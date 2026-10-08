@@ -10,7 +10,7 @@ import Foundation
 public extension Predictions {
     /// Gender of an entity(face/celebrity) identified with
     /// associated confidence value
-    struct GenderAttribute {
+    struct GenderAttribute: Sendable {
         public var gender: Gender
         public var confidence: Double
 

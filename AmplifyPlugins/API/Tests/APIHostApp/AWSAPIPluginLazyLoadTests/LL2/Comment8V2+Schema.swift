@@ -25,7 +25,8 @@ public extension Comment8V2 {
   static let schema = defineSchema { model in
     let comment8V2 = Comment8V2.keys
 
-    model.pluralName = "Comment8V2s"
+    model.listPluralName = "Comment8V2s"
+    model.syncPluralName = "Comment8V2s"
 
     model.attributes(
       .index(fields: ["postId"], name: "commentByPost"),

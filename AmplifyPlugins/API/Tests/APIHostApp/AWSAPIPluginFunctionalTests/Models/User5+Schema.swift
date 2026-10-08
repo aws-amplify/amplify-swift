@@ -25,7 +25,8 @@ public extension User5 {
   static let schema = defineSchema { model in
     let user5 = User5.keys
 
-    model.pluralName = "User5s"
+    model.listPluralName = "User5s"
+    model.syncPluralName = "User5s"
 
     model.fields(
       .id(),

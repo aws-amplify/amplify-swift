@@ -11,7 +11,7 @@ import XCTest
 
 @testable import Amplify
 
-final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
+final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest, @unchecked Sendable {
 
     func testConfigure() async throws {
         await setup(withModels: UserPostCommentModels())

@@ -281,7 +281,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter, @unchecked Sendabl
     func delete<M: Model>(
         _ modelType: M.Type,
         modelSchema: ModelSchema,
-        withId id: Model.Identifier,
+        withId id: String,
         condition: QueryPredicate? = nil,
         // `@Sendable` because the inner `delete` invokes it from an escaping completion.
         completion: @escaping @Sendable (DataStoreResult<M?>) -> Void
@@ -326,7 +326,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter, @unchecked Sendabl
     func delete(
         untypedModelType modelType: Model.Type,
         modelSchema: ModelSchema,
-        withId id: Model.Identifier,
+        withId id: String,
         condition: QueryPredicate? = nil,
         completion: DataStoreCallback<Void>
     ) {

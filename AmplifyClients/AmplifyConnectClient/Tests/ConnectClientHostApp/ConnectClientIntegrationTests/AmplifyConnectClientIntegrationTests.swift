@@ -39,7 +39,7 @@ final class AmplifyConnectClientIntegrationTests: XCTestCase, @unchecked Sendabl
     }
 
     override func tearDown() async throws {
-        await Amplify.Auth.signOut()
+        _ = await Amplify.Auth.signOut()
         try await super.tearDown()
     }
 

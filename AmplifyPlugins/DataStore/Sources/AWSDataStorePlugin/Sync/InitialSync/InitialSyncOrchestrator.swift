@@ -12,7 +12,7 @@ import Foundation
 
 protocol InitialSyncOrchestrator {
     var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> { get }
-    func sync(completion: @escaping (Result<Void, DataStoreError>) -> Void)
+    func sync(completion: @escaping @Sendable (Result<Void, DataStoreError>) -> Void)
 }
 
 // For testing
@@ -30,7 +30,7 @@ typealias InitialSyncOrchestratorFactory = @Sendable
 ///   serialized sync flow.
 final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator, @unchecked Sendable {
     typealias SyncOperationResult = Result<Void, DataStoreError>
-    typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
+    typealias SyncOperationResultHandler = @Sendable (SyncOperationResult) -> Void
 
     private var initialSyncOperationSinks: [String: AnyCancellable]
 

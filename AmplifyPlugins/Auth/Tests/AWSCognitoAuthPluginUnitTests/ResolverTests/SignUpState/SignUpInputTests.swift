@@ -118,7 +118,7 @@ class SignUpInputTests: XCTestCase, @unchecked Sendable {
     func assertHasAttributeType(
         name: String,
         validationData: [CognitoIdentityProviderClientTypes.AttributeType],
-        file: StaticString = #file,
+        file: StaticString = #filePath,
         line: UInt = #line
     ) {
 

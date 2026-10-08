@@ -36,11 +36,11 @@ struct StateSequence<MyState, MyEvent>: CustomStringConvertible where MyState: S
         resolver.resolve(oldState: oldState, byApplying: event).newState
     }
 
-    func assertResolvesToExpected(file: StaticString = #file, line: UInt = #line) {
+    func assertResolvesToExpected(file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(resolve(), expected, "\(self)", file: file, line: line)
     }
 
-    func assertNotResolvesToExpected(file: StaticString = #file, line: UInt = #line) {
+    func assertNotResolvesToExpected(file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertNotEqual(resolve(), expected, "\(self)", file: file, line: line)
     }
 }

@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
+class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest, @unchecked Sendable {
 
     func testStart() async throws {
         await setup(withModels: PhoneCallModels())
@@ -60,8 +60,8 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
             queriedPhoneCall._callee,
             state: .notLoaded(identifiers: [.init(name: "id", value: callee.id)])
         )
-        let loadedCaller = try await queriedPhoneCall.caller
-        let loadedCallee = try await queriedPhoneCall.callee
+        _ = try await queriedPhoneCall.caller
+        _ = try await queriedPhoneCall.callee
         assertLazyReference(queriedPhoneCall._caller, state: .loaded(model: savedCaller))
         assertLazyReference(queriedPhoneCall._callee, state: .loaded(model: savedCallee))
 
@@ -147,7 +147,7 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
         let savedPhoneCall = try await createAndWaitForSync(phoneCall)
         XCTAssertNil(savedPhoneCall.phoneCallTranscriptId)
         let transcript = Transcript(text: "text", phoneCall: phoneCall)
-        let savedTranscript = try await createAndWaitForSync(transcript)
+        _ = try await createAndWaitForSync(transcript)
 
 
         var queriedPhoneCall = try await query(for: savedPhoneCall)
@@ -230,8 +230,8 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
         let transcript = Transcript(text: "text", phoneCall: phoneCall)
         phoneCall.phoneCallTranscriptId = transcript.id
 
-        let savedPhoneCall = try await createAndWaitForSync(phoneCall)
-        let savedTranscript = try await createAndWaitForSync(transcript)
+        _ = try await createAndWaitForSync(phoneCall)
+        _ = try await createAndWaitForSync(transcript)
 
         try await deleteAndWaitForSync(transcript)
         try await assertModelDoesNotExist(transcript)

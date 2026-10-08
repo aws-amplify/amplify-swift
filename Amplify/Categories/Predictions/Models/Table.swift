@@ -8,7 +8,7 @@
 import CoreGraphics
 
 public extension Predictions {
-    struct Table {
+    struct Table: Sendable {
         public var rows: Int
         public var columns: Int
         public var cells: [Cell]
@@ -22,7 +22,7 @@ public extension Predictions {
 }
 
 public extension Predictions.Table {
-    struct Cell {
+    struct Cell: Sendable {
         public let text: String
 
         /// The location of the recognized text on the image. It includes an axis-aligned,

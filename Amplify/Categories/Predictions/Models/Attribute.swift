@@ -9,7 +9,7 @@ import Foundation
 
 public extension Predictions {
     /// Attribute of an entity identified as a result of identify() API
-    struct Attribute {
+    struct Attribute: Sendable {
         public let name: String
         public let value: Bool
         public let confidence: Double

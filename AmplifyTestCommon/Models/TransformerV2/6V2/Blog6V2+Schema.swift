@@ -29,7 +29,8 @@ public extension Blog6V2 {
       rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "Blog6V2s"
+    model.listPluralName = "Blog6V2s"
+    model.syncPluralName = "Blog6V2s"
 
     model.fields(
       .id(),

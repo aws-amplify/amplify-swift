@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class AWSDataStoreLazyLoadBlogPostComment8V2Tests: AWSDataStoreLazyLoadBaseTest {
+final class AWSDataStoreLazyLoadBlogPostComment8V2Tests: AWSDataStoreLazyLoadBaseTest, @unchecked Sendable {
 
     func testStart() async throws {
         await setup(withModels: BlogPostComment8V2Models())
@@ -23,15 +23,15 @@ final class AWSDataStoreLazyLoadBlogPostComment8V2Tests: AWSDataStoreLazyLoadBas
         await setup(withModels: BlogPostComment8V2Models())
 
         let blog = Blog(name: "name")
-        let savedBlog = try await createAndWaitForSync(blog)
+        _ = try await createAndWaitForSync(blog)
     }
 
     func testSavePost() async throws {
         await setup(withModels: BlogPostComment8V2Models())
         let blog = Blog(name: "name")
         let post = Post(name: "name", randomId: "randomId", blog: blog)
-        let savedBlog = try await createAndWaitForSync(blog)
-        let savedPost = try await createAndWaitForSync(post)
+        _ = try await createAndWaitForSync(blog)
+        _ = try await createAndWaitForSync(post)
 
     }
 
@@ -40,8 +40,8 @@ final class AWSDataStoreLazyLoadBlogPostComment8V2Tests: AWSDataStoreLazyLoadBas
 
         let post = Post(name: "name", randomId: "randomId")
         let comment = Comment(content: "content", post: post)
-        let savedPost = try await createAndWaitForSync(post)
-        let savedComment = try await createAndWaitForSync(comment)
+        _ = try await createAndWaitForSync(post)
+        _ = try await createAndWaitForSync(comment)
     }
 
     func testLazyLoad() async throws {
@@ -50,9 +50,9 @@ final class AWSDataStoreLazyLoadBlogPostComment8V2Tests: AWSDataStoreLazyLoadBas
         let blog = Blog(name: "name")
         let post = Post(name: "name", randomId: "randomId", blog: blog)
         let comment = Comment(content: "content", post: post)
-        let savedBlog = try await createAndWaitForSync(blog)
-        let savedPost = try await createAndWaitForSync(post)
-        let savedComment = try await createAndWaitForSync(comment)
+        _ = try await createAndWaitForSync(blog)
+        _ = try await createAndWaitForSync(post)
+        _ = try await createAndWaitForSync(comment)
     }
 
     func assertComment(
@@ -367,13 +367,13 @@ final class AWSDataStoreLazyLoadBlogPostComment8V2Tests: AWSDataStoreLazyLoadBas
         let post = Post(name: "name", randomId: "randomId")
         _ = try await createAndWaitForSync(post)
         let comment = Comment(content: "content", post: post)
-        let receivedComment = try await createAndWaitForSync(comment)
+        _ = try await createAndWaitForSync(comment)
         let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Comment.self)
         Task {
             for try await mutationEvent in mutationEvents {
                 if let receivedComment = try? mutationEvent.decodeModel(as: Comment.self),
-                   receivedComment.id == receivedComment.id {
+                   receivedComment.id == comment.id {
                     assertLazyReference(
                         receivedComment._post,
                         state: .notLoaded(identifiers: [.init(name: "id", value: post.identifier)])

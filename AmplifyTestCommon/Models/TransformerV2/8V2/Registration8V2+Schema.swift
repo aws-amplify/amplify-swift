@@ -25,7 +25,8 @@ public extension Registration8V2 {
   static let schema = defineSchema { model in
     let registration8V2 = Registration8V2.keys
 
-    model.pluralName = "Registration8V2s"
+    model.listPluralName = "Registration8V2s"
+    model.syncPluralName = "Registration8V2s"
 
     model.attributes(
       .index(fields: ["meetingId", "attendeeId"], name: "byMeeting"),

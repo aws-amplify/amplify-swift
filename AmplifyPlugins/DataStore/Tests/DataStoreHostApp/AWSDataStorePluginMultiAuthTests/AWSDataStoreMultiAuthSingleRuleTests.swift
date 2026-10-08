@@ -11,7 +11,7 @@ import XCTest
 
 @testable import Amplify
 
-class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
+class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest, @unchecked Sendable {
     /// Given: a user signed in with CognitoUserPools
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,

@@ -71,7 +71,7 @@ final class AWSS3StorageServiceListTests: XCTestCase, @unchecked Sendable {
             nextToken: nextToken
         )
         let listing = try await systemUnderTest.list(prefix: prefix, options: options)
-        XCTAssertEqual(listing.items.map(\.key), [])
+        XCTAssertTrue(listing.items.isEmpty)
         XCTAssertEqual(inputs.map(\.continuationToken), [nextToken])
         XCTAssertEqual(inputs.map(\.maxKeys), [Int(pageSize)])
     }
@@ -85,7 +85,7 @@ final class AWSS3StorageServiceListTests: XCTestCase, @unchecked Sendable {
         }
         let options = StorageListRequest.Options(accessLevel: .protected, targetIdentityId: targetIdentityId, path: path)
         let listing = try await systemUnderTest.list(prefix: prefix, options: options)
-        XCTAssertEqual(listing.items.map(\.key), [])
+        XCTAssertTrue(listing.items.isEmpty)
     }
 
     /// Given: A empty S3 bucket (client)
@@ -97,7 +97,7 @@ final class AWSS3StorageServiceListTests: XCTestCase, @unchecked Sendable {
         }
         let options = StorageListRequest.Options(accessLevel: .protected, targetIdentityId: targetIdentityId, path: nil)
         let listing = try await systemUnderTest.list(prefix: prefix, options: options)
-        XCTAssertEqual(listing.items.map(\.key), [])
+        XCTAssertTrue(listing.items.isEmpty)
     }
 
     /// Given: A misconfigured or S3 bucket with restricted permissions

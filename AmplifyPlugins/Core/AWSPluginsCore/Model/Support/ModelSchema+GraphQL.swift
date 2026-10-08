@@ -18,7 +18,7 @@ extension ModelSchema {
         case .list:
             if let listPluralName {
                 graphQLName = queryType.rawValue + listPluralName
-            } else if let pluralName {
+            } else if let pluralName = legacyPluralName {
                 graphQLName = queryType.rawValue + pluralName
             } else {
                 graphQLName = (queryType.rawValue + name).pluralize()
@@ -26,7 +26,7 @@ extension ModelSchema {
         case .sync:
             if let syncPluralName {
                 graphQLName = queryType.rawValue + syncPluralName
-            } else if let pluralName {
+            } else if let pluralName = legacyPluralName {
                 graphQLName = queryType.rawValue + pluralName
             } else {
                 graphQLName = (queryType.rawValue + name).pluralize()

@@ -9,7 +9,7 @@ import AWSPluginsCore
 import XCTest
 
 @testable import Amplify
-@testable import AmplifyTestCommon
+@testable import DataStoreHostApp
 @testable import AWSDataStorePlugin
 
 // swiftlint:disable cyclomatic_complexity
@@ -21,14 +21,14 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
     /// - When: A Post is saved and then immediately updated
     /// - Then: The post should be updated with new fields immediately and in the eventual consistent state
     func testSaveAndImmediatelyUpdate() async throws {
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         let newPost = try PostWrapper(
             title: "MyPost",
             content: "This is my post."
         )
 
-        let updatedPost = newPost
+        let updatedPost = newPost.copy() as! PostWrapper
         try updatedPost.updateRating(rating: 5)
         try updatedPost.updateStringProp(key: "title", value: "MyUpdatedTitle")
         try updatedPost.updateStringProp(key: "content", value: "This is my updated post.")
@@ -39,13 +39,15 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived
-        ) { payload in
+        ) { [newPostModel = newPost.model, updatedPostModel = updatedPost.model] payload in
+            let newPost = PostWrapper(model: newPostModel)
+            let updatedPost = PostWrapper(model: updatedPostModel)
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
             }
 
-            guard let post = try? PostWrapper(json: mutationEvent.json) as! PostWrapper, post.idString() == newPost.idString() else {
+            guard let post = try? PostWrapper(json: mutationEvent.json), post.idString() == newPost.idString() else {
                 return
             }
 
@@ -64,7 +66,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
             }
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -88,7 +90,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         await fulfillment(of: [saveAndImmediatelyUpdate], timeout: networkTimeout)
 
         // query the updated post immediately
-        guard let queryResult = queryPost(id: updatedPost.idString(), plugin: plugin) else {
+        guard let queryResult = await queryPost(id: updatedPost.idString(), plugin: plugin) else {
             XCTFail("Post should be available after update")
             return
         }
@@ -97,7 +99,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         await fulfillment(of: [saveSyncReceived, updateSyncReceived], timeout: networkTimeout)
 
         // query the updated post in eventual consistent state
-        guard let queryResultAfterSync = queryPost(id: updatedPost.idString(), plugin: plugin) else {
+        guard let queryResultAfterSync = await queryPost(id: updatedPost.idString(), plugin: plugin) else {
             XCTFail("Post should be available after update and sync")
             return
         }
@@ -106,40 +108,31 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
 
         let queryRequest =
             GraphQLRequest<MutationSyncResult?>.query(modelName: "Post", byId: updatedPost.idString())
-        let apiQuerySuccess = expectation(description: "API query is successful")
-        Amplify.API.query(request: queryRequest) { result in
-            switch result {
-            case .success(let mutationSyncResult):
-                switch mutationSyncResult {
-                case .success(let data):
-                    guard let post = data else {
-                        XCTFail("Failed to get data")
-                        return
-                    }
-
-                    let testPost = self.convertToTestPost(model: post.model.instance as! Post)
-                    XCTAssertNotNil(testPost)
-
-                    XCTAssertEqual(testPost?.title(), updatedPost.title())
-                    XCTAssertEqual(testPost?.content(), updatedPost.content())
-                    XCTAssertEqual(testPost?.rating(), updatedPost.rating())
-                    XCTAssertEqual(post.syncMetadata.version, 2)
-                    apiQuerySuccess.fulfill()
-                case .failure(let error):
-                    XCTFail("Error: \(error)")
-                }
-            case .failure(let error):
-                XCTFail("Error: \(error)")
+        let mutationSyncResult = try await Amplify.API.query(request: queryRequest)
+        switch mutationSyncResult {
+        case .success(let data):
+            guard let post = data else {
+                XCTFail("Failed to get data")
+                return
             }
+
+            let testPost = convertToTestPost(model: post.model.instance as! Post)
+            XCTAssertNotNil(testPost)
+
+            XCTAssertEqual(testPost?.title(), updatedPost.title())
+            XCTAssertEqual(testPost?.content(), updatedPost.content())
+            XCTAssertEqual(testPost?.rating(), updatedPost.rating())
+            XCTAssertEqual(post.syncMetadata.version, 2)
+        case .failure(let error):
+            XCTFail("Error: \(error)")
         }
-        await fulfillment(of: [apiQuerySuccess], timeout: networkTimeout)
     }
 
     /// - Given: API has been setup with `Post` model registered
     /// - When: A Post is saved and deleted immediately
     /// - Then: The Post should not be returned when queried for immediately and in the eventual consistent state
     func testSaveAndImmediatelyDelete() async throws {
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         let newPost = try PostWrapper(
             title: "MyPost",
@@ -154,13 +147,14 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived
-        ) { payload in
+        ) { [newPostModel = newPost.model] payload in
+            let newPost = PostWrapper(model: newPostModel)
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
             }
 
-            guard let post = try? PostWrapper(json: mutationEvent.json) as! PostWrapper, post.idString() == newPost.idString() else {
+            guard let post = try? PostWrapper(json: mutationEvent.json), post.idString() == newPost.idString() else {
                 return
             }
 
@@ -179,7 +173,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
             }
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -203,51 +197,42 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         await fulfillment(of: [saveAndImmediatelyDelete], timeout: networkTimeout)
 
         // query the deleted post immediately
-        let queryResult = queryPost(id: newPost.idString(), plugin: plugin)
+        let queryResult = await queryPost(id: newPost.idString(), plugin: plugin)
         XCTAssertNil(queryResult)
 
         await fulfillment(of: [saveSyncReceived, deleteSyncReceived], timeout: networkTimeout)
 
         // query the deleted post in eventual consistent state
-        let queryResultAfterSync = queryPost(id: newPost.idString(), plugin: plugin)
+        let queryResultAfterSync = await queryPost(id: newPost.idString(), plugin: plugin)
         XCTAssertNil(queryResultAfterSync)
 
         let queryRequest =
             GraphQLRequest<MutationSyncResult?>.query(modelName: "Post", byId: newPost.idString())
-        let apiQuerySuccess = expectation(description: "API query is successful")
-        Amplify.API.query(request: queryRequest) { result in
-            switch result {
-            case .success(let mutationSyncResult):
-                switch mutationSyncResult {
-                case .success(let data):
-                    guard let post = data else {
-                        XCTFail("Failed to get data")
-                        return
-                    }
-
-                    let testPost = self.convertToTestPost(model: post.model.instance as! Post)
-                    XCTAssertNotNil(testPost)
-                    XCTAssertEqual(testPost?.title(), newPost.title())
-                    XCTAssertEqual(testPost?.content(), newPost.content())
-                    XCTAssertEqual(testPost?.rating(), newPost.rating())
-                    XCTAssertTrue(post.syncMetadata.deleted)
-                    XCTAssertEqual(post.syncMetadata.version, 2)
-                    apiQuerySuccess.fulfill()
-                case .failure(let error):
-                    XCTFail("Error: \(error)")
-                }
-            case .failure(let error):
-                XCTFail("Error: \(error)")
+        let mutationSyncResult = try await Amplify.API.query(request: queryRequest)
+        switch mutationSyncResult {
+        case .success(let data):
+            guard let post = data else {
+                XCTFail("Failed to get data")
+                return
             }
+
+            let testPost = convertToTestPost(model: post.model.instance as! Post)
+            XCTAssertNotNil(testPost)
+            XCTAssertEqual(testPost?.title(), newPost.title())
+            XCTAssertEqual(testPost?.content(), newPost.content())
+            XCTAssertEqual(testPost?.rating(), newPost.rating())
+            XCTAssertTrue(post.syncMetadata.deleted)
+            XCTAssertEqual(post.syncMetadata.version, 2)
+        case .failure(let error):
+            XCTFail("Error: \(error)")
         }
-        await fulfillment(of: [apiQuerySuccess], timeout: networkTimeout)
     }
 
     /// - Given: API has been setup with `Post` model registered
     /// - When: A Post is saved with sync complete, updated and deleted immediately
     /// - Then: The Post should not be returned when queried for
     func testSaveThenUpdateAndImmediatelyDelete() async throws {
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
 
         let newPost = try PostWrapper(
@@ -257,7 +242,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
             rating: 3
         )
 
-        var updatedPost = newPost
+        let updatedPost = newPost.copy() as! PostWrapper
         try updatedPost.updateRating(rating: 5)
         try updatedPost.updateStringProp(key: "title", value: "MyUpdatedTitle")
         try updatedPost.updateStringProp(key: "content", value: "This is my updated post.")
@@ -269,13 +254,15 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived
-        ) { payload in
+        ) { [newPostModel = newPost.model, updatedPostModel = updatedPost.model] payload in
+            let newPost = PostWrapper(model: newPostModel)
+            let updatedPost = PostWrapper(model: updatedPostModel)
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
             }
 
-            guard let post = try? PostWrapper(json: mutationEvent.json) as! PostWrapper, post.idString() == newPost.idString() else {
+            guard let post = try? PostWrapper(json: mutationEvent.json), post.idString() == newPost.idString() else {
                 return
             }
 
@@ -301,7 +288,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
             }
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -339,54 +326,45 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         await fulfillment(of: [updateAndImmediatelyDelete], timeout: networkTimeout)
 
         // query the deleted post immediately
-        let queryResult = queryPost(id: newPost.idString(), plugin: plugin)
+        let queryResult = await queryPost(id: newPost.idString(), plugin: plugin)
         XCTAssertNil(queryResult)
 
         await fulfillment(of: [updateSyncReceived, deleteSyncReceived], timeout: networkTimeout)
 
         // query the deleted post
-        let queryResultAfterSync = queryPost(id: updatedPost.idString(), plugin: plugin)
+        let queryResultAfterSync = await queryPost(id: updatedPost.idString(), plugin: plugin)
         XCTAssertNil(queryResultAfterSync)
 
         let queryRequest =
             GraphQLRequest<MutationSyncResult?>.query(modelName: "Post", byId: updatedPost.idString())
-        let apiQuerySuccess = expectation(description: "API query is successful")
-        Amplify.API.query(request: queryRequest) { result in
-            switch result {
-            case .success(let mutationSyncResult):
-                switch mutationSyncResult {
-                case .success(let data):
-                    guard let post = data else {
-                        XCTFail("Failed to get data")
-                        return
-                    }
-                    let testPost = self.convertToTestPost(model: post.model.instance as! Post)
-                    XCTAssertNotNil(testPost)
-                    XCTAssertEqual(testPost?.title(), updatedPost.title())
-                    XCTAssertEqual(testPost?.content(), updatedPost.content())
-                    XCTAssertEqual(testPost?.rating(), updatedPost.rating())
-
-                    XCTAssertTrue(post.syncMetadata.deleted)
-                    XCTAssertEqual(post.syncMetadata.version, 3)
-                    apiQuerySuccess.fulfill()
-                case .failure(let error):
-                    XCTFail("Error: \(error)")
-                }
-            case .failure(let error):
-                XCTFail("Error: \(error)")
+        let mutationSyncResult = try await Amplify.API.query(request: queryRequest)
+        switch mutationSyncResult {
+        case .success(let data):
+            guard let post = data else {
+                XCTFail("Failed to get data")
+                return
             }
+            let testPost = convertToTestPost(model: post.model.instance as! Post)
+            XCTAssertNotNil(testPost)
+            XCTAssertEqual(testPost?.title(), updatedPost.title())
+            XCTAssertEqual(testPost?.content(), updatedPost.content())
+            XCTAssertEqual(testPost?.rating(), updatedPost.rating())
+
+            XCTAssertTrue(post.syncMetadata.deleted)
+            XCTAssertEqual(post.syncMetadata.version, 3)
+        case .failure(let error):
+            XCTFail("Error: \(error)")
         }
-        await fulfillment(of: [apiQuerySuccess], timeout: networkTimeout)
     }
 
-    private func queryPost(id: String, plugin: AWSDataStorePlugin) -> async PostWrapper? {
+    private func queryPost(id: String, plugin: AWSDataStorePlugin) async -> PostWrapper? {
         let queryExpectation = expectation(description: "Query is successful")
-        var queryResult: PostWrapper?
+        let queryResult = AtomicValue<PostWrapper?>(initialValue: nil)
         plugin.query(FlutterSerializedModel.self, modelSchema: Post.schema, where: Post.keys.id.eq(id)) { result in
             switch result {
             case .success(let post):
                 if !post.isEmpty {
-                    queryResult = PostWrapper(model: post[0])
+                    queryResult.set(PostWrapper(model: post[0]))
                 }
                 queryExpectation.fulfill()
             case .failure(let error):
@@ -394,7 +372,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
             }
         }
         await fulfillment(of: [queryExpectation], timeout: networkTimeout)
-        return queryResult
+        return queryResult.get()
     }
 
     private func convertToTestPost(model: Post) -> PostWrapper? {

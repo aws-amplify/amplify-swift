@@ -602,6 +602,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		56B54B1F29FC365C0000DF7D /* Copy amplifyconfiguration and amplify_outputs */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -621,6 +622,7 @@
 		};
 		681D7D862A42703500F7C310 /* Copy amplifyconfiguration */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -842,7 +844,6 @@
 		681D7D482A42637900F7C310 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_ENTITLEMENTS = StorageHostApp/StorageWatchApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -874,7 +875,6 @@
 		681D7D492A42637900F7C310 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_ENTITLEMENTS = StorageHostApp/StorageWatchApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -1078,7 +1078,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=appletv*]" = "";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = StorageHostApp/StorageHostApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1113,7 +1113,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=appletv*]" = "";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = StorageHostApp/StorageHostApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;

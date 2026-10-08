@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 @testable import Amplify
 
-final class GraphQLSalary18Tests: AWSAPIPluginGen2GraphQLBaseTest {
+final class GraphQLSalary18Tests: AWSAPIPluginGen2GraphQLBaseTest, @unchecked Sendable {
 
     // Code Snippet for
     func testCodeSnippet() async throws {
@@ -32,7 +32,7 @@ final class GraphQLSalary18Tests: AWSAPIPluginGen2GraphQLBaseTest {
                 wage: 50.25,
                 currency: "USD"
             )
-            let createdSalary = try await Amplify.API.mutate(request: .create(
+            _ = try await Amplify.API.mutate(request: .create(
                 salary,
                 authMode: .amazonCognitoUserPools
             )).get()

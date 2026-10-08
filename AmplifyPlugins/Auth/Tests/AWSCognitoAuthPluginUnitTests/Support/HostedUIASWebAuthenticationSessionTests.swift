@@ -181,7 +181,9 @@ final class MockASWebAuthenticationSession: ASWebAuthenticationSession, @uncheck
     var mockedError: Error?
     override func start() -> Bool {
         callback(mockedURL, mockedError)
-        return presentationContextProvider?.presentationAnchor(for: self) != nil
+        return MainActor.assumeIsolated {
+            presentationContextProvider?.presentationAnchor(for: self) != nil
+        }
     }
 
     var mockCanStart = true

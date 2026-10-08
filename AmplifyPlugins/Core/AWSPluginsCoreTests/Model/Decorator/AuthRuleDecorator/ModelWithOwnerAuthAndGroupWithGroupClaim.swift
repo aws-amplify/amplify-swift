@@ -96,7 +96,7 @@ class ModelWithOwnerAuthAndGroupWithGroupClaim: XCTestCase, @unchecked Sendable 
             "sub": "123e4567-dead-beef-a456-426614174000"
         ] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(
-            modelType: OIDCGroupPost.self,
+            modelSchema: OIDCGroupPost.schema,
             operationType: .subscription
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
@@ -128,7 +128,7 @@ class ModelWithOwnerAuthAndGroupWithGroupClaim: XCTestCase, @unchecked Sendable 
             "https://myapp.com/claims/groups": ["Admins"]
         ] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(
-            modelType: OIDCGroupPost.self,
+            modelSchema: OIDCGroupPost.schema,
             operationType: .subscription
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
@@ -156,7 +156,7 @@ class ModelWithOwnerAuthAndGroupWithGroupClaim: XCTestCase, @unchecked Sendable 
             "https://myapp.com/claims/groups": ["Admins", "Users"]
         ] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(
-            modelType: OIDCGroupPost.self,
+            modelSchema: OIDCGroupPost.schema,
             operationType: .subscription
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
@@ -184,7 +184,7 @@ class ModelWithOwnerAuthAndGroupWithGroupClaim: XCTestCase, @unchecked Sendable 
             "https://myapp.com/claims/groups": ["Users"]
         ] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(
-            modelType: OIDCGroupPost.self,
+            modelSchema: OIDCGroupPost.schema,
             operationType: .subscription
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))

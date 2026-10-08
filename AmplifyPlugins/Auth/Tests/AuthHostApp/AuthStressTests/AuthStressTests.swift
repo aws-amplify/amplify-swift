@@ -10,7 +10,7 @@ import AWSPluginsCore
 import XCTest
 @testable import Amplify
 
-final class AuthStressTests: AuthStressBaseTest {
+final class AuthStressTests: AuthStressBaseTest, @unchecked Sendable {
 
     let concurrencyLimit = 50
 

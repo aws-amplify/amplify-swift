@@ -27,7 +27,8 @@ public extension Blog8V2 {
   static let schema = defineSchema { model in
     let blog8V2 = Blog8V2.keys
 
-    model.pluralName = "Blog8V2s"
+    model.listPluralName = "Blog8V2s"
+    model.syncPluralName = "Blog8V2s"
 
     model.attributes(
       .primaryKey(fields: [blog8V2.id])

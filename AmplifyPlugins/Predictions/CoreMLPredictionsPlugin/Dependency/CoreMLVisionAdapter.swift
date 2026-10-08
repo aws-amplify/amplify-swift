@@ -7,6 +7,7 @@
 
 #if canImport(Vision)
 import Amplify
+import CoreML
 import Vision
 
 final class CoreMLVisionAdapter: CoreMLVisionBehavior {
@@ -16,7 +17,7 @@ final class CoreMLVisionAdapter: CoreMLVisionBehavior {
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let request = VNClassifyImageRequest()
 #if targetEnvironment(simulator)
-        request.usesCPUOnly = true
+        request.useCPUOnly()
 #endif
         try handler.perform([request])
         guard let observations = request.results else { return nil }
@@ -34,7 +35,7 @@ final class CoreMLVisionAdapter: CoreMLVisionBehavior {
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let request = VNRecognizeTextRequest()
 #if targetEnvironment(simulator)
-        request.usesCPUOnly = true
+        request.useCPUOnly()
 #endif
         request.recognitionLevel = .accurate
         try handler.perform([request])
@@ -73,7 +74,7 @@ final class CoreMLVisionAdapter: CoreMLVisionBehavior {
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let faceLandmarksRequest = VNDetectFaceLandmarksRequest()
 #if targetEnvironment(simulator)
-        faceLandmarksRequest.usesCPUOnly = true
+        faceLandmarksRequest.useCPUOnly()
 #endif
         try handler.perform([faceLandmarksRequest])
         guard let observations = faceLandmarksRequest.results else { return nil }
@@ -135,4 +136,22 @@ final class CoreMLVisionAdapter: CoreMLVisionBehavior {
             .compactMap { $0 }
     }
 }
+
+#if targetEnvironment(simulator)
+private extension VNRequest {
+    /// Runs every compute stage on the CPU, as the deprecated `usesCPUOnly = true` did.
+    func useCPUOnly() {
+        if #available(iOS 17.0, macOS 14.0, tvOS 17.0, visionOS 1.0, *) {
+            guard let stages = try? supportedComputeStageDevices else { return }
+            for (stage, devices) in stages {
+                if let cpu = devices.first(where: { if case .cpu = $0 { true } else { false } }) {
+                    setComputeDevice(cpu, for: stage)
+                }
+            }
+        } else {
+            usesCPUOnly = true
+        }
+    }
+}
+#endif
 #endif

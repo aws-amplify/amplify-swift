@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class GraphQLLazyLoadPostComment4V2Tests: AWSAPIPluginGen2GraphQLBaseTest {
+final class GraphQLLazyLoadPostComment4V2Tests: AWSAPIPluginGen2GraphQLBaseTest, @unchecked Sendable {
 
     func testSave() async throws {
         await setup(withModels: PostComment4V2Models())

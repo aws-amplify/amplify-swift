@@ -25,7 +25,8 @@ public extension StrangeExplicitChild {
   static let schema = defineSchema { model in
     let strangeExplicitChild = StrangeExplicitChild.keys
 
-    model.pluralName = "StrangeExplicitChildren"
+    model.listPluralName = "StrangeExplicitChildren"
+    model.syncPluralName = "StrangeExplicitChildren"
 
     model.attributes(
       .index(fields: ["strangeId", "content"], name: nil),

@@ -12,13 +12,13 @@ extension StorageListRequest {
     /// Performs client side validation and returns a `StorageError` for any validation failures.
     func validate() -> StorageError? {
         if let error = StorageRequestUtils.validateTargetIdentityId(
-            options.targetIdentityId,
-            accessLevel: options.accessLevel
+            options.legacyTargetIdentityId,
+            accessLevel: options.legacyAccessLevel
         ) {
             return error
         }
 
-        if let error = StorageRequestUtils.validatePath(options.path) {
+        if let error = StorageRequestUtils.validatePath(options.legacyPath) {
             return error
         }
 

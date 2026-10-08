@@ -24,7 +24,7 @@ protocol StorageTransferDatabase: Sendable {
 
     func removeTransferRequest(task: StorageTransferTask)
 
-    func prepareForBackground(completion: (() -> Void)?)
+    func prepareForBackground(completion: (@Sendable () -> Void)?)
 
     func defaultTransferType(persistableTransferTask: StoragePersistableTransferTask) -> StorageTransferType?
 

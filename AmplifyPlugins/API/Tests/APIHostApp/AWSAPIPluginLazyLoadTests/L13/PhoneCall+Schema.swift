@@ -27,7 +27,8 @@ public extension PhoneCall {
   static let schema = defineSchema { model in
     let phoneCall = PhoneCall.keys
 
-    model.pluralName = "PhoneCalls"
+    model.listPluralName = "PhoneCalls"
+    model.syncPluralName = "PhoneCalls"
 
     model.attributes(
       .index(fields: ["callerId"], name: "byCaller"),

@@ -45,7 +45,7 @@ extension ModelPrimaryKey: SQLColumn {
             name: name,
             type: .string,
             isRequired: true,
-            attributes: [.primaryKey]
+            attributes: [.legacyPrimaryKey]
         )
     }
 

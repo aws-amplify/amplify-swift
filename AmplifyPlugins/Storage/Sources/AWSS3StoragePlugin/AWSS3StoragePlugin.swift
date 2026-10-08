@@ -43,7 +43,13 @@ public final class AWSS3StoragePlugin: StorageCategoryPlugin, @unchecked Sendabl
 
     /// The default access level used for API calls.
     @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
-    var defaultAccessLevel: StorageAccessLevel!
+    var defaultAccessLevel: StorageAccessLevel! {
+        get { legacyDefaultAccessLevel.map { StorageAccessLevel($0) } }
+        set { legacyDefaultAccessLevel = newValue?.legacyValue }
+    }
+
+    /// Non-deprecated storage behind `defaultAccessLevel`.
+    var legacyDefaultAccessLevel: LegacyStorageAccessLevel?
 
     /// The unique key of the plugin within the storage category.
     ///

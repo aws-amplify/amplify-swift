@@ -24,7 +24,8 @@ public extension SchemaDrift {
   static let schema = defineSchema { model in
     let schemaDrift = SchemaDrift.keys
 
-    model.pluralName = "SchemaDrifts"
+    model.listPluralName = "SchemaDrifts"
+    model.syncPluralName = "SchemaDrifts"
 
     model.fields(
       .id(),

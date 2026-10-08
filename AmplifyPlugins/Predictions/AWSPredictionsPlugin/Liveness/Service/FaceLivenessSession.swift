@@ -128,7 +128,7 @@ public final class FaceLivenessSession: LivenessService, @unchecked Sendable {
 
     public func send(
         _ event: LivenessEvent<some Any>,
-        eventDate: @escaping () -> Date = Date.init
+        eventDate: @escaping @Sendable () -> Date = Date.init
     ) {
         Amplify.log.verbose("\(#fileID)-\(#function): Sending websocket event: \(event)")
         livenessServiceDispatchQueue.async { [weak self] in

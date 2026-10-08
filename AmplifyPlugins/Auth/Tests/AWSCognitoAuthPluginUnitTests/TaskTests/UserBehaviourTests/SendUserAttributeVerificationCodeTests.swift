@@ -13,7 +13,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class SendUserAttributeVerificationCodeTests: BasePluginTest {
+class SendUserAttributeVerificationCodeTests: BasePluginTest, @unchecked Sendable {
 
     /// Test a successful sendVerificationCode call with .done as next step
     ///

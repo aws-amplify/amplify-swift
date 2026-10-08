@@ -75,7 +75,7 @@ class GraphQLRequestAuthIdentityClaimTests: XCTestCase, @unchecked Sendable {
             "username": "user1",
             "sub": "123e4567-dead-beef-a456-426614174000"
         ] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, claims)))
@@ -115,7 +115,7 @@ class GraphQLRequestAuthIdentityClaimTests: XCTestCase, @unchecked Sendable {
             "username": "user1",
             "sub": "123e4567-dead-beef-a456-426614174000"
         ] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, claims)))

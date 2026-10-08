@@ -11,10 +11,21 @@ import Foundation
 import Smithy
 import SmithyHTTPAPI
 
-class AWSS3StoragePluginRequestRecorder {
-    var target: HTTPClient?
-    var sdkRequests: [HTTPRequest] = []
-    var urlRequests: [URLRequest] = []
+// `@unchecked Sendable`: mutable state is guarded by `lock`; upload parts record requests concurrently.
+final class AWSS3StoragePluginRequestRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private var _target: HTTPClient?
+    private var _sdkRequests: [HTTPRequest] = []
+    private var _urlRequests: [URLRequest] = []
+
+    var target: HTTPClient? {
+        get { lock.withLock { _target } }
+        set { lock.withLock { _target = newValue } }
+    }
+
+    var sdkRequests: [HTTPRequest] { lock.withLock { _sdkRequests } }
+    var urlRequests: [URLRequest] { lock.withLock { _urlRequests } }
+
     init() {
     }
 }
@@ -24,7 +35,7 @@ extension AWSS3StoragePluginRequestRecorder: HttpClientEngineProxy {
         guard let target  else {
             throw ClientError.unknownError("HttpClientEngine is not set")
         }
-        sdkRequests.append(request)
+        lock.withLock { _sdkRequests.append(request) }
         return try await target.send(request: request)
    }
 }
@@ -32,6 +43,6 @@ extension AWSS3StoragePluginRequestRecorder: HttpClientEngineProxy {
 extension AWSS3StoragePluginRequestRecorder: URLRequestDelegate {
     func willSend(request: URLRequest) {}
     func didSend(request: URLRequest) {
-        urlRequests.append(request)
+        lock.withLock { _urlRequests.append(request) }
     }
 }

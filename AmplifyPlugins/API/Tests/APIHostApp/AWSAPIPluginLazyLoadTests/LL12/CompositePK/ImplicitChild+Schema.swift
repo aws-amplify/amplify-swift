@@ -25,7 +25,8 @@ public extension ImplicitChild {
   static let schema = defineSchema { model in
     let implicitChild = ImplicitChild.keys
 
-    model.pluralName = "ImplicitChildren"
+    model.listPluralName = "ImplicitChildren"
+    model.syncPluralName = "ImplicitChildren"
 
     model.attributes(
       .index(fields: ["childId", "content"], name: nil),

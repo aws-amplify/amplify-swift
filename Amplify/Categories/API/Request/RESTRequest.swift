@@ -8,7 +8,8 @@
 import Foundation
 
 /// REST Request
-public class RESTRequest {
+public class RESTRequest: @unchecked Sendable {
+    // `@unchecked`: the class isn't `final`; every stored property is a `Sendable` `let`.
 
     /// The name of REST API being invoked, as specified in `amplifyconfiguration.json`.
     /// Specify this parameter when more than one REST API is configured.

@@ -39,7 +39,7 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase, @un
             operationType: .mutation
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelIdDecorator(model: customer))
+        documentBuilder.add(decorator: ModelIdDecorator(model: customer, schema: customer.schema))
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil, graphQLType: .mutation))
         let document = documentBuilder.build()
         let documentStringValue = """

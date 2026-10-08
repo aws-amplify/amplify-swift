@@ -55,7 +55,9 @@ public extension Notification.Name {
     static let reachabilityChanged = Notification.Name("reachabilityChanged")
 }
 
-public class AmplifyReachability {
+// `@unchecked Sendable`: `lock` guards all mutable state; the reachability callback writes `flags` on `reachabilitySerialQueue`.
+public class AmplifyReachability: @unchecked Sendable {
+    private let lock = NSLock()
 
     public typealias NetworkReachable = (AmplifyReachability) -> Void
     public typealias NetworkUnreachable = (AmplifyReachability) -> Void
@@ -86,17 +88,37 @@ public class AmplifyReachability {
         }
     }
 
-    public var whenReachable: NetworkReachable?
-    public var whenUnreachable: NetworkUnreachable?
+    private var _whenReachable: NetworkReachable?
+    private var _whenUnreachable: NetworkUnreachable?
+
+    public var whenReachable: NetworkReachable? {
+        get { lock.withLock { _whenReachable } }
+        set { lock.withLock { _whenReachable = newValue } }
+    }
+
+    public var whenUnreachable: NetworkUnreachable? {
+        get { lock.withLock { _whenUnreachable } }
+        set { lock.withLock { _whenUnreachable = newValue } }
+    }
 
     @available(*, deprecated, renamed: "allowsCellularConnection")
     public let reachableOnWWAN: Bool = true
 
+    private var _allowsCellularConnection: Bool
+
     /// Set to `false` to force Reachability.connection to .none when on cellular connection (default value `true`)
-    public var allowsCellularConnection: Bool
+    public var allowsCellularConnection: Bool {
+        get { lock.withLock { _allowsCellularConnection } }
+        set { lock.withLock { _allowsCellularConnection = newValue } }
+    }
+
+    private var _notificationCenter: NotificationCenter = .default
 
     // The notification center on which "reachability changed" events are being posted
-    public var notificationCenter: NotificationCenter = .default
+    public var notificationCenter: NotificationCenter {
+        get { lock.withLock { _notificationCenter } }
+        set { lock.withLock { _notificationCenter = newValue } }
+    }
 
     @available(*, deprecated, renamed: "connection.description")
     public var currentReachabilityString: String {
@@ -121,7 +143,7 @@ public class AmplifyReachability {
         }
     }
 
-    private var isRunningOnDevice: Bool = {
+    private let isRunningOnDevice: Bool = {
         #if targetEnvironment(simulator)
             return false
         #else
@@ -129,14 +151,30 @@ public class AmplifyReachability {
         #endif
     }()
 
-    private(set) var notifierRunning = false
+    private var _notifierRunning = false
+
+    private(set) var notifierRunning: Bool {
+        get { lock.withLock { _notifierRunning } }
+        set { lock.withLock { _notifierRunning = newValue } }
+    }
+
     private let reachabilityRef: SCNetworkReachability
     private let reachabilitySerialQueue: DispatchQueue
     private let notificationQueue: DispatchQueue?
+    private var _flags: SCNetworkReachabilityFlags?
+
     fileprivate(set) var flags: SCNetworkReachabilityFlags? {
-        didSet {
-            guard flags != oldValue else { return }
-            notifyReachabilityChanged()
+        get { lock.withLock { _flags } }
+        set {
+            let changed = lock.withLock {
+                guard _flags != newValue else { return false }
+                _flags = newValue
+                return true
+            }
+            // Notify after releasing the lock: observers read `connection`, which reads `flags`.
+            if changed {
+                notifyReachabilityChanged()
+            }
         }
     }
 
@@ -146,7 +184,7 @@ public class AmplifyReachability {
         targetQueue: DispatchQueue? = nil,
         notificationQueue: DispatchQueue? = .main
     ) {
-        self.allowsCellularConnection = true
+        self._allowsCellularConnection = true
         self.reachabilityRef = reachabilityRef
         self.reachabilitySerialQueue = DispatchQueue(label: "uk.co.ashleymills.reachability", qos: queueQoS, target: targetQueue)
         self.notificationQueue = notificationQueue
@@ -286,7 +324,7 @@ private extension AmplifyReachability {
     }
 
     func notifyReachabilityChanged() {
-        let notify = { [weak self] in
+        let notify: @Sendable () -> Void = { [weak self] in
             guard let self else { return }
             connection != .unavailable ? whenReachable?(self) : whenUnreachable?(self)
             notificationCenter.post(name: .reachabilityChanged, object: self)

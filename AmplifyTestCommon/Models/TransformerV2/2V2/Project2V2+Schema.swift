@@ -30,7 +30,8 @@ public extension Project2V2 {
       rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "Project2V2s"
+    model.listPluralName = "Project2V2s"
+    model.syncPluralName = "Project2V2s"
 
     model.fields(
       .id(),

@@ -13,7 +13,7 @@ import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 @testable import SQLite
 
-class SQLModelValueConverterTests: BaseDataStoreTests {
+class SQLModelValueConverterTests: BaseDataStoreTests, @unchecked Sendable {
 
     private let testId = "df5dd4a4-34f8-4974-8a37-2617cf8dafe1"
 

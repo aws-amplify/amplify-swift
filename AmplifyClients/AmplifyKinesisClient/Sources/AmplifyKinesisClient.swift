@@ -136,7 +136,12 @@ public class AmplifyKinesisClient {
             additionalMetadata: ["md/amplify-kinesis"]
         )
 
-        self.kinesisClient = AWSKinesis.KinesisClient(config: clientConfig)
+        // Inlined from the deprecated KinesisClient.init(config:)
+        do {
+            self.kinesisClient = try AWSKinesis.KinesisClient(config: clientConfig.toSendable())
+        } catch {
+            fatalError("Failed to convert deprecated configuration: \(error)")
+        }
 
         // Create RecordClient with Kinesis-specific sender
         let sender = KinesisRecordSender(

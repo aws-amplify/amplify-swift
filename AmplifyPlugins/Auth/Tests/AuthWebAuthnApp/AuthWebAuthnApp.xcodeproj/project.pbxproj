@@ -214,6 +214,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		6806280D2CDED58500AA7822 /* Copy Test Config */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);

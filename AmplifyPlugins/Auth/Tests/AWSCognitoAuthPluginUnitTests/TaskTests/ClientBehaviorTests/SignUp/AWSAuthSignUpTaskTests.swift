@@ -15,7 +15,7 @@ import XCTest
 
 import AWSCognitoIdentityProvider
 
-class AWSAuthSignUpTaskTests: BasePluginTest {
+class AWSAuthSignUpTaskTests: BasePluginTest, @unchecked Sendable {
 
     override var initialState: AuthState {
         AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)

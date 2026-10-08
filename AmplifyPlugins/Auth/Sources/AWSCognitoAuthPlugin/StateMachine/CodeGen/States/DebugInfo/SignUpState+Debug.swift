@@ -24,8 +24,8 @@ extension SignUpState: CustomDebugDictionaryConvertible {
             additionalMetadataDictionary = data.debugDictionary
         case .signedUp(let data, _):
             additionalMetadataDictionary = data.debugDictionary
-        case .error(let signUpError):
-            additionalMetadataDictionary = ["Error": signUpError]
+        case .error(let signUpError, let signUpEventData):
+            additionalMetadataDictionary = ["Error": (signUpError, signUpEventData)]
         }
         return [type: additionalMetadataDictionary]
     }

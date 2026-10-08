@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
+final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest, @unchecked Sendable {
 
     func testSave() async throws {
         await setup(withModels: PostComment7Models())
@@ -185,7 +185,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
     func testSaveWithoutPost() async throws {
         await setup(withModels: PostComment7Models())
         let comment = Comment(commentId: UUID().uuidString, content: "content")
-        let savedComment = try await mutate(.create(comment))
+        _ = try await mutate(.create(comment))
         var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(
             commentId: comment.commentId,
             content: comment.content
@@ -207,8 +207,8 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         let savedPost = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
-        var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(
+        _ = try await mutate(.create(comment))
+        let queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(
             commentId: comment.commentId,
             content: comment.content
         )))!
@@ -227,7 +227,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         _ = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
+        _ = try await mutate(.create(comment))
         var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(
             commentId: comment.commentId,
             content: comment.content
@@ -251,7 +251,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         _ = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
+        _ = try await mutate(.create(comment))
         var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(
             commentId: comment.commentId,
             content: comment.content

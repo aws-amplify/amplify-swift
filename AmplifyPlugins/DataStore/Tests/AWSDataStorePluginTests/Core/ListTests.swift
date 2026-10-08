@@ -12,7 +12,7 @@ import Amplify
 import AmplifyTestCommon
 import AWSDataStorePlugin
 
-class ListTests: BaseDataStoreTests {
+class ListTests: BaseDataStoreTests, @unchecked Sendable {
 
     /// - Given: a list a `Post` and a few comments associated with it
     /// - When:

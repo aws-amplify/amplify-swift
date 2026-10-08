@@ -25,7 +25,8 @@ public extension PostWithCompositeKey {
   static let schema = defineSchema { model in
     let postWithCompositeKey = PostWithCompositeKey.keys
 
-    model.pluralName = "PostWithCompositeKeys"
+    model.listPluralName = "PostWithCompositeKeys"
+    model.syncPluralName = "PostWithCompositeKeys"
 
     model.attributes(
       .index(fields: ["id", "title"], name: nil),

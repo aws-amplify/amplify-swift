@@ -14,7 +14,7 @@ import XCTest
 @testable import AWSDataStorePlugin
 
 // swiftlint:disable type_body_length
-class CascadeDeleteOperationTests: StorageEngineTestsBase {
+class CascadeDeleteOperationTests: StorageEngineTestsBase, @unchecked Sendable {
 
     override func setUp() {
         super.setUp()

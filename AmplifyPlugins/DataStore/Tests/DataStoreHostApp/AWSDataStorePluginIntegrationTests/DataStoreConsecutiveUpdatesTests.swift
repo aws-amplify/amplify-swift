@@ -353,7 +353,6 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
 
         let queryRequest =
             GraphQLRequest<MutationSyncResult?>.query(modelName: updatedPost.modelName, byId: updatedPost.id)
-        let apiQuerySuccess = expectation(description: "API query is successful")
         let mutationSyncResult = try await Amplify.API.query(request: queryRequest)
         switch mutationSyncResult {
         case .success(let data):

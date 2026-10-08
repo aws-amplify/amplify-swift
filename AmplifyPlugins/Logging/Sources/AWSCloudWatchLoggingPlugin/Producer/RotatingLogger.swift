@@ -65,7 +65,7 @@ final class RotatingLogger: @unchecked Sendable {
 
     private func setupSubscription() async throws {
         if rotationSubscription == nil {
-            let rotationPublisher = await actor.rotationPublisher()
+            let rotationPublisher = actor.rotationPublisher()
             rotationSubscription = rotationPublisher.sink { [weak self] url in
                 guard let self else { return }
                 batchSubject.send(RotatingLogBatch(url: url))

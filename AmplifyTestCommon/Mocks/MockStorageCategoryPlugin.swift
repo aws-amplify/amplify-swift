@@ -208,7 +208,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin, @unchec
     func getURL(path: any StoragePath, options: StorageGetURLRequest.Options?) async throws -> URL {
         notify("getURL")
         let options = options ?? StorageGetURLRequest.Options()
-        let request = StorageGetURLRequest(key: key, options: options)
+        let request = StorageGetURLRequest(path: path, options: options)
         let operation = MockStorageGetURLOperation(request: request)
         let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
         return try await taskAdapter.value
@@ -235,7 +235,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin, @unchec
     func uploadData(path: any StoragePath, data: Data, options: StorageUploadDataRequest.Options?) -> StorageUploadDataTask {
         notify("uploadData")
         let options = options ?? StorageUploadDataRequest.Options()
-        let request = StorageUploadDataRequest(key: key, data: data, options: options)
+        let request = StorageUploadDataRequest(path: path, data: data, options: options)
         let operation = MockStorageUploadDataOperation(request: request)
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         return taskAdapter
@@ -244,7 +244,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin, @unchec
     func uploadFile(path: any StoragePath, local: URL, options: StorageUploadFileRequest.Options?) -> StorageUploadFileTask {
         notify("uploadFile")
         let options = options ?? StorageUploadFileRequest.Options()
-        let request = StorageUploadFileRequest(key: key, local: local, options: options)
+        let request = StorageUploadFileRequest(path: path, local: local, options: options)
         let operation =  MockStorageUploadFileOperation(request: request)
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         return taskAdapter
@@ -253,7 +253,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin, @unchec
     func remove(path: any StoragePath, options: StorageRemoveRequest.Options?) async throws -> String {
         notify("remove")
         let options = options ?? StorageRemoveRequest.Options()
-        let request = StorageRemoveRequest(key: key, options: options)
+        let request = StorageRemoveRequest(path: path, options: options)
         let operation = MockStorageRemoveOperation(request: request)
         let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
         return try await taskAdapter.value
@@ -262,7 +262,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin, @unchec
     func list(path: any StoragePath, options: StorageListRequest.Options?) async throws -> StorageListResult {
         notify("list")
         let options = options ?? StorageListRequest.Options()
-        let request = StorageListRequest(options: options)
+        let request = StorageListRequest(path: path, options: options)
         let operation = MockStorageListOperation(request: request)
         let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
         return try await taskAdapter.value

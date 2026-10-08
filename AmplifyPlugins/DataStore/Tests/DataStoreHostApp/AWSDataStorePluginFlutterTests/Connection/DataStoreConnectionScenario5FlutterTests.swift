@@ -7,7 +7,6 @@
 
 import XCTest
 @testable import Amplify
-@testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
 /*
@@ -43,18 +42,18 @@ import XCTest
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 class DataStoreConnectionScenario5FlutterTests: SyncEngineFlutterIntegrationTestBase, @unchecked Sendable {
 
-    func testListPostEditorByPost() throws {
-        try startAmplifyAndWaitForSync()
+    func testListPostEditorByPost() async throws {
+        try await startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        guard let post = try savePost(title: "title", plugin: plugin) else {
+        guard let post = try await savePost(title: "title", plugin: plugin) else {
             XCTFail("Could not create post")
             return
         }
-        guard let user = try saveUser(username: "username", plugin: plugin) else {
+        guard let user = try await saveUser(username: "username", plugin: plugin) else {
             XCTFail("Could not create user")
             return
         }
-        guard try savePostEditor(post: post, editor: user, plugin: plugin) != nil else {
+        guard try await savePostEditor(post: post, editor: user, plugin: plugin) != nil else {
             XCTFail("Could not create user")
             return
         }
@@ -71,18 +70,18 @@ class DataStoreConnectionScenario5FlutterTests: SyncEngineFlutterIntegrationTest
         await fulfillment(of: [listPostEditorByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testListPostEditorByUser() throws {
-        try startAmplifyAndWaitForSync()
+    func testListPostEditorByUser() async throws {
+        try await startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        guard let post = try savePost(title: "title", plugin: plugin) else {
+        guard let post = try await savePost(title: "title", plugin: plugin) else {
             XCTFail("Could not create post")
             return
         }
-        guard let user = try saveUser(username: "username", plugin: plugin) else {
+        guard let user = try await saveUser(username: "username", plugin: plugin) else {
             XCTFail("Could not create user")
             return
         }
-        guard try savePostEditor(post: post, editor: user, plugin: plugin) != nil else {
+        guard try await savePostEditor(post: post, editor: user, plugin: plugin) != nil else {
             XCTFail("Could not create user")
             return
         }
@@ -100,54 +99,54 @@ class DataStoreConnectionScenario5FlutterTests: SyncEngineFlutterIntegrationTest
     }
 
     /// TODO: Include testGetPostThenLoadPostEditors when nested model lazy loading is implemented
-    func savePost(id: String = UUID().uuidString, title: String, plugin: AWSDataStorePlugin) throws -> Post5Wrapper? {
+    func savePost(id: String = UUID().uuidString, title: String, plugin: AWSDataStorePlugin) async throws -> Post5Wrapper? {
         let post = try Post5Wrapper(title: title)
-        var result: Post5Wrapper?
+        let result = AtomicValue<Post5Wrapper?>(initialValue: nil)
         let completeInvoked = expectation(description: "request completed")
         plugin.save(post.model, modelSchema: Post5.schema) { event in
             switch event {
             case .success(let queriedPost):
-                result = Post5Wrapper(model: queriedPost)
+                result.set(Post5Wrapper(model: queriedPost))
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
             }
         }
         await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
+        return result.get()
     }
 
-    func saveUser(id: String = UUID().uuidString, username: String, plugin: AWSDataStorePlugin) throws -> User5Wrapper? {
+    func saveUser(id: String = UUID().uuidString, username: String, plugin: AWSDataStorePlugin) async throws -> User5Wrapper? {
         let user = try User5Wrapper(id: id, username: username)
-        var result: User5Wrapper?
+        let result = AtomicValue<User5Wrapper?>(initialValue: nil)
         let completeInvoked = expectation(description: "request completed")
         plugin.save(user.model, modelSchema: User5.schema) { event in
             switch event {
             case .success(let user):
-                result = User5Wrapper(model: user)
+                result.set(User5Wrapper(model: user))
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
             }
         }
         await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
+        return result.get()
     }
 
-    func savePostEditor(id: String = UUID().uuidString, post: Post5Wrapper, editor: User5Wrapper, plugin: AWSDataStorePlugin) throws -> PostEditor5Wrapper? {
+    func savePostEditor(id: String = UUID().uuidString, post: Post5Wrapper, editor: User5Wrapper, plugin: AWSDataStorePlugin) async throws -> PostEditor5Wrapper? {
         let postEditor = try PostEditor5Wrapper(post: post.model, editor: editor.model)
-        var result: PostEditor5Wrapper?
+        let result = AtomicValue<PostEditor5Wrapper?>(initialValue: nil)
         let completeInvoked = expectation(description: "request completed")
         plugin.save(postEditor.model, modelSchema: PostEditor5.schema) { event in
             switch event {
             case .success(let queriedPostEditor):
-                result = PostEditor5Wrapper(model: queriedPostEditor)
+                result.set(PostEditor5Wrapper(model: queriedPostEditor))
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
             }
         }
         await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
+        return result.get()
     }
 }

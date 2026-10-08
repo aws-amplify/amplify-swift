@@ -24,7 +24,8 @@ public extension ModelExplicitCustomPk {
   static let schema = defineSchema { model in
     let modelExplicitCustomPk = ModelExplicitCustomPk.keys
 
-    model.pluralName = "ModelExplicitCustomPks"
+    model.listPluralName = "ModelExplicitCustomPks"
+    model.syncPluralName = "ModelExplicitCustomPks"
 
     model.attributes(
       .index(fields: ["userId"], name: nil),

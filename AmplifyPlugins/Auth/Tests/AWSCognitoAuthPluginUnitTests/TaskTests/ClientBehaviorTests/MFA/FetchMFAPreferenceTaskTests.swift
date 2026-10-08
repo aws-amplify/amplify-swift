@@ -16,7 +16,7 @@ import XCTest
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
-class FetchMFAPreferenceTaskTests: BasePluginTest {
+class FetchMFAPreferenceTaskTests: BasePluginTest, @unchecked Sendable {
 
     /// Test a successful fetchMFAPreference call
     ///

@@ -67,6 +67,6 @@ struct UpdateStatement: SQLStatement {
     }
 
     private var updateColumns: [ModelField] {
-        modelSchema.columns.filter { !$0.isPrimaryKey }
+        modelSchema.columns.filter { !$0.isLegacyPrimaryKey }
     }
 }

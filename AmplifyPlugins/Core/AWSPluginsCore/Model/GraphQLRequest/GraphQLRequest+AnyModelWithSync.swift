@@ -83,7 +83,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
             primaryKeysOnly: false
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: id))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: ModelIdentifierFormat.Default.name, value: id)]))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
         documentBuilder.add(decorator: AuthRuleDecorator(.query, authType: authType))
         let document = documentBuilder.build()

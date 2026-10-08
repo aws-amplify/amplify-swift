@@ -10,7 +10,8 @@
 public protocol AuthorizationMode: Sendable { }
 
 /// GraphQL Request
-public struct GraphQLRequest<R: Decodable> {
+public struct GraphQLRequest<R: Decodable>: @unchecked Sendable {
+    // `@unchecked`: `variables` is `[String: Any]?`, and `R` isn't constrained to `SendableMetatype`.
 
     /// The name of graphQL API being invoked, as specified in `amplifyconfiguration.json`.
     /// Specify this parameter when more than one GraphQL API is configured.
