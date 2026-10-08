@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.62.1 (2026-10-08)
+
+### Bug Fixes
+
+- **api**: detect dead AppSync WebSocket via client-side liveness ping (#4330)
+
 ## 2.62.0 (2026-09-23)
 
 ### Features
