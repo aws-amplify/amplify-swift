@@ -115,8 +115,6 @@ struct MockedAuthCognitoPluginHelper {
 
     private func makeAuthEnvironment(authConfiguration: AuthConfiguration) -> AuthEnvironment {
 
-        let log = Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
-
         switch authConfiguration {
         case .userPools(let userPoolConfigurationData):
             let authenticationEnvironment = authenticationEnvironment(
@@ -207,7 +205,6 @@ struct MockedAuthCognitoPluginHelper {
         }
 
     private func credentialStoreEnvironment(authConfiguration: AuthConfiguration) -> CredentialEnvironment {
-        let log = Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         return CredentialEnvironment(
             authConfiguration: authConfiguration,
             credentialStoreEnvironment: BasicCredentialStoreEnvironment(
