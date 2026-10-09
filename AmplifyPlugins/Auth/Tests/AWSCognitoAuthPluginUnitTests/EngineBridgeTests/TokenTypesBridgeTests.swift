@@ -109,7 +109,7 @@ class TokenTypesBridgeTests: XCTestCase {
     ///
     /// - Given: One value of each fork and its public counterpart
     /// - When:
-    ///    - Their stored properties are listed by reflection
+    ///    - Their stored properties are listed by reflection, each under its encoded key
     /// - Then:
     ///    - The names and order are the same
     ///
@@ -122,8 +122,10 @@ class TokenTypesBridgeTests: XCTestCase {
         XCTAssertEqual(Self.labels(credentials), Self.labels(AuthAWSCognitoCredentials(credentials)))
     }
 
+    /// The stored properties' names, each as its encoded key (`FieldDump.recordedName(of:in:)`), so a public
+    /// type whose property was renamed under an unchanged key still matches its fork.
     static func labels(_ value: Any) -> [String] {
-        Mirror(reflecting: value).children.compactMap(\.label)
+        Mirror(reflecting: value).children.compactMap(\.label).map { FieldDump.recordedName(of: $0, in: type(of: value)) }
     }
 
     // MARK: Equality

@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoAuthPlugin
 import CryptoKit
 import Foundation
 
@@ -69,7 +70,28 @@ private func _swiftEnumCaseName<T>(_ value: T) -> UnsafePointer<CChar>?
 /// presentation anchor, which is never persisted. Paths use property and case names only, never type
 /// names, so a fork with the same shape (`EngineUserPoolTokens` for `AWSCognitoUserPoolTokens`) dumps
 /// identically.
+///
+/// Each stored property is recorded under its encoded key, which is what the stored format pins. That is its
+/// own name, except for the entries of `encodedKeyAliases`.
 enum FieldDump {
+
+    /// The stored properties whose name is not their encoded key, by type: property name to encoded key.
+    ///
+    /// A type's `CodingKeys` can't be read at run time (they are private to the type), so the exceptions are
+    /// listed here, explicitly. Keep this table short, and add to it only when a property is renamed while its
+    /// encoded key stays the same. `FieldDumpEncodedKeyTests` checks every entry against the type's encoder.
+    ///
+    /// - `AWSCognitoUserPoolTokens.legacyExpiration`: main's #4351 made the deprecated public `expiration` a
+    ///   computed property over a new stored `legacyExpiration`, and kept the encoded key `"expiration"`
+    ///   (its `CodingKeys`). The stored format did not change, so the dump still says `expiration`.
+    static let encodedKeyAliases: [ObjectIdentifier: [String: String]] = [
+        ObjectIdentifier(AWSCognitoUserPoolTokens.self): ["legacyExpiration": "expiration"]
+    ]
+
+    /// The name `label`, a stored property of `type`, is recorded under: its encoded key.
+    static func recordedName(of label: String, in type: Any.Type) -> String {
+        encodedKeyAliases[ObjectIdentifier(type)]?[label] ?? label
+    }
 
     static func fields(of value: Any) -> [String: String] {
         var fields: [String: String] = [:]
@@ -134,7 +156,8 @@ enum FieldDump {
                 fields[path] = "{}"
             }
             for (index, child) in children.enumerated() {
-                walk(child.value, path: "\(path).\(child.label ?? "\(index)")", into: &fields)
+                let name = child.label.map { recordedName(of: $0, in: type(of: value)) } ?? "\(index)"
+                walk(child.value, path: "\(path).\(name)", into: &fields)
             }
         default:
             fields[path] = String(describing: value)
