@@ -465,12 +465,92 @@ class AWSCognitoAuthCredentialStoreWipeTests: XCTestCase {
         XCTAssertEqual(try keychain.store(service: service).allAccounts(), pluginAccounts.sorted())
     }
 
+    /// The interop Q7 migration's sequence: the migration moves `.default`'s two items with the configuration the
+    /// client's `.default` recorded, and the plugin's configuration change from that configuration then deletes them,
+    /// with that configuration's login, as the client does. The current configuration's two items are kept.
+    ///
+    /// - Given: an unshared service holding every plugin item under configuration A, `authConfiguration` naming A (as
+    ///   the client's `.default` records it at a restore), A's `$default.meta` and `$default.challenge`, and the two
+    ///   items of user pool B, and an empty shared service
+    /// - When:
+    ///    - the plugin is configured with user pool B and an access group for the first time, with migration
+    /// - Then:
+    ///    - no `.default` item is left in the unshared service: all four moved
+    ///    - A's login and A's two items are gone from the shared service, removed by the clearing change from A to B
+    ///    - B's two items are in the shared service, with their bytes, and `authConfiguration` names B
+    func testMigrationThenAClearingChangeRemovesOnlyThePreviousConfigurationsDefaultSessionItems() throws {
+        let current = AuthConfiguration.userPools(
+            UserPoolConfigurationData(poolId: "us-east-1_PoolB", clientId: "client", region: "us-east-1")
+        )
+        let currentItems = SessionRecordAccount.defaultSessionItemAccounts(poolNamespace: "us-east-1_PoolB")
+        let pluginAccounts = try populateUnsharedServiceAsAPluginWould()
+        try writeDefaultSessionItems()
+        for account in currentItems {
+            try keychain.store(service: service).set(Data(account.utf8), key: account)
+        }
+
+        _ = makeStore(accessGroup: accessGroup, migrate: true, configuration: current)
+
+        let unshared = try keychain.store(service: service).allAccounts()
+        XCTAssertEqual(unshared.filter(SessionRecordAccount.isDefaultSessionItem), [])
+        let shared = try keychain.store(service: sharedService, accessGroup: accessGroup).allAccounts()
+        let previousLogin = AWSCognitoAuthCredentialStore.sessionAccount(for: authConfiguration)
+        XCTAssertEqual(
+            shared,
+            (pluginAccounts.filter { $0 != previousLogin } + currentItems).sorted()
+        )
+        for account in currentItems {
+            XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: account), Data(account.utf8), account)
+        }
+        let recorded = try XCTUnwrap(keychain.value(service: sharedService, accessGroup: accessGroup, account: "authConfiguration"))
+        XCTAssertEqual(try AWSCognitoAuthCredentialStore.decodeAuthConfiguration(recorded), current)
+    }
+
+    /// A change within the same pool namespace after the migration deletes nothing of `.default`'s: another app
+    /// client and region over the same pools keep the record's key, so the login and its two items stay.
+    ///
+    /// - Given: an unshared service holding every plugin item under configuration A, `authConfiguration` naming A,
+    ///   and A's `$default.meta` and `$default.challenge`, and an empty shared service
+    /// - When:
+    ///    - the plugin is configured, with an access group for the first time and with migration, with A's user pool
+    ///      and identity pool under another app client and another region
+    /// - Then:
+    ///    - the shared service holds every plugin item, A's login included, and A's two items, with their bytes
+    ///    - no `.default` item is left in the unshared service
+    func testMigrationThenAChangeWithinTheSameNamespaceKeepsTheDefaultSessionItems() throws {
+        let current = AuthConfiguration.userPoolsAndIdentityPools(
+            UserPoolConfigurationData(poolId: "us-east-1_Pool", clientId: "client-2", region: "us-west-2"),
+            IdentityPoolConfigurationData(poolId: "us-east-1:identity-pool", region: "us-west-2")
+        )
+        XCTAssertEqual(
+            AWSCognitoAuthCredentialStore.sessionAccount(for: current),
+            AWSCognitoAuthCredentialStore.sessionAccount(for: authConfiguration)
+        )
+        let pluginAccounts = try populateUnsharedServiceAsAPluginWould()
+        try writeDefaultSessionItems()
+
+        _ = makeStore(accessGroup: accessGroup, migrate: true, configuration: current)
+
+        XCTAssertEqual(
+            try keychain.store(service: sharedService, accessGroup: accessGroup).allAccounts(),
+            (pluginAccounts + defaultSessionItemAccounts).sorted()
+        )
+        for account in defaultSessionItemAccounts {
+            XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: account), Data(account.utf8), account)
+        }
+        XCTAssertEqual(try keychain.store(service: service).allAccounts().filter(SessionRecordAccount.isDefaultSessionItem), [])
+    }
+
     // MARK: Helpers
 
-    private func makeStore(accessGroup: String?, migrate: Bool = false) -> AWSCognitoAuthCredentialStore {
+    private func makeStore(
+        accessGroup: String?,
+        migrate: Bool = false,
+        configuration: AuthConfiguration? = nil
+    ) -> AWSCognitoAuthCredentialStore {
         let keychain = keychain!
         return AWSCognitoAuthCredentialStore(
-            authConfiguration: authConfiguration,
+            authConfiguration: configuration ?? authConfiguration,
             accessGroup: accessGroup,
             migrateKeychainItemsOfUserSession: migrate,
             userDefaults: userDefaults,
