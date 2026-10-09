@@ -190,6 +190,8 @@ final class EngineStaticLogSiteTests: XCTestCase, @unchecked Sendable {
     ///      through `error(error:)` with the error itself, as `log.error(error:)` did before: the
     ///      reported error, then the assertion and registration errors the delegate resumes with
     ///
+    /// `@MainActor`: the delegate method is main-actor isolated. XCTest runs synchronous tests on the main thread.
+    @MainActor
     func testWebAuthnErrorReachesErrorErrorAtItsPreviousScope() throws {
         guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
             throw XCTSkip("WebAuthn needs iOS 17.4 / macOS 13.5")
@@ -219,6 +221,8 @@ final class EngineStaticLogSiteTests: XCTestCase, @unchecked Sendable {
     ///      `error(error:)` with the `WebAuthnError` the assertion resumes with, reach
     ///      `Amplify.Logging.logger(forCategory: "PlatformWebAuthnCredentials")`
     ///
+    /// `@MainActor`: the delegate method is main-actor isolated. XCTest runs synchronous tests on the main thread.
+    @MainActor
     func testWebAuthnAssertionFailureLogsAtItsPreviousScope() throws {
         guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
             throw XCTSkip("WebAuthn needs iOS 17.4 / macOS 13.5")

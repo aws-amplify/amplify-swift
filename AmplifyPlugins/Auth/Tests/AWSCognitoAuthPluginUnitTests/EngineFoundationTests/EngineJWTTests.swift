@@ -94,6 +94,9 @@ class EngineJWTTests: XCTestCase {
     /// - When: `exp` is read the way `AWSCognitoUserPoolTokens` and `areTokensExpiring` read it
     /// - Then: `EngineJWT` gives the same value as `AWSAuthService`
     ///
+    /// `@MainActor`: the claim is read with `AnyObject` member lookup, which resolves `doubleValue` to a
+    /// main-actor-isolated declaration. XCTest runs synchronous tests on the main thread either way.
+    @MainActor
     func testExpirationClaimMatchesAWSAuthService() {
         for (name, token) in Self.corpus {
             let expected = (try? AWSAuthService().getTokenClaims(tokenString: token).get())?["exp"]?.doubleValue
