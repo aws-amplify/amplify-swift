@@ -1,0 +1,1 @@
+{"userPools":{"authFlowType":{"type":"USER_SRP_AUTH"},"clientId":"attrsclientid0123456789","poolId":"sa-east-1_attrs0001","region":"sa-east-1","signUpAttributes":["ADDRESS","BIRTHDATE","EMAIL","FAMILY_NAME","GENDER","GIVEN_NAME","MIDDLE_NAME","NAME","NICKNAME","PHONE_NUMBER","PREFERRED_USERNAME","PROFILE","WEBSITE"],"usernameAttributes":[],"verificationMechanisms":[]}}

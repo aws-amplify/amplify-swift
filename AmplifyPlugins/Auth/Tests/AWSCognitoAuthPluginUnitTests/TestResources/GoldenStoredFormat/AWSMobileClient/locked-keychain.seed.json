@@ -1,0 +1,41 @@
+{
+  "authConfiguration": "userPoolsAndIdentityPools-minimal",
+  "existingSession": "absent",
+  "services": {
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff": {
+      "accessKey": {
+        "string": "LEGACYACCESSKEYID"
+      },
+      "expiration": {
+        "string": "1700007200"
+      },
+      "identityId": {
+        "string": "us-east-1:00000000-0000-4000-8000-00000000abcd"
+      },
+      "secretKey": {
+        "string": "legacy/secret+key"
+      },
+      "sessionKey": {
+        "string": "legacy-session-token"
+      }
+    },
+    "<bundle>.AWSCognitoIdentityUserPool": {
+      "fixture-client-id.currentUser": {
+        "string": "fixture-user"
+      },
+      "fixture-client-id.fixture-user.accessToken": {
+        "string": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature"
+      },
+      "fixture-client-id.fixture-user.idToken": {
+        "string": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature"
+      },
+      "fixture-client-id.fixture-user.refreshToken": {
+        "error": -25308
+      },
+      "fixture-client-id.fixture-user.tokenExpiration": {
+        "string": "2023-11-14T23:13:20Z"
+      }
+    }
+  },
+  "summary": "The refresh token read fails with errSecInteractionNotAllowed: nothing is migrated or cleared"
+}
