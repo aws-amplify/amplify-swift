@@ -193,7 +193,7 @@ final class EngineAuthErrorBridgeTests: XCTestCase {
     ///
     func testPluginToEngineToPluginRoundTrip() {
         for (label, underlying) in Self.underlyingVariants() {
-            for auth in Self.everyCase(underlying).map { AuthError($0) } {
+            for auth in Self.everyCase(underlying).map({ AuthError($0) }) {
                 let engine = EngineAuthError(auth)
                 XCTAssertEqual(Self.shape(engine), Self.shape(auth), label)
                 let back = AuthError(engine)
