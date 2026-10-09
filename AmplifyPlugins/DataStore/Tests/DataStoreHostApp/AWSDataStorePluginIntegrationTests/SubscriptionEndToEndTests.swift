@@ -102,7 +102,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Senda
 
     // MARK: - Utilities
 
-    func sendCreateRequest(withId id: Model.Identifier, content: String) async throws {
+    func sendCreateRequest(withId id: String, content: String) async throws {
         // Note: The hand-written documents must include the sync/conflict resolution fields in order for the
         // subscription to get them
         let document = """
@@ -206,19 +206,19 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Senda
 
     func getMutationSync(forPostWithId id: String) async -> MutationSync<AnyModel>? {
         let queryComplete = expectation(description: "Query completed")
-        var postFromQuery: Post?
+        let postFromQuery = AtomicValue<Post?>(initialValue: nil)
         storageAdapter.query(Post.self, predicate: Post.keys.id == id) { result in
             switch result {
             case .failure(let error):
                 XCTFail(String(describing: error))
             case .success(let posts):
                 // swiftlint:disable:next force_try
-                postFromQuery = try! posts.unique()
+                postFromQuery.set(try! posts.unique())
             }
             queryComplete.fulfill()
         }
         await fulfillment(of: [queryComplete], timeout: networkTimeout)
-        guard let post = postFromQuery else {
+        guard let post = postFromQuery.get() else {
             return nil
         }
 

@@ -24,7 +24,8 @@ public extension Post11 {
   static let schema = defineSchema { model in
     let post11 = Post11.keys
 
-    model.pluralName = "Post11s"
+    model.listPluralName = "Post11s"
+    model.syncPluralName = "Post11s"
 
     model.attributes(
       .index(fields: ["postId", "sk"], name: nil),

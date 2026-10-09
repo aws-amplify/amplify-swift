@@ -13,7 +13,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 import InternalAWSCognitoAuth
 
-class EmailMFATests: BasePluginTest {
+class EmailMFATests: BasePluginTest, @unchecked Sendable {
 
     override var initialState: AuthState {
         AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)

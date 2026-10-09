@@ -10,7 +10,7 @@ import AWSPluginsCore
 import XCTest
 @testable import Amplify
 
-class SignedInAuthSessionTests: AWSAuthBaseTest {
+class SignedInAuthSessionTests: AWSAuthBaseTest, @unchecked Sendable {
 
     override func setUp() async throws {
         try await super.setUp()
@@ -129,9 +129,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
             _ = try authSession?.getCognitoTokens().get()
             XCTFail("Should not receive a valid token")
         } catch {
-            guard let authError = error as? AuthError,
-                  case .sessionExpired = authError
-            else {
+            guard case .sessionExpired = error else {
                 XCTFail("Should receive a session expired error but received \(error)")
                 return
             }
@@ -173,9 +171,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
             _ = try authSession?.getCognitoTokens().get()
             XCTFail("Should not receive a valid token")
         } catch {
-            guard let authError = error as? AuthError,
-                  case .signedOut = authError
-            else {
+            guard case .signedOut = error else {
                 XCTFail("Should receive a session expired error but received \(error)")
                 return
             }

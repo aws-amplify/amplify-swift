@@ -291,10 +291,7 @@ class ClientSecretConfigurationTests: XCTestCase, @unchecked Sendable {
 
         _ = await plugin.signOut()
 
-        let pluginOptions = AWSAuthSignInOptions(
-            validationData: ["somekey": "somevalue"],
-            metadata: ["somekey": "somevalue"]
-        )
+        let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {

@@ -46,19 +46,22 @@ public extension StorageListRequest {
         ///
         /// - Tag: StorageListRequestOptions.accessLevel
         @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
-        public let accessLevel: StorageAccessLevel
+        public var accessLevel: StorageAccessLevel { .init(legacyAccessLevel) }
+        package let legacyAccessLevel: LegacyStorageAccessLevel
 
         /// Target user to apply the action on
         ///
         /// - Tag: StorageListRequestOptions.targetIdentityId
         @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
-        public let targetIdentityId: String?
+        public var targetIdentityId: String? { legacyTargetIdentityId }
+        package let legacyTargetIdentityId: String?
 
         /// Path to the keys
         ///
         /// - Tag: StorageListRequestOptions.path
         @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
-        public let path: String?
+        public var path: String? { legacyPath }
+        package let legacyPath: String?
 
         /// The strategy to use when listing contents from subpaths. Defaults to [`.include`](x-source-tag://SubpathStrategy.include)
         ///
@@ -110,9 +113,9 @@ public extension StorageListRequest {
             nextToken: String? = nil,
             pluginOptions: Any? = nil
         ) {
-            self.accessLevel = accessLevel
-            self.targetIdentityId = targetIdentityId
-            self.path = path
+            self.legacyAccessLevel = accessLevel.legacyValue
+            self.legacyTargetIdentityId = targetIdentityId
+            self.legacyPath = path
             self.subpathStrategy = subpathStrategy
             self.pageSize = pageSize
             self.bucket = nil
@@ -128,9 +131,9 @@ public extension StorageListRequest {
             nextToken: String? = nil,
             pluginOptions: Any? = nil
         ) {
-            self.accessLevel = .guest
-            self.targetIdentityId = nil
-            self.path = nil
+            self.legacyAccessLevel = .guest
+            self.legacyTargetIdentityId = nil
+            self.legacyPath = nil
             self.subpathStrategy = subpathStrategy
             self.pageSize = pageSize
             self.bucket = bucket

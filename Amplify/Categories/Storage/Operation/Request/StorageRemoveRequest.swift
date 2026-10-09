@@ -15,7 +15,8 @@ public struct StorageRemoveRequest: AmplifyOperationRequest {
     ///
     /// - Tag: StorageRemoveRequest.key
     @available(*, deprecated, message: "Use `path` in Storage API instead of `key`")
-    public let key: String
+    public var key: String { legacyKey }
+    package let legacyKey: String
 
     /// The unique path for the object in storage
     ///
@@ -30,14 +31,14 @@ public struct StorageRemoveRequest: AmplifyOperationRequest {
     /// - Tag: StorageRemoveRequest.init
     @available(*, deprecated, message: "Use init(path:options)")
     public init(key: String, options: Options) {
-        self.key = key
+        self.legacyKey = key
         self.options = options
         self.path = nil
     }
 
     /// - Tag: StorageRemoveRequest.init
     public init(path: any StoragePath, options: Options) {
-        self.key = ""
+        self.legacyKey = ""
         self.options = options
         self.path = path
     }
@@ -54,7 +55,8 @@ public extension StorageRemoveRequest {
         ///
         /// - Tag: StorageRemoveRequestOptions.accessLevel
         @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
-        public let accessLevel: StorageAccessLevel
+        public var accessLevel: StorageAccessLevel { .init(legacyAccessLevel) }
+        package let legacyAccessLevel: LegacyStorageAccessLevel
 
         /// A Storage Bucket that contains the object to remove. Defaults to `nil`, in which case the default one will be used.
         ///
@@ -73,7 +75,7 @@ public extension StorageRemoveRequest {
             accessLevel: StorageAccessLevel = .guest,
             pluginOptions: Any? = nil
         ) {
-            self.accessLevel = accessLevel
+            self.legacyAccessLevel = accessLevel.legacyValue
             self.bucket = nil
             self.pluginOptions = pluginOptions
         }
@@ -83,7 +85,7 @@ public extension StorageRemoveRequest {
             bucket: some StorageBucket,
             pluginOptions: Any? = nil
         ) {
-            self.accessLevel = .guest
+            self.legacyAccessLevel = .guest
             self.bucket = bucket
             self.pluginOptions = pluginOptions
         }

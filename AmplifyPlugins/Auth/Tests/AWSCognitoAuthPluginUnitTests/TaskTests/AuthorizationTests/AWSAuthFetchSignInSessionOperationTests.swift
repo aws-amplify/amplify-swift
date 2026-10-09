@@ -20,7 +20,7 @@ import InternalAWSCognitoAuth
 
 // swiftlint:disable file_length
 // swiftlint:disable type_body_length
-class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
+class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests, @unchecked Sendable {
 
     /// Test signedIn session with a user signed In to userPool and identityPool enabled
     ///

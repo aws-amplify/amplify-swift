@@ -436,7 +436,7 @@ private class MockAWSS3Behavior: AWSS3Behavior {
     }
 }
 
-class MockStorageMultipartUploadSession: StorageMultipartUploadSession {
+class MockStorageMultipartUploadSession: StorageMultipartUploadSession, @unchecked Sendable {
     var handleMultipartUploadCount = 0
     var lastMultipartUploadEvent: StorageMultipartUploadEvent?
     override func handle(multipartUploadEvent: StorageMultipartUploadEvent) {

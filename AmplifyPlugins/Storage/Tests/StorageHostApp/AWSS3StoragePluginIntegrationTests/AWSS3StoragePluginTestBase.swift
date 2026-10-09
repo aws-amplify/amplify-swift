@@ -76,14 +76,6 @@ class AWSS3StoragePluginTestBase: XCTestCase, @unchecked Sendable {
         try await uploadData(key: key, data: Data(dataString.utf8))
     }
 
-    func uploadTask(key: String, data: Data) async -> StorageUploadDataTask? {
-        Amplify.Storage.uploadData(key: key, data: data)
-    }
-
-    func downloadTask(key: String) async -> StorageDownloadDataTask? {
-        Amplify.Storage.downloadData(key: key)
-    }
-
     func uploadData(
         key: String,
         data: Data,
@@ -125,10 +117,7 @@ class AWSS3StoragePluginTestBase: XCTestCase, @unchecked Sendable {
     }
 
     func remove(key: String, accessLevel: StorageAccessLevel? = nil) async {
-        var removeOptions: StorageRemoveRequest.Options? = nil
-        if let accessLevel {
-            removeOptions = .init(accessLevel: accessLevel)
-        }
+        let removeOptions = accessLevel.map { StorageRemoveRequest.Options(accessLevel: $0) }
 
         let result = await wait(name: "Remove operation should be successful") {
             return try await Amplify.Storage.remove(key: key, options: removeOptions)

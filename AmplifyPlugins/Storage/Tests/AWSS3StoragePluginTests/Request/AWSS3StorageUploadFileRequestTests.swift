@@ -135,7 +135,6 @@ class AWSS3StorageUploadFileRequestTests: XCTestCase, @unchecked Sendable {
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
         let options = StorageUploadFileRequest.Options(
-            accessLevel: .protected,
             metadata: testMetadata,
             contentType: testContentType,
             pluginOptions: testPluginOptions

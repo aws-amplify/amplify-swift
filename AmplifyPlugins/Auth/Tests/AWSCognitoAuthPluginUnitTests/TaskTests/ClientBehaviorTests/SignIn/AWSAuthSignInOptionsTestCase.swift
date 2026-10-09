@@ -15,7 +15,7 @@ import XCTest
 @testable @preconcurrency import AWSCognitoAuthPlugin
 import InternalAWSCognitoAuth
 
-class AWSAuthSignInOptionsTestCase: BasePluginTest {
+class AWSAuthSignInOptionsTestCase: BasePluginTest, @unchecked Sendable {
     override var initialState: AuthState {
         AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)
     }

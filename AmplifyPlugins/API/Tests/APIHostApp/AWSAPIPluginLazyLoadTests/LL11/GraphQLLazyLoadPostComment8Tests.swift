@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
+final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest, @unchecked Sendable {
 
     func testSave() async throws {
         await setup(withModels: PostComment8Models())
@@ -24,8 +24,8 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
             postId: post.postId,
             postTitle: post.title
         )
-        let savedPost = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
+        _ = try await mutate(.create(post))
+        _ = try await mutate(.create(comment))
     }
 
     func testQueryThenLazyLoad() async throws {
@@ -130,7 +130,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
             postTitle: post.title
         )
         let savedPost = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
+        _ = try await mutate(.create(comment))
         let queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId, content: comment.content)))!
         assertComment(queriedComment, contains: post)
         let savedQueriedComment = try await mutate(.update(queriedComment))
@@ -149,7 +149,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
             postTitle: post.title
         )
         _ = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
+        _ = try await mutate(.create(comment))
         var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId, content: comment.content)))!
         assertComment(queriedComment, contains: post)
         let newPost = Post(postId: UUID().uuidString, title: "title")
@@ -172,7 +172,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
             postTitle: post.title
         )
         _ = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
+        _ = try await mutate(.create(comment))
         var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId, content: comment.content)))!
         assertComment(queriedComment, contains: post)
 

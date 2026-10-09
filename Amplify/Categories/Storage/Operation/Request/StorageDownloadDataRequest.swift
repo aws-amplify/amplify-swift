@@ -22,7 +22,8 @@ public struct StorageDownloadDataRequest: AmplifyOperationRequest {
     ///
     /// - Tag: StorageDownloadDataRequest.key
     @available(*, deprecated, message: "Use `path` instead of `key`")
-    public let key: String
+    public var key: String { legacyKey }
+    package let legacyKey: String
 
     /// Options to adjust the behavior of this request, including plugin-options
     ///
@@ -32,14 +33,14 @@ public struct StorageDownloadDataRequest: AmplifyOperationRequest {
     /// - Tag: StorageDownloadDataRequest.init
     @available(*, deprecated, message: "Use init(path:local:options)")
     public init(key: String, options: Options) {
-        self.key = key
+        self.legacyKey = key
         self.options = options
         self.path = nil
     }
 
     /// - Tag: StorageDownloadDataRequest.init
     public init(path: any StoragePath, options: Options) {
-        self.key = ""
+        self.legacyKey = ""
         self.options = options
         self.path = path
     }
@@ -56,13 +57,15 @@ public extension StorageDownloadDataRequest {
         ///
         /// - Tag: StorageDownloadDataRequestOptions.accessLevel
         @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
-        public let accessLevel: StorageAccessLevel
+        public var accessLevel: StorageAccessLevel { .init(legacyAccessLevel) }
+        package let legacyAccessLevel: LegacyStorageAccessLevel
 
         /// Target user to apply the action on.
         ///
         /// - Tag: StorageDownloadDataRequestOptions.targetIdentityId
         @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
-        public let targetIdentityId: String?
+        public var targetIdentityId: String? { legacyTargetIdentityId }
+        package let legacyTargetIdentityId: String?
 
         /// A Storage Bucket that contains the object to download. Defaults to `nil`, in which case the default one will be used.
         ///
@@ -101,8 +104,8 @@ public extension StorageDownloadDataRequest {
             targetIdentityId: String? = nil,
             pluginOptions: Any? = nil
         ) {
-            self.accessLevel = accessLevel
-            self.targetIdentityId = targetIdentityId
+            self.legacyAccessLevel = accessLevel.legacyValue
+            self.legacyTargetIdentityId = targetIdentityId
             self.bucket = nil
             self.pluginOptions = pluginOptions
         }
@@ -110,8 +113,8 @@ public extension StorageDownloadDataRequest {
         ///
         /// - Tag: StorageDownloadDataRequestOptions.init
         public init(pluginOptions: Any? = nil) {
-            self.accessLevel = .guest
-            self.targetIdentityId = nil
+            self.legacyAccessLevel = .guest
+            self.legacyTargetIdentityId = nil
             self.bucket = nil
             self.pluginOptions = pluginOptions
         }
@@ -121,8 +124,8 @@ public extension StorageDownloadDataRequest {
             bucket: some StorageBucket,
             pluginOptions: Any? = nil
         ) {
-            self.accessLevel = .guest
-            self.targetIdentityId = nil
+            self.legacyAccessLevel = .guest
+            self.legacyTargetIdentityId = nil
             self.bucket = bucket
             self.pluginOptions = pluginOptions
         }

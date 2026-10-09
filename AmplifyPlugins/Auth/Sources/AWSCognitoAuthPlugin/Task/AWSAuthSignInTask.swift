@@ -177,7 +177,7 @@ final class AWSAuthSignInTask: AuthSignInTask, DefaultLogger, @unchecked Sendabl
             // to prevent breaking behavioral changes.
             // in vNext, the `validationData` property will be removed
             // and we'll use only the `metadata` property.
-            pluginOptions?.validationData ?? [:],
+            pluginOptions?.legacyValidationData ?? [:],
             uniquingKeysWith: { _, new in new }
         )
 

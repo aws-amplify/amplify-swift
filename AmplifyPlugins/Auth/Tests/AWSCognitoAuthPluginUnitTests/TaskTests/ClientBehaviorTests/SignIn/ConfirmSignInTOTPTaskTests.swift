@@ -15,7 +15,7 @@ import InternalAWSCognitoAuth
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
-class ConfirmSignInTOTPTaskTests: BasePluginTest {
+class ConfirmSignInTOTPTaskTests: BasePluginTest, @unchecked Sendable {
 
     override var initialState: AuthState {
         AuthState.configured(

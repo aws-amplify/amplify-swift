@@ -320,7 +320,9 @@ final class MockASWebAuthenticationSession: ASWebAuthenticationSession, @uncheck
         if let mockStartResult {
             return mockStartResult
         }
-        return presentationContextProvider?.presentationAnchor(for: self) != nil
+        return MainActor.assumeIsolated {
+            presentationContextProvider?.presentationAnchor(for: self) != nil
+        }
     }
 
     func invokeCallback() {

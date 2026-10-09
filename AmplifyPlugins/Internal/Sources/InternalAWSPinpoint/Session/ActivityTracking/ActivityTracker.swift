@@ -75,8 +75,7 @@ protocol ActivityTrackerBehaviour: AnyObject, Sendable {
 ///     it is main-actor confined and the compiler enforces it.
 ///   - `backgroundTimer` is touched by the same two methods, but `stopBackgroundTracking()` is also
 ///     called from the `Timer.scheduledTimer` block, which is `@Sendable` and therefore nonisolated.
-///     Swift 6 only warns there because `NSTimer`'s block is imported preconcurrency, so this
-///     confinement rests on the run-loop convention, not on the compiler.
+///     The block uses `MainActor.assumeIsolated`, so the main-run-loop assumption is checked at runtime.
 ///   - `backgroundTrackingTimeout` is **not** confined: the protocol requires it settable, and
 ///     `SessionClient.startTrackingSessions` writes it from a nonisolated context.
 ///   - `stateMachineSubscriberToken` is **not** confined: `beginActivityTracking(_:)` is nonisolated and
@@ -188,8 +187,11 @@ final class ActivityTracker: ActivityTrackerBehaviour, @unchecked Sendable {
         #endif
         guard backgroundTrackingTimeout != .infinity else { return }
         backgroundTimer = Timer.scheduledTimer(withTimeInterval: backgroundTrackingTimeout, repeats: false) { [weak self] _ in
-            self?.stateMachine.process(.backgroundTrackingDidTimeout)
-            self?.stopBackgroundTracking()
+            // Scheduled from this `@MainActor` method, so the timer fires on the main run loop.
+            MainActor.assumeIsolated {
+                self?.stateMachine.process(.backgroundTrackingDidTimeout)
+                self?.stopBackgroundTracking()
+            }
         }
     }
 

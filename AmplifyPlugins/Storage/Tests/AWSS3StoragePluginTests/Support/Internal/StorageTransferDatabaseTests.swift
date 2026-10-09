@@ -7,7 +7,6 @@
 
 import XCTest
 
-@_implementationOnly import AmplifyAsyncTesting
 import AmplifyTestCommon
 @testable import Amplify
 @testable import AWSS3StoragePlugin

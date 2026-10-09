@@ -34,7 +34,7 @@ class GraphQLGetQueryTests: XCTestCase, @unchecked Sendable {
     func testGetGraphQLQueryFromSimpleModel() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: "id", value: "id")]))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query GetPost($id: ID!) {
@@ -63,7 +63,7 @@ class GraphQLGetQueryTests: XCTestCase, @unchecked Sendable {
     func testGetGraphQLQueryFromSimpleModelWithSyncEnabled() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: "id", value: "id")]))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
@@ -107,7 +107,7 @@ class GraphQLGetQueryTests: XCTestCase, @unchecked Sendable {
     func testGetGraphQLQueryFromModelWithAssociationPrimaryKeysOnly() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query, primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: "id", value: "id")]))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query GetComment($id: ID!) {
@@ -146,7 +146,7 @@ class GraphQLGetQueryTests: XCTestCase, @unchecked Sendable {
     func testGetGraphQLQueryFromModelWithAssociation() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query, primaryKeysOnly: false)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: "id", value: "id")]))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query GetComment($id: ID!) {
@@ -181,7 +181,7 @@ class GraphQLGetQueryTests: XCTestCase, @unchecked Sendable {
     func testGetGraphQLQueryFromModelWithAssociationAndSyncEnabledPrimaryKeysOnly() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query, primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: "id", value: "id")]))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
@@ -214,7 +214,7 @@ class GraphQLGetQueryTests: XCTestCase, @unchecked Sendable {
     func testGetGraphQLQueryFromModelWithAssociationAndSyncEnabled() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query, primaryKeysOnly: false)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: "id", value: "id")]))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query, primaryKeysOnly: false))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
@@ -262,7 +262,7 @@ class GraphQLGetQueryTests: XCTestCase, @unchecked Sendable {
     func testGetGraphQLQueryModelWithReadOnlyFields() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Record.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: "id", value: "id")]))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query GetRecord($id: ID!) {

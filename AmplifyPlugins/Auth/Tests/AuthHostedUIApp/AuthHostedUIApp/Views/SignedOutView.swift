@@ -90,9 +90,9 @@ struct SignedOutView: View {
             return window
         }
 #elseif canImport(UIKit)
-        let scene = await UIApplication.shared.connectedScenes.first!
-        let windowSceneDelegate = await scene.delegate as! UIWindowSceneDelegate
-        let window = await windowSceneDelegate.window!!
+        let scene = UIApplication.shared.connectedScenes.first!
+        let windowSceneDelegate = scene.delegate as! UIWindowSceneDelegate
+        let window = windowSceneDelegate.window!!
         return window
 #endif
     }

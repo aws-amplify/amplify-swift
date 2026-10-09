@@ -10,7 +10,7 @@ import AWSAPIPlugin
 import AWSCognitoAuthPlugin
 import XCTest
 
-class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
+class PasswordlessConfirmSignUpTests: AWSAuthBaseTest, @unchecked Sendable {
 
     override func setUp() async throws {
         // Only run these tests with Gen2 configuration
@@ -45,7 +45,7 @@ class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
     func testFailurePasswordlessConfirmSignUpUserNotFound() async throws {
         let username = "integTest\(UUID().uuidString)"
         do {
-            let confirmSignUpResult = try await Amplify.Auth.confirmSignUp(
+            _ = try await Amplify.Auth.confirmSignUp(
                 for: username,
                 confirmationCode: "123456",
                 options: AuthConfirmSignUpRequest.Options()

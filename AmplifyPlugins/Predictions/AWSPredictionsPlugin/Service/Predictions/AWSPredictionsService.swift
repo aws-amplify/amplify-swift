@@ -40,7 +40,7 @@ final class AWSPredictionsService: @unchecked Sendable {
         credentialIdentityResolver: any AWSCredentialIdentityResolver,
         identifier: String
     ) throws {
-        let translateClientConfiguration = try TranslateClient.TranslateClientConfiguration(
+        var translateClientConfiguration = try TranslateClient.TranslateClientConfig(
             awsCredentialIdentityResolver: credentialIdentityResolver,
             region: configuration.convert.region,
             signingRegion: configuration.convert.region
@@ -51,7 +51,7 @@ final class AWSPredictionsService: @unchecked Sendable {
 
         let awsTranslateClient = TranslateClient(config: translateClientConfiguration)
 
-        let pollyClientConfiguration = try PollyClient.PollyClientConfiguration(
+        var pollyClientConfiguration = try PollyClient.PollyClientConfig(
             awsCredentialIdentityResolver: credentialIdentityResolver,
             region: configuration.convert.region,
             signingRegion: configuration.convert.region
@@ -61,7 +61,7 @@ final class AWSPredictionsService: @unchecked Sendable {
         )
         let awsPollyClient = PollyClient(config: pollyClientConfiguration)
 
-        let comprehendClientConfiguration = try ComprehendClient.ComprehendClientConfiguration(
+        var comprehendClientConfiguration = try ComprehendClient.ComprehendClientConfig(
             awsCredentialIdentityResolver: credentialIdentityResolver,
             region: configuration.convert.region,
             signingRegion: configuration.convert.region
@@ -72,7 +72,7 @@ final class AWSPredictionsService: @unchecked Sendable {
 
         let awsComprehendClient = ComprehendClient(config: comprehendClientConfiguration)
 
-        let rekognitionClientConfiguration = try RekognitionClient.RekognitionClientConfiguration(
+        var rekognitionClientConfiguration = try RekognitionClient.RekognitionClientConfig(
             awsCredentialIdentityResolver: credentialIdentityResolver,
             region: configuration.identify.region,
             signingRegion: configuration.convert.region
@@ -82,7 +82,7 @@ final class AWSPredictionsService: @unchecked Sendable {
         )
         let awsRekognitionClient = RekognitionClient(config: rekognitionClientConfiguration)
 
-        let textractClientConfiguration = try TextractClient.TextractClientConfiguration(
+        var textractClientConfiguration = try TextractClient.TextractClientConfig(
             awsCredentialIdentityResolver: credentialIdentityResolver,
             region: configuration.identify.region,
             signingRegion: configuration.convert.region

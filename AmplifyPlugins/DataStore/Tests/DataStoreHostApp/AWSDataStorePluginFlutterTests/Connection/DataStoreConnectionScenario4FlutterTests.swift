@@ -7,7 +7,6 @@
 
 import XCTest
 @testable import Amplify
-@testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
 /*
@@ -33,14 +32,14 @@ import XCTest
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTestBase, @unchecked Sendable {
 
-    func testCreateCommentAndGetCommentWithPost() throws {
-        try startAmplifyAndWaitForSync()
+    func testCreateCommentAndGetCommentWithPost() async throws {
+        try await startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        guard let post = try savePost(title: "title", plugin: plugin) else {
+        guard let post = try await savePost(title: "title", plugin: plugin) else {
             XCTFail("Could not create post")
             return
         }
-        guard let comment = try saveComment(content: "content", post: post, plugin: plugin) else {
+        guard let comment = try await saveComment(content: "content", post: post, plugin: plugin) else {
             XCTFail("Could not create comment")
             return
         }
@@ -60,18 +59,18 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
         await fulfillment(of: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testUpdateComment() throws {
-        try startAmplifyAndWaitForSync()
+    func testUpdateComment() async throws {
+        try await startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        guard let post =  try savePost(title: "post", plugin: plugin) else {
+        guard let post =  try await savePost(title: "post", plugin: plugin) else {
             XCTFail("Could not create post")
             return
         }
-        guard let comment =  try saveComment(content: "content", post: post, plugin: plugin) else {
+        guard let comment =  try await saveComment(content: "content", post: post, plugin: plugin) else {
             XCTFail("Could not create comment")
             return
         }
-        guard let anotherPost =  try savePost(title: "anotherPost", plugin: plugin) else {
+        guard let anotherPost =  try await savePost(title: "anotherPost", plugin: plugin) else {
             XCTFail("Could not create post")
             return
         }
@@ -90,15 +89,15 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
         await fulfillment(of: [updateCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testDeleteAndGetComment() throws {
-        try startAmplifyAndWaitForSync()
+    func testDeleteAndGetComment() async throws {
+        try await startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
 
-        guard let post = try savePost(title: "title", plugin: plugin) else {
+        guard let post = try await savePost(title: "title", plugin: plugin) else {
             XCTFail("Could not create post")
             return
         }
-        guard let comment = try saveComment(content: "content", post: post, plugin: plugin) else {
+        guard let comment = try await saveComment(content: "content", post: post, plugin: plugin) else {
             XCTFail("Could not create comment")
             return
         }
@@ -128,14 +127,14 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
         await fulfillment(of: [getCommentAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testListCommentsByPostID() throws {
-        try startAmplifyAndWaitForSync()
+    func testListCommentsByPostID() async throws {
+        try await startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        guard let post = try savePost(title: "title", plugin: plugin) else {
+        guard let post = try await savePost(title: "title", plugin: plugin) else {
             XCTFail("Could not create post")
             return
         }
-        guard try saveComment(content: "content", post: post, plugin: plugin) != nil else {
+        guard try await saveComment(content: "content", post: post, plugin: plugin) != nil else {
             XCTFail("Could not create comment")
             return
         }
@@ -153,37 +152,37 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
         await fulfillment(of: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func savePost(id: String = UUID().uuidString, title: String, plugin: AWSDataStorePlugin) throws -> Post4Wrapper? {
+    func savePost(id: String = UUID().uuidString, title: String, plugin: AWSDataStorePlugin) async throws -> Post4Wrapper? {
         let post = try Post4Wrapper(id: id, title: title)
-        var result: Post4Wrapper?
+        let result = AtomicValue<Post4Wrapper?>(initialValue: nil)
         let completeInvoked = expectation(description: "request completed")
         plugin.save(post.model, modelSchema: Post4.schema) { event in
             switch event {
             case .success(let queriedPost):
-                result = Post4Wrapper(model: queriedPost)
+                result.set(Post4Wrapper(model: queriedPost))
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
             }
         }
         await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
+        return result.get()
     }
 
-    func saveComment(id: String = UUID().uuidString, content: String, post: Post4Wrapper, plugin: AWSDataStorePlugin) throws -> Comment4Wrapper? {
+    func saveComment(id: String = UUID().uuidString, content: String, post: Post4Wrapper, plugin: AWSDataStorePlugin) async throws -> Comment4Wrapper? {
         let comment = try Comment4Wrapper(id: id, content: "content", post: post.model)
-        var result: Comment4Wrapper?
+        let result = AtomicValue<Comment4Wrapper?>(initialValue: nil)
         let completeInvoked = expectation(description: "request completed")
         plugin.save(comment.model, modelSchema: Comment4.schema) { event in
             switch event {
             case .success(let queriedComment):
-                result = Comment4Wrapper(model: queriedComment)
+                result.set(Comment4Wrapper(model: queriedComment))
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("failed \(error)")
             }
         }
         await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
+        return result.get()
     }
 }

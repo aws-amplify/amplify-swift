@@ -2398,7 +2398,9 @@ public extension Predictions {
 
 public extension Predictions.Language {
     init(locale: Locale) {
-        guard let languageCode = locale.languageCode else {
+        // `Locale.languageCode` is deprecated; `NSLocale.languageCode` is "" where it was `nil`.
+        let languageCode = (locale as NSLocale).languageCode
+        guard !languageCode.isEmpty else {
             self = .undetermined
             return
         }

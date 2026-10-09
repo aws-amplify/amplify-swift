@@ -14,7 +14,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
 
-class DeviceBehaviorForgetDeviceTests: BasePluginTest {
+class DeviceBehaviorForgetDeviceTests: BasePluginTest, @unchecked Sendable {
 
     override func setUp() {
         super.setUp()

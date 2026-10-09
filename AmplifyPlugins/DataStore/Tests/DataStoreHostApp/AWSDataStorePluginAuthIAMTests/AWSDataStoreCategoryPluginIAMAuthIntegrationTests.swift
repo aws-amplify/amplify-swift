@@ -9,7 +9,7 @@ import XCTest
 
 @testable import Amplify
 
-class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTest {
+class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTest, @unchecked Sendable {
 
     /// Given: a user signed in with IAM, a model with `allow private`  auth rule with IAM as provider
     /// When: DataStore query/mutation operations are sent with IAM

@@ -22,7 +22,7 @@ import XCTest
 import AWSCognitoIdentityProvider
 @testable import InternalAWSCognitoAuth
 
-class AWSAuthConfirmSignUpTaskTests: BasePluginTest {
+class AWSAuthConfirmSignUpTaskTests: BasePluginTest, @unchecked Sendable {
 
     let signUpData = SignUpEventData(username: "jeffb")
     let signUpResult = EngineSignUpResult(.confirmUser())

@@ -9,7 +9,7 @@ import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
 
-class AppSyncSignerTests: AWSAuthBaseTest {
+class AppSyncSignerTests: AWSAuthBaseTest, @unchecked Sendable {
 
     /// Test signing an AppSync request with a live credentials provider
     ///

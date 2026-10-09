@@ -13,7 +13,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
-class UserBehaviorUpdateAttributesTests: BasePluginTest {
+class UserBehaviorUpdateAttributesTests: BasePluginTest, @unchecked Sendable {
 
     /// Test a successful updateUserAttributes call with .done as next step
     ///

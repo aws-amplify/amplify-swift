@@ -26,7 +26,8 @@ public extension CommentWithCompositeKeyUnidirectional {
   static let schema = defineSchema { model in
     let commentWithCompositeKeyUnidirectional = CommentWithCompositeKeyUnidirectional.keys
 
-    model.pluralName = "CommentWithCompositeKeyUnidirectionals"
+    model.listPluralName = "CommentWithCompositeKeyUnidirectionals"
+    model.syncPluralName = "CommentWithCompositeKeyUnidirectionals"
 
     model.attributes(
       .index(fields: ["id", "content"], name: nil),

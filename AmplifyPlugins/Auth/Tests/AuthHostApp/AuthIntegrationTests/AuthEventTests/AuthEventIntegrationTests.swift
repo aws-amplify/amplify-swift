@@ -9,7 +9,7 @@ import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
 
-class AuthEventIntegrationTests: AWSAuthBaseTest {
+class AuthEventIntegrationTests: AWSAuthBaseTest, @unchecked Sendable {
 
     var unsubscribeToken: UnsubscribeToken!
 

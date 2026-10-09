@@ -12,7 +12,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class AWSDataStorePluginSubscribeBehaviorTests: BaseDataStoreTests {
+class AWSDataStorePluginSubscribeBehaviorTests: BaseDataStoreTests, @unchecked Sendable {
 
     /// Calling the observeQuery API will eventually return a snapshot as it internally performs an initial query to SQL
     func testObserveQuery() throws {

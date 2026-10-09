@@ -14,14 +14,14 @@ import SmithyIdentity
 extension PinpointClient {
     convenience init(region: String, credentialIdentityResolver: some AWSCredentialIdentityResolver) throws {
         // TODO: FrameworkMetadata Replacement
-        let configuration = try PinpointClientConfiguration(
+        var configuration = try PinpointClientConfig(
             awsCredentialIdentityResolver: credentialIdentityResolver,
             region: region,
             signingRegion: region
         )
 
         configuration.httpClientEngine = .userAgentEngine(for: configuration)
-        PinpointRequestsRegistry.shared.setCustomHttpEngine(on: configuration)
+        PinpointRequestsRegistry.shared.setCustomHttpEngine(on: &configuration)
         self.init(config: configuration)
     }
 }

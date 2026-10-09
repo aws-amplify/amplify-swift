@@ -304,7 +304,7 @@ extension DefaultStorageTransferDatabase: StorageTransferDatabase {
         }
     }
 
-    func prepareForBackground(completion: (() -> Void)? = nil) {
+    func prepareForBackground(completion: (@Sendable () -> Void)? = nil) {
         dispatchPrecondition(condition: .notOnQueue(queue))
         queue.async { [weak self] in
             guard let self else { fatalError("self cannot be weak") }

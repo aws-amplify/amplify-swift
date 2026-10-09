@@ -9,7 +9,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSS3StoragePlugin
 
-class AWSS3StoragePluginAmplifyOutputsConfigurationTests: AWSS3StoragePluginTests {
+class AWSS3StoragePluginAmplifyOutputsConfigurationTests: AWSS3StoragePluginTests, @unchecked Sendable {
 
     func testConfigureSuccess() throws {
         do {

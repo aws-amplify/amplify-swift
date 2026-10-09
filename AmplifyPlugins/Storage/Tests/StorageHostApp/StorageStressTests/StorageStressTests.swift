@@ -226,12 +226,6 @@ final class StorageStressTests: XCTestCase, @unchecked Sendable {
         )
     }
 
-    func getURL(key: String, options: StorageGetURLRequest.Options? = nil) async -> URL? {
-        return await wait(name: "Get URL completed", timeout: TestCommonConstants.networkTimeout) {
-            return try await Amplify.Storage.getURL(key: key, options: options)
-        }
-    }
-
     func signOut() async {
         await wait(name: "Sign out completed") {
             await Amplify.Auth.signOut()

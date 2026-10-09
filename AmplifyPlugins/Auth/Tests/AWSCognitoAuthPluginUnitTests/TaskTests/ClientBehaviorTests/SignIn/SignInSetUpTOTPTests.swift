@@ -14,7 +14,7 @@ import XCTest
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 import InternalAWSCognitoAuth
 
-class SignInSetUpTOTPTests: BasePluginTest {
+class SignInSetUpTOTPTests: BasePluginTest, @unchecked Sendable {
 
     override var initialState: AuthState {
         AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)

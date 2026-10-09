@@ -10,7 +10,7 @@ import AWSPluginsCore
 import XCTest
 @testable import Amplify
 
-class AuthSRPSignInTests: AWSAuthBaseTest {
+class AuthSRPSignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
     override func setUp() async throws {
         try await super.setUp()

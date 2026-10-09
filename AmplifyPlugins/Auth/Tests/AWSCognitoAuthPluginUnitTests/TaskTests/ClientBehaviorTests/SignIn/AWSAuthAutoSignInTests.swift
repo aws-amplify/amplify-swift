@@ -13,7 +13,7 @@ import XCTest
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 import InternalAWSCognitoAuth
 
-class AWSAuthAutoSignInTests: BasePluginTest {
+class AWSAuthAutoSignInTests: BasePluginTest, @unchecked Sendable {
 
     override var initialState: AuthState {
         AuthState.configured(

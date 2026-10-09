@@ -25,7 +25,8 @@ public extension PostWithCompositeKeyAndIndex {
   static let schema = defineSchema { model in
     let postWithCompositeKeyAndIndex = PostWithCompositeKeyAndIndex.keys
 
-    model.pluralName = "PostWithCompositeKeyAndIndices"
+    model.listPluralName = "PostWithCompositeKeyAndIndices"
+    model.syncPluralName = "PostWithCompositeKeyAndIndices"
 
     model.attributes(
       .index(fields: ["id", "title"], name: nil),

@@ -27,7 +27,7 @@ package struct CloudWatchLoggingStreamNameFormatter {
     var deviceIdentifier: String? {
         get async {
             #if canImport(WatchKit)
-            await WKInterfaceDevice.current().identifierForVendor?.uuidString
+            WKInterfaceDevice.current().identifierForVendor?.uuidString
             #elseif canImport(UIKit)
             await UIDevice.current.identifierForVendor?.uuidString
             #elseif canImport(AppKit)

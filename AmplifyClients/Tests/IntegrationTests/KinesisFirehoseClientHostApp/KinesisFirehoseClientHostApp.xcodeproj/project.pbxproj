@@ -278,7 +278,7 @@
 			mainGroup = EA6AF65E2F50680500D372FB;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				EA67FA4E2F7E893400D4A710 /* XCLocalSwiftPackageReference "../../../../../amplify-swift" */,
+				EA67FA4E2F7E893400D4A710 /* XCLocalSwiftPackageReference "../../../.." */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EA6AF6682F50680500D372FB /* Products */;
@@ -327,6 +327,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		EA3C8E9C2F50714F003FF786 /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -741,9 +742,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		EA67FA4E2F7E893400D4A710 /* XCLocalSwiftPackageReference "../../../../../amplify-swift" */ = {
+		EA67FA4E2F7E893400D4A710 /* XCLocalSwiftPackageReference "../../../.." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../../../../amplify-swift";
+			relativePath = "../../../..";
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -822,7 +823,7 @@
 		};
 		EA67FA5D2F7E897100D4A710 /* AWSCognitoAuthPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EA67FA4E2F7E893400D4A710 /* XCLocalSwiftPackageReference "../../../../../amplify-swift" */;
+			package = EA67FA4E2F7E893400D4A710 /* XCLocalSwiftPackageReference "../../../.." */;
 			productName = AWSCognitoAuthPlugin;
 		};
 /* End XCSwiftPackageProductDependency section */

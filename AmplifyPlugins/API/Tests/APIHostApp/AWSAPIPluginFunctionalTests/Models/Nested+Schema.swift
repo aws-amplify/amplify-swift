@@ -22,7 +22,8 @@ public extension Nested {
   static let schema = defineSchema { model in
     let nested = Nested.keys
 
-    model.pluralName = "Nesteds"
+    model.listPluralName = "Nesteds"
+    model.syncPluralName = "Nesteds"
 
     model.fields(
       .field(nested.valueOne, is: .optional, ofType: .int),

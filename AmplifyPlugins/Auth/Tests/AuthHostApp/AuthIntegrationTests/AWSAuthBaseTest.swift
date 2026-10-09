@@ -183,7 +183,7 @@ class AWSAuthBaseTest: XCTestCase, @unchecked Sendable {
     func subscribeToOTPCreation() async {
         subscription = Amplify.API.subscribe(request: .init(document: document, responseType: [String: JSONValue].self))
 
-        func waitForSubscriptionConnection(
+        @Sendable func waitForSubscriptionConnection(
             subscription: AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<[String: JSONValue]>>
         ) async throws {
             for try await subscriptionEvent in subscription {

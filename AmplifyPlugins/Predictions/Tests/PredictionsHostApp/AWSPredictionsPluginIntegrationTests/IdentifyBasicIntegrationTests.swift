@@ -87,7 +87,6 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase, @unchecked Se
 
     func detectText(_ image: URL) async throws -> [Predictions.IdentifiedWord]? {
         do {
-            let options = Predictions.Identify.Options(defaultNetworkPolicy: .offline)
             let result = try await Amplify.Predictions.identify(.text, in: image)
             print("Identified text: \(result)")
             return result.words

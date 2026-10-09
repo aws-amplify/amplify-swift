@@ -13,7 +13,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class DataStoreListDecoderTests: BaseDataStoreTests {
+class DataStoreListDecoderTests: BaseDataStoreTests, @unchecked Sendable {
 
     let encoder = JSONEncoder()
     let decoder = JSONDecoder()

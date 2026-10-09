@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
+class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest, @unchecked Sendable {
 
     /*
      - Given: DataStore is cleared

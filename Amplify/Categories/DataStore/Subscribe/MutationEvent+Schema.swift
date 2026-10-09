@@ -24,7 +24,7 @@ public extension MutationEvent {
 
     // MARK: - ModelSchema
 
-    nonisolated(unsafe) static let schema = defineSchema { definition in
+    static let schema = defineSchema { definition in
         let mutation = MutationEvent.keys
 
         definition.listPluralName = "MutationEvents"
@@ -32,7 +32,7 @@ public extension MutationEvent {
         definition.attributes(.isSystem)
 
         definition.fields(
-            .id(),
+            .legacyId(),
             .field(mutation.modelId, is: .required, ofType: .string),
             .field(mutation.modelName, is: .required, ofType: .string),
             .field(mutation.json, is: .required, ofType: .string),

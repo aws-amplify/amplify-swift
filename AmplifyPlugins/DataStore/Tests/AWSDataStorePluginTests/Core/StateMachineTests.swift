@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Combine
 import XCTest
 
@@ -102,9 +103,11 @@ class StateMachineTests: XCTestCase, @unchecked Sendable {
         }
 
         let testQueue = DispatchQueue(label: "testQueue")
+        // `StateMachine` isn't `Sendable`, but `notify` serializes on its own queue.
+        let sendableStateMachine = UncheckedSendable(stateMachine)
         testQueue.async {
             for _ in 1 ... 3 {
-                stateMachine.notify(action: .increment)
+                sendableStateMachine.value.notify(action: .increment)
             }
         }
 
@@ -137,9 +140,11 @@ class StateMachineTests: XCTestCase, @unchecked Sendable {
         }
 
         let stateMachine = StateMachine<State, Action>(initialState: .one, resolver: resolver)
+        // `StateMachine` isn't `Sendable`, but `notify` serializes on its own queue.
+        let sendableStateMachine = UncheckedSendable(stateMachine)
 
         testQueue.async {
-            stateMachine.notify(action: .increment)
+            sendableStateMachine.value.notify(action: .increment)
         }
 
         await fulfillment(of: [resolverInvoked], timeout: 1)
@@ -162,9 +167,11 @@ class StateMachineTests: XCTestCase, @unchecked Sendable {
         }
 
         let stateMachine = StateMachine<State, Action>(initialState: .one, resolver: resolver)
+        // `StateMachine` isn't `Sendable`, but `notify` serializes on its own queue.
+        let sendableStateMachine = UncheckedSendable(stateMachine)
 
         testQueue.async {
-            stateMachine.notify(action: .increment)
+            sendableStateMachine.value.notify(action: .increment)
         }
 
         await fulfillment(of: [resolverInvoked], timeout: 1)

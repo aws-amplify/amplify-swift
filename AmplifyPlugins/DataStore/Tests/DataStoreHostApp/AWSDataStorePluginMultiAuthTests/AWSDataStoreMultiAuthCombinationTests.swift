@@ -11,7 +11,7 @@ import XCTest
 
 @testable import Amplify
 
-class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
+class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest, @unchecked Sendable {
 
     /// Given: an unauthenticated user
     /// When: DataStore start is called

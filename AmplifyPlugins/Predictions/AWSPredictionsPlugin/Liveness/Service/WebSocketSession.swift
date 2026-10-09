@@ -88,7 +88,7 @@ final class WebSocketSession: @unchecked Sendable {
 
     func send(
         message: URLSessionWebSocketTask.Message,
-        onError: @escaping (Error) -> Void
+        onError: @escaping @Sendable (Error) -> Void
     ) {
         task?.send(
             message,
@@ -99,10 +99,27 @@ final class WebSocketSession: @unchecked Sendable {
         )
     }
 
-    final class Delegate: NSObject, URLSessionWebSocketDelegate {
-        var onClose: (URLSessionWebSocketTask.CloseCode) -> Void = { _ in }
-        var onOpen: () -> Void = {}
-        var onServerDateReceived: (Date?) -> Void = { _ in }
+    // `@unchecked Sendable`: callbacks are set by `WebSocketSession` and called on its delegate queue, so `lock` guards them.
+    final class Delegate: NSObject, URLSessionWebSocketDelegate, @unchecked Sendable {
+        private let lock = NSLock()
+        private var _onClose: (URLSessionWebSocketTask.CloseCode) -> Void = { _ in }
+        private var _onOpen: () -> Void = {}
+        private var _onServerDateReceived: (Date?) -> Void = { _ in }
+
+        var onClose: (URLSessionWebSocketTask.CloseCode) -> Void {
+            get { lock.withLock { _onClose } }
+            set { lock.withLock { _onClose = newValue } }
+        }
+
+        var onOpen: () -> Void {
+            get { lock.withLock { _onOpen } }
+            set { lock.withLock { _onOpen = newValue } }
+        }
+
+        var onServerDateReceived: (Date?) -> Void {
+            get { lock.withLock { _onServerDateReceived } }
+            set { lock.withLock { _onServerDateReceived = newValue } }
+        }
 
         deinit {
             Amplify.log.verbose("\(#fileID).Delegate-\(#function)")
@@ -159,7 +176,7 @@ final class WebSocketSession: @unchecked Sendable {
             task: URLSessionTask,
             didCompleteWithError error: Error?
         ) {
-            Amplify.log.verbose("\(#fileID)-\(#function): Session task didCompleteWithError : \(error)")
+            Amplify.log.verbose("\(#fileID)-\(#function): Session task didCompleteWithError : \(String(describing: error))")
         }
 
         // MARK: - URLSessionDelegate methods
@@ -167,7 +184,7 @@ final class WebSocketSession: @unchecked Sendable {
             _ session: URLSession,
             didBecomeInvalidWithError error: Error?
         ) {
-            Amplify.log.verbose("\(#fileID)-\(#function): Session task didBecomeInvalidWithError : \(error)")
+            Amplify.log.verbose("\(#fileID)-\(#function): Session task didBecomeInvalidWithError : \(String(describing: error))")
         }
     }
 

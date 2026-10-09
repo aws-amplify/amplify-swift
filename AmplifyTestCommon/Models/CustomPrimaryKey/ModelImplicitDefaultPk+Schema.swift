@@ -24,7 +24,8 @@ public extension ModelImplicitDefaultPk {
   static let schema = defineSchema { model in
     let modelImplicitDefaultPk = ModelImplicitDefaultPk.keys
 
-    model.pluralName = "ModelImplicitDefaultPks"
+    model.listPluralName = "ModelImplicitDefaultPks"
+    model.syncPluralName = "ModelImplicitDefaultPks"
 
     model.fields(
       .id(),

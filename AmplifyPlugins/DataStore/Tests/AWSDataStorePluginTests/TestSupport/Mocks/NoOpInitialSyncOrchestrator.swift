@@ -22,7 +22,7 @@ struct NoOpInitialSyncOrchestrator: InitialSyncOrchestrator {
         return noOpInitialSyncOrchestrator
     }
 
-    func sync(completion: @escaping (Result<Void, DataStoreError>) -> Void) {
+    func sync(completion: @escaping @Sendable (Result<Void, DataStoreError>) -> Void) {
         completion(Result.successfulVoid)
     }
 }

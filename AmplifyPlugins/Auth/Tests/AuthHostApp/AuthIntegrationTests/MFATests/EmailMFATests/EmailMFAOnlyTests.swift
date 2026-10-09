@@ -21,7 +21,7 @@ import XCTest
 //     sms: true,
 //     email: true, (email has not been added to backend at the time of writing this test)
 //   },
-class EmailMFARequiredTests: AWSAuthBaseTest {
+class EmailMFARequiredTests: AWSAuthBaseTest, @unchecked Sendable {
 
     // Sets up the test environment with a custom configuration and adds required plugins
     override func setUp() async throws {

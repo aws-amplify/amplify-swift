@@ -189,7 +189,7 @@ class FileSystem: @unchecked Sendable {
     ///   - offset: position to start reading
     ///   - length: length of the part
     ///   - completionHandler: completion handler
-    func createPartialFile(fileURL: URL, offset: UInt64, length: UInt64, completionHandler: @escaping (Result<URL, Error>) -> Void) {
+    func createPartialFile(fileURL: URL, offset: UInt64, length: UInt64, completionHandler: @escaping @Sendable (Result<URL, Error>) -> Void) {
         // 4.5 MB (1 MB per part)
         // 1024 1024 1024 1024 512
 

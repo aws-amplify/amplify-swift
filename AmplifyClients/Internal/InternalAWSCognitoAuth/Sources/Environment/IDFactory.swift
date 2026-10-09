@@ -11,5 +11,5 @@ import Foundation
 package typealias EventIDFactory = @Sendable () -> String
 
 package enum UUIDFactory {
-    package nonisolated(unsafe) static let factory: EventIDFactory = { UUID().uuidString }
+    package static let factory: EventIDFactory = { UUID().uuidString }
 }

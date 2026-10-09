@@ -61,6 +61,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase, @unchecked Senda
     /// - Given: A valid object key
     /// - When: An attempt to generate a pre-signed URL for it is performed
     /// - Then: The underlying auth service and storage services are used to build it
+    @available(*, deprecated)
     func testPluginGetURLAsync() async throws {
         let output = try await systemUnderTest.getURL(key: testKey, options: nil)
         XCTAssertEqual(testURL, output)
@@ -76,6 +77,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase, @unchecked Senda
     /// - Given: An empty string as an object key
     /// - When: An attempt to generate a pre-signed URL for it is performed
     /// - Then: A StorageError.validation is thrown
+    @available(*, deprecated)
     func testGetURLOperationValidationError() async throws {
         let options = StorageGetURLRequest.Options(expires: 0)
         do {
@@ -91,6 +93,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase, @unchecked Senda
     /// - Given: An auth service in an invalid state
     /// - When: An attempt to generate a pre-signed URL is performed
     /// - Then: A StorageError.authError is thrown
+    @available(*, deprecated)
     func testGetURLOperationGetIdentityIdError() async throws {
         let authError = AuthError.service(UUID().uuidString, UUID().uuidString, UUID().uuidString)
         authService.getIdentityIdError = authError
@@ -109,6 +112,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase, @unchecked Senda
     /// - Given: A newly-configured storage plugin
     /// - When: An attempt to generate a pre-signed URL is performed using a `protected` access level
     /// - Then: A service key with `protected` in its path is passed to the storage service to generate the URL
+    @available(*, deprecated)
     func testGetOperationGetPresignedURL() async throws {
         let testIdentityId = UUID().uuidString
         authService.identityId = testIdentityId
@@ -131,6 +135,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase, @unchecked Senda
     /// - Given: An storage service in an invalid state
     /// - When: An attempt to generate a pre-signed URL is performed
     /// - Then: A StorageError.service is thrown
+    @available(*, deprecated)
     func testGetOperationGetPresignedURLFailed() async throws {
         let testIdentityId = UUID().uuidString
         authService.identityId = testIdentityId
@@ -163,6 +168,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase, @unchecked Senda
     /// - Given: A newly-configured storage plugin
     /// - When: An attempt to generate a pre-signed URL is performed using a `targetIdentityId` value
     /// - Then: A service key with that includes the given identity in its path is passed to the storage service to generate the URL
+    @available(*, deprecated)
     func testGetOperationGetPresignedURLFromTargetIdentityId() async throws {
         let testIdentityId = UUID().uuidString
         authService.identityId = testIdentityId
@@ -184,6 +190,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase, @unchecked Senda
     /// - Given: A key to a non-existent S3 object
     /// - When: An attempt to generate a pre-signed URL is performed using the `validateObjectExistence` option
     /// - Then: The plugin throws an AmplifyStorageError.notFound error
+    @available(*, deprecated)
     func testGetURLNonExistentKeyWithValidateObjectExistenceOption() async throws {
         storageService.validateObjectExistenceHandler = { key in
             throw StorageError.keyNotFound(key, "", "")
@@ -205,6 +212,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase, @unchecked Senda
     /// - Given: A key to a non-existent S3 object
     /// - When: An attempt to generate a pre-signed URL is performed without using the `validateObjectExistence` option
     /// - Then: The plugin returns without an error
+    @available(*, deprecated)
     func testGetURLNonExistentKeyWithoutValidateObjectExistenceOption() async throws {
         storageService.validateObjectExistenceHandler = { key in
             throw StorageError.keyNotFound(key, "", "")

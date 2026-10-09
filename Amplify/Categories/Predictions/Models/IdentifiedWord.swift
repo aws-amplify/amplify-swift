@@ -10,7 +10,7 @@ import CoreGraphics
 public extension Predictions {
     /// Describes a word identified in an image as a result of
     /// identify() API call
-    struct IdentifiedWord: IdentifiedText {
+    struct IdentifiedWord: IdentifiedText, Sendable {
         public let text: String
         public let boundingBox: CGRect
         public let polygon: Polygon?

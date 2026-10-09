@@ -8,6 +8,7 @@
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
@@ -266,6 +267,59 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase, @unchecked Sendable {
         }
     }
 
+    /// Test that network preferences reach the service clients' configuration
+    ///
+    /// - Given: Given valid config for user pool and identity pool, and network preferences
+    /// - When:
+    ///    - I configure auth with the given configuration and network preferences
+    /// - Then:
+    ///    - Both service clients use the configured region, connect timeout, retry count and user-agent engine
+    ///
+    func testConfigure_withNetworkPreferences_appliesThemToServiceClients() throws {
+        let plugin = AWSCognitoAuthPlugin(
+            networkPreferences: .init(
+                maxRetryCount: 5,
+                timeoutIntervalForRequest: 42,
+                timeoutIntervalForResource: 60
+            ))
+        try Amplify.add(plugin: plugin)
+
+        let categoryConfig = AuthCategoryConfiguration(plugins: [
+            "awsCognitoAuthPlugin": [
+                "CredentialsProvider": ["CognitoIdentity": [
+                    "Default": [
+                        "PoolId": "xx",
+                        "Region": "us-west-2"
+                    ]
+                ]],
+                "CognitoUserPool": ["Default": [
+                    "PoolId": "xx",
+                    "Region": "us-east-2",
+                    "AppClientId": "xx",
+                    "AppClientSecret": "xx"
+                ]]
+            ]
+        ])
+        try Amplify.configure(AmplifyConfiguration(auth: categoryConfig))
+
+        guard case .userPoolAndIdentityPool(let userPoolClient, let identityPoolClient) = plugin.getEscapeHatch() else {
+            XCTFail("Expected .userPoolAndIdentityPool")
+            return
+        }
+
+        XCTAssertEqual(userPoolClient.config.region, "us-east-2")
+        XCTAssertEqual(userPoolClient.config.signingRegion, "us-east-2")
+        XCTAssertEqual(userPoolClient.config.httpClientConfiguration.connectTimeout, 42)
+        XCTAssertEqual(userPoolClient.config.retryStrategyOptions.maxRetriesBase, 5)
+        XCTAssertTrue(userPoolClient.config.httpClientEngine is UserAgentSettingClientEngine)
+
+        XCTAssertEqual(identityPoolClient.config.region, "us-west-2")
+        XCTAssertEqual(identityPoolClient.config.signingRegion, "us-west-2")
+        XCTAssertEqual(identityPoolClient.config.httpClientConfiguration.connectTimeout, 42)
+        XCTAssertEqual(identityPoolClient.config.retryStrategyOptions.maxRetriesBase, 5)
+        XCTAssertTrue(identityPoolClient.config.httpClientEngine is UserAgentSettingClientEngine)
+    }
+
     /// Test Auth configuration with valid config for user pool and identity pool, with secure storage preferences
     ///
     /// - Given: Given valid config for user pool and identity pool, and secure storage preferences
@@ -381,6 +435,8 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase, @unchecked Sendable {
     ///
     func testEmittingInternalConfigureAuthHubEvent() throws {
         let expectation = expectation(description: "conifguration should complete")
+        // Hub's Combine subjects outlive `Amplify.reset()`, so a configure from an earlier test can also arrive here.
+        expectation.assertForOverFulfill = false
         let subscription = Amplify.Hub.publisher(for: .auth).sink { payload in
 
             if payload.eventName == "InternalConfigureAuth" {

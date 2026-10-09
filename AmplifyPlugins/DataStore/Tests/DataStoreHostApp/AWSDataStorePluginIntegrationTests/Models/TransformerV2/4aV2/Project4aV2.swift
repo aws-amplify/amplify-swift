@@ -13,7 +13,8 @@ import Foundation
 // which will fail with error:
 // <>
 
-public class Project4aV2: Model {
+// `@unchecked Sendable`: test fixture class with `var` properties, driven by one test at a time.
+public class Project4aV2: Model, @unchecked Sendable {
   public let id: String
   public var name: String?
   public var team: Team4aV2?

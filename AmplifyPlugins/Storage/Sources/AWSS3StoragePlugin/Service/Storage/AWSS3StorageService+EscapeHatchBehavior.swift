@@ -11,7 +11,7 @@ import Foundation
 extension AWSS3StorageService {
 
     func getEscapeHatch() -> S3Client {
-        s3Client
+        escapeHatchClient
     }
 
 }
