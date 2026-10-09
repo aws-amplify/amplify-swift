@@ -476,7 +476,7 @@ extension VersionedSessionRecord {
     /// none, and fails the test.
     var generation: UInt64 {
         guard case .generation(let generation) = version else {
-            XCTFail("expected a record versioned by its generation, got \(version)")
+            XCTFail("expected a record versioned by its generation, got \(String(describing: version))")
             return 0
         }
         return generation

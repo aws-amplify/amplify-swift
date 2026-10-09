@@ -216,7 +216,7 @@ actor HeldSheet {
     nonisolated var answer: @Sendable () async throws -> Void {
         { [up, release] in
             await up.pass()
-            try await withTaskCancellationHandler {
+            await withTaskCancellationHandler {
                 await release.pass()
             } onCancel: {
                 Task { await release.open() }
