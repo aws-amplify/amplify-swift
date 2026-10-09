@@ -34,9 +34,9 @@ final class FieldDumpEncodedKeyTests: XCTestCase {
     }
 
     /// The fixture's JSON object, edited by `edit`, written back.
-    static func editedFixture(_ edit: (inout [String: Any]) -> Void) throws -> Data {
+    static func editedFixture(_ edit: (inout [String: Any]) throws -> Void) throws -> Data {
         var object = try XCTUnwrap(JSONSerialization.jsonObject(with: tokensFixture()) as? [String: Any])
-        edit(&object)
+        try edit(&object)
         return try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
     }
 
@@ -88,7 +88,7 @@ final class FieldDumpEncodedKeyTests: XCTestCase {
         XCTAssertEqual(try Self.dump(Self.tokensFixture()), manifest)
 
         let changedValue = try Self.editedFixture { object in
-            object["expiration"] = (object["expiration"] as? Double ?? 0) + 1
+            object["expiration"] = try XCTUnwrap(object["expiration"] as? Double, "no expiration in the fixture") + 1
         }
         let changed = try Self.dump(changedValue)
         XCTAssertNotEqual(changed, manifest)
@@ -97,7 +97,7 @@ final class FieldDumpEncodedKeyTests: XCTestCase {
 
         for renamed in ["expiry", "legacyExpiration"] {
             let data = try Self.editedFixture { object in
-                object[renamed] = object.removeValue(forKey: "expiration")
+                object[renamed] = try XCTUnwrap(object.removeValue(forKey: "expiration"), "no expiration in the fixture")
             }
             XCTAssertThrowsError(try Self.dump(data), renamed) { error in
                 guard case DecodingError.keyNotFound(let key, _) = error else {

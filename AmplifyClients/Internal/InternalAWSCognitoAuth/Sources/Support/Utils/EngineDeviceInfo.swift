@@ -105,8 +105,8 @@ package struct EngineDeviceInfo {
     }
 
 #if canImport(IOKit)
-    /// Amplify's lookup, with `kIOMainPortDefault` for the deprecated `kIOMasterPortDefault`. Both are
-    /// the default main port (`0`).
+    /// Amplify's lookup (`DeviceInfo`), unchanged: the same `IOPlatformExpertDevice` service, through
+    /// `kIOMainPortDefault`, the default main port.
     private func value(forKey key: String) -> String? {
         let service = IOServiceGetMatchingService(
             kIOMainPortDefault,

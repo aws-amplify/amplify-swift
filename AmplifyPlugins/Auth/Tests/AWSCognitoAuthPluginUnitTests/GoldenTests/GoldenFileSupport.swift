@@ -81,9 +81,9 @@ enum FieldDump {
     /// listed here, explicitly. Keep this table short, and add to it only when a property is renamed while its
     /// encoded key stays the same. `FieldDumpEncodedKeyTests` checks every entry against the type's encoder.
     ///
-    /// - `AWSCognitoUserPoolTokens.legacyExpiration`: main's #4351 made the deprecated public `expiration` a
-    ///   computed property over a new stored `legacyExpiration`, and kept the encoded key `"expiration"`
-    ///   (its `CodingKeys`). The stored format did not change, so the dump still says `expiration`.
+    /// - `AWSCognitoUserPoolTokens.legacyExpiration`: the public type stores the expiration as
+    ///   `legacyExpiration` (its deprecated public `expiration` is computed from it) and encodes it under
+    ///   `"expiration"` through its `CodingKeys`. The stored format records `expiration`, so the dump does too.
     static let encodedKeyAliases: [ObjectIdentifier: [String: String]] = [
         ObjectIdentifier(AWSCognitoUserPoolTokens.self): ["legacyExpiration": "expiration"]
     ]

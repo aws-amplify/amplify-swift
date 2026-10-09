@@ -10,8 +10,10 @@ import Foundation
 /// The engine's copy of the plugin's public `AWSCognitoUserPoolTokens`
 /// (`AWSCognitoAuthPlugin/Models/AWSCognitoUserPoolTokens.swift`).
 ///
-/// It is persisted inside `SignedInData`, so the stored properties, their names, types and order, the
-/// synthesized `Codable` and the synthesized `Equatable` are the public type's. The two types encode to
+/// It is persisted inside `SignedInData`, so its encoded keys, their types and order, and its synthesized
+/// `Equatable` match the public type's. This type stores `expiration`; the public type stores the same value
+/// as `legacyExpiration` and encodes it under `"expiration"` through explicit `CodingKeys`, so the stored
+/// properties' names differ while the encoding does not. The two types encode to
 /// the same JSON tree and decode each other's encoding. The
 /// debug output is the public type's too, so log lines that print tokens do not change.
 ///
