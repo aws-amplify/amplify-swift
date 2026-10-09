@@ -8,6 +8,7 @@
 import Amplify
 import AWSCognitoIdentityProvider
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger, @unchecked Sendable {

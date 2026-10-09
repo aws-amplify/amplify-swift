@@ -55,6 +55,18 @@ Each conforms to both Foundation and SDK protocols simultaneously.
 
 **`UserAgentClientEngine`** — HTTP client wrapper that injects `lib/amplify-swift#<version>` into User-Agent headers.
 
+## Shared internals (`AmplifyClients/Internal/`)
+
+Internal modules that clients share with the plugins. They must be Amplify-free (no `Amplify`, no `AWSPluginsCore`), and a client must never depend on a target whose path is under `AmplifyPlugins/`, so shared code lives here instead.
+
+- `InternalAmplifyKeychain/` — `Sources/` (the keychain implementation used by `AWSPluginsCore` and `AmplifyCognitoClient`) and `Tests/`
+- `AmplifyKeychainTestCommon/` — the in-memory keychain fake, for test targets only
+- `InternalAWSCognitoAuth/` — `Sources/` (the Cognito engine: state machine, actions, credential store; used by `AWSCognitoAuthPlugin` and `AmplifyCognitoClient`). Depends only on `AmplifyFoundation`, `InternalAmplifyKeychain`, `AmplifySRP`, `AmplifyBigInteger`, `AmplifyAvailability` and the Cognito SDK products; `scripts/cognito-engine/check_engine_deps.py --stage final` enforces it, and fails if any target in the engine's closure has a path under `AmplifyPlugins/`. Its tests live in `AWSCognitoAuthPluginUnitTests`
+- `AmplifySRP/` — `Sources/` (SRP client state and HKDF, used by the engine). Depends only on `AmplifyBigInteger`. Its tests live in `AWSCognitoAuthPluginUnitTests` (`SRPTests/`)
+- `AmplifyBigInteger/` — `Sources/` (big-integer arithmetic over libtommath) and `Tests/` (`AmplifyBigIntegerTests`). Depends only on `libtommathAmplify`
+- `libtommathAmplify/` — `Sources/`, the vendored libtommath C library (prefixed `amplify_`)
+- `AmplifyAvailability/` — `Sources/`, a C module that reports the deployment target's minimum OS version (used for the ASF device info)
+
 ## AmplifyKinesisClient (Reference Implementation)
 
 Location: `AmplifyClients/AmplifyKinesisClient/`

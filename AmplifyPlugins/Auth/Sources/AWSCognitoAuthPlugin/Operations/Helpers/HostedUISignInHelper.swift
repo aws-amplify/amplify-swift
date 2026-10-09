@@ -8,8 +8,9 @@
 #if os(iOS) || os(macOS) || os(visionOS)
 import Amplify
 import Foundation
+import InternalAWSCognitoAuth
 
-struct HostedUISignInHelper: DefaultLogger {
+struct HostedUISignInHelper {
 
     let request: AuthWebUISignInRequest
 
@@ -123,7 +124,7 @@ struct HostedUISignInHelper: DefaultLogger {
         let idpIdentifier = pluginOptions?.idpIdentifier
 
         let providerInfo = HostedUIProviderInfo(
-            authProvider: request.authProvider,
+            authProvider: request.authProvider.map { EngineAuthProvider($0) },
             idpIdentifier: idpIdentifier
         )
         let scopeFromConfig = oauthConfiguration.scopes
@@ -174,11 +175,10 @@ struct HostedUISignInHelper: DefaultLogger {
         }
     }
 
-    static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
-    }
+    /// No environment is in scope, so these lines go through the global router.
+    static let log = EngineLog.logger(.categoryNamespace("Authentication", "HostedUISignInHelper"))
 
-    var log: Logger {
+    var log: EngineLogger {
         Self.log
     }
 }

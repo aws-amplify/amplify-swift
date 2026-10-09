@@ -11,6 +11,7 @@ import AWSCognitoIdentityProvider
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 class EmailMFATests: BasePluginTest, @unchecked Sendable {
 

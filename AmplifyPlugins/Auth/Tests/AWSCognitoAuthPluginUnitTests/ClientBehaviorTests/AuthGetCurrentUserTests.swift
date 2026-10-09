@@ -9,6 +9,7 @@ import XCTest
 
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
@@ -17,7 +18,7 @@ class AuthGetCurrentUserTests: XCTestCase, @unchecked Sendable {
     func testGetCurrentUserWhileSignedIn() async throws {
         let userId = "xyz987"
         let userName = "abc123"
-        let tokens = AWSCognitoUserPoolTokens.testData(username: userName, sub: userId)
+        let tokens = EngineUserPoolTokens.testData(username: userName, sub: userId)
         let authState = Defaults.makeAuthState(tokens: tokens)
         let plugin = try createPlugin(authState: authState)
 

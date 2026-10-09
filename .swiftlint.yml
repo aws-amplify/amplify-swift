@@ -4,6 +4,13 @@
 included:
   - Amplify
   - AmplifyPlugins
+  # The shared keychain module, moved here from AmplifyPlugins/Core/. Keeps the lint coverage it had there.
+  - AmplifyClients/Internal/InternalAmplifyKeychain/Sources
+  # The Cognito engine, moved here from AmplifyPlugins/Internal/Sources/. Keeps its lint coverage.
+  - AmplifyClients/Internal/InternalAWSCognitoAuth/Sources
+  # The engine's SRP and big-integer modules, moved here from AmplifyPlugins/Auth/Sources/. Keep their lint coverage.
+  - AmplifyClients/Internal/AmplifySRP/Sources
+  - AmplifyClients/Internal/AmplifyBigInteger/Sources
 
 excluded:
   - Pods

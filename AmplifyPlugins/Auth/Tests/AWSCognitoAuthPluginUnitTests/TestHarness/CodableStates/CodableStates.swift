@@ -10,6 +10,7 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import Foundation
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 extension DeviceMetadata {
 
@@ -229,7 +230,7 @@ extension FetchSessionError: Codable {
 }
 
 
-extension KeychainStoreError: Codable {
+extension EngineCredentialStoreError: Codable {
     public init(from decoder: Decoder) throws {
         self = .unknown("", nil)
     }

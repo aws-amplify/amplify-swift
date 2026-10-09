@@ -10,6 +10,7 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
 import Foundation
+import InternalAWSCognitoAuth
 
 protocol AuthFetchMFAPreferenceTask: AmplifyAuthTask where Request == Never,
                                                            Success == UserMFAPreference,
@@ -47,9 +48,10 @@ final class FetchMFAPreferenceTask: AuthFetchMFAPreferenceTask, DefaultLogger, @
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
             return try await fetchMFAPreference(with: accessToken)
-        } catch let error as AuthErrorConvertible {
-            throw error.authError
         } catch {
+            if let authError = AuthError(converting: error) {
+                throw authError
+            }
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }

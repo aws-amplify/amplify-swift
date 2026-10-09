@@ -12,6 +12,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
+import InternalAWSCognitoAuth
 
 class SignInSetUpTOTPTests: BasePluginTest, @unchecked Sendable {
 

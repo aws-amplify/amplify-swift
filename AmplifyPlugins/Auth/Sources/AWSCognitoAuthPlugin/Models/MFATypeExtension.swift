@@ -7,6 +7,7 @@
 
 import Amplify
 import Foundation
+import InternalAWSCognitoAuth
 
 extension MFAType: DefaultLogger {
 
@@ -18,7 +19,7 @@ extension MFAType: DefaultLogger {
         } else if rawValue.caseInsensitiveCompare("EMAIL_OTP") == .orderedSame {
             self = .email
         } else {
-            Self.log.error("Tried to initialize an unsupported MFA type with value: \(rawValue)")
+            EngineLog.logger(.category("MFAType")).error("Tried to initialize an unsupported MFA type with value: \(rawValue)")
             return nil
         }
     }

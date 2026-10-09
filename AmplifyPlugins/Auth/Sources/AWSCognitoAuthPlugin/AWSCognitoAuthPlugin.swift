@@ -8,6 +8,7 @@
 import Amplify
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement on `Plugin`. The service and
 ///   configuration properties are populated during `configure(using:)` before any client call can
@@ -59,5 +60,10 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior, @unchecke
     ) {
         self.networkPreferences = networkPreferences
         self.secureStoragePreferences = secureStoragePreferences
+        // The plugin's own static log sites, and the public `AuthFlowType` decode, go through the global
+        // router; the engine's other sites take the plugin's logger. Installing it
+        // here keeps plugin-only apps logging to `Amplify.Logging`.
+        // Only the default is replaced, so the first plugin wins (see `EngineLog`'s ordering rule).
+        EngineLog.installIfDefault(AmplifyEngineLogRouter())
     }
 }

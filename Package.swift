@@ -216,13 +216,36 @@ let authTargets: [Target] = [
         path: "AmplifyClients/Internal/AmplifySRP/Sources"
     ),
     .target(
+        name: "InternalAWSCognitoAuth",
+        // The Cognito engine, shared by AWSCognitoAuthPlugin and AmplifyCognitoClient. Amplify-free: never
+        // `Amplify`, `AWSPluginsCore`, `InternalAmplifyCredentials` or `AmplifyCognitoClient`, and nothing in
+        // its closure lives under AmplifyPlugins/ (gate G6, scripts/cognito-engine/check_engine_deps.py --stage final).
+        dependencies: [
+            .target(name: "AmplifyAvailability"),
+            // Declared, not only reached through AmplifySRP: SRP/AmplifySRPClient.swift imports it.
+            .target(name: "AmplifyBigInteger"),
+            .target(name: "AmplifyFoundation"),
+            .target(name: "AmplifySRP"),
+            .target(name: "InternalAmplifyKeychain"),
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift"),
+            .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
+            .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyClients/Internal/InternalAWSCognitoAuth/Sources",
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+    .target(
         name: "AWSCognitoAuthPlugin",
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AmplifyAvailability"),
+            .target(name: "AmplifyFoundation"),
             .target(name: "AmplifySRP"),
             .target(name: "AWSPluginsCore"),
             .target(name: "InternalAmplifyCredentials"),
+            .target(name: "InternalAWSCognitoAuth"),
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift")
@@ -250,8 +273,11 @@ let authTargets: [Target] = [
         name: "AWSCognitoAuthPluginUnitTests",
         dependencies: [
             "AWSCognitoAuthPlugin",
+            "InternalAWSCognitoAuth",
             "AWSPluginsTestCommon",
-            "AmplifyTestCommon"
+            "AmplifyTestCommon",
+            "InternalAmplifyKeychain",
+            "AmplifyKeychainTestCommon"
         ],
         path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests",
         resources: [.copy("TestResources")]
