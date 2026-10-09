@@ -1,0 +1,41 @@
+# The code sink's API (P-5c): the plugin's MfaInfo schema
+# (AuthHostApp/AuthIntegrationTests/MFATests/EmailMFATests/README.md, step 4), narrowed:
+#   - listMfaInfo needs a username (no full-table Scan), so a client test polls for one user's codes over
+#     plain HTTPS. onCreateMfaInfo keeps the plugin's optional username: the plugin's own suites
+#     (AWSAuthBaseTest.subscribeToOTPCreation) subscribe through AWSAPIPlugin with no argument and pick
+#     their user's code out of the stream, so the API key can watch every new code (all test users')
+#   - the API key (the tests) can only read; createMfaInfo is AWS_IAM only, called by the custom sender
+#   - items carry a server-set createdAt, to pick the newest; expired items are never returned
+
+type Query {
+	listMfaInfo(username: String!): [MfaInfo] @aws_api_key
+}
+
+type Mutation {
+	createMfaInfo(input: CreateMfaInfoInput!): MfaInfo @aws_iam
+}
+
+type Subscription {
+	onCreateMfaInfo(username: String): MfaInfo
+		@aws_subscribe(mutations: ["createMfaInfo"])
+		@aws_api_key
+}
+
+input CreateMfaInfoInput {
+	username: String!
+	code: String!
+	expirationTime: AWSTimestamp!
+}
+
+type MfaInfo @aws_api_key @aws_iam {
+	username: String!
+	code: String!
+	expirationTime: AWSTimestamp!
+	createdAt: AWSDateTime
+}
+
+schema {
+	query: Query
+	mutation: Mutation
+	subscription: Subscription
+}

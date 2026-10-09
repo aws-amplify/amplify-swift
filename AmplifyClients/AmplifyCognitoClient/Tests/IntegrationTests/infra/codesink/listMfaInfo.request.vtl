@@ -1,0 +1,11 @@
+## Query.listMfaInfo(username:): one user's codes. The username is required (no Scan).
+{
+    "version": "2018-05-29",
+    "operation": "Query",
+    "query": {
+        "expression": "username = :username",
+        "expressionValues": {
+            ":username": $util.dynamodb.toDynamoDBJson($ctx.args.username.toLowerCase())
+        }
+    }
+}
