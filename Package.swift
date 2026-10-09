@@ -280,7 +280,10 @@ let authTargets: [Target] = [
             "AWSPluginsTestCommon",
             "AmplifyTestCommon",
             "InternalAmplifyKeychain",
-            "AmplifyKeychainTestCommon"
+            "AmplifyKeychainTestCommon",
+            // Tests only: the rollback matrix drives the client's real storage beside the plugin's, over
+            // one keychain. The plugin itself must never depend on the client.
+            "AmplifyCognitoClient"
         ],
         path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests",
         resources: [.copy("TestResources")]

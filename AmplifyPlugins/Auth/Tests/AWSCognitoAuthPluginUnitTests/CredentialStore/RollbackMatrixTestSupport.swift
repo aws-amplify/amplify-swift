@@ -12,6 +12,7 @@ import Foundation
 import InternalAmplifyKeychain
 import XCTest
 @testable import Amplify
+@_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 @testable import AWSCognitoAuthPlugin
 @testable import InternalAWSCognitoAuth
 
