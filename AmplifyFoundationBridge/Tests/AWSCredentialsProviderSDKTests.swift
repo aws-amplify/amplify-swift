@@ -16,9 +16,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
 
     // MARK: - AWSCredentialsProvider + CRT CredentialsProviding Tests
 
-    /// Given: An AWSCredentialsProvider that also conforms to CRT CredentialsProviding
-    /// When: I call resolve()
-    /// Then: It should return AWSCredentials by converting from CRT credentials
+    /// - Given: An AWSCredentialsProvider that also conforms to CRT CredentialsProviding
+    /// - When: I call resolve()
+    /// - Then: It should return AWSCredentials by converting from CRT credentials
     func testCRTCredentialsProvidingResolve() async throws {
         let provider = MockCRTCredentialsProvider()
         let credentials = try await provider.resolve()
@@ -27,9 +27,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         XCTAssertEqual(credentials.secretAccessKey, "crt-secret-key")
     }
 
-    /// Given: An AWSCredentialsProvider that also conforms to CRT CredentialsProviding
-    /// When: CRT getCredentials() throws an error
-    /// Then: resolve() should propagate the error
+    /// - Given: An AWSCredentialsProvider that also conforms to CRT CredentialsProviding
+    /// - When: CRT getCredentials() throws an error
+    /// - Then: resolve() should propagate the error
     func testCRTCredentialsProvidingResolveThrowsError() async throws {
         let provider = MockCRTCredentialsProviderWithError()
 
@@ -43,9 +43,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
 
     // MARK: - AWSCredentialsProvider + Smithy AWSCredentialIdentityResolver Tests
 
-    /// Given: An Smithy AWSCredentialIdentityResolver that also conforms to  AWSCredentialsProvider
-    /// When: I call resolve()
-    /// Then: It should return AWSCredentials by converting from Smithy credentials
+    /// - Given: An Smithy AWSCredentialIdentityResolver that also conforms to  AWSCredentialsProvider
+    /// - When: I call resolve()
+    /// - Then: It should return AWSCredentials by converting from Smithy credentials
     func testSmithyCredentialIdentityResolverResolve() async throws {
         let provider = MockSmithyCredentialsProvider()
         let credentials = try await provider.resolve()
@@ -54,9 +54,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         XCTAssertEqual(credentials.secretAccessKey, "smithy-secret-key")
     }
 
-    /// Given: An Smithy AWSCredentialIdentityResolver that also conforms to  AWSCredentialsProvider
-    /// When: getIdentity() throws an error
-    /// Then: resolve() should propagate the error
+    /// - Given: An Smithy AWSCredentialIdentityResolver that also conforms to  AWSCredentialsProvider
+    /// - When: getIdentity() throws an error
+    /// - Then: resolve() should propagate the error
     func testSmithyCredentialIdentityResolverResolveThrowsError() async throws {
         let provider = MockSmithyCredentialsProviderWithError()
 
@@ -70,9 +70,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
 
     // MARK: - CRT CredentialsProviding + AWSCredentialsProvider Tests
 
-    /// Given: A Static AWSCredentialsProvider that also conforms to CRT CredentialsProviding
-    /// When: I call getCredentials()
-    /// Then: It should return CRT Credentials by converting from AWSCredentials
+    /// - Given: A Static AWSCredentialsProvider that also conforms to CRT CredentialsProviding
+    /// - When: I call getCredentials()
+    /// - Then: It should return CRT Credentials by converting from AWSCredentials
     func testStaticAWSCredentialsProviderGetCRTCredentials() async throws {
         let provider = MockStaticAWSCredentialsProviderWithCRT()
         let credentials = try await provider.getCredentials()
@@ -81,9 +81,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         XCTAssertEqual(credentials.getSecret(), "aws-secret-key")
     }
 
-    /// Given: A Temporary AWSCredentialsProvider that also conforms to CRT CredentialsProviding
-    /// When: I call getCredentials()
-    /// Then: It should return CRT Credentials by converting from AWSCredentials
+    /// - Given: A Temporary AWSCredentialsProvider that also conforms to CRT CredentialsProviding
+    /// - When: I call getCredentials()
+    /// - Then: It should return CRT Credentials by converting from AWSCredentials
     func testTemporaryAWSCredentialsProviderGetCRTCredentials() async throws {
         let provider = MockTemporaryAWSCredentialsProviderWithCRT()
         let credentials = try await provider.getCredentials()
@@ -94,9 +94,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         XCTAssertNotNil(credentials.getExpiration())
     }
 
-    /// Given: A CRT CredentialsProviding that also conforms to AWSCredentialsProvider
-    /// When: resolve() throws an error
-    /// Then: getCredentials() should propagate the error
+    /// - Given: A CRT CredentialsProviding that also conforms to AWSCredentialsProvider
+    /// - When: resolve() throws an error
+    /// - Then: getCredentials() should propagate the error
     func testAWSCredentialsProviderGetCRTCredentialsThrowsError() async throws {
         let provider = MockAWSCredentialsProviderWithCRTError()
 
@@ -110,9 +110,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
 
     // MARK: - Smithy AWSCredentialIdentityResolver + AWSCredentialsProvider Tests
 
-    /// Given: A  Static AWSCredentialIdentityResolver that also conforms to Smithy AWSCredentialIdentityResolver
-    /// When: I call getIdentity()
-    /// Then: It should return Smithy AWSCredentialIdentity by converting from AWSCredentials
+    /// - Given: A  Static AWSCredentialIdentityResolver that also conforms to Smithy AWSCredentialIdentityResolver
+    /// - When: I call getIdentity()
+    /// - Then: It should return Smithy AWSCredentialIdentity by converting from AWSCredentials
     func testStaticAWSCredentialsProviderGetSmithyIdentity() async throws {
         let provider = MockStaticAWSCredentialsProviderWithSmithy()
         let identity = try await provider.getIdentity()
@@ -121,9 +121,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         XCTAssertEqual(identity.secret, "aws-secret-key")
     }
 
-    /// Given: A Temporary AWSCredentialsProvider that also conforms to Smithy AWSCredentialIdentityResolver
-    /// When: I call getIdentity()
-    /// Then: It should return Smithy AWSCredentialIdentity by converting from AWSCredentials
+    /// - Given: A Temporary AWSCredentialsProvider that also conforms to Smithy AWSCredentialIdentityResolver
+    /// - When: I call getIdentity()
+    /// - Then: It should return Smithy AWSCredentialIdentity by converting from AWSCredentials
     func testTemporaryAWSCredentialsProviderGetSmithyIdentity() async throws {
         let provider = MockTemporaryAWSCredentialsProviderWithSmithy()
         let identity = try await provider.getIdentity()
@@ -134,9 +134,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         XCTAssertNotNil(identity.expiration)
     }
 
-    /// Given: A Smithy AWSCredentialIdentityResolver that also conforms to AWSCredentialsProvider
-    /// When: resolve() throws an error
-    /// Then: getIdentity() should propagate the error
+    /// - Given: A Smithy AWSCredentialIdentityResolver that also conforms to AWSCredentialsProvider
+    /// - When: resolve() throws an error
+    /// - Then: getIdentity() should propagate the error
     func testAWSCredentialsProviderGetSmithyIdentityThrowsError() async throws {
         let provider = MockAWSCredentialsProviderWithSmithyError()
 
@@ -150,9 +150,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
 
     // MARK: - Adapter Tests
 
-    /// Given: A Foundation AWSCredentialsProvider
-    /// When: I wrap it with FoundationToSDKCredentialsAdapter
-    /// Then: It should work as both AWSCredentialsProvider and AWSCredentialIdentityResolver
+    /// - Given: A Foundation AWSCredentialsProvider
+    /// - When: I wrap it with FoundationToSDKCredentialsAdapter
+    /// - Then: It should work as both AWSCredentialsProvider and AWSCredentialIdentityResolver
     func testFoundationToSDKCredentialsAdapter() async throws {
         let foundationProvider = MockFoundationProvider()
         let adapter = FoundationToSDKCredentialsAdapter(provider: foundationProvider)
@@ -168,9 +168,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         XCTAssertEqual(identity.secret, "foundation-secret-key")
     }
 
-    /// Given: A Foundation AWSCredentialsProvider that throws an error
-    /// When: I wrap it with FoundationToSDKCredentialsAdapter
-    /// Then: Both interfaces should propagate the error
+    /// - Given: A Foundation AWSCredentialsProvider that throws an error
+    /// - When: I wrap it with FoundationToSDKCredentialsAdapter
+    /// - Then: Both interfaces should propagate the error
     func testFoundationToSDKCredentialsAdapterWithError() async throws {
         let foundationProvider = MockFoundationProviderWithError()
         let adapter = FoundationToSDKCredentialsAdapter(provider: foundationProvider)
@@ -192,9 +192,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         }
     }
 
-    /// Given: An SDK AWSCredentialIdentityResolver
-    /// When: I wrap it with SDKToFoundationCredentialsAdapter
-    /// Then: It should work as AWSCredentialsProvider
+    /// - Given: An SDK AWSCredentialIdentityResolver
+    /// - When: I wrap it with SDKToFoundationCredentialsAdapter
+    /// - Then: It should work as AWSCredentialsProvider
     func testSDKToFoundationCredentialsAdapter() async throws {
         let sdkResolver = MockSDKResolver()
         let adapter = SDKToFoundationCredentialsAdapter(resolver: sdkResolver)
@@ -208,9 +208,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         XCTAssertEqual(awsCredentials.secretAccessKey, "sdk-secret-key")
     }
 
-    /// Given: An SDK AWSCredentialIdentityResolver with temporary credentials
-    /// When: I wrap it with SDKToFoundationCredentialsAdapter
-    /// Then: It should return temporary AWSCredentials with session token
+    /// - Given: An SDK AWSCredentialIdentityResolver with temporary credentials
+    /// - When: I wrap it with SDKToFoundationCredentialsAdapter
+    /// - Then: It should return temporary AWSCredentials with session token
     func testSDKToFoundationCredentialsAdapterWithTemporaryCredentials() async throws {
         let sdkResolver = MockSDKResolverWithTemporaryCredentials()
         let adapter = SDKToFoundationCredentialsAdapter(resolver: sdkResolver)
@@ -234,9 +234,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         }
     }
 
-    /// Given: An SDK AWSCredentialIdentityResolver that throws an error
-    /// When: I wrap it with SDKToFoundationCredentialsAdapter
-    /// Then: It should propagate the error
+    /// - Given: An SDK AWSCredentialIdentityResolver that throws an error
+    /// - When: I wrap it with SDKToFoundationCredentialsAdapter
+    /// - Then: It should propagate the error
     func testSDKToFoundationCredentialsAdapterWithError() async throws {
         let sdkResolver = MockSDKResolverWithError()
         let adapter = SDKToFoundationCredentialsAdapter(resolver: sdkResolver)
@@ -258,9 +258,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         }
     }
 
-    /// Given: A CRT CredentialsProviding
-    /// When: I wrap it with CRTToFoundationCredentialsAdapter
-    /// Then: It should work as AWSCredentialsProvider
+    /// - Given: A CRT CredentialsProviding
+    /// - When: I wrap it with CRTToFoundationCredentialsAdapter
+    /// - Then: It should work as AWSCredentialsProvider
     func testCRTToFoundationCredentialsAdapter() async throws {
         let crtProvider = MockCRTProvider()
         let adapter = CRTToFoundationCredentialsAdapter(provider: crtProvider)
@@ -276,9 +276,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         XCTAssertEqual(credentials.secretAccessKey, "crt-secret-key")
     }
 
-    /// Given: A CRT CredentialsProviding with temporary credentials
-    /// When: I wrap it with CRTToFoundationCredentialsAdapter
-    /// Then: It should return temporary AWSCredentials with session token
+    /// - Given: A CRT CredentialsProviding with temporary credentials
+    /// - When: I wrap it with CRTToFoundationCredentialsAdapter
+    /// - Then: It should return temporary AWSCredentials with session token
     func testCRTToFoundationCredentialsAdapterWithTemporaryCredentials() async throws {
         let crtProvider = MockCRTProviderWithTemporaryCredentials()
         let adapter = CRTToFoundationCredentialsAdapter(provider: crtProvider)
@@ -304,9 +304,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         }
     }
 
-    /// Given: A CRT CredentialsProviding that throws an error
-    /// When: I wrap it with CRTToFoundationCredentialsAdapter
-    /// Then: It should propagate the error
+    /// - Given: A CRT CredentialsProviding that throws an error
+    /// - When: I wrap it with CRTToFoundationCredentialsAdapter
+    /// - Then: It should propagate the error
     func testCRTToFoundationCredentialsAdapterWithError() async throws {
         let crtProvider = MockCRTProviderWithError()
         let adapter = CRTToFoundationCredentialsAdapter(provider: crtProvider)
@@ -328,9 +328,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         }
     }
 
-    /// Given: A Foundation AWSCredentialsProvider
-    /// When: I wrap it with FoundationToCRTCredentialsAdapter
-    /// Then: It should work as CRT CredentialsProviding
+    /// - Given: A Foundation AWSCredentialsProvider
+    /// - When: I wrap it with FoundationToCRTCredentialsAdapter
+    /// - Then: It should work as CRT CredentialsProviding
     func testFoundationToCRTCredentialsAdapter() async throws {
         let foundationProvider = MockFoundationProvider()
         let adapter = FoundationToCRTCredentialsAdapter(provider: foundationProvider)
@@ -344,9 +344,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         XCTAssertEqual(credentials.getSecret(), "foundation-secret-key")
     }
 
-    /// Given: A Foundation AWSCredentialsProvider with temporary credentials
-    /// When: I wrap it with FoundationToCRTCredentialsAdapter
-    /// Then: It should return CRT credentials with session token
+    /// - Given: A Foundation AWSCredentialsProvider with temporary credentials
+    /// - When: I wrap it with FoundationToCRTCredentialsAdapter
+    /// - Then: It should return CRT credentials with session token
     func testFoundationToCRTCredentialsAdapterWithTemporaryCredentials() async throws {
         let foundationProvider = MockFoundationProviderWithTemporaryCredentials()
         let adapter = FoundationToCRTCredentialsAdapter(provider: foundationProvider)
@@ -368,9 +368,9 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         XCTAssertNotNil(credentials.getExpiration())
     }
 
-    /// Given: A Foundation AWSCredentialsProvider that throws an error
-    /// When: I wrap it with FoundationToCRTCredentialsAdapter
-    /// Then: It should propagate the error
+    /// - Given: A Foundation AWSCredentialsProvider that throws an error
+    /// - When: I wrap it with FoundationToCRTCredentialsAdapter
+    /// - Then: It should propagate the error
     func testFoundationToCRTCredentialsAdapterWithError() async throws {
         let foundationProvider = MockFoundationProviderWithError()
         let adapter = FoundationToCRTCredentialsAdapter(provider: foundationProvider)

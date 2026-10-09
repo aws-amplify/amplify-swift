@@ -12,6 +12,7 @@ import AWSCognitoIdentityProvider
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
@@ -25,7 +26,7 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase, @unchecked Sendable {
                 SignedInData(
                     signedInDate: Date(),
                     signInMethod: .apiBased(.userSRP),
-                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                    cognitoUserPoolTokens: EngineUserPoolTokens.testData
                 )),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
             .notStarted
@@ -73,6 +74,7 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase, @unchecked Sendable {
             hubEventHandler: MockAuthHubEventBehavior(),
             analyticsHandler: MockAnalyticsHandler()
         )
+        settleConfigureOperationOnTeardown(of: plugin)
     }
 
     override func tearDown() async throws {

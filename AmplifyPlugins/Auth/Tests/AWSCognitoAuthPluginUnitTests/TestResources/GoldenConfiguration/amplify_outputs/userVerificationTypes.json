@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "auth": {
+    "aws_region": "eu-central-1",
+    "user_pool_id": "eu-central-1_verify0001",
+    "user_pool_client_id": "verifyclientid0123456789",
+    "user_verification_types": ["phone_number", "email"]
+  }
+}

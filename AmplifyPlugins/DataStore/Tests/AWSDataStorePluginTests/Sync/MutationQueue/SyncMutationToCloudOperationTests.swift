@@ -401,6 +401,141 @@ class SyncMutationToCloudOperationTests: XCTestCase, @unchecked Sendable {
         let post1 = Post(title: "post1", content: "content1", createdAt: .now())
         return try MutationEvent(model: post1, modelSchema: post1.schema, mutationType: .create)
     }
+}
+
+// MARK: - Errors from AuthSession's credential resolver
+
+extension SyncMutationToCloudOperationTests {
+
+    /// The errors a signed-out session that cannot vend credentials or tokens now produces, taken from
+    /// the resolver itself. They replaced `AuthError.unknown`.
+    private var resolverSignedOutErrors: [AuthError] {
+        let session = SignedOutAuthSession()
+        var errors: [AuthError] = []
+        do { _ = try session.resolveAWSCredentials() } catch { errors.append(error) }
+        do { _ = try session.resolveCognitoTokens() } catch { errors.append(error) }
+        return errors
+    }
+
+    /// With multi-auth, a signed-out session's resolver error still falls back to the next auth type.
+    ///
+    /// - Given: A mutation with more than one auth type, and the error the credential resolver produces
+    ///   for a signed-out session that cannot vend credentials or tokens
+    /// - When:
+    ///    - The operation decides whether to retry
+    /// - Then:
+    ///    - It takes `shouldRetryWithDifferentAuthType()`: retry at once, with the next auth type, exactly
+    ///      as for the `AuthError.unknown` the resolver replaced
+    ///    - It does not take the `.signedOut` path, which waits for sign-in on the serial queue
+    ///
+    func testGetRetryAdvice_ResolverSignedOutErrorWithMultiAuth_FallsBackToNextAuthType() async throws {
+        let operation = try await SyncMutationToCloudOperation(
+            mutationEvent: createMutationEvent(),
+            getLatestSyncMetadata: { nil },
+            api: mockAPIPlugin,
+            authModeStrategy: MockMultiAuthModeStrategy(),
+            networkReachabilityPublisher: publisher,
+            currentAttemptNumber: 1,
+            completion: { _ in }
+        )
+        let unknownAdvice = operation.getRetryAdviceIfRetryable(
+            error: APIError.operationError("", "", AuthError.unknown("", nil))
+        )
+        let signedOutAdvice = operation.getRetryAdviceIfRetryable(
+            error: APIError.operationError("", "", AuthError.signedOut("", "", nil))
+        )
+        XCTAssertNotEqual(signedOutAdvice.retryInterval, unknownAdvice.retryInterval, "Precondition: the paths differ")
+
+        let errors = resolverSignedOutErrors
+        XCTAssertEqual(errors.count, 2)
+        for authError in errors {
+            let advice = operation.getRetryAdviceIfRetryable(error: APIError.operationError("", "", authError))
+            XCTAssertTrue(advice.shouldRetry, "\(authError)")
+            XCTAssertEqual(advice.retryInterval, .milliseconds(0), "\(authError)")
+            XCTAssertEqual(advice.retryInterval, unknownAdvice.retryInterval, "\(authError)")
+        }
+    }
+
+    /// With a single auth type, a signed-out session's resolver error fails the mutation instead of
+    /// holding the serial queue until sign-in.
+    ///
+    /// - Given: A mutation with one auth type, whose request fails with the error the credential resolver
+    ///   produces for a signed-out session that cannot vend credentials
+    /// - When:
+    ///    - The operation runs
+    /// - Then:
+    ///    - It calls the API once and completes with a failure, as it did for `AuthError.unknown`
+    ///    - Its final advice is not to retry, where `.signedOut` would be to retry until sign-in
+    ///
+    func testRun_ResolverSignedOutErrorWithSingleAuth_FailsWithoutWaitingForSignIn() async throws {
+        let authError = try XCTUnwrap(resolverSignedOutErrors.first)
+        let expectation = expectation(description: "operation completed")
+        // Incremented from a `@Sendable` request interceptor, so it cannot be a captured `var`.
+        let numberOfTimesEntered = AtomicValue(initialValue: 0)
+        // Assigned from the `@Sendable` completion, so it cannot be a captured `var`.
+        let error = AtomicValue<APIError?>(initialValue: nil)
+        let operation = try await SyncMutationToCloudOperation(
+            mutationEvent: createMutationEvent(),
+            getLatestSyncMetadata: { nil },
+            api: mockAPIPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            networkReachabilityPublisher: publisher,
+            currentAttemptNumber: 1,
+            completion: { result in
+                XCTAssertEqual(numberOfTimesEntered.get(), 1)
+                if case .failure(let apiError) = result {
+                    error.set(apiError)
+                } else {
+                    XCTFail("Expected the mutation to fail, got \(result)")
+                }
+                expectation.fulfill()
+            }
+        )
+        mockAPIPlugin.responders[.mutateRequestResponse] = MutateRequestResponder<MutationSync<AnyModel>> { _ in
+            defer { _ = numberOfTimesEntered.increment() }
+            return .failure(.unknown("", "", APIError.operationError("", "", authError)))
+        }
+
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        await fulfillment(of: [expectation], timeout: defaultAsyncWaitTimeout)
+
+        let finalError = try XCTUnwrap(error.get())
+        XCTAssertFalse(operation.getRetryAdviceIfRetryable(error: finalError).shouldRetry)
+        XCTAssertTrue(
+            operation.getRetryAdviceIfRetryable(
+                error: APIError.operationError("", "", AuthError.signedOut("", "", nil))
+            ).shouldRetry,
+            "Precondition: .signedOut would have retried until sign-in"
+        )
+    }
+
+    /// Initial sync's query retry treats a signed-out session's resolver error like `AuthError.unknown`.
+    ///
+    /// - Given: The error the credential resolver produces for a signed-out session
+    /// - When:
+    ///    - `RetryableGraphQLOperation` decides whether to try the next auth type
+    /// - Then:
+    ///    - It does not, exactly as for `AuthError.unknown`, where `.notAuthorized` would
+    ///
+    func testRetryableGraphQLOperation_ResolverSignedOutError_DoesNotTryNextAuthType() {
+        XCTAssertFalse(RetryableGraphQLOperation<String>.onError(
+            APIError.operationError("", "", AuthError.unknown("", nil))
+        ))
+        XCTAssertTrue(
+            RetryableGraphQLOperation<String>.onError(
+                APIError.operationError("", "", AuthError.notAuthorized("", "", nil))
+            ),
+            "Precondition: notAuthorized tries the next auth type"
+        )
+
+        for authError in resolverSignedOutErrors {
+            XCTAssertFalse(
+                RetryableGraphQLOperation<String>.onError(APIError.operationError("", "", authError)),
+                "\(authError)"
+            )
+        }
+    }
 
 }
 
@@ -472,4 +607,9 @@ extension SyncMutationToCloudOperationTests {
         let configWithAPI = try setUpAPICategory(config: configWithoutAPI)
         try Amplify.configure(configWithAPI)
     }
+}
+
+/// What a third-party Auth plugin might return when no one is signed in: a bare `AuthSession`.
+private struct SignedOutAuthSession: AuthSession {
+    let isSignedIn = false
 }

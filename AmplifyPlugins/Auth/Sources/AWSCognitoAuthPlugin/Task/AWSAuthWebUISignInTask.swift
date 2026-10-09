@@ -9,6 +9,7 @@
 import Amplify
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class AWSAuthWebUISignInTask: AuthWebUISignInTask, DefaultLogger, @unchecked Sendable {
@@ -42,9 +43,10 @@ final class AWSAuthWebUISignInTask: AuthWebUISignInTask, DefaultLogger, @uncheck
             let result = try await helper.initiateSignIn()
             log.verbose("Received result")
             return result
-        } catch let autherror as AuthErrorConvertible {
-            throw autherror.authError
         } catch {
+            if let authError = AuthError(converting: error) {
+                throw authError
+            }
             throw AuthError.unknown("Not able to signIn to the webUI", error)
 
         }

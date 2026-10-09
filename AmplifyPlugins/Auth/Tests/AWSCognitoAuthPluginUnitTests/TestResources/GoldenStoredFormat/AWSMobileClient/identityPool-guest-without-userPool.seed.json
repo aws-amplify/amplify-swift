@@ -1,0 +1,24 @@
+{
+  "authConfiguration": "userPoolsAndIdentityPools-minimal",
+  "existingSession": "absent",
+  "services": {
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff": {
+      "accessKey": {
+        "string": "LEGACYACCESSKEYID"
+      },
+      "expiration": {
+        "string": "1700007200"
+      },
+      "identityId": {
+        "string": "us-east-1:00000000-0000-4000-8000-00000000abcd"
+      },
+      "secretKey": {
+        "string": "legacy/secret+key"
+      },
+      "sessionKey": {
+        "string": "legacy-session-token"
+      }
+    }
+  },
+  "summary": "The identity pool part without the user pool part: a guest session"
+}

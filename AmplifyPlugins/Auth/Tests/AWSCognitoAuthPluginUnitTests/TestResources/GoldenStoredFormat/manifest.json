@@ -1,0 +1,2533 @@
+{
+  "encoder" : "JSONEncoder() / JSONDecoder() with default strategies (dates as seconds since 2001-01-01)",
+  "fixtures" : [
+    {
+      "expectedFields" : {
+        "$.identityPools.poolId" : "\"us-east-1:00000000-0000-4000-8000-00000000ffff\"",
+        "$.identityPools.region" : "\"us-east-1\""
+      },
+      "file" : "authConfiguration-identityPools.json",
+      "kind" : "canonical",
+      "name" : "authConfiguration-identityPools",
+      "sha256" : "6485eac959c02960d17dc0bad4275ae1c16cf770320854c4074bd18840e2f885",
+      "summary" : "AuthConfiguration.identityPools",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "expectedFields" : {
+        "$.userPools.authFlowType.userAuth.preferredFirstFactor" : ".emailOTP",
+        "$.userPools.clientId" : "\"fixture-client-id\"",
+        "$.userPools.clientSecret" : "\"fixture-client-secret\"",
+        "$.userPools.endpoint.validatedHost" : "\"auth.fixture.example.com\"",
+        "$.userPools.hostedUIConfig.clientId" : "\"fixture-hosted-ui-client-id\"",
+        "$.userPools.hostedUIConfig.clientSecret" : "\"fixture-hosted-ui-client-secret\"",
+        "$.userPools.hostedUIConfig.oauth.domain" : "\"fixture.auth.us-east-1.amazoncognito.com\"",
+        "$.userPools.hostedUIConfig.oauth.scopes.count" : "5",
+        "$.userPools.hostedUIConfig.oauth.scopes[0]" : "\"openid\"",
+        "$.userPools.hostedUIConfig.oauth.scopes[1]" : "\"email\"",
+        "$.userPools.hostedUIConfig.oauth.scopes[2]" : "\"phone\"",
+        "$.userPools.hostedUIConfig.oauth.scopes[3]" : "\"profile\"",
+        "$.userPools.hostedUIConfig.oauth.scopes[4]" : "\"aws.cognito.signin.user.admin\"",
+        "$.userPools.hostedUIConfig.oauth.signInRedirectURI" : "\"myapp://signin/\"",
+        "$.userPools.hostedUIConfig.oauth.signOutRedirectURI" : "\"myapp://signout/\"",
+        "$.userPools.passwordProtectionSettings.characterPolicy.count" : "4",
+        "$.userPools.passwordProtectionSettings.characterPolicy[0]" : ".lowercase",
+        "$.userPools.passwordProtectionSettings.characterPolicy[1]" : ".uppercase",
+        "$.userPools.passwordProtectionSettings.characterPolicy[2]" : ".numbers",
+        "$.userPools.passwordProtectionSettings.characterPolicy[3]" : ".symbols",
+        "$.userPools.passwordProtectionSettings.minLength" : "12",
+        "$.userPools.pinpointAppId" : "\"fixture-pinpoint-app-id\"",
+        "$.userPools.poolId" : "\"us-east-1_FixturePool\"",
+        "$.userPools.region" : "\"us-east-1\"",
+        "$.userPools.signUpAttributes.count" : "13",
+        "$.userPools.signUpAttributes[0]" : ".address",
+        "$.userPools.signUpAttributes[10]" : ".preferredUsername",
+        "$.userPools.signUpAttributes[11]" : ".profile",
+        "$.userPools.signUpAttributes[12]" : ".website",
+        "$.userPools.signUpAttributes[1]" : ".birthDate",
+        "$.userPools.signUpAttributes[2]" : ".email",
+        "$.userPools.signUpAttributes[3]" : ".familyName",
+        "$.userPools.signUpAttributes[4]" : ".gender",
+        "$.userPools.signUpAttributes[5]" : ".givenName",
+        "$.userPools.signUpAttributes[6]" : ".middleName",
+        "$.userPools.signUpAttributes[7]" : ".name",
+        "$.userPools.signUpAttributes[8]" : ".nickname",
+        "$.userPools.signUpAttributes[9]" : ".phoneNumber",
+        "$.userPools.usernameAttributes.count" : "3",
+        "$.userPools.usernameAttributes[0]" : ".username",
+        "$.userPools.usernameAttributes[1]" : ".email",
+        "$.userPools.usernameAttributes[2]" : ".phoneNumber",
+        "$.userPools.verificationMechanisms.count" : "2",
+        "$.userPools.verificationMechanisms[0]" : ".email",
+        "$.userPools.verificationMechanisms[1]" : ".phoneNumber"
+      },
+      "file" : "authConfiguration-userPools-full.json",
+      "kind" : "canonical",
+      "name" : "authConfiguration-userPools-full",
+      "sha256" : "f814c137d5e5424bebf55585c2ef1da1f0303f12594b0d06ef8f8f8e157fbf16",
+      "summary" : "AuthConfiguration.userPools, full",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "expectedFields" : {
+        "$.userPools.authFlowType" : ".userSRP",
+        "$.userPools.clientId" : "\"fixture-client-id\"",
+        "$.userPools.clientSecret" : "nil",
+        "$.userPools.endpoint" : "nil",
+        "$.userPools.hostedUIConfig" : "nil",
+        "$.userPools.passwordProtectionSettings" : "nil",
+        "$.userPools.pinpointAppId" : "nil",
+        "$.userPools.poolId" : "\"us-east-1_FixturePool\"",
+        "$.userPools.region" : "\"us-east-1\"",
+        "$.userPools.signUpAttributes.count" : "0",
+        "$.userPools.usernameAttributes.count" : "0",
+        "$.userPools.verificationMechanisms.count" : "0"
+      },
+      "file" : "authConfiguration-userPools-minimal.json",
+      "kind" : "canonical",
+      "name" : "authConfiguration-userPools-minimal",
+      "sha256" : "03c7605cc9cbdc57f8b8d627eafdaeb405a40362b49147c3fcab138491249602",
+      "summary" : "AuthConfiguration.userPools, minimal",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "expectedFields" : {
+        "$.userPools.authFlowType" : ".userPassword",
+        "$.userPools.clientId" : "\"fixture-client-id\"",
+        "$.userPools.clientSecret" : "nil",
+        "$.userPools.endpoint" : "nil",
+        "$.userPools.hostedUIConfig" : "nil",
+        "$.userPools.passwordProtectionSettings" : "nil",
+        "$.userPools.pinpointAppId" : "nil",
+        "$.userPools.poolId" : "\"us-east-1_FixturePool\"",
+        "$.userPools.region" : "\"us-east-1\"",
+        "$.userPools.signUpAttributes.count" : "0",
+        "$.userPools.usernameAttributes.count" : "0",
+        "$.userPools.verificationMechanisms.count" : "0"
+      },
+      "file" : "authConfiguration-userPools-userPassword.json",
+      "kind" : "canonical",
+      "name" : "authConfiguration-userPools-userPassword",
+      "sha256" : "0ff2f1e85c22e540451e5195de3a1a4428dfb8e2b8c5860bb1945e9c72964fa0",
+      "summary" : "AuthConfiguration.userPools, minimal apart from authFlowType .userPassword",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "expectedFields" : {
+        "$.userPoolsAndIdentityPools..0.authFlowType.userAuth.preferredFirstFactor" : ".emailOTP",
+        "$.userPoolsAndIdentityPools..0.clientId" : "\"fixture-client-id\"",
+        "$.userPoolsAndIdentityPools..0.clientSecret" : "\"fixture-client-secret\"",
+        "$.userPoolsAndIdentityPools..0.endpoint.validatedHost" : "\"auth.fixture.example.com\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.clientId" : "\"fixture-hosted-ui-client-id\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.clientSecret" : "\"fixture-hosted-ui-client-secret\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.domain" : "\"fixture.auth.us-east-1.amazoncognito.com\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.scopes.count" : "5",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.scopes[0]" : "\"openid\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.scopes[1]" : "\"email\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.scopes[2]" : "\"phone\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.scopes[3]" : "\"profile\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.scopes[4]" : "\"aws.cognito.signin.user.admin\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.signInRedirectURI" : "\"myapp://signin/\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.signOutRedirectURI" : "\"myapp://signout/\"",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings.characterPolicy.count" : "4",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings.characterPolicy[0]" : ".lowercase",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings.characterPolicy[1]" : ".uppercase",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings.characterPolicy[2]" : ".numbers",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings.characterPolicy[3]" : ".symbols",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings.minLength" : "12",
+        "$.userPoolsAndIdentityPools..0.pinpointAppId" : "\"fixture-pinpoint-app-id\"",
+        "$.userPoolsAndIdentityPools..0.poolId" : "\"us-east-1_FixturePool\"",
+        "$.userPoolsAndIdentityPools..0.region" : "\"us-east-1\"",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes.count" : "13",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[0]" : ".address",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[10]" : ".preferredUsername",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[11]" : ".profile",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[12]" : ".website",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[1]" : ".birthDate",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[2]" : ".email",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[3]" : ".familyName",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[4]" : ".gender",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[5]" : ".givenName",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[6]" : ".middleName",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[7]" : ".name",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[8]" : ".nickname",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[9]" : ".phoneNumber",
+        "$.userPoolsAndIdentityPools..0.usernameAttributes.count" : "3",
+        "$.userPoolsAndIdentityPools..0.usernameAttributes[0]" : ".username",
+        "$.userPoolsAndIdentityPools..0.usernameAttributes[1]" : ".email",
+        "$.userPoolsAndIdentityPools..0.usernameAttributes[2]" : ".phoneNumber",
+        "$.userPoolsAndIdentityPools..0.verificationMechanisms.count" : "2",
+        "$.userPoolsAndIdentityPools..0.verificationMechanisms[0]" : ".email",
+        "$.userPoolsAndIdentityPools..0.verificationMechanisms[1]" : ".phoneNumber",
+        "$.userPoolsAndIdentityPools..1.poolId" : "\"us-east-1:00000000-0000-4000-8000-00000000ffff\"",
+        "$.userPoolsAndIdentityPools..1.region" : "\"us-east-1\""
+      },
+      "file" : "authConfiguration-userPoolsAndIdentityPools-full.json",
+      "kind" : "canonical",
+      "name" : "authConfiguration-userPoolsAndIdentityPools-full",
+      "sha256" : "14b51ccd811195fb8c2a34c40b5c0046269609176b2ac611d6b297cfe520a476",
+      "summary" : "AuthConfiguration.userPoolsAndIdentityPools, full user pool",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "expectedFields" : {
+        "$.userPoolsAndIdentityPools..0.authFlowType" : ".userSRP",
+        "$.userPoolsAndIdentityPools..0.clientId" : "\"fixture-client-id\"",
+        "$.userPoolsAndIdentityPools..0.clientSecret" : "nil",
+        "$.userPoolsAndIdentityPools..0.endpoint" : "nil",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig" : "nil",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings" : "nil",
+        "$.userPoolsAndIdentityPools..0.pinpointAppId" : "nil",
+        "$.userPoolsAndIdentityPools..0.poolId" : "\"us-east-1_FixturePool\"",
+        "$.userPoolsAndIdentityPools..0.region" : "\"us-east-1\"",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes.count" : "0",
+        "$.userPoolsAndIdentityPools..0.usernameAttributes.count" : "0",
+        "$.userPoolsAndIdentityPools..0.verificationMechanisms.count" : "0",
+        "$.userPoolsAndIdentityPools..1.poolId" : "\"us-east-1:00000000-0000-4000-8000-00000000ffff\"",
+        "$.userPoolsAndIdentityPools..1.region" : "\"us-east-1\""
+      },
+      "file" : "authConfiguration-userPoolsAndIdentityPools-minimal.json",
+      "kind" : "canonical",
+      "name" : "authConfiguration-userPoolsAndIdentityPools-minimal",
+      "sha256" : "01e2e7b4fbd9b926d9a7bad24127195d37a2f66b774b24f41f988398783bb19d",
+      "summary" : "AuthConfiguration.userPoolsAndIdentityPools, minimal user pool",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "constructedFields" : {
+        "$" : ".custom"
+      },
+      "expectedFields" : {
+        "$" : ".customWithSRP"
+      },
+      "file" : "authFlowType-custom.json",
+      "kind" : "canonical",
+      "name" : "authFlowType-custom",
+      "sha256" : "17e50b0d476d33b5e0aff976baf897ac0bfaff9009d44a967d55ae631b119951",
+      "summary" : "AuthFlowType .custom",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$" : ".customWithSRP"
+      },
+      "file" : "authFlowType-customWithSRP.json",
+      "kind" : "canonical",
+      "name" : "authFlowType-customWithSRP",
+      "sha256" : "17e50b0d476d33b5e0aff976baf897ac0bfaff9009d44a967d55ae631b119951",
+      "summary" : "AuthFlowType .customWithSRP",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$" : ".customWithoutSRP"
+      },
+      "file" : "authFlowType-customWithoutSRP.json",
+      "kind" : "canonical",
+      "name" : "authFlowType-customWithoutSRP",
+      "sha256" : "22796800e48ef7d62492c6b2132cf024634b7eb44c4c8f708b5f312d8493f253",
+      "summary" : "AuthFlowType .customWithoutSRP",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.userAuth.preferredFirstFactor" : ".emailOTP"
+      },
+      "file" : "authFlowType-userAuth-emailOTP.json",
+      "kind" : "canonical",
+      "name" : "authFlowType-userAuth-emailOTP",
+      "sha256" : "26a52185f9e5e41c5a04d0f74753f635c32b85e066cfc69eb304308a7ecb4d5c",
+      "summary" : "AuthFlowType .userAuth-emailOTP",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.userAuth.preferredFirstFactor" : "nil"
+      },
+      "file" : "authFlowType-userAuth-nil.json",
+      "kind" : "canonical",
+      "name" : "authFlowType-userAuth-nil",
+      "sha256" : "af1d7131e4fc5bb62bd6feae8a9b1eacb16afba4a2b3fe37de46e139d4a368f5",
+      "summary" : "AuthFlowType .userAuth-nil",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.userAuth.preferredFirstFactor" : ".password"
+      },
+      "file" : "authFlowType-userAuth-password.json",
+      "kind" : "canonical",
+      "name" : "authFlowType-userAuth-password",
+      "sha256" : "44cfc7b8af46fe51d67354f40d4211c31d5b324c3d264eb63ec10898536d5863",
+      "summary" : "AuthFlowType .userAuth-password",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.userAuth.preferredFirstFactor" : ".passwordSRP"
+      },
+      "file" : "authFlowType-userAuth-passwordSRP.json",
+      "kind" : "canonical",
+      "name" : "authFlowType-userAuth-passwordSRP",
+      "sha256" : "e2dcc231dc1f8d28afa2e272ab6c9fb3920d1a15ab82e04ec4b7ae41d336a38a",
+      "summary" : "AuthFlowType .userAuth-passwordSRP",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.userAuth.preferredFirstFactor" : ".smsOTP"
+      },
+      "file" : "authFlowType-userAuth-smsOTP.json",
+      "kind" : "canonical",
+      "name" : "authFlowType-userAuth-smsOTP",
+      "sha256" : "a0d0e2e9df3b9fba97f2b4a46f8b352f981731daa302515cee56844c2338612c",
+      "summary" : "AuthFlowType .userAuth-smsOTP",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.userAuth.preferredFirstFactor" : ".webAuthn"
+      },
+      "file" : "authFlowType-userAuth-webAuthn.json",
+      "kind" : "canonical",
+      "name" : "authFlowType-userAuth-webAuthn",
+      "sha256" : "87230c11c2498beffbfa93f608f53857a4ce4117ee3a42ee8f9da287c18c8053",
+      "summary" : "AuthFlowType .userAuth-webAuthn",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$" : ".userPassword"
+      },
+      "file" : "authFlowType-userPassword.json",
+      "kind" : "canonical",
+      "name" : "authFlowType-userPassword",
+      "sha256" : "202b263cac9263e87d009861d281dca7ade458bbe2fd27dceab77f7c0eea1cb8",
+      "summary" : "AuthFlowType .userPassword",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$" : ".userSRP"
+      },
+      "file" : "authFlowType-userSRP.json",
+      "kind" : "canonical",
+      "name" : "authFlowType-userSRP",
+      "sha256" : "665bfd97d76891795c7d39f63fa1e6953d8f60e07583c9eb88ff95bfa5ef5949",
+      "summary" : "AuthFlowType .userSRP",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.expiration" : "Date(721700000.0)",
+        "$.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.sessionToken" : "\"fixture-session-token\""
+      },
+      "file" : "awsCredentials.json",
+      "kind" : "canonical",
+      "name" : "awsCredentials",
+      "sha256" : "42aa42ef3ba294a9b21bb069b11c5fe7651527c1c2110077fca29231de738018",
+      "summary" : "AuthAWSCognitoCredentials",
+      "type" : "AuthAWSCognitoCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$" : "\"fixture-asf-device-id\""
+      },
+      "file" : "deviceASF.json",
+      "kind" : "canonical",
+      "name" : "deviceASF",
+      "sha256" : "beb4a38532a4616d3861cf9b8e053ccc2f6b5f9c757bc7df6d2bd215bd571678",
+      "summary" : "ASF device id (a top-level JSON string)",
+      "type" : "String"
+    },
+    {
+      "expectedFields" : {
+        "$.metadata.deviceGroupKey" : "\"fixture-device-group-key\"",
+        "$.metadata.deviceKey" : "\"us-east-1_fixture-device-key\"",
+        "$.metadata.deviceSecret" : "\"fixture-device-secret\""
+      },
+      "file" : "deviceMetadata-metadata.json",
+      "kind" : "canonical",
+      "name" : "deviceMetadata-metadata",
+      "sha256" : "4ee59818bbd41bffe2746dcc8c317b8c65a9f58525ee385d4b8e0aa17427a132",
+      "summary" : "DeviceMetadata.metadata",
+      "type" : "DeviceMetadata"
+    },
+    {
+      "expectedFields" : {
+        "$" : ".noData"
+      },
+      "file" : "deviceMetadata-noData.json",
+      "kind" : "canonical",
+      "name" : "deviceMetadata-noData",
+      "sha256" : "24bc040ce8dc3d6c2c1a5802848ab2bb62c36147fdc2b6cdf7b931711c011bef",
+      "summary" : "DeviceMetadata.noData",
+      "type" : "DeviceMetadata"
+    },
+    {
+      "expectedFields" : {
+        "$.userPools.authFlowType" : ".userPassword",
+        "$.userPools.clientId" : "\"fixture-client-id\"",
+        "$.userPools.clientSecret" : "nil",
+        "$.userPools.endpoint" : "nil",
+        "$.userPools.hostedUIConfig" : "nil",
+        "$.userPools.passwordProtectionSettings" : "nil",
+        "$.userPools.pinpointAppId" : "nil",
+        "$.userPools.poolId" : "\"us-east-1_FixturePool\"",
+        "$.userPools.region" : "\"us-east-1\"",
+        "$.userPools.signUpAttributes.count" : "0",
+        "$.userPools.usernameAttributes.count" : "0",
+        "$.userPools.verificationMechanisms.count" : "0"
+      },
+      "file" : "legacy-authConfiguration-userPools-bare-userPassword.json",
+      "kind" : "legacy",
+      "name" : "legacy-authConfiguration-userPools-bare-userPassword",
+      "reencodesAs" : "authConfiguration-userPools-userPassword",
+      "sha256" : "cb466f3a7822520baacfff25a4b499ec8fd7b9e21136a5f46618792b3838b2e2",
+      "summary" : "A pre-passwordless authConfiguration whose authFlowType is a bare \"userPassword\"",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "expectedFields" : {
+        "$" : ".customWithSRP"
+      },
+      "file" : "legacy-authFlowType-CUSTOM_AUTH.json",
+      "kind" : "legacy",
+      "name" : "legacy-authFlowType-CUSTOM_AUTH",
+      "reencodesAs" : "authFlowType-customWithSRP",
+      "sha256" : "8641bf0721ef3cc35ce37ecda61131770062e54358c1525153efdbebffa92216",
+      "summary" : "Object form with type CUSTOM_AUTH",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.userAuth.preferredFirstFactor" : "nil"
+      },
+      "file" : "legacy-authFlowType-USER_AUTH-no-factor-key.json",
+      "kind" : "legacy",
+      "name" : "legacy-authFlowType-USER_AUTH-no-factor-key",
+      "reencodesAs" : "authFlowType-userAuth-nil",
+      "sha256" : "69a9faaab01e85d80cbe6addd7f17c2e2c2f086c89163c6bfdfe3517961fd16a",
+      "summary" : "USER_AUTH without a preferredFirstFactor key",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$" : ".custom"
+      },
+      "file" : "legacy-authFlowType-bare-custom.json",
+      "kind" : "legacy",
+      "name" : "legacy-authFlowType-bare-custom",
+      "reencodesAs" : "authFlowType-custom",
+      "sha256" : "7aaa9573364782ca49dac193713374392709129fd0caf9b9a6c19b773d079e7a",
+      "summary" : "Pre-passwordless bare string \"custom\"",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$" : ".customWithSRP"
+      },
+      "file" : "legacy-authFlowType-bare-customWithSRP.json",
+      "kind" : "legacy",
+      "name" : "legacy-authFlowType-bare-customWithSRP",
+      "reencodesAs" : "authFlowType-customWithSRP",
+      "sha256" : "3c6714fdfd9bf8a8eda3de8c645bed1be523dbbf6bdfcc370db6f530fbe7966c",
+      "summary" : "Pre-passwordless bare string \"customWithSRP\"",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$" : ".customWithoutSRP"
+      },
+      "file" : "legacy-authFlowType-bare-customWithoutSRP.json",
+      "kind" : "legacy",
+      "name" : "legacy-authFlowType-bare-customWithoutSRP",
+      "reencodesAs" : "authFlowType-customWithoutSRP",
+      "sha256" : "37049fa361d3710180b5d8eebdb274827c83a4668aee8e57b82d1ea5ec1edb7a",
+      "summary" : "Pre-passwordless bare string \"customWithoutSRP\"",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$" : ".userPassword"
+      },
+      "file" : "legacy-authFlowType-bare-userPassword.json",
+      "kind" : "legacy",
+      "name" : "legacy-authFlowType-bare-userPassword",
+      "reencodesAs" : "authFlowType-userPassword",
+      "sha256" : "99fe8e103f2dc5be8aad941eb25cc2f2fb436966651287b68b8e509612cbefff",
+      "summary" : "Pre-passwordless bare string \"userPassword\"",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$" : ".userSRP"
+      },
+      "file" : "legacy-authFlowType-bare-userSRP.json",
+      "kind" : "legacy",
+      "name" : "legacy-authFlowType-bare-userSRP",
+      "reencodesAs" : "authFlowType-userSRP",
+      "sha256" : "32337a08047c76d18eaaaac38337bc0d855503a124e448245d173595f8944c30",
+      "summary" : "Pre-passwordless bare string \"userSRP\"",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.userPoolOnly.signedInData.deviceMetadata" : ".noData",
+        "$.userPoolOnly.signedInData.inputUsername" : "nil",
+        "$.userPoolOnly.signedInData.isRefreshTokenExpired" : "nil",
+        "$.userPoolOnly.signedInData.signInMethod.apiBased" : ".custom",
+        "$.userPoolOnly.signedInData.signedInDate" : "Date(721692800.0)",
+        "$.userPoolOnly.signedInData.userId" : "\"fixture-sub-0001\"",
+        "$.userPoolOnly.signedInData.username" : "\"fixture-user\""
+      },
+      "file" : "legacy-session-userPoolOnly-bare-custom.json",
+      "kind" : "legacy",
+      "name" : "legacy-session-userPoolOnly-bare-custom",
+      "reencodesAs" : "session-userPoolOnly-customWithSRP",
+      "sha256" : "4a8fad9b257220f9977f7b762b3f9d9affefd733df67fd51c8982f4c22f4c448",
+      "summary" : "A pre-passwordless session: bare \"custom\" flow, no isRefreshTokenExpired or inputUsername keys",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased" : ".userSRP"
+      },
+      "file" : "legacy-signInMethod-apiBased-bare-userSRP.json",
+      "kind" : "legacy",
+      "name" : "legacy-signInMethod-apiBased-bare-userSRP",
+      "reencodesAs" : "signInMethod-apiBased-userSRP",
+      "sha256" : "f1d2c0c61376ba2ec6af2eb65601060e2824082e63d63d1ce707e2f088ed123a",
+      "summary" : "SignInMethod.apiBased holding a bare \"userSRP\"",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "legacy-signInMethod-hostedUI-no-optional-keys.json",
+      "kind" : "legacy",
+      "name" : "legacy-signInMethod-hostedUI-no-optional-keys",
+      "reencodesAs" : "signInMethod-hostedUI-minimal",
+      "sha256" : "0ddad6bb754cc18df1d77884c4a9f802a2515af1a5132e0df9074634b26a7002",
+      "summary" : "hostedUI with no nonce/lang/login_hint/prompt/resource keys and an empty providerInfo",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPools.poolId" : "\"us-east-1:00000000-0000-4000-8000-00000000ffff\"",
+        "$.identityPools.region" : "\"us-east-1\""
+      },
+      "file" : "permuted-authConfiguration-identityPools.json",
+      "kind" : "permuted",
+      "name" : "permuted-authConfiguration-identityPools",
+      "reencodesAs" : "authConfiguration-identityPools",
+      "sha256" : "03463bcf8153638e1d15fd28b496c3ba057616b92d982624cd99bea28ed803e8",
+      "summary" : "AuthConfiguration.identityPools; keys in reverse-sorted order",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "expectedFields" : {
+        "$.userPools.authFlowType.userAuth.preferredFirstFactor" : ".emailOTP",
+        "$.userPools.clientId" : "\"fixture-client-id\"",
+        "$.userPools.clientSecret" : "\"fixture-client-secret\"",
+        "$.userPools.endpoint.validatedHost" : "\"auth.fixture.example.com\"",
+        "$.userPools.hostedUIConfig.clientId" : "\"fixture-hosted-ui-client-id\"",
+        "$.userPools.hostedUIConfig.clientSecret" : "\"fixture-hosted-ui-client-secret\"",
+        "$.userPools.hostedUIConfig.oauth.domain" : "\"fixture.auth.us-east-1.amazoncognito.com\"",
+        "$.userPools.hostedUIConfig.oauth.scopes.count" : "5",
+        "$.userPools.hostedUIConfig.oauth.scopes[0]" : "\"openid\"",
+        "$.userPools.hostedUIConfig.oauth.scopes[1]" : "\"email\"",
+        "$.userPools.hostedUIConfig.oauth.scopes[2]" : "\"phone\"",
+        "$.userPools.hostedUIConfig.oauth.scopes[3]" : "\"profile\"",
+        "$.userPools.hostedUIConfig.oauth.scopes[4]" : "\"aws.cognito.signin.user.admin\"",
+        "$.userPools.hostedUIConfig.oauth.signInRedirectURI" : "\"myapp://signin/\"",
+        "$.userPools.hostedUIConfig.oauth.signOutRedirectURI" : "\"myapp://signout/\"",
+        "$.userPools.passwordProtectionSettings.characterPolicy.count" : "4",
+        "$.userPools.passwordProtectionSettings.characterPolicy[0]" : ".lowercase",
+        "$.userPools.passwordProtectionSettings.characterPolicy[1]" : ".uppercase",
+        "$.userPools.passwordProtectionSettings.characterPolicy[2]" : ".numbers",
+        "$.userPools.passwordProtectionSettings.characterPolicy[3]" : ".symbols",
+        "$.userPools.passwordProtectionSettings.minLength" : "12",
+        "$.userPools.pinpointAppId" : "\"fixture-pinpoint-app-id\"",
+        "$.userPools.poolId" : "\"us-east-1_FixturePool\"",
+        "$.userPools.region" : "\"us-east-1\"",
+        "$.userPools.signUpAttributes.count" : "13",
+        "$.userPools.signUpAttributes[0]" : ".address",
+        "$.userPools.signUpAttributes[10]" : ".preferredUsername",
+        "$.userPools.signUpAttributes[11]" : ".profile",
+        "$.userPools.signUpAttributes[12]" : ".website",
+        "$.userPools.signUpAttributes[1]" : ".birthDate",
+        "$.userPools.signUpAttributes[2]" : ".email",
+        "$.userPools.signUpAttributes[3]" : ".familyName",
+        "$.userPools.signUpAttributes[4]" : ".gender",
+        "$.userPools.signUpAttributes[5]" : ".givenName",
+        "$.userPools.signUpAttributes[6]" : ".middleName",
+        "$.userPools.signUpAttributes[7]" : ".name",
+        "$.userPools.signUpAttributes[8]" : ".nickname",
+        "$.userPools.signUpAttributes[9]" : ".phoneNumber",
+        "$.userPools.usernameAttributes.count" : "3",
+        "$.userPools.usernameAttributes[0]" : ".username",
+        "$.userPools.usernameAttributes[1]" : ".email",
+        "$.userPools.usernameAttributes[2]" : ".phoneNumber",
+        "$.userPools.verificationMechanisms.count" : "2",
+        "$.userPools.verificationMechanisms[0]" : ".email",
+        "$.userPools.verificationMechanisms[1]" : ".phoneNumber"
+      },
+      "file" : "permuted-authConfiguration-userPools-full.json",
+      "kind" : "permuted",
+      "name" : "permuted-authConfiguration-userPools-full",
+      "reencodesAs" : "authConfiguration-userPools-full",
+      "sha256" : "2c65fd53ce98ce20e8d5e3ed129385fbeada95ed0777296022822cd37f6358c3",
+      "summary" : "AuthConfiguration.userPools, full; keys in reverse-sorted order",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "expectedFields" : {
+        "$.userPools.authFlowType" : ".userSRP",
+        "$.userPools.clientId" : "\"fixture-client-id\"",
+        "$.userPools.clientSecret" : "nil",
+        "$.userPools.endpoint" : "nil",
+        "$.userPools.hostedUIConfig" : "nil",
+        "$.userPools.passwordProtectionSettings" : "nil",
+        "$.userPools.pinpointAppId" : "nil",
+        "$.userPools.poolId" : "\"us-east-1_FixturePool\"",
+        "$.userPools.region" : "\"us-east-1\"",
+        "$.userPools.signUpAttributes.count" : "0",
+        "$.userPools.usernameAttributes.count" : "0",
+        "$.userPools.verificationMechanisms.count" : "0"
+      },
+      "file" : "permuted-authConfiguration-userPools-minimal.json",
+      "kind" : "permuted",
+      "name" : "permuted-authConfiguration-userPools-minimal",
+      "reencodesAs" : "authConfiguration-userPools-minimal",
+      "sha256" : "6e7af933d344203c9140a62d31f42305b13b9274b85588da6a5691cede243f6f",
+      "summary" : "AuthConfiguration.userPools, minimal; keys in reverse-sorted order",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "expectedFields" : {
+        "$.userPools.authFlowType" : ".userPassword",
+        "$.userPools.clientId" : "\"fixture-client-id\"",
+        "$.userPools.clientSecret" : "nil",
+        "$.userPools.endpoint" : "nil",
+        "$.userPools.hostedUIConfig" : "nil",
+        "$.userPools.passwordProtectionSettings" : "nil",
+        "$.userPools.pinpointAppId" : "nil",
+        "$.userPools.poolId" : "\"us-east-1_FixturePool\"",
+        "$.userPools.region" : "\"us-east-1\"",
+        "$.userPools.signUpAttributes.count" : "0",
+        "$.userPools.usernameAttributes.count" : "0",
+        "$.userPools.verificationMechanisms.count" : "0"
+      },
+      "file" : "permuted-authConfiguration-userPools-userPassword.json",
+      "kind" : "permuted",
+      "name" : "permuted-authConfiguration-userPools-userPassword",
+      "reencodesAs" : "authConfiguration-userPools-userPassword",
+      "sha256" : "df52f502ae4edc5d11053c567e31aba8d0ee2ef3f969bc4e7d78f4fc8a1add21",
+      "summary" : "AuthConfiguration.userPools, minimal apart from authFlowType .userPassword; keys in reverse-sorted order",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "expectedFields" : {
+        "$.userPoolsAndIdentityPools..0.authFlowType.userAuth.preferredFirstFactor" : ".emailOTP",
+        "$.userPoolsAndIdentityPools..0.clientId" : "\"fixture-client-id\"",
+        "$.userPoolsAndIdentityPools..0.clientSecret" : "\"fixture-client-secret\"",
+        "$.userPoolsAndIdentityPools..0.endpoint.validatedHost" : "\"auth.fixture.example.com\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.clientId" : "\"fixture-hosted-ui-client-id\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.clientSecret" : "\"fixture-hosted-ui-client-secret\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.domain" : "\"fixture.auth.us-east-1.amazoncognito.com\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.scopes.count" : "5",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.scopes[0]" : "\"openid\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.scopes[1]" : "\"email\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.scopes[2]" : "\"phone\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.scopes[3]" : "\"profile\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.scopes[4]" : "\"aws.cognito.signin.user.admin\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.signInRedirectURI" : "\"myapp://signin/\"",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig.oauth.signOutRedirectURI" : "\"myapp://signout/\"",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings.characterPolicy.count" : "4",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings.characterPolicy[0]" : ".lowercase",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings.characterPolicy[1]" : ".uppercase",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings.characterPolicy[2]" : ".numbers",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings.characterPolicy[3]" : ".symbols",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings.minLength" : "12",
+        "$.userPoolsAndIdentityPools..0.pinpointAppId" : "\"fixture-pinpoint-app-id\"",
+        "$.userPoolsAndIdentityPools..0.poolId" : "\"us-east-1_FixturePool\"",
+        "$.userPoolsAndIdentityPools..0.region" : "\"us-east-1\"",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes.count" : "13",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[0]" : ".address",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[10]" : ".preferredUsername",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[11]" : ".profile",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[12]" : ".website",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[1]" : ".birthDate",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[2]" : ".email",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[3]" : ".familyName",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[4]" : ".gender",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[5]" : ".givenName",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[6]" : ".middleName",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[7]" : ".name",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[8]" : ".nickname",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes[9]" : ".phoneNumber",
+        "$.userPoolsAndIdentityPools..0.usernameAttributes.count" : "3",
+        "$.userPoolsAndIdentityPools..0.usernameAttributes[0]" : ".username",
+        "$.userPoolsAndIdentityPools..0.usernameAttributes[1]" : ".email",
+        "$.userPoolsAndIdentityPools..0.usernameAttributes[2]" : ".phoneNumber",
+        "$.userPoolsAndIdentityPools..0.verificationMechanisms.count" : "2",
+        "$.userPoolsAndIdentityPools..0.verificationMechanisms[0]" : ".email",
+        "$.userPoolsAndIdentityPools..0.verificationMechanisms[1]" : ".phoneNumber",
+        "$.userPoolsAndIdentityPools..1.poolId" : "\"us-east-1:00000000-0000-4000-8000-00000000ffff\"",
+        "$.userPoolsAndIdentityPools..1.region" : "\"us-east-1\""
+      },
+      "file" : "permuted-authConfiguration-userPoolsAndIdentityPools-full.json",
+      "kind" : "permuted",
+      "name" : "permuted-authConfiguration-userPoolsAndIdentityPools-full",
+      "reencodesAs" : "authConfiguration-userPoolsAndIdentityPools-full",
+      "sha256" : "3d000f2916304d7bbbab6eb6c3fd4ff94c182a181979af822f3bbb1facf23e89",
+      "summary" : "AuthConfiguration.userPoolsAndIdentityPools, full user pool; keys in reverse-sorted order",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "expectedFields" : {
+        "$.userPoolsAndIdentityPools..0.authFlowType" : ".userSRP",
+        "$.userPoolsAndIdentityPools..0.clientId" : "\"fixture-client-id\"",
+        "$.userPoolsAndIdentityPools..0.clientSecret" : "nil",
+        "$.userPoolsAndIdentityPools..0.endpoint" : "nil",
+        "$.userPoolsAndIdentityPools..0.hostedUIConfig" : "nil",
+        "$.userPoolsAndIdentityPools..0.passwordProtectionSettings" : "nil",
+        "$.userPoolsAndIdentityPools..0.pinpointAppId" : "nil",
+        "$.userPoolsAndIdentityPools..0.poolId" : "\"us-east-1_FixturePool\"",
+        "$.userPoolsAndIdentityPools..0.region" : "\"us-east-1\"",
+        "$.userPoolsAndIdentityPools..0.signUpAttributes.count" : "0",
+        "$.userPoolsAndIdentityPools..0.usernameAttributes.count" : "0",
+        "$.userPoolsAndIdentityPools..0.verificationMechanisms.count" : "0",
+        "$.userPoolsAndIdentityPools..1.poolId" : "\"us-east-1:00000000-0000-4000-8000-00000000ffff\"",
+        "$.userPoolsAndIdentityPools..1.region" : "\"us-east-1\""
+      },
+      "file" : "permuted-authConfiguration-userPoolsAndIdentityPools-minimal.json",
+      "kind" : "permuted",
+      "name" : "permuted-authConfiguration-userPoolsAndIdentityPools-minimal",
+      "reencodesAs" : "authConfiguration-userPoolsAndIdentityPools-minimal",
+      "sha256" : "a967f2ed4795e44b2a60348776ddec8aa999aa64c42ef83169922ec75729c9e5",
+      "summary" : "AuthConfiguration.userPoolsAndIdentityPools, minimal user pool; keys in reverse-sorted order",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "expectedFields" : {
+        "$.userAuth.preferredFirstFactor" : ".emailOTP"
+      },
+      "file" : "permuted-authFlowType-userAuth-emailOTP.json",
+      "kind" : "permuted",
+      "name" : "permuted-authFlowType-userAuth-emailOTP",
+      "reencodesAs" : "authFlowType-userAuth-emailOTP",
+      "sha256" : "a62823cc179976d4dee578f286c5fc1add91e79fe37afddb7b4aab392a6cbdb4",
+      "summary" : "AuthFlowType .userAuth-emailOTP; keys in reverse-sorted order",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.userAuth.preferredFirstFactor" : "nil"
+      },
+      "file" : "permuted-authFlowType-userAuth-nil.json",
+      "kind" : "permuted",
+      "name" : "permuted-authFlowType-userAuth-nil",
+      "reencodesAs" : "authFlowType-userAuth-nil",
+      "sha256" : "8fd5d0dd19e7e096ad5e4f8d15b0320fd08955fc90c40307f23b6d4c56dfd5a8",
+      "summary" : "AuthFlowType .userAuth-nil; keys in reverse-sorted order",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.userAuth.preferredFirstFactor" : ".password"
+      },
+      "file" : "permuted-authFlowType-userAuth-password.json",
+      "kind" : "permuted",
+      "name" : "permuted-authFlowType-userAuth-password",
+      "reencodesAs" : "authFlowType-userAuth-password",
+      "sha256" : "3c04d84ab1bf35a681783677fe6ae066d7aab5d45ec64223e6e67d360ec0f9dc",
+      "summary" : "AuthFlowType .userAuth-password; keys in reverse-sorted order",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.userAuth.preferredFirstFactor" : ".passwordSRP"
+      },
+      "file" : "permuted-authFlowType-userAuth-passwordSRP.json",
+      "kind" : "permuted",
+      "name" : "permuted-authFlowType-userAuth-passwordSRP",
+      "reencodesAs" : "authFlowType-userAuth-passwordSRP",
+      "sha256" : "d682f2d8083ab49d087b8ce23b7af735f0981c4ae594ed6dc71c97ae87f09ec3",
+      "summary" : "AuthFlowType .userAuth-passwordSRP; keys in reverse-sorted order",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.userAuth.preferredFirstFactor" : ".smsOTP"
+      },
+      "file" : "permuted-authFlowType-userAuth-smsOTP.json",
+      "kind" : "permuted",
+      "name" : "permuted-authFlowType-userAuth-smsOTP",
+      "reencodesAs" : "authFlowType-userAuth-smsOTP",
+      "sha256" : "b17c8f13bea2ae0c10d13b9c8d5dfb16d7c8477cfee723fb7d62f5c1a00f3998",
+      "summary" : "AuthFlowType .userAuth-smsOTP; keys in reverse-sorted order",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.userAuth.preferredFirstFactor" : ".webAuthn"
+      },
+      "file" : "permuted-authFlowType-userAuth-webAuthn.json",
+      "kind" : "permuted",
+      "name" : "permuted-authFlowType-userAuth-webAuthn",
+      "reencodesAs" : "authFlowType-userAuth-webAuthn",
+      "sha256" : "a482b1e2f9845b5ad4721baffa33bf7bfb85743e12d67bdaf160bf4a9969601c",
+      "summary" : "AuthFlowType .userAuth-webAuthn; keys in reverse-sorted order",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.expiration" : "Date(721700000.0)",
+        "$.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.sessionToken" : "\"fixture-session-token\""
+      },
+      "file" : "permuted-awsCredentials.json",
+      "kind" : "permuted",
+      "name" : "permuted-awsCredentials",
+      "reencodesAs" : "awsCredentials",
+      "sha256" : "a17a2bb473bc6ad002daa364c9feda046d68bd59245aa7faaf1f93179ec10f88",
+      "summary" : "AuthAWSCognitoCredentials; keys in reverse-sorted order",
+      "type" : "AuthAWSCognitoCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.metadata.deviceGroupKey" : "\"fixture-device-group-key\"",
+        "$.metadata.deviceKey" : "\"us-east-1_fixture-device-key\"",
+        "$.metadata.deviceSecret" : "\"fixture-device-secret\""
+      },
+      "file" : "permuted-deviceMetadata-metadata.json",
+      "kind" : "permuted",
+      "name" : "permuted-deviceMetadata-metadata",
+      "reencodesAs" : "deviceMetadata-metadata",
+      "sha256" : "9736ce6d100ffa1138192fe25b4328da9997585983f8e4c5175a10f309443eeb",
+      "summary" : "DeviceMetadata.metadata; keys in reverse-sorted order",
+      "type" : "DeviceMetadata"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolOnly.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolOnly.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolOnly.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolOnly.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolOnly.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "permuted-session-identityPoolOnly.json",
+      "kind" : "permuted",
+      "name" : "permuted-session-identityPoolOnly",
+      "reencodesAs" : "session-identityPoolOnly",
+      "sha256" : "b8158801684569a08c2c7787e06b25de7ff3bc8f24ca9a0cb4add2511fc98e05",
+      "summary" : "AmplifyCredentials.identityPoolOnly; keys in reverse-sorted order",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider" : ".amazon",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "permuted-session-identityPoolWithFederation-amazon.json",
+      "kind" : "permuted",
+      "name" : "permuted-session-identityPoolWithFederation-amazon",
+      "reencodesAs" : "session-identityPoolWithFederation-amazon",
+      "sha256" : "cb9250bf12c189b82e1c7f2253762fad6f39e4813da417086f372ae3953460ff",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .amazon; keys in reverse-sorted order",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider" : ".apple",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "permuted-session-identityPoolWithFederation-apple.json",
+      "kind" : "permuted",
+      "name" : "permuted-session-identityPoolWithFederation-apple",
+      "reencodesAs" : "session-identityPoolWithFederation-apple",
+      "sha256" : "1f59678b834cf0541a82f3abb641cbbf2bc9eb43c9c08cb2d3f59f357a5d6f3f",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .apple; keys in reverse-sorted order",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider.custom" : "\"fixture.custom.provider\"",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "permuted-session-identityPoolWithFederation-custom.json",
+      "kind" : "permuted",
+      "name" : "permuted-session-identityPoolWithFederation-custom",
+      "reencodesAs" : "session-identityPoolWithFederation-custom",
+      "sha256" : "d46d41cb8faaa93d25eb96b3bec2efc22f53404ba219044d73d2367619b79fea",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .custom; keys in reverse-sorted order",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider" : ".facebook",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "permuted-session-identityPoolWithFederation-facebook.json",
+      "kind" : "permuted",
+      "name" : "permuted-session-identityPoolWithFederation-facebook",
+      "reencodesAs" : "session-identityPoolWithFederation-facebook",
+      "sha256" : "90c009186e82ee63f849dfe339dad966a38e5a62a7ab83f2112eacae90925b25",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .facebook; keys in reverse-sorted order",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider" : ".google",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "permuted-session-identityPoolWithFederation-google.json",
+      "kind" : "permuted",
+      "name" : "permuted-session-identityPoolWithFederation-google",
+      "reencodesAs" : "session-identityPoolWithFederation-google",
+      "sha256" : "d7754f91be5684601eceab95470a5a82093a56a8a267df132ffb7215595caff7",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .google; keys in reverse-sorted order",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider.oidc" : "\"fixture-oidc-provider\"",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "permuted-session-identityPoolWithFederation-oidc.json",
+      "kind" : "permuted",
+      "name" : "permuted-session-identityPoolWithFederation-oidc",
+      "reencodesAs" : "session-identityPoolWithFederation-oidc",
+      "sha256" : "bc6561db88337b143f60afba5bf576ad96ddd35ad50d9b3a7d5055ff2210bfd3",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .oidc; keys in reverse-sorted order",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider.saml" : "\"fixture-saml-provider\"",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "permuted-session-identityPoolWithFederation-saml.json",
+      "kind" : "permuted",
+      "name" : "permuted-session-identityPoolWithFederation-saml",
+      "reencodesAs" : "session-identityPoolWithFederation-saml",
+      "sha256" : "ee01a9bc3ae6efa76bc6f6fea9410b15d04c3b990c8268e391692fcb565dfd75",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .saml; keys in reverse-sorted order",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider" : ".twitter",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "permuted-session-identityPoolWithFederation-twitter.json",
+      "kind" : "permuted",
+      "name" : "permuted-session-identityPoolWithFederation-twitter",
+      "reencodesAs" : "session-identityPoolWithFederation-twitter",
+      "sha256" : "5dfeb991f3dce5cdd2de8e786d570c9b78b5e257b598f6248ee36d524ce19c2c",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .twitter; keys in reverse-sorted order",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.userPoolAndIdentityPool.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.userPoolAndIdentityPool.credentials.expiration" : "Date(721700000.0)",
+        "$.userPoolAndIdentityPool.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.userPoolAndIdentityPool.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.userPoolAndIdentityPool.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.userPoolAndIdentityPool.signedInData.deviceMetadata.metadata.deviceGroupKey" : "\"fixture-device-group-key\"",
+        "$.userPoolAndIdentityPool.signedInData.deviceMetadata.metadata.deviceKey" : "\"us-east-1_fixture-device-key\"",
+        "$.userPoolAndIdentityPool.signedInData.deviceMetadata.metadata.deviceSecret" : "\"fixture-device-secret\"",
+        "$.userPoolAndIdentityPool.signedInData.inputUsername" : "\"fixture-user\"",
+        "$.userPoolAndIdentityPool.signedInData.isRefreshTokenExpired" : "false",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.apiBased.userAuth.preferredFirstFactor" : ".smsOTP",
+        "$.userPoolAndIdentityPool.signedInData.signedInDate" : "Date(721692800.0)",
+        "$.userPoolAndIdentityPool.signedInData.userId" : "\"fixture-sub-0001\"",
+        "$.userPoolAndIdentityPool.signedInData.username" : "\"fixture-user\""
+      },
+      "file" : "permuted-session-userPoolAndIdentityPool.json",
+      "kind" : "permuted",
+      "name" : "permuted-session-userPoolAndIdentityPool",
+      "reencodesAs" : "session-userPoolAndIdentityPool",
+      "sha256" : "b98e2a9b63dd37f634a09d271a1f752c7eaf7d6440d719060b908ab36469bae0",
+      "summary" : "AmplifyCredentials.userPoolAndIdentityPool, device metadata, userAuth(.smsOTP); keys in reverse-sorted order",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.userPoolOnly.signedInData.deviceMetadata" : ".noData",
+        "$.userPoolOnly.signedInData.inputUsername" : "\"fixture-user\"",
+        "$.userPoolOnly.signedInData.isRefreshTokenExpired" : "false",
+        "$.userPoolOnly.signedInData.signInMethod.apiBased" : ".userSRP",
+        "$.userPoolOnly.signedInData.signedInDate" : "Date(721692800.0)",
+        "$.userPoolOnly.signedInData.userId" : "\"fixture-sub-0001\"",
+        "$.userPoolOnly.signedInData.username" : "\"fixture-user\""
+      },
+      "file" : "permuted-session-userPoolOnly.json",
+      "kind" : "permuted",
+      "name" : "permuted-session-userPoolOnly",
+      "reencodesAs" : "session-userPoolOnly",
+      "sha256" : "a2e9bdef6a3570509d84b9fdda23ac93029308d77d25b8c9e168e0242b7e97b1",
+      "summary" : "AmplifyCredentials.userPoolOnly; keys in reverse-sorted order",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.userPoolOnly.signedInData.deviceMetadata" : ".noData",
+        "$.userPoolOnly.signedInData.inputUsername" : "nil",
+        "$.userPoolOnly.signedInData.isRefreshTokenExpired" : "nil",
+        "$.userPoolOnly.signedInData.signInMethod.apiBased" : ".customWithSRP",
+        "$.userPoolOnly.signedInData.signedInDate" : "Date(721692800.0)",
+        "$.userPoolOnly.signedInData.userId" : "\"fixture-sub-0001\"",
+        "$.userPoolOnly.signedInData.username" : "\"fixture-user\""
+      },
+      "file" : "permuted-session-userPoolOnly-customWithSRP.json",
+      "kind" : "permuted",
+      "name" : "permuted-session-userPoolOnly-customWithSRP",
+      "reencodesAs" : "session-userPoolOnly-customWithSRP",
+      "sha256" : "6c0387ce9e43cbdb57e4cdf1269f13e1ce5d0d8187fb846cd6db7e801e718a79",
+      "summary" : "userPoolOnly, customWithSRP, isRefreshTokenExpired and inputUsername nil (the legacy session's re-encoding); keys in reverse-sorted order",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased.userAuth.preferredFirstFactor" : ".emailOTP"
+      },
+      "file" : "permuted-signInMethod-apiBased-userAuth-emailOTP.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-apiBased-userAuth-emailOTP",
+      "reencodesAs" : "signInMethod-apiBased-userAuth-emailOTP",
+      "sha256" : "fdc2f09dad3e6d0cfc9752e9e73ea7ddce462031e1bb61e35f17e12b15d11ab8",
+      "summary" : "SignInMethod.apiBased(.userAuth-emailOTP); keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased.userAuth.preferredFirstFactor" : "nil"
+      },
+      "file" : "permuted-signInMethod-apiBased-userAuth-nil.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-apiBased-userAuth-nil",
+      "reencodesAs" : "signInMethod-apiBased-userAuth-nil",
+      "sha256" : "723df37aa2e2dc9666855a1b930d9d51aea610850b0897970819cc06b72a84a6",
+      "summary" : "SignInMethod.apiBased(.userAuth-nil); keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased.userAuth.preferredFirstFactor" : ".password"
+      },
+      "file" : "permuted-signInMethod-apiBased-userAuth-password.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-apiBased-userAuth-password",
+      "reencodesAs" : "signInMethod-apiBased-userAuth-password",
+      "sha256" : "428813cf72592774c1d0c4c23e7c0c04c94367cafdb6ee4e575b1677dd8724f7",
+      "summary" : "SignInMethod.apiBased(.userAuth-password); keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased.userAuth.preferredFirstFactor" : ".passwordSRP"
+      },
+      "file" : "permuted-signInMethod-apiBased-userAuth-passwordSRP.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-apiBased-userAuth-passwordSRP",
+      "reencodesAs" : "signInMethod-apiBased-userAuth-passwordSRP",
+      "sha256" : "c4e3ecabcca7023ae34d1f352fcf444716c1c516c7cb729238eb3d25becd9134",
+      "summary" : "SignInMethod.apiBased(.userAuth-passwordSRP); keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased.userAuth.preferredFirstFactor" : ".smsOTP"
+      },
+      "file" : "permuted-signInMethod-apiBased-userAuth-smsOTP.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-apiBased-userAuth-smsOTP",
+      "reencodesAs" : "signInMethod-apiBased-userAuth-smsOTP",
+      "sha256" : "c28b38a7e5f7cd6370741c4ba680329e534f668318bae349eb9b98efc01a50ad",
+      "summary" : "SignInMethod.apiBased(.userAuth-smsOTP); keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased.userAuth.preferredFirstFactor" : ".webAuthn"
+      },
+      "file" : "permuted-signInMethod-apiBased-userAuth-webAuthn.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-apiBased-userAuth-webAuthn",
+      "reencodesAs" : "signInMethod-apiBased-userAuth-webAuthn",
+      "sha256" : "1fcc5cc3399d02ea1b27bc50fad6ad6a1c699df8d9f7ec97bbf9bb6ecc556215",
+      "summary" : "SignInMethod.apiBased(.userAuth-webAuthn); keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "\"en\"",
+        "$.hostedUI.loginHint" : "\"fixture-user@example.com\"",
+        "$.hostedUI.nonce" : "\"fixture-nonce\"",
+        "$.hostedUI.preferPrivateSession" : "true",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "\"login consent\"",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "\"fixture-idp\"",
+        "$.hostedUI.resource" : "\"myapp://resource\"",
+        "$.hostedUI.scopes.count" : "3",
+        "$.hostedUI.scopes[0]" : "\"openid\"",
+        "$.hostedUI.scopes[1]" : "\"email\"",
+        "$.hostedUI.scopes[2]" : "\"aws.cognito.signin.user.admin\""
+      },
+      "file" : "permuted-signInMethod-hostedUI-authProvider-dropped.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-hostedUI-authProvider-dropped",
+      "reencodesAs" : "signInMethod-hostedUI-authProvider-dropped",
+      "sha256" : "1ed34d5ee0eb25e2d9710c0d9770850a7cfa9122ed7595582729d9d7b51d3ba9",
+      "summary" : "hostedUI built with authProvider .google: it is not persisted and decodes as nil; keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "\"en\"",
+        "$.hostedUI.loginHint" : "\"fixture-user@example.com\"",
+        "$.hostedUI.nonce" : "\"fixture-nonce\"",
+        "$.hostedUI.preferPrivateSession" : "true",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "\"login consent\"",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "\"fixture-idp\"",
+        "$.hostedUI.resource" : "\"myapp://resource\"",
+        "$.hostedUI.scopes.count" : "3",
+        "$.hostedUI.scopes[0]" : "\"openid\"",
+        "$.hostedUI.scopes[1]" : "\"email\"",
+        "$.hostedUI.scopes[2]" : "\"aws.cognito.signin.user.admin\""
+      },
+      "file" : "permuted-signInMethod-hostedUI-full.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-hostedUI-full",
+      "reencodesAs" : "signInMethod-hostedUI-full",
+      "sha256" : "1ed34d5ee0eb25e2d9710c0d9770850a7cfa9122ed7595582729d9d7b51d3ba9",
+      "summary" : "hostedUI: scopes, private session, nonce, lang, login_hint, prompt, resource; idpIdentifier only; keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "permuted-signInMethod-hostedUI-minimal.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-hostedUI-minimal",
+      "reencodesAs" : "signInMethod-hostedUI-minimal",
+      "sha256" : "f4a23d55d91fd9ccb65bea2a07113df27ecfadaa571849f2e790b1a7c7f242ab",
+      "summary" : "hostedUI: no scopes, no provider, no optional fields; keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "\"fixture-idp\"",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "permuted-signInMethod-hostedUI-only-idpIdentifier.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-hostedUI-only-idpIdentifier",
+      "reencodesAs" : "signInMethod-hostedUI-only-idpIdentifier",
+      "sha256" : "9c8beb1f0a65dc0421aa22225590074d9e14958aabe0e4030c106a01f8106cc0",
+      "summary" : "hostedUI: minimal apart from idpIdentifier; keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "\"en\"",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "permuted-signInMethod-hostedUI-only-language.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-hostedUI-only-language",
+      "reencodesAs" : "signInMethod-hostedUI-only-language",
+      "sha256" : "edf5134b13198fea5d6012aeb9eb1c9daea017508e338a743632e7cecf3dfa8b",
+      "summary" : "hostedUI: minimal apart from language; keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "\"fixture-user@example.com\"",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "permuted-signInMethod-hostedUI-only-loginHint.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-hostedUI-only-loginHint",
+      "reencodesAs" : "signInMethod-hostedUI-only-loginHint",
+      "sha256" : "471dd5e6afb058bef4ab017f703e4a870cbe04f650a3fb6411a1e0cd2976c040",
+      "summary" : "hostedUI: minimal apart from loginHint; keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "\"fixture-nonce\"",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "permuted-signInMethod-hostedUI-only-nonce.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-hostedUI-only-nonce",
+      "reencodesAs" : "signInMethod-hostedUI-only-nonce",
+      "sha256" : "b3576f1d6e99222cdb52ef86c2df47b1048b2f981a1de497eaa434f21b8a437e",
+      "summary" : "hostedUI: minimal apart from nonce; keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "true",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "permuted-signInMethod-hostedUI-only-preferPrivateSession.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-hostedUI-only-preferPrivateSession",
+      "reencodesAs" : "signInMethod-hostedUI-only-preferPrivateSession",
+      "sha256" : "4b1fa50f231b1bc4a2dcfd36f8376c3f927d1bfb321f3ee7e7643efbf7e21a2d",
+      "summary" : "hostedUI: minimal apart from preferPrivateSession; keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "\"login\"",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "permuted-signInMethod-hostedUI-only-prompt.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-hostedUI-only-prompt",
+      "reencodesAs" : "signInMethod-hostedUI-only-prompt",
+      "sha256" : "287984fe8505b6509df3bf0046be5d04a3c8993ee053cf4532485e2fef2073ea",
+      "summary" : "hostedUI: minimal apart from prompt; keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "\"myapp://resource\"",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "permuted-signInMethod-hostedUI-only-resource.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-hostedUI-only-resource",
+      "reencodesAs" : "signInMethod-hostedUI-only-resource",
+      "sha256" : "84e6283a150d5c97fc19609d638f170d71727f018635cf5247591cdf6510d640",
+      "summary" : "hostedUI: minimal apart from resource; keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "1",
+        "$.hostedUI.scopes[0]" : "\"openid\""
+      },
+      "file" : "permuted-signInMethod-hostedUI-only-scopes.json",
+      "kind" : "permuted",
+      "name" : "permuted-signInMethod-hostedUI-only-scopes",
+      "reencodesAs" : "signInMethod-hostedUI-only-scopes",
+      "sha256" : "06035a06dc4672cc574141424164647e639fc68d7a127cc2a0c15079fbd77399",
+      "summary" : "hostedUI: minimal apart from scopes; keys in reverse-sorted order",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.deviceMetadata" : ".noData",
+        "$.inputUsername" : "nil",
+        "$.isRefreshTokenExpired" : "false",
+        "$.signInMethod.hostedUI.language" : "\"en\"",
+        "$.signInMethod.hostedUI.loginHint" : "\"fixture-user@example.com\"",
+        "$.signInMethod.hostedUI.nonce" : "\"fixture-nonce\"",
+        "$.signInMethod.hostedUI.preferPrivateSession" : "true",
+        "$.signInMethod.hostedUI.presentationAnchor" : "nil",
+        "$.signInMethod.hostedUI.prompt" : "\"login consent\"",
+        "$.signInMethod.hostedUI.providerInfo.authProvider" : "nil",
+        "$.signInMethod.hostedUI.providerInfo.idpIdentifier" : "\"fixture-idp\"",
+        "$.signInMethod.hostedUI.resource" : "\"myapp://resource\"",
+        "$.signInMethod.hostedUI.scopes.count" : "3",
+        "$.signInMethod.hostedUI.scopes[0]" : "\"openid\"",
+        "$.signInMethod.hostedUI.scopes[1]" : "\"email\"",
+        "$.signInMethod.hostedUI.scopes[2]" : "\"aws.cognito.signin.user.admin\"",
+        "$.signedInDate" : "Date(721692800.0)",
+        "$.userId" : "\"fixture-sub-0001\"",
+        "$.username" : "\"fixture-user\""
+      },
+      "file" : "permuted-signedInData-hostedUI.json",
+      "kind" : "permuted",
+      "name" : "permuted-signedInData-hostedUI",
+      "reencodesAs" : "signedInData-hostedUI",
+      "sha256" : "5c6968b18ac7cb46c8dc55d0de43cafa271cef2264cdc012685094d7bf53bcf0",
+      "summary" : "SignedInData signed in through hosted UI; keys in reverse-sorted order",
+      "type" : "SignedInData"
+    },
+    {
+      "expectedFields" : {
+        "$.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.deviceMetadata.metadata.deviceGroupKey" : "\"fixture-device-group-key\"",
+        "$.deviceMetadata.metadata.deviceKey" : "\"us-east-1_fixture-device-key\"",
+        "$.deviceMetadata.metadata.deviceSecret" : "\"fixture-device-secret\"",
+        "$.inputUsername" : "\"Fixture.User@Example.com\"",
+        "$.isRefreshTokenExpired" : "false",
+        "$.signInMethod.apiBased" : ".userSRP",
+        "$.signedInDate" : "Date(721692800.0)",
+        "$.userId" : "\"fixture-sub-0001\"",
+        "$.username" : "\"fixture-user\""
+      },
+      "file" : "permuted-signedInData-inputUsername-device.json",
+      "kind" : "permuted",
+      "name" : "permuted-signedInData-inputUsername-device",
+      "reencodesAs" : "signedInData-inputUsername-device",
+      "sha256" : "5ce1b87ca6fef1760d86d26e3a49a6dfaf35c3942221cebe964951adf6664656",
+      "summary" : "SignedInData with inputUsername and device metadata; keys in reverse-sorted order",
+      "type" : "SignedInData"
+    },
+    {
+      "expectedFields" : {
+        "$.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.deviceMetadata" : ".noData",
+        "$.inputUsername" : "nil",
+        "$.isRefreshTokenExpired" : "false",
+        "$.signInMethod.apiBased" : ".userSRP",
+        "$.signedInDate" : "Date(721692800.0)",
+        "$.userId" : "\"fixture-sub-0001\"",
+        "$.username" : "\"fixture-user\""
+      },
+      "file" : "permuted-signedInData-refreshExpired-false.json",
+      "kind" : "permuted",
+      "name" : "permuted-signedInData-refreshExpired-false",
+      "reencodesAs" : "signedInData-refreshExpired-false",
+      "sha256" : "c9da0b3ad54c6f2d63329a4f8ee561996fda21fc157edf5ff799cad160cebe66",
+      "summary" : "SignedInData, isRefreshTokenExpired false; keys in reverse-sorted order",
+      "type" : "SignedInData"
+    },
+    {
+      "expectedFields" : {
+        "$.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.deviceMetadata" : ".noData",
+        "$.inputUsername" : "nil",
+        "$.isRefreshTokenExpired" : "nil",
+        "$.signInMethod.apiBased" : ".userSRP",
+        "$.signedInDate" : "Date(721692800.0)",
+        "$.userId" : "\"fixture-sub-0001\"",
+        "$.username" : "\"fixture-user\""
+      },
+      "file" : "permuted-signedInData-refreshExpired-nil.json",
+      "kind" : "permuted",
+      "name" : "permuted-signedInData-refreshExpired-nil",
+      "reencodesAs" : "signedInData-refreshExpired-nil",
+      "sha256" : "39c1b2fe3d5644b77cc8100f22136eafdf52e7d62651d622bff3a52b89441725",
+      "summary" : "SignedInData, isRefreshTokenExpired nil, no inputUsername, noData; keys in reverse-sorted order",
+      "type" : "SignedInData"
+    },
+    {
+      "expectedFields" : {
+        "$.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.deviceMetadata" : ".noData",
+        "$.inputUsername" : "nil",
+        "$.isRefreshTokenExpired" : "true",
+        "$.signInMethod.apiBased" : ".userSRP",
+        "$.signedInDate" : "Date(721692800.0)",
+        "$.userId" : "\"fixture-sub-0001\"",
+        "$.username" : "\"fixture-user\""
+      },
+      "file" : "permuted-signedInData-refreshExpired-true.json",
+      "kind" : "permuted",
+      "name" : "permuted-signedInData-refreshExpired-true",
+      "reencodesAs" : "signedInData-refreshExpired-true",
+      "sha256" : "3553c57a77daa384995eed01a45c399d2d86219935a03ece9e6d38442fa0e0f9",
+      "summary" : "SignedInData, isRefreshTokenExpired true; keys in reverse-sorted order",
+      "type" : "SignedInData"
+    },
+    {
+      "expectedFields" : {
+        "$.authFlowType.userAuth.preferredFirstFactor" : ".emailOTP",
+        "$.clientId" : "\"fixture-client-id\"",
+        "$.clientSecret" : "\"fixture-client-secret\"",
+        "$.endpoint.validatedHost" : "\"auth.fixture.example.com\"",
+        "$.hostedUIConfig.clientId" : "\"fixture-hosted-ui-client-id\"",
+        "$.hostedUIConfig.clientSecret" : "\"fixture-hosted-ui-client-secret\"",
+        "$.hostedUIConfig.oauth.domain" : "\"fixture.auth.us-east-1.amazoncognito.com\"",
+        "$.hostedUIConfig.oauth.scopes.count" : "5",
+        "$.hostedUIConfig.oauth.scopes[0]" : "\"openid\"",
+        "$.hostedUIConfig.oauth.scopes[1]" : "\"email\"",
+        "$.hostedUIConfig.oauth.scopes[2]" : "\"phone\"",
+        "$.hostedUIConfig.oauth.scopes[3]" : "\"profile\"",
+        "$.hostedUIConfig.oauth.scopes[4]" : "\"aws.cognito.signin.user.admin\"",
+        "$.hostedUIConfig.oauth.signInRedirectURI" : "\"myapp://signin/\"",
+        "$.hostedUIConfig.oauth.signOutRedirectURI" : "\"myapp://signout/\"",
+        "$.passwordProtectionSettings.characterPolicy.count" : "4",
+        "$.passwordProtectionSettings.characterPolicy[0]" : ".lowercase",
+        "$.passwordProtectionSettings.characterPolicy[1]" : ".uppercase",
+        "$.passwordProtectionSettings.characterPolicy[2]" : ".numbers",
+        "$.passwordProtectionSettings.characterPolicy[3]" : ".symbols",
+        "$.passwordProtectionSettings.minLength" : "12",
+        "$.pinpointAppId" : "\"fixture-pinpoint-app-id\"",
+        "$.poolId" : "\"us-east-1_FixturePool\"",
+        "$.region" : "\"us-east-1\"",
+        "$.signUpAttributes.count" : "13",
+        "$.signUpAttributes[0]" : ".address",
+        "$.signUpAttributes[10]" : ".preferredUsername",
+        "$.signUpAttributes[11]" : ".profile",
+        "$.signUpAttributes[12]" : ".website",
+        "$.signUpAttributes[1]" : ".birthDate",
+        "$.signUpAttributes[2]" : ".email",
+        "$.signUpAttributes[3]" : ".familyName",
+        "$.signUpAttributes[4]" : ".gender",
+        "$.signUpAttributes[5]" : ".givenName",
+        "$.signUpAttributes[6]" : ".middleName",
+        "$.signUpAttributes[7]" : ".name",
+        "$.signUpAttributes[8]" : ".nickname",
+        "$.signUpAttributes[9]" : ".phoneNumber",
+        "$.usernameAttributes.count" : "3",
+        "$.usernameAttributes[0]" : ".username",
+        "$.usernameAttributes[1]" : ".email",
+        "$.usernameAttributes[2]" : ".phoneNumber",
+        "$.verificationMechanisms.count" : "2",
+        "$.verificationMechanisms[0]" : ".email",
+        "$.verificationMechanisms[1]" : ".phoneNumber"
+      },
+      "file" : "permuted-userPoolConfiguration-full.json",
+      "kind" : "permuted",
+      "name" : "permuted-userPoolConfiguration-full",
+      "reencodesAs" : "userPoolConfiguration-full",
+      "sha256" : "90843bbbc0a93646478bef34098d7e2ba7cf68d7badce151325594f59005de14",
+      "summary" : "UserPoolConfigurationData, every optional set; keys in reverse-sorted order",
+      "type" : "UserPoolConfigurationData"
+    },
+    {
+      "expectedFields" : {
+        "$.authFlowType" : ".userSRP",
+        "$.clientId" : "\"fixture-client-id\"",
+        "$.clientSecret" : "nil",
+        "$.endpoint" : "nil",
+        "$.hostedUIConfig" : "nil",
+        "$.passwordProtectionSettings" : "nil",
+        "$.pinpointAppId" : "nil",
+        "$.poolId" : "\"us-east-1_FixturePool\"",
+        "$.region" : "\"us-east-1\"",
+        "$.signUpAttributes.count" : "0",
+        "$.usernameAttributes.count" : "0",
+        "$.verificationMechanisms.count" : "0"
+      },
+      "file" : "permuted-userPoolConfiguration-minimal.json",
+      "kind" : "permuted",
+      "name" : "permuted-userPoolConfiguration-minimal",
+      "reencodesAs" : "userPoolConfiguration-minimal",
+      "sha256" : "5818e3ececa5d005fe45d2382840821875621ba63306ed7c662b221861429565",
+      "summary" : "UserPoolConfigurationData, every optional empty; keys in reverse-sorted order",
+      "type" : "UserPoolConfigurationData"
+    },
+    {
+      "expectedFields" : {
+        "$.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.expiration" : "Date(721696400.25)",
+        "$.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.refreshToken" : "\"fixture-refresh-token\""
+      },
+      "file" : "permuted-userPoolTokens.json",
+      "kind" : "permuted",
+      "name" : "permuted-userPoolTokens",
+      "reencodesAs" : "userPoolTokens",
+      "sha256" : "14a9c4ad4c0f4aa63a1366e8d62ce51af9d868834d47b2ed0f6ab35d7ab91c14",
+      "summary" : "AWSCognitoUserPoolTokens; keys in reverse-sorted order",
+      "type" : "AWSCognitoUserPoolTokens"
+    },
+    {
+      "expectedFields" : {
+        "$error" : "dataCorrupted"
+      },
+      "file" : "rejected-authConfiguration-empty.json",
+      "kind" : "rejected",
+      "name" : "rejected-authConfiguration-empty",
+      "sha256" : "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "summary" : "An authConfiguration with neither pool",
+      "type" : "AuthConfiguration"
+    },
+    {
+      "expectedFields" : {
+        "$error" : "keyNotFound"
+      },
+      "file" : "rejected-authFlowType-no-type.json",
+      "kind" : "rejected",
+      "name" : "rejected-authFlowType-no-type",
+      "sha256" : "c6a34f7f5716077a30fb8011041082ae5bddc65f3f38238a6a8a5752ca8e845f",
+      "summary" : "An object without the type key",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$error" : "dataCorrupted"
+      },
+      "file" : "rejected-authFlowType-unknown-bare-string.json",
+      "kind" : "rejected",
+      "name" : "rejected-authFlowType-unknown-bare-string",
+      "sha256" : "e6a7f40a7cb6a3041d82f7f4f2de3b972f66a205c346475f59efc310c035db22",
+      "summary" : "A bare string legacyInit does not know",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$error" : "dataCorrupted"
+      },
+      "file" : "rejected-authFlowType-unknown-factor.json",
+      "kind" : "rejected",
+      "name" : "rejected-authFlowType-unknown-factor",
+      "sha256" : "452e69bbd9d58ad3b87a53ad0143ca9ae783ab50fc28c754d2d5ea70943e61e2",
+      "summary" : "USER_AUTH with an unknown preferredFirstFactor",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$error" : "dataCorrupted"
+      },
+      "file" : "rejected-authFlowType-unknown-type.json",
+      "kind" : "rejected",
+      "name" : "rejected-authFlowType-unknown-type",
+      "sha256" : "03932278f43a7a506eeacc96fdb5366c322352c2fa30d5f7bc43cbebd6e8d216",
+      "summary" : "An unknown type",
+      "type" : "AuthFlowType"
+    },
+    {
+      "expectedFields" : {
+        "$error" : "typeMismatch"
+      },
+      "file" : "rejected-deviceASF-number.json",
+      "kind" : "rejected",
+      "name" : "rejected-deviceASF-number",
+      "sha256" : "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+      "summary" : "An ASF device id that is not a string",
+      "type" : "String"
+    },
+    {
+      "expectedFields" : {
+        "$error" : "keyNotFound"
+      },
+      "file" : "rejected-deviceMetadata-missing-secret.json",
+      "kind" : "rejected",
+      "name" : "rejected-deviceMetadata-missing-secret",
+      "sha256" : "2831245b1c43c09293fc90ab98046b6facfe22e0d0f3179b7df1f9ed60ed79c1",
+      "summary" : "Device metadata without deviceSecret",
+      "type" : "DeviceMetadata"
+    },
+    {
+      "expectedFields" : {
+        "$error" : "keyNotFound"
+      },
+      "file" : "rejected-session-missing-username.json",
+      "kind" : "rejected",
+      "name" : "rejected-session-missing-username",
+      "sha256" : "bea63ba235449c9c1d9e41b112714231f8a99db37d745381f91a27f9d5d13171",
+      "summary" : "userPoolOnly whose signedInData has no username",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$error" : "typeMismatch"
+      },
+      "file" : "rejected-session-unknown-case.json",
+      "kind" : "rejected",
+      "name" : "rejected-session-unknown-case",
+      "sha256" : "deadf5e9c31ed5ad920c6889335b948f91ac8697fe0b849cb6d97471177d90c0",
+      "summary" : "An AmplifyCredentials case that does not exist",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$error" : "typeMismatch"
+      },
+      "file" : "rejected-session-unknown-provider.json",
+      "kind" : "rejected",
+      "name" : "rejected-session-unknown-provider",
+      "sha256" : "4b17ac41c3b32020b949f351680f8c0ba8ab5e07b35f8347973834f8c72f5253",
+      "summary" : "identityPoolWithFederation with an AuthProvider case that does not exist",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$error" : "keyNotFound"
+      },
+      "file" : "rejected-signInMethod-hostedUI-no-preferPrivateSession.json",
+      "kind" : "rejected",
+      "name" : "rejected-signInMethod-hostedUI-no-preferPrivateSession",
+      "sha256" : "887115a36a079930938dce9cacad9753f7f83fba9c3e1ae3e683a8eb80510f1a",
+      "summary" : "hostedUI without preferPrivateSession, which is decoded with decode, not decodeIfPresent",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$error" : "typeMismatch"
+      },
+      "file" : "rejected-userPoolTokens-string-expiration.json",
+      "kind" : "rejected",
+      "name" : "rejected-userPoolTokens-string-expiration",
+      "sha256" : "b410376cdbaad7a759e9ec67df4dada138f13f6d6d63ec8ee1fb6a5310bf4648",
+      "summary" : "Tokens whose expiration is a string, not seconds since 2001",
+      "type" : "AWSCognitoUserPoolTokens"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolOnly.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolOnly.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolOnly.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolOnly.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolOnly.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "session-identityPoolOnly.json",
+      "kind" : "canonical",
+      "name" : "session-identityPoolOnly",
+      "sha256" : "8368abb1bfd0a2f0a0f9721309a14317984feecc4b36308aa85be26e3802380d",
+      "summary" : "AmplifyCredentials.identityPoolOnly",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider" : ".amazon",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "session-identityPoolWithFederation-amazon.json",
+      "kind" : "canonical",
+      "name" : "session-identityPoolWithFederation-amazon",
+      "sha256" : "d9ca5ca91ded4015fd728d0a8d3b6a0f1346a74d0428289c29b26f67636d7c31",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .amazon",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider" : ".apple",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "session-identityPoolWithFederation-apple.json",
+      "kind" : "canonical",
+      "name" : "session-identityPoolWithFederation-apple",
+      "sha256" : "28e32a6e73a3ea347343fe97a56ff941cde6612748c7d1dbe48e3663088123cc",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .apple",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider.custom" : "\"fixture.custom.provider\"",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "session-identityPoolWithFederation-custom.json",
+      "kind" : "canonical",
+      "name" : "session-identityPoolWithFederation-custom",
+      "sha256" : "70198aafc0bdab2e5fbb24780e33b97f5954b62050b91af110d2f3ea85dc464c",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .custom",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider" : ".facebook",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "session-identityPoolWithFederation-facebook.json",
+      "kind" : "canonical",
+      "name" : "session-identityPoolWithFederation-facebook",
+      "sha256" : "c6b2bf159cc5a17e9f1a9aad06b69a9ab635b987323030c1b1e5a81310308e86",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .facebook",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider" : ".google",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "session-identityPoolWithFederation-google.json",
+      "kind" : "canonical",
+      "name" : "session-identityPoolWithFederation-google",
+      "sha256" : "7ec2419256da245b9d95b91b4ec7cdff3a2522ff7090076c0f2eca640465833f",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .google",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider.oidc" : "\"fixture-oidc-provider\"",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "session-identityPoolWithFederation-oidc.json",
+      "kind" : "canonical",
+      "name" : "session-identityPoolWithFederation-oidc",
+      "sha256" : "aa8777c5075b547a54f07a0a20bc7159708dbdee3ffc6dbbf0e1f0fa70f41991",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .oidc",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider.saml" : "\"fixture-saml-provider\"",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "session-identityPoolWithFederation-saml.json",
+      "kind" : "canonical",
+      "name" : "session-identityPoolWithFederation-saml",
+      "sha256" : "98436f53d91b54929f678481632c63ef85e0e1ce8250882da6db59c252ac25c4",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .saml",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider" : ".twitter",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"fixture-federated-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\""
+      },
+      "file" : "session-identityPoolWithFederation-twitter.json",
+      "kind" : "canonical",
+      "name" : "session-identityPoolWithFederation-twitter",
+      "sha256" : "0e8422b089729dee6655c6e523a697d7d467a2b64e854eaefb713b2c2e752a78",
+      "summary" : "AmplifyCredentials.identityPoolWithFederation, provider .twitter",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$" : ".noCredentials"
+      },
+      "file" : "session-noCredentials.json",
+      "kind" : "canonical",
+      "name" : "session-noCredentials",
+      "sha256" : "65a7ce8de2d214d15649d91a9deb9915b3f573a5f3d879cff25ce1ecf4d75b7b",
+      "summary" : "AmplifyCredentials.noCredentials",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.userPoolAndIdentityPool.credentials.accessKeyId" : "\"FIXTUREACCESSKEYID\"",
+        "$.userPoolAndIdentityPool.credentials.expiration" : "Date(721700000.0)",
+        "$.userPoolAndIdentityPool.credentials.secretAccessKey" : "\"fixture/secret+access=key\"",
+        "$.userPoolAndIdentityPool.credentials.sessionToken" : "\"fixture-session-token\"",
+        "$.userPoolAndIdentityPool.identityID" : "\"us-east-1:00000000-0000-4000-8000-000000000001\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.userPoolAndIdentityPool.signedInData.deviceMetadata.metadata.deviceGroupKey" : "\"fixture-device-group-key\"",
+        "$.userPoolAndIdentityPool.signedInData.deviceMetadata.metadata.deviceKey" : "\"us-east-1_fixture-device-key\"",
+        "$.userPoolAndIdentityPool.signedInData.deviceMetadata.metadata.deviceSecret" : "\"fixture-device-secret\"",
+        "$.userPoolAndIdentityPool.signedInData.inputUsername" : "\"fixture-user\"",
+        "$.userPoolAndIdentityPool.signedInData.isRefreshTokenExpired" : "false",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.apiBased.userAuth.preferredFirstFactor" : ".smsOTP",
+        "$.userPoolAndIdentityPool.signedInData.signedInDate" : "Date(721692800.0)",
+        "$.userPoolAndIdentityPool.signedInData.userId" : "\"fixture-sub-0001\"",
+        "$.userPoolAndIdentityPool.signedInData.username" : "\"fixture-user\""
+      },
+      "file" : "session-userPoolAndIdentityPool.json",
+      "kind" : "canonical",
+      "name" : "session-userPoolAndIdentityPool",
+      "sha256" : "5612a8bf4d17ad59ecae45e7d601e0fdbba7117678badd20b0af0eae45eb01a4",
+      "summary" : "AmplifyCredentials.userPoolAndIdentityPool, device metadata, userAuth(.smsOTP)",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.userPoolOnly.signedInData.deviceMetadata" : ".noData",
+        "$.userPoolOnly.signedInData.inputUsername" : "\"fixture-user\"",
+        "$.userPoolOnly.signedInData.isRefreshTokenExpired" : "false",
+        "$.userPoolOnly.signedInData.signInMethod.apiBased" : ".userSRP",
+        "$.userPoolOnly.signedInData.signedInDate" : "Date(721692800.0)",
+        "$.userPoolOnly.signedInData.userId" : "\"fixture-sub-0001\"",
+        "$.userPoolOnly.signedInData.username" : "\"fixture-user\""
+      },
+      "file" : "session-userPoolOnly.json",
+      "kind" : "canonical",
+      "name" : "session-userPoolOnly",
+      "sha256" : "3daea62f3b82335c8757e926365070e9cb48f3300fcbb2f75cf05b6ff77c5618",
+      "summary" : "AmplifyCredentials.userPoolOnly",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "expectedFields" : {
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.userPoolOnly.signedInData.deviceMetadata" : ".noData",
+        "$.userPoolOnly.signedInData.inputUsername" : "nil",
+        "$.userPoolOnly.signedInData.isRefreshTokenExpired" : "nil",
+        "$.userPoolOnly.signedInData.signInMethod.apiBased" : ".customWithSRP",
+        "$.userPoolOnly.signedInData.signedInDate" : "Date(721692800.0)",
+        "$.userPoolOnly.signedInData.userId" : "\"fixture-sub-0001\"",
+        "$.userPoolOnly.signedInData.username" : "\"fixture-user\""
+      },
+      "file" : "session-userPoolOnly-customWithSRP.json",
+      "kind" : "canonical",
+      "name" : "session-userPoolOnly-customWithSRP",
+      "sha256" : "dfcaac3daa20280760493a3960497ef1d0769d10fdb05f670ffa2bfd42f495e4",
+      "summary" : "userPoolOnly, customWithSRP, isRefreshTokenExpired and inputUsername nil (the legacy session's re-encoding)",
+      "type" : "AmplifyCredentials"
+    },
+    {
+      "constructedFields" : {
+        "$.apiBased" : ".custom"
+      },
+      "expectedFields" : {
+        "$.apiBased" : ".customWithSRP"
+      },
+      "file" : "signInMethod-apiBased-custom.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-apiBased-custom",
+      "sha256" : "e4f5e8b133c75b9686f83eca481d2f584f9923c2fcc40da935b52773b9ce52c3",
+      "summary" : "SignInMethod.apiBased(.custom)",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased" : ".customWithSRP"
+      },
+      "file" : "signInMethod-apiBased-customWithSRP.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-apiBased-customWithSRP",
+      "sha256" : "e4f5e8b133c75b9686f83eca481d2f584f9923c2fcc40da935b52773b9ce52c3",
+      "summary" : "SignInMethod.apiBased(.customWithSRP)",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased" : ".customWithoutSRP"
+      },
+      "file" : "signInMethod-apiBased-customWithoutSRP.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-apiBased-customWithoutSRP",
+      "sha256" : "e58b77d8a81ef56fdf4606267f01eb140478a9f9cb5318c7bcd6197f577e48cb",
+      "summary" : "SignInMethod.apiBased(.customWithoutSRP)",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased.userAuth.preferredFirstFactor" : ".emailOTP"
+      },
+      "file" : "signInMethod-apiBased-userAuth-emailOTP.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-apiBased-userAuth-emailOTP",
+      "sha256" : "18799ae67c4a953d301b8632ca10d9eeeaa55b2a4f00a3f71300b1226ec09461",
+      "summary" : "SignInMethod.apiBased(.userAuth-emailOTP)",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased.userAuth.preferredFirstFactor" : "nil"
+      },
+      "file" : "signInMethod-apiBased-userAuth-nil.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-apiBased-userAuth-nil",
+      "sha256" : "9571f2cee83b5ef81bef7b914e62986362b79a1363e89ca45b90aa625f26f23d",
+      "summary" : "SignInMethod.apiBased(.userAuth-nil)",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased.userAuth.preferredFirstFactor" : ".password"
+      },
+      "file" : "signInMethod-apiBased-userAuth-password.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-apiBased-userAuth-password",
+      "sha256" : "ebead32488a9e18862598fd7c94f1633ee3037d040513a9005fe7b765d011fda",
+      "summary" : "SignInMethod.apiBased(.userAuth-password)",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased.userAuth.preferredFirstFactor" : ".passwordSRP"
+      },
+      "file" : "signInMethod-apiBased-userAuth-passwordSRP.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-apiBased-userAuth-passwordSRP",
+      "sha256" : "b52f1bfda3f86b24fc337e776ab7f037228e918de631bac2f9ab0b0b9fbc93e7",
+      "summary" : "SignInMethod.apiBased(.userAuth-passwordSRP)",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased.userAuth.preferredFirstFactor" : ".smsOTP"
+      },
+      "file" : "signInMethod-apiBased-userAuth-smsOTP.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-apiBased-userAuth-smsOTP",
+      "sha256" : "d92641eaf56d404949af1c93227bd726d3f5041789bbce6f2eb6540986a834f0",
+      "summary" : "SignInMethod.apiBased(.userAuth-smsOTP)",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased.userAuth.preferredFirstFactor" : ".webAuthn"
+      },
+      "file" : "signInMethod-apiBased-userAuth-webAuthn.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-apiBased-userAuth-webAuthn",
+      "sha256" : "24652e652d28ce3457b7780d85c2862edaa7e5dc6f9f696f2dd4420c83c24756",
+      "summary" : "SignInMethod.apiBased(.userAuth-webAuthn)",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased" : ".userPassword"
+      },
+      "file" : "signInMethod-apiBased-userPassword.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-apiBased-userPassword",
+      "sha256" : "222d5723a745346b460354c7b77a0ce321889e67e90a4d88023034eb27ff8c0f",
+      "summary" : "SignInMethod.apiBased(.userPassword)",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.apiBased" : ".userSRP"
+      },
+      "file" : "signInMethod-apiBased-userSRP.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-apiBased-userSRP",
+      "sha256" : "18fdab41df179adfc07a49d2bec550c8af5b284b76ad0e959e4006dc978aeb29",
+      "summary" : "SignInMethod.apiBased(.userSRP)",
+      "type" : "SignInMethod"
+    },
+    {
+      "constructedFields" : {
+        "$.hostedUI.language" : "\"en\"",
+        "$.hostedUI.loginHint" : "\"fixture-user@example.com\"",
+        "$.hostedUI.nonce" : "\"fixture-nonce\"",
+        "$.hostedUI.preferPrivateSession" : "true",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "\"login consent\"",
+        "$.hostedUI.providerInfo.authProvider" : ".google",
+        "$.hostedUI.providerInfo.idpIdentifier" : "\"fixture-idp\"",
+        "$.hostedUI.resource" : "\"myapp://resource\"",
+        "$.hostedUI.scopes.count" : "3",
+        "$.hostedUI.scopes[0]" : "\"openid\"",
+        "$.hostedUI.scopes[1]" : "\"email\"",
+        "$.hostedUI.scopes[2]" : "\"aws.cognito.signin.user.admin\""
+      },
+      "expectedFields" : {
+        "$.hostedUI.language" : "\"en\"",
+        "$.hostedUI.loginHint" : "\"fixture-user@example.com\"",
+        "$.hostedUI.nonce" : "\"fixture-nonce\"",
+        "$.hostedUI.preferPrivateSession" : "true",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "\"login consent\"",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "\"fixture-idp\"",
+        "$.hostedUI.resource" : "\"myapp://resource\"",
+        "$.hostedUI.scopes.count" : "3",
+        "$.hostedUI.scopes[0]" : "\"openid\"",
+        "$.hostedUI.scopes[1]" : "\"email\"",
+        "$.hostedUI.scopes[2]" : "\"aws.cognito.signin.user.admin\""
+      },
+      "file" : "signInMethod-hostedUI-authProvider-dropped.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-hostedUI-authProvider-dropped",
+      "sha256" : "d4d63561607790f83499a915917cf1640e878f271c0ae029d89a3013fcade342",
+      "summary" : "hostedUI built with authProvider .google: it is not persisted and decodes as nil",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "\"en\"",
+        "$.hostedUI.loginHint" : "\"fixture-user@example.com\"",
+        "$.hostedUI.nonce" : "\"fixture-nonce\"",
+        "$.hostedUI.preferPrivateSession" : "true",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "\"login consent\"",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "\"fixture-idp\"",
+        "$.hostedUI.resource" : "\"myapp://resource\"",
+        "$.hostedUI.scopes.count" : "3",
+        "$.hostedUI.scopes[0]" : "\"openid\"",
+        "$.hostedUI.scopes[1]" : "\"email\"",
+        "$.hostedUI.scopes[2]" : "\"aws.cognito.signin.user.admin\""
+      },
+      "file" : "signInMethod-hostedUI-full.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-hostedUI-full",
+      "sha256" : "d4d63561607790f83499a915917cf1640e878f271c0ae029d89a3013fcade342",
+      "summary" : "hostedUI: scopes, private session, nonce, lang, login_hint, prompt, resource; idpIdentifier only",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "signInMethod-hostedUI-minimal.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-hostedUI-minimal",
+      "sha256" : "c8b6b940f64b2392c375ae43648a7bc23bc56c8c12a58a718a27babd40110a9b",
+      "summary" : "hostedUI: no scopes, no provider, no optional fields",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "\"fixture-idp\"",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "signInMethod-hostedUI-only-idpIdentifier.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-hostedUI-only-idpIdentifier",
+      "sha256" : "0380c0f35c382722abb772c9815e21019ea7c35a2a6c1c63610d9b21dc8c1179",
+      "summary" : "hostedUI: minimal apart from idpIdentifier",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "\"en\"",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "signInMethod-hostedUI-only-language.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-hostedUI-only-language",
+      "sha256" : "d272c5e4e498f313af87c8cc35ff87bfda0fb702c71ca27c834260816d73e250",
+      "summary" : "hostedUI: minimal apart from language",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "\"fixture-user@example.com\"",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "signInMethod-hostedUI-only-loginHint.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-hostedUI-only-loginHint",
+      "sha256" : "ed81cd81f633d6dfd95cb0a663d08845b8ce00836dd204763328df6ed83d575d",
+      "summary" : "hostedUI: minimal apart from loginHint",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "\"fixture-nonce\"",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "signInMethod-hostedUI-only-nonce.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-hostedUI-only-nonce",
+      "sha256" : "34376f892053f58764fb94404f9dc0bd90044e7ce235a14d07ebafd2b5f1cdc1",
+      "summary" : "hostedUI: minimal apart from nonce",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "true",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "signInMethod-hostedUI-only-preferPrivateSession.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-hostedUI-only-preferPrivateSession",
+      "sha256" : "cbc46f8341f20627cbece349ab0147e30c768302ab6609fe5ed8fdad811f4bb3",
+      "summary" : "hostedUI: minimal apart from preferPrivateSession",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "\"login\"",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "signInMethod-hostedUI-only-prompt.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-hostedUI-only-prompt",
+      "sha256" : "3b3fb3688c2d34870786ac2d895098c9b4b9cfcbd6e658245b67dfd05c749409",
+      "summary" : "hostedUI: minimal apart from prompt",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "\"myapp://resource\"",
+        "$.hostedUI.scopes.count" : "0"
+      },
+      "file" : "signInMethod-hostedUI-only-resource.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-hostedUI-only-resource",
+      "sha256" : "12e13cc0a8777ca9499aa3f63bec161708534f66ca23e4a0da00ad28ae74e0bc",
+      "summary" : "hostedUI: minimal apart from resource",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.hostedUI.language" : "nil",
+        "$.hostedUI.loginHint" : "nil",
+        "$.hostedUI.nonce" : "nil",
+        "$.hostedUI.preferPrivateSession" : "false",
+        "$.hostedUI.presentationAnchor" : "nil",
+        "$.hostedUI.prompt" : "nil",
+        "$.hostedUI.providerInfo.authProvider" : "nil",
+        "$.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.hostedUI.resource" : "nil",
+        "$.hostedUI.scopes.count" : "1",
+        "$.hostedUI.scopes[0]" : "\"openid\""
+      },
+      "file" : "signInMethod-hostedUI-only-scopes.json",
+      "kind" : "canonical",
+      "name" : "signInMethod-hostedUI-only-scopes",
+      "sha256" : "e5f4ddef0db63a592bc20160f391a717415295c9e0a4486cbd128c794f4f1e14",
+      "summary" : "hostedUI: minimal apart from scopes",
+      "type" : "SignInMethod"
+    },
+    {
+      "expectedFields" : {
+        "$.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.deviceMetadata" : ".noData",
+        "$.inputUsername" : "nil",
+        "$.isRefreshTokenExpired" : "false",
+        "$.signInMethod.hostedUI.language" : "\"en\"",
+        "$.signInMethod.hostedUI.loginHint" : "\"fixture-user@example.com\"",
+        "$.signInMethod.hostedUI.nonce" : "\"fixture-nonce\"",
+        "$.signInMethod.hostedUI.preferPrivateSession" : "true",
+        "$.signInMethod.hostedUI.presentationAnchor" : "nil",
+        "$.signInMethod.hostedUI.prompt" : "\"login consent\"",
+        "$.signInMethod.hostedUI.providerInfo.authProvider" : "nil",
+        "$.signInMethod.hostedUI.providerInfo.idpIdentifier" : "\"fixture-idp\"",
+        "$.signInMethod.hostedUI.resource" : "\"myapp://resource\"",
+        "$.signInMethod.hostedUI.scopes.count" : "3",
+        "$.signInMethod.hostedUI.scopes[0]" : "\"openid\"",
+        "$.signInMethod.hostedUI.scopes[1]" : "\"email\"",
+        "$.signInMethod.hostedUI.scopes[2]" : "\"aws.cognito.signin.user.admin\"",
+        "$.signedInDate" : "Date(721692800.0)",
+        "$.userId" : "\"fixture-sub-0001\"",
+        "$.username" : "\"fixture-user\""
+      },
+      "file" : "signedInData-hostedUI.json",
+      "kind" : "canonical",
+      "name" : "signedInData-hostedUI",
+      "sha256" : "ba60bd90e4af4ed71bf1ad33370f62766c124c86e7a4622bcb639d8382fce1e3",
+      "summary" : "SignedInData signed in through hosted UI",
+      "type" : "SignedInData"
+    },
+    {
+      "expectedFields" : {
+        "$.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.deviceMetadata.metadata.deviceGroupKey" : "\"fixture-device-group-key\"",
+        "$.deviceMetadata.metadata.deviceKey" : "\"us-east-1_fixture-device-key\"",
+        "$.deviceMetadata.metadata.deviceSecret" : "\"fixture-device-secret\"",
+        "$.inputUsername" : "\"Fixture.User@Example.com\"",
+        "$.isRefreshTokenExpired" : "false",
+        "$.signInMethod.apiBased" : ".userSRP",
+        "$.signedInDate" : "Date(721692800.0)",
+        "$.userId" : "\"fixture-sub-0001\"",
+        "$.username" : "\"fixture-user\""
+      },
+      "file" : "signedInData-inputUsername-device.json",
+      "kind" : "canonical",
+      "name" : "signedInData-inputUsername-device",
+      "sha256" : "4c217c3456e89b2639d3b6fc45800398096765f9680cc0946ef5e3838bd9df22",
+      "summary" : "SignedInData with inputUsername and device metadata",
+      "type" : "SignedInData"
+    },
+    {
+      "expectedFields" : {
+        "$.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.deviceMetadata" : ".noData",
+        "$.inputUsername" : "nil",
+        "$.isRefreshTokenExpired" : "false",
+        "$.signInMethod.apiBased" : ".userSRP",
+        "$.signedInDate" : "Date(721692800.0)",
+        "$.userId" : "\"fixture-sub-0001\"",
+        "$.username" : "\"fixture-user\""
+      },
+      "file" : "signedInData-refreshExpired-false.json",
+      "kind" : "canonical",
+      "name" : "signedInData-refreshExpired-false",
+      "sha256" : "7cd820161fa8d1421413c435c2da9ebd9fb932bc9e0f06031552297d79720fe6",
+      "summary" : "SignedInData, isRefreshTokenExpired false",
+      "type" : "SignedInData"
+    },
+    {
+      "expectedFields" : {
+        "$.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.deviceMetadata" : ".noData",
+        "$.inputUsername" : "nil",
+        "$.isRefreshTokenExpired" : "nil",
+        "$.signInMethod.apiBased" : ".userSRP",
+        "$.signedInDate" : "Date(721692800.0)",
+        "$.userId" : "\"fixture-sub-0001\"",
+        "$.username" : "\"fixture-user\""
+      },
+      "file" : "signedInData-refreshExpired-nil.json",
+      "kind" : "canonical",
+      "name" : "signedInData-refreshExpired-nil",
+      "sha256" : "42572b782a4f5cb9593329dfea393085c39030b3cf1301817c6e09f16dce0cf3",
+      "summary" : "SignedInData, isRefreshTokenExpired nil, no inputUsername, noData",
+      "type" : "SignedInData"
+    },
+    {
+      "expectedFields" : {
+        "$.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.cognitoUserPoolTokens.expiration" : "Date(721696400.25)",
+        "$.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.cognitoUserPoolTokens.refreshToken" : "\"fixture-refresh-token\"",
+        "$.deviceMetadata" : ".noData",
+        "$.inputUsername" : "nil",
+        "$.isRefreshTokenExpired" : "true",
+        "$.signInMethod.apiBased" : ".userSRP",
+        "$.signedInDate" : "Date(721692800.0)",
+        "$.userId" : "\"fixture-sub-0001\"",
+        "$.username" : "\"fixture-user\""
+      },
+      "file" : "signedInData-refreshExpired-true.json",
+      "kind" : "canonical",
+      "name" : "signedInData-refreshExpired-true",
+      "sha256" : "bd950c9a7f9878c011f2dfe70d1d4054f63d41634c2943b6bd8c0ec81373b862",
+      "summary" : "SignedInData, isRefreshTokenExpired true",
+      "type" : "SignedInData"
+    },
+    {
+      "expectedFields" : {
+        "$.authFlowType.userAuth.preferredFirstFactor" : ".emailOTP",
+        "$.clientId" : "\"fixture-client-id\"",
+        "$.clientSecret" : "\"fixture-client-secret\"",
+        "$.endpoint.validatedHost" : "\"auth.fixture.example.com\"",
+        "$.hostedUIConfig.clientId" : "\"fixture-hosted-ui-client-id\"",
+        "$.hostedUIConfig.clientSecret" : "\"fixture-hosted-ui-client-secret\"",
+        "$.hostedUIConfig.oauth.domain" : "\"fixture.auth.us-east-1.amazoncognito.com\"",
+        "$.hostedUIConfig.oauth.scopes.count" : "5",
+        "$.hostedUIConfig.oauth.scopes[0]" : "\"openid\"",
+        "$.hostedUIConfig.oauth.scopes[1]" : "\"email\"",
+        "$.hostedUIConfig.oauth.scopes[2]" : "\"phone\"",
+        "$.hostedUIConfig.oauth.scopes[3]" : "\"profile\"",
+        "$.hostedUIConfig.oauth.scopes[4]" : "\"aws.cognito.signin.user.admin\"",
+        "$.hostedUIConfig.oauth.signInRedirectURI" : "\"myapp://signin/\"",
+        "$.hostedUIConfig.oauth.signOutRedirectURI" : "\"myapp://signout/\"",
+        "$.passwordProtectionSettings.characterPolicy.count" : "4",
+        "$.passwordProtectionSettings.characterPolicy[0]" : ".lowercase",
+        "$.passwordProtectionSettings.characterPolicy[1]" : ".uppercase",
+        "$.passwordProtectionSettings.characterPolicy[2]" : ".numbers",
+        "$.passwordProtectionSettings.characterPolicy[3]" : ".symbols",
+        "$.passwordProtectionSettings.minLength" : "12",
+        "$.pinpointAppId" : "\"fixture-pinpoint-app-id\"",
+        "$.poolId" : "\"us-east-1_FixturePool\"",
+        "$.region" : "\"us-east-1\"",
+        "$.signUpAttributes.count" : "13",
+        "$.signUpAttributes[0]" : ".address",
+        "$.signUpAttributes[10]" : ".preferredUsername",
+        "$.signUpAttributes[11]" : ".profile",
+        "$.signUpAttributes[12]" : ".website",
+        "$.signUpAttributes[1]" : ".birthDate",
+        "$.signUpAttributes[2]" : ".email",
+        "$.signUpAttributes[3]" : ".familyName",
+        "$.signUpAttributes[4]" : ".gender",
+        "$.signUpAttributes[5]" : ".givenName",
+        "$.signUpAttributes[6]" : ".middleName",
+        "$.signUpAttributes[7]" : ".name",
+        "$.signUpAttributes[8]" : ".nickname",
+        "$.signUpAttributes[9]" : ".phoneNumber",
+        "$.usernameAttributes.count" : "3",
+        "$.usernameAttributes[0]" : ".username",
+        "$.usernameAttributes[1]" : ".email",
+        "$.usernameAttributes[2]" : ".phoneNumber",
+        "$.verificationMechanisms.count" : "2",
+        "$.verificationMechanisms[0]" : ".email",
+        "$.verificationMechanisms[1]" : ".phoneNumber"
+      },
+      "file" : "userPoolConfiguration-full.json",
+      "kind" : "canonical",
+      "name" : "userPoolConfiguration-full",
+      "sha256" : "5e5578e9c1f15be0125d89eb6576930c740cd9c2c40006117d8f1d762148e09b",
+      "summary" : "UserPoolConfigurationData, every optional set",
+      "type" : "UserPoolConfigurationData"
+    },
+    {
+      "expectedFields" : {
+        "$.authFlowType" : ".userSRP",
+        "$.clientId" : "\"fixture-client-id\"",
+        "$.clientSecret" : "nil",
+        "$.endpoint" : "nil",
+        "$.hostedUIConfig" : "nil",
+        "$.passwordProtectionSettings" : "nil",
+        "$.pinpointAppId" : "nil",
+        "$.poolId" : "\"us-east-1_FixturePool\"",
+        "$.region" : "\"us-east-1\"",
+        "$.signUpAttributes.count" : "0",
+        "$.usernameAttributes.count" : "0",
+        "$.verificationMechanisms.count" : "0"
+      },
+      "file" : "userPoolConfiguration-minimal.json",
+      "kind" : "canonical",
+      "name" : "userPoolConfiguration-minimal",
+      "sha256" : "eb1525ddb127d63944a5f8f5c1f6055c7d347062341ab4b46727f8e827bf7606",
+      "summary" : "UserPoolConfigurationData, every optional empty",
+      "type" : "UserPoolConfigurationData"
+    },
+    {
+      "expectedFields" : {
+        "$.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.expiration" : "Date(721696400.25)",
+        "$.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.refreshToken" : "\"fixture-refresh-token\""
+      },
+      "file" : "userPoolTokens.json",
+      "kind" : "canonical",
+      "name" : "userPoolTokens",
+      "sha256" : "f10ad971cf9f34e846fbcda3ee84a95004976d20a5f45c8f5b44ecc2f0c8a979",
+      "summary" : "AWSCognitoUserPoolTokens",
+      "type" : "AWSCognitoUserPoolTokens"
+    }
+  ],
+  "note" : "Generated once at M2 step S0b from the pre-M2 types. Never regenerate. Compared as decoded fields and JSON trees, not bytes."
+}

@@ -21,11 +21,19 @@ class AmplifyLoggingTests: XCTestCase, @unchecked Sendable {
         AmplifyLogging.removeSink(logSink)
     }
 
+    /// - Given: no registered log sinks
+    /// - When: a sink is added
+    /// - Then:
+    ///    - one sink is registered
     func testAmplifyLoggingSinkAddedSuccess() {
         AmplifyLogging.addSink(logSink)
         XCTAssertEqual(AmplifyLogging.registeredLogSinks.keys.count, 1)
     }
 
+    /// - Given: one registered log sink
+    /// - When: it is removed
+    /// - Then:
+    ///    - no sink is registered
     func testAmplifyLoggingSinkRemovedSuccess() {
         AmplifyLogging.addSink(logSink)
         XCTAssertEqual(AmplifyLogging.registeredLogSinks.keys.count, 1)
@@ -34,6 +42,10 @@ class AmplifyLoggingTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(AmplifyLogging.registeredLogSinks.keys.count, 0)
     }
 
+    /// - Given: a registered sink at the debug level
+    /// - When: a logger for `testCategory` logs a debug message
+    /// - Then:
+    ///    - the sink receives one message with that category, level and content
     func testLogMessageSuccess() {
         logSink.logLevel = .debug
         AmplifyLogging.addSink(logSink)
@@ -48,6 +60,11 @@ class AmplifyLoggingTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(logSink.logMessages[0].content, message)
     }
 
+    /// - Given: a registered sink at the default (debug) level
+    /// - When: a logger logs a debug message and then an error message with an error
+    /// - Then:
+    ///    - the sink receives both, in order, with their levels and content, and the error message carries
+    ///      the error with its description and recovery suggestion
     func testMultipleLogMessageSuccess() {
         AmplifyLogging.addSink(logSink)
 
@@ -75,6 +92,10 @@ class AmplifyLoggingTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(error.recoverySuggestion, "defaultSuggestion")
     }
 
+    /// - Given: a registered sink at the error level
+    /// - When: a logger logs one message at each level, from error to verbose
+    /// - Then:
+    ///    - the sink receives one message: error, in that order
     func testErrorThresholdForLogging() {
         logSink.logLevel = .error
         AmplifyLogging.addSink(logSink)
@@ -90,6 +111,10 @@ class AmplifyLoggingTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(logSink.logMessages[0].level, .error)
     }
 
+    /// - Given: a registered sink at the warn level
+    /// - When: a logger logs one message at each level, from error to verbose
+    /// - Then:
+    ///    - the sink receives two messages: error and warn, in that order
     func testWarnThresholdForLogging() {
         logSink.logLevel = .warn
         AmplifyLogging.addSink(logSink)
@@ -106,6 +131,10 @@ class AmplifyLoggingTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(logSink.logMessages[1].level, .warn)
     }
 
+    /// - Given: a registered sink at the info level
+    /// - When: a logger logs one message at each level, from error to verbose
+    /// - Then:
+    ///    - the sink receives three messages: error, warn and info, in that order
     func testInfoThresholdForLogging() {
         logSink.logLevel = .info
         AmplifyLogging.addSink(logSink)
@@ -123,6 +152,10 @@ class AmplifyLoggingTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(logSink.logMessages[2].level, .info)
     }
 
+    /// - Given: a registered sink at the debug level
+    /// - When: a logger logs one message at each level, from error to verbose
+    /// - Then:
+    ///    - the sink receives four messages: error, warn, info and debug, in that order
     func testDebugThresholdForLogging() {
         logSink.logLevel = .debug
         AmplifyLogging.addSink(logSink)
@@ -141,6 +174,10 @@ class AmplifyLoggingTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(logSink.logMessages[3].level, .debug)
     }
 
+    /// - Given: a registered sink at the verbose level
+    /// - When: a logger logs one message at each level, from error to verbose
+    /// - Then:
+    ///    - the sink receives all five messages: error, warn, info, debug and verbose, in that order
     func testVerboseThresholdForLogging() {
         logSink.logLevel = .verbose
         AmplifyLogging.addSink(logSink)
@@ -160,6 +197,10 @@ class AmplifyLoggingTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(logSink.logMessages[4].level, .verbose)
     }
 
+    /// - Given: a registered sink at the `none` level
+    /// - When: a logger logs one message at each level, from error to verbose
+    /// - Then:
+    ///    - the sink receives nothing
     func testNoneThresholdForLogging() {
         logSink.logLevel = .none
         AmplifyLogging.addSink(logSink)
@@ -174,6 +215,10 @@ class AmplifyLoggingTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(logSink.logMessages.count, 0)
     }
 
+    /// - Given: a registered sink and a logger created from it
+    /// - When: a second sink is added and the logger then logs a debug message
+    /// - Then:
+    ///    - the first sink receives it and the second does not: a logger keeps the sinks it was created with
     func testSinkAddedAfterLoggerCreatedShouldNotReceiveLogs() {
         AmplifyLogging.addSink(logSink) // .debug log level
         let logger = AmplifyLogging.logger(for: "testCategory")
@@ -186,6 +231,10 @@ class AmplifyLoggingTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(newSink.logMessages.count, 0)
     }
 
+    /// - Given: two registered sinks at the debug level, and a logger created after both
+    /// - When: the logger logs a debug message
+    /// - Then:
+    ///    - each sink receives it once
     func testMultipleSinksLogMessageSuccess() {
         AmplifyLogging.addSink(logSink) // .debug log level
 
@@ -198,6 +247,11 @@ class AmplifyLoggingTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(newSink.logMessages.count, 1)
     }
 
+    /// - Given: one registered sink at the debug level and one at the verbose level, and a logger created after
+    ///   both
+    /// - When: the logger logs a verbose message
+    /// - Then:
+    ///    - only the verbose sink receives it
     func testMultipleSinksWithDifferentLogLevels() {
         AmplifyLogging.addSink(logSink) // .debug log level
 

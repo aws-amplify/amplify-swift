@@ -11,6 +11,7 @@ import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 class AWSAuthSignUpAPITests: BasePluginTest, @unchecked Sendable {
 
@@ -48,6 +49,51 @@ class AWSAuthSignUpAPITests: BasePluginTest, @unchecked Sendable {
             return
         }
         XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
+    }
+
+    /// Test the user attributes a sign-up sends to Cognito
+    ///
+    /// - Given: Configured auth machine in `.notStarted` sign up state and a mocked success response that
+    ///   records its input
+    /// - When:
+    ///    - `Auth.signUp(username:password:options:)` is invoked with standard, custom and unknown attribute keys
+    /// - Then:
+    ///    - The request carries each attribute under its Cognito wire name, with its value
+    ///
+    func testSignUpSendsTheAttributeWireNames() async throws {
+        let recorded = TestBox<[CognitoIdentityProviderClientTypes.AttributeType]?>(nil)
+        mockIdentityProvider = MockIdentityProvider(
+            mockSignUpResponse: { input in
+                recorded.set(input.userAttributes)
+                return .init(codeDeliveryDetails: nil, userConfirmed: true, userSub: UUID().uuidString)
+            }
+        )
+        let attributes: [AuthUserAttribute] = [
+            .init(.email, value: "random@random.com"),
+            .init(.phoneNumber, value: "+15555550100"),
+            .init(.givenName, value: "Jeff"),
+            .init(.custom("department"), value: "books"),
+            .init(.unknown("nickname"), value: "jb")
+        ]
+
+        _ = try await plugin.signUp(
+            username: "jeffb",
+            password: "Valid&99",
+            options: .init(userAttributes: attributes)
+        )
+
+        let sent = try XCTUnwrap(recorded.get())
+        XCTAssertEqual(
+            Dictionary(uniqueKeysWithValues: sent.map { ($0.name ?? "<nil>", $0.value ?? "<nil>") }),
+            [
+                "email": "random@random.com",
+                "phone_number": "+15555550100",
+                "given_name": "Jeff",
+                "custom:department": "books",
+                "nickname": "jb"
+            ]
+        )
+        XCTAssertEqual(sent.count, attributes.count)
     }
 
     /// Given: Configured auth machine in `.awaitingUserConfirmation` sign up state and a mocked success response

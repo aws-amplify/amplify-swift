@@ -7,11 +7,12 @@
 
 import Foundation
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 extension SignedInData {
 
     static var testData: SignedInData {
-        let tokens = AWSCognitoUserPoolTokens.testData
+        let tokens = EngineUserPoolTokens.testData
         return SignedInData(
             signedInDate: Date(),
             signInMethod: .apiBased(.userSRP),
@@ -20,7 +21,7 @@ extension SignedInData {
     }
 
     static var expiredTestData: SignedInData {
-        let tokens = AWSCognitoUserPoolTokens.expiredTestData
+        let tokens = EngineUserPoolTokens.expiredTestData
         return SignedInData(
             signedInDate: Date(),
             signInMethod: .apiBased(.userSRP),
@@ -29,7 +30,7 @@ extension SignedInData {
     }
 
     static var hostedUISignInData: SignedInData {
-        let tokens = AWSCognitoUserPoolTokens.testData
+        let tokens = EngineUserPoolTokens.testData
         return SignedInData(
             signedInDate: Date(),
             signInMethod: .hostedUI(.init(

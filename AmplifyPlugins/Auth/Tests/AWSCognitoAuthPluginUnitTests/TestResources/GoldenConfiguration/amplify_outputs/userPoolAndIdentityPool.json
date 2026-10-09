@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "auth": {
+    "aws_region": "eu-west-2",
+    "user_pool_id": "eu-west-2_pooled0001",
+    "user_pool_client_id": "pooledclientid0123456789",
+    "identity_pool_id": "eu-west-2:11111111-2222-3333-4444-555555555555",
+    "unauthenticated_identities_enabled": true
+  }
+}

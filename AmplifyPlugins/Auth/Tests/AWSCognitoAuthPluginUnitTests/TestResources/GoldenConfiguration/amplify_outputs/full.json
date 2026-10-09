@@ -1,0 +1,30 @@
+{
+  "version": "1",
+  "auth": {
+    "aws_region": "us-east-2",
+    "user_pool_id": "us-east-2_fullpool01",
+    "user_pool_client_id": "fullclientid0123456789",
+    "identity_pool_id": "us-east-2:aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+    "password_policy": {
+      "min_length": 8,
+      "require_numbers": true,
+      "require_lowercase": false,
+      "require_uppercase": true,
+      "require_symbols": false
+    },
+    "oauth": {
+      "identity_providers": ["FACEBOOK", "LOGIN_WITH_AMAZON", "GOOGLE"],
+      "domain": "full-app.auth.us-east-2.amazoncognito.com",
+      "scopes": ["phone", "email", "openid"],
+      "redirect_sign_in_uri": ["fullapp://callback/"],
+      "redirect_sign_out_uri": ["fullapp://signout/"],
+      "response_type": "token"
+    },
+    "standard_required_attributes": ["email", "locale", "given_name", "sub", "phone_number"],
+    "username_attributes": ["email"],
+    "user_verification_types": ["email"],
+    "unauthenticated_identities_enabled": false,
+    "mfa_configuration": "OPTIONAL",
+    "mfa_methods": ["SMS", "TOTP"]
+  }
+}

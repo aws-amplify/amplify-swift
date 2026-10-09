@@ -25,28 +25,44 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
 
     let credentialIdentityResolver: any AWSCredentialIdentityResolver
     let region: String
+    /// Where the credentials come from. `Amplify.Auth` except in tests.
+    let fetchAuthSession: () async throws -> AuthSession
 
-    init(credentialIdentityResolver: any AWSCredentialIdentityResolver, region: String) {
+    init(
+        credentialIdentityResolver: any AWSCredentialIdentityResolver,
+        region: String,
+        fetchAuthSession: @escaping () async throws -> AuthSession = { try await Amplify.Auth.fetchAuthSession() }
+    ) {
         self.credentialIdentityResolver = credentialIdentityResolver
         self.region = region
+        self.fetchAuthSession = fetchAuthSession
     }
 
     func startStreamTranscription(
         input: StartStreamInput
     ) async throws -> AsyncThrowingStream<TranscribeStreamingClientTypes.TranscriptEvent, Error> {
-        let authSession = try await Amplify.Auth.fetchAuthSession()
-        guard let awsCredentialsProvider = authSession as? AuthAWSCredentialsProvider
-        else {
-            throw PredictionsError.client(
-                .init(
-                    description: "Error retrieving credentials",
-                    recoverySuggestion: "Ensure that the Auth plugin is properly configured",
-                    underlyingError: nil
+        let authSession = try await fetchAuthSession()
+        let awsCredentials: AWSPluginsCore.AWSCredentials
+        do {
+            awsCredentials = try authSession.resolveAWSCredentials()
+        } catch {
+            // A session that cannot vend credentials at all has always been reported as this
+            // `PredictionsError.client`. Keep it as it was (`ClientError`'s `==` compares the
+            // description and suggestion), but carry the `AuthError` that says why — signed out,
+            // or no identity pool — instead of `nil`. A conforming session's own error is rethrown
+            // unchanged, as before.
+            guard authSession is AuthAWSCredentialsProvider else {
+                throw PredictionsError.client(
+                    .init(
+                        description: "Error retrieving credentials",
+                        recoverySuggestion: "Ensure that the Auth plugin is properly configured",
+                        underlyingError: error
+                    )
                 )
-            )
+            }
+            throw error
         }
 
-        let awsCredentials = try awsCredentialsProvider.getAWSCredentials().get()
         let sessionToken = (awsCredentials as? AWSTemporaryCredentials)?.sessionToken
         let signerCredentials = SigV4Signer.Credential(
             accessKey: awsCredentials.accessKeyId,

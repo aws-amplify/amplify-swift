@@ -8,6 +8,7 @@
 import Foundation
 
 @testable @preconcurrency import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 extension AuthenticationEvent {
 

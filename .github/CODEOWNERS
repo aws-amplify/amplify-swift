@@ -10,3 +10,25 @@
 # Changes to files in the api-dump or api-dump-test folder require admin approval.
 api-dump/* @aws-amplify/amplify-ios-admins
 api-dump-test/* @aws-amplify/amplify-ios-admins
+
+# The golden baselines of AWSCognitoAuthPlugin, the tests that pin them and the lock that guards them
+# require admin approval.
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenStoredFormat/ @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenErrors/ @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenLogs/ @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenKeychainQueries/ @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenConfiguration/ @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/GoldenTests/StoredFormat*.swift @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/GoldenTests/LegacyMigrationGoldenTests.swift @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/GoldenTests/KeychainQuery*.swift @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/GoldenTests/ConfigurationGoldenTests.swift @aws-amplify/amplify-ios-admins
+/scripts/cognito-engine/check_fixture_lock.sh @aws-amplify/amplify-ios-admins
+/scripts/cognito-engine/gen_engine_paths.py @aws-amplify/amplify-ios-admins
+/scripts/cognito-engine/engine_paths.txt @aws-amplify/amplify-ios-admins
+/.github/workflows/auth_golden_fixture_lock.yml @aws-amplify/amplify-ios-admins
+
+# The Amplify-free engine's dependency gates (its dependencies and privacy manifests)
+# require admin approval: weakening them would let an Amplify edge reach the client unnoticed.
+/scripts/cognito-engine/check_engine_deps.py @aws-amplify/amplify-ios-admins
+/scripts/cognito-engine/check_engine_privacy_manifest.py @aws-amplify/amplify-ios-admins
+/.github/workflows/auth_engine_gates.yml @aws-amplify/amplify-ios-admins
