@@ -30,6 +30,10 @@ struct MockCredentials: AmplifyFoundation.AWSCredentials {
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 class AmplifyKinesisClientResourceCleanupTests: XCTestCase, @unchecked Sendable {
 
+    /// - Given: a client with a 1-second interval flush strategy, enabled so that its scheduler runs
+    /// - When: the last strong reference to the client goes out of scope
+    /// - Then:
+    ///    - the client is deallocated: the running scheduler does not keep it alive
     func testDeinitStopsScheduler() async throws {
         // Create a weak reference to track deallocation
         weak var weakKinesis: AmplifyKinesisClient?

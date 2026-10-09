@@ -8,7 +8,7 @@
 @testable import AWSCloudWatchLoggingPlugin
 @testable import InternalCloudWatchLogging
 
-import Amplify
+@testable import Amplify
 import Network
 import XCTest
 @testable import AmplifyTestCommon
@@ -35,6 +35,9 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase, @unchecked S
         if let token = unsubscribeToken {
             Amplify.Hub.removeListener(token)
         }
+        // Leave Amplify as a fresh process has it, so tests that run next, in other modules, can add
+        // plugins.
+        await Amplify.reset()
         // Remove the whole logging directory, not just `amplify.0.log`; the session under test
         // rotates to additional files (e.g. `amplify.1.log`) that would otherwise leak between tests.
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!

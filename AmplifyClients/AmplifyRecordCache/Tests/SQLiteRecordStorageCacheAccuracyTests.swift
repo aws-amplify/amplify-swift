@@ -33,6 +33,10 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase, @unchecked Sendable {
         try await super.tearDown()
     }
 
+    /// - Given: an empty storage
+    /// - When: two records of 4 and 5 bytes (partition key plus data) are added
+    /// - Then:
+    ///    - the cached size is 9
     func testCachedSizeMatchesDatabaseAfterAddOperations() async throws {
         // Given
         let record1 = RecordInput(streamName: "stream1", partitionKey: "a", data: Data([1, 2, 3]))
@@ -47,6 +51,10 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(cachedSize, 9)
     }
 
+    /// - Given: three stored records across two streams
+    /// - When: the two oldest are deleted
+    /// - Then:
+    ///    - the cached size is 3, the size of the one that remains
     func testCachedSizeMatchesDatabaseAfterDeleteOperations() async throws {
         // Given: Add records
         let record1 = RecordInput(streamName: "stream1", partitionKey: "a", data: Data([1, 2, 3]))
@@ -70,6 +78,10 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(cachedSize, 3)
     }
 
+    /// - Given: two stored records in two streams
+    /// - When: the storage is cleared
+    /// - Then:
+    ///    - the cached size is 0
     func testCachedSizeMatchesDatabaseAfterClearOperations() async throws {
         // Given: Add records
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "a", data: Data([1, 2, 3])))
@@ -83,6 +95,10 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(cachedSize, 0)
     }
 
+    /// - Given: an empty storage
+    /// - When: records of 6 and 4 bytes are added, the 6-byte one is deleted, and a 3-byte one is added
+    /// - Then:
+    ///    - the cached size is 10, then 4, then 7
     func testCachedSizeRemainsAccurateThroughMixedOperations() async throws {
         // "a"(1) + data(5) = 6
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "a", data: Data([1, 2, 3, 4, 5])))
@@ -108,6 +124,11 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(cachedSize, 7) // 4 + 3
     }
 
+    /// - Given: four producers adding 400 records each and two consumers deleting 100 records each
+    /// - When: they all run concurrently against one storage
+    /// - Then:
+    ///    - the cached size equals the size of the records left, every created record is either still stored or
+    ///      was deleted (never both), and every stored record was created
     func testConcurrentProducerConsumerOperationsAreThreadSafe() async throws {
         // Given
         let recordSize = 10
@@ -234,6 +255,10 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase, @unchecked Sendable {
         XCTAssertFalse(remainingKeys.isEmpty)
     }
 
+    /// - Given: a storage with a 200-byte per-stream limit, holding six 51-byte records in each of two streams
+    /// - When: records are read by stream
+    /// - Then:
+    ///    - each stream returns 3 records (153 bytes), all from that stream
     func testGetRecordsByStreamRespectsPerStreamByteLimitAcrossMultipleStreams() async throws {
         // Storage with a large cache but a tight 200-byte per-stream limit
         let perStreamStorage = try SQLiteRecordStorage(
@@ -277,6 +302,10 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase, @unchecked Sendable {
         }
     }
 
+    /// - Given: three stored records across two streams
+    /// - When: records are read by stream with no `afterIdByStream` entries
+    /// - Then:
+    ///    - all three are returned
     func testGetRecordsByStreamWithEmptyAfterIdByStreamReturnsAllRecords() async throws {
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key2", data: Data([2])))
@@ -288,6 +317,10 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(allRecords.count, 3)
     }
 
+    /// - Given: three stored records in one stream
+    /// - When: records are read after the first record's ID
+    /// - Then:
+    ///    - the other two are returned, each with a higher ID
     func testGetRecordsByStreamExcludesRecordsUpToLastIdPerStream() async throws {
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key2", data: Data([2])))
@@ -304,6 +337,10 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase, @unchecked Sendable {
         XCTAssertTrue(filtered.allSatisfy { $0.id > afterId })
     }
 
+    /// - Given: two stored records in one stream
+    /// - When: records are read after the highest ID
+    /// - Then:
+    ///    - no stream is returned
     func testGetRecordsByStreamWithAllRecordsExcludedReturnsEmpty() async throws {
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key2", data: Data([2])))
@@ -315,6 +352,10 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(result.count, 0)
     }
 
+    /// - Given: two stored records in each of two streams
+    /// - When: records are read after each stream's first record ID
+    /// - Then:
+    ///    - two records are returned, one per stream, and neither first record is among them
     func testGetRecordsByStreamExcludesPerStreamAcrossMultipleStreams() async throws {
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key2", data: Data([2])))
@@ -336,6 +377,10 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase, @unchecked Sendable {
         XCTAssertTrue(remaining.allSatisfy { $0.id != stream2First.id })
     }
 
+    /// - Given: a storage with a batch limit of 2, holding four records in one stream
+    /// - When: records are read three times, each after the highest ID of the previous batch
+    /// - Then:
+    ///    - the batches hold 2, 2 and 0 records, and each batch's IDs are higher than the previous batch's
     func testGetRecordsByStreamRespectsBatchLimitWithAfterIdByStream() async throws {
         let batchStorage = try SQLiteRecordStorage(
             identifier: "test_batch_exclude",

@@ -36,6 +36,10 @@ class AutoFlushSchedulerTests: XCTestCase, @unchecked Sendable {
         try await super.tearDown()
     }
 
+    /// - Given: a scheduler with a 1-second interval over a mock storage
+    /// - When: it is started and runs for 2.5 seconds
+    /// - Then:
+    ///    - it has flushed exactly twice
     func testStartShouldBeginPeriodicFlushing() async throws {
         // Given
         let interval: TimeInterval = 1
@@ -55,6 +59,10 @@ class AutoFlushSchedulerTests: XCTestCase, @unchecked Sendable {
         )
     }
 
+    /// - Given: a scheduler with a 1-second interval over a mock storage
+    /// - When: it runs for 1.5 seconds, is disabled, and 2 more seconds pass
+    /// - Then:
+    ///    - it flushed exactly once before being disabled, and never after
     func testDisableShouldStopPeriodicFlushing() async throws {
         // Given
         let interval: TimeInterval = 1
@@ -82,6 +90,10 @@ class AutoFlushSchedulerTests: XCTestCase, @unchecked Sendable {
         )
     }
 
+    /// - Given: a scheduler with a 1-second interval that has been running for 0.5 seconds
+    /// - When: it is started again and runs for 1.5 more seconds
+    /// - Then:
+    ///    - it has flushed exactly once: the restart cancelled the first job and started the interval again
     func testStartShouldCancelPreviousJobAndRestart() async throws {
         // Given
         let interval: TimeInterval = 1

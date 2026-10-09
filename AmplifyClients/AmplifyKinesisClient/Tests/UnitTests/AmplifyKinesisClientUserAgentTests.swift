@@ -30,6 +30,10 @@ private final class UserAgentCapturingEngine: HTTPClient, @unchecked Sendable {
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 class AmplifyKinesisClientUserAgentTests: XCTestCase, @unchecked Sendable {
 
+    /// - Given: a client whose HTTP engine captures the request's `User-Agent` header and then fails
+    /// - When: a `putRecords` request is sent through the SDK client
+    /// - Then:
+    ///    - the header contains `lib/amplify-swift#<version>` and `md/amplify-kinesis#<version>`
     func testUserAgentContainsKinesisMetadata() async throws {
         let capturingEngine = UserAgentCapturingEngine()
 
