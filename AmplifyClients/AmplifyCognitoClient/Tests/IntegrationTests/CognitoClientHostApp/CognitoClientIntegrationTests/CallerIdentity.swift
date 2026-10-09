@@ -21,7 +21,7 @@ enum CallerIdentity {
     /// The ARN and identity `GetCallerIdentity` returns for `provider`'s credentials.
     static func of(_ provider: any AWSCredentialsProvider, region: String) async throws -> GetCallerIdentityOutput {
         let client = try await STSClient(
-            config: STSClient.STSClientConfiguration(
+            config: STSClient.STSClientConfig(
                 awsCredentialIdentityResolver: FoundationToSDKCredentialsAdapter(provider: provider),
                 region: region
             )

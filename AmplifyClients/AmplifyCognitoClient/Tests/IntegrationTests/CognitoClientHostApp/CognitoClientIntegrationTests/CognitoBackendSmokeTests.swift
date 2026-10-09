@@ -31,7 +31,7 @@ final class CognitoBackendSmokeTests: XCTestCase {
         )
         let identityPool = try XCTUnwrap(configuration.identityPool)
         let client = try await CognitoIdentityClient(
-            config: CognitoIdentityClient.CognitoIdentityClientConfiguration(region: identityPool.region)
+            config: CognitoIdentityClient.CognitoIdentityClientConfig(region: identityPool.region)
         )
 
         let getId = try await client.getId(input: GetIdInput(identityPoolId: identityPool.poolId))

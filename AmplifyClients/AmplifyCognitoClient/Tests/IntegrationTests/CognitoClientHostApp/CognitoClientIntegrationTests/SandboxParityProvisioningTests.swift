@@ -555,7 +555,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
         let region = try XCTUnwrap(auth["aws_region"] as? String)
         let identityPoolId = try XCTUnwrap(auth["identity_pool_id"] as? String)
         let client = try await CognitoIdentityClient(
-            config: CognitoIdentityClient.CognitoIdentityClientConfiguration(region: region)
+            config: CognitoIdentityClient.CognitoIdentityClientConfig(region: region)
         )
 
         let getId = try await client.getId(input: GetIdInput(identityPoolId: identityPoolId))

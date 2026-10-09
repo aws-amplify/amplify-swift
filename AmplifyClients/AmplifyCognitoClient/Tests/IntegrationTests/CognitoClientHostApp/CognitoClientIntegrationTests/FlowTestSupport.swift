@@ -396,7 +396,7 @@ private actor RoleCache {
             throw HarnessError.malformedFixture("\(IntegrationTestEnvironment.outputsResource).json has no identity pool or no user pool.")
         }
         let identity = try await CognitoIdentityClient(
-            config: CognitoIdentityClient.CognitoIdentityClientConfiguration(region: identityPool.region)
+            config: CognitoIdentityClient.CognitoIdentityClientConfig(region: identityPool.region)
         )
         let guestId = try await identity.getId(input: GetIdInput(identityPoolId: identityPool.poolId)).identityId
         let guest = try await identity.getCredentialsForIdentity(input: GetCredentialsForIdentityInput(identityId: guestId))
