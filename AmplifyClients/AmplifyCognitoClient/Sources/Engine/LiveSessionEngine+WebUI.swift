@@ -208,13 +208,16 @@ enum LiveHostedUISteps {
         resources: EngineResources
     ) async throws -> SignInStepOutcome {
         try await operation.configure(resources.authConfiguration)
-        await operation.send(AuthenticationEvent(eventType: .signInRequested(SignInEventData(
-            username: nil,
-            password: nil,
-            signInMethod: .hostedUI(options)
-        ))))
         do {
-            return try await operation.firstState { state in
+            // Subscribed before the event is sent, as the plugin's `HostedUISignInHelper.doSignIn` listens first:
+            // no state the flow passes through can be missed.
+            return try await operation.firstState(
+                after: AuthenticationEvent(eventType: .signInRequested(SignInEventData(
+                    username: nil,
+                    password: nil,
+                    signInMethod: .hostedUI(options)
+                )))
+            ) { state in
                 try progress(of: state, operation: operation)
             }
         } catch is CancellationError {
