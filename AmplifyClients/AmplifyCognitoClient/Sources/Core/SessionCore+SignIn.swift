@@ -31,7 +31,8 @@ extension SessionCore {
     ///
     /// **The refusal is per session.** It throws `invalidState` only when *this* session is signed in, and
     /// its refresh token is not known to be dead: another session's user never blocks it. A guest session
-    /// signs in, and hands the engine its guest payload so the user keeps the identity. A session waiting
+    /// signs in on the same session, and hands the engine its guest payload, though the signed-in identity ID
+    /// is the one the identity pool maps the login to, not the guest's, as in the plugin. A session waiting
     /// on a challenge signs in afresh: the engine supersedes the pending attempt.
     ///
     /// The network step runs outside the record's gate, so a slow sign-in never blocks another handle's
@@ -148,8 +149,8 @@ extension SessionCore {
     /// 1. no auto-sign-in session in the engine: "Not in a signed up state…", before anything else, so a
     ///    signed-in session gets this error and a pending sign-in is kept;
     /// 2. this session signed in: the plugin's "There is already a user in signedIn state…";
-    /// 3. otherwise it supersedes a pending sign-in (the plugin cancels one), keeps a guest's identity, and
-    ///    is committed by `commitSignIn`.
+    /// 3. otherwise it supersedes a pending sign-in (the plugin cancels one), hands the engine a guest's payload
+    ///    (the signed-in identity ID is still the login's), and is committed by `commitSignIn`.
     ///
     /// The auto-sign-in session is the engine's, so it is this session's only.
     ///
@@ -233,8 +234,8 @@ extension SessionCore {
         return false
     }
 
-    /// The snapshot a confirmation commits against, the guest payload the attempt should now keep the
-    /// identity of (the session may have become a guest since `signIn`), and the attempt's epoch.
+    /// The snapshot a confirmation commits against, the guest payload the attempt should now be seeded with
+    /// (the session may have become a guest since `signIn`), and the attempt's epoch.
     private func confirmationBase() -> (SessionSnapshot, Data?, UInt64) {
         let snapshot = restoredSnapshotIfAny ?? .absent
         let isGuest = snapshot.state(engine: engine, challenge: nil) == .guest

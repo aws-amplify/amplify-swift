@@ -301,7 +301,8 @@ extension SessionCore {
     /// Signs this session in through the hosted UI.
     ///
     /// A sign-in step, run as `signIn` runs one: under the session's `signInLock`, refused when this session is
-    /// signed in, a guest's identity kept, committed by `commitSignIn`. A password sign-in waiting on a
+    /// signed in, a guest's payload handed to the engine (the signed-in identity ID is the login's, not the
+    /// guest's), committed by `commitSignIn`. A password sign-in waiting on a
     /// challenge is cancelled first, so the state stops reporting it.
     ///
     /// **Nothing ends until the sheet is this session's.** The refusal, the `.distinctFromOtherSessions` listing

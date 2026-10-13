@@ -310,14 +310,17 @@ final class ChallengeTests: XCTestCase {
         XCTAssertEqual(events.received, [])
     }
 
-    /// Design §4.4's guest-to-user continuity holds even when the session only becomes a guest
-    /// while its sign-in waits on a challenge.
+    /// A session that only becomes a guest while its sign-in waits on a challenge hands the engine that
+    /// guest payload when the challenge is answered, as `signIn` does for a guest. A sign-in keeps the same
+    /// session, not the same identity: the signed-in identity ID is the one the identity pool maps the login to, as
+    /// in the plugin.
     ///
     /// - Given: a signed-out session waiting on a challenge, which then acquires guest credentials
     /// - When: the challenge is answered
     /// - Then:
-    ///    - the signed-in session keeps the guest's identity ID
-    func testAGuestAcquiredDuringAChallengeKeepsItsIdentity() async throws {
+    ///    - the engine is handed the guest payload
+    ///    - the signed-in session has the login's identity ID, not the guest's
+    func testAGuestAcquiredDuringAChallengeIsHandedToTheEngineButTheLoginsIdentityIsKept() async throws {
         let (client, _) = try await challengedClient(work)
         let guest = try await client.fetchAuthSession()
         XCTAssertEqual(try guest.identityIdResult.get(), "us-east-1:guest")
@@ -326,7 +329,8 @@ final class ChallengeTests: XCTestCase {
         _ = try await client.confirmSignIn(challengeResponse: "123456")
 
         let session = try await client.fetchAuthSession()
-        XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:guest")
+        XCTAssertEqual(try session.identityIdResult.get(), FakeSessionEngine.loginIdentityId(for: "alice"))
+        XCTAssertNotEqual(try session.identityIdResult.get(), "us-east-1:guest")
         XCTAssertEqual(try session.userSubResult.get(), "sub-alice")
         XCTAssertEqual(harness.engine(for: work)?.confirmSignInCurrents, [guestPayload])
     }

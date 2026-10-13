@@ -71,8 +71,9 @@ protocol SessionEngine: Sendable {
     // MARK: Network
 
     /// Starts a sign-in. A sign-in already pending on this engine is cancelled first: a new sign-in
-    /// supersedes it. `current` is the session's guest payload, if it is a guest, so the signed-in
-    /// credentials keep its identity; otherwise `nil`.
+    /// supersedes it. `current` is the session's guest payload, if it is a guest, which seeds the operation as
+    /// the plugin's machine holds a guest's session when its sign-in starts; otherwise `nil`. The signed-in
+    /// identity ID is not the guest's: it is the one the identity pool maps the login to, as in the plugin.
     ///
     /// Whether the session may sign in at all (it must not already be signed in) is the core's decision,
     /// not the engine's: the engine does not know the session's record.
@@ -128,8 +129,9 @@ protocol SessionEngine: Sendable {
     ///
     /// `current` is the session's guest payload now, if it is a guest, else `nil`. The session may have
     /// become a guest while the sign-in waited on its challenge (`fetchAuthSession` on a signed-out
-    /// session); the attempt then uses this payload in place of the one `signIn` was given, so the
-    /// signed-in credentials keep the guest's identity ID (design §4.4).
+    /// session); the attempt then uses this payload in place of the one `signIn` was given. As for
+    /// `signIn`, it only seeds the operation: the signed-in identity ID is the one the identity pool maps the
+    /// login to, not the guest's (the same session, not the same identity).
     ///
     /// `epoch` is the core's sign-in epoch now. The engine answers only an attempt of that same epoch: an
     /// attempt from an earlier one belongs to a sign-in a sign-out has ended, so it is stopped and the call
@@ -193,7 +195,8 @@ protocol SessionEngine: Sendable {
     func deleteUser(_ payload: Data) async throws
 
     /// Signs in through the hosted UI: a sign-in step, run as `signIn` runs
-    /// one. It supersedes a pending sign-in, `current` is the guest payload to keep the identity of, and
+    /// one. It supersedes a pending sign-in, `current` is the guest payload that seeds the operation, as for
+    /// `signIn` (the signed-in identity ID is the login's, not the guest's), and
     /// `epoch` is the core's sign-in epoch for this attempt. `cancelPendingSignIn(before:)` ends it, and so
     /// does cancelling the calling task; either dismisses the browser.
     ///
@@ -288,7 +291,7 @@ protocol SessionEngine: Sendable {
 
     /// Signs in with the auto-sign-in session. A sign-in step like `signIn`: it supersedes a pending sign-in
     /// (the live engine's `beginSignIn(epoch:)` preamble, then `run(epoch:on:_:)`), `current` is the guest
-    /// payload to keep the identity of, `epoch` is the core's sign-in epoch for this attempt, as for `signIn`,
+    /// payload that seeds the operation, as for `signIn`, `epoch` is the core's sign-in epoch for this attempt,
     /// and the core commits `.done` under the same rules. Called only after `hasAutoSignInSession` answered
     /// `true` and the session was found not signed in. Keeps the auto-sign-in session whatever the outcome.
     ///

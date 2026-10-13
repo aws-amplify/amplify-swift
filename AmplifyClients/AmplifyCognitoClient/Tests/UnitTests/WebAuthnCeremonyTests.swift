@@ -53,7 +53,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         let window = await WebAuthnFixtures.window()
         engine.scriptSignIn { request, current in
             _ = try await engine.runCeremony(request.webAuthn, anchor: request.webAuthn?.anchor)
-            return .done(payload: FakeSessionEngine.signedIn(request.username, keepingIdentityOf: current).data)
+            return .done(payload: FakeSessionEngine.signedIn(request.username, from: current).data)
         }
 
         for (index, flow) in [AuthClientAuthFlowType.userAuth(preferredFirstFactor: .webAuthn), .userAuth(preferredFirstFactor: nil)].enumerated() {

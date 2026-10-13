@@ -240,7 +240,7 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
         XCTAssertEqual(state, .awaitingChallenge(setup))
     }
 
-    /// A guest session signing in keeps its identity across the relaunch.
+    /// A guest session's interrupted sign-in is resumed over the guest after a relaunch.
     ///
     /// - Given: `work` stored as a guest, and a saved challenge
     /// - When: a client for `work` restores

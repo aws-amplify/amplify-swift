@@ -197,7 +197,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     private var attemptEpoch: UInt64 = 0
     private var latestCancelBefore: UInt64 = 0
     private var attemptUsername: String?
-    /// The guest payload the pending attempt keeps the identity of.
+    /// The guest payload the pending attempt was seeded with, if the session was a guest.
     private var attemptGuest: Data?
     /// The window the pending attempt's sign-in was given, which a `"WEB_AUTHN"` answer without one uses.
     private var attemptWebAuthnAnchor: EnginePresentationAnchorBox?
@@ -480,14 +480,24 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
             if let script {
                 return try await script(request, current)
             }
-            return .done(payload: Self.signedIn(request.username, keepingIdentityOf: current).data)
+            return .done(payload: Self.signedIn(request.username, from: current).data)
         }
     }
 
-    /// The default completed sign-in: the user, keeping a guest payload's identity, as the live engine's
-    /// identity pool step does.
-    static func signedIn(_ username: String, keepingIdentityOf guest: Data?) -> FakePayload {
-        FakePayload.signedIn(username, identityId: guest.flatMap(FakePayload.decode)?.identityId)
+    /// The default completed sign-in of `username`, from a session whose payload was `current`.
+    ///
+    /// A guest's sign-in gets an identity minted for the login (`loginIdentityId(for:)`), never the guest's: the
+    /// live engine's identity pool step sends `GetId` with the login alone, so Cognito answers with the identity it
+    /// maps the login to, as for the plugin. With no guest, the payload names no identity, as the fixtures' signed-in
+    /// payloads do.
+    static func signedIn(_ username: String, from current: Data?) -> FakePayload {
+        let wasGuest = current.flatMap(FakePayload.decode)?.kind == SessionKind.guest.storedValue
+        return FakePayload.signedIn(username, identityId: wasGuest ? loginIdentityId(for: username) : nil)
+    }
+
+    /// The identity the fake's identity pool maps `username`'s login to.
+    static func loginIdentityId(for username: String) -> String {
+        "us-east-1:login-\(username)"
     }
 
     func confirmSignIn(_ request: EngineConfirmSignInRequest, current: Data?, epoch: UInt64) async throws -> EngineStepResult {
@@ -530,7 +540,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
             if let script {
                 return try await script(request)
             }
-            return .done(payload: Self.signedIn(username ?? "alice", keepingIdentityOf: guest).data)
+            return .done(payload: Self.signedIn(username ?? "alice", from: guest).data)
         }
     }
 
@@ -644,7 +654,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     }
 
     /// Supersedes a pending sign-in, as `signIn` does, then answers from the browser, the script, or, by
-    /// default, `.done` as `web-user`, keeping a guest's identity, the payload marked as sharing the browser's
+    /// default, `.done` as `web-user` (`signedIn(_:from:)`), the payload marked as sharing the browser's
     /// cookies when the request did not prefer an ephemeral session.
     func signInWithWebUI(_ request: EngineWebUISignInRequest, current: Data?, epoch: UInt64) async throws -> EngineStepResult {
         let script = withLock { () -> WebUIScript? in
@@ -658,7 +668,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         }
         let step = withLock { beginStep(epoch: epoch) }
         defer { withLock { _ = endStep(step) } }
-        var payload = Self.signedIn("web-user", keepingIdentityOf: current)
+        var payload = Self.signedIn("web-user", from: current)
         payload.hostedUIShared = request.options.prefersEphemeralSession ? nil : true
         let result = EngineStepResult.done(payload: payload.data)
         #if os(iOS) || os(macOS) || os(visionOS)
@@ -884,7 +894,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     /// A sign-in step like `signIn`: it supersedes a pending sign-in first, as the live engine's
     /// `beginSignIn(epoch:)` preamble does, then with no auto-sign-in session throws the plugin's
     /// `invalidState`; otherwise it is held by `holdSignIns(on:)` like `signIn`, and follows the same
-    /// contract. By default `.done` as the user who signed up, keeping a guest's identity.
+    /// contract. By default `.done` as the user who signed up (`signedIn(_:from:)`).
     func autoSignIn(current: Data?, epoch: UInt64) async throws -> EngineStepResult {
         let (username, latch, honours, started) = withLock { () -> (String?, Gate?, Bool, Int) in
             if challenge != nil {
@@ -914,7 +924,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         return try await settle(step, retryable: false) {
             try await recordAccountOperation(
                 .autoSignIn(current: current, epoch: epoch),
-                default: EngineStepResult.done(payload: Self.signedIn(username, keepingIdentityOf: current).data)
+                default: EngineStepResult.done(payload: Self.signedIn(username, from: current).data)
             )
         }
     }
