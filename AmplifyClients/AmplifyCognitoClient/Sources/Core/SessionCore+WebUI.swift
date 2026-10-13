@@ -319,9 +319,10 @@ extension SessionCore {
     /// operation's issued-token tap hands the tokens back rather than revoking them.
     ///
     /// **`.distinctFromOtherSessions` is checked twice**: by the engine, against the listing read before the
-    /// wait for the sheet, and again here once the browser has returned, against a fresh listing, since another
-    /// session may have signed the same user in meanwhile. The second check is not atomic with the commit:
-    /// two sessions committing the same user at the same moment can both land.
+    /// wait for the sheet, which fails closed, and again here once the browser has returned, against a fresh
+    /// listing, since another session may have signed the same user in meanwhile. If that second listing cannot
+    /// be read, a warning is logged and the sign-in is committed on the first. The second check is not atomic with
+    /// the commit: two sessions committing the same user at the same moment can both land.
     ///
     /// **Cancellation.** The caller's task is watched here, where it runs: `withSignInLock` runs the step in a
     /// task of its own, which the caller's cancellation never reaches. Its handler cancels the task the lease
@@ -541,14 +542,27 @@ extension SessionCore {
     /// `.distinctFromOtherSessions` again, once the browser has returned: the engine checked a listing
     /// read before the wait for the sheet, and another session may have signed the same user in since. Throws
     /// `.unexpectedIdentity`, which names the session holding the user, after revoking the tokens, which nobody
-    /// will commit. A listing that cannot be read fails closed, as the first one does.
+    /// will commit.
+    ///
+    /// **A listing that cannot be read here logs a warning and commits** (`hostedUIRecheckSkippedWarning`). The
+    /// first listing, read before the sheet, fails closed, and this sign-in has passed it; the user has finished in
+    /// the browser by now, and failing would throw away a completed sign-in because another session's record could
+    /// not be read (a locked keychain, say). Only a listing that shows the user on another session refuses.
     private nonisolated func refuseUserOfAnotherSession(_ payload: Data, caller: SystemSheetFlow) async throws {
         do {
             let summary = try engine.checkedDescribe(payload)
             guard let userId = summary.userId else {
                 return
             }
-            let (_, holders) = try await identityPolicy(for: .distinctFromOtherSessions)
+            let holders: [String: SessionID]
+            do {
+                (_, holders) = try await identityPolicy(for: .distinctFromOtherSessions)
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch {
+                ClientLog.logger(ClientLog.hostedUI).warn(Self.hostedUIRecheckSkippedWarning, error)
+                return
+            }
             guard holders[userId] != nil else {
                 return
             }
@@ -563,6 +577,12 @@ extension SessionCore {
             throw error
         }
     }
+
+    /// The warning when the second `.distinctFromOtherSessions` listing cannot be read: the sign-in is committed on
+    /// the first listing's answer. It names no one.
+    static let hostedUIRecheckSkippedWarning = "A hosted UI sign-in with distinctFromOtherSessions could not read the "
+        + "other sessions again after the browser returned, so it was committed on the check made before the browser "
+        + "was shown."
 
     /// The nonce a flow sends: the caller's, unless it is missing or empty, else a minted one.
     static func flowNonce(_ callers: String?) -> String {

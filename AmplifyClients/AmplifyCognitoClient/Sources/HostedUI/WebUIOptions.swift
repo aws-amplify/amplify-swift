@@ -236,6 +236,11 @@ public extension WebUIOptions {
 
         /// The user that comes back must not be signed in to another session of this client's
         /// configuration (a saved, signed-in session): the "add another account" intent.
+        ///
+        /// The other sessions are read before the browser is shown, and a session that cannot be read then fails
+        /// the sign-in with `storageUnavailable`. They are read again once the browser returns, since another
+        /// session may have signed the user in while this one waited; if that second read fails, a warning is
+        /// logged under `AmplifyCognitoClient.HostedUI` and the sign-in completes on the first check.
         case distinctFromOtherSessions
     }
 }

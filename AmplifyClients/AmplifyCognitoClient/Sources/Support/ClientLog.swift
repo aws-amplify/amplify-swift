@@ -25,6 +25,10 @@ enum ClientLog {
     /// The keychain item stores the client builds over the real keychain.
     static let keychainItemStore = "KeychainItemStore"
 
+    /// The hosted UI's sign-in: the warning that `.distinctFromOtherSessions` could not check the other sessions
+    /// again once the browser returned (`SessionCore+WebUI.swift`).
+    static let hostedUI = "HostedUI"
+
     /// The default session's shared saved login: the warning that it holds another principal
     /// (`SessionCore+SharedRecordWarning.swift`), which is temporary and goes with the plugin bridge, and the warning
     /// that a login deleted by a configuration change could not be revoked (`SessionCore+PluginConfiguration.swift`).

@@ -55,6 +55,7 @@ final class ClientLogCategoryTests: XCTestCase {
         XCTAssertEqual(ClientLog.category(ClientLog.sessionSignOut), "AmplifyCognitoClient.SessionSignOut")
         XCTAssertEqual(ClientLog.category(ClientLog.keychainItemStore), "AmplifyCognitoClient.KeychainItemStore")
         XCTAssertEqual(ClientLog.category(ClientLog.defaultSession), "AmplifyCognitoClient.DefaultSession")
+        XCTAssertEqual(ClientLog.category(ClientLog.hostedUI), "AmplifyCognitoClient.HostedUI")
         XCTAssertEqual(SessionRecordStore.ChallengeLog.category, "AmplifyCognitoClient.SessionRecordStore")
         XCTAssertEqual((ClientLog.logger("X") as? ClientEngineLogger)?.name, "AmplifyCognitoClient.X")
     }

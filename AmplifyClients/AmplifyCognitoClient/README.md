@@ -840,6 +840,11 @@ A browser can finish a sign-in from a cookie without the user typing anything, a
 | `.matches("<sub-or-username>")` | This user ID (`sub`) or username, compared exactly. An alias never matches |
 | `.distinctFromOtherSessions` | Not signed in to another saved session of this configuration |
 
+`.distinctFromOtherSessions` reads the other sessions before the browser is shown, and throws `storageUnavailable` if
+one can't be read. It reads them again once the browser returns, since another session may have signed the same user
+in meanwhile, and then throws `unexpectedIdentity` naming that session. If that second read fails, the client logs a
+warning under `AmplifyCognitoClient.HostedUI` and completes the sign-in on the first check.
+
 ```swift
 @MainActor
 func addAccount(client: AmplifyCognitoClient, window: AuthClientPresentationAnchor) async throws {
@@ -1520,6 +1525,8 @@ a sink can tell the client's lines from the Auth plugin's:
 - `AmplifyCognitoClient.SessionRecordStore`: saved sessions, their listing, carrying them forward to a new
   configuration, and the interrupted sign-in's record.
 - `AmplifyCognitoClient.SessionSignOut`: sign-out.
+- `AmplifyCognitoClient.HostedUI`: the hosted UI's sign-in, such as the warning that `.distinctFromOtherSessions`
+  could not check the other sessions again (see [Adding another account](#adding-another-account)).
 - `AmplifyCognitoClient.DefaultSession`: `.default`'s saved login, such as the warning that it holds a different
   user or guest (see [Side by side is not supported](#side-by-side-is-not-supported)), and the warning that a login
   deleted by a configuration change could not be revoked (see

@@ -6,6 +6,7 @@
 //
 
 #if os(iOS) || os(macOS) || os(visionOS)
+@testable import AmplifyFoundation
 import AuthenticationServices
 import InternalAWSCognitoAuth
 import XCTest
@@ -926,6 +927,45 @@ final class WebUISignInTests: XCTestCase {
         }
         let workState = await workClient.currentSessionState()
         XCTAssertEqual(workState, .signedIn(webUser))
+    }
+
+    /// The second `.distinctFromOtherSessions` check logs and commits when it cannot read the other sessions: the
+    /// first, before the sheet, failed closed, and the user has finished in the browser.
+    ///
+    /// - Given: "home" signed in as another user; "work" showing a hosted-UI sign-in with
+    ///   `.distinctFromOtherSessions`, its first listing read; then "home"'s record becomes unreadable (a locked
+    ///   keychain)
+    /// - When: the browser returns the web user
+    /// - Then:
+    ///    - "work" is signed in as the web user, nothing is revoked
+    ///    - one warning, naming no one, is logged under `AmplifyCognitoClient.HostedUI`
+    func testASecondListingThatCannotBeReadLogsAndCommits() async throws {
+        _ = try harness.signIn(home, .signedIn("bob"))
+        let workClient = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let browser = FakeBrowser()
+        engine.showWebUISignIns(in: browser)
+        _ = await workClient.currentSessionState()
+        let sink = CategoryCapture()
+        AmplifyLogging.addSink(sink)
+        defer { AmplifyLogging.removeSink(sink) }
+
+        let signIn = await startSignIn(workClient, options: WebUIOptions(identityExpectation: .distinctFromOtherSessions))
+        await browser.shown.waitForArrivals(1)
+        harness.keychain.failingReads(of: harness.store().sessionAccount(for: home), with: errSecInteractionNotAllowed)
+        browser.finishWithDefault()
+        let result = try await signIn.value
+        harness.keychain.clearFailures()
+
+        XCTAssertEqual(result.nextStep, .done)
+        let state = await workClient.currentSessionState()
+        XCTAssertEqual(state, .signedIn(webUser))
+        XCTAssertEqual(engine.revokeCalls, [])
+        XCTAssertEqual(
+            sink.categories(containing: SessionCore.hostedUIRecheckSkippedWarning),
+            [ClientLog.category(ClientLog.hostedUI)]
+        )
+        XCTAssertEqual(sink.lines(in: [ClientLog.category(ClientLog.hostedUI)]), [SessionCore.hostedUIRecheckSkippedWarning])
     }
 
     /// - Given: `.default` on the Auth plugin's record, its own, signed in
