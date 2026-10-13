@@ -253,8 +253,15 @@ struct EngineOperation: Sendable {
 
 /// The engine's logger in the client: `AmplifyFoundation` logging under the category `AmplifyCognitoClient`.
 /// A scope the engine asks for is logged under `AmplifyCognitoClient.<scope>`, the scope
-/// named as the engine's default router names it. **No session ID** appears in either: an app-chosen ID can
-/// be an email address.
+/// named as the engine's default router names it. **No session ID** appears in either: a session ID can be
+/// derived from a user identifier, such as a username or `sub`.
+///
+/// **URL queries are redacted.** Every line, at every level, has the query and fragment of each URL in it
+/// replaced by `<redacted>` (`redactingURLQueries(_:)`), so the hosted UI's authorize URL, whose query holds
+/// `state`, `nonce`, the PKCE `code_challenge`, `login_hint` and `userContextData`, and a redirect carrying an
+/// authorization code never reach an app's sink. The engine's lines are otherwise the plugin's own, unchanged:
+/// its debug and verbose lines can still hold usernames and Cognito responses, as the plugin's do. The plugin
+/// logs through its own router, so its lines are not redacted.
 struct ClientEngineLogger: EngineScopedLogger {
 
     static let category = "AmplifyCognitoClient"
@@ -274,26 +281,39 @@ struct ClientEngineLogger: EngineScopedLogger {
     }
 
     func error(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        logger.error(message(), error())
+        logger.error(Self.redactingURLQueries(message()), error())
     }
 
     func warn(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        logger.warn(message(), error())
+        logger.warn(Self.redactingURLQueries(message()), error())
     }
 
     func info(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        logger.info(message(), error())
+        logger.info(Self.redactingURLQueries(message()), error())
     }
 
     func debug(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        logger.debug(message(), error())
+        logger.debug(Self.redactingURLQueries(message()), error())
     }
 
     func verbose(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        logger.verbose(message(), error())
+        logger.verbose(Self.redactingURLQueries(message()), error())
     }
 
     func log(_ logLevel: AmplifyFoundation.LogLevel, _ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        logger.log(logLevel, message(), error())
+        logger.log(logLevel, Self.redactingURLQueries(message()), error())
+    }
+
+    /// `message` with the query and fragment of every URL in it (`scheme://…?…` or `scheme://…#…`) replaced by
+    /// `?<redacted>`; the scheme, host and path are kept, so a line still says which endpoint it was about. A
+    /// message with no `://` is returned as it is, without a regular expression.
+    static func redactingURLQueries(_ message: String) -> String {
+        guard message.contains("://"),
+              let expression = try? NSRegularExpression(pattern: #"([A-Za-z][A-Za-z0-9+.\-]*://[^\s?#"'<>()]*)[?#][^\s"'<>()]*"#)
+        else {
+            return message
+        }
+        let range = NSRange(message.startIndex..., in: message)
+        return expression.stringByReplacingMatches(in: message, range: range, withTemplate: "$1?<redacted>")
     }
 }

@@ -8,6 +8,7 @@
 @_spi(AmplifyExperimental) import AmplifyFoundation
 @testable import AmplifyFoundation
 import InternalAmplifyKeychain
+import InternalAWSCognitoAuth
 import Security
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
@@ -122,6 +123,47 @@ final class ClientLogCategoryTests: XCTestCase {
             let itemStore = try XCTUnwrap(keychain as? KeychainItemStore, owner)
             let logger = try XCTUnwrap(Mirror(reflecting: itemStore).descendant("logger") as? ClientEngineLogger, owner)
             XCTAssertEqual(logger.name, "AmplifyCognitoClient.KeychainItemStore", owner)
+        }
+    }
+
+    /// The client's logger redacts the query and fragment of every URL, at every level: the hosted UI's authorize
+    /// URL that the engine's verbose line prints holds `state`, `nonce`, the PKCE challenge, `login_hint` and
+    /// `userContextData`, and a redirect holds the authorization code.
+    ///
+    /// - Given: the engine's logger in the client, scoped as the hosted UI's actions are
+    /// - When:
+    ///    - an authorize URL and a redirect with a code are logged at each level, beside a line with no URL
+    /// - Then:
+    ///    - each line keeps the URL's scheme, host and path, and none of the query values reaches the sink
+    ///    - the line with no URL is unchanged
+    func testTheEngineLoggerRedactsURLQueries() throws {
+        let scope = EngineLogScope.categoryNamespace("Authentication", "RedactionProbe-\(UUID().uuidString)")
+        let logger = ClientEngineLogger().scoped(scope)
+        let category = try XCTUnwrap(logger as? ClientEngineLogger).name
+        let authorize = "https://app.auth.us-east-1.amazoncognito.com/oauth2/authorize?response_type=code"
+            + "&client_id=client123&state=STATE-SECRET&nonce=NONCE-SECRET&code_challenge=CHALLENGE-SECRET"
+            + "&login_hint=alice%40example.com&userContextData=CONTEXT-SECRET"
+        let redirect = "myapp://callback/?code=CODE-SECRET&state=STATE-SECRET#FRAGMENT-SECRET"
+        let message = "Showing url \(authorize) then Optional(\(redirect))"
+
+        logger.error(message, nil)
+        logger.warn(message, nil)
+        logger.info(message, nil)
+        logger.debug(message, nil)
+        logger.verbose(message, nil)
+        logger.log(.verbose, message, nil)
+        logger.verbose("Starting execution", nil)
+
+        let lines = sink.lines(in: [category])
+        XCTAssertEqual(lines.count, 7)
+        let expected = "Showing url https://app.auth.us-east-1.amazoncognito.com/oauth2/authorize?<redacted> then "
+            + "Optional(myapp://callback/?<redacted>)"
+        XCTAssertEqual(Array(lines.prefix(6)), Array(repeating: expected, count: 6))
+        XCTAssertEqual(lines.last, "Starting execution")
+        for line in lines {
+            for secret in ["SECRET", "alice", "client123"] {
+                XCTAssertFalse(line.contains(secret), line)
+            }
         }
     }
 }
