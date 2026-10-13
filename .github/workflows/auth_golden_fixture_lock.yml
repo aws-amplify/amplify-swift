@@ -9,8 +9,8 @@
 # A second job checks that scripts/cognito-engine/engine_paths.txt (the files that belong to the shared Cognito module) matches
 # what scripts/cognito-engine/gen_engine_paths.py generates, so a hand edit or a move without a regeneration fails.
 # Unlike the first job it runs the head's generator: its lists are a reviewed input that each move updates.
-# The job itself is locked with this workflow; the generator and engine_paths.txt are protected by
-# CODEOWNERS (admin approval) instead. A missing generator fails the job.
+# The job itself is locked with this workflow. The generator is protected by CODEOWNERS (admin approval) instead;
+# engine_paths.txt is team-owned, since this job checks it against the generator. A missing generator fails the job.
 
 name: Auth | Plugin Behavior Snapshots
 
