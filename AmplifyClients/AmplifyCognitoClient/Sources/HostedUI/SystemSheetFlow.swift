@@ -144,19 +144,38 @@ final class SystemSheetFlow: @unchecked Sendable {
     /// The engine's ceremony context for this call: a runner that runs one
     /// ceremony under `sheetLock`'s lease for `session`, with the `.fail` policy, in this flow; and the stop the
     /// engine's `cancelPendingSignIn` calls, which is a session ending.
+    ///
+    /// The lock's refusal reaches the app with a passkey suggestion (`passkeyBrowserBusy(_:)`): the lock's own
+    /// suggestions name `whenBrowserBusy`, which no passkey call has.
     func ceremonyContext(anchor: EnginePresentationAnchorBox?, sheetLock: SystemSheetLock, session: SessionID) -> EngineCeremonyContext {
         EngineCeremonyContext(
             anchor: anchor,
             ceremony: { [self] body in
                 try await run {
-                    try await sheetLock.withLease(for: session, policy: .fail) { _ in
-                        try await body()
+                    do {
+                        return try await sheetLock.withLease(for: session, policy: .fail) { _ in
+                            try await body()
+                        }
+                    } catch let busy as AuthClientError where busy.isBrowserBusy {
+                        throw Self.passkeyBrowserBusy(busy)
                     }
                 }
             },
             cancel: { [weak self] in self?.cancel(.sessionEnded) }
         )
     }
+
+    /// The sheet lock's `browserBusy`, with a suggestion for a passkey ceremony, which always asks with `.fail`.
+    /// The holder and description are kept.
+    static func passkeyBrowserBusy(_ busy: AuthClientError) -> AuthClientError {
+        guard case .browserBusy(let holder, let description, _, let underlying) = busy else {
+            return busy
+        }
+        return .browserBusy(holder: holder, description, passkeyBrowserBusySuggestion, underlying)
+    }
+
+    static let passkeyBrowserBusySuggestion =
+        "Ask the user to finish with the sheet that is showing, or cancel it, then try again."
 }
 
 /// A task `SystemSheetFlow` can cancel, whatever its result type.

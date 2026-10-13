@@ -270,6 +270,8 @@ final class WebAuthnCeremonyTests: XCTestCase {
     ///    - `home` associates a passkey, and `home` signs in (after signing out) with a WebAuthn ceremony
     /// - Then:
     ///    - both throw `.browserBusy(holder: work)`, and neither of `home`'s ceremonies ran
+    ///    - both suggest finishing or cancelling the sheet that is showing, never `whenBrowserBusy`, which no
+    ///      passkey call has; the lock's description, naming `work`, is kept
     ///    - `work`'s associate then completes, and the sheet is free
     func testASecondCeremonyWhileOneHoldsTheSheetIsBusy() async throws {
         try harness.signIn(work, .signedIn("alice"))
@@ -305,6 +307,12 @@ final class WebAuthnCeremonyTests: XCTestCase {
 
         XCTAssertEqual(busyAssociate?.kind, .browserBusy(holder: work))
         XCTAssertEqual(busySignIn?.kind, .browserBusy(holder: work))
+        let lockError = AuthClientError.browserBusy(heldBy: work, requestedBy: home, reason: .heldByAnotherSession)
+        for busy in [busyAssociate, busySignIn] {
+            XCTAssertEqual(busy?.recoverySuggestion, SystemSheetFlow.passkeyBrowserBusySuggestion)
+            XCTAssertFalse(busy?.recoverySuggestion.contains("whenBrowserBusy") ?? true)
+            XCTAssertEqual(busy?.errorDescription, lockError.errorDescription)
+        }
         XCTAssertEqual(homeEngine.ceremonyAnchorCalls.count, 0)
         let free = await harness.sheetLock.currentHolder
         XCTAssertNil(free)
