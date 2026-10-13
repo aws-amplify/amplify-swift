@@ -8,8 +8,8 @@
 /// The next step of a multi-step sign-in.
 ///
 /// Mirrors Amplify core's `AuthSignInStep` case for case, with the same associated-value shapes,
-/// using client-owned payload types in place of Amplify core's. The client does not depend on
-/// Amplify core, so the plugin bridge maps between the two. Amplify core's typealiases are
+/// using client-owned payload types in place of Amplify core's, since the client does not depend on
+/// Amplify core (no bridge between the two ships yet). Amplify core's typealiases are
 /// spelled out: `AdditionalInfo` is `[String: String]`, `AllowedMFATypes` is
 /// `Set<AuthClientMFAType>` and `AvailableAuthFactorTypes` is `Set<AuthClientFactorType>`.
 ///

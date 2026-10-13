@@ -17,7 +17,7 @@ import XCTest
 ///
 /// - `AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Models/Options/AWSAuthWebUISignInOptions.swift`
 ///   (fields, `Prompt`)
-/// - `AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Support/HostedUI/HostedUIRequestHelper.swift`
+/// - `AmplifyClients/Internal/InternalAWSCognitoAuth/Sources/Support/HostedUI/HostedUIRequestHelper.swift`
 ///   (query item names and order)
 /// - `AmplifyClients/Internal/InternalAWSCognitoAuth/Sources/Support/Helpers/AuthProvider+Cognito.swift`
 ///   (`userPoolProviderName`)

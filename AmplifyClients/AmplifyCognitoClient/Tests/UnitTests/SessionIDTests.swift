@@ -66,7 +66,7 @@ final class SessionIDTests: XCTestCase {
     }
 
     /// The reason for the `$`: an app naming a session "default" for its own purposes must not land
-    /// on the record that adopts the migrated plugin credentials.
+    /// on `.default`, which is the Auth plugin's own saved login.
     ///
     /// - Given: `named("default")`, and other spellings near the sentinel
     /// - When: compared with the library's sentinel
@@ -92,7 +92,7 @@ final class SessionIDTests: XCTestCase {
         XCTAssertEqual(try SessionID.named(work.stringValue), work)
     }
 
-    /// `.default` is the only sentinel: the adopted plugin session lives under it, so no second ID
+    /// `.default` is the only sentinel: it is the Auth plugin's own saved login, so no second ID
     /// can address the plugin's record.
     ///
     /// - Given: the retired `$plugin` spelling, as a stored key segment and as encoded JSON
