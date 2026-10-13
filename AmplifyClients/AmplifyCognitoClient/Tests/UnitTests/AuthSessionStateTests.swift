@@ -39,21 +39,62 @@ final class AuthSessionStateTests: XCTestCase {
         }
     }
 
-    /// One value of every `AuthClientError` case, all with the same strings, so only the case and
-    /// its structured payload tell them apart.
+    /// Every `AuthClientError` case, by name. `errorCase(of:)` and `sample(of:)` keep it complete.
+    private enum ErrorCase: CaseIterable {
+        case configuration, storageUnavailable, sessionExpired, notSignedIn, invalidSessionID, challengeExpired
+        case browserBusy, sessionConfigurationMismatch, validation, service, notAuthorized, invalidState
+        case userCancelled, webAuthnCeremonyFailed, unexpectedIdentity, unknown
+    }
+
+    /// Exhaustive on purpose, with no `default`: a new `AuthClientError` case does not compile until it is
+    /// given an `ErrorCase`, and then `sample(of:)` does not compile until it is given a sample.
+    private static func errorCase(of error: AuthClientError) -> ErrorCase {
+        switch error {
+        case .configuration: return .configuration
+        case .storageUnavailable: return .storageUnavailable
+        case .sessionExpired: return .sessionExpired
+        case .notSignedIn: return .notSignedIn
+        case .invalidSessionID: return .invalidSessionID
+        case .challengeExpired: return .challengeExpired
+        case .browserBusy: return .browserBusy
+        case .sessionConfigurationMismatch: return .sessionConfigurationMismatch
+        case .validation: return .validation
+        case .service: return .service
+        case .notAuthorized: return .notAuthorized
+        case .invalidState: return .invalidState
+        case .userCancelled: return .userCancelled
+        case .webAuthnCeremonyFailed: return .webAuthnCeremonyFailed
+        case .unexpectedIdentity: return .unexpectedIdentity
+        case .unknown: return .unknown
+        }
+    }
+
+    /// One value of `errorCase`, with the same strings as every other, so only the case and its structured
+    /// payload tell them apart.
+    private static func sample(of errorCase: ErrorCase) -> AuthClientError {
+        switch errorCase {
+        case .configuration: return .configuration("d", "s")
+        case .storageUnavailable: return .storageUnavailable(.locked, "d", "s")
+        case .sessionExpired: return .sessionExpired("d", "s")
+        case .notSignedIn: return .notSignedIn("d", "s")
+        case .invalidSessionID: return .invalidSessionID("d", "s")
+        case .challengeExpired: return .challengeExpired("d", "s")
+        case .browserBusy: return .browserBusy(holder: .default, "d", "s")
+        case .sessionConfigurationMismatch: return .sessionConfigurationMismatch(.default, "d", "s")
+        case .validation: return .validation(field: "f", "d", "s")
+        case .service: return .service(.userNotFound, "d", "s")
+        case .notAuthorized: return .notAuthorized("d", "s")
+        case .invalidState: return .invalidState("d", "s")
+        case .userCancelled: return .userCancelled("d", "s")
+        case .webAuthnCeremonyFailed: return .webAuthnCeremonyFailed(.failed, "d", "s")
+        case .unexpectedIdentity: return .unexpectedIdentity(expected: "alice", returned: AuthClientUser(username: "bob", userId: "sub-bob"), "d", "s")
+        case .unknown: return .unknown("d", "s")
+        }
+    }
+
+    /// One value of every `AuthClientError` case, from `sample(of:)`.
     private static func oneOfEachError() -> [AuthClientError] {
-        [
-            .configuration("d", "s"),
-            .storageUnavailable(.locked, "d", "s"),
-            .sessionExpired("d", "s"),
-            .notSignedIn("d", "s"),
-            .invalidSessionID("d", "s"),
-            .challengeExpired("d", "s"),
-            .browserBusy(holder: .default, "d", "s"),
-            .sessionConfigurationMismatch(.default, "d", "s"),
-            .validation(field: "f", "d", "s"),
-            .unknown("d", "s")
-        ]
+        ErrorCase.allCases.map(sample(of:))
     }
 
     // MARK: - The case matrix
@@ -144,14 +185,15 @@ final class AuthSessionStateTests: XCTestCase {
     /// The rule is not payload-blind: every `AuthClientError` case, given identical strings,
     /// is still a different failure.
     ///
-    /// - Given: one error of every `AuthClientError` case, all carrying the same description and
-    ///   suggestion
+    /// - Given: one error of every `AuthClientError` case, built through exhaustive switches, all carrying the
+    ///   same description and suggestion
     /// - When: each pair is wrapped in `.failed` and compared
     /// - Then:
+    ///    - every sample is of the case it was built for
     ///    - each equals itself and differs from every other case
     func testFailedDistinguishesEveryErrorCase() {
         let errors = Self.oneOfEachError()
-        XCTAssertEqual(errors.count, 10)
+        XCTAssertEqual(errors.map(Self.errorCase(of:)), ErrorCase.allCases)
         for (index, error) in errors.enumerated() {
             for (otherIndex, other) in errors.enumerated() {
                 XCTAssertEqual(
@@ -174,10 +216,11 @@ final class AuthSessionStateTests: XCTestCase {
     }
 
     /// - Given: `.failed` errors of one case that differ only in their structured payload: the
-    ///   storage reason, the busy holder, the mismatched session, the validation field
+    ///   storage reason, the busy holder, the mismatched session, the validation field, the service
+    ///   code, the ceremony failure, and the expected or returned user of an unexpected identity
     /// - When: they are compared
     /// - Then:
-    ///    - each pair is unequal
+    ///    - each pair is unequal, and a pair with equal payloads is equal
     func testFailedComparesStructuredPayload() throws {
         let work = try SessionID.named("work")
         XCTAssertNotEqual(
@@ -196,9 +239,34 @@ final class AuthSessionStateTests: XCTestCase {
             AuthSessionState.failed(.validation(field: "appName", "d", "s")),
             .failed(.validation(field: "accountName", "d", "s"))
         )
+        XCTAssertNotEqual(
+            AuthSessionState.failed(.service(.userNotFound, "d", "s")),
+            .failed(.service(.codeMismatch, "d", "s"))
+        )
+        XCTAssertNotEqual(
+            AuthSessionState.failed(.service(.userNotFound, "d", "s")),
+            .failed(.service(nil, "d", "s"))
+        )
+        XCTAssertNotEqual(
+            AuthSessionState.failed(.webAuthnCeremonyFailed(.failed, "d", "s")),
+            .failed(.webAuthnCeremonyFailed(.credentialAlreadyExists, "d", "s"))
+        )
+        let bob = AuthClientUser(username: "bob", userId: "sub-bob")
+        XCTAssertNotEqual(
+            AuthSessionState.failed(.unexpectedIdentity(expected: "alice", returned: bob, "d", "s")),
+            .failed(.unexpectedIdentity(expected: nil, returned: bob, "d", "s"))
+        )
+        XCTAssertNotEqual(
+            AuthSessionState.failed(.unexpectedIdentity(expected: "alice", returned: bob, "d", "s")),
+            .failed(.unexpectedIdentity(expected: "alice", returned: AuthClientUser(username: "bob", userId: "sub-other"), "d", "s"))
+        )
         XCTAssertEqual(
             AuthSessionState.failed(.browserBusy(holder: work, "d", "s")),
             .failed(.browserBusy(holder: try SessionID.named("work"), "d", "s"))
+        )
+        XCTAssertEqual(
+            AuthSessionState.failed(.unexpectedIdentity(expected: "alice", returned: bob, "d", "s")),
+            .failed(.unexpectedIdentity(expected: "alice", returned: AuthClientUser(username: "bob", userId: "sub-bob"), "d", "s"))
         )
     }
 
