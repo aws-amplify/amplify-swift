@@ -7,22 +7,10 @@
 
 import XCTest
 
-/// The release guard for the not-yet-implemented stubs.
-///
-/// Every operation is implemented, and the `notYetImplemented` helper is gone; the scan stays, so no
-/// stub can come back unlisted before the parity declaration.
-///
-/// `stillStubbed` lists every operation the client's sources still answer with `notYetImplemented`, and the
-/// sources are scanned for them, so the list can neither hide a stub nor keep one that has gone. **Each W-row
-/// removes its entries when it implements them.** When plugin parity is declared, `parityDeclared` becomes
-/// `true`, and the build then fails while any entry remains: nothing ships that fails with "not implemented".
+/// The release guard for not-yet-implemented stubs: every operation is implemented, and the `notYetImplemented`
+/// helper is gone. The sources are scanned so that no stub can come back, whether through a call, the helper, or
+/// a hand-written "not implemented yet" message.
 final class NotYetImplementedGuardTests: XCTestCase {
-
-    /// Set to `true` with the parity declaration.
-    static let parityDeclared = false
-
-    /// Operation name → the row that implements it.
-    static let stillStubbed: [String: String] = [:]
 
     /// `AmplifyClients/AmplifyCognitoClient/Sources`, from this file's path.
     private static let sources = URL(fileURLWithPath: #filePath)
@@ -55,11 +43,11 @@ final class NotYetImplementedGuardTests: XCTestCase {
     /// - Given: the client's sources
     /// - When: they are scanned for `notYetImplemented` calls
     /// - Then:
-    ///    - the stubs found are exactly `stillStubbed`, each with its row
-    func testTheStubListMatchesTheSources() throws {
+    ///    - none is found: every operation is implemented
+    func testNoStubCallRemains() throws {
         XCTAssertTrue(FileManager.default.fileExists(atPath: Self.sources.appendingPathComponent("AuthClientError.swift").path), "the scan's path is wrong")
         let found = try Self.stubsInSources()
-        XCTAssertEqual(found, Self.stillStubbed, "a W-row that implements an operation removes it from stillStubbed")
+        XCTAssertEqual(found, [:], "these operations still throw notYetImplemented")
     }
 
     /// - Given: the client's sources
@@ -84,16 +72,5 @@ final class NotYetImplementedGuardTests: XCTestCase {
             }
         }
         XCTAssertEqual(hits, [], "a not-yet-implemented stub is back")
-    }
-
-    /// - Given: the parity declaration
-    /// - When: it has been made
-    /// - Then:
-    ///    - no operation is still stubbed
-    func testNothingIsStubbedOnceParityIsDeclared() {
-        guard Self.parityDeclared else {
-            return
-        }
-        XCTAssertEqual(Self.stillStubbed, [:], "parity is declared, but these still throw notYetImplemented")
     }
 }
