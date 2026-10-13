@@ -27,7 +27,7 @@ struct BrowserLease: Sendable, Equatable {
 /// inherited from nothing.
 ///
 /// - **Process-wide.** `shared` is the one production instance, used by every session of every
-///   client. The justification is UI presentation (a flow needs a foreground-active anchor, and a
+///   client. The Auth plugin does not take it, so its sheets are outside the rule. The justification is UI presentation (a flow needs a foreground-active anchor, and a
 ///   device cannot offer two), and the foreground belongs to the process, not to a user pool.
 /// - **In memory only, never persisted.** Process death releases it. A persisted lock would survive
 ///   a crash and block sign-in until something cleared it.
@@ -165,8 +165,9 @@ actor SystemSheetLock {
     /// Runs `body` while holding the lock for `session`, acquiring it per `policy` first.
     ///
     /// `body` is the whole browser round trip, including the code-for-token exchange, since the
-    /// token endpoint and the browser's cookie jar are what the lock protects. It runs in its own
-    /// task, so the lock can stop it from outside.
+    /// token endpoint and the browser's cookie jar are what the lock protects; a hosted-UI sign-in's
+    /// also includes its identity pool calls, since its engine step ends at the established session.
+    /// It runs in its own task, so the lock can stop it from outside.
     ///
     /// - The lock is released when `body` finishes, whether it returned or threw.
     /// - If the calling task is cancelled, or `cancel(for:)` names this session, `body`'s task is

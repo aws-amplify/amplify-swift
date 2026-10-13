@@ -33,11 +33,14 @@ import Foundation
 @_spi(AmplifyExperimental)
 public struct WebUIOptions {
 
-    /// What to do when another session already has a browser sign-in in flight. `.fail` by default.
+    /// What to do when another session already holds the system sheet. `.fail` by default.
     ///
-    /// Only one browser sign-in is in flight per process, across every session and every client.
-    /// That is a library policy rather than an OS guarantee: a flow needs a foreground-active
-    /// presentation anchor, and a device cannot offer two.
+    /// The client's sessions show one system sheet at a time per process, across every session of
+    /// every `AmplifyCognitoClient`: a hosted-UI sign-in or sign-out page, or a passkey sheet. That is a
+    /// library policy rather than an OS guarantee: a flow needs a foreground-active presentation
+    /// anchor, and a device cannot offer two. The Auth plugin's own hosted UI and passkey sheets do not
+    /// take part, so one of them can be up beside a client's sheet, and `systemSheetHolder` does not
+    /// report it.
     public var whenBrowserBusy: BrowserBusyPolicy
 
     /// Whether to ask for a private (ephemeral) browser session. `true` by default.

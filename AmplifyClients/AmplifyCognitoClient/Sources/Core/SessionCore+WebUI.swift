@@ -135,7 +135,7 @@ extension SessionCore {
             return try await .finished(afterClosedLogout(payload, global: global, error))
         } catch is CancellationError {
             // The caller's own cancellation too: the engine's sign-out runs in a task of its own and may go on
-            // revoking, so the record must follow what it did, not the cancellation (verification should-fix).
+            // revoking, so the record must follow what it did, not the cancellation.
             return try await .finished(
                 afterInterruptedLogout(payload, global: global, body: body, byCaller: Task.isCancelled)
             )
@@ -196,7 +196,7 @@ extension SessionCore {
     /// | failed otherwise | its failure, as the revoke's: the session is cleared | the same |
     ///
     /// A body that never started is abandoned under the claim's lock, so it can no longer start: waiting for it
-    /// would wait forever while this sign-out holds the record gate (verification blocker).
+    /// would wait forever while this sign-out holds the record gate.
     private nonisolated func afterInterruptedLogout(
         _ payload: Data,
         global: Bool,

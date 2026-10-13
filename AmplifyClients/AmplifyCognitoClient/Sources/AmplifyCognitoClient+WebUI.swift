@@ -9,7 +9,8 @@
 import Foundation
 import InternalAWSCognitoAuth
 
-// The hosted UI: per session, each call acts on this client's `sessionId`. One system sheet is shown at a time per process, whichever session asks: see
+// The hosted UI: per session, each call acts on this client's `sessionId`. The client's sessions show one system sheet
+// at a time per process, whichever session asks (the Auth plugin's sheets do not take part): see
 // `WebUIOptions.whenBrowserBusy`.
 @_spi(AmplifyExperimental)
 public extension AmplifyCognitoClient {
@@ -17,9 +18,13 @@ public extension AmplifyCognitoClient {
     /// Signs this session in through the hosted UI, in a browser sheet over `presentationAnchor`'s window.
     ///
     /// The whole round trip runs while this session holds the process's system sheet: the browser, then the
-    /// exchange of the returned code for tokens, then the identity checks. The client checks that the tokens
-    /// belong to this flow and this app, and to the user `options.identityExpectation` asks for; a failed check
-    /// signs nobody in and stores nothing. A password sign-in waiting on a challenge is cancelled first.
+    /// exchange of the returned code for tokens, then the identity checks, and with an identity pool, its
+    /// `GetId` and `GetCredentialsForIdentity` calls. So other sessions can get `browserBusy` for a moment
+    /// after the browser has closed, and an interrupt then (`cancelWebUISignIn()`, `resetSystemSheet()`)
+    /// revokes a sign-in the user has already finished. The client checks that the tokens belong to this flow
+    /// and this app, and to the user `options.identityExpectation` asks for; a failed check signs nobody in and
+    /// stores nothing. A password sign-in waiting on a challenge is cancelled once this session holds the
+    /// sheet, so a refusal or a timeout leaves it waiting.
     ///
     /// Private (ephemeral) by default, unlike the plugin: see `WebUIOptions.prefersEphemeralSession`.
     ///
@@ -102,6 +107,10 @@ public extension AmplifyCognitoClient {
     /// Cancels this session's hosted-UI sign-in, once it holds or is queued for the system sheet: the browser
     /// is dismissed and the call throws `userCancelled`. Idempotent; never throws; a no-op when there is none.
     ///
+    /// It also closes this session's hosted-UI sign-out page, if one is showing: that sign-out is then
+    /// `.failed(.userCancelled)` and the session stays signed in, as when the user closes the page (a session
+    /// whose refresh token is already dead signs out anyway).
+    ///
     /// A call still waiting behind another of this session's sign-ins (its sign-in lock) is not reached yet, and
     /// goes on; cancel its task to stop it there.
     ///
@@ -120,7 +129,8 @@ public extension AmplifyCognitoClient {
     /// then show its sheet. In memory only.
     ///
     /// The system sheet is one per process, shared by every client's sessions, so this and
-    /// `systemSheetHolder` see every session.
+    /// `systemSheetHolder` see every session of every client. They do not see the Auth plugin's hosted UI or
+    /// passkey sheets, which do not take part.
     ///
     /// - Returns: the session that was holding it, or `nil` if it was free.
     @discardableResult

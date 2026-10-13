@@ -18,8 +18,8 @@ import InternalAWSCognitoAuth
 /// sheet attaches to, which the client never looks for itself.
 ///
 /// **One sheet per process.** A passkey sheet and the hosted UI's browser share one process-wide lease: while
-/// any session shows one, another session's (or this session's) passkey ceremony throws
-/// `AuthClientError.browserBusy(holder:)` and presents nothing.
+/// any of the client's sessions shows one, another session's (or this session's) passkey ceremony throws
+/// `AuthClientError.browserBusy(holder:)` and presents nothing. The Auth plugin's sheets do not take part.
 ///
 /// **Cancellation.** The user closing the sheet is `AuthClientError.userCancelled`. Cancelling the calling
 /// task closes the sheet, and the call throws `CancellationError`.
