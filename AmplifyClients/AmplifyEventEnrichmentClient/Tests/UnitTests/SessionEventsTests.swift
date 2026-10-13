@@ -353,6 +353,62 @@ final class SessionEventsTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(events.map { $0.metrics["count"] }, [1, 2])
     }
 
+    /// Test that the launch session start carries the initial user ID and global fields
+    ///
+    /// - Given: A client created with initialUserId, initialGlobalAttributes and initialGlobalMetrics
+    /// - When:
+    ///    - An event is recorded and the client closes
+    /// - Then:
+    ///    - Every event, the launch start included, carries those values
+    ///
+    func testInitialFieldsAreOnLaunchStart() async throws {
+        let sink = RecordingSink()
+        let client = AmplifyEventEnrichmentClient(
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
+            deviceMetadata: DeviceMetadata(platform: "iOS"),
+            initialUserId: "user-1",
+            initialGlobalAttributes: ["key": "value"],
+            initialGlobalMetrics: ["count": 1],
+            sink: sink
+        )
+
+        _ = try await client.record("a")
+        await client.close()
+
+        let events = await sink.events
+        XCTAssertEqual(events.map(\.eventType), ["_session.start", "a", "_session.stop"])
+        XCTAssertEqual(events.map(\.userId), ["user-1", "user-1", "user-1"])
+        XCTAssertEqual(events.map { $0.attributes["key"] }, ["value", "value", "value"])
+        XCTAssertEqual(events.map { $0.metrics["count"] }, [1, 1, 1])
+    }
+
+    /// Test that the initial fields can be changed afterwards
+    ///
+    /// - Given: A client created with an initial user ID and global attribute
+    /// - When:
+    ///    - Both are cleared and an event is recorded
+    /// - Then:
+    ///    - The event carries neither
+    ///
+    func testInitialFieldsCanBeCleared() async throws {
+        let client = AmplifyEventEnrichmentClient(
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
+            initialUserId: "user-1",
+            initialGlobalAttributes: ["key": "value"]
+        )
+
+        await client.setUserId(nil)
+        await client.removeGlobalAttribute("key")
+        let event = try await client.record("a")
+
+        XCTAssertNil(event.userId)
+        XCTAssertNil(event.attributes["key"])
+
+        await client.close()
+    }
+
     // MARK: - Helpers
 
     private func makeClient(

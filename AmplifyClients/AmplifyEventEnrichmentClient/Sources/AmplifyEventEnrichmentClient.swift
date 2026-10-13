@@ -59,6 +59,10 @@ public actor AmplifyEventEnrichmentClient {
     ///   - sdkMetadata: SDK-level metadata for events.
     ///   - appMetadata: Application-level metadata. If nil, created from `appId`.
     ///   - deviceMetadata: Device-level metadata. If nil, resolved via platform APIs.
+    ///   - initialUserId: User identifier stamped on events from the start, including
+    ///     the launch `_session.start`.
+    ///   - initialGlobalAttributes: Global attributes applied before the launch session starts.
+    ///   - initialGlobalMetrics: Global metrics applied before the launch session starts.
     ///   - options: Configuration options. With `autoSessionTracking`, a session
     ///     starts here and its `_session.start` event is queued for the sink.
     ///   - sink: Optional transport sink for enriched events.
@@ -68,6 +72,9 @@ public actor AmplifyEventEnrichmentClient {
         sdkMetadata: SDKMetadata,
         appMetadata: AppMetadata? = nil,
         deviceMetadata: DeviceMetadata? = nil,
+        initialUserId: String? = nil,
+        initialGlobalAttributes: [String: String] = [:],
+        initialGlobalMetrics: [String: Double] = [:],
         options: EventEnrichmentClientOptions = EventEnrichmentClientOptions(),
         sink: (any EventSink)? = nil
     ) {
@@ -77,6 +84,9 @@ public actor AmplifyEventEnrichmentClient {
 
         let logger = AmplifyLogging.logger(for: AmplifyEventEnrichmentClient.self)
         let globalFields = GlobalFieldsManager()
+        globalFields.userId = initialUserId
+        initialGlobalAttributes.forEach { globalFields.addAttribute($0.key, value: $0.value) }
+        initialGlobalMetrics.forEach { globalFields.addMetric($0.key, value: $0.value) }
         let makeEvent: EventFactory = { eventType, session, attributes, metrics in
             let fields = globalFields.snapshot()
             return EnrichedEvent(
