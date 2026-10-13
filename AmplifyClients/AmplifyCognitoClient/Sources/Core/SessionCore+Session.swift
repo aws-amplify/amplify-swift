@@ -313,27 +313,35 @@ extension SessionCore {
     /// row for a user who no longer exists cannot be resumed. Sends `.userDeleted`.
     ///
     /// A federated session, or one whose sign-in waits on a challenge, is refused first, with nothing refreshed
-    /// (`requireUserPoolUser`). The credentials are refreshed first if they need it, through the session's refresh
-    /// flight, since Cognito needs a valid access token. The deletion then runs under the record's gate, in an
-    /// unstructured task: the caller's cancellation cannot stop it between deleting the user at Cognito
-    /// and removing the row, which would leave a row for a user who no longer exists. If Cognito says
-    /// the user does not exist, the session is signed out globally, as the plugin does, its row is purged
-    /// as for a deletion, and the error is rethrown. The per-user device records are left as the engine leaves them.
+    /// (`requireUserPoolUser`). The credentials are then refreshed if they need it, through the session's refresh
+    /// flight, since Cognito needs a valid access token. A caller cancelled by then deletes nothing. The deletion
+    /// then runs under the record's gate, in an unstructured task: the caller's cancellation cannot stop it
+    /// between deleting the user at Cognito and removing the row, which would leave a row for a user who no
+    /// longer exists. If Cognito says the user does not exist, the session is signed out globally, as the plugin
+    /// does, in the same task, its row is purged as for a deletion, and the error is rethrown. The per-user
+    /// device records are left as the engine leaves them.
     ///
     /// - Throws: `notSignedIn`, `sessionExpired` or `storageUnavailable` as the credential providers do;
     ///   `invalidState` if a different user signed in to the session meanwhile; the engine's mapped
     ///   failure. If the user was deleted but the row could not be removed, the session still reports
-    ///   the deletion (signed out, `.userDeleted`), then `storageUnavailable` says so.
+    ///   the deletion (signed out, `.userDeleted`), then `storageUnavailable` says so. `CancellationError` if
+    ///   the calling task is cancelled before Cognito is asked.
     nonisolated func deleteUser() async throws {
         try requireUserPool(for: "delete the user")
         try await requireUserPoolUser()
         let payload = try await freshPayload(for: .accessToken)
         let principal = try engine.checkedDescribe(payload)
+        try Task.checkCancellation()
         let deletion = try await Task { [self] in
-            try await deleteUnderGate(payload: payload, principal: principal)
+            let deletion = try await deleteUnderGate(payload: payload, principal: principal)
+            if case .userNotFound = deletion {
+                // Here, not in the caller's task: the record's gate refuses a cancelled task, so the sign-out would
+                // fail and keep the row of a user who no longer exists.
+                _ = await signOut(global: true, purge: true)
+            }
+            return deletion
         }.value
         if case .userNotFound(let error) = deletion {
-            _ = await signOut(global: true, purge: true)
             throw error
         }
     }
