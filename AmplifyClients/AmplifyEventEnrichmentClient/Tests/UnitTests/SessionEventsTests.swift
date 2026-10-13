@@ -64,6 +64,28 @@ final class SessionEventsTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(events.map(\.eventType), [])
     }
 
+    /// Test that turning off session events sends only records
+    ///
+    /// - Given: A client with emitSessionEvents disabled
+    /// - When:
+    ///    - Events are recorded around a stop, then the client is closed
+    /// - Then:
+    ///    - The sink receives only the records, each still in its own session
+    ///
+    func testSessionEventsCanBeTurnedOff() async throws {
+        let sink = RecordingSink()
+        let client = makeClient(sink: sink, emitSessionEvents: false)
+
+        let first = try await client.record("a")
+        await client.stopSession()
+        let second = try await client.record("b")
+        await client.close()
+
+        let events = await sink.events
+        XCTAssertEqual(events.map(\.eventType), ["a", "b"])
+        XCTAssertNotEqual(first.session.id, second.session.id)
+    }
+
     /// Test that records and boundaries reach the sink in call order
     ///
     /// - Given: A client with autoSessionTracking disabled
@@ -414,7 +436,8 @@ final class SessionEventsTests: XCTestCase, @unchecked Sendable {
     private func makeClient(
         sink: any EventSink,
         autoSessionTracking: Bool = true,
-        sessionTimeout: TimeInterval = 5.0
+        sessionTimeout: TimeInterval = 5.0,
+        emitSessionEvents: Bool = true
     ) -> AmplifyEventEnrichmentClient {
         AmplifyEventEnrichmentClient(
             appId: "test-app",
@@ -422,7 +445,8 @@ final class SessionEventsTests: XCTestCase, @unchecked Sendable {
             deviceMetadata: DeviceMetadata(platform: "iOS"),
             options: EventEnrichmentClientOptions(
                 autoSessionTracking: autoSessionTracking,
-                sessionTimeout: sessionTimeout
+                sessionTimeout: sessionTimeout,
+                emitSessionEvents: emitSessionEvents
             ),
             sink: sink
         )

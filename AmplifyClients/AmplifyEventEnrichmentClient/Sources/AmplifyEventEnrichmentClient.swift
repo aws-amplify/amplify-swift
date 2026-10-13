@@ -124,12 +124,14 @@ public actor AmplifyEventEnrichmentClient {
                 delivery.sent?.signal()
             }
         }
+        let emitSessionEvents = options.emitSessionEvents
         let sessionManager = SessionManager(
             appId: resolvedAppMetadata.appId,
             sessionTimeout: options.sessionTimeout,
             generateId: { UUID().uuidString },
             startingSession: options.autoSessionTracking,
             onBoundary: { boundary, session in
+                guard emitSessionEvents else { return }
                 // Built and queued inside the transition, so boundaries are
                 // queued in transition order with the fields of that moment.
                 deliveries.yield(Delivery(event: makeEvent(boundary.eventType, session, [:], [:]), sent: nil))
