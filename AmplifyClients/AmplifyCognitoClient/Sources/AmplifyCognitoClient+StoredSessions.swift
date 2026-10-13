@@ -71,8 +71,13 @@ public extension AmplifyCognitoClient {
     /// device, keeping its row. If a client for that session is live in this process, the sign-out goes
     /// through it, so its state, streams and providers see it at once.
     ///
-    /// The revocation is never global, and touches no keychain beyond the session's record. A failed
-    /// revocation is reported in `.partial`; the session is still cleared on this device.
+    /// The revocation is never global. It changes no other session's records and no device records; for `.default`,
+    /// which is the Auth plugin's saved login, it also clears the AWSMobileClient logins the plugin would otherwise
+    /// migrate back into it, as the plugin's own sign-out does. A failed revocation is reported in `.partial`; the
+    /// session is still cleared on this device. With no client for the session live in this process, the revoke goes
+    /// through SDK clients built from `configuration` alone, so a `configureUserPoolClient` the app passes to its clients
+    /// (a custom endpoint, a proxy, certificate pinning) is not applied: hold a client for the session to sign out
+    /// through it instead.
     ///
     /// Never signs out a different user: if another process signed someone else in to this session ID
     /// meanwhile, they are left signed in and the result is `.failed(.invalidState)`.
@@ -119,14 +124,15 @@ public extension AmplifyCognitoClient {
     ///
     /// If a client for that session is live in this process, the purge goes through it: it moves to
     /// `.signedOut`, sends `.signedOut` if it held credentials, and its providers throw `notSignedIn`.
-    /// For `.default`, the plugin's record is deleted too, so nothing resurrects the session; a login the Auth plugin's
+    /// For `.default`, this configuration's copy of the plugin's saved login is deleted. A login the Auth plugin's
     /// configuration-change rule carries here is carried first, and a change it would delete on is left alone, the
     /// previous configuration's login included, and so is the login a carry came from (a purge revokes nothing), which
-    /// the next restore under the new configuration carries here again. For a named session, so are the copies
-    /// of it this app left under earlier pool configurations (each only while untouched since it was carried, if it
-    /// provably holds the same user and is not a guest's; their refresh tokens are not revoked), each with the
-    /// interrupted sign-in saved under its configuration; and so is the session's record of which configuration
-    /// it was kept under, so no later restore carries it forward. That record stays while it remembers other
+    /// the next restore under the new configuration carries here again: use `signOutStoredSession` to end the session
+    /// under both configurations. The AWSMobileClient logins the plugin would migrate back into it are cleared too, as
+    /// a sign-out clears them. For a named session, the copies of it this app left under earlier pool configurations
+    /// are deleted too (each only while untouched since it was carried, if it provably holds the same user and is not a
+    /// guest's; their refresh tokens are not revoked), each with the interrupted sign-in saved under its configuration;
+    /// and so is the session's record of which configuration it was kept under, so no later restore carries it forward. That record stays while it remembers other
     /// users' copies (alice's, when bob's session is purged), rewritten to name this configuration, where nothing
     /// is left, so it carries nothing. Purged with an older configuration than the one the session last ran with,
     /// the record under that later configuration is left, and is then a session of its own there.
