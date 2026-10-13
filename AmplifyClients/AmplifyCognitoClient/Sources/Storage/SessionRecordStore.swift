@@ -72,6 +72,11 @@ struct SessionRecordStore: Sendable {
     /// what a sign-out compares, so the Auth plugin saving `.default`'s credentials again in other bytes is not
     /// another writer's sign-in. The engine's format; injectable for tests' payloads.
     let sameCredentials: @Sendable (Data, Data) -> Bool
+    /// The AWSMobileClient logins the Auth plugin would migrate into `.default`'s saved login, one item store per
+    /// keychain service (`legacyLoginServices(for:)`): what `.default`'s sign-out and purge clear, as the plugin's own
+    /// sign-out does (`clearLegacyLogins()`). None unless given, so a store a test builds never reaches them;
+    /// `init(namespace:)` gives the real keychain's.
+    let legacyLoginStores: @Sendable () -> [any KeychainItemStoreBehavior]
 
     init(
         namespace: SessionStorageNamespace,
@@ -83,7 +88,8 @@ struct SessionRecordStore: Sendable {
         markerScope: String = SessionRecordStore.appMarkerScope,
         summarizeSharedRecord: @escaping @Sendable (Data) -> PluginRecordSummary = PluginRecordSummary.peek,
         rereadsAbsentSharedRecord: Bool = SessionRecordStore.rereadsAbsentSharedRecordByDefault,
-        sameCredentials: @escaping @Sendable (Data, Data) -> Bool = CredentialSlot.sameCredentials
+        sameCredentials: @escaping @Sendable (Data, Data) -> Bool = CredentialSlot.sameCredentials,
+        legacyLoginStores: @escaping @Sendable () -> [any KeychainItemStoreBehavior] = { [] }
     ) {
         self.namespace = namespace
         self.keychain = keychain
@@ -95,6 +101,7 @@ struct SessionRecordStore: Sendable {
         self.summarizeSharedRecord = summarizeSharedRecord
         self.rereadsAbsentSharedRecord = rereadsAbsentSharedRecord
         self.sameCredentials = sameCredentials
+        self.legacyLoginStores = legacyLoginStores
     }
 
     /// A store over the real keychain.
@@ -105,7 +112,8 @@ struct SessionRecordStore: Sendable {
                 service: Self.service(forAccessGroup: namespace.accessGroup),
                 accessGroup: namespace.accessGroup,
                 logger: ClientLog.logger(ClientLog.keychainItemStore)
-            )
+            ),
+            legacyLoginStores: { Self.legacyLoginStores(for: namespace.pools) }
         )
     }
 
@@ -281,6 +289,7 @@ struct SessionRecordStore: Sendable {
     ///
     /// Unless superseded, it also deletes the session's interrupted-sign-in record, best effort (a failure is logged:
     /// the session is signed out by then); a superseded sign-out leaves it, since it may belong to the newer sign-in.
+    /// For `.default`, it then clears the AWSMobileClient logins too, best effort (`clearLegacyLogins()`).
     ///
     /// A record this build cannot read is replaced by a signed-out row, since its credentials cannot be
     /// kept past sign-out; its generation cannot be read, so the row starts again at generation 1.
@@ -332,7 +341,9 @@ struct SessionRecordStore: Sendable {
         // here must not report it as still signed in.
         deleteChallengeAfterSignOut(sessionId)
         guard sessionId != .default else {
-            // `.default` keeps no namespace marker, so it has no remembered copies or challenges to sweep.
+            // `.default` keeps no namespace marker, so it has no remembered copies or challenges to sweep. It shares the
+            // Auth plugin's saved login, so it clears the AWSMobileClient logins as the plugin's sign-out does.
+            clearLegacyLogins()
             return outcome
         }
         // Its interrupted sign-ins under the namespaces its marker remembers, which no restore resumes: before the
@@ -399,7 +410,8 @@ struct SessionRecordStore: Sendable {
     }
 
     /// For `.default`: deletes the Auth plugin's record (the shared saved login), then the sidecar, then the
-    /// interrupted-sign-in record (`purgeDefault`). It keeps no namespace marker, so nothing else is deleted.
+    /// interrupted-sign-in record (`purgeDefault`), and last, best effort, the AWSMobileClient logins the plugin would
+    /// migrate back into it (`clearLegacyLogins()`). It keeps no namespace marker, so nothing else is deleted.
     ///
     /// For a named session, deletes, in this order: the copies this app left under
     /// earlier namespaces of the purged record's user, each only while untouched since it was carried

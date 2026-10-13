@@ -16,7 +16,9 @@ import InternalAmplifyKeychain
 /// saved; it keeps them when a read fails (`c57dd1094`). When a newer saved session exists, it writes nothing
 /// and clears the legacy services without a copy; when reading that session fails with a keychain error it
 /// keeps them, and an undecodable session counts as absent (`f3b06afef`). The inert store is still needed:
-/// the client must never migrate, clear or rewrite AWSMobileClient data, which stays the Auth plugin's job.
+/// the client must never migrate or rewrite AWSMobileClient data, which stays the Auth plugin's job. The one
+/// exception is not the engine's: `.default`'s sign-out and purge clear those services after the record, as the
+/// plugin's sign-out does, through the record store (`SessionRecordStore.clearLegacyLogins()`).
 /// So the engine must see empty legacy services and must not be able to change them:
 /// - every read is `KeychainAccessError.itemNotFound`, and every listing is empty;
 /// - every write and removal succeeds and is dropped. `addIfAbsent` reports the add as accepted, as `set`

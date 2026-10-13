@@ -7,6 +7,8 @@
 
 import AmplifyFoundation
 import Foundation
+import InternalAmplifyKeychain
+import InternalAWSCognitoAuth
 
 // `.default` uses the Auth plugin's saved login.
 //
@@ -38,6 +40,10 @@ import Foundation
 //
 // **The configuration-change rule is the plugin's** (`SessionRecordStore+PluginConfiguration.swift`). `.default` keeps
 // no namespace marker: nothing is carried forward or swept for it by the named sessions' rule.
+//
+// **Sign-out and purge clear the AWSMobileClient logins**, as the plugin's sign-out does (`clearLegacyLogins()`): the
+// plugin migrates them into this record at configure whenever it holds no session, so they must not outlive a
+// sign-out. The client never migrates them.
 extension SessionRecordStore {
 
     /// Whether a store re-reads an absent shared record by default: on macOS only, where the keychain's `set`
@@ -342,11 +348,64 @@ extension SessionRecordStore {
 
     // MARK: Sign-out and purge
 
-    /// `purge(_:)` for `.default`: the shared record, then the sidecar, then the interrupted-sign-in record.
+    /// `purge(_:)` for `.default`: the shared record, then the sidecar, then the interrupted-sign-in record, then, best
+    /// effort, the AWSMobileClient logins (`clearLegacyLogins()`).
     func purgeDefault() throws {
         try perform("delete the default session's saved login") { try keychain.remove(sharedRecordAccount) }
         try perform("delete the default session's sidecar") { try keychain.remove(sidecarAccount) }
         try perform("delete the interrupted sign-in record") { try keychain.remove(challengeAccount(for: .default)) }
+        clearLegacyLogins()
+    }
+
+    // MARK: AWSMobileClient logins
+
+    /// What a failed clear of an AWSMobileClient login logs: no identifiers.
+    static let legacyLoginClearFailedWarning =
+        "An AWSMobileClient login could not be cleared after the default session was signed out. An Auth plugin build may migrate it back."
+
+    /// Clears the AWSMobileClient logins once `.default` has been signed out or purged, as the Auth plugin's own
+    /// sign-out does (`ClearCredentialStore`): `.default` is the plugin's saved login, and every plugin configure first
+    /// migrates those logins into it when it holds no session, so a login kept for a later migration would otherwise
+    /// sign its user in again under the next plugin build. Best effort, as the plugin's: a failure is logged, and never
+    /// fails the sign-out or purge, whose record is already gone.
+    func clearLegacyLogins() {
+        for store in legacyLoginStores() {
+            do {
+                try store.removeAll()
+            } catch {
+                ClientLog.logger(ClientLog.sessionRecordStore).warn(Self.legacyLoginClearFailedWarning)
+            }
+        }
+    }
+
+    /// Item stores over the real keychain for `legacyLoginServices(for:)`, with no access group, as the plugin builds
+    /// them (`AWSCognitoAuthPlugin.makeLegacyKeychainStore(service:)`). Building one reads nothing.
+    static func legacyLoginStores(for pools: PoolNamespace) -> [any KeychainItemStoreBehavior] {
+        legacyLoginServices(for: pools).map {
+            KeychainItemStore(service: $0, logger: ClientLog.logger(ClientLog.keychainItemStore))
+        }
+    }
+
+    /// The keychain services of the AWSMobileClient logins the Auth plugin migrates and clears for `pools`: the
+    /// engine's own list (`MigrateLegacyCredentialStore.legacyServiceKeys(for:)`). It names a service from which pools
+    /// are configured and the identity pool's ID only, so the configuration it is given holds nothing else.
+    static func legacyLoginServices(for pools: PoolNamespace) -> [String] {
+        func userPool(_ poolId: String) -> UserPoolConfigurationData {
+            UserPoolConfigurationData(poolId: poolId, clientId: "", region: "")
+        }
+        func identityPool(_ poolId: String) -> IdentityPoolConfigurationData {
+            IdentityPoolConfigurationData(poolId: poolId, region: "")
+        }
+        let configuration: AuthConfiguration
+        switch pools {
+        case .userPool(let userPoolId):
+            configuration = .userPools(userPool(userPoolId))
+        case .identityPool(let identityPoolId):
+            configuration = .identityPools(identityPool(identityPoolId))
+        case .userPoolAndIdentityPool(let userPoolId, let identityPoolId):
+            configuration = .userPoolsAndIdentityPools(userPool(userPoolId), identityPool(identityPoolId))
+        }
+        return MigrateLegacyCredentialStore.legacyServiceKeys(for: configuration)
     }
 
     /// Sign-out's last resort for `.default`: replaces the shared record with `{"noCredentials":{}}`, unguarded,
