@@ -47,9 +47,9 @@ struct SessionCoreDependencies: Sendable {
     let now: @Sendable () -> Date
 
     #if os(iOS) || os(macOS) || os(visionOS)
-    /// The system-sheet lock every session's hosted-UI flows take: the process-wide one in the app, a test's
-    /// own in tests, so no test touches `SystemSheetLock.shared`.
-    var sheetLock: SystemSheetLock = .shared
+    /// The system-sheet lock every session's hosted-UI flows take: the process-wide one in `live`; a fresh one by
+    /// default, so dependencies a test builds never touch `SystemSheetLock.shared`.
+    var sheetLock = SystemSheetLock()
 
     /// A test seam inside a sign-out's logout-page lease body, given the session: runs once the body has stopped
     /// the session's passkey registrations, before it checks for an interrupt and shows the page. Does nothing in
@@ -72,6 +72,9 @@ struct SessionCoreDependencies: Sendable {
             now: { Date() }
         )
         live.makePreviousConfigurationRevoker = { LiveSessionRevoker(previous: $0) }
+        #if os(iOS) || os(macOS) || os(visionOS)
+        live.sheetLock = .shared
+        #endif
         return live
     }()
 }

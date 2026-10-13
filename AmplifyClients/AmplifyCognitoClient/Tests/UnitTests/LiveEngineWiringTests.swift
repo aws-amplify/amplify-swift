@@ -70,6 +70,40 @@ final class LiveEngineWiringTests: XCTestCase {
         XCTAssertNil(clients.identity)
     }
 
+    #if os(iOS) || os(macOS) || os(visionOS)
+    /// Only the live dependencies take the process-wide sheet lock: dependencies built without naming one get their
+    /// own, so a test that rebuilds them never shares `SystemSheetLock.shared`.
+    ///
+    /// - Given: the live dependencies, and two dependencies rebuilt from a test harness's without a sheet lock
+    /// - When: their sheet locks are read
+    /// - Then:
+    ///    - the live one is `SystemSheetLock.shared`
+    ///    - each rebuilt one is a fresh lock: neither the shared one nor the other's
+    func testOnlyTheLiveDependenciesTakeTheSharedSheetLock() {
+        let base = ClientHarness().dependencies
+        let rebuild = {
+            SessionCoreDependencies(
+                registry: base.registry,
+                gates: base.gates,
+                makeStore: base.makeStore,
+                makeClients: base.makeClients,
+                makeEngine: base.makeEngine,
+                makeRevoker: base.makeRevoker,
+                scheduleRestore: base.scheduleRestore,
+                bounds: base.bounds,
+                now: base.now
+            )
+        }
+        let first = rebuild()
+        let second = rebuild()
+
+        XCTAssertTrue(SessionCoreDependencies.live.sheetLock === SystemSheetLock.shared)
+        XCTAssertFalse(first.sheetLock === SystemSheetLock.shared)
+        XCTAssertFalse(second.sheetLock === SystemSheetLock.shared)
+        XCTAssertFalse(first.sheetLock === second.sheetLock)
+    }
+    #endif
+
     /// A previous configuration's custom endpoint (a Gen1 plugin configuration can record one) is used by its revoke,
     /// as the plugin's own user pool client uses it.
     ///
