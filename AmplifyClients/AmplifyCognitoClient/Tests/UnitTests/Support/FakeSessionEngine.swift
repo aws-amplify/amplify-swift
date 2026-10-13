@@ -158,7 +158,9 @@ struct FakeRetryable: Error {
 /// `holdSignIns(on:)` throws `CancellationError` when released if `cancelPendingSignIn` ran meanwhile.
 /// Its epochs follow the live engine's rules: `confirmSignIn` answers only an attempt of its own epoch, and
 /// drops an earlier one with `invalidState`; `autoSignIn` supersedes the pending attempt before it checks
-/// for an auto-sign-in session; and a cancel's epoch only ever raises the highest one seen.
+/// for an auto-sign-in session; a cancel's epoch only ever raises the highest one seen; a step a cancel or a
+/// newer sign-in took never becomes the pending attempt, so never returns `.challenge`; and `resumeSignIn` is
+/// refused while a step is in flight.
 /// A step held inside a script instead returns whatever the script returns, which models an engine that
 /// had already finished when the cancel arrived.
 final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
@@ -202,6 +204,10 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     /// The ceremony contexts of the sign-in steps in flight, by epoch: what `cancelPendingSignIn` stops, as
     /// the live engine stops its step's ceremony.
     private var stepCeremonies: [(id: UInt64, epoch: UInt64, context: EngineCeremonyContext)] = []
+    /// The sign-in step in flight, as the live engine's `inFlight`: a cancel before its epoch or a newer sign-in
+    /// takes it, and a step that ends once taken never becomes the pending attempt.
+    private var inFlight: (id: UInt64, epoch: UInt64)?
+    private var nextStepId: UInt64 = 0
     private var nextStepCeremonyId: UInt64 = 0
     /// What the fake's ceremony body does, inside the runner: returns the credential's data by default.
     private var ceremonyBody: (@Sendable (EnginePresentationAnchorBox?) async throws -> Data)?
@@ -462,13 +468,15 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
             attemptWebAuthnAnchor = request.webAuthn?.anchor
             return (signInScript, signInLatch, signInsHonourCancellation, cancels)
         }
+        let step = withLock { beginStep(epoch: epoch) }
+        defer { withLock { _ = endStep(step) } }
         let ceremony = registerStepCeremony(request.webAuthn, epoch: epoch)
         defer { endStepCeremony(ceremony) }
         if let latch {
             await latch.pass()
             try checkStillWanted(since: started, epoch: epoch, honouringCancellation: honours)
         }
-        return try await settle(retryable: false) {
+        return try await settle(step, retryable: false) {
             if let script {
                 return try await script(request, current)
             }
@@ -510,13 +518,15 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         if anchor == nil, let step, LiveSignInSteps.selectsWebAuthn(request.challengeResponse, at: step) {
             throw SessionCore.presentationAnchorRequired()
         }
+        let inFlightStep = withLock { beginStep(epoch: epoch) }
+        defer { withLock { _ = endStep(inFlightStep) } }
         let ceremony = registerStepCeremony(request.webAuthn, epoch: epoch)
         defer { endStepCeremony(ceremony) }
         if let latch {
             await latch.pass()
             try checkStillWanted(since: started, epoch: epoch, honouringCancellation: honours)
         }
-        return try await settle(retryable: true) {
+        return try await settle(inFlightStep, retryable: true) {
             if let script {
                 return try await script(request)
             }
@@ -538,41 +548,55 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         }
     }
 
-    /// Applies a sign-in step's result to the pending attempt, per the seam's contract.
+    /// Applies a sign-in step's result to the pending attempt, per the seam's contract, as the live engine's
+    /// `run` does: only while the step is still the one in flight. A step a cancel or a newer sign-in took
+    /// meanwhile never becomes the pending attempt: a `.challenge` then throws `CancellationError`, a `.done` is
+    /// returned for the core to refuse and revoke, and a failure leaves the attempt to whoever took it.
     private func settle(
+        _ step: UInt64,
         retryable: Bool,
         _ body: () async throws -> EngineStepResult
     ) async throws -> EngineStepResult {
+        let result: EngineStepResult
         do {
-            let result = try await body()
-            withLock {
-                switch result {
-                case .challenge(let step):
-                    challenge = step
-                    // Never the session a resumed attempt holds: a new challenge is Cognito's new session.
-                    var next: String
-                    repeat {
-                        sessionCount += 1
-                        next = "fake-session-\(sessionCount)"
-                    } while next == challengeSession
-                    challengeSession = next
-                case .done:
-                    challenge = nil
-                }
-            }
-            return result
+            result = try await body()
         } catch let error as FakeRetryable where retryable {
+            withLock { _ = endStep(step) }
             throw error.error
         } catch let error as AuthClientError where retryable && error.isValidation {
             // The contract: an answer rejected as invalid keeps the attempt.
+            withLock { _ = endStep(step) }
             throw error
         } catch let error as FakeRetryable {
-            withLock { challenge = nil }
+            withLock { dropAttemptIfCurrent(step) }
             throw error.error
         } catch {
-            withLock { challenge = nil }
+            withLock { dropAttemptIfCurrent(step) }
             throw error
         }
+        let isCurrent = withLock { () -> Bool in
+            let isCurrent = endStep(step)
+            switch result {
+            case .challenge(let challengeStep) where isCurrent:
+                challenge = challengeStep
+                // Never the session a resumed attempt holds: a new challenge is Cognito's new session.
+                var next: String
+                repeat {
+                    sessionCount += 1
+                    next = "fake-session-\(sessionCount)"
+                } while next == challengeSession
+                challengeSession = next
+            case .done where isCurrent:
+                challenge = nil
+            case .challenge, .done:
+                break
+            }
+            return isCurrent
+        }
+        if case .challenge = result, !isCurrent {
+            throw CancellationError()
+        }
+        return result
     }
 
     func refresh(_ payload: Data, force: Bool) async throws -> Data {
@@ -632,6 +656,8 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
             attemptEpoch = epoch
             return webUIScript
         }
+        let step = withLock { beginStep(epoch: epoch) }
+        defer { withLock { _ = endStep(step) } }
         var payload = Self.signedIn("web-user", keepingIdentityOf: current)
         payload.hostedUIShared = request.options.prefersEphemeralSession ? nil : true
         let result = EngineStepResult.done(payload: payload.data)
@@ -679,11 +705,12 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     }
 
     /// Resumes a saved sign-in as the pending attempt of `epoch`, as the live engine does: refused while one is
-    /// pending, and when `refuseResumes` was called.
+    /// pending or a sign-in step is in flight, and when `refuseResumes` was called.
     func resumeSignIn(from state: ChallengeRecord.State, epoch: UInt64) async -> AuthClientSignInStep? {
         withLock {
             resumes.append((state, epoch))
-            guard challenge == nil, !refusesResumes, let step = state.fakeResumedStep else {
+            // Refused while an attempt or a step is live, as the live engine refuses: either is newer.
+            guard challenge == nil, inFlight == nil, !refusesResumes, let step = state.fakeResumedStep else {
                 return nil
             }
             challenge = step
@@ -725,6 +752,9 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
             // (two sign-outs whose cancels arrive out of order) does not let a step the first one ended run on.
             latestCancelBefore = max(latestCancelBefore, epoch)
             let ceremonies = stepCeremonies.filter { $0.epoch < epoch }.map(\.context)
+            if let step = inFlight, step.epoch < epoch {
+                inFlight = nil
+            }
             if attemptEpoch < epoch {
                 dropAttempt()
             }
@@ -861,6 +891,8 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
                 dropAttempt()
                 supersedes += 1
             }
+            // The live preamble also takes the step in flight, whatever comes next.
+            inFlight = nil
             guard let signedUpUsername else {
                 return (nil, nil, false, cancels)
             }
@@ -873,15 +905,41 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
             withLock { accountOperations.append(.autoSignIn(current: current, epoch: epoch)) }
             throw SessionCore.notSignedUp()
         }
+        let step = withLock { beginStep(epoch: epoch) }
+        defer { withLock { _ = endStep(step) } }
         if let latch {
             await latch.pass()
             try checkStillWanted(since: started, epoch: epoch, honouringCancellation: honours)
         }
-        return try await settle(retryable: false) {
+        return try await settle(step, retryable: false) {
             try await recordAccountOperation(
                 .autoSignIn(current: current, epoch: epoch),
                 default: EngineStepResult.done(payload: Self.signedIn(username, keepingIdentityOf: current).data)
             )
+        }
+    }
+
+    /// Makes a new sign-in step the one in flight, taking the place of any other, as the live engine's `run`
+    /// does. Called holding `lock`.
+    private func beginStep(epoch: UInt64) -> UInt64 {
+        nextStepId += 1
+        inFlight = (nextStepId, epoch)
+        return nextStepId
+    }
+
+    /// Ends `step`, and answers whether it was still the one in flight. Called holding `lock`.
+    private func endStep(_ step: UInt64) -> Bool {
+        guard inFlight?.id == step else {
+            return false
+        }
+        inFlight = nil
+        return true
+    }
+
+    /// Ends `step` and, if it was still the one in flight, drops the pending attempt. Called holding `lock`.
+    private func dropAttemptIfCurrent(_ step: UInt64) {
+        if endStep(step) {
+            challenge = nil
         }
     }
 

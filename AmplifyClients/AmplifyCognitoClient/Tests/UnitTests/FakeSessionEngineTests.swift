@@ -136,6 +136,73 @@ final class FakeSessionEngineTests: XCTestCase {
         XCTAssertEqual(engine.cancelPendingSignInCount, 2)
     }
 
+    /// A sign-in a newer one superseded never becomes the pending attempt, as in the live engine, and leaves the
+    /// newer sign-in's attempt alone.
+    ///
+    /// - Given: alice's sign-in held inside its script, which then stops on a new-password challenge
+    /// - When:
+    ///    - bob signs in and stops on a TOTP challenge
+    ///    - alice's sign-in is released
+    /// - Then:
+    ///    - alice's sign-in throws `CancellationError`, and bob's TOTP challenge is still the one pending
+    func testASupersededStepNeverReplacesTheNewerAttempt() async throws {
+        let engine = try makeEngine()
+        let gate = Gate()
+        engine.scriptSignIn { request, _ in
+            guard request.username == "bob" else {
+                await gate.pass()
+                return .challenge(.confirmSignInWithNewPassword(nil))
+            }
+            return .challenge(.confirmSignInWithTOTPCode)
+        }
+        let alice = Self.request("alice")
+        let first = Task { try await engine.signIn(alice, current: nil, epoch: 1) }
+        await gate.waitForArrivals(1)
+
+        let second = try await engine.signIn(Self.request("bob"), current: nil, epoch: 1)
+        await gate.open()
+
+        XCTAssertEqual(second, .challenge(.confirmSignInWithTOTPCode))
+        await assertThrowsAsync({ try await first.value }) { error in
+            XCTAssertTrue(error is CancellationError, "\(error)")
+        }
+        let pending = await engine.pendingChallenge
+        XCTAssertEqual(pending, .confirmSignInWithTOTPCode)
+    }
+
+    /// A step a cancel took is no longer in flight: a resume refused while it ran is accepted once the cancel
+    /// has run, and the step's late `.done` is still returned, for the core to refuse and revoke.
+    ///
+    /// - Given: a sign-in at epoch 1 held inside its script, which then finishes with `.done`
+    /// - When:
+    ///    - a saved challenge is resumed while it is held
+    ///    - a cancel for everything before epoch 2 runs, the script is released, and the saved challenge is
+    ///      resumed again
+    /// - Then:
+    ///    - the first resume is refused, the sign-in returns its `.done`, and the second resume is accepted
+    func testAStepACancelTookLeavesNothingInFlight() async throws {
+        let engine = try makeEngine()
+        let gate = Gate()
+        engine.scriptSignIn { request, _ in
+            await gate.pass()
+            return .done(payload: FakePayload.signedIn(request.username).data)
+        }
+        let alice = Self.request("alice")
+        let signIn = Task { try await engine.signIn(alice, current: nil, epoch: 1) }
+        await gate.waitForArrivals(1)
+        let saved = try XCTUnwrap(ChallengeRecord.State.fake(.confirmSignInWithTOTPCode))
+        let whileHeld = await engine.resumeSignIn(from: saved, epoch: 1)
+
+        await engine.cancelPendingSignIn(before: 2)
+        await gate.open()
+        let result = try await signIn.value
+        let afterwards = await engine.resumeSignIn(from: saved, epoch: 2)
+
+        XCTAssertNil(whileHeld, "a step in flight is newer than a saved record")
+        XCTAssertEqual(result, .done(payload: FakePayload.signedIn("alice").data))
+        XCTAssertEqual(afterwards, .confirmSignInWithTOTPCode)
+    }
+
     #if os(iOS) || os(macOS) || os(visionOS)
     /// A sign-in cancelled before it waited dismisses only itself: the next one shown in the same browser waits.
     ///

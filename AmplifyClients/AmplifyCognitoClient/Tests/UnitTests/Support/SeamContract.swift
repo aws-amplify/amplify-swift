@@ -23,6 +23,10 @@ protocol SeamContractDriver: AnyObject {
     func scriptExpiredSession()
     /// The next `signIn` finishes at once for `username`.
     func scriptSignInDone(_ username: String)
+    /// The next `signIn` waits on `gate` for Cognito, then stops on a new-password challenge.
+    func scriptNewPasswordChallenge(heldOn gate: Gate) throws
+    /// The next answer waits on `gate` for Cognito, then stops on a TOTP challenge.
+    func scriptAnswerThenTOTPChallenge(heldOn gate: Gate)
 }
 
 /// The contract's cases, run over any driver. Every case uses `alice`, a new-password challenge, and the
@@ -33,6 +37,11 @@ enum SeamContractCases {
 
     static func answer(_ response: String) -> EngineConfirmSignInRequest {
         EngineConfirmSignInRequest(challengeResponse: response, userAttributes: [:], clientMetadata: [:], friendlyDeviceName: nil)
+    }
+
+    /// A saved TOTP challenge, as a restore hands it to `resumeSignIn`.
+    static func savedChallenge() -> ChallengeRecord.State? {
+        .fake(.confirmSignInWithTOTPCode)
     }
 
     static func isNewPassword(_ step: AuthClientSignInStep?) -> Bool {
@@ -174,6 +183,55 @@ enum SeamContractCases {
         let pending = await driver.engine.pendingChallenge
         XCTAssertNil(pending, "the earlier attempt must be ended before the refusal")
     }
+
+    /// A step a cancel ended never becomes the pending attempt: an answer Cognito meets with a further
+    /// challenge after the cancel throws `CancellationError`, and nothing is pending.
+    static func aCancelledStepNeverReturnsAChallenge(_ driver: SeamContractDriver) async throws {
+        try driver.scriptNewPasswordChallenge()
+        _ = try await driver.engine.signIn(request, current: nil)
+        let gate = Gate()
+        driver.scriptAnswerThenTOTPChallenge(heldOn: gate)
+        let engine = driver.engine
+        let response = answer("Str0ng!Passw0rd")
+        let confirm = Task { try await engine.confirmSignIn(response, current: nil) }
+        await gate.waitForArrivals(1)
+
+        await engine.cancelPendingSignIn()
+        await gate.open()
+        let result = await confirm.result
+
+        guard case .failure(let error) = result, error is CancellationError else {
+            return XCTFail("expected CancellationError, got \(result)")
+        }
+        let pending = await engine.pendingChallenge
+        XCTAssertNil(pending)
+    }
+
+    /// `resumeSignIn` is refused while a sign-in step is in flight, which is newer than any saved record; it
+    /// resumes the same record once nothing is live.
+    static func aResumeIsRefusedWhileAStepIsInFlight(_ driver: SeamContractDriver) async throws {
+        let saved = try XCTUnwrap(savedChallenge())
+        let engine = driver.engine
+        let idle = await engine.resumeSignIn(from: saved, epoch: 0)
+        XCTAssertEqual(idle, .confirmSignInWithTOTPCode, "the saved record resumes on an idle engine")
+        await engine.cancelPendingSignIn()
+        let gate = Gate()
+        try driver.scriptNewPasswordChallenge(heldOn: gate)
+        let signInRequest = request
+        let signIn = Task { try await engine.signIn(signInRequest, current: nil) }
+        await gate.waitForArrivals(1)
+
+        let resumed = await engine.resumeSignIn(from: saved, epoch: 0)
+        await gate.open()
+        let result = try await signIn.value
+
+        XCTAssertNil(resumed, "a step in flight is newer than a saved record")
+        guard case .challenge(let step) = result, isNewPassword(step) else {
+            return XCTFail("expected the sign-in's own challenge, got \(result)")
+        }
+        let pending = await engine.pendingChallenge
+        XCTAssertTrue(isNewPassword(pending), "\(String(describing: pending))")
+    }
 }
 
 /// The contract over `FakeSessionEngine`.
@@ -216,6 +274,20 @@ final class FakeSeamContractDriver: SeamContractDriver {
     func scriptSignInDone(_ username: String) {
         fake.scriptSignIn { request, _ in .done(payload: FakePayload.signedIn(request.username).data) }
     }
+
+    func scriptNewPasswordChallenge(heldOn gate: Gate) throws {
+        fake.scriptSignIn { _, _ in
+            await gate.pass()
+            return .challenge(.confirmSignInWithNewPassword(nil))
+        }
+    }
+
+    func scriptAnswerThenTOTPChallenge(heldOn gate: Gate) {
+        fake.scriptConfirmSignIn { _ in
+            await gate.pass()
+            return .challenge(.confirmSignInWithTOTPCode)
+        }
+    }
 }
 
 /// The contract over the live engine and scripted Cognito.
@@ -249,5 +321,21 @@ final class LiveSeamContractDriver: SeamContractDriver {
 
     func scriptSignInDone(_ username: String) {
         harness.scriptSRP(username)
+    }
+
+    func scriptNewPasswordChallenge(heldOn gate: Gate) throws {
+        harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in
+            await gate.pass()
+            return LiveEngineFixtures.passwordVerifier()
+        }
+        let challenge = LiveEngineFixtures.challenge(.newPasswordRequired, parameters: ["requiredAttributes": "[]"])
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in challenge }
+    }
+
+    func scriptAnswerThenTOTPChallenge(heldOn gate: Gate) {
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in
+            await gate.pass()
+            return LiveEngineFixtures.challenge(.softwareTokenMfa)
+        }
     }
 }

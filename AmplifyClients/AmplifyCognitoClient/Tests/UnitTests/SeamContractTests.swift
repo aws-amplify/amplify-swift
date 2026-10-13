@@ -89,6 +89,26 @@ final class FakeEngineSeamContractTests: XCTestCase {
     func testAnAutoSignInWithoutASessionEndsAnEarlierAttempt() async throws {
         try await SeamContractCases.anAutoSignInWithoutASessionEndsAnEarlierAttempt(driver())
     }
+
+    /// A step a cancel ended never returns a challenge.
+    ///
+    /// - Given: a pending new-password challenge, and the answer held on its way to Cognito, which will meet
+    ///   it with a TOTP challenge
+    /// - When: `cancelPendingSignIn` runs while the answer is held, then the answer is released
+    /// - Then: the confirmation throws `CancellationError`, and nothing is pending
+    func testACancelledStepNeverReturnsAChallenge() async throws {
+        try await SeamContractCases.aCancelledStepNeverReturnsAChallenge(driver())
+    }
+
+    /// A resume is refused while a sign-in step is in flight.
+    ///
+    /// - Given: a saved TOTP challenge that resumes on the idle engine, then a sign-in held on its way to
+    ///   Cognito
+    /// - When: the saved challenge is resumed while the sign-in is held, then the sign-in is released
+    /// - Then: the resume is refused, and the sign-in's own new-password challenge is what is pending
+    func testAResumeIsRefusedWhileAStepIsInFlight() async throws {
+        try await SeamContractCases.aResumeIsRefusedWhileAStepIsInFlight(driver())
+    }
 }
 
 /// The same contract over the live engine and scripted Cognito.
@@ -181,5 +201,25 @@ final class LiveEngineSeamContractTests: XCTestCase {
     /// - Then: it throws the "Not in a signed up state…" `invalidState`, and nothing is pending
     func testAnAutoSignInWithoutASessionEndsAnEarlierAttempt() async throws {
         try await SeamContractCases.anAutoSignInWithoutASessionEndsAnEarlierAttempt(driver())
+    }
+
+    /// A step a cancel ended never returns a challenge.
+    ///
+    /// - Given: a pending new-password challenge, and the answer held on its way to Cognito, which will meet
+    ///   it with a TOTP challenge
+    /// - When: `cancelPendingSignIn` runs while the answer is held, then the answer is released
+    /// - Then: the confirmation throws `CancellationError`, and nothing is pending
+    func testACancelledStepNeverReturnsAChallenge() async throws {
+        try await SeamContractCases.aCancelledStepNeverReturnsAChallenge(driver())
+    }
+
+    /// A resume is refused while a sign-in step is in flight.
+    ///
+    /// - Given: a saved TOTP challenge that resumes on the idle engine, then a sign-in held on its way to
+    ///   Cognito
+    /// - When: the saved challenge is resumed while the sign-in is held, then the sign-in is released
+    /// - Then: the resume is refused, and the sign-in's own new-password challenge is what is pending
+    func testAResumeIsRefusedWhileAStepIsInFlight() async throws {
+        try await SeamContractCases.aResumeIsRefusedWhileAStepIsInFlight(driver())
     }
 }
