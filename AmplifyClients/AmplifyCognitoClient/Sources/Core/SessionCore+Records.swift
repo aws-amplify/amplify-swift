@@ -169,9 +169,10 @@ extension SessionCore {
                 do {
                     after = try await store.load(sessionId)
                 } catch {
-                    // The record is signed out, but could not be read back: the signed-out row as this session knew it,
-                    // keeping its label and last user, rather than no row at all.
-                    after = outcome.removedCredentials ? Self.signedOutRow(keeping: await restoredSnapshotIfAny) : nil
+                    // The session ended, but its record could not be read back: the signed-out row as this session knew
+                    // it, keeping its label and last user, rather than no row at all. Whether or
+                    // not credentials were removed, so the pending sign-in cancelled above is cleared with it.
+                    after = outcome.endedSession ? Self.signedOutRow(keeping: await restoredSnapshotIfAny) : nil
                 }
                 if let after {
                     await apply(
