@@ -366,8 +366,13 @@ extension SessionRecordStore {
     /// Clears the AWSMobileClient logins once `.default` has been signed out or purged, as the Auth plugin's own
     /// sign-out does (`ClearCredentialStore`): `.default` is the plugin's saved login, and every plugin configure first
     /// migrates those logins into it when it holds no session, so a login kept for a later migration would otherwise
-    /// sign its user in again under the next plugin build. Best effort, as the plugin's: a failure is logged, and never
-    /// fails the sign-out or purge, whose record is already gone.
+    /// sign its user in again under the next plugin build. Like the plugin's, it runs on a sign-out that had nothing to
+    /// sign out too. Best effort, as the plugin's: each service that fails to clear logs one warning, and none fails the
+    /// sign-out or purge, whose record is already gone.
+    ///
+    /// The identity pool's service is named from this store's own pools (`namespace.pools`): an AWSMobileClient app
+    /// that used another identity pool than the client's configuration names keeps that login, which the plugin, built
+    /// with the same configuration, would not clear either.
     func clearLegacyLogins() {
         for store in legacyLoginStores() {
             do {

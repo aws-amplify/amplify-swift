@@ -117,8 +117,9 @@ let work = try AmplifyCognitoClient(
 )
 ```
 
-Pass the resource name without `.json`. The initializer throws `AuthClientError.configuration` naming the problem:
-a name with an extension, a missing file, a Gen1 file, a missing `auth` section or key, or a value outside the
+Pass the resource name without `.json`; a dotted name such as `"amplify_outputs.staging"` loads
+`amplify_outputs.staging.json`. The initializer throws `AuthClientError.configuration` naming the problem: a name
+ending in `.json` (in any case), a missing file, a Gen1 file, a missing `auth` section or key, or a value outside the
 schema.
 
 To configure without a file:
@@ -483,8 +484,9 @@ About `autoSignIn()`:
 ## Sign-in
 
 `signIn` is refused (`.invalidState`) only when **this** session is already signed in or federated. Other
-sessions never block it. A guest session keeps its identity when it signs in. A session waiting on a challenge
-starts over.
+sessions never block it. A guest session signs in on the same session, but its identity ID is not kept: as with
+the Auth plugin, the signed-in identity ID is the one the identity pool maps the login to. A session waiting on a
+challenge starts over.
 
 The result's `nextStep` is `.done` when the user is signed in. Otherwise it is the step to present; see
 [Sign-in steps and confirmSignIn](#sign-in-steps-and-confirmsignin).
@@ -1228,8 +1230,11 @@ any other, with `.complete`.
 
 Signing `.default` out or purging it (so also `deleteUser` and `clearFederationToIdentityPool` on `.default`) also
 clears the AWSMobileClient (Amplify v1) logins, as the Auth plugin's sign-out does, so a plugin build's migration
-can't bring an old login back over the signed-out one. It is best effort: a failure logs a warning under
-`AmplifyCognitoClient.SessionRecordStore` and never fails the sign-out. Named sessions never touch those logins.
+can't bring an old login back over the signed-out one. Like the plugin's, it runs even when there was nothing to
+sign out. It is best effort: each service that fails to clear logs one warning (up to three) under
+`AmplifyCognitoClient.SessionRecordStore`, and it never fails the sign-out. The identity pool's login is the one for
+the client's configured identity pool: if the AWSMobileClient app used another identity pool, that login isn't
+cleared. Named sessions never touch those logins.
 
 ### Hosted-UI sign-out
 
@@ -1469,6 +1474,10 @@ When the pools change, a named session is **carried forward** the first time it 
 the client copies the session's login from the record of the configuration the app last used for that session into
 a record for the new configuration, and keeps the old record. Below, "carried" means the same.
 
+The rule compares pool IDs only, not the app client: a named session is also carried when the app client changes
+along with one of the changes below, where the plugin's rule would not carry. The carried session then gets
+`sessionExpired` at its first refresh, as a change of app client alone gives, and its user signs in again.
+
 | Change | The session after the change |
 |---|---|
 | Identity pool only, then a user pool added | The guest or federated identity, as it was |
@@ -1571,11 +1580,13 @@ import AmplifyFoundation
 AmplifyLogging.addSink(AmplifyOSLogSink(logLevel: .warn))
 ```
 
-The client redacts two things in every line, at every level: the query and fragment of each URL (the hosted UI's
-authorize URL holds `state`, the nonce, the PKCE challenge, `login_hint` and `userContextData`, and its redirect the
-authorization code), and the value of each user identifier the Cognito flows print, such as `USERNAME` and
-`USER_ID_FOR_SRP` in a challenge's parameters, the username of a sign-in, and the user's attributes. Debug and verbose
-lines can still hold Cognito's other challenge parameters and responses, so keep a remote sink, such as
+The client redacts two things in every line, at every level, in each message; an error passed with a line reaches
+the sink as it is. It replaces the query and fragment of each URL with `?<redacted>` (the hosted UI's authorize URL
+holds `state`, the nonce, the PKCE challenge, `login_hint` and `userContextData`, and its redirect, a custom-scheme
+one included, the authorization code), and the value of each user identifier the Cognito flows print with
+`<redacted>`, such as `USERNAME` and `USER_ID_FOR_SRP` in a challenge's parameters, the username of a sign-in, a
+passkey's `userHandle`, and the user's attributes. Debug and verbose lines can still hold Cognito's other challenge
+parameters and responses, a challenge's `session` string among them, so keep a remote sink, such as
 `AmplifyCloudWatchClient`, at `.info` or above. The Auth plugin's own lines are not redacted this way.
 
 ## Differences from the Auth plugin
@@ -1612,6 +1623,7 @@ The client keeps the plugin's semantics except where listed here.
 | Configuration change | Carries some changes, deletes the old record otherwise | `.default`: the same, and a deleted login of the same user pool is revoked. Named sessions carry the same changes and keep the old record; a changed identity pool keeps user pool tokens only |
 | Credential error types | Not applicable | `CredentialsError` and `StorageUnavailableReason` need `@_spi(AmplifyExperimental) import AmplifyFoundation` |
 | Category plugins | Use its session | Don't see client sessions |
+| Credentials during a pending sign-in challenge | Keeps vending a guest's credentials | `credentialsProvider` and `userPoolTokenProvider` throw `notSignedIn` (`.discard`), whatever the session held |
 
 ## Known limitations
 
