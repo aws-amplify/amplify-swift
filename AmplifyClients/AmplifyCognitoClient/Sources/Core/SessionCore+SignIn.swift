@@ -250,7 +250,10 @@ extension SessionCore {
     }
 
     /// `signInBase()` without starting an attempt: the snapshot and guest payload, or the refusal. The epoch
-    /// does not move, so a pending challenge stays answerable: for a check before a step that may still fail.
+    /// does not move, so a pending challenge is not ended: for a check before a step that may still fail. It is
+    /// not answerable meanwhile, though: the hosted UI holds `signInLock` while it waits for the sheet, so a
+    /// `confirmSignIn` queues behind it, and answers the challenge only if that sign-in ends without starting
+    /// its attempt.
     func signInSeed() throws -> (SessionSnapshot, Data?) {
         guard let snapshot = restoredSnapshotIfAny else {
             // `restoredSnapshot()` returned, so a snapshot is installed; nothing ever removes one.
