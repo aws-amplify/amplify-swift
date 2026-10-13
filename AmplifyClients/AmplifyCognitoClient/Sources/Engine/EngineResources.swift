@@ -259,9 +259,18 @@ struct EngineOperation: Sendable {
 /// **URL queries are redacted.** Every line, at every level, has the query and fragment of each URL in it
 /// replaced by `<redacted>` (`redactingURLQueries(_:)`), so the hosted UI's authorize URL, whose query holds
 /// `state`, `nonce`, the PKCE `code_challenge`, `login_hint` and `userContextData`, and a redirect carrying an
-/// authorization code never reach an app's sink. The engine's lines are otherwise the plugin's own, unchanged:
-/// its debug and verbose lines can still hold usernames and Cognito responses, as the plugin's do. The plugin
-/// logs through its own router, so its lines are not redacted.
+/// authorization code never reach an app's sink.
+///
+/// **So are user identifiers.** The engine's verbose lines print its events and Cognito's responses as they are:
+/// `InitiateAuth`'s challenge parameters hold `USERNAME` and `USER_ID_FOR_SRP` in clear, and a sign-in's events the
+/// username it was given. Every line has the value of each such key (`userIdentifierKeys`) replaced by `<redacted>`
+/// (`redactingUserIdentifiers(_:)`), in each form the engine prints one: a dictionary entry or a labelled field,
+/// optional or not, quoted, quoted inside another quoted string, or bare in a property-list dump. Values the engine
+/// already masks (`tr***er`) are replaced too.
+///
+/// The lines are otherwise the plugin's own, unchanged: debug and verbose lines can still hold Cognito's other
+/// challenge parameters and responses, so keep a remote sink at `.info` or above. The plugin logs through its own
+/// router, so its lines, and its log golden, are not redacted.
 struct ClientEngineLogger: EngineScopedLogger {
 
     static let category = "AmplifyCognitoClient"
@@ -281,27 +290,79 @@ struct ClientEngineLogger: EngineScopedLogger {
     }
 
     func error(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        logger.error(Self.redactingURLQueries(message()), error())
+        logger.error(Self.redacting(message()), error())
     }
 
     func warn(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        logger.warn(Self.redactingURLQueries(message()), error())
+        logger.warn(Self.redacting(message()), error())
     }
 
     func info(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        logger.info(Self.redactingURLQueries(message()), error())
+        logger.info(Self.redacting(message()), error())
     }
 
     func debug(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        logger.debug(Self.redactingURLQueries(message()), error())
+        logger.debug(Self.redacting(message()), error())
     }
 
     func verbose(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        logger.verbose(Self.redactingURLQueries(message()), error())
+        logger.verbose(Self.redacting(message()), error())
     }
 
     func log(_ logLevel: AmplifyFoundation.LogLevel, _ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        logger.log(logLevel, Self.redactingURLQueries(message()), error())
+        logger.log(logLevel, Self.redacting(message()), error())
+    }
+
+    /// `message` as a sink may see it: its URL queries (`redactingURLQueries(_:)`), then its user identifiers
+    /// (`redactingUserIdentifiers(_:)`), redacted.
+    static func redacting(_ message: String) -> String {
+        redactingUserIdentifiers(redactingURLQueries(message))
+    }
+
+    /// The keys whose values name a user, matched case-insensitively as whole words: Cognito's challenge and auth
+    /// parameters (`USERNAME`, `USER_ID_FOR_SRP`, `userAttributes`, whose JSON holds the user's attributes), the
+    /// engine's own fields (`username`, `inputUsername`, `userId`), the user's sub, and the standard attributes that
+    /// identify a user (`email`, `phone_number`, `preferred_username`, `login_hint`).
+    static let userIdentifierKeys = [
+        "USERNAME", "USER_ID_FOR_SRP", "inputUsername", "userId", "userSub", "sub", "userAttributes",
+        "email", "phone_number", "preferred_username", "login_hint"
+    ]
+
+    /// `message` with the value of every `userIdentifierKeys` key replaced by `<redacted>`, keeping the key and its
+    /// quoting:
+    ///
+    /// | Printed as | Becomes |
+    /// |---|---|
+    /// | `"USERNAME": "alice"`, `username: Optional("alice")`, `userName = "alice";` | `"USERNAME": "<redacted>"`, … |
+    /// | `\"username\": \"alice\"` (a dictionary printed inside another string) | `\"username\": \"<redacted>\"` |
+    /// | `userName = alice;` (a property-list dump) | `userName = <redacted>;` |
+    ///
+    /// A message that names none of the keys' stems is returned as it is, without a regular expression.
+    static func redactingUserIdentifiers(_ message: String) -> String {
+        guard ["user", "sub", "email", "phone", "login_hint"].contains(where: {
+            message.range(of: $0, options: .caseInsensitive) != nil
+        }) else {
+            return message
+        }
+        let keys = userIdentifierKeys.joined(separator: "|")
+        let rules: [(pattern: String, template: String)] = [
+            // A quoted value, after a quoted or bare key, `:` or `=`, and an optional `Optional(`.
+            (#"(?i)("?\b(?:"# + keys + #")\b"?\s*[:=]\s*(?:Optional\()?)"(?:[^"\\]|\\.)*""#, #"$1"<redacted>""#),
+            // The same inside another quoted string, every quote escaped.
+            (#"(?i)(\\"\b(?:"# + keys + #")\b\\"\s*[:=]\s*(?:Optional\()?)\\"(?:[^"\\]|\\[^"])*\\""#,
+             #"$1\\"<redacted>\\""#),
+            // A bare value in a property-list dump: `key = value;`.
+            (#"(?i)(\b(?:"# + keys + #")\s=\s)(?!["\\])[^;\s]+;"#, #"$1<redacted>;"#)
+        ]
+        var redacted = message
+        for rule in rules {
+            guard let expression = try? NSRegularExpression(pattern: rule.pattern) else {
+                continue
+            }
+            let range = NSRange(redacted.startIndex..., in: redacted)
+            redacted = expression.stringByReplacingMatches(in: redacted, range: range, withTemplate: rule.template)
+        }
+        return redacted
     }
 
     /// `message` with the query and fragment of every URL in it (`scheme://…?…` or `scheme://…#…`) replaced by

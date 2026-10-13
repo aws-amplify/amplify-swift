@@ -167,6 +167,56 @@ final class ClientLogCategoryTests: XCTestCase {
             }
         }
     }
+
+    /// The client's logger also redacts the user identifiers the engine's verbose lines print in clear: `InitiateAuth`'s
+    /// challenge parameters (`USERNAME`, `USER_ID_FOR_SRP`), a sign-in event's username, and the user's attributes, in
+    /// each form the engine prints them. Everything else on the line is kept.
+    ///
+    /// - Given: the engine's logger in the client, scoped as the SRP step is
+    /// - When:
+    ///    - lines shaped as the engine prints its events, Cognito's challenge parameters and its state dumps are
+    ///      logged, beside a line that mentions a username without a value
+    /// - Then:
+    ///    - every identifier's value is `<redacted>`, keeping its key and quoting, at every level
+    ///    - the other parameters (`SALT`, the challenge name) and the line without a value are unchanged
+    func testTheEngineLoggerRedactsUserIdentifiers() throws {
+        let scope = EngineLogScope.categoryNamespace("Authentication", "IdentifierProbe-\(UUID().uuidString)")
+        let logger = ClientEngineLogger().scoped(scope)
+        let category = try XCTUnwrap(logger as? ClientEngineLogger).name
+        let challenge = #"Sending event InitiateAuthOutput(ChallengeName: "PASSWORD_VERIFIER", ChallengeParameters: "#
+            + #"["SALT": "79b0", "USERNAME": "royji2", "USER_ID_FOR_SRP": "royji2"])"#
+        let respond = #"RespondToAuthChallenge(challenge: smsMfa, username: "alice", session: Optional("S"), "#
+            + #"parameters: Optional(["userAttributes": "{\"email\":\"alice@example.com\"}"]), "#
+            + #"inputUsername: Optional("alice@example.com"))"#
+        let nested = #"tokens = "[\"username\": \"bob\", \"idToken\": \"ey*****re\"]"; userName = carol; "#
+            + #"userId = "tr**ub"; deviceMetadata = "noData";"#
+        let mention = "Unable to extract username from signInEventData"
+
+        logger.verbose(challenge, nil)
+        logger.debug(respond, nil)
+        logger.info(nested, nil)
+        logger.warn(challenge, nil)
+        logger.error(respond, nil)
+        logger.log(.verbose, nested, nil)
+        logger.verbose(mention, nil)
+
+        let lines = sink.lines(in: [category])
+        XCTAssertEqual(lines.count, 7)
+        let redactedChallenge = #"Sending event InitiateAuthOutput(ChallengeName: "PASSWORD_VERIFIER", ChallengeParameters: "#
+            + #"["SALT": "79b0", "USERNAME": "<redacted>", "USER_ID_FOR_SRP": "<redacted>"])"#
+        let redactedRespond = #"RespondToAuthChallenge(challenge: smsMfa, username: "<redacted>", session: Optional("S"), "#
+            + #"parameters: Optional(["userAttributes": "<redacted>"]), inputUsername: Optional("<redacted>"))"#
+        let redactedNested = #"tokens = "[\"username\": \"<redacted>\", \"idToken\": \"ey*****re\"]"; "#
+            + #"userName = <redacted>; userId = "<redacted>"; deviceMetadata = "noData";"#
+        XCTAssertEqual(lines, [
+            redactedChallenge, redactedRespond, redactedNested, redactedChallenge, redactedRespond, redactedNested, mention
+        ])
+        for line in lines {
+            for secret in ["royji2", "alice", "bob", "carol", "example.com", "tr**ub"] {
+                XCTAssertFalse(line.contains(secret), line)
+            }
+        }
+    }
 }
 
 /// Records the category (the logger name) of every line logged through `AmplifyLogging` while it is registered.
