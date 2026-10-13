@@ -148,13 +148,18 @@ struct SessionSignOut: Sendable {
         switch try await held(store.read(sessionId)) {
         case .nothing:
             return .nothingToSignOut
-        case .unreadable:
+        case .unreadable(let unreadable):
             // Nothing this build can read, so nothing to revoke. The store replaces it with a
             // signed-out row, so no unreadable credentials outlive sign-out.
             switch try await store.signOut(sessionId) {
             case .signedOut, .noRecord:
                 challengeDeleted = true
-                return .nothingToSignOut
+                guard case .unsupportedSchema(let version) = unreadable else {
+                    return .nothingToSignOut
+                }
+                // A newer version's record may have held tokens, which this build could neither read nor revoke: the
+                // sign-out is partial, not complete, so the app knows a refresh token may stay valid.
+                return .signedOut(server: EngineSignOutOutcome(revokeError: Self.unrevokedNewerRecordError(version: version)))
             case .superseded:
                 return .superseded
             }
@@ -333,6 +338,16 @@ struct SessionSignOut: Sendable {
                 underlying
             )
         }
+    }
+
+    /// The revoke failure a sign-out reports after replacing a newer schema's record, which it could not read, and so
+    /// could not revoke.
+    static func unrevokedNewerRecordError(version: Int) -> AuthClientError {
+        .unknown(
+            "A newer version of the app saved this session (record schema \(version)), so its tokens could not be read or "
+                + "revoked. The record was replaced with a signed-out row; a refresh token it held stays valid until it expires.",
+            "Update the app before signing in to this session again, so a later sign-out can revoke its tokens."
+        )
     }
 
     /// Another sign-in replaced the session while it was signing out.
