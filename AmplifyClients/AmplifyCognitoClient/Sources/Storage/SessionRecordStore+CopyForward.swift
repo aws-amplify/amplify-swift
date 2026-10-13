@@ -17,7 +17,8 @@ import Foundation
 //
 // **The recorded previous configuration.** The plugin keeps the configuration it last ran with
 // (`authConfigurationKey`) and, on start, compares it with the current one
-// (`AWSCognitoAuthCredentialStore.restoreCredentialsOnConfigurationChanges`). The client keeps the same fact per
+// (`AWSCognitoAuthCredentialStore.restoreCredentialsOnConfigurationChanges`, whose rule is
+// `AWSCognitoAuthCredentialStore+ConfigurationChange.swift`, `configurationChange(from:to:)`). The client keeps the same fact per
 // session: a **namespace marker**, `amplify.1.<sessionId>.<app>.configuration`, recording the namespace this app
 // last kept the session's record under. It is written when a record with credentials is first created here, or
 // written over a signed-out row (a sign-in, a guest, a carry), and when a restore finds a record here,
@@ -28,15 +29,23 @@ import Foundation
 // marker this build cannot read (corrupt, or a newer schema) is never overwritten, and carries nothing.
 //
 // A session is carried **only from the namespace its marker names**, only when that differs from the current
-// one, only when the current namespace holds no record for it, and only on the changes the plugin accepts:
+// one, only when the current namespace holds no record for it, and only on the pool changes the plugin accepts:
 //
-// | Plugin branch | Recorded namespace | Current namespace | The client carries |
+// | Plugin branch (`configurationChange(from:to:)`) | Recorded namespace | Current namespace | The client carries |
 // |---|---|---|---|
-// | no old user pool, same identity pool (`:127`) | `<ip>` | `<up>.<ip>` | the record as it is (a guest, or a federated identity) |
-// | same user pool (`:138-140`) | `<up>` | `<up>.<ip>` | the user pool tokens; the identity is fetched lazily (`identityPending`) |
-// | same user pool (`:138-140`) | `<up>.<ip2>` | `<up>.<ip>` | the user pool tokens only: **not** the identity from `<ip2>` (below); fetched lazily |
-// | same user pool (`:138-140`) | `<up>.<ip>` | `<up>` | the user pool tokens only |
-// | anything else (`:148-153`) | — | — | nothing; the record there is **kept** (the plugin clears it: below) |
+// | no old user pool, same identity pool (first `.carry`) | `<ip>` | `<up>.<ip>` | the record as it is (a guest, or a federated identity) |
+// | same user pool (second `.carry`) | `<up>` | `<up>.<ip>` | the user pool tokens; the identity is fetched lazily (`identityPending`) |
+// | same user pool (second `.carry`) | `<up>.<ip2>` | `<up>.<ip>` | the user pool tokens only: **not** the identity from `<ip2>` (below); fetched lazily |
+// | same user pool (second `.carry`) | `<up>.<ip>` | `<up>` | the user pool tokens only |
+// | anything else (`.clear`) | — | — | nothing; the record there is **kept** (the plugin clears it: below) |
+//
+// **The rule compares pool IDs only, not the app client.** The plugin's same-user-pool branch also requires the same app
+// client ID and region (`UserPoolConfigurationData.isNamespacingEqual`); a user pool ID embeds its region, but the marker
+// records only the namespace, so a change of app client beside an identity pool change still carries here, where the
+// plugin would clear. The carried session then lists as signed in and its first refresh fails with `sessionExpired`
+// (Cognito refuses a refresh token from another app client), as a change of app client alone does for named sessions and
+// for the plugin, whose key has no client ID either; its sign-out reports the failed revoke in `.partial`, and the old
+// app client's refresh token stays valid until it expires. Recording the app client would change the marker's format.
 //
 // So the latest recorded state wins. A signed-out or absent record under the recorded namespace carries nothing,
 // even if an older namespace still holds the user (a tombstone). A signed-out row under the *current* namespace is
@@ -46,7 +55,7 @@ import Foundation
 // record from an earlier build, or another app's) carries nothing.
 //
 // **A change the client does not carry keeps the old record** (a deliberate difference for named sessions: the
-// plugin's `:148-153` branch deletes it). An app can switch its pool configuration at runtime under one session ID (an organisation picker),
+// plugin's `.clear` branch deletes it). An app can switch its pool configuration at runtime under one session ID (an organisation picker),
 // which the plugin cannot; deleting there would delete the other configuration's live session, unrevoked, on every
 // switch. The first record started under the new namespace remembers the old one as a copy, with its digest and its
 // own user, whoever starts (`recordStartedHere`), so its user's sign-out or purge there sweeps it while it is
@@ -87,7 +96,7 @@ import Foundation
 // absent. No re-read-then-delete here is atomic (the keychain has no compare-and-delete): a writer that lands between
 // the two calls loses its write.
 //
-// **A deliberate difference from the plugin's `:138` branch.** The plugin copies its record's bytes, so a changed
+// **A deliberate difference from the plugin's same-user-pool `.carry` branch.** The plugin copies its record's bytes, so a changed
 // identity pool inherits an identity ID and AWS credentials from the old one. The client never carries an
 // identity across a changed identity pool: only the tokens, and the new pool issues its own identity on first
 // use. **Another:** a record whose kind the change does not carry (a guest under a user-pool-only namespace, as
@@ -198,7 +207,7 @@ extension SessionRecordStore {
     }
 
     /// How a session recorded under `previous` is carried into `current`, or `nil` if the change is not one
-    /// the plugin carries (the table above).
+    /// the plugin carries (the table above). Pool IDs only: the app client is not compared (above).
     static func carry(from previous: PoolNamespace, into current: PoolNamespace) -> Carry? {
         switch (previous, current) {
         case let (.identityPool(old), .userPoolAndIdentityPool(_, new)) where old == new:
