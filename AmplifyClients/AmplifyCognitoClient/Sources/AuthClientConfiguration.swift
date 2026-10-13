@@ -27,11 +27,11 @@ public struct AuthClientConfiguration: Sendable, Equatable {
         public let appClientId: String
         /// The AWS Region the user pool is in, such as `us-east-1`.
         public let region: String
-        /// Sent with user-pool API calls. The hosted UI's token exchange does not receive it, as for the
-        /// plugin configured from `amplify_outputs`.
+        /// Sent with user-pool API calls, and with the hosted UI's token exchange (`Authorization: Basic`), as
+        /// the plugin sends it when its configuration carries one. `amplify_outputs` has none.
         public let appClientSecret: String?
-        /// The hosted UI settings, or `nil` if the pool has no OAuth domain configured. The hosted UI does
-        /// not use `appClientSecret`.
+        /// The hosted UI settings, or `nil` if the pool has no OAuth domain configured. Its token exchange
+        /// uses `appClientSecret`, when there is one.
         public let oauth: OAuth?
         /// The pool's password policy, or `nil` if not stated. Cognito enforces it.
         public let passwordPolicy: PasswordPolicy?

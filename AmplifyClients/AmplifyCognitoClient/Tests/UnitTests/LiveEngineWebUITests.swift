@@ -316,6 +316,51 @@ final class LiveEngineWebUITests: XCTestCase {
         XCTAssertEqual(after, pending)
     }
 
+    // MARK: A confidential app client
+
+    /// The hosted UI's token exchange carries the app client's secret, as the plugin's does when its
+    /// configuration has one
+    ///
+    /// - Given: a hosted UI whose app client has a secret, and one whose app client has none
+    /// - When: a hosted-UI sign-in runs on each
+    /// - Then:
+    ///    - with the secret, the token request carries `Authorization: Basic` of the client ID and the secret, and
+    ///      the sign-in reaches `.done`; without one, it carries no `Authorization` header
+    func testTheTokenExchangeCarriesTheAppClientSecret() async throws {
+        let base = HostedUIFixtures.userPool
+        let confidential = AuthClientConfiguration.UserPool(
+            poolId: base.poolId,
+            appClientId: base.appClientId,
+            region: base.region,
+            appClientSecret: "app-client-secret",
+            oauth: base.oauth
+        )
+        let expected = "Basic " + Data("app-client-1:app-client-secret".utf8).base64EncodedString()
+        for (userPool, authorization) in [(confidential, expected as String?), (base, nil)] {
+            harness = LiveEngineHarness(
+                configuration: ClientFixtures.make(userPool: userPool, identityPool: ClientFixtures.identityPool),
+                hostedUIPresenter: presenter,
+                hostedUIURLSession: TokenEndpointStub.session
+            )
+            harness.scriptIdentityPool()
+            let presenter = presenter!
+            let headers = HeaderLog()
+            TokenEndpointStub.respond { request in
+                headers.record(request.value(forHTTPHeaderField: "Authorization"))
+                return TokenEndpointStub.tokens("alice", nonce: presenter.lastQueryItem("nonce"))
+            }
+            let engine = try harness.engine()
+            let request = await request()
+
+            let result = try await engine.signInWithWebUI(request, current: nil, epoch: 0)
+
+            guard case .done = result else {
+                return XCTFail("expected .done, got \(result)")
+            }
+            XCTAssertEqual(headers.values, [authorization])
+        }
+    }
+
     // MARK: Sign-out
 
     /// Pins the non-ephemeral logout HU-2 cannot
@@ -737,6 +782,27 @@ final class CallsAtShow: @unchecked Sendable {
     func record(_ calls: [String]) {
         lock.lock()
         recorded.append(calls)
+        lock.unlock()
+    }
+}
+
+/// The `Authorization` header of each token request, in order.
+///
+/// - Note: `@unchecked Sendable`: `recorded` is only touched while holding `lock`.
+final class HeaderLog: @unchecked Sendable {
+
+    private let lock = NSLock()
+    private var recorded: [String?] = []
+
+    var values: [String?] {
+        lock.lock()
+        defer { lock.unlock() }
+        return recorded
+    }
+
+    func record(_ value: String?) {
+        lock.lock()
+        recorded.append(value)
         lock.unlock()
     }
 }

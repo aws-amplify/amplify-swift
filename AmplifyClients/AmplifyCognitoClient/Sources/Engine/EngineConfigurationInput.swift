@@ -120,8 +120,10 @@ struct EngineUserPoolSettings: Sendable, Equatable {
         self.authFlowType = .userSRP
 
         // `parseHostedConfiguration(configuration: AmplifyOutputsData.Auth)`: no hosted UI unless both
-        // redirect lists are non-empty, and then the first of each. No secret, even when the app client has
-        // one: the plugin passes `nil` on this path, and the client matches it exactly.
+        // redirect lists are non-empty, and then the first of each. With the app client's secret, as the plugin's
+        // only configuration that can carry one (`amplify_outputs` has none) gives it to its hosted UI
+        // (`parseHostedConfiguration(configuration: JSONValue?)`): a confidential app client's token exchange
+        // needs it (`Authorization: Basic`). `nil` for every configuration read from `amplify_outputs`.
         self.hostedUIConfig = userPool.oauth.flatMap { oauth in
             guard let signIn = oauth.redirectSignInURIs.first,
                   let signOut = oauth.redirectSignOutURIs.first else {
@@ -135,7 +137,7 @@ struct EngineUserPoolSettings: Sendable, Equatable {
                     signInRedirectURI: signIn,
                     signOutRedirectURI: signOut
                 ),
-                clientSecret: nil
+                clientSecret: userPool.appClientSecret
             )
         }
 

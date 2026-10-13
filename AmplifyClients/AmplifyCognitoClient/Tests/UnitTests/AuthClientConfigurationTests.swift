@@ -354,8 +354,8 @@ final class AuthClientConfigurationTests: XCTestCase {
     ///    - Their engine input is derived
     /// - Then:
     ///    - The flow is `.userSRP`, there is no endpoint and no Pinpoint app
-    ///    - The user pool keeps the app client's secret, but the hosted UI has none, as the plugin builds it,
-    ///      and it has the first redirect URI of each list
+    ///    - The user pool and the hosted UI both keep the app client's secret, as the plugin gives one to its
+    ///      hosted UI, and the hosted UI has the first redirect URI of each list; one read from a file has none
     ///    - Only the engine's thirteen sign-up attributes are kept, in order
     ///
     func testEngineInputDefaultsAndHostedUISecret() throws {
@@ -374,7 +374,7 @@ final class AuthClientConfigurationTests: XCTestCase {
         XCTAssertEqual(settings.hostedUIConfig, .init(
             clientId: "c",
             oauth: .init(domain: "d", scopes: ["openid"], signInRedirectURI: "a://1", signOutRedirectURI: "b://1"),
-            clientSecret: nil
+            clientSecret: "secret"
         ))
 
         let parsed = try XCTUnwrap(AuthClientConfiguration(outputsData: outputs(settingsAuth), resourceName: "x").userPool)
