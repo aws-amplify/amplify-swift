@@ -191,6 +191,9 @@ final class ClientLogCategoryTests: XCTestCase {
         let nested = #"tokens = "[\"username\": \"bob\", \"idToken\": \"ey*****re\"]"; userName = carol; "#
             + #"userId = "tr**ub"; deviceMetadata = "noData";"#
         let mention = "Unable to extract username from signInEventData"
+        let assertion = #"Sending event WebAuthnEvent(eventType: verifyCredentialsAndSignIn("{\"id\":\"cred-1\","#
+            + #"\"response\":{\"userHandle\":\"dXNlci1kYXZl\",\"signature\":\"c2ln\"}}", "#
+            + #"loginHint: Optional("dave@example.com")))"#
 
         logger.verbose(challenge, nil)
         logger.debug(respond, nil)
@@ -199,23 +202,55 @@ final class ClientLogCategoryTests: XCTestCase {
         logger.error(respond, nil)
         logger.log(.verbose, nested, nil)
         logger.verbose(mention, nil)
+        logger.verbose(assertion, nil)
 
         let lines = sink.lines(in: [category])
-        XCTAssertEqual(lines.count, 7)
+        XCTAssertEqual(lines.count, 8)
         let redactedChallenge = #"Sending event InitiateAuthOutput(ChallengeName: "PASSWORD_VERIFIER", ChallengeParameters: "#
             + #"["SALT": "79b0", "USERNAME": "<redacted>", "USER_ID_FOR_SRP": "<redacted>"])"#
         let redactedRespond = #"RespondToAuthChallenge(challenge: smsMfa, username: "<redacted>", session: Optional("S"), "#
             + #"parameters: Optional(["userAttributes": "<redacted>"]), inputUsername: Optional("<redacted>"))"#
         let redactedNested = #"tokens = "[\"username\": \"<redacted>\", \"idToken\": \"ey*****re\"]"; "#
             + #"userName = <redacted>; userId = "<redacted>"; deviceMetadata = "noData";"#
+        let redactedAssertion = #"Sending event WebAuthnEvent(eventType: verifyCredentialsAndSignIn("{\"id\":\"cred-1\","#
+            + #"\"response\":{\"userHandle\":\"<redacted>\",\"signature\":\"c2ln\"}}", "#
+            + #"loginHint: Optional("<redacted>")))"#
         XCTAssertEqual(lines, [
-            redactedChallenge, redactedRespond, redactedNested, redactedChallenge, redactedRespond, redactedNested, mention
+            redactedChallenge, redactedRespond, redactedNested, redactedChallenge, redactedRespond, redactedNested, mention,
+            redactedAssertion
         ])
         for line in lines {
-            for secret in ["royji2", "alice", "bob", "carol", "example.com", "tr**ub"] {
+            for secret in ["royji2", "alice", "bob", "carol", "dave", "dXNlci1kYXZl", "example.com", "tr**ub"] {
                 XCTAssertFalse(line.contains(secret), line)
             }
         }
+    }
+
+    /// The forms the first identifier and URL rules missed: a quoted key with a bare value (a property-list dump of a
+    /// dictionary), a doubly optional value, and a custom-scheme redirect without `//`.
+    ///
+    /// - Given: the client's engine logger
+    /// - When: a line of each form is redacted
+    /// - Then:
+    ///    - each value, and the redirect's query, is `<redacted>`; the key, the scheme and the path are kept
+    func testTheEngineLoggerRedactsTheRemainingForms() {
+        XCTAssertEqual(
+            ClientEngineLogger.redacting(#"parameters = { "USER_ID_FOR_SRP" = abcd1234; SALT = 79b0; }"#),
+            #"parameters = { "USER_ID_FOR_SRP" = <redacted>; SALT = 79b0; }"#
+        )
+        XCTAssertEqual(
+            ClientEngineLogger.redacting(#"SignInEventData(username: Optional(Optional("alice")), password: nil)"#),
+            #"SignInEventData(username: Optional(Optional("<redacted>")), password: nil)"#
+        )
+        XCTAssertEqual(
+            ClientEngineLogger.redacting("Received redirect com.example.app:/callback?code=CODE-SECRET&state=S#F"),
+            "Received redirect com.example.app:/callback?<redacted>"
+        )
+        XCTAssertEqual(
+            ClientEngineLogger.redacting("Received Optional(myapp:/cb?code=CODE-SECRET)"),
+            "Received Optional(myapp:/cb?<redacted>)"
+        )
+        XCTAssertEqual(ClientEngineLogger.redacting("Elapsed 12:30 / 13:00, nothing to redact"), "Elapsed 12:30 / 13:00, nothing to redact")
     }
 }
 

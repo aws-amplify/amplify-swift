@@ -256,21 +256,23 @@ struct EngineOperation: Sendable {
 /// named as the engine's default router names it. **No session ID** appears in either: a session ID can be
 /// derived from a user identifier, such as a username or `sub`.
 ///
-/// **URL queries are redacted.** Every line, at every level, has the query and fragment of each URL in it
-/// replaced by `<redacted>` (`redactingURLQueries(_:)`), so the hosted UI's authorize URL, whose query holds
-/// `state`, `nonce`, the PKCE `code_challenge`, `login_hint` and `userContextData`, and a redirect carrying an
-/// authorization code never reach an app's sink.
+/// **URL queries are redacted.** Every line, at every level, has the query and fragment of each URL in its message
+/// replaced by `?<redacted>` (`redactingURLQueries(_:)`), a custom-scheme redirect without `//` included, so the
+/// query of the hosted UI's authorize URL, which holds `state`, `nonce`, the PKCE `code_challenge`, `login_hint` and
+/// `userContextData`, and the authorization code in a redirect never reach an app's sink.
 ///
 /// **So are user identifiers.** The engine's verbose lines print its events and Cognito's responses as they are:
-/// `InitiateAuth`'s challenge parameters hold `USERNAME` and `USER_ID_FOR_SRP` in clear, and a sign-in's events the
-/// username it was given. Every line has the value of each such key (`userIdentifierKeys`) replaced by `<redacted>`
-/// (`redactingUserIdentifiers(_:)`), in each form the engine prints one: a dictionary entry or a labelled field,
-/// optional or not, quoted, quoted inside another quoted string, or bare in a property-list dump. Values the engine
-/// already masks (`tr***er`) are replaced too.
+/// `InitiateAuth`'s challenge parameters hold `USERNAME` and `USER_ID_FOR_SRP` in clear, a sign-in's events the
+/// username it was given, and a passkey assertion the credential's `userHandle`. Every line has the value of each
+/// such key (`userIdentifierKeys`) in its message replaced by `<redacted>` (`redactingUserIdentifiers(_:)`), in each
+/// form the engine prints one: a dictionary entry or a labelled field, optional (at any depth) or not, quoted, quoted
+/// inside another quoted string, or bare in a property-list dump, its key quoted or not. Values the engine already
+/// masks (`tr***er`) are replaced too.
 ///
-/// The lines are otherwise the plugin's own, unchanged: debug and verbose lines can still hold Cognito's other
-/// challenge parameters and responses, so keep a remote sink at `.info` or above. The plugin logs through its own
-/// router, so its lines, and its log golden, are not redacted.
+/// Only the message is redacted: an error passed with a line reaches the sink as it is. The lines are otherwise the
+/// plugin's own, unchanged: debug and verbose lines can still hold Cognito's other challenge parameters and
+/// responses, a challenge's `session` string among them, so keep a remote sink at `.info` or above. The plugin logs
+/// through its own router, so its lines, and its log golden, are not redacted.
 struct ClientEngineLogger: EngineScopedLogger {
 
     static let category = "AmplifyCognitoClient"
@@ -321,11 +323,12 @@ struct ClientEngineLogger: EngineScopedLogger {
 
     /// The keys whose values name a user, matched case-insensitively as whole words: Cognito's challenge and auth
     /// parameters (`USERNAME`, `USER_ID_FOR_SRP`, `userAttributes`, whose JSON holds the user's attributes), the
-    /// engine's own fields (`username`, `inputUsername`, `userId`), the user's sub, and the standard attributes that
-    /// identify a user (`email`, `phone_number`, `preferred_username`, `login_hint`).
+    /// engine's own fields (`username`, `inputUsername`, `userId`), the user's sub, a passkey's `userHandle`, and the
+    /// standard attributes and hints that identify a user (`email`, `phone_number`, `preferred_username`,
+    /// `login_hint`, `loginHint`).
     static let userIdentifierKeys = [
-        "USERNAME", "USER_ID_FOR_SRP", "inputUsername", "userId", "userSub", "sub", "userAttributes",
-        "email", "phone_number", "preferred_username", "login_hint"
+        "USERNAME", "USER_ID_FOR_SRP", "inputUsername", "userId", "userSub", "sub", "userAttributes", "userHandle",
+        "email", "phone_number", "preferred_username", "login_hint", "loginHint"
     ]
 
     /// `message` with the value of every `userIdentifierKeys` key replaced by `<redacted>`, keeping the key and its
@@ -333,48 +336,56 @@ struct ClientEngineLogger: EngineScopedLogger {
     ///
     /// | Printed as | Becomes |
     /// |---|---|
-    /// | `"USERNAME": "alice"`, `username: Optional("alice")`, `userName = "alice";` | `"USERNAME": "<redacted>"`, … |
+    /// | `"USERNAME": "alice"`, `username: Optional(Optional("alice"))`, `userName = "alice";` | `"USERNAME": "<redacted>"`, … |
     /// | `\"username\": \"alice\"` (a dictionary printed inside another string) | `\"username\": \"<redacted>\"` |
-    /// | `userName = alice;` (a property-list dump) | `userName = <redacted>;` |
+    /// | `userName = alice;`, `"USER_ID_FOR_SRP" = alice;` (a property-list dump) | `userName = <redacted>;`, … |
     ///
     /// A message that names none of the keys' stems is returned as it is, without a regular expression.
     static func redactingUserIdentifiers(_ message: String) -> String {
-        guard ["user", "sub", "email", "phone", "login_hint"].contains(where: {
+        guard ["user", "sub", "email", "phone", "hint"].contains(where: {
             message.range(of: $0, options: .caseInsensitive) != nil
         }) else {
             return message
         }
-        let keys = userIdentifierKeys.joined(separator: "|")
-        let rules: [(pattern: String, template: String)] = [
-            // A quoted value, after a quoted or bare key, `:` or `=`, and an optional `Optional(`.
-            (#"(?i)("?\b(?:"# + keys + #")\b"?\s*[:=]\s*(?:Optional\()?)"(?:[^"\\]|\\.)*""#, #"$1"<redacted>""#),
-            // The same inside another quoted string, every quote escaped.
-            (#"(?i)(\\"\b(?:"# + keys + #")\b\\"\s*[:=]\s*(?:Optional\()?)\\"(?:[^"\\]|\\[^"])*\\""#,
-             #"$1\\"<redacted>\\""#),
-            // A bare value in a property-list dump: `key = value;`.
-            (#"(?i)(\b(?:"# + keys + #")\s=\s)(?!["\\])[^;\s]+;"#, #"$1<redacted>;"#)
-        ]
         var redacted = message
-        for rule in rules {
-            guard let expression = try? NSRegularExpression(pattern: rule.pattern) else {
-                continue
-            }
+        for rule in identifierRules {
             let range = NSRange(redacted.startIndex..., in: redacted)
-            redacted = expression.stringByReplacingMatches(in: redacted, range: range, withTemplate: rule.template)
+            redacted = rule.expression.stringByReplacingMatches(in: redacted, range: range, withTemplate: rule.template)
         }
         return redacted
     }
 
-    /// `message` with the query and fragment of every URL in it (`scheme://…?…` or `scheme://…#…`) replaced by
-    /// `?<redacted>`; the scheme, host and path are kept, so a line still says which endpoint it was about. A
-    /// message with no `://` is returned as it is, without a regular expression.
+    /// The rules `redactingUserIdentifiers(_:)` applies, in order, compiled once.
+    private static let identifierRules: [(expression: NSRegularExpression, template: String)] = {
+        let keys = userIdentifierKeys.joined(separator: "|")
+        let rules: [(pattern: String, template: String)] = [
+            // A quoted value, after a quoted or bare key, `:` or `=`, and any number of `Optional(`.
+            (#"(?i)("?\b(?:"# + keys + #")\b"?\s*[:=]\s*(?:Optional\()*)"(?:[^"\\]|\\.)*""#, #"$1"<redacted>""#),
+            // The same inside another quoted string, every quote escaped.
+            (#"(?i)(\\"\b(?:"# + keys + #")\b\\"\s*[:=]\s*(?:Optional\()*)\\"(?:[^"\\]|\\[^"])*\\""#,
+             #"$1\\"<redacted>\\""#),
+            // A bare value in a property-list dump, its key quoted or not: `key = value;`, `"key" = value;`.
+            (#"(?i)("?\b(?:"# + keys + #")\b"?\s*=\s*)(?!["\\])[^;\s]+;"#, #"$1<redacted>;"#)
+        ]
+        return rules.compactMap { rule in
+            (try? NSRegularExpression(pattern: rule.pattern)).map { ($0, rule.template) }
+        }
+    }()
+
+    /// `message` with the query and fragment of every URL in it (`scheme://…?…`, `scheme://…#…`, or a custom-scheme
+    /// redirect without `//` such as `com.example.app:/callback?code=…`) replaced by `?<redacted>`; the scheme, host
+    /// and path are kept, so a line still says which endpoint it was about. A message with no `:/` is returned as it
+    /// is, without a regular expression.
     static func redactingURLQueries(_ message: String) -> String {
-        guard message.contains("://"),
-              let expression = try? NSRegularExpression(pattern: #"([A-Za-z][A-Za-z0-9+.\-]*://[^\s?#"'<>()]*)[?#][^\s"'<>()]*"#)
-        else {
+        guard message.contains(":/"), let expression = urlQueryExpression else {
             return message
         }
         let range = NSRange(message.startIndex..., in: message)
         return expression.stringByReplacingMatches(in: message, range: range, withTemplate: "$1?<redacted>")
     }
+
+    /// A URL's scheme, host and path (group 1), then its query or fragment, compiled once.
+    private static let urlQueryExpression = try? NSRegularExpression(
+        pattern: #"([A-Za-z][A-Za-z0-9+.\-]*:/[^\s?#"'<>()]*)[?#][^\s"'<>()]*"#
+    )
 }
