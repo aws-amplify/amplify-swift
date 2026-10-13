@@ -17,17 +17,35 @@ enum SessionState: Sendable {
     case paused
 }
 
+/// A session boundary, reported from inside the transition that caused it.
+enum SessionBoundary: Sendable {
+    case start
+    case stop
+
+    /// The event type sent for this boundary. Matches legacy Amplify Analytics.
+    var eventType: String {
+        switch self {
+        case .start: return "_session.start"
+        case .stop: return "_session.stop"
+        }
+    }
+}
+
 /// Manages session lifecycle with Active/Paused/Stopped states.
 ///
 /// When the app backgrounds, the session enters ``SessionState/paused``.
 /// If the app returns to foreground within the configured timeout, the same
 /// session resumes. If the timeout expires, a new session starts on next
 /// foreground.
+///
+/// Every transition runs synchronously on the actor and reports its boundary
+/// before returning, so boundaries are reported in transition order.
 actor SessionManager {
     private let appId: String
     private let sessionTimeout: TimeInterval
     private let generateId: @Sendable () -> String
     private let now: @Sendable () -> Date
+    private let onBoundary: @Sendable (SessionBoundary, Session) -> Void
 
     private var _state: SessionState = .stopped
     private var _session: Session?
@@ -63,23 +81,61 @@ actor SessionManager {
     ///   - sessionTimeout: Duration the app can remain backgrounded before a new session starts.
     ///   - generateId: Closure to generate a unique identifier (e.g., UUID).
     ///   - now: Clock used for session timestamps and pause expiry.
+    ///   - startingSession: Whether to start a session right away.
+    ///   - onBoundary: Called synchronously inside each transition. Must not block.
     init(
         appId: String,
         sessionTimeout: TimeInterval = 5.0,
         generateId: @escaping @Sendable () -> String,
-        now: @escaping @Sendable () -> Date = { Date() }
+        now: @escaping @Sendable () -> Date = { Date() },
+        startingSession: Bool = false,
+        onBoundary: @escaping @Sendable (SessionBoundary, Session) -> Void = { _, _ in }
     ) {
         self.appId = appId
         self.sessionTimeout = sessionTimeout
         self.generateId = generateId
         self.now = now
+        self.onBoundary = onBoundary
+        if startingSession {
+            // An initializer cannot call isolated methods, so this repeats startFresh().
+            let start = now()
+            let session = Self.makeSession(appId: appId, uniqueId: generateId(), start: start)
+            sessionStart = start
+            _session = session
+            _state = .active
+            onBoundary(.start, session)
+        }
     }
 
-    /// Starts a new session. No-op if a session is already active or paused,
-    /// or once disposed.
+    /// Starts a new session, ending the current one first if there is one.
+    /// No-op once disposed.
     func startSession() {
-        guard !disposed, _state == .stopped else { return }
+        guard !disposed else { return }
+        endCurrent()
         startFresh()
+    }
+
+    /// Hands `body` the session an event recorded now belongs to, in the same
+    /// isolated section that resolves it, so whatever `body` queues lands after
+    /// that session's start and before its stop.
+    ///
+    /// A pause past the timeout ends the session first. With no running
+    /// session, starts one if `startingIfNeeded`, otherwise returns `nil`.
+    /// Returns `nil` once disposed.
+    func withRecordingSession<T: Sendable>(
+        startingIfNeeded: Bool,
+        _ body: @Sendable (Session) -> T
+    ) -> T? {
+        guard !disposed else { return nil }
+        if _state == .paused, isPauseExpired {
+            endCurrent()
+        }
+        if _state == .stopped {
+            guard startingIfNeeded else { return nil }
+            startFresh()
+        }
+        guard let session = _session else { return nil }
+        return body(session)
     }
 
     /// Stops the current session, recording stop time and duration.
@@ -153,12 +209,11 @@ actor SessionManager {
     private func startFresh() {
         stoppedExplicitly = false
         let start = now()
+        let session = Self.makeSession(appId: appId, uniqueId: generateId(), start: start)
         sessionStart = start
-        _session = Session(
-            id: generateSessionId(at: start),
-            startTimestamp: start
-        )
+        _session = session
         _state = .active
+        onBoundary(.start, session)
     }
 
     // The session became inactive when the app was backgrounded, so a session
@@ -168,13 +223,15 @@ actor SessionManager {
         let stopTime = pausedAt ?? now()
         pausedAt = nil
         guard _state != .stopped, let currentSession = _session, let start = sessionStart else { return }
-        _session = Session(
+        let ended = Session(
             id: currentSession.id,
             startTimestamp: currentSession.startTimestamp,
             stopTimestamp: stopTime,
             duration: Int64(stopTime.timeIntervalSince(start) * 1_000)
         )
+        _session = ended
         _state = .stopped
+        onBoundary(.stop, ended)
     }
 
     private func cancelPauseTimer() {
@@ -182,24 +239,28 @@ actor SessionManager {
         pauseTask = nil
     }
 
+    private static func makeSession(appId: String, uniqueId: String, start: Date) -> Session {
+        Session(id: generateSessionId(appId: appId, uniqueId: uniqueId, at: start), startTimestamp: start)
+    }
+
     /// Builds a session ID formatted as `<appId>-<uniqueId>-<day>-<time>`.
     ///
     /// The layout matches Pinpoint's `PinpointSession.generateSessionId`: both the
     /// app ID and the unique ID are right-padded with `_` (and truncated when
     /// longer) to a fixed 8 characters so consumers can parse the ID positionally.
-    private func generateSessionId(at date: Date) -> String {
+    private static func generateSessionId(appId: String, uniqueId: String, at date: Date) -> String {
         let appIdKey = appId.padding(
             toLength: Constants.maxAppKeyLength,
             withPad: Constants.paddingCharacter,
             startingAt: 0
         )
-        let uniqueIdKey = generateId().padding(
+        let uniqueIdKey = uniqueId.padding(
             toLength: Constants.maxUniqueIdLength,
             withPad: Constants.paddingCharacter,
             startingAt: 0
         )
-        let day = Self.dayFormatter.string(from: date)
-        let time = Self.timeFormatter.string(from: date)
+        let day = dayFormatter.string(from: date)
+        let time = timeFormatter.string(from: date)
         return "\(appIdKey)-\(uniqueIdKey)-\(day)-\(time)"
     }
 

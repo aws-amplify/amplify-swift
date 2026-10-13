@@ -741,6 +741,271 @@ final class SessionManagerTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(state, .stopped)
         XCTAssertNil(session)
     }
+
+    /// Test that a manager created with startingSession reports the start
+    ///
+    /// - Given: A session manager created with startingSession = true
+    /// - When:
+    ///    - It is initialized
+    /// - Then:
+    ///    - It is active and has reported one start for its session
+    ///
+    func testStartingSessionReportsStart() async {
+        let recorder = BoundaryRecorder()
+        let manager = SessionManager(
+            appId: "test-app",
+            generateId: { UUID().uuidString },
+            startingSession: true,
+            onBoundary: recorder.record
+        )
+
+        let state = await manager.state
+        let session = await manager.session
+        XCTAssertEqual(state, .active)
+        XCTAssertEqual(recorder.boundaries, [.start])
+        XCTAssertEqual(recorder.sessionIds, [session?.id])
+    }
+
+    /// Test that startSession() while active ends the session before starting a new one
+    ///
+    /// - Given: A session manager with an active session
+    /// - When:
+    ///    - startSession() is called again
+    /// - Then:
+    ///    - It reports a stop for the old session, then a start for a new one
+    ///
+    func testStartSessionWhileActiveReportsStopThenStart() async {
+        let recorder = BoundaryRecorder()
+        let manager = SessionManager(
+            appId: "test-app",
+            generateId: { UUID().uuidString },
+            onBoundary: recorder.record
+        )
+
+        await manager.startSession()
+        let first = await manager.session
+        await manager.startSession()
+        let second = await manager.session
+
+        XCTAssertEqual(recorder.boundaries, [.start, .stop, .start])
+        XCTAssertEqual(recorder.sessionIds, [first?.id, first?.id, second?.id])
+        XCTAssertNotEqual(first?.id, second?.id)
+        XCTAssertNotNil(recorder.sessions[1].stopTimestamp)
+        XCTAssertNotNil(recorder.sessions[1].duration)
+    }
+
+    /// Test that a session is reported stopped once
+    ///
+    /// - Given: A session manager with an active session
+    /// - When:
+    ///    - stopSession() is called twice and then dispose()
+    /// - Then:
+    ///    - One stop is reported
+    ///
+    func testStopIsReportedOnce() async {
+        let recorder = BoundaryRecorder()
+        let manager = SessionManager(
+            appId: "test-app",
+            generateId: { UUID().uuidString },
+            onBoundary: recorder.record
+        )
+
+        await manager.startSession()
+        await manager.stopSession()
+        await manager.stopSession()
+        await manager.dispose()
+
+        XCTAssertEqual(recorder.boundaries, [.start, .stop])
+    }
+
+    /// Test that a pause and resume within the timeout reports nothing
+    ///
+    /// - Given: A session manager with an active session
+    /// - When:
+    ///    - The app pauses and resumes within the timeout
+    /// - Then:
+    ///    - No boundary is reported beyond the start
+    ///
+    func testPauseAndResumeWithinTimeoutReportsNothing() async {
+        let recorder = BoundaryRecorder()
+        let manager = SessionManager(
+            appId: "test-app",
+            generateId: { UUID().uuidString },
+            onBoundary: recorder.record
+        )
+
+        await manager.startSession()
+        await manager.handleAppPaused()
+        await manager.handleAppResumed()
+
+        XCTAssertEqual(recorder.boundaries, [.start])
+    }
+
+    /// Test that a timeout reports a stop stamped at the pause, and the resume only a start
+    ///
+    /// - Given: A paused session whose timer fired
+    /// - When:
+    ///    - The app resumes
+    /// - Then:
+    ///    - The stop was reported with the pause time, and the resume reports only a start
+    ///
+    func testTimeoutReportsStopAndResumeReportsStart() async {
+        let clock = TestClock()
+        let recorder = BoundaryRecorder()
+        let manager = SessionManager(
+            appId: "test-app",
+            generateId: { UUID().uuidString },
+            now: { clock.now },
+            onBoundary: recorder.record
+        )
+
+        await manager.startSession()
+        clock.advance(by: 2)
+        let pauseTime = clock.now
+        await manager.handleAppPaused()
+        clock.advance(by: 6)
+        await manager.onTimeoutExpired(pauseGeneration: 1)
+        XCTAssertEqual(recorder.boundaries, [.start, .stop])
+        await manager.handleAppResumed()
+
+        XCTAssertEqual(recorder.boundaries, [.start, .stop, .start])
+        XCTAssertEqual(recorder.sessions[1].stopTimestamp, pauseTime)
+        XCTAssertEqual(recorder.sessions[1].duration, 2_000)
+    }
+
+    /// Test that resuming after an expired pause whose timer never fired reports stop then start
+    ///
+    /// - Given: A paused session whose timeout elapsed by the clock but not by the timer
+    /// - When:
+    ///    - The app resumes
+    /// - Then:
+    ///    - A stop stamped at the pause time is reported, then a start
+    ///
+    func testExpiredResumeReportsStopThenStart() async {
+        let clock = TestClock()
+        let recorder = BoundaryRecorder()
+        let manager = SessionManager(
+            appId: "test-app",
+            generateId: { UUID().uuidString },
+            now: { clock.now },
+            onBoundary: recorder.record
+        )
+
+        await manager.startSession()
+        let pauseTime = clock.now
+        await manager.handleAppPaused()
+        clock.advance(by: 6)
+        await manager.handleAppResumed()
+
+        XCTAssertEqual(recorder.boundaries, [.start, .stop, .start])
+        XCTAssertEqual(recorder.sessions[1].stopTimestamp, pauseTime)
+    }
+
+    /// Test that the recording session starts a session first when there is none
+    ///
+    /// - Given: A stopped session manager
+    /// - When:
+    ///    - withRecordingSession(startingIfNeeded: true) runs a body
+    /// - Then:
+    ///    - The start is reported before the body runs, and the body gets that session
+    ///
+    func testRecordingSessionStartsSessionBeforeBody() async {
+        let recorder = BoundaryRecorder()
+        let manager = SessionManager(
+            appId: "test-app",
+            generateId: { UUID().uuidString },
+            onBoundary: recorder.record
+        )
+
+        let id = await manager.withRecordingSession(startingIfNeeded: true) { session in
+            recorder.note()
+            return session.id
+        }
+
+        XCTAssertEqual(recorder.log, ["start", "body"])
+        XCTAssertEqual(recorder.sessionIds, [id])
+    }
+
+    /// Test that the recording session does not start a session when not allowed
+    ///
+    /// - Given: A stopped session manager
+    /// - When:
+    ///    - withRecordingSession(startingIfNeeded: false) runs a body
+    /// - Then:
+    ///    - The body does not run and nothing is reported
+    ///
+    func testRecordingSessionWithoutStartReturnsNil() async {
+        let recorder = BoundaryRecorder()
+        let manager = SessionManager(
+            appId: "test-app",
+            generateId: { UUID().uuidString },
+            onBoundary: recorder.record
+        )
+
+        let id = await manager.withRecordingSession(startingIfNeeded: false) { session in
+            recorder.note()
+            return session.id
+        }
+
+        XCTAssertNil(id)
+        XCTAssertEqual(recorder.log, [])
+    }
+
+    /// Test that the recording session replaces a session paused past its timeout
+    ///
+    /// - Given: A paused session whose timeout elapsed by the clock but not by the timer
+    /// - When:
+    ///    - withRecordingSession runs a body
+    /// - Then:
+    ///    - Stop and start are reported before the body, which gets the new session
+    ///
+    func testRecordingSessionReplacesExpiredPause() async {
+        let clock = TestClock()
+        let recorder = BoundaryRecorder()
+        let manager = SessionManager(
+            appId: "test-app",
+            generateId: { UUID().uuidString },
+            now: { clock.now },
+            onBoundary: recorder.record
+        )
+
+        await manager.startSession()
+        await manager.handleAppPaused()
+        clock.advance(by: 6)
+        let id = await manager.withRecordingSession(startingIfNeeded: true) { session in
+            recorder.note()
+            return session.id
+        }
+
+        XCTAssertEqual(recorder.log, ["start", "stop", "start", "body"])
+        XCTAssertEqual(recorder.sessionIds.last, id)
+    }
+
+    /// Test that dispose() reports the final stop and nothing afterwards
+    ///
+    /// - Given: A session manager with an active session
+    /// - When:
+    ///    - dispose() runs, followed by session and lifecycle calls
+    /// - Then:
+    ///    - Only the final stop is reported after the start
+    ///
+    func testDisposeReportsFinalStopOnly() async {
+        let recorder = BoundaryRecorder()
+        let manager = SessionManager(
+            appId: "test-app",
+            generateId: { UUID().uuidString },
+            onBoundary: recorder.record
+        )
+
+        await manager.startSession()
+        await manager.dispose()
+        await manager.startSession()
+        await manager.handleAppResumed()
+        let id = await manager.withRecordingSession(startingIfNeeded: true) { $0.id }
+
+        XCTAssertNil(id)
+        XCTAssertEqual(recorder.boundaries, [.start, .stop])
+    }
 }
 
 /// A clock that only moves when a test advances it.
@@ -758,5 +1023,44 @@ private final class TestClock: @unchecked Sendable {
         lock.lock()
         current = current.addingTimeInterval(seconds)
         lock.unlock()
+    }
+}
+
+/// Records reported boundaries, and body runs marked with `note()`, in order.
+private final class BoundaryRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private var entries: [(boundary: SessionBoundary?, session: Session?)] = []
+
+    var record: @Sendable (SessionBoundary, Session) -> Void {
+        { [self] boundary, session in
+            lock.lock()
+            entries.append((boundary, session))
+            lock.unlock()
+        }
+    }
+
+    func note() {
+        lock.lock()
+        entries.append((nil, nil))
+        lock.unlock()
+    }
+
+    private var snapshot: [(boundary: SessionBoundary?, session: Session?)] {
+        lock.lock()
+        defer { lock.unlock() }
+        return entries
+    }
+
+    var boundaries: [SessionBoundary] { snapshot.compactMap(\.boundary) }
+    var sessions: [Session] { snapshot.compactMap(\.session) }
+    var sessionIds: [String?] { sessions.map(\.id) }
+    var log: [String] {
+        snapshot.map { entry in
+            switch entry.boundary {
+            case .start: return "start"
+            case .stop: return "stop"
+            case nil: return "body"
+            }
+        }
     }
 }

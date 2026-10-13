@@ -12,6 +12,8 @@ import Foundation
 ///
 /// Collects device, app, session, and SDK metadata and produces
 /// ``EnrichedEvent`` instances with Pinpoint-compatible JSON output.
+/// Session boundaries are sent to the sink as `_session.start` and
+/// `_session.stop` events, in order with recorded events.
 ///
 /// ## Usage
 ///
@@ -28,19 +30,19 @@ import Foundation
 /// ```
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
 public actor AmplifyEventEnrichmentClient {
-    private let appMetadata: AppMetadata
-    private let deviceMetadata: DeviceMetadata
-    private let sdkMetadata: SDKMetadata
-    private let clientId: String
-    private let sink: (any EventSink)?
     private let logger: Logger
     private let globalFields: GlobalFieldsManager
+    private let makeEvent: EventFactory
     private let sessionManager: SessionManager
     private var activityTracker: ActivityTracker?
     private let autoSessionTracking: Bool
-    private var userId: String?
     private var closed = false
     private var closing: Task<Void, Never>?
+
+    // Every send goes through this one queue and its one consumer, so the sink
+    // sees events in the order they were queued, one at a time.
+    private let deliveries: AsyncStream<Delivery>.Continuation
+    private let consumer: Task<Void, Never>
 
     /// Initializes a new event enrichment client.
     ///
@@ -57,7 +59,8 @@ public actor AmplifyEventEnrichmentClient {
     ///   - sdkMetadata: SDK-level metadata for events.
     ///   - appMetadata: Application-level metadata. If nil, created from `appId`.
     ///   - deviceMetadata: Device-level metadata. If nil, resolved via platform APIs.
-    ///   - options: Configuration options.
+    ///   - options: Configuration options. With `autoSessionTracking`, a session
+    ///     starts here and its `_session.start` event is queued for the sink.
     ///   - sink: Optional transport sink for enriched events.
     @MainActor
     public init(
@@ -72,18 +75,55 @@ public actor AmplifyEventEnrichmentClient {
         let resolvedDeviceMetadata = deviceMetadata ?? PlatformDeviceMetadataProvider().getDeviceMetadata()
         let resolvedClientId = ClientIDProvider.resolve()
 
-        self.appMetadata = resolvedAppMetadata
-        self.deviceMetadata = resolvedDeviceMetadata
-        self.sdkMetadata = sdkMetadata
-        self.clientId = resolvedClientId
-        self.sink = sink
+        let logger = AmplifyLogging.logger(for: AmplifyEventEnrichmentClient.self)
+        let globalFields = GlobalFieldsManager()
+        let makeEvent: EventFactory = { eventType, session, attributes, metrics in
+            let fields = globalFields.snapshot()
+            return EnrichedEvent(
+                eventId: UUID().uuidString,
+                eventType: eventType,
+                eventTimestamp: Int64(Date().timeIntervalSince1970 * 1_000),
+                session: session,
+                attributes: fields.attributes.merging(attributes) { _, event in event },
+                metrics: fields.metrics.merging(metrics) { _, event in event },
+                device: resolvedDeviceMetadata,
+                app: resolvedAppMetadata,
+                sdk: sdkMetadata,
+                clientId: resolvedClientId,
+                userId: fields.userId
+            )
+        }
+
+        var continuation: AsyncStream<Delivery>.Continuation?
+        let stream = AsyncStream<Delivery> { continuation = $0 }
+        // The build closure runs synchronously, so the continuation is set here.
+        let deliveries = continuation!
+
+        self.logger = logger
+        self.globalFields = globalFields
+        self.makeEvent = makeEvent
         self.autoSessionTracking = options.autoSessionTracking
-        self.logger = AmplifyLogging.logger(for: AmplifyEventEnrichmentClient.self)
-        self.globalFields = GlobalFieldsManager()
+        self.deliveries = deliveries
+        // Started here so it exists before anything can be queued. Detached, and
+        // capturing no `self`, so it neither runs on the main actor nor needs a
+        // fully initialized actor. The stream buffers what is queued before it runs.
+        self.consumer = Task.detached {
+            for await delivery in stream {
+                await sink?.send(delivery.event)
+                logger.verbose("Recorded event: \(delivery.event.eventType)")
+                delivery.sent?.signal()
+            }
+        }
         let sessionManager = SessionManager(
             appId: resolvedAppMetadata.appId,
             sessionTimeout: options.sessionTimeout,
-            generateId: { UUID().uuidString }
+            generateId: { UUID().uuidString },
+            startingSession: options.autoSessionTracking,
+            onBoundary: { boundary, session in
+                // Built and queued inside the transition, so boundaries are
+                // queued in transition order with the fields of that moment.
+                deliveries.yield(Delivery(event: makeEvent(boundary.eventType, session, [:], [:]), sent: nil))
+            }
         )
         self.sessionManager = sessionManager
         if options.autoSessionTracking {
@@ -96,7 +136,8 @@ public actor AmplifyEventEnrichmentClient {
         }
     }
 
-    /// Records an event and returns the enriched result.
+    /// Records an event and returns the enriched result once the sink has
+    /// received it.
     ///
     /// - Parameters:
     ///   - eventType: The type/name of the event.
@@ -118,50 +159,35 @@ public actor AmplifyEventEnrichmentClient {
             )
         }
 
-        if autoSessionTracking {
-            await sessionManager.startSession()
+        let makeEvent = makeEvent
+        let deliveries = deliveries
+        let sent = DeliverySignal()
+        let event = await sessionManager.withRecordingSession(startingIfNeeded: autoSessionTracking) { session in
+            let event = makeEvent(eventType, session, attributes, metrics)
+            if case .terminated = deliveries.yield(Delivery(event: event, sent: sent)) {
+                sent.signal()
+            }
+            return event
         }
-
-        let globalAttributes = await globalFields.attributes
-        let globalMetrics = await globalFields.metrics
-
-        var mergedAttributes = globalAttributes
-        for (key, value) in attributes {
-            mergedAttributes[key] = value
-        }
-
-        var mergedMetrics = globalMetrics
-        for (key, value) in metrics {
-            mergedMetrics[key] = value
-        }
-
-        guard let session = await sessionManager.activeSession else {
+        guard let event else {
+            if closed {
+                throw EventEnrichmentError.clientClosed(
+                    "Client has been closed",
+                    "Create a new AmplifyEventEnrichmentClient instance."
+                )
+            }
             throw EventEnrichmentError.noActiveSession(
                 "No active session",
                 "Call startSession() before recording events when autoSessionTracking is disabled."
             )
         }
 
-        let event = EnrichedEvent(
-            eventId: UUID().uuidString,
-            eventType: eventType,
-            eventTimestamp: Int64(Date().timeIntervalSince1970 * 1_000),
-            session: session,
-            attributes: mergedAttributes,
-            metrics: mergedMetrics,
-            device: deviceMetadata,
-            app: appMetadata,
-            sdk: sdkMetadata,
-            clientId: clientId,
-            userId: userId
-        )
-
-        await sink?.send(event)
-        logger.verbose("Recorded event: \(eventType)")
+        await sent.wait()
         return event
     }
 
-    /// Starts a new session manually. No-op once the client is closed.
+    /// Starts a new session manually, ending the current one first.
+    /// No-op once the client is closed.
     public func startSession() async {
         guard !closed else { return }
         await sessionManager.startSession()
@@ -178,27 +204,27 @@ public actor AmplifyEventEnrichmentClient {
 
     /// Sets the user identifier stamped on subsequent events.
     public func setUserId(_ userId: String?) {
-        self.userId = userId
+        globalFields.userId = userId
     }
 
     /// Adds a global attribute stamped on every subsequent event.
     public func addGlobalAttribute(_ key: String, value: String) async {
-        await globalFields.addAttribute(key, value: value)
+        globalFields.addAttribute(key, value: value)
     }
 
     /// Removes a global attribute.
     public func removeGlobalAttribute(_ key: String) async {
-        await globalFields.removeAttribute(key)
+        globalFields.removeAttribute(key)
     }
 
     /// Adds a global metric stamped on every subsequent event.
     public func addGlobalMetric(_ key: String, value: Double) async {
-        await globalFields.addMetric(key, value: value)
+        globalFields.addMetric(key, value: value)
     }
 
     /// Removes a global metric.
     public func removeGlobalMetric(_ key: String) async {
-        await globalFields.removeMetric(key)
+        globalFields.removeMetric(key)
     }
 
     /// The current session state. Internal, for tests to observe lifecycle handling.
@@ -213,6 +239,8 @@ public actor AmplifyEventEnrichmentClient {
 
     /// Releases resources and stops session tracking.
     ///
+    /// Queues the final `_session.stop` and returns once the sink has received
+    /// it and everything queued before it. Nothing reaches the sink afterwards.
     /// The client cannot be reused after closing. Concurrent calls share one
     /// teardown and all return once it finishes.
     public func close() async {
@@ -228,6 +256,13 @@ public actor AmplifyEventEnrichmentClient {
         await sessionManager.dispose()
         await activityTracker?.stopTracking()
         activityTracker = nil
+        // Nothing can queue after dispose(), so the final stop is the last delivery.
+        deliveries.finish()
+        await consumer.value
         logger.info("Client closed")
+    }
+
+    deinit {
+        deliveries.finish()
     }
 }
