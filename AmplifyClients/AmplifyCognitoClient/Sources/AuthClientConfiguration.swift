@@ -127,18 +127,20 @@ public struct AuthClientConfiguration: Sendable, Equatable {
     /// an error that says so.
     ///
     /// - Parameters:
-    ///   - resource: The file name **without** an extension; `.json` is implied.
+    ///   - resource: The file name **without** its `.json` extension, which is implied: `"amplify_outputs"` for
+    ///     `amplify_outputs.json`, `"amplify_outputs.staging"` for `amplify_outputs.staging.json`.
     ///   - bundle: The bundle containing it.
-    /// - Throws: `AuthClientError.configuration` naming the specific problem: a name with an extension, a
+    /// - Throws: `AuthClientError.configuration` naming the specific problem: a name ending in `.json`, a
     ///   missing or unreadable file, a document that is not a JSON object, a Gen1 configuration, a missing
     ///   `auth` section or required key, or a value outside the schema.
     public init(from resource: String = "amplify_outputs", bundle: Bundle = .main) throws {
-        // A name carrying an extension would silently look for "amplify_outputs.json.json".
+        // A name ending in ".json" would silently look for "amplify_outputs.json.json". Any other dot is part of
+        // the name, as `Bundle` and core's `.resource(named:)` read it.
         let resourceURL = URL(fileURLWithPath: resource)
-        guard resourceURL.pathExtension.isEmpty else {
+        guard resourceURL.pathExtension.lowercased() != "json" else {
             throw AuthClientError.configuration(
-                "Resource name \"\(resource)\" must not include a file extension.",
-                "Pass the file name without an extension, e.g. \"\(resourceURL.deletingPathExtension().lastPathComponent)\"."
+                "Resource name \"\(resource)\" must not include the .json extension.",
+                "Pass the file name without .json, e.g. \"\(resourceURL.deletingPathExtension().lastPathComponent)\"."
             )
         }
         guard let url = bundle.url(forResource: resource, withExtension: "json") else {

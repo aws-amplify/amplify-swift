@@ -160,6 +160,38 @@ final class AuthClientConfigurationTests: XCTestCase {
         }
     }
 
+    /// Only a `.json` extension is refused: any other dot is part of the resource's name.
+    ///
+    /// - Given: a bundle holding `amplify_outputs.staging.json`
+    /// - When:
+    ///    - it is loaded as `"amplify_outputs.staging"`, as `"amplify_outputs.staging.json"` and as
+    ///      `"amplify_outputs.staging.JSON"`
+    /// - Then:
+    ///    - the dotted name loads the file
+    ///    - both names ending in `.json` are refused before any lookup, and the suggestion names the dotted file,
+    ///      `"amplify_outputs.staging"`, not the production `"amplify_outputs"`
+    func testADottedResourceNameLoadsAndOnlyAJSONExtensionIsRejected() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("AuthClientConfigurationTests-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        try outputs(fullAuth).write(to: directory.appendingPathComponent("amplify_outputs.staging.json"))
+        let bundle = try XCTUnwrap(Bundle(url: directory))
+
+        let config = try AuthClientConfiguration(from: "amplify_outputs.staging", bundle: bundle)
+        XCTAssertEqual(config.userPool?.poolId, "us-east-1_AbC")
+
+        for name in ["amplify_outputs.staging.json", "amplify_outputs.staging.JSON"] {
+            XCTAssertThrowsError(try AuthClientConfiguration(from: name, bundle: bundle)) { error in
+                guard case AuthClientError.configuration(let description, let suggestion, _) = error else {
+                    return XCTFail("Expected configuration error, got \(error)")
+                }
+                XCTAssertTrue(description.contains(".json extension"), description)
+                XCTAssertTrue(suggestion.contains("\"amplify_outputs.staging\""), suggestion)
+            }
+        }
+    }
+
     /// - Given: no pools
     /// - When: constructed programmatically
     /// - Then:
