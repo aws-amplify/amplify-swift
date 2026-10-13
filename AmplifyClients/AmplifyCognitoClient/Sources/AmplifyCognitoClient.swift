@@ -111,7 +111,10 @@ public final class AmplifyCognitoClient: Sendable {
         /// engine is wrapped for the `User-Agent` after this closure runs, so a custom engine is wrapped
         /// too. The SDK builds its HTTP engine from `httpClientConfiguration` before this closure runs, so
         /// setting only `httpClientConfiguration` (a connect timeout, say) has no effect unless the closure
-        /// also replaces `httpClientEngine`.
+        /// also replaces `httpClientEngine`. Likewise the SDK computes `retryStrategyOptions` from
+        /// `maxAttempts` and `awsRetryMode` before this closure runs, and builds the client's retries from
+        /// `retryStrategyOptions` alone, so setting `maxAttempts` or `awsRetryMode` here has no effect: to
+        /// change retries, set `retryStrategyOptions`, as the plugin does for its `maxRetryCount`.
         ///
         /// Applied only by the handle that builds the session. A handle joining a live session uses the
         /// session's existing SDK client, so its closure is not applied. One handle passing a closure and

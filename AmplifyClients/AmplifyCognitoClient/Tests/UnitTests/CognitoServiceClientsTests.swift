@@ -10,6 +10,7 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import SmithyHTTPAPI
 import SmithyIdentity
+import SmithyRetriesAPI
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
@@ -217,6 +218,34 @@ final class CognitoServiceClientsTests: XCTestCase {
         XCTAssertTrue(userPool.awsCredentialIdentityResolver is StaticAWSCredentialIdentityResolver)
         XCTAssertEqual(identity.signingRegion, Self.identityPoolRegion)
         XCTAssertTrue(identity.awsCredentialIdentityResolver is CognitoUnsignedOperationResolver)
+    }
+
+    /// The escape hatch changes retries through `retryStrategyOptions` only, as `configureUserPoolClient`'s doc
+    /// says: the SDK computes those options from `maxAttempts` and `awsRetryMode` before the closure runs.
+    ///
+    /// - Given: an escape-hatch closure that sets `maxAttempts`, and one that sets `retryStrategyOptions`
+    /// - When:
+    ///    - the clients are built with each, and with no closure
+    /// - Then:
+    ///    - `maxAttempts` leaves the built client's retry options as they are with no closure
+    ///    - `retryStrategyOptions` reaches the built client
+    ///
+    func testEscapeHatchChangesRetriesOnlyThroughRetryStrategyOptions() throws {
+        let baseline = try XCTUnwrap(CognitoServiceClients(configuration: configuration(), configureUserPoolClient: nil).userPool)
+            .config.retryStrategyOptions.maxRetriesBase
+
+        let throughMaxAttempts = try CognitoServiceClients(configuration: configuration(), configureUserPoolClient: { config in
+            config.maxAttempts = baseline + 5
+        })
+        let throughOptions = try CognitoServiceClients(configuration: configuration(), configureUserPoolClient: { config in
+            config.retryStrategyOptions = RetryStrategyOptions(
+                backoffStrategy: config.retryStrategyOptions.backoffStrategy,
+                maxRetriesBase: baseline + 7
+            )
+        })
+
+        XCTAssertEqual(try XCTUnwrap(throughMaxAttempts.userPool).config.retryStrategyOptions.maxRetriesBase, baseline)
+        XCTAssertEqual(try XCTUnwrap(throughOptions.userPool).config.retryStrategyOptions.maxRetriesBase, baseline + 7)
     }
 
     // MARK: Helpers
