@@ -12,8 +12,8 @@ import AmplifyFoundation
 /// from any other library's.
 ///
 /// The engine's lines use the same prefix through `ClientEngineLogger`'s scopes (for example
-/// `AmplifyCognitoClient.InitiateAuthSRP`). **No session ID** appears in a category: an app-chosen ID can be an
-/// email address.
+/// `AmplifyCognitoClient.InitiateAuthSRP`). **No session ID** appears in a category: a session ID can be derived
+/// from a user identifier, such as a username or `sub`.
 enum ClientLog {
 
     /// The session record store: listing, copy-forward and the interrupted sign-in's record.
