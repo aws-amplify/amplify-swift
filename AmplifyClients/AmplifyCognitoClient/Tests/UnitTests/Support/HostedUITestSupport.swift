@@ -50,6 +50,11 @@ final class FakeBrowser: @unchecked Sendable {
         withLock { cancels }
     }
 
+    /// Whether a shown sign-in is waiting for `finish(_:)`.
+    var isWaiting: Bool {
+        withLock { waiting != nil }
+    }
+
     /// The payload the default answer would have committed, for `finishWithDefault()`.
     var defaultAnswer: EngineStepResult? {
         withLock { answersWith }
@@ -65,11 +70,14 @@ final class FakeBrowser: @unchecked Sendable {
         return try await withTaskCancellationHandler {
             try await withCheckedThrowingContinuation { continuation in
                 let ready: Result<EngineStepResult, Error>? = withLock {
+                    // This sign-in's own early cancel, taken here so it never reaches a later sign-in.
+                    let cancelledEarly = cancelledBeforeWaiting
+                    cancelledBeforeWaiting = false
                     if let answer {
                         self.answer = nil
                         return answer
                     }
-                    if cancelledBeforeWaiting, afterCancel == .dismiss {
+                    if cancelledEarly, afterCancel == .dismiss {
                         return .failure(CancellationError())
                     }
                     waiting = continuation

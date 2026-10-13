@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import InternalAWSCognitoAuth
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
@@ -134,6 +135,42 @@ final class FakeSessionEngineTests: XCTestCase {
         }
         XCTAssertEqual(engine.cancelPendingSignInCount, 2)
     }
+
+    #if os(iOS) || os(macOS) || os(visionOS)
+    /// A sign-in cancelled before it waited dismisses only itself: the next one shown in the same browser waits.
+    ///
+    /// - Given: a `FakeBrowser` that dismisses on cancel, and a sign-in shown in it from a task already cancelled
+    /// - When:
+    ///    - a second sign-in is shown in the same browser
+    ///    - the test finishes it
+    /// - Then:
+    ///    - the first throws `CancellationError` at once
+    ///    - the second waits, and returns what the test finished it with
+    func testAnEarlyCancelDismissesOnlyItsOwnBrowserSignIn() async throws {
+        let browser = FakeBrowser()
+        let request = EngineWebUISignInRequest(
+            anchor: .empty(),
+            options: EngineWebUIOptions(WebUIOptions(), nonce: "n"),
+            identity: .none
+        )
+        let done = EngineStepResult.done(payload: FakePayload.signedIn("web-user").data)
+        let first = Task {
+            withUnsafeCurrentTask { $0?.cancel() }
+            return try await browser.show(request, answering: done)
+        }
+        await assertThrowsAsync({ try await first.value }) { error in
+            XCTAssertTrue(error is CancellationError, "\(error)")
+        }
+
+        let second = Task { try await browser.show(request, answering: done) }
+        await waitUntil("the second sign-in waits") { browser.isWaiting }
+        browser.finish(.success(done))
+
+        let result = try await second.value
+        XCTAssertEqual(result, done)
+        XCTAssertEqual(browser.cancelCount, 1)
+    }
+    #endif
 
     static func request(_ username: String, password: String? = "password") -> EngineSignInRequest {
         EngineSignInRequest(username: username, password: password, authFlowType: nil, clientMetadata: [:])
