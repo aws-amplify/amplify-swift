@@ -9,8 +9,9 @@
 ///
 /// The client's counterpart of Amplify core's `AuthSignInRequest.Options` with the plugin's
 /// `AWSAuthSignInOptions` folded in. The plugin's deprecated `validationData` is not mirrored: the plugin
-/// merges it into the client metadata anyway, so pass those values in `clientMetadata`. A WebAuthn
-/// presentation anchor arrives with passwordless sign-in.
+/// merges it into the client metadata anyway, so pass those values in `clientMetadata`. The WebAuthn
+/// presentation anchor is not an option: pass it to the `presentationAnchor:` overloads of `signIn` and
+/// `confirmSignIn`, on iOS, macOS and visionOS.
 @_spi(AmplifyExperimental)
 public struct AuthClientSignInOptions {
 
