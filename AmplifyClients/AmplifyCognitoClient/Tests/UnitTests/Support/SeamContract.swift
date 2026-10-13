@@ -135,6 +135,45 @@ enum SeamContractCases {
         XCTAssertNil(pending)
         await nothingPendingIsInvalidState(driver)
     }
+
+    /// An answer at a later epoch than the pending attempt's is `invalidState`, and drops the attempt: it
+    /// belongs to a sign-in a sign-out has ended, whose cancel has not reached the engine yet. Not even an
+    /// answer at the attempt's own epoch reaches it after that.
+    static func anEarlierEpochAttemptIsRefusedAndDropped(_ driver: SeamContractDriver) async throws {
+        try driver.scriptNewPasswordChallenge()
+        _ = try await driver.engine.signIn(request, current: nil, epoch: 1)
+
+        await assertThrowsAsync({ try await driver.engine.confirmSignIn(answer("Str0ng!Passw0rd"), current: nil, epoch: 2) }) { error in
+            guard case .invalidState(let description, _, _) = error as? AuthClientError else {
+                return XCTFail("expected invalidState, got \(error)")
+            }
+            XCTAssertEqual(description, "There is no sign-in in progress for this session")
+        }
+        let pending = await driver.engine.pendingChallenge
+        XCTAssertNil(pending, "an earlier epoch's attempt must be dropped, not kept")
+        await assertThrowsAsync({ try await driver.engine.confirmSignIn(answer("Str0ng!Passw0rd"), current: nil, epoch: 1) }) { error in
+            guard case .invalidState(let description, _, _) = error as? AuthClientError else {
+                return XCTFail("expected invalidState, got \(error)")
+            }
+            XCTAssertEqual(description, "There is no sign-in in progress for this session")
+        }
+    }
+
+    /// `autoSignIn` with no auto-sign-in session ends the pending attempt before it refuses, as every new
+    /// sign-in does, so no attempt from before its epoch outlives it.
+    static func anAutoSignInWithoutASessionEndsAnEarlierAttempt(_ driver: SeamContractDriver) async throws {
+        try driver.scriptNewPasswordChallenge()
+        _ = try await driver.engine.signIn(request, current: nil, epoch: 1)
+
+        await assertThrowsAsync({ try await driver.engine.autoSignIn(current: nil, epoch: 2) }) { error in
+            guard case .invalidState(let description, _, _) = error as? AuthClientError else {
+                return XCTFail("expected invalidState, got \(error)")
+            }
+            XCTAssertEqual(description, SessionCore.notSignedUp().errorDescription)
+        }
+        let pending = await driver.engine.pendingChallenge
+        XCTAssertNil(pending, "the earlier attempt must be ended before the refusal")
+    }
 }
 
 /// The contract over `FakeSessionEngine`.

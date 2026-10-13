@@ -156,6 +156,9 @@ struct FakeRetryable: Error {
 /// sign-in supersedes it; `.done` or a failure clears it, except a `FakeRetryable` failure of
 /// `confirmSignIn`; `confirmSignIn` with nothing pending throws `invalidState`; and a step held by
 /// `holdSignIns(on:)` throws `CancellationError` when released if `cancelPendingSignIn` ran meanwhile.
+/// Its epochs follow the live engine's rules: `confirmSignIn` answers only an attempt of its own epoch, and
+/// drops an earlier one with `invalidState`; `autoSignIn` supersedes the pending attempt before it checks
+/// for an auto-sign-in session; and a cancel's epoch only ever raises the highest one seen.
 /// A step held inside a script instead returns whatever the script returns, which models an engine that
 /// had already finished when the cancel arrived.
 final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
@@ -484,16 +487,22 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
             () -> (Bool, String?, Data?, ConfirmScript?, Gate?, Bool, Int) in
             confirms.append(request)
             confirmCurrents.append(current)
+            // The live engine's epoch rule: an attempt from an earlier epoch belongs to a sign-in a sign-out has
+            // ended (its cancel not yet heard), so it is dropped and never answered under the newer epoch.
+            guard challenge != nil else {
+                return (false, nil, nil, nil, nil, false, cancels)
+            }
+            guard attemptEpoch == epoch else {
+                dropAttempt()
+                return (false, nil, nil, nil, nil, false, cancels)
+            }
             if current != nil {
                 attemptGuest = current
             }
-            return (challenge != nil, attemptUsername, attemptGuest, confirmScript, signInLatch, signInsHonourCancellation, cancels)
+            return (true, attemptUsername, attemptGuest, confirmScript, signInLatch, signInsHonourCancellation, cancels)
         }
         guard pending else {
-            throw AuthClientError.invalidState(
-                "There is no sign-in in progress for this session",
-                "Call signIn first."
-            )
+            throw LiveSignInSteps.noSignInInProgress()
         }
         // The live engine's rule: a WebAuthn selection with no window at all is refused before anything is
         // sent, and the challenge is kept.
@@ -712,14 +721,13 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         }
         let ceremonies = withLock { () -> [EngineCeremonyContext] in
             cancels += 1
-            latestCancelBefore = epoch
+            // The highest epoch any cancel named, as the live engine keeps it: a later cancel for an older epoch
+            // (two sign-outs whose cancels arrive out of order) does not let a step the first one ended run on.
+            latestCancelBefore = max(latestCancelBefore, epoch)
             let ceremonies = stepCeremonies.filter { $0.epoch < epoch }.map(\.context)
-            guard attemptEpoch < epoch else {
-                return ceremonies
+            if attemptEpoch < epoch {
+                dropAttempt()
             }
-            challenge = nil
-            attemptUsername = nil
-            attemptWebAuthnAnchor = nil
             return ceremonies
         }
         // As the live engine: a step's ceremony runs where cancelling the step does not reach it.
@@ -843,18 +851,18 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         get async { withLock { signedUpUsername != nil } }
     }
 
-    /// A sign-in step like `signIn`: with no auto-sign-in session it throws the plugin's `invalidState`
-    /// before superseding anything; otherwise it supersedes a pending sign-in, is held by
-    /// `holdSignIns(on:)` like `signIn`, and follows the same contract. By default `.done` as the user who
-    /// signed up, keeping a guest's identity.
+    /// A sign-in step like `signIn`: it supersedes a pending sign-in first, as the live engine's
+    /// `beginSignIn(epoch:)` preamble does, then with no auto-sign-in session throws the plugin's
+    /// `invalidState`; otherwise it is held by `holdSignIns(on:)` like `signIn`, and follows the same
+    /// contract. By default `.done` as the user who signed up, keeping a guest's identity.
     func autoSignIn(current: Data?, epoch: UInt64) async throws -> EngineStepResult {
         let (username, latch, honours, started) = withLock { () -> (String?, Gate?, Bool, Int) in
+            if challenge != nil {
+                dropAttempt()
+                supersedes += 1
+            }
             guard let signedUpUsername else {
                 return (nil, nil, false, cancels)
-            }
-            if challenge != nil {
-                challenge = nil
-                supersedes += 1
             }
             attemptEpoch = epoch
             attemptGuest = current
@@ -875,6 +883,13 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
                 default: EngineStepResult.done(payload: Self.signedIn(username, keepingIdentityOf: current).data)
             )
         }
+    }
+
+    /// Drops the pending attempt. Called holding `lock`.
+    private func dropAttempt() {
+        challenge = nil
+        attemptUsername = nil
+        attemptWebAuthnAnchor = nil
     }
 
     private func withLock<Value>(_ body: () throws -> Value) rethrows -> Value {

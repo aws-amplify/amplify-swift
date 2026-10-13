@@ -109,6 +109,32 @@ final class FakeSessionEngineTests: XCTestCase {
         XCTAssertEqual(engine.cancelPendingSignInCount, 1)
     }
 
+    /// A later cancel for an older epoch does not undo an earlier cancel's, as in the live engine.
+    ///
+    /// - Given: a sign-in at epoch 4, held on a latch
+    /// - When:
+    ///    - a cancel for everything before epoch 5 runs, then one for everything before epoch 3
+    ///    - the latch opens
+    /// - Then:
+    ///    - the held sign-in throws `CancellationError`: the first cancel ended it, whatever came after
+    func testAnOlderEpochCancelDoesNotReviveAStepANewerOneEnded() async throws {
+        let engine = try makeEngine()
+        let latch = Gate()
+        engine.holdSignIns(on: latch)
+        let request = Self.request("alice")
+        let signIn = Task { try await engine.signIn(request, current: nil, epoch: 4) }
+        await latch.waitForArrivals(1)
+
+        await engine.cancelPendingSignIn(before: 5)
+        await engine.cancelPendingSignIn(before: 3)
+        await latch.open()
+
+        await assertThrowsAsync({ try await signIn.value }) { error in
+            XCTAssertTrue(error is CancellationError, "\(error)")
+        }
+        XCTAssertEqual(engine.cancelPendingSignInCount, 2)
+    }
+
     static func request(_ username: String, password: String? = "password") -> EngineSignInRequest {
         EngineSignInRequest(username: username, password: password, authFlowType: nil, clientMetadata: [:])
     }

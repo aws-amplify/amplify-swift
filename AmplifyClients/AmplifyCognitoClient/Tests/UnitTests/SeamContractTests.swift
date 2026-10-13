@@ -70,6 +70,25 @@ final class FakeEngineSeamContractTests: XCTestCase {
     func testACancelDropsTheAttempt() async throws {
         try await SeamContractCases.aCancelDropsTheAttempt(driver())
     }
+
+    /// An attempt from an earlier epoch is refused and dropped.
+    ///
+    /// - Given: a pending challenge from a sign-in at epoch 1
+    /// - When: the user answers at epoch 2, then at epoch 1
+    /// - Then: both throw `invalidState("There is no sign-in in progress for this session", …)`, and nothing
+    ///   is pending after the first
+    func testAnEarlierEpochAttemptIsRefusedAndDropped() async throws {
+        try await SeamContractCases.anEarlierEpochAttemptIsRefusedAndDropped(driver())
+    }
+
+    /// `autoSignIn` with no auto-sign-in session ends the pending attempt first.
+    ///
+    /// - Given: a pending challenge from a sign-in at epoch 1, and no sign-up
+    /// - When: `autoSignIn` runs at epoch 2
+    /// - Then: it throws the "Not in a signed up state…" `invalidState`, and nothing is pending
+    func testAnAutoSignInWithoutASessionEndsAnEarlierAttempt() async throws {
+        try await SeamContractCases.anAutoSignInWithoutASessionEndsAnEarlierAttempt(driver())
+    }
 }
 
 /// The same contract over the live engine and scripted Cognito.
@@ -143,5 +162,24 @@ final class LiveEngineSeamContractTests: XCTestCase {
     /// - Then: nothing is pending, and a later answer is `invalidState`
     func testACancelDropsTheAttempt() async throws {
         try await SeamContractCases.aCancelDropsTheAttempt(driver())
+    }
+
+    /// An attempt from an earlier epoch is refused and dropped.
+    ///
+    /// - Given: a pending challenge from a sign-in at epoch 1
+    /// - When: the user answers at epoch 2, then at epoch 1
+    /// - Then: both throw `invalidState("There is no sign-in in progress for this session", …)`, and nothing
+    ///   is pending after the first
+    func testAnEarlierEpochAttemptIsRefusedAndDropped() async throws {
+        try await SeamContractCases.anEarlierEpochAttemptIsRefusedAndDropped(driver())
+    }
+
+    /// `autoSignIn` with no auto-sign-in session ends the pending attempt first.
+    ///
+    /// - Given: a pending challenge from a sign-in at epoch 1, and no sign-up
+    /// - When: `autoSignIn` runs at epoch 2
+    /// - Then: it throws the "Not in a signed up state…" `invalidState`, and nothing is pending
+    func testAnAutoSignInWithoutASessionEndsAnEarlierAttempt() async throws {
+        try await SeamContractCases.anAutoSignInWithoutASessionEndsAnEarlierAttempt(driver())
     }
 }
