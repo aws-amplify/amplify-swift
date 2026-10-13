@@ -145,9 +145,12 @@ public final class AmplifyCognitoClient: Sendable {
 
     /// Builds a handle onto the session `options.sessionId` names.
     ///
-    /// Switching configuration under one session ID (release the handles of one, then build one with another)
-    /// keeps each configuration's saved record: switching back finds that configuration's session as it was, unless it
-    /// was signed out there. See `SessionID`.
+    /// Switching configuration under one **named** session ID (release the handles of one, then build one with
+    /// another) keeps each configuration's saved record: switching back finds that configuration's session as it
+    /// was, unless it was signed out there. See `SessionID`. `.default`, the default `options.sessionId`, follows
+    /// the Auth plugin's rule instead and keeps one backend's login at a time: a move to another user pool deletes
+    /// the old login, so switching back finds it signed out. See `SessionID.default`, and use named sessions to
+    /// switch between backends.
     ///
     /// - Throws: `AuthClientError.sessionConfigurationMismatch` if that session is already live in this
     ///   process under a different configuration; `AuthClientError.configuration` if the SDK clients
