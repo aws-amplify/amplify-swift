@@ -63,13 +63,6 @@ struct SessionSnapshot: Sendable, Equatable {
         }
     }
 
-    /// Reads a session's record once. Decodes and checks nothing else: not expiry, and not the network.
-    ///
-    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read.
-    static func load(_ sessionId: SessionID, from store: SessionRecordStore) throws -> SessionSnapshot {
-        try SessionSnapshot(store.read(sessionId))
-    }
-
     /// The credentials payload, if the session holds one.
     var credentials: Data? {
         switch source {
