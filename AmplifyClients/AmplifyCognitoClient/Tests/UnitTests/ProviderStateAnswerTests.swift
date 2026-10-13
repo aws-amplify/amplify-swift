@@ -10,7 +10,8 @@ import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
 /// What the providers and the operations on the signed-in user answer while a sign-in waits on a challenge over a
-/// session that holds credentials, and for a federated session whose credentials need a refresh.
+/// session that holds credentials (they refuse it, whatever the session held), and for a federated session whose
+/// credentials need a refresh.
 final class ProviderStateAnswerTests: XCTestCase {
 
     private var harness: ClientHarness!
@@ -53,38 +54,43 @@ final class ProviderStateAnswerTests: XCTestCase {
 
     // MARK: A pending challenge
 
-    /// The plugin keeps vending a guest's credentials while a sign-in is pending, and `fetchAuthSession()` does too.
-    /// `notSignedIn` (`.discard`) would have a consumer drop the guest's buffered work.
+    /// The providers answer from the state the app sees: while a sign-in waits on a challenge the session is moving
+    /// to whoever answers it, with that login's identity ID, so a guest's credentials are not vended, and `.discard`
+    /// has a consumer drop what it buffered as the guest. `fetchAuthSession()` still reports what the record holds.
     ///
     /// - Given: a guest session whose sign-in waits on an SMS code
-    /// - When: both providers are asked
+    /// - When: both providers are asked, and the session is fetched
     /// - Then:
-    ///    - the AWS credentials are the guest's, as `fetchAuthSession()` reports them; the access token throws
-    ///      `notSignedIn`, as for any guest
-    func testAGuestWaitingOnAChallengeKeepsVendingItsCredentials() async throws {
+    ///    - both providers throw `notSignedIn`, disposition `.discard`
+    ///    - `fetchAuthSession()` reports the guest's credentials; nothing is refreshed
+    func testAGuestWaitingOnAChallengeVendsNothing() async throws {
         let guest = FakePayload.guest(identityId: "us-east-1:guest")
         try harness.signIn(work, guest)
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         try await startChallengedSignIn(client, engine: engine)
 
-        let credentials = try await client.credentialsProvider.resolve()
+        let aws = await credentialsError { try await client.credentialsProvider.resolve() }
         let token = await credentialsError { try await client.userPoolTokenProvider.accessToken() }
         let session = try await client.fetchAuthSession()
 
-        XCTAssertEqual(credentials as? CognitoAWSCredentials, guest.awsCredentials)
-        XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(guest.awsCredentials))
+        XCTAssertEqual(aws?.isNotSignedIn, true, "\(String(describing: aws))")
+        XCTAssertEqual(aws?.disposition, .discard)
         XCTAssertEqual(token?.isNotSignedIn, true, "\(String(describing: token))")
+        XCTAssertEqual(token?.disposition, .discard)
+        XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(guest.awsCredentials))
+        XCTAssertEqual(engine.refreshCalls.count, 0)
     }
 
-    /// An expired user re-authenticating keeps `sessionExpired` (`.retryAfterReauthentication`) for the length of
-    /// the challenge, so a consumer keeps what it held for the re-authentication.
+    /// The same rule for an expired session whose user signs in again: whoever answers the challenge may be another
+    /// user, so the session's answer is `notSignedIn`, not `sessionExpired`, until the sign-in ends.
     ///
-    /// - Given: a signed-in session whose refresh token is dead, and its user's sign-in waiting on an SMS code
-    /// - When: both providers are asked
+    /// - Given: a signed-in session whose refresh token is dead, and then a sign-in on it waiting on an SMS code
+    /// - When: both providers are asked; then the challenge is answered and both are asked again
     /// - Then:
-    ///    - both throw `sessionExpired`, disposition `.retryAfterReauthentication`, not `notSignedIn`
-    func testAnExpiredSessionWaitingOnAChallengeStaysExpired() async throws {
+    ///    - while the challenge waits, both throw `notSignedIn` (`.discard`), with no second refresh
+    ///    - once it is answered, both vend the new sign-in's credentials
+    func testAnExpiredSessionWaitingOnAChallengeVendsNothing() async throws {
         try harness.signIn(work, .signedIn("alice", stale: true))
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
@@ -96,10 +102,18 @@ final class ProviderStateAnswerTests: XCTestCase {
         let aws = await credentialsError { try await client.credentialsProvider.resolve() }
         let token = await credentialsError { try await client.userPoolTokenProvider.accessToken() }
 
-        XCTAssertEqual(aws?.isSessionExpired, true, "\(String(describing: aws))")
-        XCTAssertEqual(aws?.disposition, .retryAfterReauthentication)
-        XCTAssertEqual(token?.isSessionExpired, true, "\(String(describing: token))")
-        XCTAssertEqual(token?.disposition, .retryAfterReauthentication)
+        XCTAssertEqual(aws?.isNotSignedIn, true, "\(String(describing: aws))")
+        XCTAssertEqual(aws?.disposition, .discard)
+        XCTAssertEqual(token?.isNotSignedIn, true, "\(String(describing: token))")
+        XCTAssertEqual(token?.disposition, .discard)
+        XCTAssertEqual(engine.refreshCalls.count, 1)
+
+        _ = try await client.confirmSignIn(challengeResponse: "123456")
+        let credentials = try await client.credentialsProvider.resolve()
+        let signedInToken = try await client.userPoolTokenProvider.accessToken()
+
+        XCTAssertEqual(credentials as? CognitoAWSCredentials, FakePayload.signedIn("alice").awsCredentials)
+        XCTAssertEqual(signedInToken, FakePayload.signedIn("alice").accessToken)
     }
 
     /// The operations on the signed-in user still refuse a pending sign-in: it is not a signed-in user.

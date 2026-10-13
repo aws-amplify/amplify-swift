@@ -43,9 +43,12 @@ public struct CognitoCredentialsProvider: AWSCredentialsProvider, Sendable {
     /// - Throws: `CredentialsError`, whose `disposition` says what to do with buffered work:
     ///   - `.notConfigured` if the configuration has no identity pool, or the session is signed in to the
     ///     user pool only;
-    ///   - `.notSignedIn` for a signed-out session, whether or not a sign-in on it waits on a challenge. A
-    ///     pending sign-in never changes the answer: a guest keeps vending its guest credentials, and an
-    ///     expired session stays `.sessionExpired`;
+    ///   - `.notSignedIn` for a signed-out session, and while a sign-in on it waits on a challenge, whatever the
+    ///     session held before: a guest's credentials or an expired session's tokens. The session is moving to
+    ///     whoever answers the challenge, with that login's identity ID, so `.discard` tells a consumer to drop
+    ///     what it buffered as the principal the session is leaving rather than send it with the next one's
+    ///     credentials. To keep a guest's buffered work, flush it before starting the sign-in.
+    ///     `AmplifyCognitoClient.fetchAuthSession()` still reports what the session holds;
     ///   - `.sessionExpired` if the refresh token (or a federated session's provider token) is dead;
     ///   - `.storageUnavailable` if secure storage could not be read or written;
     ///   - `.unknown` for anything else, such as a refresh that failed on the network, or a saved record

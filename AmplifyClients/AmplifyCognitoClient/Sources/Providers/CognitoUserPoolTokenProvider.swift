@@ -37,10 +37,10 @@ public struct CognitoUserPoolTokenProvider: Sendable {
     /// - Throws: `CredentialsError`, whose `disposition` says what to do with buffered work:
     ///   - `.notConfigured` if the configuration has no user pool, or the session is federated to the
     ///     identity pool (answered before any refresh);
-    ///   - `.notSignedIn` for a signed-out or guest session, whether or not a sign-in on it waits on a
-    ///     challenge;
-    ///   - `.sessionExpired` if the refresh token is dead, also while its user's new sign-in waits on a
-    ///     challenge;
+    ///   - `.notSignedIn` for a signed-out or guest session, and while a sign-in on it waits on a challenge,
+    ///     whatever the session held before, an expired user's tokens included: the session is moving to whoever
+    ///     answers the challenge, so a consumer drops what it buffered for the user it is leaving;
+    ///   - `.sessionExpired` if the refresh token is dead;
     ///   - `.storageUnavailable` if secure storage could not be read or written;
     ///   - `.unknown` for anything else, such as a refresh that failed on the network, or a saved record
     ///     this version cannot read.
