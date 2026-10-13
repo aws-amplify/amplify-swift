@@ -878,6 +878,56 @@ final class WebUISignInTests: XCTestCase {
         XCTAssertNil(try harness.storedRecord(work))
     }
 
+    /// `.distinctFromOtherSessions` is checked again once the browser returns: the listing the engine
+    /// checked was read before the wait for the sheet
+    ///
+    /// - Given: "work" showing its hosted-UI sign-in; "home" queued behind it with `.wait(timeout:)` and
+    ///   `.distinctFromOtherSessions`, its listing read while nobody was signed in
+    /// - When: "work" signs in as the web user; then "home"'s browser returns the same user
+    /// - Then:
+    ///    - "home" throws `.unexpectedIdentity` with no expectation and that user, its description naming "work"
+    ///    - nothing is stored for "home", it is signed out, and its tokens are revoked
+    func testAUserAnotherSessionSignedInWhileThisWaitedIsRefused() async throws {
+        let workClient = try client(work)
+        let homeClient = try client(home)
+        let workBrowser = FakeBrowser()
+        let homeBrowser = FakeBrowser()
+        try XCTUnwrap(harness.engine(for: work)).showWebUISignIns(in: workBrowser)
+        let homeEngine = try XCTUnwrap(harness.engine(for: home))
+        homeEngine.showWebUISignIns(in: homeBrowser)
+        let workSignIn = await startSignIn(workClient)
+        await workBrowser.shown.waitForArrivals(1)
+        let homeSignIn = await startSignIn(
+            homeClient,
+            options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60), identityExpectation: .distinctFromOtherSessions)
+        )
+        let lock = harness.sheetLock
+        await waitUntil("home queues") { await lock.waiterCount == 1 }
+
+        workBrowser.finishWithDefault()
+        _ = try await workSignIn.value
+        await homeBrowser.shown.waitForArrivals(1)
+        XCTAssertEqual(homeEngine.webUISignInCalls.first?.request.identity, EngineIdentityPolicy(excludedSubjects: []))
+        homeBrowser.finishWithDefault()
+        let error = await authClientError { try await homeSignIn.value }
+
+        XCTAssertEqual(error?.kind, .unexpectedIdentity(expected: nil, returned: webUser))
+        XCTAssertEqual(
+            error?.errorDescription,
+            "The hosted UI sign-in returned the user who is signed in to session \"work\", so nobody was signed in."
+        )
+        XCTAssertNil(try harness.storedRecord(home))
+        let homeState = await homeClient.currentSessionState()
+        XCTAssertEqual(homeState, .signedOut)
+        if case .done(let payload)? = homeBrowser.defaultAnswer {
+            XCTAssertEqual(homeEngine.revokeCalls, [payload])
+        } else {
+            XCTFail("home's browser was not shown")
+        }
+        let workState = await workClient.currentSessionState()
+        XCTAssertEqual(workState, .signedIn(webUser))
+    }
+
     /// - Given: `.default` on the Auth plugin's record, its own, signed in
     /// - When: another session signs in with `.distinctFromOtherSessions`
     /// - Then:

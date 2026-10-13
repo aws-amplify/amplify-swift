@@ -318,6 +318,11 @@ extension SessionCore {
     /// not committed: an interrupt dismisses the browser but does not cancel the engine's operation, so that
     /// operation's issued-token tap hands the tokens back rather than revoking them.
     ///
+    /// **`.distinctFromOtherSessions` is checked twice**: by the engine, against the listing read before the
+    /// wait for the sheet, and again here once the browser has returned, against a fresh listing, since another
+    /// session may have signed the same user in meanwhile. The second check is not atomic with the commit:
+    /// two sessions committing the same user at the same moment can both land.
+    ///
     /// **Cancellation.** The caller's task is watched here, where it runs: `withSignInLock` runs the step in a
     /// task of its own, which the caller's cancellation never reaches. Its handler cancels the task the lease
     /// runs in, which dismisses the browser, and the step checks it before the lease. A sign-out, purge or
@@ -485,6 +490,9 @@ extension SessionCore {
         return try await runStep(base: attempt.base, epoch: attempt.epoch) {
             switch step {
             case .success(let result):
+                if case .distinctFromOtherSessions = options.identityExpectation, case .done(let payload) = result {
+                    try await refuseUserOfAnotherSession(payload, caller: caller)
+                }
                 return result
             case .failure(is CancellationError):
                 if let payload = claim.close() {
@@ -528,6 +536,32 @@ extension SessionCore {
             return CancellationError()
         }
         return error
+    }
+
+    /// `.distinctFromOtherSessions` again, once the browser has returned: the engine checked a listing
+    /// read before the wait for the sheet, and another session may have signed the same user in since. Throws
+    /// `.unexpectedIdentity`, which names the session holding the user, after revoking the tokens, which nobody
+    /// will commit. A listing that cannot be read fails closed, as the first one does.
+    private nonisolated func refuseUserOfAnotherSession(_ payload: Data, caller: SystemSheetFlow) async throws {
+        do {
+            let summary = try engine.checkedDescribe(payload)
+            guard let userId = summary.userId else {
+                return
+            }
+            let (_, holders) = try await identityPolicy(for: .distinctFromOtherSessions)
+            guard holders[userId] != nil else {
+                return
+            }
+            caller.record(holders)
+            throw AuthClientError(hostedUIMismatch: HostedUIIdentityMismatch(
+                reason: .signedInToAnotherSession,
+                returnedUsername: summary.username,
+                returnedUserId: userId
+            ))
+        } catch {
+            _ = try? await engine.revoke(payload, global: false)
+            throw error
+        }
     }
 
     /// The nonce a flow sends: the caller's, unless it is missing or empty, else a minted one.
