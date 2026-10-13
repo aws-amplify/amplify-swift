@@ -851,6 +851,38 @@ final class LiveEngineSignInTests: XCTestCase {
         XCTAssertEqual(try engine.describe(payload).kind, .userPoolAndIdentityPool)
     }
 
+    /// A guest's sign-in takes the identity ID the identity pool maps the login to, not the guest's, as the
+    /// plugin does: the public `signIn` doc says so.
+    ///
+    /// - Given: a guest payload for `us-east-1:guest`, and an identity pool that maps alice's login to
+    ///   `us-east-1:alice`
+    /// - When:
+    ///    - alice signs in with the guest payload as `current`
+    /// - Then:
+    ///    - `GetId` is sent with alice's user pool login
+    ///    - AWS credentials are fetched for `us-east-1:alice` only, and the signed-in payload holds that identity ID
+    ///
+    func testAGuestSignInTakesTheLoginsIdentityNotTheGuests() async throws {
+        let engine = try harness.engine()
+        harness.scriptIdentityPool(identityId: "us-east-1:guest")
+        let guest = try await engine.fetchGuestCredentials(current: nil)
+        XCTAssertEqual(try engine.describe(guest).identityId, "us-east-1:guest")
+        harness.cognito.clearCalls()
+        harness.scriptIdentityPool(identityId: "us-east-1:alice")
+        harness.scriptSRP()
+
+        let result = try await engine.signIn(.srp(), current: guest)
+
+        guard case .done(let payload) = result else {
+            return XCTFail("expected .done, got \(result)")
+        }
+        let getId = try XCTUnwrap(harness.cognito.inputs("GetId", as: GetIdInput.self).last)
+        XCTAssertEqual(getId.logins?.count, 1, "GetId carries the user pool login")
+        let credentialInputs = harness.cognito.inputs("GetCredentialsForIdentity", as: GetCredentialsForIdentityInput.self)
+        XCTAssertEqual(credentialInputs.map(\.identityId), ["us-east-1:alice"])
+        XCTAssertEqual(try engine.describe(payload).identityId, "us-east-1:alice")
+    }
+
     /// Without a user pool, a sign-in is a configuration error before anything runs.
     ///
     /// - Given: an identity-pool-only engine

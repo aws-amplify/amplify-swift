@@ -22,8 +22,12 @@ public extension AmplifyCognitoClient {
     /// Signs a user in to this session.
     ///
     /// Refused only when this session is already signed in, or federated: other sessions' users never block
-    /// it. A guest session signs in and keeps its identity, and a session waiting on a challenge starts over,
-    /// the new sign-in superseding the pending one.
+    /// it. A guest session signs in on the same session, and a session waiting on a challenge starts over, the
+    /// new sign-in superseding the pending one.
+    ///
+    /// **A guest's identity ID is not kept.** As with the Auth plugin, the signed-in identity ID is the one the
+    /// identity pool maps the user's login to: a new one on the user's first sign-in, not the guest's. Data kept
+    /// under the guest's identity ID (a `private/{identityId}/` path, say) is not reachable as the user.
     ///
     /// When sign-in needs more from the user, the result's `nextStep` says what, the session's state
     /// becomes `.awaitingChallenge(step)`, and `confirmSignIn(challengeResponse:options:)` continues it.
