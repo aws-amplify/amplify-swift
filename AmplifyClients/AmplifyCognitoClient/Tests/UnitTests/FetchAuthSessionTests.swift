@@ -376,14 +376,16 @@ final class FetchAuthSessionTests: XCTestCase {
         XCTAssertFalse(expired)
     }
 
-    /// Like the providers, `fetchAuthSession` never hands out credentials that still need a
-    /// refresh after the refresh flight.
+    /// As the plugin draws it: like the providers, `fetchAuthSession` reports what its own refresh
+    /// committed, as the plugin reports what its refresh established, even when those credentials still read as
+    /// needing a refresh (a device clock running ahead of Cognito's). Only a re-read or adopted record that still
+    /// needs one is never reported (`RefreshResultTests`).
     ///
-    /// - Given: a stale session whose refresh returns credentials that are still stale
+    /// - Given: a stale session whose refresh returns credentials that still read as stale
     /// - When: its session is fetched
     /// - Then:
-    ///    - it does not throw, and the fields fail with a retryable `unknown` rather than carry the tokens
-    func testCredentialsStillStaleAfterTheRefreshAreNotHandedOut() async throws {
+    ///    - the fields carry the refreshed tokens and AWS credentials, not a retryable `unknown`
+    func testCredentialsStillStaleAfterTheirOwnRefreshAreReported() async throws {
         try harness.signIn(work, .signedIn("alice", stale: true))
         let client = try harness.client(work)
         harness.engine(for: work)?.scriptRefresh { payload in
@@ -394,10 +396,8 @@ final class FetchAuthSessionTests: XCTestCase {
 
         let session = try await client.fetchAuthSession()
 
-        XCTAssertThrowsError(try session.userPoolTokensResult.get()) { error in
-            XCTAssertEqual((error as? AuthClientError)?.kind, .unknown)
-        }
-        XCTAssertThrowsError(try session.awsCredentialsResult.get())
+        XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, "access-alice-v2")
+        XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(FakePayload.signedIn("alice", version: 2).awsCredentials))
     }
 
     /// A `CredentialsError` from inside the session core never escapes `fetchAuthSession`,

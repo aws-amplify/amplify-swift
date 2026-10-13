@@ -54,7 +54,7 @@ extension SessionCore {
             guard try forceRefresh || needsRefresh(payload, of: snapshot) else {
                 return try session(of: snapshot)
             }
-            let refreshed: SessionSnapshot
+            let refreshed: RefreshCommit
             do {
                 let flight = forceRefresh ? forcedRefreshFlight : refreshFlight
                 refreshed = try await flight.run { [self] in
@@ -81,15 +81,17 @@ extension SessionCore {
             } catch let error as CredentialsError {
                 return Self.session(failingWith: Self.authClientError(from: error))
             }
-            // What the flight left may be a re-read record rather than a refresh's result. Never report
-            // credentials that still need a refresh, as the providers never vend them.
-            if let fresh = refreshed.credentials, try needsRefresh(fresh, of: refreshed) {
+            // What the flight left may be a re-read or adopted record rather than a refresh's result. Never
+            // report credentials from one that still need a refresh, as the providers never vend them. The
+            // refresh's own result is reported as it is, as the plugin does: checked again by a device clock
+            // running ahead of Cognito's, every refresh Cognito accepted would fail.
+            if case .adopted(let adopted) = refreshed, let fresh = adopted.credentials, try needsRefresh(fresh, of: adopted) {
                 return Self.session(failingWith: .unknown(
                     "Session \"\(sessionId)\"'s credentials could not be refreshed.",
                     "Retry the operation."
                 ))
             }
-            return try session(of: refreshed)
+            return try session(of: refreshed.snapshot)
         }
     }
 

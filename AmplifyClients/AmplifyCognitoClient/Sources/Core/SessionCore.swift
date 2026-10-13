@@ -50,9 +50,9 @@ actor SessionCore {
     nonisolated let restoreFlight = SingleFlight<SessionSnapshot>()
     /// One flight per kind of operation, because a flight's joiners take its result whatever they asked
     /// for: a refresh when the credentials need one, ...
-    nonisolated let refreshFlight = SingleFlight<SessionSnapshot>()
+    nonisolated let refreshFlight = SingleFlight<RefreshCommit>()
     /// ... a refresh whatever the credentials' expiry (`fetchAuthSession(forceRefresh: true)`), ...
-    nonisolated let forcedRefreshFlight = SingleFlight<SessionSnapshot>()
+    nonisolated let forcedRefreshFlight = SingleFlight<RefreshCommit>()
     /// ... and guest acquisition on a signed-out session. All three take the record's gate, so they
     /// serialize against each other; each re-reads first, so a later one builds on an earlier one.
     nonisolated let guestFlight = SingleFlight<SessionSnapshot>()

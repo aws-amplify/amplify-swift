@@ -79,8 +79,9 @@ extension SessionCore {
             }
             return payload
         }
+        let commit: RefreshCommit
         do {
-            _ = try await refreshFlight.run { [self] in
+            commit = try await refreshFlight.run { [self] in
                 try await refreshOnce(force: false)
             }
         } catch let failure as IdentityStepFailure {
@@ -93,8 +94,14 @@ extension SessionCore {
             throw failure.error
         }
         let refreshed = try await usableCredentials(for: purpose)
-        // What the flight left may be a re-read record rather than this refresh's result. Never hand out
-        // credentials that are still expired: the provider contract is currently-valid credentials.
+        // The refresh's own result is handed out as it is, as the plugin hands out what its refresh established
+        // (`FetchAuthSessionOperationHelper.listenForSession`): checked again by a device clock running ahead of
+        // Cognito's, every refresh Cognito accepted would fail.
+        if case .committed(let own) = commit, own.credentials == refreshed {
+            return refreshed
+        }
+        // What the flight left may be a re-read or adopted record rather than this refresh's result. Never hand
+        // out credentials from one that are still expired: the provider contract is currently-valid credentials.
         guard try await !needsRefresh(refreshed, of: identity ? restoredSnapshotIfAny : nil) else {
             throw AuthClientError.unknown(
                 "Session \"\(sessionId)\"'s credentials could not be refreshed.",
@@ -227,11 +234,14 @@ extension SessionCore {
     ///
     /// With `force` (`fetchAuthSession(options: .init(forceRefresh: true))`) step 1 still re-reads, but
     /// refreshes whatever credentials the record holds, needed or not.
-    nonisolated func refreshOnce(force: Bool) async throws -> SessionSnapshot {
+    ///
+    /// Returns `.committed` with the record this refresh wrote, and `.adopted` with any other: a re-read
+    /// record, or another writer's newer one.
+    nonisolated func refreshOnce(force: Bool) async throws -> RefreshCommit {
         try await withRecord { [self] store in
             let current = try await store.load(sessionId)
             guard let payload = current.credentials, try force || needsRefresh(payload, of: current) else {
-                return await apply(current, event: nil)
+                return await .adopted(apply(current, event: nil))
             }
 
             let refreshed: Data
@@ -242,12 +252,12 @@ extension SessionCore {
                 let forceTokens = try force || engine.checkedUserPoolTokensNeedRefresh(payload, at: now())
                 refreshed = try await engine.refresh(payload, force: forceTokens)
             } catch SessionEngineError.refreshedThenFailed(let stored, let failure) {
-                return try await keepRefreshedTokens(stored, failure: failure, over: current, replacing: payload, store: store)
+                return try await .adopted(keepRefreshedTokens(stored, failure: failure, over: current, replacing: payload, store: store))
             } catch SessionEngineError.refreshTokenReused {
                 let reread = try await store.load(sessionId)
                 if let fresh = reread.credentials, try !needsRefresh(fresh, of: reread) {
                     refreshTokenReuse.reset()
-                    return await apply(reread, event: nil)
+                    return await .adopted(apply(reread, event: nil))
                 }
                 // Nobody saved a refresh. Once, another writer may still be saving the one that used the token (an
                 // extension suspended between Cognito's answer and its keychain write). Again, at least
@@ -267,7 +277,7 @@ extension SessionCore {
             } catch SessionEngineError.refreshTokenInvalid {
                 let reread = try await store.load(sessionId)
                 if !reread.holdsCredentials(payload, engine: engine) {
-                    return await apply(reread, event: nil)
+                    return await .adopted(apply(reread, event: nil))
                 }
                 await markExpired()
                 throw Self.sessionExpired(sessionId)
@@ -276,7 +286,7 @@ extension SessionCore {
             }
 
             refreshTokenReuse.reset()
-            return try await commitRefresh(refreshed, over: current, replacing: payload, store: store).snapshot
+            return try await commitRefresh(refreshed, over: current, replacing: payload, store: store)
         }
     }
 
@@ -324,8 +334,9 @@ extension SessionCore {
         throw IdentityStepFailure(error: error)
     }
 
-    /// What a refresh's commit left: its own record, or another writer's newer one, adopted.
-    enum RefreshCommit {
+    /// What a refresh left: the record it committed, or another one, adopted: a re-read record, or another
+    /// writer's newer one.
+    enum RefreshCommit: Sendable {
         case committed(SessionSnapshot)
         case adopted(SessionSnapshot)
 
