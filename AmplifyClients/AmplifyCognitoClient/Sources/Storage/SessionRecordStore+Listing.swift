@@ -139,7 +139,8 @@ extension SessionRecordStore {
     /// The user ID (`sub`) each signed-in saved session of this namespace holds, by session ID: what a hosted-UI
     /// sign-in that must return a user of no other session checks against.
     ///
-    /// Read as `listing()` reads: the same accounts, `.default` from the Auth plugin's record only, and a named
+    /// Read as `listing()` reads: the same accounts (and, with `rereadsAbsentSharedRecord`, the Auth plugin's record
+    /// even when they miss it), `.default` from the Auth plugin's record only, and a named
     /// session waiting to be carried forward counted as the user it would carry. A record's `userId` is used as
     /// stored, and `describe` reads it from the credentials when the record has none, and always for `.default`.
     /// Signed-out, guest and federated rows, unreadable records, and credentials `describe` cannot read contribute
@@ -177,7 +178,7 @@ extension SessionRecordStore {
                let userId = describe(credentials)?.userId ?? pending.userId {
                 userIds[.default] = userId
             }
-        } else if accounts.contains(sharedRecordAccount),
+        } else if accounts.contains(sharedRecordAccount) || rereadsAbsentSharedRecord,
                   let data = try fetchSharedRecord(operation: "read the default session's saved login") {
             let summary = summarizeSharedRecord(data)
             if summary.isRecognised, Self.isSignedIn(summary.kind), let userId = describe(data)?.userId ?? summary.userId {
@@ -218,13 +219,14 @@ extension SessionRecordStore {
     }
 
     /// The `.default` row, from the Auth plugin's record and the sidecar, if phase one listed either and one is still
-    /// there.
+    /// there. With `rereadsAbsentSharedRecord`, the record is read even when phase one did not list it: on macOS a
+    /// listing taken inside another writer's delete-then-add misses it, and absent once is not signed out.
     private func defaultRow(listedAccounts: [String]) throws -> StoredSession? {
-        let listsRecord = listedAccounts.contains(sharedRecordAccount)
-        guard listsRecord || listedAccounts.contains(sidecarAccount) else {
+        let readsRecord = listedAccounts.contains(sharedRecordAccount) || rereadsAbsentSharedRecord
+        guard readsRecord || listedAccounts.contains(sidecarAccount) else {
             return nil
         }
-        let data = listsRecord ? try fetchSharedRecord(operation: "read the default session's saved login") : nil
+        let data = readsRecord ? try fetchSharedRecord(operation: "read the default session's saved login") : nil
         let sidecar = try readSidecar().meta
         guard let data else {
             return sidecar.map { StoredSession(sessionId: .default, label: $0.label, username: $0.username, kind: .signedOut) }

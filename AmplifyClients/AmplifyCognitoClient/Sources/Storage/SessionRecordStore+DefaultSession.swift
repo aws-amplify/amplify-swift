@@ -412,7 +412,7 @@ extension SessionRecordStore {
     /// but only if it still holds `credentials`; then, once replaced, the sidecar for the signed-out row (a record
     /// purged meanwhile gets no sidecar back).
     func forceSignOutDefault(removing credentials: Data?) throws -> SignOutOutcome {
-        guard let data = try fetch(sharedRecordAccount, operation: "read the default session's saved login before signing it out") else {
+        guard let data = try fetchSharedRecord(operation: "read the default session's saved login before signing it out") else {
             return .noRecord
         }
         guard let stored = defaultRecord(holding: data, sidecar: try readSidecar().meta) else {
@@ -434,7 +434,7 @@ extension SessionRecordStore {
     /// Replaces a shared record that is not the plugin's format with `{"noCredentials":{}}`, unless it has meanwhile
     /// become one this build reads: another writer's, which is left alone.
     func replaceUnreadableDefault() throws -> SignOutOutcome {
-        guard let data = try fetch(sharedRecordAccount, operation: "read the default session's saved login before signing it out") else {
+        guard let data = try fetchSharedRecord(operation: "read the default session's saved login before signing it out") else {
             return .noRecord
         }
         if summarizeSharedRecord(data).isRecognised {
