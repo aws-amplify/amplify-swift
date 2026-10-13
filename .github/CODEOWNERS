@@ -37,3 +37,7 @@ api-dump-test/* @aws-amplify/amplify-ios-admins
 #   error and log golden tests (the log normaliser reads rename_table.json).
 /scripts/cognito-engine/ @aws-amplify/amplify-ios-admins
 /.github/workflows/auth_engine_gates.yml @aws-amplify/amplify-ios-admins
+# engine_paths.txt is the exception (the last matching rule wins). It changes whenever a file of the module
+# is added, removed or renamed, CI checks it against gen_engine_paths.py (admin-owned above), and
+# error_match_gate.sh treats every file under the module's Sources/ as module code whether listed or not.
+/scripts/cognito-engine/engine_paths.txt @aws-amplify/amplify-ios
