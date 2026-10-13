@@ -205,7 +205,14 @@ actor LiveSessionEngine: SessionEngine {
     /// supersedes the pending attempt and any step in flight (`AWSAuthSignInTask.validateCurrentState`), and
     /// throws `CancellationError` if a cancel for `epoch` arrived while they were being stopped, rather than
     /// absorbing it.
+    ///
+    /// Also throws `CancellationError`, stopping nothing, for a sign-in older than the step in flight or the
+    /// pending attempt: the core's epochs only grow, so it is a step its caller has already given up on (a
+    /// hosted-UI lease body that an interrupt answered, still running), and it must not end a newer sign-in.
     func beginSignIn(epoch: UInt64) async throws {
+        if let newest = [inFlight?.epoch, attempt?.epoch].compactMap({ $0 }).max(), newest > epoch {
+            throw CancellationError()
+        }
         let cancelsBefore = cancelCount
         let (stopped, dropped) = take(before: .max)
         await stop(stopped, dropped)

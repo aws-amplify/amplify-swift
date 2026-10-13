@@ -262,6 +262,60 @@ final class LiveEngineWebUITests: XCTestCase {
         XCTAssertTrue(presenter.shown.isEmpty)
     }
 
+    // MARK: A stale lease body
+
+    /// A hosted-UI step older than the pending attempt stops nothing: an interrupted lease body runs on after its
+    /// caller was answered, and the core's next sign-in may already have begun
+    ///
+    /// - Given: a password sign-in of epoch 2 waiting on an SMS code
+    /// - When: a hosted-UI sign-in of epoch 1 reaches the engine
+    /// - Then:
+    ///    - it throws `CancellationError`, shows nothing, and the newer attempt is still pending
+    func testAnOlderHostedUIStepDoesNotStopANewerSignIn() async throws {
+        let engine = try harness.engine()
+        harness.scriptSRP(then: LiveEngineFixtures.challenge(.smsMfa, parameters: LiveEngineFixtures.smsParameters))
+        _ = try await engine.signIn(.srp(), current: nil, epoch: 2)
+        let pending = await engine.pendingChallenge
+        XCTAssertNotNil(pending)
+        let request = await request()
+
+        let result = await Task { try await engine.signInWithWebUI(request, current: nil, epoch: 1) }.result
+
+        XCTAssertThrowsError(try result.get()) { XCTAssertTrue($0 is CancellationError, "got \($0)") }
+        XCTAssertTrue(presenter.shown.isEmpty)
+        let after = await engine.pendingChallenge
+        XCTAssertEqual(after, pending)
+    }
+
+    /// A hosted-UI step whose task is already cancelled stops nothing: an interrupt cancels the lease body's task
+    ///
+    /// - Given: a password sign-in of epoch 1 waiting on an SMS code
+    /// - When: a hosted-UI sign-in of epoch 2 reaches the engine from a cancelled task
+    /// - Then:
+    ///    - it throws `CancellationError`, shows nothing, and the attempt is still pending
+    func testACancelledHostedUIStepDoesNotStopAPendingSignIn() async throws {
+        let engine = try harness.engine()
+        harness.scriptSRP(then: LiveEngineFixtures.challenge(.smsMfa, parameters: LiveEngineFixtures.smsParameters))
+        _ = try await engine.signIn(.srp(), current: nil, epoch: 1)
+        let pending = await engine.pendingChallenge
+        XCTAssertNotNil(pending)
+        let request = await request()
+        let started = Gate()
+
+        let signIn = Task {
+            await started.pass()
+            return try await engine.signInWithWebUI(request, current: nil, epoch: 2)
+        }
+        signIn.cancel()
+        await started.open()
+        let result = await signIn.result
+
+        XCTAssertThrowsError(try result.get()) { XCTAssertTrue($0 is CancellationError, "got \($0)") }
+        XCTAssertTrue(presenter.shown.isEmpty)
+        let after = await engine.pendingChallenge
+        XCTAssertEqual(after, pending)
+    }
+
     // MARK: Sign-out
 
     /// Pins the non-ephemeral logout HU-2 cannot

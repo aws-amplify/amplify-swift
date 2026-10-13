@@ -38,6 +38,9 @@ extension LiveSessionEngine {
         guard let anchor = await MainActor.run(body: { box.anchor }) else {
             throw Self.presentationAnchorGone()
         }
+        // The caller is the core's lease body, whose task an interrupt cancels while the body runs on: an
+        // interrupted body must not go on to stop a newer sign-in (`beginSignIn` also refuses an older epoch).
+        try Task.checkCancellation()
         try await beginSignIn(epoch: epoch)
         let presenter = resources.makeHostedUIPresenter()
         let operation = try resources.makeOperation(
