@@ -75,6 +75,11 @@ protocol SessionEngine: Sendable {
     /// the plugin's machine holds a guest's session when its sign-in starts; otherwise `nil`. The signed-in
     /// identity ID is not the guest's: it is the one the identity pool maps the login to, as in the plugin.
     ///
+    /// **An older epoch stops nothing.** A sign-in whose `epoch` is older than the step in flight or the pending
+    /// attempt throws `CancellationError` and leaves both as they are: the core's epochs only grow, so it is a step
+    /// its caller has already given up (a hosted-UI lease body an interrupt answered, still running), and it must
+    /// not end a newer sign-in. `signInWithWebUI` and `autoSignIn` follow the same rule.
+    ///
     /// Whether the session may sign in at all (it must not already be signed in) is the core's decision,
     /// not the engine's: the engine does not know the session's record.
     ///

@@ -81,6 +81,15 @@ final class FakeEngineSeamContractTests: XCTestCase {
         try await SeamContractCases.anEarlierEpochAttemptIsRefusedAndDropped(driver())
     }
 
+    /// An older-epoch sign-in stops nothing.
+    ///
+    /// - Given: a pending challenge from a sign-in at epoch 2
+    /// - When: a sign-in, then an auto sign-in, run at epoch 1
+    /// - Then: both throw `CancellationError`, and the epoch-2 challenge is still pending
+    func testAnOlderEpochSignInStopsNothing() async throws {
+        try await SeamContractCases.anOlderEpochSignInStopsNothing(driver())
+    }
+
     /// `autoSignIn` with no auto-sign-in session ends the pending attempt first.
     ///
     /// - Given: a pending challenge from a sign-in at epoch 1, and no sign-up
@@ -192,6 +201,15 @@ final class LiveEngineSeamContractTests: XCTestCase {
     ///   is pending after the first
     func testAnEarlierEpochAttemptIsRefusedAndDropped() async throws {
         try await SeamContractCases.anEarlierEpochAttemptIsRefusedAndDropped(driver())
+    }
+
+    /// An older-epoch sign-in stops nothing.
+    ///
+    /// - Given: a pending challenge from a sign-in at epoch 2
+    /// - When: a sign-in, then an auto sign-in, run at epoch 1
+    /// - Then: both throw `CancellationError`, and the epoch-2 challenge is still pending
+    func testAnOlderEpochSignInStopsNothing() async throws {
+        try await SeamContractCases.anOlderEpochSignInStopsNothing(driver())
     }
 
     /// `autoSignIn` with no auto-sign-in session ends the pending attempt first.

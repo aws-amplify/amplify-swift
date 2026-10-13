@@ -168,6 +168,24 @@ enum SeamContractCases {
         }
     }
 
+    /// A sign-in older than the pending attempt stops nothing: it throws `CancellationError`, and the newer attempt
+    /// is still pending. The core's epochs only grow, so such a sign-in is one its caller has already given up (a
+    /// hosted-UI lease body an interrupt answered, still running). `autoSignIn` follows the same rule.
+    static func anOlderEpochSignInStopsNothing(_ driver: SeamContractDriver) async throws {
+        try driver.scriptNewPasswordChallenge()
+        _ = try await driver.engine.signIn(request, current: nil, epoch: 2)
+
+        await assertThrowsAsync({ try await driver.engine.signIn(request, current: nil, epoch: 1) }) { error in
+            XCTAssertTrue(error is CancellationError, "expected CancellationError, got \(error)")
+        }
+        await assertThrowsAsync({ try await driver.engine.autoSignIn(current: nil, epoch: 1) }) { error in
+            XCTAssertTrue(error is CancellationError, "expected CancellationError, got \(error)")
+        }
+
+        let pending = await driver.engine.pendingChallenge
+        XCTAssertTrue(isNewPassword(pending), "the newer attempt must still be pending: \(String(describing: pending))")
+    }
+
     /// `autoSignIn` with no auto-sign-in session ends the pending attempt before it refuses, as every new
     /// sign-in does, so no attempt from before its epoch outlives it.
     static func anAutoSignInWithoutASessionEndsAnEarlierAttempt(_ driver: SeamContractDriver) async throws {

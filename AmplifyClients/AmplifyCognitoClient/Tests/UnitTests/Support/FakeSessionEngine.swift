@@ -455,7 +455,8 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     }
 
     func signIn(_ request: EngineSignInRequest, current: Data?, epoch: UInt64) async throws -> EngineStepResult {
-        let (script, latch, honours, started) = withLock { () -> (SignInScript?, Gate?, Bool, Int) in
+        let (script, latch, honours, started) = try withLock { () throws -> (SignInScript?, Gate?, Bool, Int) in
+            try refuseOlderThanTheNewest(epoch)
             signIns.append((request, current))
             if challenge != nil {
                 // A new sign-in supersedes the pending one.
@@ -657,7 +658,8 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     /// default, `.done` as `web-user` (`signedIn(_:from:)`), the payload marked as sharing the browser's
     /// cookies when the request did not prefer an ephemeral session.
     func signInWithWebUI(_ request: EngineWebUISignInRequest, current: Data?, epoch: UInt64) async throws -> EngineStepResult {
-        let script = withLock { () -> WebUIScript? in
+        let script = try withLock { () throws -> WebUIScript? in
+            try refuseOlderThanTheNewest(epoch)
             webUISignIns.append((request, current, epoch))
             if challenge != nil {
                 challenge = nil
@@ -896,7 +898,8 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     /// `invalidState`; otherwise it is held by `holdSignIns(on:)` like `signIn`, and follows the same
     /// contract. By default `.done` as the user who signed up (`signedIn(_:from:)`).
     func autoSignIn(current: Data?, epoch: UInt64) async throws -> EngineStepResult {
-        let (username, latch, honours, started) = withLock { () -> (String?, Gate?, Bool, Int) in
+        let (username, latch, honours, started) = try withLock { () throws -> (String?, Gate?, Bool, Int) in
+            try refuseOlderThanTheNewest(epoch)
             if challenge != nil {
                 dropAttempt()
                 supersedes += 1
@@ -926,6 +929,16 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
                 .autoSignIn(current: current, epoch: epoch),
                 default: EngineStepResult.done(payload: Self.signedIn(username, from: current).data)
             )
+        }
+    }
+
+    /// The live `beginSignIn(epoch:)` rule: a sign-in older than the step in flight or the pending attempt throws
+    /// `CancellationError` and stops nothing, since the core's epochs only grow and its caller has already given it
+    /// up. Called holding `lock`.
+    private func refuseOlderThanTheNewest(_ epoch: UInt64) throws {
+        let pending = challenge != nil ? attemptEpoch : nil
+        if let newest = [inFlight?.epoch, pending].compactMap({ $0 }).max(), newest > epoch {
+            throw CancellationError()
         }
     }
 
