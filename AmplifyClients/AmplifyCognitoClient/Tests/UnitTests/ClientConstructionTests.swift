@@ -13,13 +13,18 @@ import XCTest
 final class ClientConstructionTests: XCTestCase {
 
     private var harness: ClientHarness!
+    /// Set when a construction is stuck holding the registry lock: reading the registry would block behind it.
+    private var registryIsStuck = false
 
     override func setUp() {
         harness = ClientHarness()
+        registryIsStuck = false
     }
 
     override func tearDown() async throws {
-        await harness.waitForBaseline()
+        if !registryIsStuck {
+            await harness.waitForBaseline()
+        }
         harness = nil
     }
 
@@ -434,6 +439,8 @@ final class ClientConstructionTests: XCTestCase {
     /// - Then:
     ///    - it throws `sessionConfigurationMismatch` and returns, rather than deadlocking
     ///    - the core was released, and its scheduled prune empties the registry
+    ///    - if it does deadlock, the test fails without touching the registry again, here or in `tearDown`,
+    ///      so it does not block behind the stuck thread's lock and the rest of the suite still runs
     func testReleasingTheLastHandleUnderTheRegistryLockDoesNotDeadlock() async throws {
         let holder = HandleHolder()
         let registry = SessionCoreDependencies.Registry(didLoadLiveEntry: { _ in holder.drop() })
@@ -446,6 +453,7 @@ final class ClientConstructionTests: XCTestCase {
         _ = original
 
         let returned = expectation(description: "the mismatched construction returns")
+        let finished = Flag()
         let harness = harness!
         let thread = Thread {
             do {
@@ -454,10 +462,15 @@ final class ClientConstructionTests: XCTestCase {
             } catch {
                 XCTAssertEqual((error as? AuthClientError)?.isMismatch(for: work), true, "\(error)")
             }
+            finished.raise()
             returned.fulfill()
         }
         thread.start()
         await fulfillment(of: [returned], timeout: 300)
+        guard finished.isRaised else {
+            registryIsStuck = true
+            return XCTFail("the mismatched construction deadlocked under the registry lock")
+        }
 
         XCTAssertNil(probe, "the lookup's temporary was the last reference")
         await waitUntil("the scheduled prune runs") { harness.registry.entryCount == 0 }
