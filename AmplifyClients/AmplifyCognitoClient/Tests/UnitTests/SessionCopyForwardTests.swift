@@ -414,33 +414,110 @@ final class SessionCopyForwardTests: XCTestCase {
         }
     }
 
-    /// An identity-step failure whose stored tokens need a refresh after all reports the session expired.
+    /// The refresh's own committed tokens are reported as they are, as for a refresh that succeeded: checked again by
+    /// a device clock running ahead of Cognito's, every refresh Cognito accepted would read as expired.
     ///
-    /// - Given: alice's session carried from the user pool alone, and a refresh that stores still-expired tokens
-    ///   then fails the identity step
+    /// - Given: alice's session carried from the user pool alone, and a refresh that stores tokens which still read as
+    ///   needing a refresh (a device clock far ahead), then fails the identity step
     /// - When: the session is fetched
-    /// - Then: every field fails with `sessionExpired`: the partial result is only for tokens that need no refresh
-    func testAnIdentityFailureWithTokensThatNeedARefreshExpiresEveryField() async throws {
+    /// - Then:
+    ///    - it reports the committed tokens and sub, and fails only the identity and the AWS credentials
+    ///    - it refreshed once, and the record holds the committed tokens
+    func testAnIdentityFailureReportsTheTokensItsRefreshCommittedAsTheyAre() async throws {
         try aliceUnderTheUserPoolOnly()
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         var staleTokens = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 2)
+        staleTokens.stale = true
+        staleTokens.tokensStale = true
+        let stored = staleTokens.data
+        let refusal = AuthClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
+        engine.scriptRefresh { _ in
+            throw SessionEngineError.refreshedThenFailed(payload: stored, error: .service(refusal))
+        }
+
+        let session = try await client.fetchAuthSession()
+
+        XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, "access-alice-v2")
+        XCTAssertEqual(try session.userSubResult.get(), "sub-alice")
+        assertFails(session.identityIdResult, with: refusal)
+        assertFails(session.awsCredentialsResult, with: refusal)
+        XCTAssertEqual(engine.refreshCalls.count, 1)
+        XCTAssertEqual(try XCTUnwrap(currentRecord()).credentials, stored)
+    }
+
+    /// The access token's path: a refresh whose identity step failed hands out the tokens it committed without
+    /// checking them again by the device clock.
+    ///
+    /// - Given: alice's session carried from the user pool alone with expired tokens, and a refresh that stores
+    ///   tokens which still read as needing a refresh (a device clock far ahead), then fails the identity step
+    /// - When: the user pool token provider is asked for an access token
+    /// - Then: it vends the committed token, after one refresh
+    func testAnAccessTokenAfterAnIdentityFailureIsTheCommittedOneAsItIs() async throws {
+        var expired = FakePayload.signedIn("alice", kind: .userPoolOnly)
+        expired.stale = true
+        expired.tokensStale = true
+        try userPoolOnlyStore.write(expired.record(), for: work, expecting: nil)
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        var staleTokens = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 2)
+        staleTokens.stale = true
         staleTokens.tokensStale = true
         let stored = staleTokens.data
         engine.scriptRefresh { _ in
             throw SessionEngineError.refreshedThenFailed(
                 payload: stored,
-                error: .service(.notAuthorized("Invalid login token.", "Check the identity pool's providers."))
+                error: .service(.service(.network, "The network connection was lost.", "Retry."))
             )
+        }
+
+        let token = try await client.userPoolTokenProvider.accessToken()
+
+        XCTAssertEqual(token, "access-alice-v2")
+        XCTAssertEqual(engine.refreshCalls.count, 1)
+    }
+
+    /// Tokens adopted from another writer are not this refresh's result: ones that need a refresh are still reported
+    /// expired, and never handed out.
+    ///
+    /// - Given: alice's session carried from the user pool alone, and a refresh during which another process stores
+    ///   alice's tokens, still waiting for their identity and needing a refresh, so the refresh's commit loses and
+    ///   adopts them; the refresh then fails the identity step
+    /// - When: the session is fetched
+    /// - Then:
+    ///    - every field fails with `sessionExpired`, and the record holds the other writer's tokens
+    func testAnIdentityFailureWithAdoptedTokensThatNeedARefreshExpiresEveryField() async throws {
+        try aliceUnderTheUserPoolOnly()
+        let client = try harness.client(work)
+        _ = await client.currentSessionState()
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let store = harness.store()
+        let work = work
+        var otherWriters = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 7)
+        otherWriters.stale = true
+        otherWriters.tokensStale = true
+        let adopted = otherWriters
+        let stored = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 2)
+        engine.scriptRefresh { _ in
+            if case .record(let envelope) = try store.read(work), envelope.record.credentials != adopted.data {
+                var record = adopted.record(label: "Work")
+                record.identityPending = true
+                _ = try store.write(record, for: work, expecting: envelope.version)
+            }
+            throw SessionEngineError.refreshedThenFailed(payload: stored.data, error: .service(.service(.limitExceeded, "", "")))
         }
 
         let session = try await client.fetchAuthSession()
 
-        guard case .failure(let error) = session.userPoolTokensResult else {
-            return XCTFail("the tokens need a refresh: expired")
+        for result in [session.userPoolTokensResult.map { _ in () }, session.userSubResult.map { _ in () },
+                       session.identityIdResult.map { _ in () }, session.awsCredentialsResult.map { _ in () }] {
+            guard case .failure(let error) = result else {
+                XCTFail("every field should fail")
+                continue
+            }
+            XCTAssertEqual(error.kind, .sessionExpired)
         }
-        XCTAssertEqual(error.kind, .sessionExpired)
-        XCTAssertThrowsError(try session.identityIdResult.get())
+        XCTAssertEqual(try XCTUnwrap(currentRecord()).credentials, adopted.data)
     }
 
     /// Which identity-step failures are transient: only the known refusals are permanent.

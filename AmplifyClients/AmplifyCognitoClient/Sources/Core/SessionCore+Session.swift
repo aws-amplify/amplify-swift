@@ -62,8 +62,9 @@ extension SessionCore {
                 }
             } catch let failure as IdentityStepFailure {
                 // A carried session's refresh stored new user pool tokens, then failed the identity step: only the
-                // identity and its AWS credentials fail. If the stored tokens need a refresh after all, the session
-                // is expired, as the plugin reports it.
+                // identity and its AWS credentials fail. The refresh's own committed tokens are reported as they are;
+                // if tokens adopted from another writer need a refresh after all, the session is expired, as the
+                // plugin reports it.
                 if Self.isCancellation(failure.error) {
                     throw CancellationError()
                 }
@@ -71,7 +72,7 @@ extension SessionCore {
                 if case .storageUnavailable = error {
                     throw error
                 }
-                return try await sessionWithoutIdentity(failingWith: error)
+                return try await sessionWithoutIdentity(failingWith: error, after: failure)
                     ?? Self.session(failingWith: Self.sessionExpired(sessionId))
             } catch let error as AuthClientError {
                 if case .storageUnavailable = error {
@@ -213,14 +214,19 @@ extension SessionCore {
     }
 
     /// The session's fields when it is a user pool session waiting for its identity (carried forward,
-    /// `identityPending`) and holds user pool tokens that need no refresh: the tokens and sub as they are, and
-    /// the identity ID and AWS credentials failing with `error`. `nil` for any other session.
-    private nonisolated func sessionWithoutIdentity(failingWith error: AuthClientError) async throws -> AuthClientSession? {
+    /// `identityPending`) and holds the user pool tokens `failure`'s refresh committed, or other tokens that need no
+    /// refresh: the tokens and sub as they are, and the identity ID and AWS credentials failing with `error`. The
+    /// refresh's own tokens are not checked again by the device clock, which may run ahead of Cognito's. `nil` for any
+    /// other session.
+    private nonisolated func sessionWithoutIdentity(
+        failingWith error: AuthClientError,
+        after failure: IdentityStepFailure
+    ) async throws -> AuthClientSession? {
         guard let snapshot = await restoredSnapshotIfAny,
               configuration.identityPool != nil,
               let payload = snapshot.credentials,
               try engine.checkedDescribe(payload).kind == .userPoolOnly,
-              try !engine.checkedUserPoolTokensNeedRefresh(payload, at: now()) else {
+              try failure.committed(payload) || !engine.checkedUserPoolTokensNeedRefresh(payload, at: now()) else {
             return nil
         }
         let fields = try session(of: snapshot)

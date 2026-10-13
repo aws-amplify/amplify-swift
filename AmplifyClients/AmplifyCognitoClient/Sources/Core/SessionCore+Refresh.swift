@@ -107,9 +107,10 @@ extension SessionCore {
             }
         } catch let failure as IdentityStepFailure {
             // The refresh stored new user pool tokens and then failed the identity step. An access token needs no
-            // identity: hand out the refreshed one.
+            // identity: hand out the refreshed one. Its own committed tokens as they are, as for a refresh that
+            // succeeded; tokens it adopted from another writer only if they need no refresh.
             if purpose == .accessToken, let payload = try? await usableCredentials(for: .accessToken),
-               try !engine.checkedUserPoolTokensNeedRefresh(payload, at: now()) {
+               try failure.committed(payload) || !engine.checkedUserPoolTokensNeedRefresh(payload, at: now()) {
                 return payload
             }
             throw failure.error
@@ -361,7 +362,7 @@ extension SessionCore {
                 userId: current.ownRecord?.userId
             )
         }
-        throw IdentityStepFailure(error: error)
+        throw IdentityStepFailure(error: error, commit: result)
     }
 
     /// What a refresh left: the record it committed, or another one, adopted: a re-read record, or another
@@ -491,6 +492,18 @@ extension SessionCore {
 /// tokens.
 struct IdentityStepFailure: Error {
     let error: Error
+    /// What the refresh left: the record it committed, or another writer's, adopted, that still waits for its
+    /// identity.
+    let commit: SessionCore.RefreshCommit
+
+    /// Whether `payload` is the refresh's own committed result, which is handed out as it is (`freshPayload`): never
+    /// checked again by the device clock, as the plugin hands out what its refresh established.
+    func committed(_ payload: Data) -> Bool {
+        if case .committed(let own) = commit {
+            return own.credentials == payload
+        }
+        return false
+    }
 }
 
 /// When a carried session waiting for its identity may try the identity step again: not within `interval` of a
