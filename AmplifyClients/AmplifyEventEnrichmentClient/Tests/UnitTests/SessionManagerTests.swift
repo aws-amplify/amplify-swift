@@ -111,13 +111,13 @@ final class SessionManagerTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(session?.id, originalSession?.id)
     }
 
-    /// Test that resuming from stopped starts a new session
+    /// Test that resuming after an explicit stop does not start a new session
     ///
-    /// - Given: A session manager in stopped state
+    /// - Given: A session manager whose session was stopped with stopSession()
     /// - When:
     ///    - handleAppResumed() is called
     /// - Then:
-    ///    - A new session is started
+    ///    - The manager stays stopped on the session that was stopped
     ///
     func testHandleAppResumedFromStopped() async {
         let manager = SessionManager(
@@ -128,12 +128,66 @@ final class SessionManagerTests: XCTestCase, @unchecked Sendable {
 
         await manager.startSession()
         await manager.stopSession()
+        let stopped = await manager.session
+        await manager.handleAppResumed()
+
+        let state = await manager.state
+        let session = await manager.session
+        XCTAssertEqual(state, .stopped)
+        XCTAssertEqual(session?.id, stopped?.id)
+        XCTAssertNotNil(session?.stopTimestamp)
+    }
+
+    /// Test that resuming after a timeout stop starts a new session
+    ///
+    /// - Given: A session manager whose paused session timed out
+    /// - When:
+    ///    - handleAppResumed() is called
+    /// - Then:
+    ///    - A new session starts, since only an explicit stop is sticky
+    ///
+    func testHandleAppResumedAfterTimeoutStartsNewSession() async {
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { UUID().uuidString }
+        )
+
+        await manager.startSession()
+        let first = await manager.session
+        await manager.handleAppPaused()
+        await manager.onTimeoutExpired(pauseGeneration: 1)
         await manager.handleAppResumed()
 
         let state = await manager.state
         let session = await manager.session
         XCTAssertEqual(state, .active)
-        XCTAssertNotNil(session)
+        XCTAssertNotEqual(session?.id, first?.id)
+    }
+
+    /// Test that startSession() after an explicit stop re-enables resume
+    ///
+    /// - Given: A session manager that was stopped and then started again
+    /// - When:
+    ///    - The app pauses and resumes
+    /// - Then:
+    ///    - The session is active
+    ///
+    func testStartSessionAfterStopReenablesResume() async {
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { UUID().uuidString }
+        )
+
+        await manager.startSession()
+        await manager.stopSession()
+        await manager.startSession()
+        await manager.handleAppPaused()
+        await manager.handleAppResumed()
+
+        let state = await manager.state
+        XCTAssertEqual(state, .active)
     }
 
     /// Test session timeout expires and stops session
@@ -344,5 +398,365 @@ final class SessionManagerTests: XCTestCase, @unchecked Sendable {
         // The stop time is the pause time, not pause + timeout.
         XCTAssertEqual(stopTimestamp.timeIntervalSince1970, pauseTime.timeIntervalSince1970, accuracy: 0.15)
         XCTAssertLessThan(duration, Int64(timeout * 1_000))
+    }
+
+    /// Test that a timeout firing after a resume does not stop the resumed session
+    ///
+    /// - Given: A session manager that paused and resumed
+    /// - When:
+    ///    - The timeout for that pause is delivered late
+    /// - Then:
+    ///    - The session stays active and unstopped
+    ///
+    func testStaleTimeoutAfterResumeDoesNotStopSession() async {
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { UUID().uuidString }
+        )
+
+        await manager.startSession()
+        let first = await manager.session
+        await manager.handleAppPaused()
+        await manager.handleAppResumed()
+        await manager.onTimeoutExpired(pauseGeneration: 1)
+
+        let state = await manager.state
+        let session = await manager.session
+        XCTAssertEqual(state, .active)
+        XCTAssertEqual(session?.id, first?.id)
+        XCTAssertNil(session?.stopTimestamp)
+    }
+
+    /// Test that a timeout from an earlier pause does not end a later pause
+    ///
+    /// - Given: A session manager that paused, resumed and paused again
+    /// - When:
+    ///    - The timeout for the first pause is delivered late
+    /// - Then:
+    ///    - The second pause is unaffected
+    ///
+    func testStaleTimeoutFromEarlierPauseDoesNotEndLaterPause() async {
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { UUID().uuidString }
+        )
+
+        await manager.startSession()
+        await manager.handleAppPaused()
+        await manager.handleAppResumed()
+        await manager.handleAppPaused()
+        await manager.onTimeoutExpired(pauseGeneration: 1)
+
+        let state = await manager.state
+        XCTAssertEqual(state, .paused)
+    }
+
+    /// Test that a timeout from an earlier pause leaves the later session resumable
+    ///
+    /// - Given: A session manager that paused, resumed and paused again
+    /// - When:
+    ///    - The timeout for the first pause is delivered late and the app resumes
+    /// - Then:
+    ///    - The original session is active and was never stopped
+    ///
+    func testStaleTimeoutFromEarlierPauseKeepsSessionOnResume() async {
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { UUID().uuidString }
+        )
+
+        await manager.startSession()
+        let first = await manager.session
+        await manager.handleAppPaused()
+        await manager.handleAppResumed()
+        await manager.handleAppPaused()
+        await manager.onTimeoutExpired(pauseGeneration: 1)
+        await manager.handleAppResumed()
+
+        let session = await manager.session
+        XCTAssertEqual(session?.id, first?.id)
+        XCTAssertNil(session?.stopTimestamp)
+    }
+
+    /// Test that a resume landing next to the timeout is never undone by it
+    ///
+    /// - Given: A session manager with a timeout of a few milliseconds
+    /// - When:
+    ///    - The app resumes right around the moment the timeout fires
+    /// - Then:
+    ///    - The session is active afterwards, every time
+    ///
+    func testResumeNearTimeoutIsNeverUndone() async throws {
+        for iteration in 0 ..< 200 {
+            let timeout = 0.002 + Double(iteration % 8) * 0.0005
+            let manager = SessionManager(
+                appId: "test-app",
+                sessionTimeout: timeout,
+                generateId: { UUID().uuidString }
+            )
+            await manager.startSession()
+            await manager.handleAppPaused()
+            try await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+            await manager.handleAppResumed()
+            try await Task.sleep(nanoseconds: 3_000_000)
+            let state = await manager.state
+            XCTAssertEqual(state, .active, "iteration \(iteration)")
+        }
+    }
+
+    /// Test that stopping twice keeps the first stop
+    ///
+    /// - Given: A session manager whose session was stopped
+    /// - When:
+    ///    - stopSession() is called again later
+    /// - Then:
+    ///    - The stop timestamp and duration are unchanged
+    ///
+    func testStopSessionTwiceKeepsFirstStop() async throws {
+        let clock = TestClock()
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { UUID().uuidString },
+            now: { clock.now }
+        )
+        let start = clock.now
+
+        await manager.startSession()
+        clock.advance(by: 1)
+        await manager.stopSession()
+        clock.advance(by: 5)
+        await manager.stopSession()
+
+        let currentSession = await manager.session
+        let session = try XCTUnwrap(currentSession)
+        XCTAssertEqual(session.stopTimestamp, start.addingTimeInterval(1))
+        XCTAssertEqual(session.duration, 1_000)
+    }
+
+    /// Test that stopping a timed-out session keeps the pause time
+    ///
+    /// - Given: A session manager whose paused session timed out
+    /// - When:
+    ///    - stopSession() is called later
+    /// - Then:
+    ///    - The stop timestamp is still the pause time
+    ///
+    func testStopSessionAfterTimeoutKeepsPauseTime() async throws {
+        let clock = TestClock()
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { UUID().uuidString },
+            now: { clock.now }
+        )
+        let start = clock.now
+
+        await manager.startSession()
+        clock.advance(by: 2)
+        await manager.handleAppPaused()
+        clock.advance(by: 10)
+        await manager.onTimeoutExpired(pauseGeneration: 1)
+        clock.advance(by: 3)
+        await manager.stopSession()
+
+        let currentSession = await manager.session
+        let session = try XCTUnwrap(currentSession)
+        XCTAssertEqual(session.stopTimestamp, start.addingTimeInterval(2))
+        XCTAssertEqual(session.duration, 2_000)
+    }
+
+    /// Test that an explicit stop while paused is stamped at the pause time
+    ///
+    /// - Given: A session manager whose session is paused
+    /// - When:
+    ///    - stopSession() is called later, within the timeout
+    /// - Then:
+    ///    - The stop timestamp is the pause time
+    ///
+    func testStopSessionWhilePausedUsesPauseTime() async throws {
+        let clock = TestClock()
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { UUID().uuidString },
+            now: { clock.now }
+        )
+        let start = clock.now
+
+        await manager.startSession()
+        clock.advance(by: 2)
+        await manager.handleAppPaused()
+        clock.advance(by: 1)
+        await manager.stopSession()
+
+        let currentSession = await manager.session
+        let session = try XCTUnwrap(currentSession)
+        XCTAssertEqual(session.stopTimestamp, start.addingTimeInterval(2))
+    }
+
+    /// Test that resuming after the timeout starts a new session even if the timer never fired
+    ///
+    /// - Given: A paused session whose timeout has elapsed by the clock but not by the timer
+    /// - When:
+    ///    - handleAppResumed() is called
+    /// - Then:
+    ///    - A new active session replaces the old one
+    ///
+    func testResumeAfterExpiredPauseStartsNewSession() async {
+        let clock = TestClock()
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { UUID().uuidString },
+            now: { clock.now }
+        )
+
+        await manager.startSession()
+        let first = await manager.session
+        await manager.handleAppPaused()
+        clock.advance(by: 6)
+        await manager.handleAppResumed()
+
+        let state = await manager.state
+        let session = await manager.session
+        XCTAssertEqual(state, .active)
+        XCTAssertNotEqual(session?.id, first?.id)
+    }
+
+    /// Test that the session started after an expired pause begins at the resume
+    ///
+    /// - Given: A paused session whose timeout has elapsed by the clock but not by the timer
+    /// - When:
+    ///    - handleAppResumed() is called
+    /// - Then:
+    ///    - The current session starts at the resume time and is not stopped
+    ///
+    func testResumeAfterExpiredPauseStartsAtResumeTime() async throws {
+        let clock = TestClock()
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { UUID().uuidString },
+            now: { clock.now }
+        )
+
+        await manager.startSession()
+        await manager.handleAppPaused()
+        clock.advance(by: 6)
+        let resumeTime = clock.now
+        await manager.handleAppResumed()
+
+        let currentSession = await manager.session
+        let session = try XCTUnwrap(currentSession)
+        XCTAssertEqual(session.startTimestamp, resumeTime)
+        XCTAssertNil(session.stopTimestamp)
+    }
+
+    /// Test that resuming within the timeout keeps the session
+    ///
+    /// - Given: A paused session whose timeout has not elapsed by the clock
+    /// - When:
+    ///    - handleAppResumed() is called
+    /// - Then:
+    ///    - The same session is active
+    ///
+    func testResumeWithinTimeoutKeepsSession() async {
+        let clock = TestClock()
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { UUID().uuidString },
+            now: { clock.now }
+        )
+
+        await manager.startSession()
+        let first = await manager.session
+        await manager.handleAppPaused()
+        clock.advance(by: 4)
+        await manager.handleAppResumed()
+
+        let state = await manager.state
+        let session = await manager.session
+        XCTAssertEqual(state, .active)
+        XCTAssertEqual(session?.id, first?.id)
+    }
+
+    /// Test that dispose() stops the session and ignores later session calls
+    ///
+    /// - Given: A disposed session manager
+    /// - When:
+    ///    - startSession() and stopSession() are called
+    /// - Then:
+    ///    - The manager stays stopped and the final stop is unchanged
+    ///
+    func testDisposeIgnoresLaterSessionCalls() async throws {
+        let clock = TestClock()
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { UUID().uuidString },
+            now: { clock.now }
+        )
+
+        await manager.startSession()
+        await manager.dispose()
+        let currentDisposed = await manager.session
+        let disposed = try XCTUnwrap(currentDisposed)
+        clock.advance(by: 1)
+        await manager.startSession()
+        await manager.stopSession()
+
+        let state = await manager.state
+        let session = await manager.session
+        XCTAssertEqual(state, .stopped)
+        XCTAssertEqual(session?.id, disposed.id)
+        XCTAssertEqual(session?.stopTimestamp, disposed.stopTimestamp)
+    }
+
+    /// Test that dispose() ignores later lifecycle calls
+    ///
+    /// - Given: A disposed session manager that had never stopped explicitly
+    /// - When:
+    ///    - handleAppResumed() and handleAppPaused() are called
+    /// - Then:
+    ///    - No session is started
+    ///
+    func testDisposeIgnoresLaterLifecycleCalls() async {
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { UUID().uuidString }
+        )
+
+        await manager.dispose()
+        await manager.handleAppResumed()
+        await manager.handleAppPaused()
+
+        let state = await manager.state
+        let session = await manager.session
+        XCTAssertEqual(state, .stopped)
+        XCTAssertNil(session)
+    }
+}
+
+/// A clock that only moves when a test advances it.
+private final class TestClock: @unchecked Sendable {
+    private let lock = NSLock()
+    private var current = Date(timeIntervalSince1970: 1_700_000_000)
+
+    var now: Date {
+        lock.lock()
+        defer { lock.unlock() }
+        return current
+    }
+
+    func advance(by seconds: TimeInterval) {
+        lock.lock()
+        current = current.addingTimeInterval(seconds)
+        lock.unlock()
     }
 }

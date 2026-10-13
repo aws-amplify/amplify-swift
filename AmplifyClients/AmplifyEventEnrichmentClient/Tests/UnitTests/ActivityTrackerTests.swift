@@ -221,6 +221,33 @@ final class ActivityTrackerTests: XCTestCase, @unchecked Sendable {
         XCTAssertFalse(isTracking)
     }
 
+    /// Test that returning to the foreground does not undo an explicit stop
+    ///
+    /// - Given: A client with autoSessionTracking enabled whose session was stopped explicitly
+    /// - When:
+    ///    - A foreground notification is posted
+    /// - Then:
+    ///    - The session stays stopped
+    ///
+    func testForegroundDoesNotUndoStopSession() async throws {
+        let client = AmplifyEventEnrichmentClient(
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
+            options: EventEnrichmentClientOptions(autoSessionTracking: true)
+        )
+
+        _ = try await client.record("warmup")
+        await client.stopSession()
+
+        postForegroundNotification()
+        try await Task.sleep(nanoseconds: 100_000_000)
+
+        let state = await client.sessionState
+        XCTAssertEqual(state, .stopped)
+
+        await client.close()
+    }
+
     private func postBackgroundNotification() {
         #if canImport(WatchKit)
         NotificationCenter.default.post(

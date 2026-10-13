@@ -40,6 +40,7 @@ public actor AmplifyEventEnrichmentClient {
     private let autoSessionTracking: Bool
     private var userId: String?
     private var closed = false
+    private var closing: Task<Void, Never>?
 
     /// Initializes a new event enrichment client.
     ///
@@ -160,13 +161,18 @@ public actor AmplifyEventEnrichmentClient {
         return event
     }
 
-    /// Starts a new session manually.
+    /// Starts a new session manually. No-op once the client is closed.
     public func startSession() async {
+        guard !closed else { return }
         await sessionManager.startSession()
     }
 
-    /// Stops the current session.
+    /// Stops the current session. No-op once the client is closed.
+    ///
+    /// Returning to the foreground does not start a new session afterwards;
+    /// recording an event or calling ``startSession()`` does.
     public func stopSession() async {
+        guard !closed else { return }
         await sessionManager.stopSession()
     }
 
@@ -207,14 +213,21 @@ public actor AmplifyEventEnrichmentClient {
 
     /// Releases resources and stops session tracking.
     ///
-    /// The client cannot be reused after closing.
+    /// The client cannot be reused after closing. Concurrent calls share one
+    /// teardown and all return once it finishes.
     public func close() async {
         closed = true
-        // Tear the tracker down before stopping the session: otherwise a lifecycle
-        // notification arriving in between would start a new session on a closed client.
+        let teardown = closing ?? Task { await tearDown() }
+        closing = teardown
+        await teardown.value
+    }
+
+    private func tearDown() async {
+        // Dispose first: the session manager then ignores lifecycle callbacks
+        // still in flight, so none can start a session on a closed client.
+        await sessionManager.dispose()
         await activityTracker?.stopTracking()
         activityTracker = nil
-        await sessionManager.stopSession()
         logger.info("Client closed")
     }
 }

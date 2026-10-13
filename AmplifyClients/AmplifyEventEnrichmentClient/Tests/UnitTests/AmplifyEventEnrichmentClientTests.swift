@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AmplifyFoundation
 @testable import AmplifyEventEnrichmentClient
 import XCTest
 
@@ -356,5 +357,131 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase, @unchecked Sendable {
 
         await client.close()
     }
+
+    /// Test that recording after stopSession() starts tracking again
+    ///
+    /// - Given: A client with autoSessionTracking enabled whose session was stopped
+    /// - When:
+    ///    - An event is recorded
+    /// - Then:
+    ///    - The event belongs to a new active session
+    ///
+    func testRecordAfterStopSessionStartsNewSession() async throws {
+        let client = AmplifyEventEnrichmentClient(
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
+        )
+
+        let before = try await client.record("before_stop")
+        await client.stopSession()
+        let after = try await client.record("after_stop")
+
+        let state = await client.sessionState
+        XCTAssertNotEqual(before.session.id, after.session.id)
+        XCTAssertEqual(state, .active)
+
+        await client.close()
+    }
+
+    /// Test that startSession() after close() does nothing
+    ///
+    /// - Given: A closed client with autoSessionTracking disabled
+    /// - When:
+    ///    - startSession() is called
+    /// - Then:
+    ///    - No session is started
+    ///
+    func testStartSessionAfterCloseDoesNothing() async {
+        let client = AmplifyEventEnrichmentClient(
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
+            options: EventEnrichmentClientOptions(autoSessionTracking: false)
+        )
+
+        await client.close()
+        await client.startSession()
+
+        let state = await client.sessionState
+        XCTAssertEqual(state, .stopped)
+    }
+
+    /// Test that concurrent close() calls all return after teardown
+    ///
+    /// - Given: A client with autoSessionTracking enabled and an active session
+    /// - When:
+    ///    - close() is called twice concurrently
+    /// - Then:
+    ///    - Both return with the session stopped and lifecycle tracking removed
+    ///    - The teardown ran once
+    ///
+    func testConcurrentCloseCallsShareTeardown() async throws {
+        let log = ClosedLogCounter.shared
+        let client = AmplifyEventEnrichmentClient(
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
+        )
+        _ = try await client.record("warmup")
+        let closedBefore = log.count
+
+        async let first: Void = client.close()
+        async let second: Void = client.close()
+        _ = await (first, second)
+
+        let state = await client.sessionState
+        let isTracking = await client.isTrackingLifecycle
+        XCTAssertEqual(state, .stopped)
+        XCTAssertFalse(isTracking)
+        XCTAssertEqual(log.count - closedBefore, 1)
+    }
+
+    /// Test that closing an already closed client does not tear down again
+    ///
+    /// - Given: A closed client
+    /// - When:
+    ///    - close() is called again
+    /// - Then:
+    ///    - The teardown does not run a second time
+    ///
+    func testCloseTwiceTearsDownOnce() async {
+        let log = ClosedLogCounter.shared
+        let client = AmplifyEventEnrichmentClient(
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
+        )
+        let closedBefore = log.count
+
+        await client.close()
+        await client.close()
+
+        XCTAssertEqual(log.count - closedBefore, 1)
+    }
 }
 
+/// Counts the client's "Client closed" log lines, which it writes once per teardown.
+/// Registered once because log sinks cannot be removed from outside AmplifyFoundation.
+private final class ClosedLogCounter: LogSinkBehavior, @unchecked Sendable {
+    static let shared: ClosedLogCounter = {
+        let counter = ClosedLogCounter()
+        AmplifyLogging.addSink(counter)
+        return counter
+    }()
+
+    let id = "AmplifyEventEnrichmentClientTests.ClosedLogCounter"
+    private let lock = NSLock()
+    private var closed = 0
+
+    var count: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return closed
+    }
+
+    func isEnabled(for logLevel: LogLevel) -> Bool { true }
+
+    func emit(message: LogMessage) {
+        guard message.name == "AmplifyEventEnrichmentClient", message.content == "Client closed" else { return }
+        lock.lock()
+        closed += 1
+        lock.unlock()
+    }
+}

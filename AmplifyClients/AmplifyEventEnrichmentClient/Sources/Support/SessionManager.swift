@@ -27,12 +27,16 @@ actor SessionManager {
     private let appId: String
     private let sessionTimeout: TimeInterval
     private let generateId: @Sendable () -> String
+    private let now: @Sendable () -> Date
 
     private var _state: SessionState = .stopped
     private var _session: Session?
     private var sessionStart: Date?
     private var pausedAt: Date?
     private var pauseTask: Task<Void, Never>?
+    private var pauseGeneration = 0
+    private var stoppedExplicitly = false
+    private var disposed = false
 
     /// Current session state.
     var state: SessionState { _state }
@@ -58,39 +62,112 @@ actor SessionManager {
     ///   - appId: Application identifier used in session ID generation.
     ///   - sessionTimeout: Duration the app can remain backgrounded before a new session starts.
     ///   - generateId: Closure to generate a unique identifier (e.g., UUID).
+    ///   - now: Clock used for session timestamps and pause expiry.
     init(
         appId: String,
         sessionTimeout: TimeInterval = 5.0,
-        generateId: @escaping @Sendable () -> String
+        generateId: @escaping @Sendable () -> String,
+        now: @escaping @Sendable () -> Date = { Date() }
     ) {
         self.appId = appId
         self.sessionTimeout = sessionTimeout
         self.generateId = generateId
+        self.now = now
     }
 
-    /// Starts a new session. No-op if a session is already active or paused.
+    /// Starts a new session. No-op if a session is already active or paused,
+    /// or once disposed.
     func startSession() {
-        if _state != .stopped {
-            return
+        guard !disposed, _state == .stopped else { return }
+        startFresh()
+    }
+
+    /// Stops the current session, recording stop time and duration.
+    ///
+    /// No-op if the session is already stopped. ``handleAppResumed()`` does not
+    /// start a new session afterwards; ``startSession()`` does.
+    func stopSession() {
+        guard !disposed else { return }
+        stoppedExplicitly = true
+        endCurrent()
+    }
+
+    /// Stops the current session and turns every later call into a no-op.
+    func dispose() {
+        guard !disposed else { return }
+        endCurrent()
+        disposed = true
+    }
+
+    /// Called when the app moves to background.
+    func handleAppPaused() {
+        guard !disposed, _state == .active else { return }
+        _state = .paused
+        pausedAt = now()
+        pauseGeneration += 1
+        let generation = pauseGeneration
+        let timeout = sessionTimeout
+        pauseTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+            guard !Task.isCancelled else { return }
+            await self?.onTimeoutExpired(pauseGeneration: generation)
         }
-        let start = Date()
+    }
+
+    /// Called when the app returns to foreground.
+    ///
+    /// The pause timestamp decides expiry, not only the timer, because the
+    /// system can suspend timers while the app is in the background.
+    func handleAppResumed() {
+        guard !disposed else { return }
+        switch _state {
+        case .paused:
+            if isPauseExpired {
+                endCurrent()
+                startFresh()
+            } else {
+                cancelPauseTimer()
+                pausedAt = nil
+                _state = .active
+            }
+        case .stopped:
+            guard !stoppedExplicitly else { return }
+            startFresh()
+        case .active:
+            break
+        }
+    }
+
+    /// Ends the paused session when its timeout elapses. Internal for tests.
+    func onTimeoutExpired(pauseGeneration generation: Int) {
+        // A timer that outlived its pause must not end the session after it.
+        guard _state == .paused, generation == pauseGeneration else { return }
+        endCurrent()
+    }
+
+    private var isPauseExpired: Bool {
+        guard let pausedAt else { return false }
+        return now().timeIntervalSince(pausedAt) >= sessionTimeout
+    }
+
+    private func startFresh() {
+        stoppedExplicitly = false
+        let start = now()
         sessionStart = start
         _session = Session(
-            id: generateSessionId(),
+            id: generateSessionId(at: start),
             startTimestamp: start
         )
         _state = .active
     }
 
-    /// Stops the current session, recording stop time and duration.
-    ///
-    /// - Parameter stopTime: When the session ended. Defaults to now; pass an
-    ///   earlier date when the session ended before this call was made, such as
-    ///   a paused session whose timeout later expired.
-    func stopSession(at stopTime: Date = Date()) {
+    // The session became inactive when the app was backgrounded, so a session
+    // ended while paused is stamped at the pause time.
+    private func endCurrent() {
         cancelPauseTimer()
+        let stopTime = pausedAt ?? now()
         pausedAt = nil
-        guard let currentSession = _session, let start = sessionStart else { return }
+        guard _state != .stopped, let currentSession = _session, let start = sessionStart else { return }
         _session = Session(
             id: currentSession.id,
             startTimestamp: currentSession.startTimestamp,
@@ -98,39 +175,6 @@ actor SessionManager {
             duration: Int64(stopTime.timeIntervalSince(start) * 1_000)
         )
         _state = .stopped
-    }
-
-    /// Called when the app moves to background.
-    func handleAppPaused() {
-        guard _state == .active else { return }
-        _state = .paused
-        pausedAt = Date()
-        let timeout = sessionTimeout
-        pauseTask = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
-            guard !Task.isCancelled else { return }
-            await self?.onTimeoutExpired()
-        }
-    }
-
-    /// Called when the app returns to foreground.
-    func handleAppResumed() {
-        switch _state {
-        case .paused:
-            cancelPauseTimer()
-            pausedAt = nil
-            _state = .active
-        case .stopped:
-            startSession()
-        case .active:
-            break
-        }
-    }
-
-    private func onTimeoutExpired() {
-        // The session became inactive when the app was backgrounded, not when
-        // the timeout elapsed, so attribute the stop to the pause time.
-        stopSession(at: pausedAt ?? Date())
     }
 
     private func cancelPauseTimer() {
@@ -143,7 +187,7 @@ actor SessionManager {
     /// The layout matches Pinpoint's `PinpointSession.generateSessionId`: both the
     /// app ID and the unique ID are right-padded with `_` (and truncated when
     /// longer) to a fixed 8 characters so consumers can parse the ID positionally.
-    private func generateSessionId() -> String {
+    private func generateSessionId(at date: Date) -> String {
         let appIdKey = appId.padding(
             toLength: Constants.maxAppKeyLength,
             withPad: Constants.paddingCharacter,
@@ -154,9 +198,8 @@ actor SessionManager {
             withPad: Constants.paddingCharacter,
             startingAt: 0
         )
-        let now = Date()
-        let day = Self.dayFormatter.string(from: now)
-        let time = Self.timeFormatter.string(from: now)
+        let day = Self.dayFormatter.string(from: date)
+        let time = Self.timeFormatter.string(from: date)
         return "\(appIdKey)-\(uniqueIdKey)-\(day)-\(time)"
     }
 
