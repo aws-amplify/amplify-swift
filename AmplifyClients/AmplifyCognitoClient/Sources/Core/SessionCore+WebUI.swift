@@ -304,11 +304,19 @@ extension SessionCore {
     /// signed in, a guest's identity kept, committed by `commitSignIn`. A password sign-in waiting on a
     /// challenge is cancelled first, so the state stops reporting it.
     ///
-    /// **The sheet lease wraps exactly the engine call**: the authorize URL, the browser, the code exchange and
-    /// the identity checks. The commit, the state and `.signedIn` come after the lease is released, so a
-    /// sign-in the caller saw as cancelled never signs the session in, and nothing holding the lease takes a
-    /// record gate. A `.done` that arrives after an interrupt is revoked, not committed: the hosted UI's tokens
-    /// come from the token endpoint, which no issued-token tap watches.
+    /// **Nothing ends until the sheet is this session's.** The refusal, the `.distinctFromOtherSessions` listing
+    /// and the wait for the sheet all come before the attempt begins, so a busy sheet, a `.wait` that times out
+    /// or a record that cannot be read leaves a pending password challenge, and its saved record, as they were.
+    /// The attempt begins (the epoch moves, a pending challenge and its record end) as the lease body's first
+    /// step.
+    ///
+    /// **The sheet lease wraps the attempt's start and the engine call**: the authorize URL, the browser, the
+    /// code exchange, the identity checks, and with an identity pool `GetId` and `GetCredentialsForIdentity`,
+    /// since the engine's step ends at the established session. The commit, the state and `.signedIn` come
+    /// after the lease is released, so a sign-in the caller saw as cancelled never signs the session in, and
+    /// nothing holding the lease takes a record gate. A `.done` that arrives after an interrupt is revoked here,
+    /// not committed: an interrupt dismisses the browser but does not cancel the engine's operation, so that
+    /// operation's issued-token tap hands the tokens back rather than revoking them.
     ///
     /// **Cancellation.** The caller's task is watched here, where it runs: `withSignInLock` runs the step in a
     /// task of its own, which the caller's cancellation never reaches. Its handler cancels the task the lease
@@ -367,28 +375,21 @@ extension SessionCore {
         }
     }
 
-    /// The sign-in step, under the session's sign-in lock, with the lease around the engine call.
+    /// The sign-in step, under the session's sign-in lock: every check that can fail without a browser, then
+    /// the lease (`leasedWebUISignIn`).
     private nonisolated func webUISignInStep(
         anchor: EnginePresentationAnchorBox,
         options: WebUIOptions,
         caller: SystemSheetFlow
     ) async throws -> AuthClientSignInResult {
-        let engine = engine
-        let lock = sheetLock
-        let sessionId = sessionId
         let endings = await sessionEndings
         return try await withSignInLock(endedSince: endings) { [self] in
             // The step runs in a task of its own, which the caller's cancellation does not reach: check it.
             guard !caller.isCancelled else {
                 throw CancellationError()
             }
-            let (base, guestPayload, epoch) = try await signInBase()
-            // Again before ending a pending password challenge: a caller that has given up must not cost the
-            // session its challenge.
-            guard !caller.isCancelled else {
-                throw CancellationError()
-            }
-            try await cancelPendingChallenge(before: epoch)
+            // The refusal, without starting an attempt: a signed-in session takes no sheet.
+            _ = try await signInSeed()
             let (identity, subjects) = try await identityPolicy(for: options.identityExpectation)
             caller.record(subjects)
             let request = EngineWebUISignInRequest(
@@ -396,45 +397,137 @@ extension SessionCore {
                 options: EngineWebUIOptions(options, nonce: Self.flowNonce(options.nonce)),
                 identity: identity
             )
-            return try await runStep(base: base, epoch: epoch, superseding: true) {
-                // Tokens the body got after its caller was answered are revoked by whichever of the two comes
-                // second: the lock discards a result produced after an interrupt, even one the body
-                // had already returned when the interrupt landed.
-                let claim = LateSignInClaim()
-                // A sign-out, purge or deletion from here on stops this flow, and only this one.
-                guard await registerWebUIFlow(epoch: epoch, cancel: { caller.cancel(.sessionEnded) }) else {
-                    throw CancellationError()
-                }
-                defer {
-                    // Fire-and-forget on purpose: `defer` cannot await, and a late unregister is harmless. It is
-                    // keyed by epoch, so it never removes a later flow's registration, and a stale registration
-                    // only lets a later ending cancel a flow that has already ended.
-                    Task { await self.unregisterWebUIFlow(epoch: epoch) }
-                }
-                do {
-                    return try await caller.run {
-                        try await lock.withLease(for: sessionId, policy: options.whenBrowserBusy) { _ in
-                            // An ending that landed while this waited for the sheet: show nothing.
-                            guard await self.signInEpoch == epoch else {
-                                throw CancellationError()
-                            }
-                            let step = try await engine.signInWithWebUI(request, current: guestPayload, epoch: epoch)
-                            if case .done(let payload) = step, !claim.offer(payload) {
-                                // Interrupted: nobody will commit these tokens, so revoke them.
-                                Self.revokeOrphaned(payload, engine: engine)
-                                throw CancellationError()
-                            }
-                            return step
-                        }
+            // A sign-out, purge or deletion from here on stops this flow, its wait for the sheet included, and only
+            // this one. Registered under the epoch before the attempt's: an ending stops a flow
+            // registered under any earlier epoch.
+            let registered = await signInEpoch
+            guard await registerWebUIFlow(epoch: registered, cancel: { caller.cancel(.sessionEnded) }) else {
+                throw Self.signInCancelled()
+            }
+            let result: Result<AuthClientSignInResult, Error>
+            do {
+                result = try await .success(leasedWebUISignIn(request, options: options, endings: endings, caller: caller))
+            } catch {
+                result = .failure(error)
+            }
+            // Awaited, not fire-and-forget: a refused or timed-out lease leaves the epoch where it was, and the
+            // next flow, which can only register once this step has released the sign-in lock, may use it too.
+            await unregisterWebUIFlow(epoch: registered)
+            return try result.get()
+        }
+    }
+
+    /// The attempt, begun and run under the sheet's lease, then its result, committed after the lease.
+    ///
+    /// | The lease | Then |
+    /// |---|---|
+    /// | refused (`.fail`), timed out (`.wait`), or interrupted before the body began | nothing began: the lock's error, or the sign-in-cancelled `invalidState` if the session ended meanwhile |
+    /// | granted | the body begins the attempt, then runs the engine's step; its result goes to `runStep`, which commits it or reports it |
+    private nonisolated func leasedWebUISignIn(
+        _ request: EngineWebUISignInRequest,
+        options: WebUIOptions,
+        endings: UInt64,
+        caller: SystemSheetFlow
+    ) async throws -> AuthClientSignInResult {
+        let engine = engine
+        let lock = sheetLock
+        let sessionId = sessionId
+        // Tokens the body got after its caller was answered are revoked by whichever of the two comes second:
+        // the lock discards a result produced after an interrupt, even one the body had already
+        // returned when the interrupt landed.
+        let claim = LateSignInClaim()
+        // The attempt the body began: an interrupt answers this caller at once, and it must still learn whether
+        // the body began one, and its epoch. The body begins, or this caller abandons it, never both.
+        let begun = LeaseBodyResult<WebUIAttempt>()
+        let step: Result<EngineStepResult, Error>
+        do {
+            step = try await .success(caller.run {
+                try await lock.withLease(for: sessionId, policy: options.whenBrowserBusy) { _ in
+                    // An interrupt that landed while this waited for the sheet: begin nothing.
+                    guard !Task.isCancelled, !caller.isCancelled, begun.begin() else {
+                        throw CancellationError()
                     }
-                } catch is CancellationError {
-                    if let payload = claim.close() {
+                    let attempt: WebUIAttempt
+                    do {
+                        attempt = try await self.beginWebUIAttempt(endedSince: endings)
+                        begun.finish(.success(attempt))
+                    } catch {
+                        begun.finish(.failure(error))
+                        throw error
+                    }
+                    // An ending or an interrupt that landed meanwhile: show nothing.
+                    guard await self.signInEpoch == attempt.epoch else {
+                        throw CancellationError()
+                    }
+                    try Task.checkCancellation()
+                    let step = try await engine.signInWithWebUI(request, current: attempt.guestPayload, epoch: attempt.epoch)
+                    if case .done(let payload) = step, !claim.offer(payload) {
+                        // Interrupted: nobody will commit these tokens, so revoke them.
                         Self.revokeOrphaned(payload, engine: engine)
+                        throw CancellationError()
                     }
-                    throw CancellationError()
+                    return step
                 }
+            })
+        } catch {
+            step = .failure(error)
+        }
+        let attempt: WebUIAttempt
+        if begun.abandonIfNotBegun() {
+            throw await notBegun(step, endedSince: endings)
+        }
+        switch await begun.value {
+        case .success(let value):
+            attempt = value
+        case .failure:
+            throw await notBegun(step, endedSince: endings)
+        }
+        return try await runStep(base: attempt.base, epoch: attempt.epoch) {
+            switch step {
+            case .success(let result):
+                return result
+            case .failure(is CancellationError):
+                if let payload = claim.close() {
+                    Self.revokeOrphaned(payload, engine: engine)
+                }
+                throw CancellationError()
+            case .failure(let error):
+                throw error
             }
         }
+    }
+
+    /// A hosted-UI attempt begun under the lease: what its commit expects, its seed, and its epoch.
+    private struct WebUIAttempt: Sendable {
+        let base: SessionSnapshot
+        let guestPayload: Data?
+        let epoch: UInt64
+    }
+
+    /// The lease body's first step: begins the attempt, refused as `signIn` is (the state may have changed while
+    /// the sheet was awaited), unless the session ended meanwhile. The epoch moves, and a pending password
+    /// challenge and its record end: the attempt this one supersedes.
+    private nonisolated func beginWebUIAttempt(endedSince endings: UInt64) async throws -> WebUIAttempt {
+        guard await sessionEndings == endings else {
+            throw CancellationError()
+        }
+        let (base, guestPayload, epoch) = try await signInBase()
+        try await cancelPendingChallenge(before: epoch)
+        await deleteChallengeRecord(epoch: epoch)
+        return WebUIAttempt(base: base, guestPayload: guestPayload, epoch: epoch)
+    }
+
+    /// What a hosted-UI sign-in whose lease began no attempt throws: the sign-in-cancelled `invalidState` if
+    /// the session ended meanwhile (its flow was stopped), else the lease's own error.
+    private nonisolated func notBegun(_ step: Result<EngineStepResult, Error>, endedSince endings: UInt64) async -> Error {
+        guard await sessionEndings == endings else {
+            return Self.signInCancelled()
+        }
+        guard case .failure(let error) = step else {
+            // Unreachable: a lease whose body began no attempt returned nothing.
+            return CancellationError()
+        }
+        return error
     }
 
     /// The nonce a flow sends: the caller's, unless it is missing or empty, else a minted one.

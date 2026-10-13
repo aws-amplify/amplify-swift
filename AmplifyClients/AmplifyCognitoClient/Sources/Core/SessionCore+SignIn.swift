@@ -244,6 +244,13 @@ extension SessionCore {
     /// The snapshot a sign-in commits against, the guest payload to seed it with, and its attempt's
     /// epoch; or the refusal. One actor call, so the refusal and the new epoch see the same state.
     func signInBase() throws -> (SessionSnapshot, Data?, UInt64) {
+        let (snapshot, guestPayload) = try signInSeed()
+        return (snapshot, guestPayload, beginSignInAttempt())
+    }
+
+    /// `signInBase()` without starting an attempt: the snapshot and guest payload, or the refusal. The epoch
+    /// does not move, so a pending challenge stays answerable: for a check before a step that may still fail.
+    func signInSeed() throws -> (SessionSnapshot, Data?) {
         guard let snapshot = restoredSnapshotIfAny else {
             // `restoredSnapshot()` returned, so a snapshot is installed; nothing ever removes one.
             throw AuthClientError.unknown("The session could not be restored.", "Retry the operation.")
@@ -255,7 +262,7 @@ extension SessionCore {
                 "Operation performed is not a valid operation for the current auth state"
             )
         case .guest:
-            return (snapshot, snapshot.credentials, beginSignInAttempt())
+            return (snapshot, snapshot.credentials)
         case .federated:
             // The plugin's sign-in waits for a state it never reaches here; the client says why instead.
             throw AuthClientError.invalidState(
@@ -264,7 +271,7 @@ extension SessionCore {
             )
         case .signedIn, .signedOut, .awaitingChallenge:
             // An expired session signs in again: that is how its user recovers.
-            return (snapshot, nil, beginSignInAttempt())
+            return (snapshot, nil)
         case .unavailable(let reason):
             throw AuthClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later. Do not treat this as signed out.")
         case .failed(let error):

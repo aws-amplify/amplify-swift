@@ -382,6 +382,88 @@ final class WebUISignInTests: XCTestCase {
         XCTAssertEqual(state, .signedIn(webUser))
     }
 
+    /// A sign-in the sheet refuses ends nothing: the attempt begins only once the sheet is this session's
+    ///
+    /// - Given: "home" showing its hosted-UI sign-in; "work"'s password sign-in waiting on a TOTP code, saved
+    /// - When: "work" asks for a hosted-UI sign-in with `.fail`, then with a `.wait(timeout:)` that expires
+    /// - Then:
+    ///    - each throws `browserBusy` naming "home", and "work"'s engine shows nothing
+    ///    - "work" still reports the challenge: nothing was cancelled, the epoch did not move, and its saved
+    ///      record is unchanged
+    ///    - the code is then answered, and "work" signs in
+    func testABusySheetKeepsAPendingChallengeAndItsRecord() async throws {
+        let homeClient = try client(home)
+        let homeBrowser = FakeBrowser()
+        try XCTUnwrap(harness.engine(for: home)).showWebUISignIns(in: homeBrowser)
+        let homeSignIn = await startSignIn(homeClient)
+        await homeBrowser.shown.waitForArrivals(1)
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptSignIn { _, _ in .challenge(.confirmSignInWithTOTPCode) }
+        _ = try await client.signInForTest("alice")
+        let saved = try XCTUnwrap(try harness.store().storedChallenge(work))
+        let epoch = await client.core.signInEpoch
+
+        for policy in [WebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 0.05)] {
+            let error = await authClientError { try await startSignIn(client, options: WebUIOptions(whenBrowserBusy: policy)).value }
+
+            XCTAssertEqual(error?.kind, .browserBusy(holder: home))
+            let state = await client.currentSessionState()
+            XCTAssertEqual(state, .awaitingChallenge(.confirmSignInWithTOTPCode))
+            let after = await client.core.signInEpoch
+            XCTAssertEqual(after, epoch)
+            XCTAssertEqual(engine.cancelPendingSignInCount, 0)
+            XCTAssertEqual(try harness.store().storedChallenge(work), saved)
+        }
+        XCTAssertEqual(engine.webUISignInCalls.count, 0)
+
+        engine.scriptConfirmSignIn { _ in .done(payload: FakePayload.signedIn("alice").data) }
+        let done = try await client.confirmSignIn(challengeResponse: "123456")
+        XCTAssertEqual(done.nextStep, .done)
+        homeBrowser.finishWithDefault()
+        _ = try await homeSignIn.value
+    }
+
+    /// A listing that cannot be read ends nothing either, and the saved challenge survives the app
+    /// being closed
+    ///
+    /// - Given: "work"'s password sign-in waiting on a TOTP code, saved; "home"'s saved record cannot be read
+    /// - When: "work" asks for a hosted-UI sign-in with `.distinctFromOtherSessions`; then the app is closed
+    ///   and opened again
+    /// - Then:
+    ///    - the sign-in throws `storageUnavailable`, nothing is cancelled, and "work" still reports the challenge
+    ///    - after the relaunch the challenge record is unchanged, and "work" reports the same challenge
+    func testAListingThatCannotBeReadKeepsAPendingChallengeAcrossARelaunch() async throws {
+        _ = try harness.signIn(home, .signedIn("bob"))
+        let saved: ChallengeRecord
+        do {
+            let client = try client(work)
+            let engine = try XCTUnwrap(harness.engine(for: work))
+            engine.scriptSignIn { _, _ in .challenge(.confirmSignInWithTOTPCode) }
+            _ = try await client.signInForTest("alice")
+            saved = try XCTUnwrap(try harness.store().storedChallenge(work))
+            harness.keychain.failingReads(of: harness.store().sessionAccount(for: home), with: errSecInteractionNotAllowed)
+
+            let error = await authClientError {
+                try await self.startSignIn(client, options: WebUIOptions(identityExpectation: .distinctFromOtherSessions)).value
+            }
+
+            harness.keychain.clearFailures()
+            XCTAssertNotNil(error?.storageUnavailableReason)
+            XCTAssertEqual(engine.cancelPendingSignInCount, 0)
+            XCTAssertEqual(engine.webUISignInCalls.count, 0)
+            let before = await client.currentSessionState()
+            XCTAssertEqual(before, .awaitingChallenge(.confirmSignInWithTOTPCode))
+        }
+
+        // "The app was closed": the client and its core released, then a new client over the same keychain.
+        await harness.waitForBaseline()
+        let relaunched = try client(work)
+        XCTAssertEqual(try harness.store().storedChallenge(work), saved)
+        let after = await relaunched.currentSessionState()
+        XCTAssertEqual(after, .awaitingChallenge(.confirmSignInWithTOTPCode))
+    }
+
     // MARK: Cancellation
 
     /// - Given: a hosted-UI sign-in showing its browser
@@ -427,6 +509,36 @@ final class WebUISignInTests: XCTestCase {
         _ = await signOut.value
         XCTAssertEqual(error?.errorDescription, SessionCore.signInCancelled().errorDescription)
         XCTAssertEqual(engine.webUISignInCalls.count, 0)
+    }
+
+    /// An ending while the sign-in waits for the sheet stops it there
+    ///
+    /// - Given: "home" showing its hosted-UI sign-in; "work" queued behind it with `.wait(timeout:)`
+    /// - When: "work" is signed out
+    /// - Then:
+    ///    - "work" throws the sign-in-cancelled `invalidState` at once, leaves the queue, and its engine shows
+    ///      nothing
+    func testASignOutWhileWaitingForTheSheetStopsTheWait() async throws {
+        let homeClient = try client(home)
+        let homeBrowser = FakeBrowser()
+        try XCTUnwrap(harness.engine(for: home)).showWebUISignIns(in: homeBrowser)
+        let homeSignIn = await startSignIn(homeClient)
+        await homeBrowser.shown.waitForArrivals(1)
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let signIn = await startSignIn(client, options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let lock = harness.sheetLock
+        await waitUntil("work queues") { await lock.waiterCount == 1 }
+
+        _ = await client.signOut()
+
+        let error = await authClientError { try await signIn.value }
+        XCTAssertEqual(error?.errorDescription, SessionCore.signInCancelled().errorDescription)
+        let waiters = await lock.waiterCount
+        XCTAssertEqual(waiters, 0)
+        XCTAssertEqual(engine.webUISignInCalls.count, 0)
+        homeBrowser.finishWithDefault()
+        _ = try await homeSignIn.value
     }
 
     /// An earlier ending never stops a later flow
