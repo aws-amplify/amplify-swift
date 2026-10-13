@@ -1160,7 +1160,7 @@ func uploadReceipt(_ data: Data) async throws {
 
 Restated together, because a design is judged partly on what it declines:
 
-1. **One system sheet at a time, per process, on iOS, macOS and visionOS**: browser sign-in, the browser sign-out page and the passkey sheet. This is our library's policy rather than an OS rule, and 9.1 says why we keep it.
+1. **One system sheet at a time, per process, on iOS, macOS and visionOS**: browser sign-in, the browser sign-out page and the passkey sheet. As built, it covers the client's sessions: the Auth plugin's hosted UI and passkey sheets don't take part. This is our library's policy rather than an OS rule, and 9.1 says why we keep it.
 
 2. **No multi-user through the existing categories. Multi-session reaches the standalone clients, not the plugins.** Every client in the `AmplifyClients` family (Kinesis, Firehose, Connect, EventEnrichment, CloudWatch) already takes a credentials provider at construction, so handing one `client.credentialsProvider` binds it to that session with no further work. The category plugins - Storage, API, Analytics, Predictions, and the rest - resolve auth through the global, so they follow the plugin's session regardless of how many Auth Clients exist. DataStore is out of scope entirely: its local database is a single file shared by every identity.
 
