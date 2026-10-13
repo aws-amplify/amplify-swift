@@ -807,6 +807,10 @@ func hostedUI(client: AmplifyCognitoClient, window: AuthClientPresentationAnchor
 shared cookie, signing a second session in would silently return the first session's user. It is best effort:
 Safari honours it; another default browser might not.
 
+An app client with a secret works too: an `AuthClientConfiguration.UserPool` built in code with an `appClientSecret`
+and `oauth` sends the secret with the hosted UI's token exchange (`Authorization: Basic`), as the plugin does.
+`amplify_outputs` carries no secret.
+
 ### WebUIOptions
 
 | Option | Default | Plugin equivalent |
@@ -825,9 +829,12 @@ Safari honours it; another default browser might not.
 
 ### One sheet at a time
 
-One system sheet (a hosted-UI sign-in, a hosted-UI sign-out page, or a passkey sheet) is shown at a time per
-process, across every session. By default a second request throws `.browserBusy(holder:)`, naming the session that
-holds it. `.wait(timeout:)` queues instead, for at most one hour.
+One system sheet (a hosted-UI sign-in, a hosted-UI sign-out page, or a passkey sheet) is shown at a time across the
+client's sessions: every session of every `AmplifyCognitoClient` in the process. By default a second request throws
+`.browserBusy(holder:)`, naming the session that holds it. `.wait(timeout:)` queues instead, for at most one hour.
+
+The Auth plugin's hosted UI and passkey sheets don't take part: one can be up beside a client sheet, and
+`systemSheetHolder` doesn't report it.
 
 ### Adding another account
 
@@ -937,6 +944,11 @@ The provider:
 - is bound to its session for life, and keeps the session alive;
 - never falls back: a signed-out session throws `notSignedIn` and never quietly returns guest credentials. Call
   `fetchAuthSession()` first if you want a signed-out session to become a guest;
+- vends nothing while a sign-in on the session waits on a challenge, whatever the session held, a guest's
+  credentials included: it throws `notSignedIn` (`.discard`). The session is moving to whoever answers the
+  challenge, with that login's identity ID, so a consumer drops what it buffered for the one it is leaving. Flush a
+  guest's buffered work before you start a sign-in if you want it sent. `fetchAuthSession()` still reports what the
+  session holds. The Auth plugin keeps vending a guest's credentials here;
 - holds no credentials of its own: each call resolves through the live session, refreshing if needed.
 
 `userPoolTokenProvider` does the same for the user pool access token.
@@ -967,7 +979,7 @@ do {
 
 | `CredentialsError` | `disposition` | When |
 |---|---|---|
-| `.notSignedIn` | `.discard` | Signed out, or waiting on a challenge. For the token provider also a guest |
+| `.notSignedIn` | `.discard` | Signed out, or a sign-in on the session waiting on a challenge, whatever the session held (a guest, or an expired session, included). For the token provider also a guest |
 | `.sessionExpired` | `.retryAfterReauthentication` | The refresh token (or a federated provider token) is dead |
 | `.storageUnavailable(reason)` | `.retryWithBackoff`, or `.failLoudly` for `.denied` | The keychain could not be read or written |
 | `.notConfigured` | `.failLoudly` | No identity pool, or a user-pool-only sign-in (credentials provider); no user pool, or a federated session (token provider) |
@@ -1214,6 +1226,11 @@ await client.signOut(options: .init(purgeStoredSession: true))
 Any pending sign-in on the session is cancelled. Other sessions are untouched. A federated session signs out like
 any other, with `.complete`.
 
+Signing `.default` out or purging it (so also `deleteUser` and `clearFederationToIdentityPool` on `.default`) also
+clears the AWSMobileClient (Amplify v1) logins, as the Auth plugin's sign-out does, so a plugin build's migration
+can't bring an old login back over the signed-out one. It is best effort: a failure logs a warning under
+`AmplifyCognitoClient.SessionRecordStore` and never fails the sign-out. Named sessions never touch those logins.
+
 ### Hosted-UI sign-out
 
 After a hosted-UI sign-in with `prefersEphemeralSession: false`, the browser holds a cookie. Clear it by signing
@@ -1321,7 +1338,8 @@ Before you switch:
   keychain and starts signed out. The other stored-session calls (`signOutStoredSession`, `purgeStoredSession`)
   take it too.
 - **Ship the plugin's migrations first.** The client does not migrate AWSMobileClient (Amplify v1) logins or move
-  items between access groups: ship a plugin release first if your users may still need those migrations.
+  items between access groups: ship a plugin release first if your users may still need those migrations. It only
+  clears the AWSMobileClient logins when `.default` signs out or is purged, as the plugin's sign-out does.
 
 ```swift
 // The plugin was configured with secureStoragePreferences.accessGroup = "<team-id>.com.example.shared".
@@ -1385,6 +1403,7 @@ never log it. The warning is temporary: it goes when the plugin uses the client 
 | A purge, or the plugin's own sign-out, after a configuration change that copied the login, then a rollback to the build with the earlier configuration | **That build finds the earlier copy and signs the user back in.** The copy keeps its source, as the plugin's does, and a purge or the plugin's sign-out deletes only the current configuration's login. A sign-out through the client doesn't do this: it saves a signed-out login, which that build reads as signed out |
 | A sign-out through the client, then a later configuration change that the rule doesn't copy across, onto a configuration whose key still holds an earlier copy of the user | **That copy is restored signed in**, as with the plugin: the change deletes the signed-out login and lands on the old copy. For example: alice signs in under A; B adds an identity pool and copies her, keeping A's copy; she signs out under B; D (the same user pool with a new app client, and A's identity pool) deletes B's signed-out login, and its key is A's, which still holds her |
 | Back to a plugin release before 2.51.0, with refresh-token rotation on | That plugin can't refresh on the app client at all, whatever the client did |
+| Back to a released plugin while AWSMobileClient (Amplify v1) logins are still on the device | **The plugin migrates the old login over whatever `.default` holds**: released plugins write it with no check, so a user signed in through the client is replaced by the old AWSMobileClient user. A sign-out or purge of `.default` through the client clears those logins, so after one there is nothing to migrate. Ship a plugin release that has migrated them before you move to the client |
 
 ## Changing the configuration
 
@@ -1507,14 +1526,22 @@ Customize the user pool SDK client when the session is built:
 let client = try AmplifyCognitoClient(
     configuration: configuration,
     options: .init(configureUserPoolClient: { config in
-        config.maxAttempts = 5
+        config.retryStrategyOptions = RetryStrategyOptions(
+            backoffStrategy: config.retryStrategyOptions.backoffStrategy,
+            maxRetriesBase: 5
+        )
     })
 )
 ```
 
+(`RetryStrategyOptions` needs `import SmithyRetriesAPI`.)
 The closure runs after the client sets the region, signing region and credential resolver, so it can override
-them. Only the handle that builds the session applies it. To change timeouts, replace `httpClientEngine`: setting
-only `httpClientConfiguration` has no effect.
+them. Only the handle that builds the session applies it. It runs after the SDK has built its retry options and
+HTTP client from the configuration, so some settings have no effect there:
+
+- To change retries, set `retryStrategyOptions`, as the plugin does: setting `maxAttempts` or `awsRetryMode` has no
+  effect.
+- To change timeouts, replace `httpClientEngine`: setting only `httpClientConfiguration` has no effect.
 
 The client logs through AmplifyFoundation's logging. Every line's category starts with `AmplifyCognitoClient`, so
 a sink can tell the client's lines from the Auth plugin's:
@@ -1535,13 +1562,21 @@ a sink can tell the client's lines from the Auth plugin's:
 - `AmplifyCognitoClient.KeychainItemStore` and `AmplifyCognitoClient.KeychainStore`: keychain access.
 - `AmplifyCognitoClient.PlatformWebAuthnCredentials`: the passkey sheet.
 
-No category includes a session ID. Add a sink to see the lines:
+No category includes a session ID: a session ID can be derived from a user identifier, such as a username or
+`sub`. Add a sink to see the lines:
 
 ```swift
 import AmplifyFoundation
 
 AmplifyLogging.addSink(AmplifyOSLogSink(logLevel: .warn))
 ```
+
+The client redacts two things in every line, at every level: the query and fragment of each URL (the hosted UI's
+authorize URL holds `state`, the nonce, the PKCE challenge, `login_hint` and `userContextData`, and its redirect the
+authorization code), and the value of each user identifier the Cognito flows print, such as `USERNAME` and
+`USER_ID_FOR_SRP` in a challenge's parameters, the username of a sign-in, and the user's attributes. Debug and verbose
+lines can still hold Cognito's other challenge parameters and responses, so keep a remote sink, such as
+`AmplifyCloudWatchClient`, at `.info` or above. The Auth plugin's own lines are not redacted this way.
 
 ## Differences from the Auth plugin
 
@@ -1588,7 +1623,8 @@ The client keeps the plugin's semantics except where listed here.
   for the same region.
 - **A provider is bound to a session ID, not to a user.** After a sign-out and a different user's sign-in on the
   same session ID, a consumer holding buffered data gets the new user's credentials without notice.
-- **One system sheet at a time** per process: no concurrent hosted-UI sign-ins.
+- **One system sheet at a time** across the client's sessions: no concurrent hosted-UI sign-ins. The Auth plugin's
+  sheets are not counted.
 - **No "sign out of every session".** Loop over `storedSessions`.
 - **How many sessions an app can hold** at once has no stated limit yet. Each costs memory and SDK clients.
 - **An app and its extension sharing a session** (same access group and session ID) have no concurrency guard
