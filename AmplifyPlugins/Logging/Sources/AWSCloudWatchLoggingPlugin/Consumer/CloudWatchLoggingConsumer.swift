@@ -13,15 +13,14 @@ import Foundation
 import InternalCloudWatchLogging
 
 /// - Note: `final` and `@unchecked Sendable` to satisfy `LogBatchConsumer`s `Sendable` requirement.
-///   `client` comes from the AWS SDK and is not declared `Sendable`; `logStreamName` is resolved
-///   once before the first flush.
+///   `client` comes from the AWS SDK and is not declared `Sendable`; the log stream is set up once,
+///   by `logStreamSetup`, however many batches are consumed at the same time.
 final class CloudWatchLoggingConsumer: @unchecked Sendable {
 
     private let client: CloudWatchLogsClientProtocol
     private let formatter: CloudWatchLoggingStreamNameFormatter
     private let logGroupName: String
-    private var logStreamName: String?
-    private var ensureLogStreamExistsComplete: Bool = false
+    private let logStreamSetup = LogStreamSetup()
     private let encoderLock = NSLock()
     private let encoder: JSONEncoder = {
         let encoder = JSONEncoder()
@@ -53,14 +52,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             try batch.complete()
             return
         }
-        await ensureLogStreamExists()
-
-        // Add safety check for nil logStreamName
-        guard let _ = logStreamName else {
-            Amplify.Logging.error("Log stream name is nil, cannot send logs")
-            try batch.complete()
-            return
-        }
+        let logStreamName = await logStreamSetup.streamName { await self.setUpLogStream() }
 
         // Create a strong reference to entries to prevent deallocation during encoding
         let entriesCopy = entries
@@ -82,10 +74,10 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
                     if entrySize > CloudWatchConstants.maxBatchByteSize {
                         let chunks = try chunk(entries, into: CloudWatchConstants.maxBatchByteSize)
                         for chunk in chunks {
-                            try await sendLogEvents(chunk)
+                            try await sendLogEvents(chunk, to: logStreamName)
                         }
                     } else {
-                        try await sendLogEvents(entries)
+                        try await sendLogEvents(entries, to: logStreamName)
                     }
                 } catch {
                     Amplify.Logging.error("Error processing log batch: \(error)")
@@ -96,44 +88,23 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             do {
                 let smallerEntries = try chunk(entriesCopy, into: CloudWatchConstants.maxBatchByteSize)
                 for entries in smallerEntries {
-                    try await sendLogEvents(entries)
+                    try await sendLogEvents(entries, to: logStreamName)
                 }
             } catch {
                 Amplify.Logging.error("Error chunking log entries: \(error)")
             }
         } else {
-            try await sendLogEvents(entriesCopy)
+            try await sendLogEvents(entriesCopy, to: logStreamName)
         }
 
         try batch.complete()
     }
 
-    private func ensureLogStreamExists() async {
-        if ensureLogStreamExistsComplete {
-            return
-        }
-
-        // Only mark as complete after everything has finished successfully
-        // to avoid potential race conditions with incomplete state
-
-        if logStreamName == nil {
-            // Explicitly capture self to avoid potential memory issues
-            let streamName = await formatter.formattedStreamName()
-            // Check if self is still valid and streamName is not nil before assigning
-            if !streamName.isEmpty {
-                self.logStreamName = streamName
-            } else {
-                // Fallback to a default if the stream name couldn't be determined
-                self.logStreamName = "default.\(UUID().uuidString)"
-            }
-        }
-
-        // Safety check - ensure we have a valid stream name before proceeding
-        guard let logStreamName, !logStreamName.isEmpty else {
-            Amplify.Logging.error("Invalid log stream name")
-            ensureLogStreamExistsComplete = true
-            return
-        }
+    /// Resolves this consumer's stream name and creates the stream if it doesn't exist yet.
+    private func setUpLogStream() async -> String {
+        let streamName = await formatter.formattedStreamName()
+        // Fallback to a default if the stream name couldn't be determined
+        let logStreamName = streamName.isEmpty ? "default.\(UUID().uuidString)" : streamName
 
         let stream = try? await client.describeLogStreams(input: DescribeLogStreamsInput(
             logGroupName: logGroupName,
@@ -148,19 +119,17 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
                 logStreamName: logStreamName
             ))
         }
-
-        // Mark as complete only after all operations finished
-        ensureLogStreamExistsComplete = true
+        return logStreamName
     }
 
-    private func sendLogEvents(_ entries: [LogEntry]) async throws {
+    private func sendLogEvents(_ entries: [LogEntry], to logStreamName: String) async throws {
         // Safety check for empty entries
         if entries.isEmpty {
             return
         }
 
         // Safety check for logStreamName
-        guard let logStreamName, !logStreamName.isEmpty else {
+        guard !logStreamName.isEmpty else {
             Amplify.Logging.error("Cannot send log events: Log stream name is nil or empty")
             return
         }
@@ -272,6 +241,20 @@ private extension NSLock {
         lock()
         defer { unlock() }
         return try block()
+    }
+}
+
+/// Runs a consumer's log stream setup once; batches consumed meanwhile wait for the same setup.
+private actor LogStreamSetup {
+    private var setup: Task<String, Never>?
+
+    func streamName(setUp: @escaping @Sendable () async -> String) async -> String {
+        if let setup {
+            return await setup.value
+        }
+        let setup = Task(operation: setUp)
+        self.setup = setup
+        return await setup.value
     }
 }
 

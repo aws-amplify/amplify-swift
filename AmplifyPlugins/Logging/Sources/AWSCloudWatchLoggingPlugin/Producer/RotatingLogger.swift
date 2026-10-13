@@ -10,8 +10,8 @@ import Amplify
 import Foundation
 import InternalCloudWatchLogging
 
-/// - Note: `@unchecked Sendable`: mutable state is established during setup and not written
-///   concurrently with reads.
+/// - Note: `@unchecked Sendable`: `logLevel` is the only mutable state, and the owning session
+///   controller writes it under its lock.
 final class RotatingLogger: @unchecked Sendable {
 
     var logLevel: Amplify.LogLevel
@@ -20,9 +20,7 @@ final class RotatingLogger: @unchecked Sendable {
     private let namespace: String?
     private let actor: LogActor
     private let batchSubject: PassthroughSubject<LogBatch, Never>
-    private var rotationSubscription: Combine.Cancellable? {
-        willSet { rotationSubscription?.cancel() }
-    }
+    private let rotationSubscription: Combine.Cancellable
 
     /// Initializes the logger with the given directory as its log rotation base directory.
     ///
@@ -37,9 +35,15 @@ final class RotatingLogger: @unchecked Sendable {
     ) throws {
         self.category = category
         self.namespace = namespace
-        self.actor = try LogActor(directory: directory, fileSizeLimitInBytes: fileSizeLimitInBytes)
-        self.batchSubject = PassthroughSubject()
+        let logActor = try LogActor(directory: directory, fileSizeLimitInBytes: fileSizeLimitInBytes)
+        let batchSubject = PassthroughSubject<LogBatch, Never>()
+        self.actor = logActor
+        self.batchSubject = batchSubject
         self.logLevel = logLevel
+        // Subscribe once, eagerly, so concurrent first records can't race to create the subscription.
+        self.rotationSubscription = logActor.rotationPublisher().sink { url in
+            batchSubject.send(RotatingLogBatch(url: url))
+        }
     }
 
     /// Attempts to flush the contents of the log to disk.
@@ -57,20 +61,9 @@ final class RotatingLogger: @unchecked Sendable {
     }
 
     func record(level: LogLevel, message: @autoclosure () -> String) async throws {
-        try await setupSubscription()
         let entry = LogEntry(category: category, namespace: namespace, level: level, message: message())
         let data = try LogEntryCodec().encode(entry: entry)
         try await actor.record(data)
-    }
-
-    private func setupSubscription() async throws {
-        if rotationSubscription == nil {
-            let rotationPublisher = actor.rotationPublisher()
-            rotationSubscription = rotationPublisher.sink { [weak self] url in
-                guard let self else { return }
-                batchSubject.send(RotatingLogBatch(url: url))
-            }
-        }
     }
 
     private func _record(level: LogLevel, message: @autoclosure () -> String) {

@@ -5,10 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AmplifyFoundation
 import AWSCloudWatchLogs
 import Combine
+import CryptoKit
 import XCTest
+
+@testable import AmplifyFoundation
 
 @_spi(AmplifyExperimental) @testable import AmplifyCloudWatchClient
 @testable import InternalCloudWatchLogging
@@ -111,9 +113,212 @@ final class CloudWatchLoggingSessionControllerTests: XCTestCase {
 
         XCTAssertTrue(mockCloudWatchLogClient.interactions.isEmpty, "No client calls should occur while offline")
     }
+
+    /// Changing the user while disabled
+    ///
+    /// - Given: a controller that was enabled and then disabled
+    /// - When:
+    ///    - the current user changes
+    /// - Then:
+    ///    - no session is created for the new user until the controller is enabled again
+    ///
+    func testUserChangeWhileDisabledDoesNotCreateSession() throws {
+        let userIdentifier = "user-\(UUID().uuidString)"
+        let userDirectory = logDirectory(forUser: userIdentifier)
+        defer { try? FileManager.default.removeItem(at: userDirectory.deletingLastPathComponent()) }
+        systemUnderTest = makeController(userIdentifier: nil)
+        systemUnderTest.enable()
+        systemUnderTest.disable()
+
+        systemUnderTest.setCurrentUser(identifier: userIdentifier)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: userDirectory.path))
+
+        systemUnderTest.enable()
+        XCTAssertTrue(FileManager.default.fileExists(atPath: userDirectory.path))
+    }
+
+    /// Disabling mid-flush
+    ///
+    /// - Given: an enabled controller with several log files waiting to be sent
+    /// - When:
+    ///    - the controller is disabled while the first of them is being sent
+    /// - Then:
+    ///    - no other log file is sent, and the unsent ones stay on disk
+    ///
+    func testDisableMidFlushKeepsUnsentLogs() async throws {
+        let namespace = "pending\(UUID().uuidString.replacingOccurrences(of: "-", with: ""))"
+        let directory = logDirectory(forUser: nil, namespace: namespace)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let data = try LogEntryCodec().encode(entry: LogEntry(namespace: namespace, level: .error, message: "pending"))
+        for index in 0 ..< 3 {
+            FileManager.default.createFile(atPath: directory.appendingPathComponent("amplify.\(index).log").path, contents: data)
+        }
+        let controller = makeController(userIdentifier: nil, namespace: namespace)
+        systemUnderTest = controller
+        controller.enable()
+        let sends = SendCounter()
+        mockCloudWatchLogClient.putLogEventsHandler = { _ in
+            await sends.increment()
+            controller.disable()
+            return PutLogEventsOutput()
+        }
+
+        try await controller.flushLogs()
+
+        let sendCount = await sends.count
+        XCTAssertEqual(sendCount, 1)
+        let remaining = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            .filter { ((try? FileManager.default.attributesOfItem(atPath: $0.path)[.size] as? Int) ?? 0) > 0 }
+        XCTAssertEqual(remaining.count, 2)
+    }
+
+    /// Logging while the current user changes
+    ///
+    /// - Given: an enabled controller
+    /// - When:
+    ///    - several tasks log and flush while the current user changes repeatedly
+    /// - Then:
+    ///    - every task completes
+    ///    - a message logged afterwards lands in the last user's log directory. Run with Thread Sanitizer to
+    ///      detect data races.
+    ///
+    func testLoggingWhileCurrentUserChanges() async throws {
+        let controller = makeController(userIdentifier: nil)
+        systemUnderTest = controller
+        controller.enable()
+        let users: [String?] = [nil, "user-a", "user-b", "user-c"]
+        defer {
+            for user in users.compactMap({ $0 }) {
+                try? FileManager.default.removeItem(at: logDirectory(forUser: user).deletingLastPathComponent())
+            }
+        }
+
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask {
+                for index in 0 ..< 100 {
+                    controller.setCurrentUser(identifier: users[index % users.count])
+                }
+            }
+            for _ in 0 ..< 4 {
+                group.addTask {
+                    for index in 0 ..< 250 {
+                        controller.log(.error, "message \(index)", nil)
+                    }
+                }
+            }
+            group.addTask {
+                for _ in 0 ..< 10 {
+                    try? await controller.flushLogs()
+                }
+            }
+        }
+
+        let lastUser = "user-\(UUID().uuidString)"
+        let directory = logDirectory(forUser: lastUser)
+        defer { try? FileManager.default.removeItem(at: directory.deletingLastPathComponent()) }
+        controller.setCurrentUser(identifier: lastUser)
+        let message = UUID().uuidString
+        controller.log(.error, message, nil)
+        let logged = await waitUntil { (try? self.logContents(in: directory).contains(message)) == true }
+        XCTAssertTrue(logged, "A message logged after the user changes should land in the last user's logs")
+    }
+
+    /// Session creation failure while registered as a sink
+    ///
+    /// - Given: a client registered as a logging sink, and a namespace whose log directory can't be created
+    /// - When:
+    ///    - a message is logged for that namespace
+    /// - Then:
+    ///    - the client reports the failure through its own sink without deadlocking on its lock
+    ///
+    func testSessionCreationFailureDoesNotDeadlockSink() async throws {
+        // A user of its own keeps every directory this test causes under one path it removes.
+        let userIdentifier = "user-\(UUID().uuidString)"
+        let namespace = "blocked\(UUID().uuidString.replacingOccurrences(of: "-", with: ""))"
+        let blocker = logDirectory(forUser: userIdentifier, namespace: namespace)
+        defer { try? FileManager.default.removeItem(at: blocker.deletingLastPathComponent()) }
+        try FileManager.default.createDirectory(at: blocker.deletingLastPathComponent(), withIntermediateDirectories: true)
+        // A file where the namespace's log directory should be makes session creation fail.
+        XCTAssertTrue(FileManager.default.createFile(atPath: blocker.path, contents: Data()))
+
+        let client = AmplifyCloudWatchClient(
+            cloudWatchClient: mockCloudWatchLogClient,
+            logGroupName: "logGroupName",
+            networkMonitor: mockLoggingNetworkMonitor
+        )
+        client.setUserIdentifier(userIdentifier)
+        AmplifyLogging.addSink(client)
+        defer { AmplifyLogging.removeSink(client) }
+
+        let emitted = expectation(description: "emit(message:) returns")
+        // Its own thread, so a deadlock fails this test instead of blocking the runner. The generous timeout
+        // only absorbs slow disks; a deadlocked emit never returns.
+        Thread {
+            client.emit(message: LogMessage(level: .error, name: namespace, content: "message"))
+            emitted.fulfill()
+        }.start()
+        await fulfillment(of: [emitted], timeout: 30)
+
+        let reportDirectory = logDirectory(forUser: userIdentifier, namespace: "CloudWatchLoggingSessionController")
+        let reported = await waitUntil(timeout: 30) {
+            (try? self.logContents(in: reportDirectory).contains("Error creating logging session")) == true
+        }
+        XCTAssertTrue(reported, "The session creation failure should be logged through the client's sink")
+    }
+
+    private func makeController(userIdentifier: String?, namespace: String? = nil) -> CloudWatchLoggingSessionController {
+        CloudWatchLoggingSessionController(
+            client: mockCloudWatchLogClient,
+            logFilter: MockLoggingFilter(),
+            namespace: namespace ?? self.namespace,
+            logGroupName: "logGroupName",
+            region: "us-east-1",
+            localStoreMaxSizeInMB: 1,
+            userIdentifier: userIdentifier,
+            networkMonitor: mockLoggingNetworkMonitor,
+            eventSubject: eventSubject
+        )
+    }
+
+    /// Mirrors the directory `CloudWatchLoggingSession` derives for a user and namespace.
+    private func logDirectory(forUser userIdentifier: String?, namespace: String? = nil) -> URL {
+        let user = userIdentifier.map { identifier in
+            SHA256.hash(data: Data(identifier.utf8)).map { String(format: "%02X", $0) }.joined()
+        } ?? "guest"
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return documents.appendingPathComponent("amplify-cloudwatch-client")
+                        .appendingPathComponent("logging")
+                        .appendingPathComponent(user)
+                        .appendingPathComponent((namespace ?? self.namespace).lowercased())
+    }
+
+    private func logContents(in directory: URL) throws -> String {
+        try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            .filter { $0.pathExtension == "log" }
+            .map { try String(contentsOf: $0, encoding: .utf8) }
+            .joined()
+    }
+
+    private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) async -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if condition() { return true }
+            try? await Task.sleep(nanoseconds: 20_000_000)
+        }
+        return condition()
+    }
 }
 
 // MARK: - Mocks
+
+private actor SendCounter {
+    private(set) var count = 0
+
+    func increment() {
+        count += 1
+    }
+}
 
 final class MockLoggingFilter: CloudWatchLoggingFilterBehavior {
     func canLog(withNamespace namespace: String?, logLevel: LogLevel, userIdentifier: String?) -> Bool {
