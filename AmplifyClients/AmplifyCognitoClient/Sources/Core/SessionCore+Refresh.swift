@@ -21,7 +21,8 @@ extension SessionCore {
     /// The session's AWS credentials, refreshed first if they need it.
     ///
     /// Fails rather than falls back: a signed-out session throws `notSignedIn` and never fetches guest
-    /// credentials. A guest session vends its guest credentials, because the session *is* guest.
+    /// credentials. A guest session vends its guest credentials, because the session *is* guest. A sign-in waiting
+    /// on a challenge does not change the answer (`usableCredentials`).
     ///
     /// - Throws: `CredentialsError.notConfigured` if the session has no identity pool, or holds only user
     ///   pool tokens; otherwise `AuthClientError` (`notSignedIn`, `sessionExpired`, `storageUnavailable`,
@@ -41,26 +42,45 @@ extension SessionCore {
         return credentials
     }
 
-    /// The session's user pool access token, refreshed first if it needs it.
+    /// The session's user pool access token, refreshed first if the session's credentials need it. With an
+    /// identity pool that includes its AWS credentials, refreshed with the tokens as the plugin does, so an
+    /// identity pool failure fails the call even while the token itself is valid.
     ///
-    /// - Throws: `CredentialsError.notConfigured` if the session has no user pool; otherwise
-    ///   `AuthClientError` (`notSignedIn` for a signed-out or guest session, `sessionExpired`,
-    ///   `storageUnavailable`, or `unknown`).
+    /// - Throws: `CredentialsError.notConfigured` if the session has no user pool, or is federated (before any
+    ///   refresh); otherwise `AuthClientError` (`notSignedIn` for a signed-out or guest session,
+    ///   `sessionExpired`, `storageUnavailable`, or `unknown`).
     nonisolated func accessToken() async throws -> String {
         guard configuration.userPool != nil else {
             throw Self.notConfigured("an access token", missing: "a user pool")
         }
+        // A federated session is signed in, through an identity pool, but has no user pool tokens. Not "signed
+        // out", whose disposition would have a consumer discard its buffered work: this session cannot provide a
+        // token at all. Answered before any refresh, which could only spend the provider token, and, if the identity
+        // pool refused it, mark the session expired.
+        _ = try await restoredSnapshot()
+        if await isFederated {
+            throw Self.federatedHasNoAccessToken()
+        }
         let payload = try await freshPayload(for: .accessToken)
         guard let token = try engine.checkedAccessToken(in: payload) else {
-            // A federated session is signed in, through an identity pool, but has no user pool tokens.
-            // Not "signed out", whose disposition would have a consumer discard its buffered work: this
-            // session cannot provide a token at all.
             if try engine.checkedDescribe(payload).kind == .federated {
-                throw Self.notConfigured("an access token", missing: "user pool sign-in (it is federated)")
+                throw Self.federatedHasNoAccessToken()
             }
             throw Self.notSignedIn(sessionId)
         }
         return token
+    }
+
+    /// Whether the session's record is federated to the identity pool, whatever sign-in is pending.
+    var isFederated: Bool {
+        if case .federated = restoredSnapshotIfAny?.state(engine: engine, challenge: nil) {
+            return true
+        }
+        return false
+    }
+
+    static func federatedHasNoAccessToken() -> CredentialsError {
+        notConfigured("an access token", missing: "user pool sign-in (it is federated)")
     }
 
     /// The payload to read credentials from: restored, checked usable for `purpose`, and refreshed
@@ -166,10 +186,12 @@ extension SessionCore {
     }
 
     /// The in-memory payload, if the session's state allows `purpose`.
+    ///
+    /// Answered from the record, whatever sign-in is pending: a guest whose sign-in waits on a challenge keeps
+    /// vending its guest credentials, as the plugin does, and an expired session whose user is signing in again
+    /// stays `sessionExpired`. A signed-out session waiting on one is `notSignedIn`, as it is signed out. The
+    /// operations on the signed-in user refuse a pending sign-in before they get here (`requireUserPoolUser`).
     func usableCredentials(for purpose: CredentialPurpose) throws -> Data {
-        if pendingChallenge != nil {
-            throw Self.notSignedIn(sessionId)
-        }
         if isExpired {
             throw Self.sessionExpired(sessionId)
         }

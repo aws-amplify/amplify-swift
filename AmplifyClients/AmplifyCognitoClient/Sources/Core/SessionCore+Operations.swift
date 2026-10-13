@@ -35,8 +35,10 @@ extension SessionCore {
     }
 
     /// Runs an operation on the session's signed-in user with the session's credentials payload: restored,
-    /// and refreshed first through the session's single refresh flight if its tokens need it (never a
-    /// second refresh). The engine reads the access token from the payload.
+    /// and refreshed first through the session's single refresh flight if its credentials need it (never a
+    /// second refresh). With an identity pool that includes its AWS credentials, refreshed with the tokens as the
+    /// plugin does, so an identity pool failure fails the operation even while the access token is valid. The
+    /// engine reads the access token from the payload.
     ///
     /// - Parameter operation: What the operation does, for the errors ("fetch the user attributes").
     /// - Throws: `configuration` without a user pool; `notSignedIn` for a signed-out, guest or federated
@@ -49,11 +51,7 @@ extension SessionCore {
         try requireUserPool(for: operation)
         let payload: Data
         do {
-            _ = try await restoredSnapshot()
-            if case .federated = await currentState {
-                // No user pool user, and nothing to refresh for one.
-                throw Self.notSignedIn(sessionId)
-            }
+            try await requireUserPoolUser()
             payload = try await freshPayload(for: .accessToken)
             guard try engine.checkedAccessToken(in: payload) != nil else {
                 throw Self.notSignedIn(sessionId)
@@ -65,6 +63,19 @@ extension SessionCore {
             return try await body(engine, payload)
         } catch {
             throw Self.operationFailure(error, operation: operation)
+        }
+    }
+
+    /// The preamble of an operation on the session's signed-in user, before anything is refreshed: restores the
+    /// session, and refuses with `notSignedIn` a federated session (no user pool user, and nothing to refresh for
+    /// one) and one whose sign-in waits on a challenge (a pending sign-in is not a signed-in user).
+    nonisolated func requireUserPoolUser() async throws {
+        _ = try await restoredSnapshot()
+        switch await currentState {
+        case .federated, .awaitingChallenge:
+            throw Self.notSignedIn(sessionId)
+        default:
+            return
         }
     }
 

@@ -312,8 +312,9 @@ extension SessionCore {
     /// Deletes the signed-in user, then removes the session's saved row: a
     /// row for a user who no longer exists cannot be resumed. Sends `.userDeleted`.
     ///
-    /// The credentials are refreshed first if they need it, through the session's refresh flight, since
-    /// Cognito needs a valid access token. The deletion then runs under the record's gate, in an
+    /// A federated session, or one whose sign-in waits on a challenge, is refused first, with nothing refreshed
+    /// (`requireUserPoolUser`). The credentials are refreshed first if they need it, through the session's refresh
+    /// flight, since Cognito needs a valid access token. The deletion then runs under the record's gate, in an
     /// unstructured task: the caller's cancellation cannot stop it between deleting the user at Cognito
     /// and removing the row, which would leave a row for a user who no longer exists. If Cognito says
     /// the user does not exist, the session is signed out globally, as the plugin does, its row is purged
@@ -325,6 +326,7 @@ extension SessionCore {
     ///   the deletion (signed out, `.userDeleted`), then `storageUnavailable` says so.
     nonisolated func deleteUser() async throws {
         try requireUserPool(for: "delete the user")
+        try await requireUserPoolUser()
         let payload = try await freshPayload(for: .accessToken)
         let principal = try engine.checkedDescribe(payload)
         let deletion = try await Task { [self] in
