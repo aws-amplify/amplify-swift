@@ -69,6 +69,10 @@ struct SignUpScreen: Screen {
     /// then lands on its form. So Back is tapped again, every 10 s, while the sign-up screen is
     /// still shown and Back is hittable. The signed-out screen has no Back button, so a tap can
     /// never go past it.
+    ///
+    /// Once the filled-in form is gone, iOS can show its "Save Password?" sheet over the signed-out
+    /// screen, a few seconds later, and the sheet takes the sign-in taps. So it is dismissed here
+    /// when it shows within 5 s; the sign-in screen dismisses one that shows later.
     func returnBack() -> Self {
         let backButton = app.navigationBars.buttons.element(boundBy: 0)
         let usernameField = app.textFields[Identifiers.usernameField]
@@ -81,6 +85,7 @@ struct SignUpScreen: Screen {
                 taps += 1
             }
             if usernameField.waitForNonExistence(timeout: 10) {
+                app.dismissSavePasswordPrompt(timeout: 5)
                 return self
             }
         } while Date() < deadline

@@ -25,6 +25,27 @@ extension XCUIApplication {
             .firstMatch
     }
 
+    /// Whether the system's "Save Password?" sheet is shown. iOS offers to save the password once
+    /// the filled-in sign-up form goes off screen. The sheet sits over the signed-out screen in a
+    /// window of its own and takes every tap meant for the sign-in buttons under it, while
+    /// XCUITest can still call those buttons hittable.
+    var isSavePasswordPromptShown: Bool {
+        sheets.buttons["Not Now"].firstMatch.exists
+    }
+
+    /// Dismisses the "Save Password?" sheet with "Not Now" when it is shown, waiting up to
+    /// `timeout` for it to show. Returns whether it was shown.
+    @discardableResult
+    func dismissSavePasswordPrompt(timeout: TimeInterval = 0) -> Bool {
+        let notNow = sheets.buttons["Not Now"].firstMatch
+        guard timeout > 0 ? notNow.waitForExistence(timeout: timeout) : notNow.exists else {
+            return false
+        }
+        notNow.tap()
+        _ = notNow.waitForNonExistence(timeout: 5)
+        return true
+    }
+
     /// Returns the first of `elements` to exist, or nil when none does within `timeout`. Ends as
     /// soon as one exists.
     func waitForFirst(of elements: [XCUIElement], timeout: TimeInterval) -> XCUIElement? {

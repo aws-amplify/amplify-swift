@@ -65,7 +65,8 @@ struct SignInScreen: Screen {
     /// Back from the sign-up screen on a loaded runner, the button can be found before the pop and
     /// the keyboard's dismissal have finished, and a tap then can be dropped. So the tap waits, up
     /// to 30 s, until the sign-up screen and the keyboard are gone and the button is hittable at the
-    /// same place on two polls half a second apart.
+    /// same place on two polls half a second apart. The system's "Save Password?" sheet takes the
+    /// tap too, so it is dismissed when it shows, and the button then settles again.
     private func tapSignInButton(_ identifier: String, _ name: String) -> Self {
         let button = app.buttons[identifier]
         XCTAssertTrue(button.waitForExistence(timeout: 30), "\(name) not found")
@@ -73,6 +74,9 @@ struct SignInScreen: Screen {
         var lastFrame: CGRect?
         let deadline = Date().addingTimeInterval(30)
         repeat {
+            if app.dismissSavePasswordPrompt() {
+                lastFrame = nil
+            }
             target = tapTarget(for: button)
             let frame = button.frame
             if case .hittable = target, !app.keyboards.firstMatch.exists, frame == lastFrame {
@@ -111,6 +115,10 @@ struct SignInScreen: Screen {
         }
         guard !SignUpScreen(app: app).isShown else {
             return .blocked("the sign-up screen is still shown")
+        }
+        // Checked before `isHittable`, which can be true for a button under the sheet.
+        guard !app.isSavePasswordPromptShown else {
+            return .blocked("the system's Save Password? sheet is over the button")
         }
         if button.isHittable {
             return .hittable
@@ -202,8 +210,9 @@ struct SignInScreen: Screen {
     /// polls. A sign-in tap lost on a loaded runner never starts a session, so the button is tapped
     /// again, 10 s after the last tap and at most 4 times, but only while the app shows no sign-in
     /// started: the app shows it as soon as a tap reaches the button, and a second sign-in would
-    /// cancel the first, and iOS 26 presents only the first session on a simulator. When no tap
-    /// again happens, the failure says why.
+    /// cancel the first, and iOS 26 presents only the first session on a simulator. A "Save
+    /// Password?" sheet that shows late takes the taps, so it is dismissed first. When no tap again
+    /// happens, the failure says why.
     private func waitForHostedUI() {
         let webView = app.webViews.firstMatch
         let signInStarted = app.staticTexts[Identifiers.signInStartedLabel]
@@ -216,6 +225,7 @@ struct SignInScreen: Screen {
             if webView.waitForExistence(timeout: 2) {
                 return
             }
+            app.dismissSavePasswordPrompt()
             if let error = signInError() {
                 XCTFail("Sign in failed before the hosted UI showed: \(error)")
                 return
