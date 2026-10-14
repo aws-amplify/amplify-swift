@@ -18,7 +18,7 @@ package actor LogActor {
     private nonisolated let directory: URL
     private nonisolated let closedLock = NSLock()
     /// Guarded by `closedLock`, because `close()` is called from outside the actor.
-    private nonisolated(unsafe) var _isClosed = false
+    private nonisolated(unsafe) var closed = false
 
     /// Initialized the actor with the given directory and fileCountLimit.
     package init(directory: URL, fileSizeLimitInBytes: Int) throws {
@@ -31,13 +31,13 @@ package actor LogActor {
     private nonisolated var isClosed: Bool {
         closedLock.lock()
         defer { closedLock.unlock() }
-        return _isClosed
+        return closed
     }
 
     /// Leaves the directory to the next `LogActor` there: queued records are dropped, and no logs are listed.
     package nonisolated func close() {
         closedLock.lock()
-        _isClosed = true
+        closed = true
         closedLock.unlock()
     }
 
