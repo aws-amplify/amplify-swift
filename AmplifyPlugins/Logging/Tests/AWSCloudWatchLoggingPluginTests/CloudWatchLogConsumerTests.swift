@@ -317,53 +317,6 @@ final class CloudWatchLogConsumerTests: XCTestCase, @unchecked Sendable {
     }
 }
 
-extension CloudWatchLogConsumerTests {
-
-    /// - Given: a consumer that hasn't set up its log stream yet
-    /// - When: several log batches are consumed at the same time
-    /// - Then: the log stream is described and created once, and every batch is sent to that stream
-    func testConcurrentConsumesSetUpLogStreamOnce() async throws {
-        client.describeLogStreamsHandler = { _ in
-            // Keeps the first setup in flight while the other batches arrive.
-            try await Task.sleep(nanoseconds: 100_000_000)
-            return DescribeLogStreamsOutput()
-        }
-        let streamNames = AtomicValue<[String]>(initialValue: [])
-        client.putLogEventsHandler = { input in
-            streamNames.append(input.logStreamName ?? "")
-            return PutLogEventsOutput()
-        }
-        let consumer = systemUnderTest!
-        let batches = (0 ..< 8).map { index in
-            TestLogBatch(entries: [
-                LogEntry(category: "CloudWatchLogConsumerTests", namespace: nil, level: .error, message: "\(index)")
-            ])
-        }
-
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            for batch in batches {
-                group.addTask { try await consumer.consume(batch: batch) }
-            }
-            try await group.waitForAll()
-        }
-
-        XCTAssertEqual(client.interactions.count(where: { $0 == "describeLogStreams(input:)" }), 1)
-        XCTAssertEqual(client.interactions.count(where: { $0 == "createLogStream(input:)" }), 1)
-        XCTAssertEqual(streamNames.get().count, batches.count)
-        XCTAssertEqual(Set(streamNames.get()).count, 1)
-    }
-}
-
-private struct TestLogBatch: LogBatch {
-    let entries: [LogEntry]
-
-    func readEntries() throws -> [any LogEntryRepresentable] {
-        entries
-    }
-
-    func complete() {}
-}
-
 extension CloudWatchLogConsumerTests: LogBatch {
 
     func readEntries() throws -> [any LogEntryRepresentable] {

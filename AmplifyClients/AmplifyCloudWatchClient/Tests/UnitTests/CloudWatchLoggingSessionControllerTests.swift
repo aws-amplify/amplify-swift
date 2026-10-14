@@ -308,9 +308,175 @@ final class CloudWatchLoggingSessionControllerTests: XCTestCase {
         }
         return condition()
     }
+
+    private func staysTrue(for duration: TimeInterval, _ condition: () -> Bool) async -> Bool {
+        let deadline = Date().addingTimeInterval(duration)
+        while Date() < deadline {
+            if !condition() { return false }
+            try? await Task.sleep(nanoseconds: 20_000_000)
+        }
+        return condition()
+    }
+
+    private func logFileCount(in directory: URL) throws -> Int {
+        try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            .count(where: { $0.pathExtension == "log" })
+    }
+
+    private func uniqueNamespace(_ prefix: String) -> String {
+        "\(prefix)\(UUID().uuidString.replacingOccurrences(of: "-", with: ""))"
+    }
+
+    /// Runs `body` on its own utility `Thread` (a dispatch queue would starve) while every utility cooperative thread is held.
+    private func whileCooperativePoolIsBusy(_ body: @escaping @Sendable () -> Void) async {
+        let width = ProcessInfo.processInfo.activeProcessorCount
+        let held = Locked(0)
+        let released = Locked(false)
+        let holders = (0 ..< width).map { _ in
+            Task.detached(priority: .utility) {
+                held.update { $0 += 1 }
+                while !released.get() {
+                    usleep(100)
+                }
+            }
+        }
+        await withCheckedContinuation { continuation in
+            let thread = Thread {
+                let deadline = Date().addingTimeInterval(2)
+                while held.get() < width, Date() < deadline {
+                    usleep(100)
+                }
+                body()
+                released.update { $0 = true }
+                continuation.resume()
+            }
+            thread.qualityOfService = .utility
+            thread.start()
+        }
+        for holder in holders {
+            await holder.value
+        }
+    }
+}
+
+extension CloudWatchLoggingSessionControllerTests {
+
+    /// A user who comes back keeps the new session's logs
+    ///
+    /// - Given: a controller enabled for a signed-in user, with records still queued for that session
+    /// - When:
+    ///    - the user signs out and back in, then logs a message
+    /// - Then:
+    ///    - the message stays in the user's log directory, and none of the queued records end up there
+    ///
+    func testReturningUserKeepsNewSessionLogs() async throws {
+        let namespace = uniqueNamespace("returning")
+        let userIdentifier = "user-\(UUID().uuidString)"
+        let userDirectory = logDirectory(forUser: userIdentifier, namespace: namespace)
+        defer {
+            try? FileManager.default.removeItem(at: userDirectory.deletingLastPathComponent())
+            try? FileManager.default.removeItem(at: logDirectory(forUser: nil, namespace: namespace))
+        }
+        let controller = makeController(userIdentifier: userIdentifier, namespace: namespace)
+        systemUnderTest = controller
+        controller.enable()
+        let message = UUID().uuidString
+        // Holds off background work, so the outgoing session still has records queued when the user returns.
+        await whileCooperativePoolIsBusy {
+            for index in 0 ..< 200 {
+                controller.error("queued \(index)", nil)
+            }
+            controller.setCurrentUser(identifier: nil)
+            controller.setCurrentUser(identifier: userIdentifier)
+            controller.error(message, nil)
+        }
+
+        let logged = await waitUntil { (try? self.logContents(in: userDirectory).contains(message)) == true }
+        XCTAssertTrue(logged, "The returning user's message should be written")
+        let kept = await staysTrue(for: 1) { (try? self.logContents(in: userDirectory).contains(message)) == true }
+        XCTAssertTrue(kept, "Discarding the outgoing session's logs shouldn't remove the returning user's")
+        XCTAssertFalse(try logContents(in: userDirectory).contains("queued"))
+    }
+
+    /// Changing the user mid-flush
+    ///
+    /// - Given: an enabled controller with several log files waiting to be sent
+    /// - When:
+    ///    - the current user changes while the first of them is being sent
+    /// - Then:
+    ///    - the flush stops without an error, and no other log file is sent
+    ///
+    func testUserChangeMidFlushStopsFlush() async throws {
+        let namespace = uniqueNamespace("midflush")
+        let directory = logDirectory(forUser: nil, namespace: namespace)
+        let userIdentifier = "user-\(UUID().uuidString)"
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer {
+            try? FileManager.default.removeItem(at: directory)
+            try? FileManager.default.removeItem(at: logDirectory(forUser: userIdentifier, namespace: namespace))
+        }
+        let data = try LogEntryCodec().encode(entry: LogEntry(namespace: namespace, level: .error, message: "pending"))
+        for index in 0 ..< 3 {
+            FileManager.default.createFile(atPath: directory.appendingPathComponent("amplify.\(index).log").path, contents: data)
+        }
+        let controller = makeController(userIdentifier: nil, namespace: namespace)
+        systemUnderTest = controller
+        controller.enable()
+        let sends = SendCounter()
+        mockCloudWatchLogClient.putLogEventsHandler = { _ in
+            await sends.increment()
+            controller.setCurrentUser(identifier: userIdentifier)
+            return PutLogEventsOutput()
+        }
+
+        try await controller.flushLogs()
+
+        let sendCount = await sends.count
+        XCTAssertEqual(sendCount, 1)
+    }
+
+    /// Enabling an enabled controller
+    ///
+    /// - Given: an enabled controller
+    /// - When:
+    ///    - it's enabled again
+    /// - Then:
+    ///    - it keeps its session, so a single log file is open in its directory
+    ///
+    func testEnableWhileEnabledKeepsSession() throws {
+        let namespace = uniqueNamespace("enabletwice")
+        let directory = logDirectory(forUser: nil, namespace: namespace)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        systemUnderTest = makeController(userIdentifier: nil, namespace: namespace)
+        systemUnderTest.enable()
+        systemUnderTest.enable()
+        XCTAssertEqual(try logFileCount(in: directory), 1)
+    }
 }
 
 // MARK: - Mocks
+
+/// A value shared between the threads of a test.
+private final class Locked<Value>: @unchecked Sendable {
+    private let lock = NSLock()
+    private var value: Value
+
+    init(_ value: Value) {
+        self.value = value
+    }
+
+    func get() -> Value {
+        lock.lock()
+        defer { lock.unlock() }
+        return value
+    }
+
+    func update(_ change: (inout Value) -> Void) {
+        lock.lock()
+        defer { lock.unlock() }
+        change(&value)
+    }
+}
 
 private actor SendCounter {
     private(set) var count = 0

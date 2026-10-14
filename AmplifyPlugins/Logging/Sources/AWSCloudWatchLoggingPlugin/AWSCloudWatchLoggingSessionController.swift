@@ -101,6 +101,8 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
 
     func enable() {
         lock.execute {
+            // A second session would write the same directory as the first.
+            guard !isEnabled else { return }
             isEnabled = true
             updateSession()
             updateConsumer()
@@ -111,6 +113,8 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
     func disable() {
         lock.execute {
             isEnabled = false
+            // Drop records still queued, so they can't land beside the session `enable()` builds next.
+            session?.logger.close()
             batchSubscription = nil
             authSubscription = nil
             session = nil
@@ -173,7 +177,7 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
     }
 
     private func userIdentifierDidChange() {
-        resetLogs(for: session)
+        discardLogs(of: session)
         updateSession()
         updateConsumer()
         connectProducerAndConsumer()
@@ -209,8 +213,8 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
         guard let logBatches = try await logger?.getLogBatches() else { return }
 
         for batch in logBatches {
-            // Stop if disabled mid-flush; the remaining logs stay on disk for a later flush.
-            guard lock.execute({ isEnabled }) else { return }
+            // Stop once the session is disabled, leaving its logs for a later flush, or replaced, which discards them.
+            guard lock.execute({ session?.logger === logger }) else { return }
             try await consumeLogBatch(batch, with: consumer)
         }
     }
@@ -233,15 +237,14 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
         }
     }
 
-    /// Captures the outgoing session's logger now, so the reset can't hit the session that replaces it.
-    private func resetLogs(for session: AWSCloudWatchLoggingSession?) {
-        guard let logger = session?.logger else { return }
-        Task {
-            do {
-                try await logger.resetLogs()
-            } catch {
-                Amplify.Logging.error("Error resetting logs with \(error)")
-            }
+    /// Discards the outgoing session's logs before a later session can start in its directory.
+    private func discardLogs(of session: AWSCloudWatchLoggingSession?) {
+        do {
+            try session?.logger.discardLogs()
+        } catch {
+            // Logged from a task: the category client holds its lock while it calls in.
+            let description = "\(error)"
+            Task { Amplify.Logging.error("Error resetting logs with \(description)") }
         }
     }
 }

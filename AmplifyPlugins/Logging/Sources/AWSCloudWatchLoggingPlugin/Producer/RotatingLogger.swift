@@ -60,6 +60,16 @@ final class RotatingLogger: @unchecked Sendable {
         try await actor.deleteLogs()
     }
 
+    /// Stops writing; see `LogActor.close()`.
+    func close() {
+        actor.close()
+    }
+
+    /// Stops writing and discards the logs; see `LogActor.discardLogs()`.
+    func discardLogs() throws {
+        try actor.discardLogs()
+    }
+
     func record(level: LogLevel, message: @autoclosure () -> String) async throws {
         let entry = LogEntry(category: category, namespace: namespace, level: level, message: message())
         let data = try LogEntryCodec().encode(entry: entry)

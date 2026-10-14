@@ -13,8 +13,8 @@ import Foundation
 import InternalCloudWatchLogging
 
 /// - Note: `final` and `@unchecked Sendable` to satisfy `LogBatchConsumer`s `Sendable` requirement.
-///   `client` comes from the AWS SDK and is not declared `Sendable`; the log stream is set up once,
-///   by `logStreamSetup`, however many batches are consumed at the same time.
+///   `client` comes from the AWS SDK and is not declared `Sendable`; the log stream is set up by
+///   `logStreamSetup`, so batches consumed at the same time share one setup.
 final class CloudWatchLoggingConsumer: @unchecked Sendable {
 
     private let client: CloudWatchLogsClientProtocol
@@ -52,7 +52,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             try batch.complete()
             return
         }
-        let logStreamName = await logStreamSetup.streamName { await self.setUpLogStream() }
+        let logStreamName = await logStreamSetup.streamName { await self.setUpLogStream(named: $0) }
 
         // Create a strong reference to entries to prevent deallocation during encoding
         let entriesCopy = entries
@@ -100,11 +100,17 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         try batch.complete()
     }
 
-    /// Resolves this consumer's stream name and creates the stream if it doesn't exist yet.
-    private func setUpLogStream() async -> String {
-        let streamName = await formatter.formattedStreamName()
-        // Fallback to a default if the stream name couldn't be determined
-        let logStreamName = streamName.isEmpty ? "default.\(UUID().uuidString)" : streamName
+    /// Resolves this consumer's stream name, unless a previous attempt did, and creates the stream if
+    /// needed. `isSetUp` is false when creating it failed, so the next batch retries.
+    private func setUpLogStream(named knownName: String?) async -> (name: String, isSetUp: Bool) {
+        let logStreamName: String
+        if let knownName {
+            logStreamName = knownName
+        } else {
+            let streamName = await formatter.formattedStreamName()
+            // Fallback to a default if the stream name couldn't be determined
+            logStreamName = streamName.isEmpty ? "default.\(UUID().uuidString)" : streamName
+        }
 
         let stream = try? await client.describeLogStreams(input: DescribeLogStreamsInput(
             logGroupName: logGroupName,
@@ -113,13 +119,19 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             return stream.logStreamName == logStreamName
         })
 
-        if stream == nil {
-            _ = try? await client.createLogStream(input: CreateLogStreamInput(
+        if stream != nil {
+            return (logStreamName, true)
+        }
+
+        do {
+            _ = try await client.createLogStream(input: CreateLogStreamInput(
                 logGroupName: logGroupName,
                 logStreamName: logStreamName
             ))
+            return (logStreamName, true)
+        } catch {
+            return (logStreamName, false)
         }
-        return logStreamName
     }
 
     private func sendLogEvents(_ entries: [LogEntry], to logStreamName: String) async throws {
@@ -243,19 +255,3 @@ private extension NSLock {
         return try block()
     }
 }
-
-/// Runs a consumer's log stream setup once; batches consumed meanwhile wait for the same setup.
-private actor LogStreamSetup {
-    private var setup: Task<String, Never>?
-
-    func streamName(setUp: @escaping @Sendable () async -> String) async -> String {
-        if let setup {
-            return await setup.value
-        }
-        let setup = Task(operation: setUp)
-        self.setup = setup
-        return await setup.value
-    }
-}
-
-

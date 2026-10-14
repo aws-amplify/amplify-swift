@@ -125,7 +125,7 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase, @unchecked S
         let controller = makeController(userIdentifier: nil)
         systemUnderTest = controller
         controller.enable()
-        // Keeps the reset task from starting before the swap completes.
+        // Holds off background work, so the guest's logs must be gone without it.
         await whileCooperativePoolIsBusy {
             controller.setCurrentUser(identifier: userIdentifier)
         }
@@ -275,8 +275,10 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase, @unchecked S
                         .appendingPathComponent(category)
     }
 
+    /// The directory's log files; none once it has been discarded.
     private func logFiles(in directory: URL) throws -> [URL] {
-        try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        guard FileManager.default.fileExists(atPath: directory.path) else { return [] }
+        return try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
             .filter { $0.pathExtension == "log" }
     }
 
@@ -290,45 +292,86 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase, @unchecked S
     private func logContents(in directory: URL) throws -> String {
         try logFiles(in: directory).map { try String(contentsOf: $0, encoding: .utf8) }.joined()
     }
+}
 
-    /// Runs `body` on its own utility `Thread` (a dispatch queue would starve) while every utility cooperative thread is held.
-    private func whileCooperativePoolIsBusy(_ body: @escaping @Sendable () -> Void) async {
-        let width = ProcessInfo.processInfo.activeProcessorCount
-        let held = AtomicValue(initialValue: 0)
-        let released = AtomicValue(initialValue: false)
-        let holders = (0 ..< width).map { _ in
-            Task.detached(priority: .utility) {
-                _ = held.increment()
-                while !released.get() {
-                    usleep(100)
-                }
+extension AWSCloudWatchLoggingSessionControllerTests {
+
+    /// A user who comes back keeps the new session's logs
+    ///
+    /// - Given: a controller enabled for a signed-in user, with records still queued for that session
+    /// - When:
+    ///    - the user signs out and back in, then logs a message
+    /// - Then:
+    ///    - the message stays in the user's log directory, and none of the queued records end up there
+    ///
+    func testReturningUserKeepsNewSessionLogs() async throws {
+        let userIdentifier = "user-\(UUID().uuidString)"
+        let userDirectory = logDirectory(forUser: userIdentifier)
+        let controller = makeController(userIdentifier: userIdentifier)
+        systemUnderTest = controller
+        controller.enable()
+        let message = UUID().uuidString
+        // Holds off background work, so the outgoing session still has records queued when the user returns.
+        await whileCooperativePoolIsBusy {
+            for index in 0 ..< 200 {
+                controller.error("queued \(index)")
             }
+            controller.setCurrentUser(identifier: nil)
+            controller.setCurrentUser(identifier: userIdentifier)
+            controller.error(message)
         }
-        await withCheckedContinuation { continuation in
-            let thread = Thread {
-                let deadline = Date().addingTimeInterval(2)
-                while held.get() < width, Date() < deadline {
-                    usleep(100)
-                }
-                body()
-                released.set(true)
-                continuation.resume()
-            }
-            thread.qualityOfService = .utility
-            thread.start()
-        }
-        for holder in holders {
-            await holder.value
-        }
+
+        let logged = await waitUntil { (try? self.logContents(in: userDirectory).contains(message)) == true }
+        XCTAssertTrue(logged, "The returning user's message should be written")
+        let kept = await staysTrue(for: 1) { (try? self.logContents(in: userDirectory).contains(message)) == true }
+        XCTAssertTrue(kept, "Discarding the outgoing session's logs shouldn't remove the returning user's")
+        XCTAssertFalse(try logContents(in: userDirectory).contains("queued"))
     }
 
-    private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) async -> Bool {
-        let deadline = Date().addingTimeInterval(timeout)
-        while Date() < deadline {
-            if condition() { return true }
-            try? await Task.sleep(nanoseconds: 20_000_000)
+    /// Changing the user mid-flush
+    ///
+    /// - Given: an enabled controller with several log files waiting to be sent
+    /// - When:
+    ///    - the current user changes while the first of them is being sent
+    /// - Then:
+    ///    - the flush stops without an error, and no other log file is sent
+    ///
+    func testUserChangeMidFlushStopsFlush() async throws {
+        let directory = getLogFile().deletingLastPathComponent()
+        let data = try LogEntryCodec().encode(entry: LogEntry(category: category, namespace: nil, level: .error, message: "pending"))
+        for index in 0 ..< 3 {
+            FileManager.default.createFile(atPath: directory.appendingPathComponent("amplify.\(index).log").path, contents: data)
         }
-        return condition()
+        let controller = makeController(userIdentifier: nil)
+        systemUnderTest = controller
+        controller.enable()
+        let sends = AtomicValue(initialValue: 0)
+        let userIdentifier = "user-\(UUID().uuidString)"
+        mockCloudWatchLogClient.putLogEventsHandler = { _ in
+            _ = sends.increment()
+            controller.setCurrentUser(identifier: userIdentifier)
+            return PutLogEventsOutput()
+        }
+
+        try await controller.flushLogs()
+
+        XCTAssertEqual(sends.get(), 1)
+    }
+
+    /// Enabling an enabled controller
+    ///
+    /// - Given: an enabled controller
+    /// - When:
+    ///    - it's enabled again
+    /// - Then:
+    ///    - it keeps its session, so a single log file is open in its directory
+    ///
+    func testEnableWhileEnabledKeepsSession() throws {
+        let directory = getLogFile().deletingLastPathComponent()
+        systemUnderTest = makeController(userIdentifier: nil)
+        systemUnderTest.enable()
+        systemUnderTest.enable()
+        XCTAssertEqual(try logFiles(in: directory).count, 1)
     }
 }
 
