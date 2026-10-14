@@ -58,8 +58,34 @@ struct SignUpScreen: Screen {
         return self
     }
 
+    /// Whether the sign-up screen is on screen now.
+    var isShown: Bool {
+        app.textFields[Identifiers.usernameField].exists
+    }
+
+    /// Goes back to the signed-out screen and waits until the sign-up screen is gone.
+    ///
+    /// A Back tap lost on a loaded runner leaves the sign-up screen up, and the next sign-in tap
+    /// then lands on its form. So Back is tapped again, every 10 s, while the sign-up screen is
+    /// still shown and Back is hittable. The signed-out screen has no Back button, so a tap can
+    /// never go past it.
     func returnBack() -> Self {
-        app.navigationBars.buttons.element(boundBy: 0).tap()
+        let backButton = app.navigationBars.buttons.element(boundBy: 0)
+        let usernameField = app.textFields[Identifiers.usernameField]
+        XCTAssertTrue(backButton.waitForExistence(timeout: 30), "Sign up screen's Back button not found")
+        var taps = 0
+        let deadline = Date().addingTimeInterval(60)
+        repeat {
+            if usernameField.exists, backButton.exists, backButton.isHittable {
+                backButton.tap()
+                taps += 1
+            }
+            if usernameField.waitForNonExistence(timeout: 10) {
+                return self
+            }
+        } while Date() < deadline
+        let state = backButton.exists ? "Back is \(backButton.isHittable ? "" : "not ")hittable" : "Back is gone"
+        XCTFail("Sign up screen still shown after \(taps) taps on Back; \(state)")
         return self
     }
 }

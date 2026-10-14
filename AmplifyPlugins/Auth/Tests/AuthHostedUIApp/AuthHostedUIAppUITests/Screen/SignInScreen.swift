@@ -12,6 +12,8 @@ struct SignInScreen: Screen {
     let app: XCUIApplication
     /// The sign-in button last tapped, to tap again when the tap is lost.
     var tappedSignInButton: String?
+    /// When that button was tapped, so a tap again waits 10 s from the tap, not from the wait.
+    var signInTappedAt: Date?
 
     var useGen2Configuration: Bool {
         ProcessInfo.processInfo.arguments.contains("GEN2")
@@ -51,21 +53,86 @@ struct SignInScreen: Screen {
     }
 
     func tapSignIn() -> Self {
-        // Back from the sign-up screen, wait for the pop to bring this button back before tapping.
-        tapSignInButton(Identifiers.signInButton, "Sign in button not found")
+        tapSignInButton(Identifiers.signInButton, "Sign in button")
     }
 
     func tapSignInWithoutPresentationAnchor() -> Self {
-        tapSignInButton(Identifiers.signInWithoutWindowButton, "Sign in without window button not found")
+        tapSignInButton(Identifiers.signInWithoutWindowButton, "Sign in without window button")
     }
 
-    private func tapSignInButton(_ identifier: String, _ notFound: String) -> Self {
+    /// Taps a sign-in button once the signed-out screen can take the tap.
+    ///
+    /// Back from the sign-up screen on a loaded runner, the button can be found before the pop and
+    /// the keyboard's dismissal have finished, and a tap then can be dropped. So the tap waits, up
+    /// to 30 s, until the sign-up screen and the keyboard are gone and the button is hittable at the
+    /// same place on two polls half a second apart.
+    private func tapSignInButton(_ identifier: String, _ name: String) -> Self {
         let button = app.buttons[identifier]
-        XCTAssertTrue(button.waitForExistence(timeout: 30), notFound)
-        button.tap()
+        XCTAssertTrue(button.waitForExistence(timeout: 30), "\(name) not found")
+        var target: TapTarget
+        var lastFrame: CGRect?
+        let deadline = Date().addingTimeInterval(30)
+        repeat {
+            target = tapTarget(for: button)
+            let frame = button.frame
+            if case .hittable = target, !app.keyboards.firstMatch.exists, frame == lastFrame {
+                break
+            }
+            lastFrame = frame
+            Thread.sleep(forTimeInterval: 0.5)
+        } while Date() < deadline
+        if case let .blocked(reason) = target {
+            XCTFail("\(name) cannot take a tap: \(reason)")
+        }
+        tap(button, target)
         var screen = self
         screen.tappedSignInButton = identifier
+        screen.signInTappedAt = Date()
         return screen
+    }
+
+    /// How a tap can reach `button` now, or why it cannot.
+    private enum TapTarget {
+        /// XCUITest says the button takes a tap.
+        case hittable
+        /// The signed-out screen is up and the button is on it, but XCUITest calls it unhittable:
+        /// a tap at its centre reaches it.
+        case coordinate
+        /// A tap would not reach the button, for the reason given.
+        case blocked(String)
+    }
+
+    private func tapTarget(for button: XCUIElement) -> TapTarget {
+        guard app.state == .runningForeground else {
+            return .blocked("the app is not in the foreground (state \(app.state.rawValue))")
+        }
+        guard button.exists else {
+            return .blocked("the button is gone")
+        }
+        guard !SignUpScreen(app: app).isShown else {
+            return .blocked("the sign-up screen is still shown")
+        }
+        if button.isHittable {
+            return .hittable
+        }
+        let alert = XCUIApplication(bundleIdentifier: "com.apple.springboard").alerts.firstMatch
+        if alert.exists {
+            return .blocked("the button is not hittable under a system alert \"\(alert.label)\"")
+        }
+        let frame = button.frame
+        let window = app.windows.firstMatch.frame
+        guard !frame.isEmpty, window.contains(CGPoint(x: frame.midX, y: frame.midY)) else {
+            return .blocked("the button is not hittable and off screen")
+        }
+        return .coordinate
+    }
+
+    private func tap(_ button: XCUIElement, _ target: TapTarget) {
+        if case .coordinate = target {
+            button.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        } else {
+            button.tap()
+        }
     }
 
     func dismissSignInAlert() -> Self {
@@ -133,13 +200,16 @@ struct SignInScreen: Screen {
 
     /// Waits for the authentication session's web view, clearing a late consent prompt while it
     /// polls. A sign-in tap lost on a loaded runner never starts a session, so the button is tapped
-    /// again, but only while the app shows no sign-in started: a second sign-in would cancel the
-    /// first, and iOS 26 presents only the first session on a simulator.
+    /// again, 10 s after the last tap and at most 4 times, but only while the app shows no sign-in
+    /// started: the app shows it as soon as a tap reaches the button, and a second sign-in would
+    /// cancel the first, and iOS 26 presents only the first session on a simulator. When no tap
+    /// again happens, the failure says why.
     private func waitForHostedUI() {
         let webView = app.webViews.firstMatch
         let signInStarted = app.staticTexts[Identifiers.signInStartedLabel]
-        var lastTap = Date()
+        var lastTap = signInTappedAt ?? Date()
         var taps = 1
+        var noTapAgain = "none was due"
         let deadline = Date().addingTimeInterval(UITestTimeout.firstLoad)
         while Date() < deadline {
             tapConsentContinueIfPresent(timeout: 1)
@@ -150,20 +220,30 @@ struct SignInScreen: Screen {
                 XCTFail("Sign in failed before the hosted UI showed: \(error)")
                 return
             }
-            if !signInStarted.exists, Date().timeIntervalSince(lastTap) >= 10,
-               let identifier = tappedSignInButton {
-                let button = app.buttons[identifier]
-                if button.exists, button.isHittable {
-                    button.tap()
-                    taps += 1
-                    lastTap = Date()
-                }
+            guard let identifier = tappedSignInButton, Date().timeIntervalSince(lastTap) >= 10 else {
+                continue
             }
+            if signInStarted.exists {
+                noTapAgain = "the sign-in started, and a second one would cancel it"
+                continue
+            }
+            guard taps < 5 else {
+                noTapAgain = "\(taps) taps is the most it makes"
+                continue
+            }
+            let button = app.buttons[identifier]
+            let target = tapTarget(for: button)
+            if case let .blocked(reason) = target {
+                noTapAgain = reason
+                continue
+            }
+            tap(button, target)
+            taps += 1
+            lastTap = Date()
+            noTapAgain = "the last tap was under 10 s before the end"
         }
-        XCTFail(
-            "Hosted UI web view not shown after \(taps) sign-in taps; the app "
-                + (signInStarted.exists ? "started the sign-in" : "shows no sign-in started")
-        )
+        let state = signInStarted.exists ? "started the sign-in" : "shows no sign-in started"
+        XCTFail("Hosted UI web view not shown after \(taps) sign-in taps; the app \(state); not tapped again: \(noTapAgain)")
     }
 
     /// Returns the first of `candidates` to exist, clearing a late consent prompt while it polls.
