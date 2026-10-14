@@ -13,15 +13,14 @@ import Foundation
 import InternalCloudWatchLogging
 
 /// - Note: `final` and `@unchecked Sendable` to satisfy `LogBatchConsumer`s `Sendable` requirement.
-///   `client` comes from the AWS SDK and is not declared `Sendable`; `logStreamName` is resolved
-///   once before the first flush.
+///   `client` comes from the AWS SDK and is not declared `Sendable`; the log stream is set up by
+///   `logStreamSetup`, so batches consumed at the same time share one setup.
 final class CloudWatchLoggingConsumer: @unchecked Sendable {
 
     private let client: CloudWatchLogsClientProtocol
     private let formatter: CloudWatchLoggingStreamNameFormatter
     private let logGroupName: String
-    private var logStreamName: String?
-    private var ensureLogStreamExistsComplete: Bool = false
+    private let logStreamSetup = LogStreamSetup()
     private let encoderLock = NSLock()
     private let encoder: JSONEncoder = {
         let encoder = JSONEncoder()
@@ -53,14 +52,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             try batch.complete()
             return
         }
-        await ensureLogStreamExists()
-
-        // Add safety check for nil logStreamName
-        guard let _ = logStreamName else {
-            Amplify.Logging.error("Log stream name is nil, cannot send logs")
-            try batch.complete()
-            return
-        }
+        let logStreamName = await logStreamSetup.streamName { await self.setUpLogStream(named: $0) }
 
         // Create a strong reference to entries to prevent deallocation during encoding
         let entriesCopy = entries
@@ -82,10 +74,10 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
                     if entrySize > CloudWatchConstants.maxBatchByteSize {
                         let chunks = try chunk(entries, into: CloudWatchConstants.maxBatchByteSize)
                         for chunk in chunks {
-                            try await sendLogEvents(chunk)
+                            try await sendLogEvents(chunk, to: logStreamName)
                         }
                     } else {
-                        try await sendLogEvents(entries)
+                        try await sendLogEvents(entries, to: logStreamName)
                     }
                 } catch {
                     Amplify.Logging.error("Error processing log batch: \(error)")
@@ -96,43 +88,28 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             do {
                 let smallerEntries = try chunk(entriesCopy, into: CloudWatchConstants.maxBatchByteSize)
                 for entries in smallerEntries {
-                    try await sendLogEvents(entries)
+                    try await sendLogEvents(entries, to: logStreamName)
                 }
             } catch {
                 Amplify.Logging.error("Error chunking log entries: \(error)")
             }
         } else {
-            try await sendLogEvents(entriesCopy)
+            try await sendLogEvents(entriesCopy, to: logStreamName)
         }
 
         try batch.complete()
     }
 
-    private func ensureLogStreamExists() async {
-        if ensureLogStreamExistsComplete {
-            return
-        }
-
-        // Only mark as complete after everything has finished successfully
-        // to avoid potential race conditions with incomplete state
-
-        if logStreamName == nil {
-            // Explicitly capture self to avoid potential memory issues
+    /// Resolves this consumer's stream name, unless a previous attempt did, and creates the stream if
+    /// needed. `isSetUp` is false when creating it failed, so the next batch retries.
+    private func setUpLogStream(named knownName: String?) async -> (name: String, isSetUp: Bool) {
+        let logStreamName: String
+        if let knownName {
+            logStreamName = knownName
+        } else {
             let streamName = await formatter.formattedStreamName()
-            // Check if self is still valid and streamName is not nil before assigning
-            if !streamName.isEmpty {
-                self.logStreamName = streamName
-            } else {
-                // Fallback to a default if the stream name couldn't be determined
-                self.logStreamName = "default.\(UUID().uuidString)"
-            }
-        }
-
-        // Safety check - ensure we have a valid stream name before proceeding
-        guard let logStreamName, !logStreamName.isEmpty else {
-            Amplify.Logging.error("Invalid log stream name")
-            ensureLogStreamExistsComplete = true
-            return
+            // Fallback to a default if the stream name couldn't be determined
+            logStreamName = streamName.isEmpty ? "default.\(UUID().uuidString)" : streamName
         }
 
         let stream = try? await client.describeLogStreams(input: DescribeLogStreamsInput(
@@ -142,25 +119,29 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             return stream.logStreamName == logStreamName
         })
 
-        if stream == nil {
-            _ = try? await client.createLogStream(input: CreateLogStreamInput(
+        if stream != nil {
+            return (logStreamName, true)
+        }
+
+        do {
+            _ = try await client.createLogStream(input: CreateLogStreamInput(
                 logGroupName: logGroupName,
                 logStreamName: logStreamName
             ))
+            return (logStreamName, true)
+        } catch {
+            return (logStreamName, false)
         }
-
-        // Mark as complete only after all operations finished
-        ensureLogStreamExistsComplete = true
     }
 
-    private func sendLogEvents(_ entries: [LogEntry]) async throws {
+    private func sendLogEvents(_ entries: [LogEntry], to logStreamName: String) async throws {
         // Safety check for empty entries
         if entries.isEmpty {
             return
         }
 
         // Safety check for logStreamName
-        guard let logStreamName, !logStreamName.isEmpty else {
+        guard !logStreamName.isEmpty else {
             Amplify.Logging.error("Cannot send log events: Log stream name is nil or empty")
             return
         }
@@ -274,5 +255,3 @@ private extension NSLock {
         return try block()
     }
 }
-
-

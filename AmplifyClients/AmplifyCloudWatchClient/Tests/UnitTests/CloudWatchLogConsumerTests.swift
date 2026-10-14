@@ -346,6 +346,86 @@ final class CloudWatchLogConsumerTests: XCTestCase {
 
         XCTAssertTrue(events.contains { if case .flushLogFailure = $0 { return true } else { return false } })
     }
+
+    /// - Given: a consumer that hasn't set up its log stream yet
+    /// - When: several log batches are consumed at the same time
+    /// - Then: the log stream is described and created once, and every batch is sent to that stream
+    func testConcurrentConsumesSetUpLogStreamOnce() async throws {
+        client.describeLogStreamsHandler = { _ in
+            // Keeps the first setup in flight while the other batches arrive.
+            try await Task.sleep(nanoseconds: 100_000_000)
+            return DescribeLogStreamsOutput()
+        }
+        let streamNames = Recorder<String>()
+        client.putLogEventsHandler = { input in
+            await streamNames.append(input.logStreamName ?? "")
+            return PutLogEventsOutput()
+        }
+        let consumer = systemUnderTest!
+        let batches = (0 ..< 8).map { index in
+            TestLogBatch(entries: [LogEntry(namespace: "CloudWatchLogConsumerTests", level: .error, message: "\(index)")])
+        }
+
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            for batch in batches {
+                group.addTask { try await consumer.consume(batch: batch) }
+            }
+            try await group.waitForAll()
+        }
+
+        XCTAssertEqual(client.interactions.count(where: { $0 == "describeLogStreams(input:)" }), 1)
+        XCTAssertEqual(client.interactions.count(where: { $0 == "createLogStream(input:)" }), 1)
+        let recordedNames = await streamNames.values
+        XCTAssertEqual(recordedNames.count, batches.count)
+        XCTAssertEqual(Set(recordedNames).count, 1)
+    }
+
+    /// - Given: a consumer whose first attempt to create its log stream fails
+    /// - When: three log batches are consumed one after another
+    /// - Then: the second batch sets up the log stream again, and the third reuses it
+    func testFailedLogStreamCreationIsRetriedOnNextBatch() async throws {
+        let createAttempts = Recorder<Int>()
+        client.createLogStreamHandler = { _ in
+            await createAttempts.append(1)
+            if await createAttempts.values.count == 1 {
+                throw MockCloudWatchLogsClient.MockError.unexpected
+            }
+            return CreateLogStreamOutput()
+        }
+        entries = [LogEntry(namespace: "CloudWatchLogConsumerTests", level: .error, message: "")]
+
+        try await systemUnderTest.consume(batch: self)
+        try await systemUnderTest.consume(batch: self)
+        try await systemUnderTest.consume(batch: self)
+
+        XCTAssertEqual(client.interactions, [
+            "describeLogStreams(input:)",
+            "createLogStream(input:)",
+            "putLogEvents(input:)",
+            "describeLogStreams(input:)",
+            "createLogStream(input:)",
+            "putLogEvents(input:)",
+            "putLogEvents(input:)"
+        ])
+    }
+}
+
+private struct TestLogBatch: LogBatch {
+    let entries: [LogEntry]
+
+    func readEntries() throws -> [any LogEntryRepresentable] {
+        entries
+    }
+
+    func complete() {}
+}
+
+private actor Recorder<Value: Sendable> {
+    private(set) var values: [Value] = []
+
+    func append(_ value: Value) {
+        values.append(value)
+    }
 }
 
 extension CloudWatchLogConsumerTests: LogBatch, @unchecked Sendable {

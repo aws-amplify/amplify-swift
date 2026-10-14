@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
 import Foundation
 
-/// Simple pair that represents a category + log level combination.
+/// Identifies a logging session controller by category, the directory its logs live in. Log level isn't
+/// part of the key: `AWSCloudWatchLoggingFilter` filters each message, and a controller per level would
+/// write the same files.
 struct LoggerKey: Hashable {
     var category: String
-    var logLevel: LogLevel
 }

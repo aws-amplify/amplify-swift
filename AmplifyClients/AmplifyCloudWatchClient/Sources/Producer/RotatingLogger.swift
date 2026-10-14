@@ -80,6 +80,24 @@ final class RotatingLogger: @unchecked Sendable {
         }
     }
 
+    /// Stops writing; see `LogActor.close()`.
+    func close() {
+        logActor.close()
+    }
+
+    /// Stops writing and discards the logs; see `LogActor.discardLogs()`.
+    func discardLogs() throws {
+        do {
+            try logActor.discardLogs()
+        } catch {
+            throw CloudWatchError.storage(
+                "Failed to reset local logs",
+                "This is an internal error. Please file a bug report.",
+                error
+            )
+        }
+    }
+
     func record(level: LogLevel, message: @autoclosure () -> String) async throws {
         let entry = LogEntry(namespace: namespace, level: level, message: message())
         let data = try LogEntryCodec().encode(entry: entry)

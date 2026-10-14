@@ -11,14 +11,15 @@ import Combine
 import Foundation
 import InternalCloudWatchLogging
 
+/// - Note: `@unchecked Sendable`: `client` comes from the AWS SDK and is not declared `Sendable`; the log
+///   stream is set up by `logStreamSetup`, so batches consumed at the same time share one setup.
 class CloudWatchLoggingConsumer: @unchecked Sendable {
 
     private let client: CloudWatchLogsClientProtocol
     private let formatter: CloudWatchLoggingStreamNameFormatter
     private let entryFormatter = CloudWatchLoggingEntryFormatter()
     private let logGroupName: String
-    private var logStreamName: String?
-    private var ensureLogStreamExistsComplete: Bool = false
+    private let logStreamSetup = LogStreamSetup()
     private let logger = AmplifyFoundation.AmplifyLogging.logger(for: CloudWatchLoggingConsumer.self)
     private let eventSubject: PassthroughSubject<LoggingEvent, Never>?
 
@@ -50,62 +51,56 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             try batch.complete()
             return
         }
-        await ensureLogStreamExists()
+        let logStreamName = await logStreamSetup.streamName { await self.setUpLogStream(named: $0) }
 
-        guard logStreamName != nil else {
-            logger.error("Log stream name is nil, cannot send logs")
-            try batch.complete()
-            return
-        }
-
-        try await sendEntries(entries)
+        try await sendEntries(entries, to: logStreamName)
         try batch.complete()
     }
 
-    private func sendEntries(_ entries: [LogEntry]) async throws {
+    private func sendEntries(_ entries: [LogEntry], to logStreamName: String) async throws {
         let batchByteSize = cloudWatchByteSize(of: entries)
 
         if entries.count > CloudWatchConstants.maxLogEvents {
-            try await sendEntriesExceedingMaxCount(entries)
+            try await sendEntriesExceedingMaxCount(entries, to: logStreamName)
         } else if batchByteSize > Int(CloudWatchConstants.maxBatchByteSize) {
-            try await sendEntriesExceedingMaxSize(entries)
+            try await sendEntriesExceedingMaxSize(entries, to: logStreamName)
         } else {
-            try await sendLogEvents(entries)
+            try await sendLogEvents(entries, to: logStreamName)
         }
     }
 
-    private func sendEntriesExceedingMaxCount(_ entries: [LogEntry]) async throws {
+    private func sendEntriesExceedingMaxCount(_ entries: [LogEntry], to logStreamName: String) async throws {
         let smallerEntries = entries.chunked(into: CloudWatchConstants.maxLogEvents)
         for entries in smallerEntries {
             if cloudWatchByteSize(of: entries) > Int(CloudWatchConstants.maxBatchByteSize) {
                 for chunk in chunk(entries, into: Int(CloudWatchConstants.maxBatchByteSize)) {
-                    try await sendLogEvents(chunk)
+                    try await sendLogEvents(chunk, to: logStreamName)
                 }
             } else {
-                try await sendLogEvents(entries)
+                try await sendLogEvents(entries, to: logStreamName)
             }
         }
     }
 
-    private func sendEntriesExceedingMaxSize(_ entries: [LogEntry]) async throws {
+    private func sendEntriesExceedingMaxSize(_ entries: [LogEntry], to logStreamName: String) async throws {
         for chunk in chunk(entries, into: Int(CloudWatchConstants.maxBatchByteSize)) {
-            try await sendLogEvents(chunk)
+            try await sendLogEvents(chunk, to: logStreamName)
         }
     }
 
-    private func ensureLogStreamExists() async {
-        if ensureLogStreamExistsComplete {
-            return
+    /// Resolves this consumer's stream name, unless a previous attempt did, and creates the stream if
+    /// needed. `isSetUp` is false when creating it failed, so the next batch retries.
+    private func setUpLogStream(named knownName: String?) async -> (name: String, isSetUp: Bool) {
+        let logStreamName: String
+        if let knownName {
+            logStreamName = knownName
+        } else {
+            logStreamName = await formatter.formattedStreamName()
         }
 
-        if logStreamName == nil {
-            self.logStreamName = await formatter.formattedStreamName()
-        }
-
-        guard let logStreamName, !logStreamName.isEmpty else {
+        guard !logStreamName.isEmpty else {
             logger.error("Invalid log stream name")
-            ensureLogStreamExistsComplete = true
-            return
+            return (logStreamName, true)
         }
 
         let stream = try? await client.describeLogStreams(input: DescribeLogStreamsInput(
@@ -116,8 +111,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         })
 
         if stream != nil {
-            ensureLogStreamExistsComplete = true
-            return
+            return (logStreamName, true)
         }
 
         do {
@@ -125,18 +119,19 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
                 logGroupName: logGroupName,
                 logStreamName: logStreamName
             ))
-            ensureLogStreamExistsComplete = true
+            return (logStreamName, true)
         } catch {
-            // Don't latch "stream exists" when creation actually failed — leave the flag false so the
-            // next flush retries. (A subsequent PutLogEvents would otherwise fail permanently.)
+            // Don't latch "stream exists" when creation actually failed, so the next flush retries.
+            // (A subsequent PutLogEvents would otherwise fail permanently.)
             logger.error("Failed to create log stream \(logStreamName): \(error)")
+            return (logStreamName, false)
         }
     }
 
-    private func sendLogEvents(_ entries: [LogEntry]) async throws {
+    private func sendLogEvents(_ entries: [LogEntry], to logStreamName: String) async throws {
         if entries.isEmpty { return }
 
-        guard let logStreamName, !logStreamName.isEmpty else {
+        guard !logStreamName.isEmpty else {
             logger.error("Cannot send log events: Log stream name is nil or empty")
             return
         }

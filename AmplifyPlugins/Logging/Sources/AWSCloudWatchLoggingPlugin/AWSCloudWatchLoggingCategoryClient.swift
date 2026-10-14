@@ -43,6 +43,8 @@ final class AWSCloudWatchLoggingCategoryClient: @unchecked Sendable {
     private let logFilter: AWSCloudWatchLoggingFilterBehavior
     /// Guarded by `lock`. Read through `currentUserIdentifier` from unlocked contexts.
     private var _userIdentifier: String?
+    /// Guarded by `lock`. Counts auth events, so only the latest one's user lookup is applied.
+    private var userIdentifierGeneration = 0
     private var authSubscription: AnyCancellable? { willSet { authSubscription?.cancel() } }
     private let networkMonitor: LoggingNetworkMonitor
 
@@ -74,26 +76,29 @@ final class AWSCloudWatchLoggingCategoryClient: @unchecked Sendable {
     }
 
     func takeUserIdentifierFromCurrentUser() {
+        let generation = lock.execute {
+            userIdentifierGeneration += 1
+            return userIdentifierGeneration
+        }
         Task {
-            do {
-                let user = try await authentication.getCurrentUser()
-                self.lock.execute { self._userIdentifier = user.userId }
-            } catch {
-                self.lock.execute { self._userIdentifier = nil }
-            }
-            self.updateSessionControllers()
-        }
-    }
-
-    private func updateSessionControllers() {
-        lock.execute {
-            for controller in loggersByKey.values {
-                controller.setCurrentUser(identifier: self._userIdentifier)
+            let userIdentifier = try? await authentication.getCurrentUser().userId
+            self.lock.execute {
+                // A later auth event superseded this lookup, so its result may be stale.
+                guard generation == self.userIdentifierGeneration else { return }
+                self.setUserIdentifier(userIdentifier)
             }
         }
     }
 
-    private func handle(payload: HubPayload) {
+    /// Must be called with `lock` held, so updates reach the controllers in the order they're made.
+    private func setUserIdentifier(_ userIdentifier: String?) {
+        _userIdentifier = userIdentifier
+        for controller in loggersByKey.values {
+            controller.setCurrentUser(identifier: userIdentifier)
+        }
+    }
+
+    func handle(payload: HubPayload) {
         enum CognitoEventName: String {
             case signInAPI = "Auth.signInAPI"
             case signOutAPI = "Auth.signOutAPI"
@@ -103,8 +108,10 @@ final class AWSCloudWatchLoggingCategoryClient: @unchecked Sendable {
         case HubPayload.EventName.Auth.signedIn, CognitoEventName.signInAPI.rawValue, CognitoEventName.configured.rawValue:
             takeUserIdentifierFromCurrentUser()
         case HubPayload.EventName.Auth.signedOut, CognitoEventName.signOutAPI.rawValue:
-            lock.execute { _userIdentifier = nil }
-            updateSessionControllers()
+            lock.execute {
+                userIdentifierGeneration += 1
+                setUserIdentifier(nil)
+            }
         default:
             break
         }
@@ -117,8 +124,8 @@ final class AWSCloudWatchLoggingCategoryClient: @unchecked Sendable {
         }
     }
 
-    func getLoggerSessionController(forCategory category: String, logLevel: LogLevel) -> AWSCloudWatchLoggingSessionController? {
-        let key = LoggerKey(category: category, logLevel: logLevel)
+    func getLoggerSessionController(forCategory category: String) -> AWSCloudWatchLoggingSessionController? {
+        let key = LoggerKey(category: category)
         return lock.execute { loggersByKey[key] }
     }
 }
@@ -148,7 +155,7 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
 
     func logger(forCategory category: String, namespace: String?, logLevel: Amplify.LogLevel) -> Logger {
         return lock.execute {
-            let key = LoggerKey(category: category, logLevel: logLevel)
+            let key = LoggerKey(category: category)
             if let existing = loggersByKey[key] {
                 return existing
             }

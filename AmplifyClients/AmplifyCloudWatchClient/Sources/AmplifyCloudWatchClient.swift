@@ -278,17 +278,6 @@ public final class AmplifyCloudWatchClient: AmplifyFoundation.LogSinkBehavior, @
     }
 }
 
-// MARK: - NSLock helper
-
-private extension NSLock {
-    @discardableResult
-    func execute<T>(_ block: () -> T) -> T {
-        lock()
-        defer { unlock() }
-        return block()
-    }
-}
-
 // MARK: - CloudWatchLoggingMonitorDelegate
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)

@@ -55,11 +55,11 @@ final class AWSCloudWatchLoggingPluginTests: XCTestCase, @unchecked Sendable {
         let configuration = AWSCloudWatchLoggingPluginConfiguration(logGroupName: "testLogGroup", region: "us-east-1")
         let plugin = AWSCloudWatchLoggingPlugin(loggingPluginConfiguration: configuration)
         _ = plugin.logger(forCategory: "Category1")
-        var sessionController = plugin.loggingClient.getLoggerSessionController(forCategory: "Category1", logLevel: .error)
+        var sessionController = plugin.loggingClient.getLoggerSessionController(forCategory: "Category1")
         XCTAssertEqual(sessionController?.namespace, nil)
 
         _ = plugin.logger(forCategory: "Category2", forNamespace: "testNamespace")
-        sessionController = plugin.loggingClient.getLoggerSessionController(forCategory: "Category2", logLevel: .error)
+        sessionController = plugin.loggingClient.getLoggerSessionController(forCategory: "Category2")
         XCTAssertEqual(sessionController?.namespace, "testNamespace")
 
     }
