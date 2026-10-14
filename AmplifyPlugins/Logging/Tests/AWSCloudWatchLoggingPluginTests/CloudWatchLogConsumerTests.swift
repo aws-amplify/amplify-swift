@@ -347,8 +347,8 @@ extension CloudWatchLogConsumerTests {
             try await group.waitForAll()
         }
 
-        XCTAssertEqual(client.interactions.filter { $0 == "describeLogStreams(input:)" }.count, 1)
-        XCTAssertEqual(client.interactions.filter { $0 == "createLogStream(input:)" }.count, 1)
+        XCTAssertEqual(client.interactions.count(where: { $0 == "describeLogStreams(input:)" }), 1)
+        XCTAssertEqual(client.interactions.count(where: { $0 == "createLogStream(input:)" }), 1)
         XCTAssertEqual(streamNames.get().count, batches.count)
         XCTAssertEqual(Set(streamNames.get()).count, 1)
     }

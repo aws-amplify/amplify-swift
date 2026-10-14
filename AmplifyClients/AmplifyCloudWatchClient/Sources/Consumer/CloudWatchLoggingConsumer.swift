@@ -263,7 +263,7 @@ private actor LogStreamSetup {
     private var name: String?
 
     func streamName(setUp: @escaping @Sendable (String?) async -> (name: String, isSetUp: Bool)) async -> String {
-        let setup = self.setup ?? Task { [name] in await setUp(name) }
+        let setup = setup ?? Task { [name] in await setUp(name) }
         self.setup = setup
         let result = await setup.value
         name = result.name
