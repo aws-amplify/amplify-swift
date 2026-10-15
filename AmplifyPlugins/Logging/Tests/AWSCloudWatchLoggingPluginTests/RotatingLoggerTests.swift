@@ -144,6 +144,53 @@ final class RotatingLoggerTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(logBatches.count, 2)
     }
 
+    /// Concurrent first records
+    ///
+    /// - Given: freshly created rotating loggers
+    /// - When:
+    ///    - each one's first records are written concurrently, enough to rotate its file several times
+    /// - Then:
+    ///    - every record is persisted
+    ///    - every rotated file is published exactly once
+    ///
+    func testConcurrentFirstRecordsPublishEachRotationOnce() async throws {
+        let messages = (0 ..< 1_000).map { String(format: "record %04d", $0) }
+        let entry = LogEntry(category: "RotatingLoggerTests", namespace: nil, level: .error, message: messages[0])
+        let recordSize = try LogEntryCodec().encode(entry: entry).count
+        let recordCount = (fileSizeLimitInBytes / recordSize) * 3
+
+        for iteration in 0 ..< 10 {
+            let iterationDirectory = directory.appendingPathComponent("\(iteration)")
+            try FileManager.default.createDirectory(at: iterationDirectory, withIntermediateDirectories: true)
+            let logger = try RotatingLogger(
+                directory: iterationDirectory,
+                category: "RotatingLoggerTests",
+                namespace: nil,
+                logLevel: .verbose,
+                fileSizeLimitInBytes: fileSizeLimitInBytes
+            )
+            let published = AtomicValue<[String]>(initialValue: [])
+            let subscription = logger.logBatchPublisher.sink { batch in
+                published.append(String(describing: batch))
+            }
+
+            try await withThrowingTaskGroup(of: Void.self) { group in
+                for message in messages.prefix(recordCount) {
+                    group.addTask { try await logger.record(level: .error, message: message) }
+                }
+                try await group.waitForAll()
+            }
+            try await logger.synchronize()
+            subscription.cancel()
+
+            let files = try FileManager.default.contentsOfDirectory(at: iterationDirectory, includingPropertiesForKeys: nil)
+            let entries = try files.flatMap { try LogEntryCodec().decode(from: $0) }
+            XCTAssertEqual(entries.count, recordCount, "iteration \(iteration)")
+            XCTAssertEqual(published.get().count, Set(published.get()).count, "iteration \(iteration)")
+            XCTAssertEqual(published.get().count, files.count - 1, "iteration \(iteration)")
+        }
+    }
+
     private func logWith(level: LogLevel, message: String) async throws {
         switch level {
         case .error:

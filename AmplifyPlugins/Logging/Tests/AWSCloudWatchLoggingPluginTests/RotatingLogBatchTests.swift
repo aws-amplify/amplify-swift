@@ -61,6 +61,14 @@ final class RotatingLogBatchTests: XCTestCase, @unchecked Sendable {
         try rotatingLogBatch.complete()
         XCTAssertFalse(FileManager.default.fileExists(atPath: fileURL.absoluteString))
     }
+
+    /// Given: a rotating log batch whose file was already removed
+    /// When: batch is completed
+    /// Then: no error is thrown
+    func testCompleteIgnoresAlreadyRemovedFile() throws {
+        try FileManager.default.removeItem(at: fileURL)
+        XCTAssertNoThrow(try RotatingLogBatch(url: fileURL).complete())
+    }
 }
 
 extension RotatingLogBatch: CustomStringConvertible {

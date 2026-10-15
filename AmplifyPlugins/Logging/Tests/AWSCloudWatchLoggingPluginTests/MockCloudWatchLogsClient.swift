@@ -16,14 +16,28 @@ class MockCloudWatchLogsClient: CloudWatchLogsClientProtocol {
         case unimplemented
     }
 
-    var interactions: [String] = []
+    private let interactionsLock = NSLock()
+    private var recordedInteractions: [String] = []
+
+    /// Guarded by `interactionsLock`, since batches consumed at the same time call the client from several tasks.
+    var interactions: [String] {
+        interactionsLock.lock()
+        defer { interactionsLock.unlock() }
+        return recordedInteractions
+    }
+
+    private func record(_ interaction: String) {
+        interactionsLock.lock()
+        defer { interactionsLock.unlock() }
+        recordedInteractions.append(interaction)
+    }
 
     var putLogEventsHandler: (PutLogEventsInput) async throws -> PutLogEventsOutput = { input in
         return PutLogEventsOutput()
     }
 
     func putLogEvents(input: PutLogEventsInput) async throws -> PutLogEventsOutput {
-        interactions.append(#function)
+        record(#function)
         return try await putLogEventsHandler(input)
     }
 
@@ -48,7 +62,7 @@ class MockCloudWatchLogsClient: CloudWatchLogsClientProtocol {
     }
 
     func createLogStream(input: CreateLogStreamInput) async throws -> CreateLogStreamOutput {
-        interactions.append(#function)
+        record(#function)
         return try await createLogStreamHandler(input)
     }
 
@@ -105,7 +119,7 @@ class MockCloudWatchLogsClient: CloudWatchLogsClientProtocol {
     }
 
     func describeLogStreams(input: DescribeLogStreamsInput) async throws -> DescribeLogStreamsOutput {
-        interactions.append(#function)
+        record(#function)
         return try await describeLogStreamsHandler(input)
     }
 
