@@ -126,6 +126,9 @@ let amplifyTargets: [Target] = [
         dependencies: [
             "InternalAmplifyCredentials",
             "AmplifyTestCommon",
+            // For the version-parity test: the clients' copy of the version and their user-agent engine.
+            "AmplifyFoundation",
+            "AmplifyFoundationBridge",
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Core/AmplifyCredentialsTests"
@@ -418,7 +421,8 @@ let kinesisTargets: [Target] = [
         name: "AmplifyKinesisClientTests",
         dependencies: [
             "AmplifyKinesisClient",
-            "AmplifyRecordCache"
+            "AmplifyRecordCache",
+            .product(name: "SQLite", package: "SQLite.swift")
         ],
         path: "AmplifyClients/AmplifyKinesisClient/Tests/UnitTests"
     )

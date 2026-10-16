@@ -34,9 +34,9 @@ final class RotatingLogBatchTests: XCTestCase {
         } catch {}
     }
 
-    /// Given: a rotating log batch
-    /// When: entries are read
-    /// Then: Log Entries are created from log file
+    /// - Given: a rotating log batch
+    /// - When: entries are read
+    /// - Then: Log Entries are created from log file
     func testSuccessfullyReadEntriesFromDisk() {
         let rotatingLogBatch = RotatingLogBatch(url: fileURL)
         let rawEntries = try? rotatingLogBatch.readEntries()
@@ -47,9 +47,9 @@ final class RotatingLogBatchTests: XCTestCase {
         XCTAssertEqual(entries![0].message, "error message")
     }
 
-    /// Given: a rotating log batch
-    /// When: batch is completed
-    /// Then: the log file is removed from disk
+    /// - Given: a rotating log batch
+    /// - When: batch is completed
+    /// - Then: the log file is removed from disk
     func testSuccessfullyCompleteEntriesAndRemovesFile() throws {
         let rotatingLogBatch = RotatingLogBatch(url: fileURL)
         try rotatingLogBatch.complete()

@@ -52,16 +52,10 @@ extension AWSCognitoAuthPlugin {
             return urlRequest
         }
 
-        // Retrieve the credentials from credentials provider
-        let credentials: AWSCredentialIdentity
+        // Retrieve the credentials from the session. A session without credentials throws an
+        // `AuthError` that says why (see `AuthSession.resolveAWSCredentials()`).
         let authSession = try await Amplify.Auth.fetchAuthSession()
-        if let awsCredentialsProvider = authSession as? AuthAWSCredentialsProvider {
-            let awsCredentials = try awsCredentialsProvider.getAWSCredentials().get()
-            credentials = try awsCredentials.toAWSSDKCredentials()
-        } else {
-            let error = AuthError.unknown("Auth session does not include AWS credentials information")
-            throw error
-        }
+        let credentials = try authSession.resolveAWSCredentials().toAWSSDKCredentials()
 
         // Prepare signing
         let flags = SigningFlags(

@@ -41,6 +41,11 @@ class RecordClientFlushTests: XCTestCase, @unchecked Sendable {
         try await super.tearDown()
     }
 
+    /// - Given: three stored records, the third already at the maximum retry count, and a sender that accepts
+    ///   the first, reports the second as retryable and the third as failed
+    /// - When: the client flushes
+    /// - Then:
+    ///    - one record is reported flushed, and only the second remains, with its retry count raised to 1
     func testFlushShouldHandleMixedRecordStatesCorrectly() async throws {
         // Given: Records with different states
         let streamName = "test-stream"
@@ -74,6 +79,10 @@ class RecordClientFlushTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(remainingRecords[0].retryCount, 1)
     }
 
+    /// - Given: three stored records, and a sender that throws a non-SDK error
+    /// - When: the client flushes
+    /// - Then:
+    ///    - the flush throws, and all three records remain, each with a retry count of 1
     func testFlushShouldIncrementRetryCountWhenNonSdkErrorOccurs() async throws {
         let streamName = "test-stream"
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key1", data: Data([1])))
@@ -96,6 +105,11 @@ class RecordClientFlushTests: XCTestCase, @unchecked Sendable {
         }
     }
 
+    /// - Given: three stored records, two of them at the maximum retry count, and a sender that throws a
+    ///   non-SDK error
+    /// - When: the client flushes
+    /// - Then:
+    ///    - the flush throws, the two expired records are deleted, and the first remains with a retry count of 1
     func testFlushShouldDeleteRecordsAtMaxRetriesWhenNonSdkErrorOccurs() async throws {
         let streamName = "test-stream"
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key1", data: Data([1])))
@@ -126,6 +140,11 @@ class RecordClientFlushTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(remainingRecords[0].retryCount, 1)
     }
 
+    /// - Given: one record in each of two streams, and a sender that throws a non-SDK error for every stream
+    /// - When: the client flushes
+    /// - Then:
+    ///    - the flush throws after the first stream: both records remain, and only one has its retry count
+    ///      raised
     func testFlushShouldStopProcessingStreamsWhenNonSdkErrorOccurs() async throws {
         let stream1 = "stream-1"
         let stream2 = "stream-2"
@@ -151,6 +170,11 @@ class RecordClientFlushTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(retryCountSum, 1) // Only one stream was processed before throwing
     }
 
+    /// - Given: two stored records, and a sender that throws an SDK error
+    /// - When: the client flushes
+    /// - Then:
+    ///    - the flush does not throw and reports nothing flushed; both records remain, each with a retry count
+    ///      of 1
     func testFlushShouldSucceedWhenSdkErrorOccurs() async throws {
         let streamName = "test-stream"
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key1", data: Data([1])))
@@ -168,6 +192,12 @@ class RecordClientFlushTests: XCTestCase, @unchecked Sendable {
         }
     }
 
+    /// - Given: one record in each of two streams, and a sender that throws an SDK error for the first stream and
+    ///   accepts the second
+    /// - When: the client flushes
+    /// - Then:
+    ///    - one record is reported flushed: the second stream's record is deleted, and the first stream's remains
+    ///      with a retry count of 1
     func testFlushShouldContinueProcessingStreamsWhenSdkErrorOccurs() async throws {
         let stream1 = "stream-1"
         let stream2 = "stream-2"
