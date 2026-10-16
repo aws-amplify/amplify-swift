@@ -5,15 +5,16 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-"""The snapshot that proves provision-ci.sh changed nothing it did not create (provision-ci.sh snapshot and
-verify-unchanged). No AWS call is made here.
+"""The snapshot that shows provision-ci.sh changed nothing it did not create, as far as the metadata it reads goes
+(provision-ci.sh snapshot and verify-unchanged; READ_KINDS lists what each version reads). No AWS call is made here.
 
     snapshot.py build <raw.ndjson> <snapshot.json> <tag-value>
         raw.ndjson: one {"kind", "id", "name", "doc"} per line, as provision-ci.sh's `record` writes them.
-        Writes <snapshot.json> (mode 600, version 2): each resource under "<kind>:<first 16 hex of SHA-256(id)>",
+        Writes <snapshot.json> (mode 600, version 3): each resource under "<kind>:<first 16 hex of SHA-256(id)>",
         with a masked label and the SHA-256 of its normalized document (`normalize`) in canonical JSON; and
         <snapshot>.docs.json (mode 600), the documents themselves, so a later diff can name the fields that
-        changed. Prints counts only.
+        changed, with every secret they hold replaced by its SHA-256 first (`redact_secrets`): the values of a
+        Lambda's environment variables, an app client's ClientSecret, and the SMS external ids. Prints counts only.
     snapshot.py verify <before.json> <after.json> [--allow-foreign-additions]
         Fails (exit 1) on a resource changed or removed since <before>, and on one added that is not a ccit-ci-
         resource (unless allowed). A ccit-ci- addition is expected, and so is a change to a ccit-ci- resource: a
@@ -21,8 +22,10 @@ verify-unchanged). No AWS call is made here.
         and each is listed. A ccit-ci- resource removed still fails. An AWS-managed KMS alias (alias/aws/*) that
         appears is listed as such and does not fail: AWS creates one the first time a service uses its default key.
         Where both snapshots have their .docs.json, the hashes are made again from the normalized documents, so a
-        version-1 snapshot (hashed unnormalized) compares with a version-2 one. Prints kinds, masked labels and
-        field names, never values or identifiers.
+        version-1 snapshot (hashed unnormalized) compares with a later one, and their secrets are hashed first
+        the same way. Only the kinds both snapshots read are compared (an earlier version reads fewer); the
+        others are listed as not compared. Prints kinds, masked labels and field names, never values or
+        identifiers.
 
 The documents leave out only what AWS changes by itself, with no change to the resource:
     - a user pool's EstimatedNumberOfUsers, which every sign-up and deletion of a CI run moves;
@@ -74,7 +77,16 @@ def canonical(doc):
     return json.dumps(doc, sort_keys=True, separators=(",", ":"))
 
 
-SNAPSHOT_VERSION = 2
+SNAPSHOT_VERSION = 3
+# The kinds of resource each version reads (provision-ci.sh's snapshot). Version 3 adds the policies and settings
+# the script writes: roles' inline and attached policies, KMS key policies, tables' key schema and TTL, rules'
+# targets, SSM parameters' metadata (never their values), log groups, and every Lambda's resource policy.
+V2_KINDS = ("user-pool", "user-pool-mfa", "user-pool-clients", "user-pool-client", "trigger-lambda",
+            "trigger-lambda-policy", "identity-pool", "identity-pool-roles", "s3-object", "iam-role", "lambda",
+            "kms-alias", "appsync-api", "dynamodb-table", "events-rule")
+READ_KINDS = {1: V2_KINDS, 2: V2_KINDS,
+              3: V2_KINDS + ("iam-role-policies", "kms-key-policy", "dynamodb-table-settings", "events-rule-targets",
+                             "ssm-parameter", "log-group", "lambda-policy")}
 # IAM policy keys whose value is a set of strings, written as one string or a list.
 POLICY_SET_KEYS = {"Action", "NotAction", "Resource", "NotResource"}
 PRINCIPAL_SET_KEYS = {"Service", "AWS", "Federated", "CanonicalUser"}
@@ -131,6 +143,35 @@ def normalize(value, key=None):
     return value
 
 
+SECRET_KEYS = {"ClientSecret", "ExternalId", "sts:ExternalId"}
+
+
+def hashed(value):
+    """A secret as "<sha256:…>" of its canonical JSON; one already hashed stays as it is."""
+    if isinstance(value, str) and value.startswith("<sha256:"):
+        return value
+    return "<sha256:" + hashlib.sha256(canonical(value).encode()).hexdigest() + ">"
+
+
+def redact_secrets(value, key=None):
+    """The document with each secret it holds hashed: the values of a Lambda's Environment.Variables, and any
+    ClientSecret, ExternalId (a pool's SmsConfiguration) or sts:ExternalId (a trust policy's condition, one string
+    or a list). The comparison needs only equality, which the hashes keep. Idempotent."""
+    if isinstance(value, dict):
+        out = {}
+        for name, child in value.items():
+            if name in SECRET_KEYS:
+                out[name] = [hashed(v) for v in child] if isinstance(child, list) else hashed(child)
+            elif key == "Environment" and name == "Variables" and isinstance(child, dict):
+                out[name] = {k: hashed(v) for k, v in child.items()}
+            else:
+                out[name] = redact_secrets(child, name)
+        return out
+    if isinstance(value, list):
+        return [redact_secrets(v, key) for v in value]
+    return value
+
+
 def doc_hash(doc):
     return hashlib.sha256(canonical(normalize(doc)).encode()).hexdigest()
 
@@ -157,13 +198,15 @@ def build(raw_path, out_path, tag_value):
             doc = row["doc"]
             if isinstance(doc, dict):
                 doc = {k: v for k, v in doc.items() if k not in VOLATILE.get(row["kind"], ())}
+            doc = redact_secrets(doc)
             key = key_of(row["kind"], row["id"])
             entries[key] = {"kind": row["kind"], "label": label(row["name"]),
                             "ours": bool(OURS.search(row["name"])),
                             "sha256": doc_hash(doc)}
             docs[key] = doc
             counts[row["kind"]] = counts.get(row["kind"], 0) + 1
-    snapshot = {"version": SNAPSHOT_VERSION, "tag": tag_value, "counts": counts, "entries": entries}
+    snapshot = {"version": SNAPSHOT_VERSION, "tag": tag_value, "kinds": list(READ_KINDS[SNAPSHOT_VERSION]),
+                "counts": counts, "entries": entries}
     write_private(out_path, snapshot)
     write_private(docs_path(out_path), docs)
     ours = sum(1 for e in entries.values() if e["ours"])
@@ -198,11 +241,23 @@ def changed_fields(before, after):
     return paths
 
 
+def read_kinds(snapshot):
+    return set(snapshot.get("kinds") or READ_KINDS.get(snapshot.get("version", 1), V2_KINDS))
+
+
 def verify(before_path, after_path, allow_foreign):
     before, after = load(before_path), load(after_path)
     before_docs = load(docs_path(before_path)) if os.path.exists(docs_path(before_path)) else {}
     after_docs = load(docs_path(after_path)) if os.path.exists(docs_path(after_path)) else {}
-    a, b = before["entries"], after["entries"]
+    # Secrets hashed on both sides, whichever version wrote the documents (version 2 kept them as they were).
+    before_docs = {k: redact_secrets(v) for k, v in before_docs.items()}
+    after_docs = {k: redact_secrets(v) for k, v in after_docs.items()}
+    # Only what both snapshots read: a kind one of them does not read would show as all added, or all removed.
+    compared = read_kinds(before) & read_kinds(after)
+    for kind in sorted((read_kinds(before) | read_kinds(after)) - compared):
+        print(f"not compared  {kind} (read by only one of the snapshots; take both with the same version)")
+    a = {k: v for k, v in before["entries"].items() if v["kind"] in compared}
+    b = {k: v for k, v in after["entries"].items() if v["kind"] in compared}
     # With both sides' documents, hash them again normalized: the same rule whatever version each was written by.
     if before_docs and after_docs:
         a = {k: dict(v, sha256=doc_hash(before_docs[k])) if k in before_docs else v for k, v in a.items()}

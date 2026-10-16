@@ -69,22 +69,23 @@ final class LiveEngineSessionTests: XCTestCase {
         XCTAssertEqual(try engine2.awsCredentials(in: refreshed)?.accessKeyId, "AKID-v2")
     }
 
-    /// Every refresh is one forced refresh of that payload: never coalesced, cached or skipped.
+    /// A forced refresh is one refresh of that payload: never coalesced, cached or skipped. (An unforced one refreshes
+    /// only what is stale: `LiveEngineBranchTests`.)
     ///
     /// - Given: a signed-in payload with fresh tokens
     /// - When:
-    ///    - it is refreshed twice
+    ///    - it is refreshed twice, forced
     /// - Then:
     ///    - `GetTokensFromRefreshToken` was called twice, although nothing needed a refresh
     ///
-    func testEveryRefreshIsForced() async throws {
+    func testAForcedRefreshIsNeverCoalescedOrCached() async throws {
         let engine = try harness.engine()
         let payload = try await signedIn(on: engine)
         harness.scriptRefresh()
         harness.scriptIdentityPool()
 
-        _ = try await engine.refresh(payload)
-        _ = try await engine.refresh(payload)
+        _ = try await engine.refresh(payload, force: true)
+        _ = try await engine.refresh(payload, force: true)
 
         XCTAssertEqual(harness.cognito.inputs("GetTokensFromRefreshToken", as: GetTokensFromRefreshTokenInput.self).count, 2)
     }
@@ -126,6 +127,66 @@ final class LiveEngineSessionTests: XCTestCase {
             await assertThrowsAsync({ try await engine.refresh(payload) }) { error in
                 XCTAssertTrue(matches(error), "\(thrown) was classified as \(error)")
             }
+        }
+    }
+
+    /// With rotation, a refresh whose identity pool step then fails hands back what the engine stored first: the
+    /// rotated user pool tokens, which the next refresh must use.
+    ///
+    /// - Given: alice's both-pools payload, a refresh that rotates her refresh token, and
+    ///   `GetCredentialsForIdentity` failing
+    /// - When:
+    ///    - it is refreshed, forced
+    /// - Then:
+    ///    - it throws `refreshedThenFailed` with a `service` failure, and the payload it carries holds the rotated
+    ///      refresh token and her identity
+    ///
+    func testARotatedRefreshThatFailsAtTheIdentityPoolHandsBackTheRotatedTokens() async throws {
+        let engine = try harness.engine()
+        let payload = try await signedIn(on: engine)
+        harness.scriptRefresh(version: 2)
+        harness.cognito.once("GetCredentialsForIdentity") { (_: GetCredentialsForIdentityInput) -> GetCredentialsForIdentityOutput in
+            throw AWSCognitoIdentity.InternalErrorException(message: "down")
+        }
+
+        await assertThrowsAsync({ try await engine.refresh(payload, force: true) }) { error in
+            guard case SessionEngineError.refreshedThenFailed(let stored, .service) = error else {
+                return XCTFail("expected refreshedThenFailed, got \(error)")
+            }
+            let kept = try? AmplifyCredentials.decoded(stored)
+            XCTAssertEqual(kept?.signedInData?.cognitoUserPoolTokens.refreshToken, "refresh-alice-v2")
+            XCTAssertEqual(kept?.identityId, LiveEngineFixtures.identityId)
+        }
+    }
+
+    /// The same for a session carried without its identity: its refresh fetches the identity, and a failed `GetId`
+    /// still hands back the rotated user pool tokens the engine stored.
+    ///
+    /// - Given: alice's user-pool-only payload under a configuration with an identity pool, a refresh that rotates
+    ///   her refresh token, and `GetId` failing
+    /// - When:
+    ///    - it is refreshed, forced
+    /// - Then:
+    ///    - it throws `refreshedThenFailed` with a `service` failure, and the payload it carries is user-pool-only,
+    ///      with the rotated refresh token
+    ///
+    func testARotatedRefreshThatFailsToGetTheIdentityHandsBackTheRotatedTokens() async throws {
+        let engine = try harness.engine()
+        let signedIn = try await signedIn(on: engine)
+        let payload = try XCTUnwrap(CredentialSlot.userPoolTokensOnly(signedIn))
+        harness.scriptRefresh(version: 2)
+        harness.cognito.once("GetId") { (_: GetIdInput) -> GetIdOutput in
+            throw AWSCognitoIdentity.InternalErrorException(message: "down")
+        }
+
+        await assertThrowsAsync({ try await engine.refresh(payload, force: true) }) { error in
+            guard case SessionEngineError.refreshedThenFailed(let stored, .service) = error else {
+                return XCTFail("expected refreshedThenFailed, got \(error)")
+            }
+            guard case .userPoolOnly(let kept)? = try? AmplifyCredentials.decoded(stored) else {
+                return XCTFail("expected user-pool-only credentials")
+            }
+            XCTAssertEqual(kept.cognitoUserPoolTokens.refreshToken, "refresh-alice-v2")
         }
     }
 

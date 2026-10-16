@@ -55,8 +55,9 @@ enum IntegrationTestEnvironment {
     /// new-password users, a code API and a verified email at sign-up (CA-1…3 and the stored-answer check, CH-1,
     /// P-3, the fixture check, AT-2's second half, RP-3). That is the extended role when its outputs file is in the
     /// bundle (on CI, `infra/ci`'s `ccit-ci-default`, mapped in by `infra/ci/ci-overlay.sh`), and otherwise the
-    /// default role itself: the sandbox's, which has them all, or the plugin's on CI, which has none, so the tests
-    /// skip there with their CI-only skip reasons as before. Every other test on the default role keeps the default role.
+    /// default role itself: the sandbox's, which has them all, or the plugin's own, which has none, so on the
+    /// plugin's files alone the tests fail naming the resource, or skip with their reasons when the run asks for
+    /// the skips (`isCIRun`). Every other test on the default role keeps the default role.
     static var extrasRole: SandboxPool {
         extrasRole(hasExtendedOutputs: hasOutputs(.extended))
     }
@@ -68,8 +69,8 @@ enum IntegrationTestEnvironment {
 
     /// The role the email-alias code check runs on: the client's own alias-codes role when its outputs file is in
     /// the bundle (on CI, `infra/ci`'s `ccit-ci-email-alias-codes`, mapped in by `infra/ci/ci-overlay.sh`), and
-    /// otherwise the device-alias role itself: the sandbox's, which has a code API, or the plugin's on CI, which
-    /// has none, so the check skips there as a sandbox check, as before.
+    /// otherwise the device-alias role itself: the sandbox's, which has a code API, or the plugin's own, which has
+    /// none, so on the plugin's files alone the check skips as a sandbox check.
     static var emailAliasCodesRole: SandboxPool {
         emailAliasCodesRole(hasAliasCodesOutputs: hasOutputs(.emailAliasCodes))
     }
@@ -209,8 +210,9 @@ enum IntegrationTestEnvironment {
     /// The `data` API a role's codes are published to (the plugin's MfaInfo API), from its outputs file.
     ///
     /// A test that reads a code on the default backend names its CI skip (`ciSkip`: `.defaultCodeAPI` or
-    /// `.defaultCodeAPIAndVerifiedEmail`), so on CI, where that backend names no code API, it skips with that
-    /// reason (`skipOnCIIfMissing(_:present:)`) rather than fail.
+    /// `.defaultCodeAPIAndVerifiedEmail`), so in a run that asks for the CI-only skips on the plugin's own files,
+    /// where that backend names no code API, it skips with that reason (`skipOnCIIfMissing(_:present:)`) rather
+    /// than fail. CI itself overlays the client's extended role, which has one.
     static func codeSinkAPI(_ pool: SandboxPool, ciSkip: CISkipReason? = nil) throws -> CodeSinkAPI {
         let data = try outputsDocument(pool)["data"] as? [String: Any]
         let url = (data?["url"] as? String).flatMap(URL.init(string:))
@@ -348,9 +350,8 @@ enum IntegrationTestEnvironment {
     }
 
     /// What `requireSandbox(_:_:)`'s skip adds for a set with the default credentials file: the advice to write
-    /// the sandbox's set again, which only an unmarked sandbox set needs. On CI the file comes from the client's
-    /// own CI resources (`infra/ci`, through `infra/ci/ci-overlay.sh`), which are not the sandbox's and carry no
-    /// mark by design, so the skip gives no such advice there.
+    /// the sandbox's set again, which only an unmarked sandbox set needs. A run that asks for the CI-only skips
+    /// (`isCIRun`) is on the plugin's or CI's files, never an old sandbox set, so it gets no such advice.
     static func sandboxRewriteHint(isCIRun: Bool, hasCredentialsFile: Bool) -> String {
         guard !isCIRun, hasCredentialsFile else {
             return ""
@@ -361,13 +362,15 @@ enum IntegrationTestEnvironment {
 
     // MARK: - CI skips
 
-    /// What the client's CI job sets to `1` in the test process, through `xcodebuild`'s
-    /// `TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS` (`run_integration_tests.yml`'s `cognito_client_integ_ci_skips`
-    /// input). CI sets it, and the README's recommended local recipe on CI's file set sets it too; a run without
-    /// it stays strict.
+    /// What a run sets to `1` in the test process, through `xcodebuild`'s `TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS`
+    /// (or `run_integration_tests.yml`'s `cognito_client_integ_ci_skips` input), to skip the tests whose resources
+    /// the plugin's own files lack. The client's CI jobs no longer set it: they overlay the client's own roles
+    /// (`infra/ci/ci-overlay.sh`) and allow no skip. It is a local approximation only, for a run on the plugin's
+    /// files without the overlay ("Running locally" in the README); a run without it stays strict.
     static let ciSkipsVariable = "COGNITO_CLIENT_INTEG_CI_SKIPS"
 
-    /// Whether this process runs in the client's CI job (`ciSkipsVariable` is `1`).
+    /// Whether the run asks for the CI-only skips (`ciSkipsVariable` is `1`). Named for the CI job that once set
+    /// it; the client's CI jobs now leave it unset.
     static var isCIRun: Bool {
         ProcessInfo.processInfo.environment[ciSkipsVariable] == "1"
     }
@@ -379,10 +382,11 @@ enum IntegrationTestEnvironment {
         SandboxPool.allCases.contains { isSandbox($0) }
     }
 
-    /// Skips the test, with `reason`'s message, when it runs on CI (`isCIRun`), the file set is not the
-    /// sandbox's (`isSandboxFileSet`) and the resource the reason names is missing (`present` is false).
-    /// Otherwise it returns, and the test goes on to fail naming the resource, as it does off CI: a sandbox run
-    /// never skips, even with the variable set by mistake, and once CI gains the resource the test runs there.
+    /// Skips the test, with `reason`'s message, when the run asks for the CI-only skips (`isCIRun`), the file set
+    /// is not the sandbox's (`isSandboxFileSet`) and the resource the reason names is missing (`present` is false).
+    /// Otherwise it returns, and the test goes on to fail naming the resource: a sandbox run never skips, even
+    /// with the variable set by mistake, and a run with the resource (CI, with the client's roles overlaid) runs
+    /// the test.
     static func skipOnCIIfMissing(_ reason: CISkipReason, present: Bool) throws {
         try skipOnCIIfMissing(reason, present: present, isCIRun: isCIRun, isSandboxFileSet: isSandboxFileSet)
     }
@@ -744,8 +748,9 @@ struct PluginCredentials: Sendable {
         guard isPresent else {
             return """
             \(file) is not in the test bundle, so there is no \(keys): the default backend needs \(backend), \
-            named in that file. The plugin's CI test configuration has no credentials file (its own suite skips \
-            these tests without it); a local run gets one from infra/plugin-configs.py --dir.
+            named in that file. The plugin's own files have none (its suite skips these tests without it). For CI's \
+            set, which has one for the client's extended role (infra/ci), download it with infra/fetch-ci-config.sh, \
+            overlay it with infra/ci/ci-overlay.sh, and rebuild with COGNITO_CLIENT_INTEG_DIR set to the overlay.
             """
         }
         return "\(file) has no \(keys): the default backend needs \(backend), as the plugin's own suite does."
@@ -848,8 +853,9 @@ enum HarnessError: Error, CustomStringConvertible {
             return """
             \(name) is not in the test bundle. The build phase copies the plugin's test configuration from \
             $COGNITO_CLIENT_INTEG_DIR (default ~/.aws-amplify/amplify-ios/testconfiguration, where CI \
-            downloads it). For a local run, write it with infra/plugin-configs.py --dir <dir>, then rebuild \
-            with COGNITO_CLIENT_INTEG_DIR=<dir>.
+            downloads it). For a local run on CI's set, download it with infra/fetch-ci-config.sh <dir>, overlay \
+            the client's roles with infra/ci/ci-overlay.sh <dir> <new-dir> "email-alias extended", then rebuild \
+            with COGNITO_CLIENT_INTEG_DIR=<new-dir>.
             """
         case .malformedFixture(let message):
             return message

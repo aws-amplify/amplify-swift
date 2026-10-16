@@ -143,3 +143,36 @@ public enum AuthClientSignUpStep {
 extension AuthClientSignUpStep: Equatable {}
 
 extension AuthClientSignUpStep: Sendable {}
+
+extension AuthClientSignUpStep: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+
+    /// Redacted: Cognito's auto sign-in session never reaches a log through string interpolation, as the
+    /// engine masks it in its own log lines. Stricter than core's `AuthSignUpStep`, which is not redacted.
+    /// `AuthClientSignUpResult` prints its step through this.
+    public var description: String {
+        switch self {
+        case .confirmUser(let details, let info, let userId):
+            return "confirmUser(\(String(describing: details)), \(String(describing: info)), \(String(describing: userId)))"
+        case .completeAutoSignIn:
+            return "completeAutoSignIn(<redacted>)"
+        case .done:
+            return "done"
+        }
+    }
+
+    public var debugDescription: String {
+        description
+    }
+
+    /// For `dump` and debuggers: the auto sign-in session redacted, the other cases as they are.
+    public var customMirror: Mirror {
+        switch self {
+        case .confirmUser(let details, let info, let userId):
+            return Mirror(self, children: ["confirmUser": (details, info, userId)], displayStyle: .enum)
+        case .completeAutoSignIn:
+            return Mirror(self, children: ["completeAutoSignIn": "<redacted>"], displayStyle: .enum)
+        case .done:
+            return Mirror(self, children: [:], displayStyle: .enum)
+        }
+    }
+}

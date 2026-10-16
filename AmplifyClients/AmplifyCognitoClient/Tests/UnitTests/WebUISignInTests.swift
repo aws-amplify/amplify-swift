@@ -478,7 +478,8 @@ final class WebUISignInTests: XCTestCase {
         let signIn = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
 
-        _ = await client.signOut()
+        // Bounded: were the sign-out to wait for the browser, it would wait for one the test never finishes.
+        _ = try await withinTime(10, "the sign-out") { await client.signOut() }
 
         let error = await authClientError { try await signIn.value }
         XCTAssertEqual(error?.kind, .invalidState)
@@ -535,6 +536,48 @@ final class WebUISignInTests: XCTestCase {
 
         let error = await authClientError { try await signIn.value }
         XCTAssertEqual(error?.errorDescription, SessionCore.signInCancelled().errorDescription)
+        let waiters = await lock.waiterCount
+        XCTAssertEqual(waiters, 0)
+        XCTAssertEqual(engine.webUISignInCalls.count, 0)
+        homeBrowser.finishWithDefault()
+        _ = try await homeSignIn.value
+    }
+
+    /// An ending that lands while a queued sign-in reads the other sessions still stops it at once: the flow
+    /// registers only if the session has not ended since the sign-in took its lock
+    ///
+    /// - Given: "home" showing its hosted-UI sign-in; "team" signed in as bob; "work" asking for one with
+    ///   `.wait(timeout:)` and `.distinctFromOtherSessions`, held while its listing reads team's record
+    /// - When: "work" is signed out there, and the listing is then let go
+    /// - Then:
+    ///    - within 5 s, "work" throws the sign-in-cancelled `invalidState` without queueing behind "home", and its
+    ///      engine shows nothing
+    func testASignOutDuringTheListingStopsASignInThatWouldQueue() async throws {
+        let homeClient = try client(home)
+        let homeBrowser = FakeBrowser()
+        try XCTUnwrap(harness.engine(for: home)).showWebUISignIns(in: homeBrowser)
+        let homeSignIn = await startSignIn(homeClient)
+        await homeBrowser.shown.waitForArrivals(1)
+        let team = ClientFixtures.id("team")
+        _ = try harness.signIn(team, .signedIn("bob"))
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let listing = Stall()
+        harness.keychain.onceAfterReading(harness.store().sessionAccount(for: team)) { listing.block() }
+        let signIn = await startSignIn(
+            client,
+            options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60), identityExpectation: .distinctFromOtherSessions)
+        )
+        await waitUntil("the listing is held") { listing.hasBeenReached }
+
+        let signOut = Task { await client.signOut() }
+        await waitUntil("the sign-out has ended the session") { engine.cancelPendingSignInCount == 1 }
+        listing.release()
+
+        let error = try await withinTime(5, "work's sign-in ending") { await authClientError { try await signIn.value } }
+        _ = await signOut.value
+        XCTAssertEqual(error?.errorDescription, SessionCore.signInCancelled().errorDescription)
+        let lock = harness.sheetLock
         let waiters = await lock.waiterCount
         XCTAssertEqual(waiters, 0)
         XCTAssertEqual(engine.webUISignInCalls.count, 0)

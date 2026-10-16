@@ -45,12 +45,11 @@ package final class ShowHostedUISignOut: NSObject, Action, @unchecked Sendable {
             _ = try await sessionAdapter.showHostedUI(
                 url: logoutURL,
                 callbackScheme: callbackURLScheme,
-                // The sign-in's own choice, so the logout sees the cookie jar the sign-in used.
-                // `InitiateSignOut` branches on the state's copy of the sign-in and only comes here for one that
-                // shared the browser's cookies; `signInData` is the stored copy of the same sign-in, whose method
-                // a refresh keeps (`RefreshUserPoolTokens`). So this is `false` whenever it runs. Were the stored
-                // record ever a different sign-in, the logout would follow the stored one: the session it clears.
-                inPrivate: signInData.hostedUIPrefersPrivateSession ?? false,
+                // Always the browser's shared cookie jar: `InitiateSignOut` only comes here for a sign-in that
+                // shared it (`signOutPresentsBrowser`), and a private sign-in's sign-out shows nothing. The
+                // stored `signInData` is not consulted, so a record replaced by another writer (say, with a private
+                // sign-in) cannot move the logout into an ephemeral session and leave the shared cookie behind.
+                inPrivate: false,
                 presentationAnchor: signOutEvent.presentationAnchor
             )
             await sendEvent(with: nil, dispatcher: dispatcher, environment: environment)

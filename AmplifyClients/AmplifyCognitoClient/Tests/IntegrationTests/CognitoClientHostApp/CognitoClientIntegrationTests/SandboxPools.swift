@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-// Shared with CognitoClientUITests (the hosted-UI UI tests), which compiles this file and the five other
-// shared sandbox helpers (IntegrationTestEnvironment, SandboxPools, SandboxSignUp, SandboxUserCleanup,
-// CodeSink, TOTP) and nothing else from this folder. Keep it self-contained: it may use only those files,
+// Shared with CognitoClientUITests (the hosted-UI UI tests), which compiles this file and the six other
+// shared sandbox helpers (IntegrationTestEnvironment, PluginTestConfiguration, SandboxPools, SandboxSignUp,
+// SandboxUserCleanup, CodeSink, TOTP) and nothing else from this folder. Keep it self-contained: it may use only those files,
 // AmplifyCognitoClient (and AmplifySRP and AmplifyBigInteger, which its product builds),
 // AWSCognitoIdentityProvider, Foundation, Security, CryptoKit and XCTest.
 //

@@ -109,6 +109,61 @@ final class KeychainItemMigratorTests: XCTestCase {
         XCTAssertFalse(logger.messages(at: .warn).joined().contains(colliding))
     }
 
+    /// A run that skipped colliding items says so, and never reports a cleared destination or full success.
+    ///
+    /// - Given: a source holding every plugin item, and a destination that already holds every one of them
+    ///   (and, in a second run, only one of them) because its clear did nothing
+    /// - When: the migration runs
+    /// - Then:
+    ///    - its last verbose line counts the moved and the skipped items
+    ///    - it logs neither "keychain under new access group is cleared" nor "Successfully migrated"
+    func testARunWithCollisionsDoesNotReportSuccess() throws {
+        for colliding in [pluginAccounts, [pluginAccounts.sorted()[1]]] {
+            let keychain = InMemoryKeychain()
+            try populate(keychain, source, with: pluginAccounts)
+            try populate(keychain, destination, with: colliding)
+            let logger = RecordingLogger()
+
+            try makeMigrator(keychain, logger: logger).migrate(clearingDestinationWith: {})
+
+            let verbose = logger.messages(at: .verbose)
+            let moved = pluginAccounts.count - colliding.count
+            XCTAssertEqual(
+                verbose.last,
+                "[KeychainStoreMigrator] Migrated \(moved) item(s); \(colliding.count) already existed in the destination and were not migrated"
+            )
+            XCTAssertFalse(verbose.contains { $0.contains("is cleared") || $0.contains("Successfully migrated") }, "\(colliding)")
+            XCTAssertEqual(logger.messages(at: .warn).count, colliding.count)
+        }
+    }
+
+    /// `willMove` runs once, after the destination clear has finished and before the first move, and also
+    /// when there is nothing to clear.
+    ///
+    /// - Given: a source holding every plugin item, and a destination that holds a stale item (and, in a
+    ///   second run, nothing)
+    /// - When: the migration runs with a clear and a `willMove` that both record what they see
+    /// - Then:
+    ///    - with the stale item: the clear runs, then `willMove`, once, before any move
+    ///    - with an empty destination: the clear does not run, and `willMove` still runs once, before any move
+    func testWillMoveRunsAfterTheClearAndBeforeTheFirstMove() throws {
+        for stale in [["amplify.us-east-1_Old.session"], []] {
+            let keychain = InMemoryKeychain()
+            try populate(keychain, source, with: pluginAccounts)
+            try populate(keychain, destination, with: stale)
+            let events = EventRecorder()
+            keychain.beforeMove { account in events.append("move \(account)") }
+
+            try makeMigrator(keychain).migrate(
+                clearingDestinationWith: { events.append("clear") },
+                willMove: { events.append("willMove") }
+            )
+
+            let moves = pluginAccounts.sorted().map { "move \($0)" }
+            XCTAssertEqual(events.all, (stale.isEmpty ? [] : ["clear"]) + ["willMove"] + moves, "\(stale)")
+        }
+    }
+
     /// Any other move failure part-way stops the migration and throws, leaving the earlier moves done.
     ///
     /// - Given: a source holding every plugin item, whose move of the second account in listing order
@@ -181,18 +236,23 @@ final class KeychainItemMigratorTests: XCTestCase {
         XCTAssertEqual(try keychain.store(service: source.service).allAccounts(), [])
     }
 
-    /// An account stored in two access groups moves once; the second copy collides and stays behind.
+    /// An account stored in two access groups moves once; the other copy collides and stays behind.
+    ///
+    /// Which copy moves is the one listed first, and the keychain does not specify that order, so this
+    /// only checks that one copy moved and the other stayed, whichever they are.
     ///
     /// - Given: in `.everyGroup` mode, an unscoped source holding every plugin item, with
     ///   `authConfiguration` stored both without a group and under `group-x`
     /// - When: the migration runs
     /// - Then:
-    ///    - the destination holds every plugin item, `authConfiguration` being the ungrouped copy
-    ///    - the `group-x` copy is still in the source, and nothing else is
+    ///    - the destination holds every plugin item, `authConfiguration` being one of the two copies
+    ///    - the other copy is still in the source, under its own group, and nothing else is
     func testAccountInTwoGroupsMovesOneCopy() throws {
         let keychain = InMemoryKeychain(unscopedMatching: .everyGroup)
+        let ungroupedCopy = Data("\(source.service)/authConfiguration".utf8)
+        let groupXCopy = Data("group-x".utf8)
         try populate(keychain, source, with: pluginAccounts)
-        try keychain.store(service: source.service, accessGroup: "group-x").set(Data("group-x".utf8), key: "authConfiguration")
+        try keychain.store(service: source.service, accessGroup: "group-x").set(groupXCopy, key: "authConfiguration")
 
         try makeMigrator(keychain).migrate()
 
@@ -200,9 +260,14 @@ final class KeychainItemMigratorTests: XCTestCase {
             try keychain.store(service: destination.service, accessGroup: destination.accessGroup).allAccounts(),
             pluginAccounts.sorted()
         )
-        XCTAssertEqual(value(keychain, destination, "authConfiguration"), Data("\(source.service)/authConfiguration".utf8))
+        let moved = try XCTUnwrap(value(keychain, destination, "authConfiguration"))
+        let left = [
+            keychain.value(service: source.service, account: "authConfiguration"),
+            keychain.value(service: source.service, accessGroup: "group-x", account: "authConfiguration")
+        ].compactMap { $0 }
+        XCTAssertEqual(left.count, 1)
+        XCTAssertEqual(Set(left + [moved]), [ungroupedCopy, groupXCopy])
         XCTAssertEqual(try keychain.store(service: source.service).allAccounts(), ["authConfiguration"])
-        XCTAssertEqual(keychain.value(service: source.service, accessGroup: "group-x", account: "authConfiguration"), Data("group-x".utf8))
     }
 
     // MARK: Client session records
@@ -340,6 +405,25 @@ final class KeychainItemMigratorTests: XCTestCase {
     }
 
     // MARK: Helpers
+
+    /// Records events in order, from the migrator's closures and the keychain's hooks.
+    private final class EventRecorder: @unchecked Sendable {
+        // `@unchecked Sendable`: `events` is only touched while holding `lock`.
+        private let lock = NSLock()
+        private var events: [String] = []
+
+        var all: [String] {
+            lock.lock()
+            defer { lock.unlock() }
+            return events
+        }
+
+        func append(_ event: String) {
+            lock.lock()
+            defer { lock.unlock() }
+            events.append(event)
+        }
+    }
 
     private func makeMigrator(_ keychain: InMemoryKeychain, logger: any Logger = SilentLogger()) -> KeychainItemMigrator {
         KeychainItemMigrator(

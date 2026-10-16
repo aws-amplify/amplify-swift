@@ -31,8 +31,8 @@ final class SessionLifecycleTests: XCTestCase {
     /// - Given: two signed-in sessions A and B, with subscribers on B
     /// - When: A's label is set, A is signed out through the static call, and then A is purged
     /// - Then:
-    ///    - B's state is still its user, B received no state or event, B's record is unchanged, and B's
-    ///      provider still vends B's credentials
+    ///    - B's state is still its user, B's record is unchanged, and B's provider still vends B's credentials
+    ///    - B received no state or event: once B is signed out last, its subscribers hold only that sign-out
     func testActingOnOneSessionLeavesAnotherUntouched() async throws {
         let bob = FakePayload.signedIn("bob")
         try harness.signIn(work, .signedIn("alice"))
@@ -63,8 +63,6 @@ final class SessionLifecycleTests: XCTestCase {
         let stateB = await clientB.currentSessionState()
         XCTAssertEqual(stateA, .signedOut)
         XCTAssertEqual(stateB, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
-        XCTAssertEqual(statesB.received, [])
-        XCTAssertEqual(eventsB.received, [])
         guard case .record(let stored) = try harness.store().read(home) else {
             return XCTFail("B's record is gone")
         }
@@ -73,6 +71,7 @@ final class SessionLifecycleTests: XCTestCase {
         let credentialsB = try await clientB.credentialsProvider.resolve()
         XCTAssertEqual(credentialsB as? CognitoAWSCredentials, bob.awsCredentials)
         XCTAssertEqual(harness.engine(for: home)?.revokeCalls, [])
+        await assertOnlyItsOwnSignOutReaches(clientB, states: statesB, events: eventsB)
     }
 
     /// The isolation matrix, extended to every session operation.
@@ -81,7 +80,8 @@ final class SessionLifecycleTests: XCTestCase {
     /// - When: A fetches guest credentials, signs in through a challenge, force-refreshes, signs out
     ///   globally, signs in again and deletes its user
     /// - Then:
-    ///    - A saw every transition; B's state, events, record, provider and engine are all untouched
+    ///    - A saw every transition; B's state, record, provider and engine are all untouched
+    ///    - B received no state or event: once B is signed out last, its subscribers hold only that sign-out
     func testEverySessionOperationLeavesAnotherSessionUntouched() async throws {
         let bob = FakePayload.signedIn("bob")
         let homeRecord = try harness.signIn(home, bob)
@@ -109,8 +109,6 @@ final class SessionLifecycleTests: XCTestCase {
         XCTAssertEqual(eventsA.received, [.signedIn, .signedOut, .signedIn, .userDeleted])
         let stateB = await clientB.currentSessionState()
         XCTAssertEqual(stateB, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
-        XCTAssertEqual(statesB.received, [])
-        XCTAssertEqual(eventsB.received, [])
         XCTAssertEqual(try harness.store().read(home), .record(homeRecord))
         XCTAssertEqual(harness.storedBytes(home), homeBytes)
         let credentialsB = try await clientB.credentialsProvider.resolve()
@@ -122,6 +120,7 @@ final class SessionLifecycleTests: XCTestCase {
         XCTAssertEqual(engineB.revokeCalls, [])
         XCTAssertEqual(engineB.deleteUserCalls, [])
         XCTAssertEqual(engineB.guestFetchCount, 0)
+        await assertOnlyItsOwnSignOutReaches(clientB, states: statesB, events: eventsB)
     }
 
     /// Work in flight keeps its session alive, independently of any handle or caller. The shared refresh
@@ -186,5 +185,24 @@ final class SessionLifecycleTests: XCTestCase {
             await harness.waitForBaseline()
         }
         XCTAssertEqual(harness.engines.count, 20)
+    }
+
+    // MARK: Helpers
+
+    /// Checks that `client`'s subscribers received nothing before now: signs `client` out and waits for its own
+    /// `.signedOut`. Each recorder appends on its own task, so a bare empty-list check could pass with an element still
+    /// in flight; the streams deliver in order, so anything sent earlier is counted here.
+    private func assertOnlyItsOwnSignOutReaches(
+        _ client: AmplifyCognitoClient,
+        states: StreamRecorder<AuthSessionState>,
+        events: StreamRecorder<AuthEvent>,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async {
+        _ = await client.signOut()
+        await states.waitFor(1, file: file, line: line)
+        await events.waitFor(1, file: file, line: line)
+        XCTAssertEqual(states.received, [.signedOut], file: file, line: line)
+        XCTAssertEqual(events.received, [.signedOut], file: file, line: line)
     }
 }

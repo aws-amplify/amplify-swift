@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-// Shared with CognitoClientUITests (the hosted-UI UI tests), which compiles this file and the five other
-// shared sandbox helpers (IntegrationTestEnvironment, SandboxPools, SandboxSignUp, SandboxUserCleanup,
-// CodeSink, TOTP) and nothing else from this folder. Keep it self-contained: it may use only those files,
+// Shared with CognitoClientUITests (the hosted-UI UI tests), which compiles this file and the six other
+// shared sandbox helpers (IntegrationTestEnvironment, PluginTestConfiguration, SandboxPools, SandboxSignUp,
+// SandboxUserCleanup, CodeSink, TOTP) and nothing else from this folder. Keep it self-contained: it may use only those files,
 // AmplifyCognitoClient, AWSCognitoIdentityProvider, Foundation, Security, CryptoKit and XCTest.
 
 import CryptoKit
@@ -32,7 +32,7 @@ enum TOTP {
     /// The code for `secret` in `step`.
     static func code(secret: TOTPSecret, step: UInt64) throws -> String {
         guard let key = base32Decode(secret.base32) else {
-            throw HarnessError.malformedFixture("carolTotpSecret is not base32.")
+            throw HarnessError.malformedFixture("The TOTP secret is not base32.")
         }
         let counter = withUnsafeBytes(of: step.bigEndian) { Data($0) }
         let digest = Array(HMAC<Insecure.SHA1>.authenticationCode(for: counter, using: SymmetricKey(data: key)))

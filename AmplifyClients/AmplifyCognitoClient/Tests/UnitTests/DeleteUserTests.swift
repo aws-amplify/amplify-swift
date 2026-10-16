@@ -34,13 +34,15 @@ final class DeleteUserTests: XCTestCase {
     /// - When: the user is deleted
     /// - Then:
     ///    - the engine deletes with the session's payload; the row is gone from storage and the listing;
-    ///      the state is signed out; `.userDeleted` is sent, and only it; the pending sign-in is cancelled
+    ///      the state is signed out; `.userDeleted` is sent, and only it; the pending sign-in is cancelled, so the
+    ///      engine holds no challenge
     func testDeleteUserRemovesTheRowAndSendsUserDeleted() async throws {
         let alice = FakePayload.signedIn("alice")
         try harness.signIn(work, alice, label: "Work")
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         _ = await client.currentSessionState()
+        engine.setPendingChallenge(.confirmSignInWithTOTPCode)
         let events = StreamRecorder(client.listenToAuthEvents())
         let states = StreamRecorder(client.listenToSessionStateChanges())
 
@@ -50,6 +52,8 @@ final class DeleteUserTests: XCTestCase {
         XCTAssertEqual(try harness.store().read(work), .absent)
         XCTAssertEqual(try harness.store().storedSessions(includingSignedOut: true), [])
         XCTAssertEqual(engine.cancelPendingSignInCount, 1)
+        let pending = await engine.pendingChallenge
+        XCTAssertNil(pending)
         XCTAssertEqual(engine.revokeCalls, [])
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedOut)
@@ -106,16 +110,17 @@ final class DeleteUserTests: XCTestCase {
     /// Once Cognito has deleted the user, the session reports it even when the
     /// row cannot be removed.
     ///
-    /// - Given: a signed-in session with a pending challenge, whose keychain removals fail
+    /// - Given: a signed-in session with a pending challenge in its engine, whose keychain removals fail
     /// - When: the user is deleted
     /// - Then:
     ///    - it throws `storageUnavailable` saying the user was deleted; the state is signed out, `.userDeleted`
-    ///      is sent, and the pending sign-in is cancelled
+    ///      is sent, and the pending sign-in is cancelled: the engine holds no challenge
     func testAFailedPurgeAfterDeletionStillReportsTheDeletion() async throws {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         _ = await client.currentSessionState()
+        engine.setPendingChallenge(.confirmSignInWithTOTPCode)
         let events = StreamRecorder(client.listenToAuthEvents())
         harness.keychain.failing(.remove, with: errSecInteractionNotAllowed)
 
@@ -125,6 +130,8 @@ final class DeleteUserTests: XCTestCase {
         XCTAssertTrue(error?.errorDescription.contains("The user was deleted") == true)
         XCTAssertEqual(engine.deleteUserCalls.count, 1)
         XCTAssertEqual(engine.cancelPendingSignInCount, 1)
+        let pending = await engine.pendingChallenge
+        XCTAssertNil(pending)
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedOut)
         await events.waitFor(1)
@@ -148,7 +155,10 @@ final class DeleteUserTests: XCTestCase {
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, alice.data)
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
-        XCTAssertEqual(events.received, [])
+        // Nothing was sent: ended with a known event, as the recorder appends on its own task.
+        _ = await client.signOut()
+        await events.waitFor(1)
+        XCTAssertEqual(events.received, [.signedOut])
     }
 
     /// - Given: a signed-out session, a guest session, and a configuration without a user pool
@@ -256,9 +266,10 @@ final class DeleteUserTests: XCTestCase {
         harness.engine(for: work)?.scriptDeleteUser { _ in await latch.pass() }
 
         let deletion = Task { try await workClient.deleteUser() }
-        await latch.waitForArrivals(1)
+        try await latch.arrivals(1)
         let held = await workClient.core.gate.isLocked
-        let homeResult = await homeClient.signOut()
+        // Bounded: were home's sign-out queued behind work's gate, it would wait for a latch opened only below.
+        let homeResult = try await withinTime(10, "home's sign-out") { await homeClient.signOut() }
         await latch.open()
         try await deletion.value
 

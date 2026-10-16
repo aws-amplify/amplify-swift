@@ -59,7 +59,9 @@ final class EngineAuthErrorBridgeTests: XCTestCase {
         ]
     }
 
-    /// Compile-time exhaustiveness for `everyCase`: a new case breaks this switch.
+    /// An exhaustive switch, so a new `EngineAuthError` case fails to compile here. That does not add the case
+    /// to `everyCase`, a literal list, or change the counts the tests check (`8 * …`): when this switch gets a
+    /// case, add a value of it to `everyCase` and update those counts.
     static func caseName(_ error: EngineAuthError) -> String {
         switch error {
         case .configuration: "configuration"

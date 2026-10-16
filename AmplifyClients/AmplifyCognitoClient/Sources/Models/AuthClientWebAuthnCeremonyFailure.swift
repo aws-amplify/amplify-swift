@@ -9,7 +9,8 @@ import Foundation
 
 /// Why a local WebAuthn ceremony (the passkey sheet) failed. Carried by
 /// `AuthClientError.webAuthnCeremonyFailed`, whose underlying error is the platform's
-/// `ASAuthorizationError`.
+/// `ASAuthorizationError` for `.credentialAlreadyExists` and `.failed`, and an internal encoding or decoding
+/// error, which an app cannot name, for `.invalidCredential`.
 ///
 /// Distinct from Cognito's answers, which are `AuthClientError.service` with a WebAuthn
 /// `AuthClientServiceErrorCode`.

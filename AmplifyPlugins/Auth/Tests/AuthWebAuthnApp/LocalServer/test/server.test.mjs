@@ -65,7 +65,7 @@ const startServer = async (environment = {}) => {
 const post = (server, requestPath, body = { deviceId: device }) => new Promise((resolve, reject) => {
     const data = JSON.stringify(body)
     const request = http.request({
-        host: "127.0.0.1",
+        host: server.host ?? "127.0.0.1",
         port: server.port,
         path: requestPath,
         method: "POST",
@@ -89,6 +89,18 @@ const withServer = (environment, body) => async () => {
         server.stop()
     }
 }
+
+// This Mac's first IPv4 address that is not loopback, if it has one.
+const otherAddress = Object.values(os.networkInterfaces()).flat()
+    .find((entry) => entry?.family === "IPv4" && !entry.internal)?.address
+
+test("the server listens on loopback only, so nothing on the network reaches it", {
+    skip: otherAddress === undefined && "this Mac has no address but loopback"
+}, withServer({}, async (server) => {
+    await assert.rejects(post({ ...server, host: otherAddress }, "/match", { deviceId: "booted" }), { code: "ECONNREFUSED" })
+    assert.equal(server.calls().length, 0)
+    assert.equal((await post(server, "/match", { deviceId: "booted" })).status, 200)
+}))
 
 test("enroll sets the enrollment state and posts its change from one notifyutil", withServer({}, async (server) => {
     const response = await post(server, "/enroll")

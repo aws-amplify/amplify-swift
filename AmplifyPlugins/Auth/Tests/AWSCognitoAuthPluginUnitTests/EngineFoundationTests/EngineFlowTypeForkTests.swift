@@ -36,6 +36,9 @@ class EngineFlowTypeForkTests: XCTestCase {
 
     // MARK: Every value of each public type
 
+    // Literal lists, and the counts the tests check: nothing adds a new case to them, so extend them by hand
+    // when a public type gets one.
+
     static var factors: [AuthFactorType] {
         var factors: [AuthFactorType] = [.password, .passwordSRP, .smsOTP, .emailOTP]
         #if os(iOS) || os(macOS) || os(visionOS)

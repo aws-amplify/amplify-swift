@@ -12,8 +12,8 @@ import Foundation
 /// Mirrors the plugin's public `AWSCognitoAuthError` case for case, with the same names, the same order
 /// and the same messages. The plugin's type is reached as `underlyingError as? AWSCognitoAuthError`; the
 /// client carries its code in the error case itself, so `catch AuthClientError.service(.codeMismatch?, _, _, _)`
-/// needs no downcast. The client does not depend on the plugin, so it owns this type, and the plugin bridge
-/// will map the two case to case.
+/// needs no downcast. The client does not depend on the plugin, so it owns this type, and a plugin bridge
+/// would map the two case to case (not built yet).
 ///
 /// A plain value, not an `Error`: it is never thrown on its own, only carried by `AuthClientError.service`.
 /// `errorDescription` is a plain property that names the case and gives the plugin's message.

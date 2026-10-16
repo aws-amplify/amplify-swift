@@ -79,8 +79,9 @@ public extension AmplifyCognitoClient {
     /// (a custom endpoint, a proxy, certificate pinning) is not applied: hold a client for the session to sign out
     /// through it instead.
     ///
-    /// Never signs out a different user: if another process signed someone else in to this session ID
-    /// meanwhile, they are left signed in and the result is `.failed(.invalidState)`.
+    /// Never signs out a user who signs in while the call runs: if another process signs someone else in to
+    /// this session ID meanwhile, they are left signed in and the result is `.failed(.invalidState)`. The call
+    /// takes no expected user, so it signs out whoever the saved session holds when it starts.
     ///
     /// Never throws, as `signOut(options:)` does not: `.failed` means the session is still signed in on this
     /// device; `.complete` and `.partial` that it is signed out here.
@@ -96,7 +97,9 @@ public extension AmplifyCognitoClient {
     /// then signed out; a change the rule would delete on is left alone, the app's login included, so a call with a
     /// configuration other than the app's never deletes the app's login. The configuration the app last ran with stays
     /// recorded (only a restore records one). After a carry, the login it came from is signed out too while it still
-    /// holds the user just signed out, so the user stays signed out under both configurations.
+    /// holds the user (or federated identity) just signed out, so the user stays signed out under both configurations.
+    /// A guest's is left, as a named session leaves a guest's copy: a restore under either configuration then finds
+    /// the same guest.
     ///
     /// - Returns: `.complete`, or `.partial` with the revoke's failure or the hosted UI's cookie left behind,
     ///   when the session is signed out on this device. `.failed`, and the session is still signed in:

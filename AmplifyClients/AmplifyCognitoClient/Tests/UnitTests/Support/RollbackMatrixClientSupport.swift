@@ -17,32 +17,50 @@ import XCTest
 enum RollbackPluginBinary: String, CaseIterable {
     /// A released plugin (2.62.0), which does not know the Cognito client's records, the `amplify.<digits>.`
     /// accounts. Its view (`PluginBinaryKeychainView`) refuses any read of one, a guard on the emulation: 2.62.0 never
-    /// asks. On every read, save, delete and refresh path it runs the same code as `.current`; only the access-group
-    /// transition rows differ.
+    /// asks. It also keeps any client record its store asks to remove, as 2.62.0 never removes one outside a
+    /// service-wide removal: on a configuration change that deletes the old login, `.current` removes the old
+    /// namespace's two `$default` items and `.released` doesn't. On every other read, save, delete and refresh path it
+    /// runs the same code as `.current`; only the access-group transition rows differ.
     case released
     /// This plugin, over the whole keychain. It no longer reads the client's records either.
     case current
 
-    /// The keychain as this binary's credential store sees it, over `base`. Every read of a client record either way
-    /// is recorded in `hiddenReads`.
+    /// The keychain as this binary's credential store sees it, over `base`. Every read and every removal by account
+    /// of a client record, either way, is recorded in `hiddenReads`.
     func keychainStore(over base: any KeychainItemStoreBehavior, recording hiddenReads: HiddenReads) -> any KeychainItemStoreBehavior {
-        PluginBinaryKeychainView(base: base, hidesClientRecords: self == .released, onClientRecordRead: { hiddenReads.record($0) })
+        PluginBinaryKeychainView(
+            base: base,
+            hidesClientRecords: self == .released,
+            onClientRecordRead: { hiddenReads.record($0) },
+            onClientRecordRemove: { hiddenReads.recordRemove($0) }
+        )
     }
 }
 
-/// The client records a plugin binary asked to read, which the rows assert stays empty.
+/// The client records a plugin binary asked to read, which the rows assert stays empty, and the ones it asked to
+/// remove by account.
 ///
-/// - Note: `@unchecked Sendable`: `recorded` is only touched while holding `lock`.
+/// - Note: `@unchecked Sendable`: `recorded` and `removed` are only touched while holding `lock`.
 final class HiddenReads: @unchecked Sendable {
     private let lock = NSLock()
     private var recorded: [String] = []
+    private var removed: [String] = []
 
     var accounts: [String] {
         lock.withLock { recorded }
     }
 
+    /// The client records the binary asked to remove, whether its view kept them (`.released`) or not.
+    var removedAccounts: [String] {
+        lock.withLock { removed }
+    }
+
     func record(_ account: String) {
         lock.withLock { recorded.append(account) }
+    }
+
+    func recordRemove(_ account: String) {
+        lock.withLock { removed.append(account) }
     }
 }
 

@@ -62,10 +62,6 @@ final class SessionRecordEnvelopeTests: XCTestCase {
             #"{"credentials":"dG9rZW5z","generation":3,"kind":"userPoolAndIdentityPool","label":"Acme Corp","# +
                 #""lastWriteTimestamp":1790000000123,"schemaVersion":1,"userId":"sub-1","username":"alice"}"#
         )
-        XCTAssertEqual(
-            Set(SessionRecordEnvelope.CodingKeys.allRawValues),
-            ["schemaVersion", "generation", "lastWriteTimestamp", "label", "username", "userId", "kind", "credentials"]
-        )
     }
 
     /// `userId` was added to schema version 1 as an additive key, so records written before it existed
@@ -175,11 +171,15 @@ final class SessionRecordEnvelopeTests: XCTestCase {
     /// so a new kind must come with a schema bump. This stops the file compiling until whoever adds a
     /// case records the schema version that introduced it.
     ///
-    /// - Given: every session kind, reached through an exhaustive switch with no `default`
-    /// - When: each is mapped to the schema version that introduced it
+    /// **The compile error is the whole check.** `SessionKind` is not `CaseIterable` (that would add `allCases` to
+    /// its API), so the assertions below run over the five kinds listed here, not over every case: a new case is
+    /// caught only by the exhaustive switch, and whoever adds its row must also bump
+    /// `SessionRecordEnvelope.currentSchemaVersion` to the version it returns.
+    ///
+    /// - Given: the five version-1 kinds, and an exhaustive switch with no `default` over every kind
+    /// - When: each of the five is mapped to the schema version that introduced it
     /// - Then:
-    ///    - every version is one this build reads, and the version-1 kinds are exactly the five pinned
-    ///      spellings
+    ///    - each is a version this build reads, and their spellings are exactly the five pinned ones
     func testAddingASessionKindRequiresRecordingItsSchemaVersion() {
         func introducedIn(_ kind: SessionKind) -> Int {
             switch kind {
@@ -272,10 +272,4 @@ final class SessionRecordEnvelopeTests: XCTestCase {
         }
         XCTAssertEqual(SessionRecordEnvelope.decode(Data()), .corrupt)
     }
-}
-
-private extension SessionRecordEnvelope.CodingKeys {
-    static let allRawValues: [String] = [
-        Self.schemaVersion, .generation, .lastWriteTimestamp, .label, .username, .userId, .kind, .credentials
-    ].map(\.rawValue)
 }

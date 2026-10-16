@@ -1189,13 +1189,15 @@ final class SessionCopyForwardTests: XCTestCase {
 
     /// The refusal covers a session live under any other namespace, not only one the marker names.
     ///
-    /// - Given: `work` live under the identity pool alone (a guest), which its marker does not name
+    /// - Given: `work` live under the identity pool alone (a guest), with no marker, so none names that namespace
     /// - When: `purgeStoredSession` runs over both pools
     /// - Then: it throws `sessionConfigurationMismatch`
     func testStoredSessionCallsRefuseASessionLiveUnderAnUnrelatedConfiguration() async throws {
-        try identityPoolOnlyStore.write(FakePayload.guest().record(), for: ClientFixtures.id("other"), expecting: nil)
+        // No marker: the default `recordingMarker: true` would name the identity-pool-only namespace.
+        try identityPoolOnlyStore.write(FakePayload.guest().record(), for: work, expecting: nil, recordingMarker: false)
         let live = try harness.client(work, configuration: ClientFixtures.identityPoolOnlyConfiguration)
-        _ = await live.currentSessionState()
+        let restored = await live.currentSessionState()
+        XCTAssertEqual(restored, .guest)
         let dependencies = harness.dependencies
         let work = work
 

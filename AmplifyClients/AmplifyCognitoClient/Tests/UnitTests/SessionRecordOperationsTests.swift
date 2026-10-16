@@ -178,6 +178,8 @@ final class SessionRecordOperationsTests: XCTestCase {
     /// - When: a label is set
     /// - Then:
     ///    - after three lost races it throws `storageUnavailable(.interrupted)` rather than forcing
+    ///    - exactly three attempts ran: the rival committed twice per attempt, once after its read and once after
+    ///      the write's re-read
     func testLabelGivesUpAfterThreeLostRaces() async throws {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
@@ -193,6 +195,7 @@ final class SessionRecordOperationsTests: XCTestCase {
             XCTAssertEqual((error as? AuthClientError)?.storageUnavailableReason, .interrupted, "\(error)")
         }
         harness.keychain.afterEveryRead(of: harness.store().sessionAccount(for: work), nil)
+        XCTAssertEqual(rival.commits, 2 * SessionCore.maximumRecordWriteAttempts)
         XCTAssertNotEqual(try envelope(work)?.record.label, "Work")
     }
 

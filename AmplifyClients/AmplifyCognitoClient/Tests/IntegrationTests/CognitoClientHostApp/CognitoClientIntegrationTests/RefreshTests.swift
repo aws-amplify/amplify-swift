@@ -76,8 +76,8 @@ final class RefreshTests: ClientIntegrationTestCase {
             return results
         }
 
-        XCTAssertEqual(aliceRecorder.operations.count(where: { $0 == "GetTokensFromRefreshToken" }), 1, "\(aliceRecorder.operations)")
-        XCTAssertEqual(bobRecorder.operations.count(where: { $0 == "GetTokensFromRefreshToken" }), 1, "\(bobRecorder.operations)")
+        XCTAssertEqual(aliceRecorder.answeredOperations.count(where: { $0 == "GetTokensFromRefreshToken" }), 1, "\(aliceRecorder.operations)")
+        XCTAssertEqual(bobRecorder.answeredOperations.count(where: { $0 == "GetTokensFromRefreshToken" }), 1, "\(bobRecorder.operations)")
         let aliceForced = Set(results.filter { $0.0 == "alice-forced" }.map(\.1))
         let aliceProvided = Set(results.filter { $0.0 == "alice-provider" }.map(\.1))
         let bobForced = Set(results.filter { $0.0 == "bob-forced" }.map(\.1))

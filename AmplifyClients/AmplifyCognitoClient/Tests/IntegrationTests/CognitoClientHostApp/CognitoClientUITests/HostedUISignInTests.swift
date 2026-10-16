@@ -33,8 +33,9 @@ import XCTest
 /// **Credentials are pasted, never typed or printed.** `typeText` records its text in XCTest's activity log
 /// (`xcodebuild`'s output and the result bundle), so the user's name and password go into the web form
 /// through the simulator's pasteboard: local only, expiring after a minute, and cleared right after the paste
-/// and at teardown. A field is checked by its length only. Failure messages carry the app's result line and
-/// redacted sheet hierarchies, never a name, password or hosted-UI domain.
+/// and at teardown. A field is checked by its length only. Failure messages carry the app's result line (which
+/// names an error by its case only) and sheet hierarchies, both redacted, never a name, password or hosted-UI
+/// domain.
 final class HostedUISignInTests: XCTestCase, @unchecked Sendable {
     private let timeout = TimeInterval(30)
     private var app: XCUIApplication!
@@ -305,8 +306,8 @@ final class HostedUISignInTests: XCTestCase, @unchecked Sendable {
         return await XCTWaiter().fulfillment(of: [expectation], timeout: timeout) == .completed
     }
 
-    /// Waits for the running action's result line and returns it. The app clears the line when an action
-    /// starts, so the result read is always this action's own.
+    /// Waits for the running action's result line and returns it, redacted. The app clears the line when an
+    /// action starts, so the result read is always this action's own.
     @MainActor
     private func waitForResult(timeout: TimeInterval? = nil) async -> String {
         let result = app.staticTexts["LastResult"]
@@ -314,7 +315,7 @@ final class HostedUISignInTests: XCTestCase, @unchecked Sendable {
         let deadline = Date().addingTimeInterval(timeout ?? self.timeout)
         while Date() < deadline {
             if result.exists, !result.label.isEmpty {
-                return result.label
+                return Self.redacted(result.label)
             }
             _ = result.waitForExistence(timeout: 0.5)
         }
@@ -332,7 +333,7 @@ final class HostedUISignInTests: XCTestCase, @unchecked Sendable {
                 showedBrowser = true
             }
             if result.exists, !result.label.isEmpty {
-                return (result.label, showedBrowser)
+                return (Self.redacted(result.label), showedBrowser)
             }
             _ = result.waitForExistence(timeout: 0.5)
         }
@@ -346,7 +347,7 @@ final class HostedUISignInTests: XCTestCase, @unchecked Sendable {
         }
         let result = app.staticTexts["LastResult"]
         // SwiftUI drops an empty Text from the hierarchy: no element means the action is still running.
-        return result.exists ? result.label : "(no result yet: the action is still running)"
+        return result.exists ? Self.redacted(result.label) : "(no result yet: the action is still running)"
     }
 
     // MARK: - Sheets

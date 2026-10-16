@@ -55,6 +55,30 @@ final class SignOutUnreadableRecordTests: XCTestCase {
         await waitUntil("the session sends .signedOut") { events.received == [.signedOut] }
     }
 
+    /// - Given: a named session whose record a newer version of the app saved (schema 2)
+    /// - When: it signs out globally through its client
+    /// - Then:
+    ///    - the result is `.partial` with the same error as both its revoke and its global sign-out error, since no
+    ///      global sign-out was sent; nothing was revoked; the record is a signed-out row
+    func testSigningOutANewerSchemasRecordGloballyReportsTheGlobalSignOutAsFailed() async throws {
+        let store = harness.store()
+        harness.keychain.put(StorageFixtures.futureSchemaRecord, store.sessionAccount(for: work))
+        let client = try harness.client(work)
+        _ = await client.currentSessionState()
+
+        let result = await client.signOut(options: AuthClientSignOutOptions(globalSignOut: true))
+
+        let unrevoked = SessionSignOut.unrevokedNewerRecordError(version: 2)
+        XCTAssertEqual(result, .partial(
+            revokeTokenError: unrevoked,
+            globalSignOutError: unrevoked,
+            hostedUIError: nil,
+            storageError: nil
+        ))
+        XCTAssertEqual(harness.engine(for: work)?.revokeCalls, [])
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
+    }
+
     /// - Given: one named session whose record a newer version saved, and another whose record is corrupt bytes, neither
     ///   held by a client
     /// - When: each is signed out with `signOutStoredSession`

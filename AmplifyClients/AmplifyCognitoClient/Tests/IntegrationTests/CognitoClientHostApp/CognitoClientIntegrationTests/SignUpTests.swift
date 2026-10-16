@@ -146,7 +146,8 @@ final class SignUpTests: ClientSignUpTestCase {
     ///    - the client resends its sign-up code
     /// - Then:
     ///    - the destination is an email, or the error is `.service` with `userNotFound` or `limitExceeded`
-    ///    - one `ResendConfirmationCode` was sent
+    ///    - one `ResendConfirmationCode` was answered, or, on `limitExceeded` (which the SDK retries), only
+    ///      `ResendConfirmationCode` was sent
     ///
     func testUserNotFoundResendSignUpCode() async throws {
         let recorder = RecordingHTTPClient()
@@ -157,10 +158,16 @@ final class SignUpTests: ClientSignUpTestCase {
             guard case .email = details.destination else {
                 return XCTFail("expected an email destination")
             }
-        } catch AuthClientError.service(let code?, _, _, _) where [.userNotFound, .limitExceeded].contains(code) {
+        } catch AuthClientError.service(.limitExceeded?, _, _, _) {
+            // The SDK retries `LimitExceededException`, so every attempt was the same request, and none counts
+            // as answered.
+            XCTAssertFalse(recorder.operations.isEmpty, "no ResendConfirmationCode was sent")
+            XCTAssertEqual(Set(recorder.operations), ["ResendConfirmationCode"])
+            return
+        } catch AuthClientError.service(.userNotFound?, _, _, _) {
             // User-existence errors are on.
         }
-        XCTAssertEqual(recorder.operations, ["ResendConfirmationCode"])
+        XCTAssertEqual(recorder.answeredOperations, ["ResendConfirmationCode"])
     }
 
     // MARK: PasswordlessSignUpTests

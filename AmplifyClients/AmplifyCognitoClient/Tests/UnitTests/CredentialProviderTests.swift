@@ -92,6 +92,50 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(client.userPoolTokenProvider.sessionId, work)
     }
 
+    /// The credentials `credentialsProvider` resolves never print their secret or session token, as
+    /// `fetchAuthSession()`'s `AuthClientAWSCredentials` don't.
+    ///
+    /// - Given: a signed-in session with an identity pool
+    /// - When: its resolved credentials are rendered by interpolation, `String(describing:)`,
+    ///   `String(reflecting:)`, `print`, `debugPrint` and `dump`, and read through their mirror
+    /// - Then:
+    ///    - no rendering contains the secret, the session token or the whole access key ID, and each says
+    ///      `<redacted>`
+    ///    - the values themselves are unchanged
+    func testResolvedCredentialsRedactTheSecretAndTokenInEveryRendering() async throws {
+        let alice = FakePayload.signedIn("alice")
+        try harness.signIn(work, alice)
+        let client = try harness.client(work)
+
+        let resolved = try await client.credentialsProvider.resolve()
+        let credentials = try XCTUnwrap(resolved as? CognitoAWSCredentials)
+
+        var printed = ""
+        print(resolved, to: &printed)
+        var debugPrinted = ""
+        debugPrint(resolved, to: &debugPrinted)
+        var dumped = ""
+        dump(resolved, to: &dumped)
+        let renderings = [
+            ("interpolation", "\(resolved)"),
+            ("describing", String(describing: resolved)),
+            ("reflecting", String(reflecting: resolved)),
+            ("print", printed),
+            ("debugPrint", debugPrinted),
+            ("dump", dumped)
+        ]
+        for (form, text) in renderings {
+            XCTAssertFalse(text.contains(credentials.secretAccessKey), "\(form): the secret is rendered")
+            XCTAssertFalse(text.contains(credentials.sessionToken), "\(form): the session token is rendered")
+            XCTAssertFalse(text.contains(credentials.accessKeyId), "\(form): the access key ID is not masked")
+            XCTAssertTrue(text.contains("<redacted>"), "\(form): no redaction marker")
+        }
+        let children = Mirror(reflecting: credentials).children.map { "\($0.value)" }
+        XCTAssertFalse(children.contains(credentials.secretAccessKey), "the mirror holds the secret")
+        XCTAssertFalse(children.contains(credentials.sessionToken), "the mirror holds the session token")
+        XCTAssertEqual(credentials, alice.awsCredentials, "the values themselves are unchanged")
+    }
+
     /// A user-pool-only session has no identity-pool credentials to give: a misconfiguration, so it
     /// fails loudly rather than retrying forever or pretending to be signed out.
     ///
@@ -261,10 +305,13 @@ final class CredentialProviderTests: XCTestCase {
         let providerA = clientA.credentialsProvider
 
         let callA = Task { try await providerA.resolve() as? CognitoAWSCredentials }
-        await latch.waitForArrivals(1)
-        let credentialsB = try await clientB.credentialsProvider.resolve()
+        try await latch.arrivals(1)
+        // Bounded: were B's refresh queued behind A's, it would wait for a latch opened only below.
+        let credentialsB = try await withinTime(10, "B's credentials") {
+            try await clientB.credentialsProvider.resolve() as? CognitoAWSCredentials
+        }
 
-        XCTAssertEqual(credentialsB as? CognitoAWSCredentials, FakePayload.signedIn("bob", stale: true).refreshed.awsCredentials)
+        XCTAssertEqual(credentialsB, FakePayload.signedIn("bob", stale: true).refreshed.awsCredentials)
         let stillHeld = await latch.arrivalCount
         XCTAssertEqual(stillHeld, 1, "A's refresh was still held when B finished")
         await latch.open()
@@ -331,9 +378,13 @@ final class CredentialProviderTests: XCTestCase {
         let credentials = try await client.credentialsProvider.resolve()
 
         XCTAssertEqual(credentials as? CognitoAWSCredentials, otherProcess.awsCredentials)
-        XCTAssertEqual(events.received, [])
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        // Ends with a known event: the recorder appends on its own task, so an empty list alone could miss an event
+        // still in flight.
+        _ = await client.signOut()
+        await events.waitFor(1)
+        XCTAssertEqual(events.received, [.signedOut])
     }
 
     /// - Given: a session needing a refresh, whose refresh fails as reused with nothing fresher stored
@@ -359,8 +410,12 @@ final class CredentialProviderTests: XCTestCase {
     /// rolled forward over a token the plugin rotated away). A repeat sooner than that is another writer that may
     /// still be saving (an extension suspended between Cognito's answer and its keychain write).
     ///
+    /// A too-soon repeat keeps the first reuse's time: the gap is counted from the first, so an app retrying more
+    /// often than the gap still learns the token is dead.
+    ///
     /// - Given: a session needing a refresh, whose every refresh fails as reused, with nothing stored meanwhile
-    /// - When: credentials are requested, again at once, then after the gap, then once more
+    /// - When: credentials are requested; again 10 s before the gap ends; then once the gap since the first has
+    ///   passed (only 10 s after the repeat); then once more
     /// - Then:
     ///    - the first two throw `unknown` (retryable), with no event
     ///    - the third throws `sessionExpired` and sends one `.sessionExpired` event; the fourth throws
@@ -375,9 +430,10 @@ final class CredentialProviderTests: XCTestCase {
         let events = StreamRecorder(client.listenToAuthEvents())
 
         let first = await credentialsError { try await client.credentialsProvider.resolve() }
+        harness.advanceClock(by: RefreshTokenReuse.minimumGap - 10)
         let tooSoon = await credentialsError { try await client.credentialsProvider.resolve() }
         XCTAssertEqual(events.received, [], "no event while another writer may still be saving")
-        harness.advanceClock(by: RefreshTokenReuse.minimumGap)
+        harness.advanceClock(by: 10)
         let third = await credentialsError { try await client.credentialsProvider.resolve() }
         let fourth = await credentialsError { try await client.credentialsProvider.resolve() }
 
@@ -386,11 +442,13 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(third?.isSessionExpired, true, "\(String(describing: third))")
         XCTAssertEqual(fourth?.isSessionExpired, true, "\(String(describing: fourth))")
         XCTAssertEqual(engine.refreshCalls.count, 3)
-        await events.waitFor(1)
-        XCTAssertEqual(events.received, [.sessionExpired])
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, stale.data)
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        // Ends with a known event, so an extra `.sessionExpired` still in the recorder's buffer is counted too.
+        _ = await client.signOut()
+        await events.waitFor(2)
+        XCTAssertEqual(events.received, [.sessionExpired, .signedOut])
     }
 
     /// The dead-token count is the record's, for the process: a new client of the same session after the first
@@ -450,10 +508,13 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(first?.isUnknown, true, "\(String(describing: first))")
         XCTAssertEqual(second?.isUnknown, true, "\(String(describing: second))")
         XCTAssertEqual(engine.refreshCalls, [stale.data, stale.data])
-        try await Task.sleep(nanoseconds: 50_000_000)
-        XCTAssertEqual(events.received, [])
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        // Ends with a known event: the recorder appends on its own task, so an empty list alone could miss an event
+        // still in flight.
+        _ = await client.signOut()
+        await events.waitFor(1)
+        XCTAssertEqual(events.received, [.signedOut])
     }
 
     /// A reuse whose record is unchanged, then one after which another writer saved a refresh: the second is the
@@ -487,9 +548,13 @@ final class CredentialProviderTests: XCTestCase {
 
         XCTAssertEqual(first?.isUnknown, true, "\(String(describing: first))")
         XCTAssertEqual(credentials as? CognitoAWSCredentials, otherProcess.awsCredentials)
-        XCTAssertEqual(events.received, [])
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        // Ends with a known event: the recorder appends on its own task, so an empty list alone could miss an event
+        // still in flight.
+        _ = await client.signOut()
+        await events.waitFor(1)
+        XCTAssertEqual(events.received, [.signedOut])
     }
 
     /// - Given: a session needing a refresh, whose refresh token turns out to be expired
@@ -548,7 +613,11 @@ final class CredentialProviderTests: XCTestCase {
         let credentials = try await client.credentialsProvider.resolve()
 
         XCTAssertEqual(credentials as? CognitoAWSCredentials, otherProcess.awsCredentials)
-        XCTAssertEqual(events.received, [])
+        // Ends with a known event: the recorder appends on its own task, so an empty list alone could miss an event
+        // still in flight.
+        _ = await client.signOut()
+        await events.waitFor(1)
+        XCTAssertEqual(events.received, [.signedOut])
     }
 
     /// An expired session is not stuck: a fresh sign-in stored by another process, such as an app

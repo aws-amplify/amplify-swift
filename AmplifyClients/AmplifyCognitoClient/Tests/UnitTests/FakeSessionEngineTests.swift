@@ -170,16 +170,18 @@ final class FakeSessionEngineTests: XCTestCase {
         XCTAssertEqual(pending, .confirmSignInWithTOTPCode)
     }
 
-    /// A step a cancel took is no longer in flight: a resume refused while it ran is accepted once the cancel
-    /// has run, and the step's late `.done` is still returned, for the core to refuse and revoke.
+    /// A step a cancel took is no longer in flight: a resume refused while it ran is accepted as soon as the cancel
+    /// has run, before the step ends, as the live engine accepts one once its `take` has run. The step's late
+    /// `.done` is still returned, for the core to refuse and revoke, and it leaves the resumed attempt alone.
     ///
     /// - Given: a sign-in at epoch 1 held inside its script, which then finishes with `.done`
     /// - When:
     ///    - a saved challenge is resumed while it is held
-    ///    - a cancel for everything before epoch 2 runs, the script is released, and the saved challenge is
-    ///      resumed again
+    ///    - a cancel for everything before epoch 2 runs, the saved challenge is resumed again, and only then is the
+    ///      script released
     /// - Then:
-    ///    - the first resume is refused, the sign-in returns its `.done`, and the second resume is accepted
+    ///    - the first resume is refused and the second accepted; the sign-in returns its `.done`, and the resumed
+    ///      challenge is still pending
     func testAStepACancelTookLeavesNothingInFlight() async throws {
         let engine = try makeEngine()
         let gate = Gate()
@@ -194,13 +196,52 @@ final class FakeSessionEngineTests: XCTestCase {
         let whileHeld = await engine.resumeSignIn(from: saved, epoch: 1)
 
         await engine.cancelPendingSignIn(before: 2)
+        let afterCancel = await engine.resumeSignIn(from: saved, epoch: 2)
         await gate.open()
         let result = try await signIn.value
-        let afterwards = await engine.resumeSignIn(from: saved, epoch: 2)
+        let pending = await engine.pendingChallenge
 
         XCTAssertNil(whileHeld, "a step in flight is newer than a saved record")
+        XCTAssertEqual(afterCancel, .confirmSignInWithTOTPCode, "the cancel took the step")
         XCTAssertEqual(result, .done(payload: FakePayload.signedIn("alice").data))
-        XCTAssertEqual(afterwards, .confirmSignInWithTOTPCode)
+        XCTAssertEqual(pending, .confirmSignInWithTOTPCode, "a taken step's late .done leaves the resumed attempt")
+    }
+
+    /// A taken step's late failure leaves the attempt to whoever came after it, as the live engine's `run` does.
+    ///
+    /// - Given: a sign-in at epoch 1, held inside its script and then failing, and alternatively held by
+    ///   `holdSignIns(on:)` (which throws `CancellationError` once released after the cancel)
+    /// - When:
+    ///    - a cancel for everything before epoch 2 runs, a saved challenge is resumed, and the step is released
+    /// - Then:
+    ///    - the sign-in throws, and the resumed challenge is still pending
+    func testAStepACancelTookFailsWithoutDroppingTheResumedAttempt() async throws {
+        for heldByTheFake in [false, true] {
+            let engine = try makeEngine()
+            let gate = Gate()
+            if heldByTheFake {
+                engine.holdSignIns(on: gate)
+            } else {
+                engine.scriptSignIn { _, _ in
+                    await gate.pass()
+                    throw FixtureError(description: "Cognito failed")
+                }
+            }
+            let alice = Self.request("alice")
+            let signIn = Task { try await engine.signIn(alice, current: nil, epoch: 1) }
+            await gate.waitForArrivals(1)
+            let saved = try XCTUnwrap(ChallengeRecord.State.fake(.confirmSignInWithTOTPCode))
+
+            await engine.cancelPendingSignIn(before: 2)
+            let afterCancel = await engine.resumeSignIn(from: saved, epoch: 2)
+            await gate.open()
+            let result = await signIn.result
+            let pending = await engine.pendingChallenge
+
+            XCTAssertEqual(afterCancel, .confirmSignInWithTOTPCode, "held by the fake: \(heldByTheFake)")
+            XCTAssertThrowsError(try result.get(), "held by the fake: \(heldByTheFake)")
+            XCTAssertEqual(pending, .confirmSignInWithTOTPCode, "held by the fake: \(heldByTheFake)")
+        }
     }
 
     #if os(iOS) || os(macOS) || os(visionOS)
@@ -236,6 +277,35 @@ final class FakeSessionEngineTests: XCTestCase {
         let result = try await second.value
         XCTAssertEqual(result, done)
         XCTAssertEqual(browser.cancelCount, 1)
+    }
+
+    /// The live `beginSignIn(epoch:)` rule holds for a hosted-UI sign-in too: one older than the pending attempt
+    /// stops nothing.
+    ///
+    /// - Given: a challenge pending from a sign-in at epoch 2
+    /// - When:
+    ///    - a hosted-UI sign-in runs at epoch 1
+    /// - Then:
+    ///    - it throws `CancellationError` without being recorded or superseding anything, and the challenge is
+    ///      still pending
+    func testAnOlderHostedUISignInStopsNothing() async throws {
+        let engine = try makeEngine()
+        engine.scriptSignIn { _, _ in .challenge(.confirmSignInWithTOTPCode) }
+        _ = try await engine.signIn(Self.request("alice"), current: nil, epoch: 2)
+        let request = EngineWebUISignInRequest(
+            anchor: .empty(),
+            options: EngineWebUIOptions(WebUIOptions(), nonce: "n"),
+            identity: .none
+        )
+
+        await assertThrowsAsync({ try await engine.signInWithWebUI(request, current: nil, epoch: 1) }) { error in
+            XCTAssertTrue(error is CancellationError, "\(error)")
+        }
+
+        XCTAssertTrue(engine.webUISignInCalls.isEmpty)
+        XCTAssertEqual(engine.supersededCount, 0)
+        let pending = await engine.pendingChallenge
+        XCTAssertEqual(pending, .confirmSignInWithTOTPCode)
     }
     #endif
 

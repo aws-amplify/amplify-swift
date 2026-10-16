@@ -232,6 +232,58 @@ final class LiveEngineSignInTests: XCTestCase {
         XCTAssertEqual(initiate.clientMetadata, ["k": "v"])
     }
 
+    /// A sign-in without client metadata sends an empty map, not none, as the plugin's sign-in task does
+    /// (`?? [:]`).
+    ///
+    /// - Given: `InitiateAuth` answering tokens
+    /// - When:
+    ///    - alice signs in with `.userPassword` and no client metadata
+    /// - Then:
+    ///    - `InitiateAuth` carries `[:]` as its client metadata
+    ///
+    func testSignInWithoutClientMetadataSendsAnEmptyMap() async throws {
+        let engine = try harness.engine()
+        harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in
+            InitiateAuthOutput(authenticationResult: LiveEngineFixtures.tokens(), challengeParameters: [:])
+        }
+        harness.scriptIdentityPool()
+
+        _ = try await engine.signIn(
+            EngineSignInRequest(username: "alice", password: "pw", authFlowType: .userPassword, clientMetadata: [:]),
+            current: nil
+        )
+
+        let initiate = try XCTUnwrap(harness.cognito.inputs("InitiateAuth", as: InitiateAuthInput.self).first)
+        XCTAssertEqual(initiate.clientMetadata, [:])
+    }
+
+    /// A confirmation without client metadata hands the engine none, as the plugin's confirm task does
+    /// (`pluginOptions?.metadata`); with some, it hands it over as given.
+    ///
+    /// - Given: an answer without client metadata, and one with
+    /// - When:
+    ///    - each is turned into the engine's confirmation event
+    /// - Then:
+    ///    - the event's metadata is `nil` for the first and the given map for the second
+    ///
+    func testConfirmSignInWithoutClientMetadataHandsTheEngineNone() {
+        let without = EngineConfirmSignInRequest(
+            challengeResponse: "123456",
+            userAttributes: [:],
+            clientMetadata: [:],
+            friendlyDeviceName: nil
+        )
+        let with = EngineConfirmSignInRequest(
+            challengeResponse: "123456",
+            userAttributes: [:],
+            clientMetadata: ["k": "v"],
+            friendlyDeviceName: nil
+        )
+
+        XCTAssertNil(LiveSignInSteps.eventData(for: without).metadata)
+        XCTAssertEqual(LiveSignInSteps.eventData(for: with).metadata, ["k": "v"])
+    }
+
     /// Custom auth without SRP: the custom challenge, then its answer.
     ///
     /// - Given: `InitiateAuth` answering `CUSTOM_CHALLENGE`, and the answer accepted
@@ -877,7 +929,9 @@ final class LiveEngineSignInTests: XCTestCase {
             return XCTFail("expected .done, got \(result)")
         }
         let getId = try XCTUnwrap(harness.cognito.inputs("GetId", as: GetIdInput.self).last)
+        let pool = try XCTUnwrap(harness.configuration.userPool)
         XCTAssertEqual(getId.logins?.count, 1, "GetId carries the user pool login")
+        XCTAssertNotNil(getId.logins?["cognito-idp.\(pool.region).amazonaws.com/\(pool.poolId)"], "the login is the user pool's")
         let credentialInputs = harness.cognito.inputs("GetCredentialsForIdentity", as: GetCredentialsForIdentityInput.self)
         XCTAssertEqual(credentialInputs.map(\.identityId), ["us-east-1:alice"])
         XCTAssertEqual(try engine.describe(payload).identityId, "us-east-1:alice")

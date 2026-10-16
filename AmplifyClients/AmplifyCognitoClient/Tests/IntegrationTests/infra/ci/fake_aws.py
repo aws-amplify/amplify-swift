@@ -113,6 +113,11 @@ def handle(state, service, verb, o, data):
             return {"SummaryMap": {"Roles": len(roles) + 500, "RolesQuota": 1000}}
         if verb == "list-roles":
             return {"Roles": [dict(r["Role"]) for r in roles.values()]}
+        if verb == "get-account-authorization-details":
+            return {"RoleDetailList": [{"RoleName": r["Role"]["RoleName"], "RoleId": r["Role"]["RoleId"],
+                                        "RolePolicyList": [{"PolicyName": n, "PolicyDocument": d}
+                                                           for n, d in sorted(r["inline"].items())],
+                                        "AttachedManagedPolicies": r["attached"]} for r in roles.values()]}
         if verb == "create-role":
             if name in roles:
                 raise Fail("EntityAlreadyExists")
@@ -192,6 +197,8 @@ def handle(state, service, verb, o, data):
         if verb == "delete-alias":
             del kms["aliases"][one(o, "alias-name")]
             return {}
+        if verb == "list-keys":
+            return {"Keys": [{"KeyId": k, "KeyArn": f"arn:aws:kms:{region}:{acct}:key/{k}"} for k in sorted(kms["keys"])]}
         key_id = one(o, "key-id")
         if key_id not in kms["keys"]:
             raise Fail("NotFoundException")
@@ -208,6 +215,8 @@ def handle(state, service, verb, o, data):
         if verb == "list-resource-tags":
             return {"Tags": key["tags"]}
         if verb == "schedule-key-deletion":
+            if key["state"] == "PendingDeletion":
+                raise Fail("KMSInvalidStateException", f"{key_id} is pending deletion.")
             key["state"] = "PendingDeletion"
             return {}
     # --- dynamodb ------------------------------------------------------------------------------------------
@@ -281,6 +290,12 @@ def handle(state, service, verb, o, data):
             key = {"id": "da2-" + new_id(s, "apikey"), "description": one(o, "description"), "expires": int(one(o, "expires"))}
             api["keys"].append(key)
             return {"apiKey": key}
+        if verb == "update-api-key":
+            key = next((k for k in api["keys"] if k["id"] == data["id"]), None)
+            if key is None:
+                raise Fail("NotFoundException", "API key not found")
+            key["expires"] = int(data["expires"])
+            return {"apiKey": key}
         if verb == "delete-graphql-api":
             del apis[api_id]
             return {}
@@ -302,9 +317,9 @@ def handle(state, service, verb, o, data):
             params[name] = {"value": data["Value"], "tags": tags, "key": key}
             return {"Version": 1}
         if verb == "describe-parameters":
-            wanted = shorthand(one(o, "parameter-filters"))["Values"]
+            wanted = shorthand(one(o, "parameter-filters"))["Values"] if one(o, "parameter-filters") else None
             return {"Parameters": [{"Name": n, "Type": "SecureString", "KeyId": p.get("key", "alias/aws/ssm")}
-                                   for n, p in sorted(params.items()) if n == wanted]}
+                                   for n, p in sorted(params.items()) if wanted in (None, n)]}
         if name not in params:
             raise Fail("ParameterNotFound" if verb != "list-tags-for-resource" else "InvalidResourceId")
         if verb == "get-parameter":
@@ -352,6 +367,13 @@ def handle(state, service, verb, o, data):
             # As Lambda does: a change to the function's policy gives it a new revision.
             function["config"]["RevisionId"] = new_id(s, "rev", 8)
             return {"Statement": "{}"}
+        if verb == "remove-permission":
+            sid = one(o, "statement-id")
+            if not any(statement["Sid"] == sid for statement in function["policy"]):
+                raise Fail("ResourceNotFoundException", "Statement not found")
+            function["policy"] = [statement for statement in function["policy"] if statement["Sid"] != sid]
+            function["config"]["RevisionId"] = new_id(s, "rev", 8)
+            return {}
         if verb == "invoke":
             outfile = o["payload"][-1]
             users = function["config"]["Environment"]["Variables"]["USERNAMES"].split(",")

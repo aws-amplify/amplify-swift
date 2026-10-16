@@ -26,12 +26,14 @@ import XCTest
 /// plugin (2.62.0), and `.current`, this plugin.
 ///
 /// The two columns run identical code on every read, save, delete and refresh path: this plugin's credential store,
-/// which touches only its own key, as 2.62.0's does. `.released` differs only in its view of the keychain
-/// (`PluginBinaryKeychainView` refuses it any read of a client record, a guard on the emulation that 2.62.0 never
-/// needs, since it never asks) and in the access-group transition rows, where it runs 2.62.0's service-wide
-/// `_removeAll()`. So the columns are not double coverage of the other rows: `hiddenReadAccounts` and
-/// `mutatedClientAccounts` are the evidence there. The released access-group migration
-/// (`migrateKeychainItemsOfUserSession: true`) is not emulated.
+/// which touches only its own key, as 2.62.0's does, except on a configuration change that deletes the old login,
+/// where `.current` also removes the old namespace's two `$default` items (`$default.meta` and `$default.challenge`)
+/// and `.released` doesn't. `.released` differs only in its view of the keychain (`PluginBinaryKeychainView` refuses
+/// it any read of a client record, a guard on the emulation that 2.62.0 never needs, since it never asks, and keeps
+/// any client record it asks to remove, as 2.62.0 never removes one) and in the access-group transition rows, where it
+/// runs 2.62.0's service-wide `_removeAll()`. So the columns are not double coverage of the other rows:
+/// `hiddenReadAccounts`, `hiddenRemoveAccounts` and `mutatedClientAccounts` are the evidence there. The released
+/// access-group migration (`migrateKeychainItemsOfUserSession: true`) is not emulated.
 ///
 /// The rows the rollback matrix's checklist requires, here and in `RollbackMatrixClientTests`:
 /// 1. rotation rollback now signed in: `testMatrix_rotationRollback_isNowSignedIn`, with the roll-forward,
@@ -49,7 +51,7 @@ import XCTest
 ///    `authConfiguration`: `testMatrix_pluginBuildWithTheOldConfiguration_runsItsOwnRuleAfterTheClient`.
 ///
 /// The other rollback rows are in `RollbackMatrixPluginTests+Rollback.swift` (mixed binaries at rest, named sessions
-/// across a rollback, and a newer sidecar) and `RollbackMatrixPluginTests+SignOut.swift` (a signed-out
+/// across a rollback, a newer sidecar, and a released plugin's deleting change leaving the sidecar) and `RollbackMatrixPluginTests+SignOut.swift` (a signed-out
 /// user never signed back in, a client sign-out read as signed out, G2, and the documented caveat of a purge after a
 /// carry). The client's bytes decoded by the released types are in `KeychainAttributeParityTests`.
 /// `Matrix07` names a row of the cell matrix (which keys the keychain holds) that still holds.

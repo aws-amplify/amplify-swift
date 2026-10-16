@@ -15,7 +15,8 @@ import XCTest
 
 /// `IO-1` … `IO-3` and `IO-5`: the plugin's `CredentialStoreTransitionRealKeychainTests` (Q7),
 /// ported into the interop target, the one that links the plugin. Each test keeps
-/// the plugin's method name.
+/// the plugin's method name. `IO-6` is the client's own: the plugin's
+/// configuration change from the configuration the client recorded.
 ///
 /// The plugin's access-group transition runs on the real keychain, end to end, through its public
 /// surface: `AWSCognitoAuthPlugin(secureStoragePreferences:)` and `configure(using:)`, which builds
@@ -268,6 +269,53 @@ final class CredentialStoreTransitionRealKeychainTests: XCTestCase {
         XCTAssertEqual(unshared, expectedClientRows, "the unshared service's client records after the destination clear: \(observed)")
     }
 
+    /// IO-6. A configuration change the plugin applies to the configuration the client recorded: under another user
+    /// pool, the plugin deletes the login of the configuration the client last ran, with `.default`'s sidecar and
+    /// interrupted sign-in, on the real keychain, and keeps the client's named records.
+    ///
+    /// IO-1 … IO-5 put the seeded `authConfiguration` back after the client's restore, so the plugin never applies a
+    /// change there; this test keeps the one the client wrote. No access group is set on either side, so no
+    /// transition clear or migration runs, and nothing signs in, so no request is made: the plugin's configuration
+    /// has a user pool only, and another user pool's login is not revoked.
+    ///
+    /// - Given: an empty unshared service; a labelled named row the client wrote, and a `.default` label, whose
+    ///   restore records the client's configuration as the plugin's last one (`authConfiguration`) and writes the
+    ///   sidecar; then, under the client's pool namespace, a plugin record and a `$default.challenge` item
+    /// - When:
+    ///    - the plugin, with no access group, is configured under another user pool
+    /// - Then:
+    ///    - the plugin rewrote `authConfiguration` with its own configuration
+    ///    - the client namespace's plugin record, sidecar and challenge item are gone
+    ///    - the named row is kept, and the client still lists it with its label
+    ///
+    func testConfigurationChangeFromTheClientsConfigurationRemovesTheLoginAndDefaultItems() async throws {
+        let configuration = try XCTUnwrap(clientConfiguration)
+        let clientSession = try await writeClientRow()
+        let sidecar = try await writeClientDefaultLabel(keepingTheClientsConfiguration: true)
+        let recorded = RealKeychain.rows(service: unsharedService).first { $0.account == "authConfiguration" }?.value
+        XCTAssertNotNil(recorded, "the client's restore of `.default` recorded no configuration for the plugin")
+        let login = SessionRecordKey.pluginSessionAccount(in: configuration.poolNamespace)
+        let challenge = SessionRecordKey.account(for: .default, in: configuration.poolNamespace, kind: .challenge)
+        for account in [login, challenge] {
+            let status = RealKeychain.add("default", account: account, service: unsharedService)
+            XCTAssertEqual(status, errSecSuccess, "seed \(RealKeychain.redact(account)): \(RealKeychain.describe(status))")
+        }
+        let clientRows = RealKeychain.rows(service: unsharedService).filter { staysWithTheClient($0.account) }
+
+        try await configurePluginWithoutAnAccessGroup(changedFrom: recorded)
+
+        let unshared = RealKeychain.rows(service: unsharedService)
+        let observed = "unshared service \(unshared)"
+        RealKeychain.report(self, "after the plugin's configuration change: \(observed)")
+        let accounts = Set(unshared.map(\.account))
+        // Booleans: these accounts hold the sandbox's pool IDs. `observed` is redacted.
+        XCTAssertFalse(accounts.contains(login), "the plugin kept the client configuration's login: \(observed)")
+        XCTAssertFalse(accounts.contains(sidecar), "the plugin kept `.default`'s sidecar: \(observed)")
+        XCTAssertFalse(accounts.contains(challenge), "the plugin kept `.default`'s interrupted sign-in: \(observed)")
+        XCTAssertEqual(unshared.filter { staysWithTheClient($0.account) }, clientRows, "the plugin changed client records: \(observed)")
+        try await assertClientStillLists(clientSession, observed: observed)
+    }
+
     // MARK: - Helpers
 
     private static let clientLabel = "Keychain port"
@@ -284,7 +332,7 @@ final class CredentialStoreTransitionRealKeychainTests: XCTestCase {
         let account = SessionRecordKey.account(for: sessionId, in: configuration.poolNamespace, kind: .session)
         XCTAssertTrue(
             RealKeychain.rows(service: unsharedService).contains { $0.account == account },
-            "the client's row \(account) is not in \(RealKeychain.rows(service: unsharedService))"
+            "the client's row \(RealKeychain.redact(account)) is not in \(RealKeychain.rows(service: unsharedService))"
         )
         return sessionId
     }
@@ -300,14 +348,19 @@ final class CredentialStoreTransitionRealKeychainTests: XCTestCase {
     /// sandbox namespace's login and, with it, that namespace's `$default.meta` and `$default.challenge` (as the
     /// client does on the same change), the very sidecar these tests follow. The plugin's own Q7 tests see no previous
     /// configuration, and these must too: they test the access-group transition, not a configuration change.
+    ///
+    /// `keepingTheClientsConfiguration` leaves the configuration the client recorded in place instead, for IO-6,
+    /// which tests that configuration change.
     @discardableResult
-    private func writeClientDefaultLabel() async throws -> String {
+    private func writeClientDefaultLabel(keepingTheClientsConfiguration: Bool = false) async throws -> String {
         let configuration = try XCTUnwrap(clientConfiguration)
         try await AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: .default))
             .setSessionLabel(Self.clientLabel)
         try await InteropEnvironment.waitUntilReleased(.default)
-        let status = RealKeychain.replace("default", account: "authConfiguration", service: unsharedService)
-        XCTAssertEqual(status, errSecSuccess, "restore the seeded authConfiguration: \(RealKeychain.describe(status))")
+        if !keepingTheClientsConfiguration {
+            let status = RealKeychain.replace("default", account: "authConfiguration", service: unsharedService)
+            XCTAssertEqual(status, errSecSuccess, "restore the seeded authConfiguration: \(RealKeychain.describe(status))")
+        }
         let account = SessionRecordKey.metaAccount(in: configuration.poolNamespace)
         XCTAssertTrue(
             RealKeychain.rows(service: unsharedService).contains { $0.account == account },
@@ -379,6 +432,35 @@ final class CredentialStoreTransitionRealKeychainTests: XCTestCase {
 
         let deadline = Date().addingTimeInterval(20)
         while !RealKeychain.rows(service: sharedService).contains(where: { $0.account == "authConfiguration" }) {
+            guard Date() < deadline else {
+                XCTFail("The credential store was not built within 20 s")
+                return
+            }
+            try await Task.sleep(nanoseconds: 100_000_000)
+        }
+        // Let the credential-store state machine finish loading, so nothing writes after the asserts.
+        _ = try? await plugin.fetchAuthSession(options: nil)
+    }
+
+    /// Configures a fresh plugin with no access group under another user pool, and waits until its credential
+    /// store has been built: `AWSCognitoAuthCredentialStore.init` applies the configuration change from
+    /// `previous`, the bytes of `authConfiguration` before, and then rewrites it.
+    private func configurePluginWithoutAnAccessGroup(changedFrom previous: String?) async throws {
+        let plugin = AWSCognitoAuthPlugin()
+        self.plugin = plugin
+        let configuration: JSONValue = [
+            "CognitoUserPool": [
+                "Default": [
+                    "PoolId": "us-east-1_KcWipeNew",
+                    "AppClientId": "kcwipeappclient",
+                    "Region": "us-east-1"
+                ]
+            ]
+        ]
+        try plugin.configure(using: configuration)
+
+        let deadline = Date().addingTimeInterval(20)
+        while RealKeychain.rows(service: unsharedService).first(where: { $0.account == "authConfiguration" })?.value == previous {
             guard Date() < deadline else {
                 XCTFail("The credential store was not built within 20 s")
                 return

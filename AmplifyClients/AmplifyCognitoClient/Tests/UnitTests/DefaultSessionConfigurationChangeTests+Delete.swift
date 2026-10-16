@@ -181,4 +181,48 @@ extension DefaultSessionConfigurationChangeTests {
         try await settleRevokes()
         XCTAssertEqual(revokers.configurations, [])
     }
+
+    /// Whether a deleted login is revoked at all, decided before anything is started: the rule starts a revoke only
+    /// for the payload `revocablePayload(after:current:)` returns, so its `nil` cases mean no revoke ever runs, which
+    /// the end-to-end tests above, after `settleRevokes()`, can only sample.
+    ///
+    /// - Given: alice's login and a guest, and the rule's outcomes for them
+    /// - When: `revocablePayload(after:current:)` is asked for each
+    /// - Then:
+    ///    - alice's deleted login under the same user pool is revoked: her payload
+    ///    - nothing is revoked for her login deleted under another user pool, a deleted guest, a deletion with no
+    ///      record, a carry, or no change
+    func testRevocablePayload_isOnlyADeletedUserLoginOfTheSameUserPool() async throws {
+        let alice = try await signedInPayload("alice", under: ChangeConfigs.userPoolOnly)
+        let guest = try ChangePayloads.guest()
+        let store = harness.keychain.recordStore(for: SessionStorageNamespace(pools: ChangeConfigs.both.poolNamespace, accessGroup: nil))
+        let userPoolOnly = AuthConfiguration(client: ChangeConfigs.userPoolOnly)
+        let identityPoolOnly = AuthConfiguration(client: ChangeConfigs.identityPoolOnly)
+
+        XCTAssertEqual(
+            store.revocablePayload(after: .cleared(previousPayload: alice, previous: userPoolOnly), current: AuthConfiguration(client: ChangeConfigs.otherClientBoth)),
+            alice
+        )
+        XCTAssertNil(store.revocablePayload(
+            after: .cleared(previousPayload: alice, previous: userPoolOnly),
+            current: AuthConfiguration(client: ChangeConfigs.otherUserPool)
+        ))
+        XCTAssertNil(store.revocablePayload(
+            after: .cleared(previousPayload: guest, previous: identityPoolOnly),
+            current: AuthConfiguration(client: ChangeConfigs.otherIdentityPoolOnly)
+        ))
+        XCTAssertNil(store.revocablePayload(
+            after: .cleared(previousPayload: guest, previous: AuthConfiguration(client: ChangeConfigs.both)),
+            current: AuthConfiguration(client: ChangeConfigs.otherClientBoth)
+        ))
+        XCTAssertNil(store.revocablePayload(
+            after: .cleared(previousPayload: nil, previous: userPoolOnly),
+            current: AuthConfiguration(client: ChangeConfigs.otherClientBoth)
+        ))
+        XCTAssertNil(store.revocablePayload(
+            after: .carried(fromAccount: account(ChangeConfigs.userPoolOnly), bytes: alice),
+            current: AuthConfiguration(client: ChangeConfigs.both)
+        ))
+        XCTAssertNil(store.revocablePayload(after: .unchanged, current: AuthConfiguration(client: ChangeConfigs.both)))
+    }
 }

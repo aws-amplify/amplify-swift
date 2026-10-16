@@ -517,6 +517,32 @@ final class FederationTests: XCTestCase {
         XCTAssertEqual(state, .federated(identityId: "us-east-1:fed"))
     }
 
+    /// An expired federated session re-reads its record before it refuses an access token, so a user-pool sign-in
+    /// another process stored over it is answered.
+    ///
+    /// - Given: a federated session that a refresh proved expired, and another process that then stores a user-pool
+    ///   sign-in for it
+    /// - When: an access token is requested
+    /// - Then:
+    ///    - the new sign-in's token is returned, with no second refresh, not `notConfigured`
+    func testAnExpiredFederatedSessionPicksUpAUserPoolSignInBeforeRefusingAToken() async throws {
+        try harness.signIn(work, .federated(identityId: "us-east-1:fed", stale: true))
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
+        await assertThrowsAsync { try await client.credentialsProvider.resolve() }
+        let extensionSignIn = FakePayload.signedIn("alice", version: 7)
+        guard case .record(let envelope) = try harness.store().read(work) else {
+            return XCTFail("the expired record was not kept")
+        }
+        try harness.store().write(extensionSignIn.record(), for: work, expecting: envelope.version)
+
+        let token = try await client.userPoolTokenProvider.accessToken()
+
+        XCTAssertEqual(token, extensionSignIn.accessToken)
+        XCTAssertEqual(engine.refreshCalls.count, 1)
+    }
+
     // MARK: Clearing
 
     /// - Given: a labelled federated session, and a federated `home` session

@@ -183,7 +183,9 @@ final class PluginRotationTests: XCTestCase {
     /// Without the rotation outputs: skips on CI and on any backend that is not the sandbox (the plugin's CI
     /// backends have no rotation client), and fails on the sandbox, where the client belongs (P-15). The sandbox is
     /// told by the marker `infra/plugin-configs.py --dir` puts in its outputs (`InteropEnvironment.isSandbox`); CI by
-    /// `COGNITO_CLIENT_INTEG_CI_SKIPS=1`, which the client's CI job sets, or `CI` or `GITHUB_ACTIONS`. The test
+    /// `COGNITO_CLIENT_INTEG_CI_SKIPS=1` (a local run on the plugin's own files that asks for CI's skips), or
+    /// `CI` or `GITHUB_ACTIONS`. The client's interop CI job sets none of them: it overlays the `extended` role,
+    /// whose rotation client RT-1 and RT-2 run on, and allows no skip. The test
     /// process gets only what xcodebuild's environment names with the `TEST_RUNNER_` prefix, under the name without
     /// it: the runner's own `CI` and `GITHUB_ACTIONS` never reach it unless passed as `TEST_RUNNER_CI` and
     /// `TEST_RUNNER_GITHUB_ACTIONS`.
@@ -193,8 +195,9 @@ final class PluginRotationTests: XCTestCase {
             || ["CI", "GITHUB_ACTIONS"].contains { environment[$0] != nil }
         guard !onCI, InteropEnvironment.isSandbox else {
             throw XCTSkip("""
-            \(outputsResource).json is not in the test bundle, and this is \(onCI ? "CI" : "not the sandbox"): no \
-            backend there has an app client with refresh-token rotation.
+            \(outputsResource).json is not in the test bundle, and this is \(onCI ? "a run on the plugin's own CI files" : "not the sandbox"): \
+            no backend there has an app client with refresh-token rotation. The client's CI overlays its `extended` \
+            role, which has one (infra/ci/ci-overlay.sh).
             """)
         }
         throw InteropError("""

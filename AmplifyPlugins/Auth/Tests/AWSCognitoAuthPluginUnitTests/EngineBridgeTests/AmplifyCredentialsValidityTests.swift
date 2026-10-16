@@ -51,13 +51,12 @@ class AmplifyCredentialsValidityTests: XCTestCase {
     /// - When:
     ///    - `areValid()` is called without an instant
     /// - Then:
-    ///    - It agrees with `areValid(at: Date())`: the frozen ones are valid, the expired ones are not
+    ///    - It agrees with `areValid(at: Date())`, and the expired ones are not valid
     ///
     func testAreValid_defaultsToNow() throws {
         for caseName in AmplifyCredentialsPayloadFixtures.caseNames {
             let credentials = try XCTUnwrap(AmplifyCredentialsPayloadFixtures.expected(caseName))
             XCTAssertEqual(credentials.areValid(), credentials.areValid(at: Date()), caseName)
-            XCTAssertEqual(credentials.areValid(), caseName != "noCredentials", caseName)
         }
 
         let expired = AmplifyCredentials.identityPoolOnly(

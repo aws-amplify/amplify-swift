@@ -20,12 +20,16 @@
 # three pools, the sender's decrypt to the two it sends for and the SMS role to the default pool, and writes the six
 # files (mode 600, in a mode-700 directory) with what the client reads; that a second --apply makes no call; that
 # --upload puts only new keys under auth/cognito-client-ci/ and refuses, with no upload, once one exists; that a
-# rerun over phase 2 as it was first applied (the script at 80712afe4, when git has it) plans and makes only the
-# alias-codes pool and what it needs, updates only the script's own resources, and uploads only the two new files,
-# finding the four uploaded ones byte for byte the same; that snapshot and verify-unchanged ignore a user count,
-# and fail on a changed, removed or foreign added resource, but not on a ccit-ci- addition or change; that teardown
-# is a dry run by default, deletes only the ccit-ci- resources with --apply, and refuses an untagged one; and that
-# the library's guards refuse a name that is not ccit-ci- and a mutating call in a dry run.
+# rerun over phase 2 as it was first applied (the script at 80712afe4 when git has it, else skipped) plans and makes
+# only the alias-codes pool and what it needs, updates only the script's own resources, and uploads only the two new
+# files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after phase 2 makes no call, and
+# a code sink key near its expiry is extended in place; that snapshot and verify-unchanged ignore a user count, and
+# fail on a changed, removed or foreign added resource (a foreign role's inline policy, key policy, parameter or log
+# group included), but not on a ccit-ci- addition or change, and that the snapshot's documents hold no secret; that
+# teardown is a dry run by default, deletes only the ccit-ci- resources with --apply, refuses an untagged one, and
+# schedules the key's deletion before removing its alias; that a run in another region is refused; that a pool made
+# again gets its Lambdas' invoke permissions replaced; and that the library's guards refuse a name that is not
+# ccit-ci- and a mutating call in a dry run.
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT="$CI_DIR/provision-ci.sh"
@@ -50,9 +54,11 @@ unset AWS_PROFILE AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN CCIT
 [[ "$(command -v aws)" == "$BIN/aws" ]] || { echo "FAIL: the fake aws is not first on PATH"; exit 1; }
 ACCOUNT=123456789012
 BUCKET=fake-ci-bucket.example
+CONFIG_PATH=v2/testconfiguration
 PLUGIN_POOL=us-east-1_PluginPool01
 
 failures=0
+skipped=0
 pass() { echo "ok - $1"; }
 fail() { echo "FAIL - $1"; failures=$((failures + 1)); }
 check() {
@@ -114,9 +120,11 @@ only_reads() {
     ! calls | awk '{print $2}' | grep -vqE '^(get|list|describe|head)-'
 }
 
-# No identifier the fake knows reaches the output: the account, the bucket, a pool, client, key or API id.
+# No identifier the fake knows reaches the output: the account, the bucket, the config path, a pool, client, key or
+# API id.
 no_identifiers() {
-    [[ "$OUT" != *"$ACCOUNT"* && "$OUT" != *"$BUCKET"* && "$OUT" != *"$PLUGIN_POOL"* && "$OUT" != *us-east-1_Fake* ]] \
+    [[ "$OUT" != *"$ACCOUNT"* && "$OUT" != *"$BUCKET"* && "$OUT" != *"$CONFIG_PATH"* ]] \
+        && [[ "$OUT" != *"$PLUGIN_POOL"* && "$OUT" != *us-east-1_Fake* ]] \
         && ! grep -qE '[0-9a-f]{26}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|da2-' <<<"$OUT"
 }
 
@@ -127,7 +135,7 @@ plus_lines_are_ours() {
 
 usage_is_refused() {
     run --scope bogus
-    (( STATUS == 2 )) && [[ ! -s "$FAKE_LOG" ]] || [[ -z "$(calls)" ]]
+    (( STATUS == 2 )) && { [[ ! -s "$FAKE_LOG" ]] || [[ -z "$(calls)" ]]; }
 }
 
 a_missing_config_url_is_refused() {
@@ -326,6 +334,36 @@ a_second_apply_makes_no_call_and_uploads_nothing() {
     (( STATUS == 0 )) && [[ "$OUT" == *"Done: 0 calls made."* ]] && ! calls | grep -q 'put-object' && no_identifiers
 }
 
+# The default scope after phase 2 changes nothing: the triggers' role keeps the phase-2 triggers' log groups.
+a_phase_1_rerun_after_phase_2_makes_no_call() {
+    run --apply --upload
+    if ! { (( STATUS == 0 )) && [[ "$OUT" == *"Done: 0 calls made."* ]] && ! calls | grep -q 'put-object'; }; then
+        echo "$OUT" | sed -nE 's/^  \+ //p'
+        return 1
+    fi
+    no_identifiers && jq -e '.roles["ccit-ci-trigger-exec"].inline["ccit-ci-trigger-exec-policy"].Statement[0].Resource
+        | any(contains(":log-group:/aws/lambda/ccit-ci-verify-auth-challenge:"))' "$FAKE_STATE" >/dev/null
+}
+
+# The code sink's key, 10 days from its expiry, is extended in place: the same id, so the uploaded files that name it
+# stay as they are, and nothing is uploaded.
+an_api_key_near_its_expiry_is_extended_in_place() {
+    local key soon
+    key=$(jq -r '[.apis[] | .keys[]] | .[0].id' "$FAKE_STATE")
+    soon=$(( $(date +%s) + 10 * 86400 ))
+    jq --argjson e "$soon" '(.apis[] | .keys[]).expires = $e' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    run --scope all --upload
+    (( STATUS == 0 )) && only_reads && no_identifiers \
+        && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "extend the tests' read-only API key to 364 days from now (the same key)" ]] \
+        || { echo "$OUT" | sed -nE 's/^  \+ //p'; return 1; }
+    run --apply --scope all --upload
+    (( STATUS == 0 )) && [[ "$OUT" == *"Done: 1 calls made."* ]] && ! calls | grep -qE 'put-object|create-api-key' \
+        && no_identifiers && [[ "$(grep -c 'uploaded already, the same bytes' <<<"$OUT")" == 6 ]] \
+        || { echo "$OUT" | tail -8; return 1; }
+    jq -e --arg k "$key" --argjson e "$(( $(date +%s) + 300 * 86400 ))" \
+        '[.apis[] | .keys[]] | length == 1 and .[0].id == $k and .[0].expires > $e' "$FAKE_STATE" >/dev/null
+}
+
 a_key_with_other_contents_refuses_the_upload() {
     jq '.s3["v2/testconfiguration/auth/cognito-client-ci/ccit-ci-default-credentials.json"].body = "{}"' "$FAKE_STATE" \
         > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
@@ -397,26 +435,59 @@ a_rerun_over_phase_2_as_applied_adds_only_the_alias_codes_pool() {
         && [[ "$(calls | grep -c 's3api put-object')" == 2 ]] || { echo "$OUT" | tail -8; return 1; }
     CONFIG=$(config_dir_of "$OUT")
     alias_codes_files_are_right && alias_codes_pool_is_right && secrets_use_the_ccit_ci_key || return 1
-    # Only the script's own resources changed: the custom sender, given the new pool's invoke permission (its
-    # revision, and its policy, recorded both as a function and as a trigger).
+    # Only the script's own resources changed, every update the plan shows: the custom sender, given the new pool's
+    # invoke permission (its revision, and its policy, as a function and as a trigger), the three role policies, the
+    # key policy and the two parameters' key.
     run snapshot
     second=$(find "$WORK/disc" -name 'snapshot-*.json' ! -name '*.docs.json' | sort | tail -1)
     status=0
     out=$("$SCRIPT" verify-unchanged "$WORK/rerun-before.json" "$second" 2>&1) || status=$?
     (( status == 0 )) && [[ "$out" == *"changed  lambda ccit-ci-custom-sender: RevisionId (ccit-ci-, this script's own)"* ]] \
         && [[ "$out" == *"changed  trigger-lambda-policy ccit-ci-custom-sender: Statement (ccit-ci-, this script's own)"* ]] \
+        && [[ "$out" == *"changed  iam-role-policies ccit-ci-trigger-exec: inline.ccit-ci-trigger-exec-policy (ccit-ci-, this script's own)"* ]] \
+        && [[ "$out" == *"changed  kms-key-policy alias/ccit-ci-senders: Statement (ccit-ci-, this script's own)"* ]] \
+        && [[ "$out" == *"changed  ssm-parameter /ccit-ci/new-password-temporary: KeyId (ccit-ci-, this script's own)"* ]] \
         && [[ "$out" == *"added    user-pool ccit-ci-email-alias-codes (ccit-ci-, expected)"* ]] \
-        && [[ "$out" == *" 0 changed, 3 ccit-ci- changed, 0 removed"* ]] || { echo "$out"; return 1; }
+        && [[ "$out" == *" 0 changed, 10 ccit-ci- changed, 0 removed"* ]] || { echo "$out"; return 1; }
     run --apply --scope all --upload
     (( STATUS == 0 )) && [[ "$OUT" == *"Done: 0 calls made."* ]]
 }
 
+# Foreign resources of the kinds a snapshot reads beyond the lists: an SSM parameter, a log group and a KMS key, and
+# a secret on the plugin's app client. Removed again at the end, so teardown finds only its own.
+FOREIGN_SECRET=plugin-client-secret-placeholder
+add_foreign_resources() {
+    jq --arg p "$PLUGIN_POOL" --arg x "$FOREIGN_SECRET" '.ssm["/plugin/param"] = {value: "v", tags: [], key: "alias/aws/ssm"}
+        | .log_groups["/aws/lambda/plugin-pre-sign-up"] = {tags: {}, retention: 14}
+        | .kms.keys["plugin-key"] = {policy: {Version: "2012-10-17", Statement: [{Sid: "Root", Effect: "Allow",
+            Principal: {AWS: "arn:aws:iam::\(.account):root"}, Action: "kms:*", Resource: "*"}]}, tags: [], state: "Enabled"}
+        | .pools[$p].clients["pluginclient0000000000000a"].ClientSecret = $x' "$FAKE_STATE" > "$WORK/s" \
+        && mv "$WORK/s" "$FAKE_STATE"
+}
+remove_foreign_resources() {
+    jq --arg p "$PLUGIN_POOL" 'del(.ssm["/plugin/param"], .log_groups["/aws/lambda/plugin-pre-sign-up"], .kms.keys["plugin-key"],
+        .pools[$p].clients["pluginclient0000000000000a"].ClientSecret)
+        | .roles["plugin-role"].inline = {}' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+}
+
+# The documents a snapshot keeps hold no secret: the SMS external id (in the default pool and the SMS role's trust),
+# an app client's secret and the Lambdas' environment values are hashed; the comparison still sees them.
+snapshot_documents_hold_no_secret() {
+    local docs="$1" external answer_hash
+    external=$(jq -r '.roles["ccit-ci-cognito-sms"].Role.AssumeRolePolicyDocument.Statement[0].Condition.StringEquals["sts:ExternalId"]' "$FAKE_STATE")
+    answer_hash=$(jq -r '.lambdas["ccit-ci-create-auth-challenge"].config.Environment.Variables.CUSTOM_CHALLENGE_ANSWER_SHA256' "$FAKE_STATE")
+    [[ -n "$external" && "$external" != null && -n "$answer_hash" && "$answer_hash" != null ]] || return 1
+    ! grep -qF -e "$external" -e "$FOREIGN_SECRET" -e "$answer_hash" "$docs" && grep -q '<sha256:' "$docs"
+}
+
 snapshot_and_verify() {
     local first second third out status
+    add_foreign_resources
     run snapshot
     (( STATUS == 0 )) && only_reads && no_identifiers || return 1
     first=$(find "$WORK/disc" -name 'snapshot-*.json' ! -name '*.docs.json' | sort | tail -1)
     [[ -f "$first" && "$(stat -f '%Lp' "$first")" == 600 && "$(stat -f '%Lp' "${first%.json}.docs.json")" == 600 ]] || return 1
+    snapshot_documents_hold_no_secret "${first%.json}.docs.json" || { echo "a secret is in the documents"; return 1; }
     mv "$first" "$WORK/disc/before.json"
     mv "${first%.json}.docs.json" "$WORK/disc/before.docs.json"
     # A user count moving is not a change.
@@ -426,9 +497,15 @@ snapshot_and_verify() {
     run verify-unchanged "$WORK/disc/before.json" "$second"
     (( STATUS == 0 )) && [[ "$OUT" == *"OK: every resource"* ]] || { echo "$OUT"; return 1; }
     rm -f "$second" "${second%.json}.docs.json"
-    # A changed plugin pool, a removed plugin object, a ccit-ci- addition and a foreign one.
+    # A changed plugin pool, a removed plugin object, a ccit-ci- addition and a foreign one; and the kinds the
+    # script writes on its own, changed on foreign resources: a role's inline policy, a key policy, a parameter's
+    # key, a log group's retention, and the app client's secret.
     jq --arg p "$PLUGIN_POOL" '.pools[$p].UserPool.MfaConfiguration = "OFF"
         | del(.s3["v2/testconfiguration/auth/AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json"])
+        | .roles["plugin-role"].inline["plugin-role-policy"] = {Version: "2012-10-17", Statement: []}
+        | .kms.keys["plugin-key"].policy.Statement[0].Action = "kms:Decrypt"
+        | .ssm["/plugin/param"].key = "alias/other" | .log_groups["/aws/lambda/plugin-pre-sign-up"].retention = 1
+        | .pools[$p].clients["pluginclient0000000000000a"].ClientSecret = "another-secret-placeholder"
         | .roles["ccit-ci-extra"] = (.roles["plugin-role"] | .Role.RoleName = "ccit-ci-extra" | .Role.RoleId = "AROAEXTRA")
         | .roles["someone-else"] = (.roles["plugin-role"] | .Role.RoleName = "someone-else" | .Role.RoleId = "AROAELSE")' \
         "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
@@ -440,10 +517,17 @@ snapshot_and_verify() {
         && [[ "$out" == *"REMOVED  s3-object auth/AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json"* ]] \
         && [[ "$out" == *"added    iam-role ccit-ci-extra (ccit-ci-, expected)"* ]] \
         && [[ "$out" == *"ADDED    iam-role someone-else"* ]] \
-        && [[ "$out" != *"$PLUGIN_POOL"* && "$out" != *"$ACCOUNT"* && "$out" != *116854* ]] || { echo "$out"; return 1; }
+        && [[ "$out" == *"CHANGED  iam-role-policies plugin-role: inline"* ]] \
+        && [[ "$out" == *"CHANGED  kms-key-policy plugin-key: Statement"* ]] \
+        && [[ "$out" == *"CHANGED  ssm-parameter /plugin/param: KeyId"* ]] \
+        && [[ "$out" == *"CHANGED  log-group /aws/lambda/plugin-pre-sign-up: retentionInDays"* ]] \
+        && [[ "$out" == *"CHANGED  user-pool-client amplify-plugin-default/plugin: ClientSecret"* ]] \
+        && [[ "$out" != *"$PLUGIN_POOL"* && "$out" != *"$ACCOUNT"* && "$out" != *116854* ]] \
+        && [[ "$out" != *"$FOREIGN_SECRET"* && "$out" != *another-secret-placeholder* ]] || { echo "$out"; return 1; }
     # Only the foreign addition, allowed, leaves the change and the removal failing.
     status=0
     out=$("$SCRIPT" verify-unchanged "$WORK/disc/before.json" "$third" --allow-foreign-additions 2>&1) || status=$?
+    remove_foreign_resources
     (( status == 1 )) && [[ "$out" == *"someone-else (not ccit-ci-; allowed)"* ]]
 }
 
@@ -493,11 +577,11 @@ snapshot_normalizes_unordered_lists() {
            else . end' "$dir/a.ndjson" > "$dir/b.ndjson"
     python3 "$CI_DIR/snapshot.py" build "$dir/a.ndjson" "$dir/a.json" t >/dev/null \
         && python3 "$CI_DIR/snapshot.py" build "$dir/b.ndjson" "$dir/b.json" t >/dev/null || return 1
-    [[ "$(jq .version "$dir/a.json")" == 2 ]] && ! cmp -s "$dir/a.ndjson" "$dir/b.ndjson" || return 1
+    [[ "$(jq .version "$dir/a.json")" == 3 ]] && ! cmp -s "$dir/a.ndjson" "$dir/b.ndjson" || return 1
     out=$(python3 "$CI_DIR/snapshot.py" verify "$dir/a.json" "$dir/b.json") || { echo "$out"; return 1; }
     [[ "$out" == *"0 changed, 0 ccit-ci- changed"* ]] || return 1
     # The same, written by version 1 (hashed unnormalized): the documents are hashed again, so still no change.
-    jq '.version = 1 | .entries |= map_values(.sha256 = "v1")' "$dir/a.json" > "$dir/v1.json"
+    jq '.version = 1 | del(.kinds) | .entries |= map_values(.sha256 = "v1")' "$dir/a.json" > "$dir/v1.json"
     cp "$dir/a.docs.json" "$dir/v1.docs.json"
     out=$(python3 "$CI_DIR/snapshot.py" verify "$dir/v1.json" "$dir/b.json") || { echo "$out"; return 1; }
     # Layers reordered, and a real change, are changes; an AWS-managed alias added is listed, not failed.
@@ -555,6 +639,64 @@ teardown_refuses_an_untagged_ccit_ci_resource() {
         && [[ "$OUT" == *"table ccit-ci-codes exists without purpose"* ]]
 }
 
+# A pool deleted by hand and made again by a rerun gets a new ARN: the invoke permissions that name the old one are
+# replaced, so Cognito can invoke the pool's trigger and sender.
+a_remade_pool_gets_its_lambdas_invoke_permissions() {
+    local arn
+    fresh_state
+    run --apply
+    (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
+    jq 'del(.pools[] | select(.UserPool.Name == "ccit-ci-email-alias"))' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    run
+    (( STATUS == 0 )) && only_reads && no_identifiers \
+        && [[ "$OUT" == *"+ remove ccit-ci-pre-sign-up's invoke permission cognito-email-alias, which names another source"* ]] \
+        && [[ "$OUT" == *"+ remove ccit-ci-discard-sender's invoke permission cognito-email-alias, which names another source"* ]] \
+        || { echo "$OUT" | sed -nE 's/^  \+ //p'; return 1; }
+    run --apply
+    (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
+    arn=$(jq -r '.pools[] | select(.UserPool.Name == "ccit-ci-email-alias") | .UserPool.Arn' "$FAKE_STATE")
+    jq -e --arg a "$arn" '[.lambdas["ccit-ci-pre-sign-up", "ccit-ci-discard-sender"].policy[]
+        | .Condition.ArnLike["AWS:SourceArn"]] == [$a, $a]' "$FAKE_STATE" >/dev/null || return 1
+    run --apply
+    [[ "$OUT" == *"Done: 0 calls made."* ]]
+}
+
+# Once the ccit-ci- resources exist in one region, a run in another (whose global roles it would re-point, or
+# delete) is refused before any change, provision and teardown alike.
+another_region_is_refused() {
+    fresh_state
+    run --apply
+    (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
+    CCIT_CI_REGION=us-west-2 run --apply
+    (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"ccit-ci- resources are in us-east-1, not CCIT_CI_REGION's us-west-2"* ]] \
+        || { echo "$OUT" | tail -5; return 1; }
+    CCIT_CI_REGION=us-west-2 run teardown --apply
+    (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"Set CCIT_CI_REGION to theirs."* ]]
+}
+
+# A teardown whose key deletion fails (denied, or throttled) keeps the alias, so a rerun finds the key and finishes;
+# and a key already pending deletion (a teardown that failed at the alias) is not scheduled again.
+a_failed_key_deletion_keeps_the_alias_for_a_rerun() {
+    fresh_state
+    run --apply
+    (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
+    : > "$FAKE_LOG"
+    STATUS=0
+    OUT=$(FAKE_FAIL_ONCE="kms schedule-key-deletion KMSInternalException" "$SCRIPT" teardown --apply 2>&1) || STATUS=$?
+    (( STATUS == 1 )) && [[ "$OUT" == *"schedule the key's deletion in 7 days failed (KMSInternalException)"* ]] \
+        || { echo "$OUT" | tail -5; return 1; }
+    jq -e '(.kms.aliases | has("alias/ccit-ci-senders")) and ([.kms.keys[] | .state] == ["Enabled"])' \
+        "$FAKE_STATE" >/dev/null || return 1
+    run teardown --apply
+    (( STATUS == 0 )) && [[ "$(calls | grep -c 'kms schedule-key-deletion')" == 1 ]] || { echo "$OUT" | tail -5; return 1; }
+    jq -e '(.kms.aliases == {}) and ([.kms.keys[] | .state] == ["PendingDeletion"])' "$FAKE_STATE" >/dev/null || return 1
+    # Pending deletion, the alias put back as a failed delete-alias would have left it: only the alias goes.
+    jq '.kms.aliases["alias/ccit-ci-senders"] = (.kms.keys | keys[0])' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    run teardown --apply
+    (( STATUS == 0 )) && ! calls | grep -q 'kms schedule-key-deletion' && [[ "$(calls | grep -c 'kms delete-alias')" == 1 ]] \
+        && jq -e '.kms.aliases == {}' "$FAKE_STATE" >/dev/null
+}
+
 # The first Lambda's create meets IAM propagation once: it is retried, so the two functions take three calls.
 a_propagation_error_is_retried() {
     fresh_state
@@ -609,6 +751,10 @@ check "phase 1 --apply --upload makes only the Lite device-alias pool, its trigg
 check "phase 2 adds the default and alias-codes pools, narrowed, keeps phase 1, and uploads only the five new files" \
     phase_2_adds_the_default_pool_and_keeps_phase_1
 check "a second --apply --upload makes no call and uploads nothing" a_second_apply_makes_no_call_and_uploads_nothing
+check "a phase-1 --apply --upload after phase 2 makes no call: the triggers' role keeps every trigger's logs" \
+    a_phase_1_rerun_after_phase_2_makes_no_call
+check "the code sink's API key near its expiry is extended in place, and the uploaded files stay valid" \
+    an_api_key_near_its_expiry_is_extended_in_place
 check "a key with other contents refuses the whole upload" a_key_with_other_contents_refuses_the_upload
 check "snapshot and verify-unchanged: a user count is no change; a change, a removal, a foreign addition fail" \
     snapshot_and_verify
@@ -624,10 +770,17 @@ if frozen_script; then
     check "teardown --apply then deletes every ccit-ci- resource, the alias-codes pool's too" \
         teardown_deletes_only_ours '["plugin-role"]'
 else
-    echo "FAIL - the script at $FROZEN_COMMIT is not in this clone's git history, so the rerun over it was not checked"
-    failures=$((failures + 1))
+    # A clone without that history (a public one: the commit predates the squash merges) cannot run it. The
+    # migration it guards was applied to the CI account once, so its absence is reported, never failed.
+    echo "skip - the script at $FROZEN_COMMIT is not in this clone's git history, so the rerun over it was not checked"
+    skipped=$((skipped + 1))
 fi
 check "teardown refuses a ccit-ci- resource without the tag, before any change" teardown_refuses_an_untagged_ccit_ci_resource
+check "teardown schedules the key's deletion before removing its alias, so a failed schedule can be rerun" \
+    a_failed_key_deletion_keeps_the_alias_for_a_rerun
+check "a run in another region than the ccit-ci- resources' is refused before any change" another_region_is_refused
+check "a pool made again under a new ARN gets its Lambdas' invoke permissions replaced" \
+    a_remade_pool_gets_its_lambdas_invoke_permissions
 check "a role-propagation error is retried" a_propagation_error_is_retried
 check "any other error stops --apply, and a second --apply makes only what is missing" \
     another_error_stops_the_apply_and_a_rerun_finishes_it
@@ -637,4 +790,8 @@ if (( failures > 0 )); then
     echo "$failures failed"
     exit 1
 fi
-echo "All passed"
+if (( skipped > 0 )); then
+    echo "All passed ($skipped skipped)"
+else
+    echo "All passed"
+fi

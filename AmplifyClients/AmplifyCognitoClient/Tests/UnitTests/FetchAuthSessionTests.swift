@@ -376,10 +376,10 @@ final class FetchAuthSessionTests: XCTestCase {
         XCTAssertFalse(expired)
     }
 
-    /// As the plugin draws it: like the providers, `fetchAuthSession` reports what its own refresh
-    /// committed, as the plugin reports what its refresh established, even when those credentials still read as
-    /// needing a refresh (a device clock running ahead of Cognito's). Only a re-read or adopted record that still
-    /// needs one is never reported (`RefreshResultTests`).
+    /// Like the providers, `fetchAuthSession` reports what its own refresh committed, as the plugin reports what its
+    /// refresh established, even when those credentials still read as needing a refresh (a device clock running
+    /// ahead of Cognito's). Only a re-read or adopted record that still needs one is never reported
+    /// (`RefreshResultTests`).
     ///
     /// - Given: a stale session whose refresh returns credentials that still read as stale
     /// - When: its session is fetched

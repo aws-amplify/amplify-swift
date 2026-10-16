@@ -35,7 +35,7 @@ enum HostedUIHarness {
                 bundle: PluginTestConfiguration.outputsBundle(outputsResource, in: .main)
             ))
         } catch {
-            return .failure(HarnessAppError("Could not configure the client: \(error)"))
+            return .failure(HarnessAppError("Could not configure the client: \(harnessResultText(error))"))
         }
     }
 
@@ -115,4 +115,21 @@ extension AuthClientError {
     var harnessCaseName: String {
         Mirror(reflecting: self).children.first?.label ?? "unknown"
     }
+}
+
+/// What the app's result line says of `error`: an `AuthClientError`'s case name (with its service code, for
+/// `.service`), a `HarnessAppError`'s own message, or else the error's type alone. Never an error's text or
+/// payload: an underlying `NSError` names the URL it failed on (the hosted-UI domain), and other errors can
+/// hold a username or an identifier.
+func harnessResultText(_ error: Error) -> String {
+    if let error = error as? AuthClientError {
+        if case .service(let code?, _, _, _) = error {
+            return "service(\(code))"
+        }
+        return error.harnessCaseName
+    }
+    if let error = error as? HarnessAppError {
+        return error.description
+    }
+    return "\(type(of: error))"
 }

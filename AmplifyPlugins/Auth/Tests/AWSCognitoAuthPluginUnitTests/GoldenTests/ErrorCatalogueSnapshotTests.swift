@@ -116,6 +116,10 @@ final class ErrorCatalogueSnapshotTests: XCTestCase {
     /// A non-convertible error, for the "anything else" branches.
     struct SentinelError: Error {}
 
+    /// SHA-256 of `catalogue.json`. Regenerating the catalogue changes it, so a regeneration also has to edit
+    /// this line, in review.
+    static let pinnedCatalogueSHA256 = "4ed168cd146957f65ceb02c0b5775a119c452085056aee67337f075569882fc6"
+
     static var fileURL: URL {
         GoldenFiles.directory("GoldenErrors").appendingPathComponent("catalogue.json")
     }
@@ -123,6 +127,19 @@ final class ErrorCatalogueSnapshotTests: XCTestCase {
     static let message = "fixture service message"
 
     // MARK: Tests
+
+    /// Test that the committed catalogue is the pinned one
+    ///
+    /// - Given: The committed `catalogue.json`
+    /// - When:
+    ///    - Its SHA-256 is computed
+    /// - Then:
+    ///    - It equals the value pinned in this file
+    ///
+    func testCatalogueIsPinned() throws {
+        try XCTSkipIf(GoldenFiles.isGenerating, "Generating golden files")
+        XCTAssertEqual(try GoldenFiles.sha256Hex(Data(contentsOf: Self.fileURL)), Self.pinnedCatalogueSHA256)
+    }
 
     /// Test that the error catalogue is unchanged
     ///

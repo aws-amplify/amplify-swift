@@ -7,6 +7,7 @@
 
 #if os(iOS) || os(macOS) || os(visionOS)
 import Foundation
+import InternalAWSCognitoAuth
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
@@ -17,14 +18,20 @@ import XCTest
 ///
 /// - `AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Models/Options/AWSAuthWebUISignInOptions.swift`
 ///   (fields, `Prompt`)
-/// - `AmplifyClients/Internal/InternalAWSCognitoAuth/Sources/Support/HostedUI/HostedUIRequestHelper.swift`
-///   (query item names and order)
-/// - `AmplifyClients/Internal/InternalAWSCognitoAuth/Sources/Support/Helpers/AuthProvider+Cognito.swift`
-///   (`userPoolProviderName`)
+///
+/// The engine builds the authorize request from the options the client hands it
+/// (`HostedUIOptions(_:anchor:configuredScopes:)`), with its own `HostedUIRequestHelper.createSignInURL` and
+/// `userPoolProviderName`, the plugin's; `LiveEngineWebUITests` pins the resulting query items end to end.
 final class WebUIOptionsTests: XCTestCase {
 
-    private static func dictionary(_ items: [URLQueryItem]) -> [String: String?] {
-        Dictionary(uniqueKeysWithValues: items.map { ($0.name, $0.value) })
+    /// The engine's hosted-UI options for `options`, as the live engine builds them: the core's request, with the
+    /// options' own nonce (the core mints one when they have none).
+    private static func engineOptions(_ options: WebUIOptions, configuredScopes: [String]) -> HostedUIOptions {
+        HostedUIOptions(
+            EngineWebUIOptions(options, nonce: options.nonce ?? "minted-nonce"),
+            anchor: nil,
+            configuredScopes: configuredScopes
+        )
     }
 
     // MARK: - Defaults
@@ -52,30 +59,38 @@ final class WebUIOptionsTests: XCTestCase {
         XCTAssertNil(options.resource)
     }
 
-    /// Defaults contribute only the configured scopes to the authorize request.
+    /// Defaults ask the engine for the configured scopes and nothing else.
     ///
     /// - Given: `WebUIOptions()`
     /// - When:
-    ///    - its query items are built against configured scopes `["openid", "email"]`
+    ///    - the engine's hosted-UI options are built from it against configured scopes `["openid", "email"]`
     /// - Then:
-    ///    - the only item is `scope`, sorted and space-separated
-    func testDefaultsContributeOnlyTheConfiguredScopes() {
-        let items = WebUIOptions().authorizeQueryItems(configuredScopes: ["openid", "email"])
+    ///    - the scopes are the configured ones, and no provider, language, login hint, prompt or resource is set
+    func testDefaultsAskForTheConfiguredScopesOnly() {
+        let options = Self.engineOptions(WebUIOptions(), configuredScopes: ["openid", "email"])
 
-        XCTAssertEqual(items, [URLQueryItem(name: "scope", value: "email openid")])
+        XCTAssertEqual(options.scopes, ["openid", "email"])
+        XCTAssertEqual(options.providerInfo, HostedUIProviderInfo(authProvider: nil, idpIdentifier: nil))
+        XCTAssertNil(options.language)
+        XCTAssertNil(options.loginHint)
+        XCTAssertNil(options.prompt)
+        XCTAssertNil(options.resource)
     }
 
-    // MARK: - Query items
+    // MARK: - The engine's options
 
-    /// Every parity field reaches the authorize request under the plugin's name, in its order.
+    /// Every parity field reaches the engine's hosted-UI options, which the engine's `createSignInURL` turns into
+    /// the authorize request's items (names and values pinned end to end by `LiveEngineWebUITests`).
     ///
     /// - Given: options with every field set, and `idpIdentifier` absent so `provider` applies
     /// - When:
-    ///    - the query items are built
+    ///    - the engine's hosted-UI options are built from them
     /// - Then:
-    ///    - the names and values match `HostedUIRequestHelper.createSignInURL`, in its append order
-    func testEveryFieldMapsToThePluginsQueryItemInThePluginsOrder() {
+    ///    - each field is carried: the request's scopes, the engine's provider of the same case, the nonce, the
+    ///      language, the login hint, the prompt space-separated in order, the resource, and the privacy
+    func testEveryFieldReachesTheEnginesOptions() {
         let options = WebUIOptions(
+            prefersEphemeralSession: false,
             scopes: ["profile", "openid"],
             provider: .google,
             nonce: "n-123",
@@ -85,59 +100,54 @@ final class WebUIOptionsTests: XCTestCase {
             resource: "myapp://resource"
         )
 
-        let items = options.authorizeQueryItems(configuredScopes: ["ignored"])
+        let engine = Self.engineOptions(options, configuredScopes: ["ignored"])
 
-        XCTAssertEqual(items, [
-            URLQueryItem(name: "scope", value: "openid profile"),
-            URLQueryItem(name: "identity_provider", value: "Google"),
-            URLQueryItem(name: "nonce", value: "n-123"),
-            URLQueryItem(name: "lang", value: "fr"),
-            URLQueryItem(name: "login_hint", value: "alice@example.com"),
-            URLQueryItem(name: "prompt", value: "login select_account"),
-            URLQueryItem(name: "resource", value: "myapp://resource")
-        ])
+        XCTAssertEqual(engine.scopes, ["profile", "openid"])
+        XCTAssertEqual(engine.providerInfo, HostedUIProviderInfo(authProvider: .google, idpIdentifier: nil))
+        XCTAssertEqual(engine.nonce, "n-123")
+        XCTAssertEqual(engine.language, "fr")
+        XCTAssertEqual(engine.loginHint, "alice@example.com")
+        XCTAssertEqual(engine.prompt, "login select_account")
+        XCTAssertEqual(engine.resource, "myapp://resource")
+        XCTAssertFalse(engine.preferPrivateSession)
     }
 
-    /// `idpIdentifier` wins over `provider`, as in the plugin.
+    /// Both `idpIdentifier` and `provider` reach the engine, whose authorize URL sends `idp_identifier` alone, as the
+    /// plugin's does (`LiveEngineWebUITests.testTheAuthorizeRequestCarriesTheOptions`).
     ///
     /// - Given: options with both `idpIdentifier` and `provider`
     /// - When:
-    ///    - the query items are built
+    ///    - the engine's hosted-UI options are built from them
     /// - Then:
-    ///    - `idp_identifier` is sent and `identity_provider` is not
-    func testIdpIdentifierTakesPrecedenceOverProvider() {
+    ///    - the provider info holds both
+    func testIdpIdentifierAndProviderBothReachTheEngine() {
         let options = WebUIOptions(provider: .saml("Okta"), idpIdentifier: "corp.example.com")
 
-        let items = Self.dictionary(options.authorizeQueryItems(configuredScopes: ["openid"]))
+        let engine = Self.engineOptions(options, configuredScopes: ["openid"])
 
-        XCTAssertEqual(items["idp_identifier"], "corp.example.com")
-        XCTAssertFalse(items.keys.contains("identity_provider"))
+        XCTAssertEqual(engine.providerInfo, HostedUIProviderInfo(authProvider: .saml("Okta"), idpIdentifier: "corp.example.com"))
     }
 
     /// Explicit scopes replace the configured ones rather than adding to them, including an empty list.
     ///
     /// - Given: options with `scopes: []`
     /// - When:
-    ///    - the query items are built against non-empty configured scopes
+    ///    - the engine's hosted-UI options are built against non-empty configured scopes
     /// - Then:
-    ///    - `scope` is empty, as `request.options.scopes ?? configured` produces in the plugin
+    ///    - the scopes are empty, as `request.options.scopes ?? configured` produces in the plugin
     func testExplicitScopesReplaceTheConfiguredScopes() {
-        let items = WebUIOptions(scopes: []).authorizeQueryItems(configuredScopes: ["openid"])
-
-        XCTAssertEqual(items, [URLQueryItem(name: "scope", value: "")])
+        XCTAssertEqual(Self.engineOptions(WebUIOptions(scopes: []), configuredScopes: ["openid"]).scopes, [])
     }
 
     /// An empty prompt list sends nothing, the one documented divergence from the plugin.
     ///
     /// - Given: options with `prompt: []`
     /// - When:
-    ///    - the query items are built
+    ///    - the engine's hosted-UI options are built from them
     /// - Then:
-    ///    - there is no `prompt` item
+    ///    - there is no prompt, so the authorize request has no `prompt` item
     func testEmptyPromptSendsNoPromptItem() {
-        let items = Self.dictionary(WebUIOptions(prompt: []).authorizeQueryItems(configuredScopes: ["openid"]))
-
-        XCTAssertFalse(items.keys.contains("prompt"))
+        XCTAssertNil(Self.engineOptions(WebUIOptions(prompt: []), configuredScopes: ["openid"]).prompt)
     }
 
     // MARK: - Transcribed values
@@ -155,30 +165,31 @@ final class WebUIOptionsTests: XCTestCase {
         XCTAssertEqual(WebUIOptions.Prompt(rawValue: "select_account"), .selectAccount)
     }
 
-    /// Provider names match the plugin's `userPoolProviderName`.
+    /// Each provider reaches the engine as the engine's provider of the same case, whose `userPoolProviderName` is
+    /// the plugin's own: the authorize request's `identity_provider` (`LiveEngineWebUITests`).
     ///
     /// - Given: one `AuthClientProvider` of every case
     /// - When:
-    ///    - `userPoolProviderName` is read
+    ///    - it is mapped to the engine's provider
     /// - Then:
-    ///    - each matches the plugin's string, and the three named cases pass their name through
-    func testProviderNamesMatchThePlugin() {
-        let expected: [(AuthClientProvider, String)] = [
-            (.amazon, "LoginWithAmazon"),
-            (.apple, "SignInWithApple"),
-            (.facebook, "Facebook"),
-            (.google, "Google"),
-            (.twitter, "Twitter"),
-            (.oidc("MyOIDC"), "MyOIDC"),
-            (.saml("MySAML"), "MySAML"),
-            (.custom("MyCustom"), "MyCustom")
+    ///    - each is the same case, and the three named cases pass their name through
+    func testProvidersMapToTheEnginesCaseForCase() {
+        let expected: [(AuthClientProvider, EngineAuthProvider)] = [
+            (.amazon, .amazon),
+            (.apple, .apple),
+            (.facebook, .facebook),
+            (.google, .google),
+            (.twitter, .twitter),
+            (.oidc("MyOIDC"), .oidc("MyOIDC")),
+            (.saml("MySAML"), .saml("MySAML")),
+            (.custom("MyCustom"), .custom("MyCustom"))
         ]
-        for (provider, name) in expected {
+        for (provider, engine) in expected {
             // An exhaustive switch with no default, so a new case fails to compile until it is
             // added to the list above.
             switch provider {
             case .amazon, .apple, .facebook, .google, .twitter, .oidc, .saml, .custom:
-                XCTAssertEqual(provider.userPoolProviderName, name, "\(provider)")
+                XCTAssertEqual(EngineAuthProvider(provider), engine, "\(provider)")
             }
         }
     }

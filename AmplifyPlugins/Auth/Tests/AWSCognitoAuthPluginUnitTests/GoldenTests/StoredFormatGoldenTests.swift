@@ -14,7 +14,9 @@ import XCTest
 ///
 /// The fixtures in `TestResources/GoldenStoredFormat/` were generated once, from the types as they were
 /// before the engine extraction, and must never be regenerated. Byte equality is deliberately not
-/// checked: `JSONEncoder`'s key order is not deterministic on Apple platforms.
+/// checked: `JSONEncoder`'s key order is not deterministic on Apple platforms. The `AWSMobileClient/`
+/// migration results, which `LegacyMigrationGoldenTests` checks, record the legacy migration with the fixes
+/// that ship with the engine move.
 @available(*, deprecated, message: "Exercises deprecated token and flow APIs, on purpose")
 final class StoredFormatGoldenTests: XCTestCase {
 

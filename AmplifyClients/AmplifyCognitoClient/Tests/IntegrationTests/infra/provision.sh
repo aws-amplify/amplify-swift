@@ -30,12 +30,24 @@
 #
 # Usage: AWS_PROFILE=<sandbox-profile> [COGNITO_CLIENT_INTEG_SES_DOMAIN=<domain> | COGNITO_CLIENT_INTEG_SES_EMAIL=<address>]
 #        ./provision.sh [region]
+# The region: the one state.json records (any other is refused), else the argument, AWS_REGION, or us-west-2.
 set -euo pipefail
 
-REGION="${1:-${AWS_REGION:-us-west-2}}"
 INFRA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib.sh
 source "$INFRA_DIR/lib.sh"
+# The region state.json records wins over AWS_REGION, and any other is refused: every other script uses the
+# recorded one, and a run in another region would build a second sandbox there, re-pointing the global roles at it.
+RECORDED_REGION=""
+if [[ -f "$STATE_DIR/state.json" ]]; then
+    RECORDED_REGION=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('region',''))" "$STATE_DIR/state.json")
+fi
+REGION="${1:-${RECORDED_REGION:-${AWS_REGION:-us-west-2}}}"
+if [[ -n "$RECORDED_REGION" && "$REGION" != "$RECORDED_REGION" ]]; then
+    echo "Refusing: $STATE_DIR/state.json records region $RECORDED_REGION. Pass it, or point" \
+        "COGNITO_CLIENT_INTEG_DIR at another directory." >&2
+    exit 1
+fi
 mkdir -p "$STATE_DIR"
 chmod 700 "$STATE_DIR"
 # Before any AWS call: enough free disk for the CLI (COGNITO_CLIENT_INTEG_MIN_FREE_GIB, lib.sh).
@@ -49,17 +61,59 @@ require_recorded_account
 # checks again, under the toggle lock).
 python3 "$INFRA_DIR/parity.py" self-sign-up require-idle
 
+# The id ($3) of the first item whose $2 is $4 in list $1 of `aws <call>` (the rest), "" when none. Cognito's list
+# calls need --max-results, which turns the CLI's own pagination off, so this follows NextToken itself, 60 items a
+# page: a sandbox pool past the first page is still found, and never made a second time.
+find_by_name() {
+    local list="$1" name_field="$2" id_field="$3" wanted="$4" page result token="" found=""
+    shift 4
+    while :; do
+        if [[ -n "$token" ]]; then
+            page=$(aws "$@" --max-results 60 --next-token "$token")
+        else
+            page=$(aws "$@" --max-results 60)
+        fi
+        # "<id found, or nothing>|<next token, or nothing>"; a page that does not parse stops the script.
+        result=$(python3 -c '
+import json, sys
+page = json.load(sys.stdin)
+list_field, name_field, id_field, wanted = sys.argv[1:]
+found = next((item[id_field] for item in page.get(list_field) or [] if item.get(name_field) == wanted), "")
+print(found + "|" + (page.get("NextToken") or ""))
+' "$list" "$name_field" "$id_field" "$wanted" <<<"$page")
+        found="${result%%|*}"
+        token="${result#*|}"
+        [[ -z "$found" && -n "$token" ]] || break
+    done
+    printf '%s' "$found"
+}
+
+# Merges the pairs given (key, value, ...) into state.json, mode 600, keeping the "parity" section parity.py
+# records. Each id is recorded as soon as it exists, so teardown.sh removes what a failed run had already made.
+record_state() {
+    python3 - "$STATE_DIR/state.json" "$@" <<'PY'
+import json, os, sys
+path, pairs = sys.argv[1], sys.argv[2:]
+state = json.load(open(path)) if os.path.exists(path) else {}
+state.update(dict(zip(pairs[0::2], pairs[1::2])))
+tmp = path + ".tmp"
+with os.fdopen(os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w") as f:
+    json.dump(state, f, sort_keys=True, indent=1)
+    f.write("\n")
+os.replace(tmp, path)
+PY
+}
+
 # --- User pool -----------------------------------------------------------------------------------
-# The id an earlier run recorded wins over the name lookup, which reads only the first page.
+# The id an earlier run recorded wins over the name lookup.
 USER_POOL_ID=""
 if [[ -f "$STATE_DIR/state.json" ]]; then
     USER_POOL_ID=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('userPoolId',''))" "$STATE_DIR/state.json")
 fi
 if [[ -z "$USER_POOL_ID" ]] || ! aws cognito-idp describe-user-pool --user-pool-id "$USER_POOL_ID" >/dev/null 2>&1; then
-    USER_POOL_ID=$(aws cognito-idp list-user-pools --max-results 60 \
-        --query "UserPools[?Name=='$NAME'].Id | [0]" --output text)
+    USER_POOL_ID=$(find_by_name UserPools Name Id "$NAME" cognito-idp list-user-pools)
 fi
-if [[ "$USER_POOL_ID" == "None" || -z "$USER_POOL_ID" ]]; then
+if [[ -z "$USER_POOL_ID" ]]; then
     USER_POOL_ID=$(aws cognito-idp create-user-pool \
         --pool-name "$NAME" \
         --policies 'PasswordPolicy={MinimumLength=12,RequireUppercase=true,RequireLowercase=true,RequireNumbers=true,RequireSymbols=false}' \
@@ -72,6 +126,7 @@ else
     require_user_pool_tag "$USER_POOL_ID"
     echo "Reusing user pool $NAME"
 fi
+record_state account "$ACCOUNT" region "$REGION" userPoolId "$USER_POOL_ID"
 
 # --- MFA: optional, TOTP only (P-1). Users with no MFA preference, like alice and bob, are unaffected.
 require_user_pool_tag "$USER_POOL_ID"
@@ -96,6 +151,7 @@ if [[ "$CLIENT_ID" == "None" || -z "$CLIENT_ID" ]]; then
 else
     echo "Reusing app client $NAME-client"
 fi
+record_state appClientId "$CLIENT_ID"
 
 # --- Identity pool --------------------------------------------------------------------------------
 IDENTITY_POOL_ID=""
@@ -103,10 +159,10 @@ if [[ -f "$STATE_DIR/state.json" ]]; then
     IDENTITY_POOL_ID=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('identityPoolId',''))" "$STATE_DIR/state.json")
 fi
 if [[ -z "$IDENTITY_POOL_ID" ]] || ! aws cognito-identity describe-identity-pool --identity-pool-id "$IDENTITY_POOL_ID" >/dev/null 2>&1; then
-    IDENTITY_POOL_ID=$(aws cognito-identity list-identity-pools --max-results 60 \
-        --query "IdentityPools[?IdentityPoolName=='${NAME//-/_}'].IdentityPoolId | [0]" --output text)
+    IDENTITY_POOL_ID=$(find_by_name IdentityPools IdentityPoolName IdentityPoolId "${NAME//-/_}" \
+        cognito-identity list-identity-pools)
 fi
-if [[ "$IDENTITY_POOL_ID" == "None" || -z "$IDENTITY_POOL_ID" ]]; then
+if [[ -z "$IDENTITY_POOL_ID" ]]; then
     IDENTITY_POOL_ID=$(aws cognito-identity create-identity-pool \
         --identity-pool-name "${NAME//-/_}" \
         --allow-unauthenticated-identities \
@@ -114,6 +170,7 @@ if [[ "$IDENTITY_POOL_ID" == "None" || -z "$IDENTITY_POOL_ID" ]]; then
         --identity-pool-tags "$TAG_KEY=$TAG_VALUE" \
         --query 'IdentityPoolId' --output text)
     echo "Created identity pool ${NAME//-/_}"
+    record_state identityPoolId "$IDENTITY_POOL_ID"
 else
     require_identity_pool_tag "$IDENTITY_POOL_ID"
     echo "Reusing identity pool ${NAME//-/_}"
@@ -206,19 +263,8 @@ REGION="$REGION" USER_POOL_ID="$USER_POOL_ID" CLIENT_ID="$CLIENT_ID" USERS_FILE=
 
 # --- Outputs --------------------------------------------------------------------------------------
 # Merged into state.json, so the "parity" section parity.py records survives a re-run.
-python3 - "$STATE_DIR/state.json" "$ACCOUNT" "$REGION" "$USER_POOL_ID" "$CLIENT_ID" "$IDENTITY_POOL_ID" \
-    "$AUTH_ROLE_ARN" "$UNAUTH_ROLE_ARN" <<'PY'
-import json, os, sys
-path = sys.argv[1]
-state = json.load(open(path)) if os.path.exists(path) else {}
-keys = ["account", "region", "userPoolId", "appClientId", "identityPoolId", "authRoleArn", "unauthRoleArn"]
-state.update(dict(zip(keys, sys.argv[2:])))
-tmp = path + ".tmp"
-with os.fdopen(os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w") as f:
-    json.dump(state, f, sort_keys=True, indent=1)
-    f.write("\n")
-os.replace(tmp, path)
-PY
+record_state account "$ACCOUNT" region "$REGION" userPoolId "$USER_POOL_ID" appClientId "$CLIENT_ID" \
+    identityPoolId "$IDENTITY_POOL_ID" authRoleArn "$AUTH_ROLE_ARN" unauthRoleArn "$UNAUTH_ROLE_ARN"
 cat > "$STATE_DIR/amplify_outputs.json" <<JSON
 {"version":"1.4","auth":{"aws_region":"$REGION","user_pool_id":"$USER_POOL_ID",
 "user_pool_client_id":"$CLIENT_ID","identity_pool_id":"$IDENTITY_POOL_ID",

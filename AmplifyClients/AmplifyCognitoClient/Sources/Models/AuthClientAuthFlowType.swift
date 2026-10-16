@@ -9,7 +9,8 @@
 ///
 /// Mirrors the plugin's `AuthFlowType` case for case, except the deprecated `custom`, which has no
 /// client case: use `customWithSRP`, which is what the plugin sends for it. The plugin's `rawValue` (the
-/// Cognito flow name) is not mirrored; the engine owns that mapping, and the bridge maps case to case.
+/// Cognito flow name) is not mirrored; the engine owns that mapping, and a plugin bridge would map case to case
+/// (not built yet).
 ///
 /// May gain cases in a minor release: include `@unknown default` when you switch over it.
 @_spi(AmplifyExperimental)

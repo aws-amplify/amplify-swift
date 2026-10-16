@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-// Shared with CognitoClientUITests (the hosted-UI UI tests), which compiles this file and the five other
-// shared sandbox helpers (IntegrationTestEnvironment, SandboxPools, SandboxSignUp, SandboxUserCleanup,
-// CodeSink, TOTP) and nothing else from this folder. Keep it self-contained: it may use only those files,
+// Shared with CognitoClientUITests (the hosted-UI UI tests), which compiles this file and the six other
+// shared sandbox helpers (IntegrationTestEnvironment, PluginTestConfiguration, SandboxPools, SandboxSignUp,
+// SandboxUserCleanup, CodeSink, TOTP) and nothing else from this folder. Keep it self-contained: it may use only those files,
 // AmplifyCognitoClient, AWSCognitoIdentityProvider, Foundation, Security, CryptoKit and XCTest.
 
 @_spi(AmplifyExperimental) import AmplifyCognitoClient
@@ -155,17 +155,24 @@ enum SandboxSignUp {
         } catch {
             throw selfSignUpRefusal(error, on: pool.pool)
         }
-        if userConfirmed, options.needsConfirmation {
-            throw HarnessError.malformedFixture("""
-            \(pool.pool.rawValue) confirmed a sign-up this test needs unconfirmed: the backend needs a \
-            pre-sign-up trigger that leaves `\(confirmPrefix)` users for the confirm step.
-            """)
-        }
         let user = makeUser(userSub: userSub, isConfirmed: userConfirmed)
-        if !userConfirmed, !options.needsConfirmation {
-            // No pre-sign-up trigger confirmed it (the plugin's passwordless backend has none).
-            try requireCodeAPIToConfirm(pool.pool)
-            try await confirm(user, sentSince: signedUpAt, on: pool, sink: CodeSink())
+        do {
+            if userConfirmed, options.needsConfirmation {
+                throw HarnessError.malformedFixture("""
+                \(pool.pool.rawValue) confirmed a sign-up this test needs unconfirmed: the backend needs a \
+                pre-sign-up trigger that leaves `\(confirmPrefix)` users for the confirm step.
+                """)
+            }
+            if !userConfirmed, !options.needsConfirmation {
+                // No pre-sign-up trigger confirmed it (the plugin's passwordless backend has none).
+                try requireCodeAPIToConfirm(pool.pool)
+                try await confirm(user, sentSince: signedUpAt, on: pool, sink: CodeSink())
+            }
+        } catch {
+            // The user exists, but the caller never gets it to delete at teardown, and the cleanup of old test
+            // users runs on the sandbox only, not on the plugin's backends.
+            await discard(user)
+            throw error
         }
         return user
     }
@@ -313,15 +320,16 @@ enum SandboxSignUp {
         print("[SandboxSignUp] \(pool.rawValue): the SDK retried an accepted SignUp (UsernameExistsException); the earlier attempt's user was \(decision).")
     }
 
-    /// Deletes an earlier attempt's user this call did not adopt, best effort, through its own sign-in
-    /// (`SandboxUserCleanup.delete(_:sink:)`), which only a user that accepts this call's credentials passes.
-    /// One that cannot be deleted is left for the backend's cleanup of old test users (P-12); the line logged
-    /// names its role only.
+    /// Deletes a user this call created but does not return, best effort, through its own sign-in
+    /// (`SandboxUserCleanup.delete(_:sink:)`, which first confirms an unconfirmed user with its sign-up code),
+    /// which only a user that accepts this call's credentials passes: an earlier attempt's user this call did
+    /// not adopt, or the user of a sign-up whose checks or confirmation failed. One that cannot be deleted is
+    /// left for the backend's cleanup of old test users (P-12); the line logged names its role only.
     private static func discard(_ user: FreshUser) async {
         do {
             try await SandboxUserCleanup.delete(user)
         } catch {
-            print("[SandboxSignUp] left an earlier attempt's \(user.pool.rawValue) user for the cleanup of old test users (\(type(of: error))).")
+            print("[SandboxSignUp] left a \(user.pool.rawValue) user this sign-up did not return for the cleanup of old test users (\(type(of: error))).")
         }
     }
 

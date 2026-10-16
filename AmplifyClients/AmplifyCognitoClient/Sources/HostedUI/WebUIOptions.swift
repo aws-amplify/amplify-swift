@@ -161,7 +161,10 @@ public extension WebUIOptions {
         /// Wait for the sign-ins ahead of this one to finish, first come first served, then proceed.
         /// Throws `AuthClientError.browserBusy` if `timeout` seconds pass first, and
         /// `CancellationError` if the calling task is cancelled while waiting. Neither takes the
-        /// browser.
+        /// browser. A hosted-UI sign-in that waits holds its session's place for sign-ins meanwhile: a
+        /// password sign-in's challenge is still reported, but `confirmSignIn` queues behind it, and
+        /// fails with `invalidState` if the hosted UI then takes the sheet; `cancelWebUISignIn()`, or
+        /// cancelling the call, ends the wait and keeps the challenge.
         ///
         /// Seconds rather than `Duration`, which needs iOS 16. A timeout that is zero, negative, NaN
         /// or shorter than a nanosecond gives `.fail`. One longer than `maximumWaitTimeout`,
@@ -257,43 +260,4 @@ extension WebUIOptions.IdentityExpectation: Sendable {}
 
 extension WebUIOptions.IdentityExpectation: Equatable {}
 
-extension WebUIOptions {
-
-    /// The authorize-request query items these options contribute: `scope`, then the optional items
-    /// in the relative order the plugin's `HostedUIRequestHelper.createSignInURL` appends them.
-    ///
-    /// The rest of the request (`response_type`, `client_id`, `state`, `redirect_uri`, the PKCE
-    /// challenge, `userContextData`) comes from the configuration and the flow, not from options.
-    /// The plugin places `code_challenge` and `userContextData` between `scope` and the optional
-    /// items, so these are not a contiguous run of the plugin's URL; order has no meaning on the
-    /// wire, so a URL test should compare items as a set.
-    ///
-    /// One deliberate difference: an empty `prompt` array sends no `prompt` item, where the plugin
-    /// sends an empty one.
-    func authorizeQueryItems(configuredScopes: [String]) -> [URLQueryItem] {
-        let scope = (scopes ?? configuredScopes).sorted().joined(separator: " ")
-        var items = [URLQueryItem(name: "scope", value: scope)]
-        if let idpIdentifier {
-            items.append(.init(name: "idp_identifier", value: idpIdentifier))
-        } else if let provider {
-            items.append(.init(name: "identity_provider", value: provider.userPoolProviderName))
-        }
-        if let nonce {
-            items.append(.init(name: "nonce", value: nonce))
-        }
-        if let language {
-            items.append(.init(name: "lang", value: language))
-        }
-        if let loginHint {
-            items.append(.init(name: "login_hint", value: loginHint))
-        }
-        if let prompt, !prompt.isEmpty {
-            items.append(.init(name: "prompt", value: prompt.map(\.rawValue).joined(separator: " ")))
-        }
-        if let resource {
-            items.append(.init(name: "resource", value: resource))
-        }
-        return items
-    }
-}
 #endif

@@ -314,9 +314,10 @@ actor SessionCore {
     }
 
     /// Registers the session's hosted-UI flow of `epoch`, which an ending then stops. `false` if the epoch has
-    /// already moved: the flow must not start.
-    func registerWebUIFlow(epoch: UInt64, cancel: @escaping @Sendable () -> Void) -> Bool {
-        guard signInEpoch == epoch else {
+    /// already moved, or the session ended since `endings` was read (an ending before the registration stops
+    /// nothing): the flow must not start.
+    func registerWebUIFlow(epoch: UInt64, endedSince endings: UInt64, cancel: @escaping @Sendable () -> Void) -> Bool {
+        guard signInEpoch == epoch, sessionEndings == endings else {
             return false
         }
         webUIFlow = (epoch, cancel)

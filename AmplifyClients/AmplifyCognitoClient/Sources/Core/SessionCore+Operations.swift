@@ -37,8 +37,9 @@ extension SessionCore {
     /// Runs an operation on the session's signed-in user with the session's credentials payload: restored,
     /// and refreshed first through the session's single refresh flight if its credentials need it (never a
     /// second refresh). With an identity pool that includes its AWS credentials, refreshed with the tokens as the
-    /// plugin does, so an identity pool failure fails the operation even while the access token is valid. The
-    /// engine reads the access token from the payload.
+    /// plugin does, so an identity pool failure fails the operation even while the access token is valid, except for a
+    /// session still waiting for its first identity (`isIdentityPending`), whose token is used without it
+    /// (`freshPayload(for:)`). The engine reads the access token from the payload.
     ///
     /// - Parameter operation: What the operation does, for the errors ("fetch the user attributes").
     /// - Throws: `configuration` without a user pool; `notSignedIn` for a signed-out, guest or federated

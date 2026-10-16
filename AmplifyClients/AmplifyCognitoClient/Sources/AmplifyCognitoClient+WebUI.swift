@@ -24,7 +24,10 @@ public extension AmplifyCognitoClient {
     /// revokes a sign-in the user has already finished. The client checks that the tokens belong to this flow
     /// and this app, and to the user `options.identityExpectation` asks for; a failed check signs nobody in and
     /// stores nothing. A password sign-in waiting on a challenge is cancelled once this session holds the
-    /// sheet, so a refusal or a timeout leaves it waiting.
+    /// sheet, so a refusal or a timeout leaves it waiting. Until then, with `.wait(timeout:)` for up to the whole
+    /// wait, the challenge is still reported, but a `confirmSignIn` answering it queues behind this call, and fails
+    /// with `invalidState` if this call then takes the sheet; `cancelWebUISignIn()`, or cancelling this call, ends
+    /// the wait and keeps the challenge.
     ///
     /// Private (ephemeral) by default, unlike the plugin: see `WebUIOptions.prefersEphemeralSession`.
     ///

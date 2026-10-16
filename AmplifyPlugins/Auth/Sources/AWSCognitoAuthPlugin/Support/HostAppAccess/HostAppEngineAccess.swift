@@ -5,6 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+// Debug builds only: the host app reaches these through `@testable import`, which needs a Debug build, so the
+// shipping product does not carry them.
+#if DEBUG
+
 import Foundation
 import InternalAWSCognitoAuth
 
@@ -213,3 +217,5 @@ struct HostAppCredentialStore {
         try credentialStore.retrieveCredential()
     }
 }
+
+#endif

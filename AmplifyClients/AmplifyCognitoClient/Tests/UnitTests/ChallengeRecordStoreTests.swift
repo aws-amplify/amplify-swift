@@ -484,6 +484,28 @@ final class ChallengeRecordStoreTests: XCTestCase {
         XCTAssertNotEqual(try store(Self.userPoolOnly).readChallenge(work), .absent)
     }
 
+    /// The sweep deletes an expired record only if a re-read finds the same bytes: a listing takes no record gate, so
+    /// a sign-in may save a fresh challenge between the sweep's read and its delete.
+    ///
+    /// - Given: `work`'s record created 20 minutes ago, and a sign-in that saves a fresh one in its place right after
+    ///   the sweep first reads it
+    /// - When: the sessions are listed with the sweep at now
+    /// - Then:
+    ///    - the fresh record is kept
+    func testTheSweepKeepsAChallengeSavedAfterItsRead() throws {
+        try store.putChallenge(record(at: createdAt.addingTimeInterval(-20 * 60)), for: work)
+        let writer: SessionRecordStore = store
+        let fresh = record(session: "fresh")
+        let sessionId = work
+        keychain.onceAfterReading(store.challengeAccount(for: work)) {
+            try? writer.putChallenge(fresh, for: sessionId)
+        }
+
+        _ = try store.storedSessions(sweepingChallengesAt: createdAt)
+
+        XCTAssertEqual(try store.storedChallenge(work), fresh)
+    }
+
     /// The sweep is best effort: the listing never fails on it.
     ///
     /// - Given: an expired record whose delete fails, and a signed-in session

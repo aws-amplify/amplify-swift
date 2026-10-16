@@ -256,7 +256,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
             withExtension: "entitlements"
         ) else {
             throw HarnessError.malformedFixture(
-                "\(name) is not in the test bundle: the \"Copy sandbox configuration\" phase copies it from "
+                "\(name) is not in the test bundle: the \"Copy test configuration\" phase copies it from "
                     + "CognitoClientHostApp/. Rebuild the CognitoClientIntegrationTests target."
             )
         }

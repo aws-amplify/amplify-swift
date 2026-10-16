@@ -86,7 +86,7 @@ final class StressTests: ClientIntegrationTestCase {
             let token = try fingerprint(session.userPoolTokensResult.get().accessToken)
             XCTAssertTrue(token == before || token == refreshed, "fetch \(index) returns the old or the new token")
         }
-        XCTAssertEqual(recorder.operations, ["GetTokensFromRefreshToken"], "one forced refresh, one network refresh")
+        XCTAssertEqual(recorder.answeredOperations, ["GetTokensFromRefreshToken"], "one forced refresh, one network refresh")
         let after = try await fingerprint(client.fetchAuthSession().userPoolTokensResult.get().accessToken)
         XCTAssertTrue(after == refreshed, "a fetch afterwards returns the new token")
     }

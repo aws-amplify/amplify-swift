@@ -273,7 +273,11 @@ class AuthSRPSignInTests: AWSAuthBaseTest, @unchecked Sendable {
             }
         }
         guard challenged else {
-            XCTFail("Every FORCE_CHANGE_PASSWORD user was already used; run infra/prepare-run.sh to reset them")
+            XCTFail(
+                "Every FORCE_CHANGE_PASSWORD user was already used. Reset them: put each user in "
+                    + "new_password_required_usernames back into FORCE_CHANGE_PASSWORD with "
+                    + "new_password_required_temporary_password (AdminSetUserPassword with Permanent false)"
+            )
             return
         }
 

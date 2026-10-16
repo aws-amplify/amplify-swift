@@ -236,7 +236,7 @@ class AmplifyEngineLogRouterTests: XCTestCase {
         XCTAssertEqual(sink.lines, ["info: a", "info: b", "info: c"])
     }
 
-    /// - Given: Some other router is installed
+    /// - Given: The default router is installed, as before any plugin is created
     /// - When: An `AWSCognitoAuthPlugin` is created
     /// - Then: The plugin's router, at the plugin's scope, is the global engine router
     ///

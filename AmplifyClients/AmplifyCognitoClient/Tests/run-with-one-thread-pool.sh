@@ -14,7 +14,7 @@
 # is the regression this script exists to catch, so run it under a timeout.
 #
 # Usage, from the repository root:
-#   swift build --build-tests --target AmplifyCognitoClientTests   # or any `swift test` run
+#   swift build --build-tests   # or any `swift test` run; `--target` cannot be combined with `--build-tests`
 #   AmplifyClients/AmplifyCognitoClient/Tests/run-with-one-thread-pool.sh
 #
 # LIBDISPATCH_COOPERATIVE_POOL_STRICT must be set before the test process starts, which is why this runs

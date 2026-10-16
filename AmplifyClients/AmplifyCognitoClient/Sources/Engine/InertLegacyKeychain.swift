@@ -13,9 +13,10 @@ import InternalAmplifyKeychain
 ///
 /// The engine's credential-store machine runs the AWSMobileClient legacy migration on its first event.
 /// That migration copies the legacy logins forward, and deletes the legacy services only after the copy is
-/// saved; it keeps them when a read fails (`c57dd1094`). When a newer saved session exists, it writes nothing
-/// and clears the legacy services without a copy; when reading that session fails with a keychain error it
-/// keeps them, and an undecodable session counts as absent (`f3b06afef`). The inert store is still needed:
+/// saved; it keeps them when a read fails. When a newer saved session exists, it writes nothing and clears the
+/// legacy services without a copy; when reading that session fails with a keychain error it keeps them, and an
+/// undecodable session counts as absent (`MigrateLegacyCredentialStore.shouldWriteLegacyValuesForward`, and
+/// `existingSession(in:legacyHasLogin:migration:)` beside it). The inert store is still needed:
 /// the client must never migrate or rewrite AWSMobileClient data, which stays the Auth plugin's job. The one
 /// exception is not the engine's: `.default`'s sign-out and purge clear those services after the record, as the
 /// plugin's sign-out does, through the record store (`SessionRecordStore.clearLegacyLogins()`).

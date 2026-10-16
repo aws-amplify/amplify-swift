@@ -10,12 +10,14 @@
 #
 # The rules every caller relies on:
 #   - Every AWS call goes through aws_into, which always passes --region "$CI_REGION" and masks the CLI's error
-#     output (`mask`: lib.sh's `redact`, plus the bucket and the account as literal text).
+#     output (`mask`: lib.sh's `redact`, plus the bucket, the account and the config path as literal text).
 #   - Every mutating call goes through `mutate`, which refuses a resource whose name is not this script's
 #     (`is_ours`: the ccit-ci- prefix), and in plan mode (the default) only prints the call, masked.
 #   - Before a mutating call on a resource that already exists, the caller checks its purpose tag
 #     (`require_ours`), so nothing without the tag is ever changed or deleted.
-#   - Secrets reach the CLI through --cli-input-json, from a mode-600 file in $CI_WORK (`input_file`), never argv.
+#   - Secrets reach the CLI through --cli-input-json, from a mode-600 file in $CI_WORK (`input_file`), never argv;
+#     and jq through its environment (`CCIT_SECRET_<x>=… jq … '$ENV.CCIT_SECRET_<x>'`) or stdin, never argv either,
+#     where `ps` would show them to other local users.
 
 CI_PREFIX="ccit-ci"
 CI_TAG_KEY="purpose"
@@ -67,7 +69,8 @@ sed_literal() {
     printf '%s' "$1" | sed -e 's/[][\\.*^$#/]/\\&/g'
 }
 
-# Masks identifiers: lib.sh's `redact`, then the bucket and the account as literal text, then AWS access key ids.
+# Masks identifiers: lib.sh's `redact`, then the bucket, the account and the config path as literal text, then AWS
+# access key ids.
 # The literal expressions are built once they are known (mask_init, after parse_config_url and require_caller).
 MASK_SED=(-e 's/(A[SK]IA)[A-Z0-9]{12,}/\1<key>/g')
 mask_init() {
@@ -77,6 +80,10 @@ mask_init() {
     fi
     if [[ -n "$CI_ACCOUNT" ]]; then
         MASK_SED+=(-e "s#$(sed_literal "$CI_ACCOUNT")#<account>#g")
+    fi
+    # The path before auth/ in every S3 key the scripts name, as fetch-ci-config.sh masks it.
+    if [[ -n "$CI_PREFIX_PATH" ]]; then
+        MASK_SED+=(-e "s#$(sed_literal "$CI_PREFIX_PATH/auth/")#<path>/auth/#g")
     fi
 }
 

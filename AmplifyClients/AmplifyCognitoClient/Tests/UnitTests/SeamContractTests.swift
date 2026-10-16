@@ -90,6 +90,15 @@ final class FakeEngineSeamContractTests: XCTestCase {
         try await SeamContractCases.anOlderEpochSignInStopsNothing(driver())
     }
 
+    /// An older-epoch sign-in stops nothing in flight.
+    ///
+    /// - Given: a sign-in at epoch 2 held on its way to Cognito, which will meet it with a new-password challenge
+    /// - When: a sign-in, then an auto sign-in, run at epoch 1, then the held sign-in is released
+    /// - Then: both throw `CancellationError`, and the epoch-2 sign-in returns its challenge
+    func testAnOlderEpochSignInStopsNothingInFlight() async throws {
+        try await SeamContractCases.anOlderEpochSignInStopsNothingInFlight(driver())
+    }
+
     /// `autoSignIn` with no auto-sign-in session ends the pending attempt first.
     ///
     /// - Given: a pending challenge from a sign-in at epoch 1, and no sign-up
@@ -210,6 +219,15 @@ final class LiveEngineSeamContractTests: XCTestCase {
     /// - Then: both throw `CancellationError`, and the epoch-2 challenge is still pending
     func testAnOlderEpochSignInStopsNothing() async throws {
         try await SeamContractCases.anOlderEpochSignInStopsNothing(driver())
+    }
+
+    /// An older-epoch sign-in stops nothing in flight.
+    ///
+    /// - Given: a sign-in at epoch 2 held on its way to Cognito, which will meet it with a new-password challenge
+    /// - When: a sign-in, then an auto sign-in, run at epoch 1, then the held sign-in is released
+    /// - Then: both throw `CancellationError`, and the epoch-2 sign-in returns its challenge
+    func testAnOlderEpochSignInStopsNothingInFlight() async throws {
+        try await SeamContractCases.anOlderEpochSignInStopsNothingInFlight(driver())
     }
 
     /// `autoSignIn` with no auto-sign-in session ends the pending attempt first.

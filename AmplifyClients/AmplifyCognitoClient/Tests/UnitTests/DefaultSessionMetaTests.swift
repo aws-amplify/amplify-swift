@@ -116,16 +116,21 @@ final class DefaultSessionMetaTests: XCTestCase {
         }
     }
 
+    /// The sidecar belongs to the plugin's session: every wipe of that session removes it too.
+    ///
     /// - Given: the sidecar account for each of the three namespace shapes
     /// - When: it is checked as the plugin's scoped wipe checks it
     /// - Then:
-    ///    - it is a client session record, so the scoped wipe leaves it alone. (The plugin's access-group
-    ///      migration moves it with `.default`'s other items; that is pinned with the migration.)
-    func testMetaAccountIsAClientRecordForThePluginsWipe() {
+    ///    - it is a client session record, and a default-session item: a scoped wipe spares it only when it spares
+    ///      default-session items, and the plugin's own wipes (`sparingDefaultSessionItems: false`, every production
+    ///      caller) remove it with the plugin's session. (The plugin's access-group migration moves it with
+    ///      `.default`'s other items; that is pinned with the migration.)
+    func testMetaAccountIsADefaultSessionItemForThePluginsWipe() {
         for namespace in Self.namespaces {
             let account = SessionRecordKey.metaAccount(in: namespace)
 
             XCTAssertTrue(SessionRecordAccount.isClientSessionRecord(account), account)
+            XCTAssertTrue(SessionRecordAccount.isDefaultSessionItem(account), account)
         }
     }
 
@@ -138,7 +143,8 @@ final class DefaultSessionMetaTests: XCTestCase {
     /// - Then:
     ///    - alice's sidecar applies to alice and to a signed-out or absent record only
     ///    - a sidecar with no user applies to every record, so a user who signs in keeps its label
-    ///    - after alice signs out, her signing in again keeps the label, and bob's signing in drops it
+    ///    - a signed-out row's sidecar still names alice, so the same-user and other-user rows are also alice
+    ///      signing in again over her signed-out row (the label kept) and bob signing in over it (dropped)
     func testBindingRules() {
         let alices = meta(label: "Work", username: "alice", userId: "sub-alice")
         let nobodys = meta(label: "Shared iPad")
@@ -149,9 +155,7 @@ final class DefaultSessionMetaTests: XCTestCase {
             ("guest record with a user's sidecar", alices, nil, false, false),
             ("no-user sidecar with a guest record", nobodys, nil, false, true),
             ("no-user sidecar with a user record", nobodys, "sub-alice", false, true),
-            ("no-user sidecar with a signed-out record", nobodys, nil, true, true),
-            ("alice signs in again over her signed-out row", alices, "sub-alice", false, true),
-            ("bob signs in over alice's signed-out row", alices, "sub-bob", false, false)
+            ("no-user sidecar with a signed-out record", nobodys, nil, true, true)
         ]
         for (name, sidecar, recordUser, recordIsSignedOut, expected) in rows {
             XCTAssertEqual(sidecar.applies(toRecordUser: recordUser, recordIsSignedOut: recordIsSignedOut), expected, name)

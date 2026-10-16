@@ -97,8 +97,11 @@ package struct MigrateLegacyCredentialStore: Action {
         } ?? .apiBased(.userSRP)
 
         let hasLegacyValues = deviceDetails != nil || userPoolTokens != nil || identityId != nil
+        // A login, not a guest: user-pool tokens, or an identity with a logins map (a federated sign-in).
+        let legacyHasLogin = userPoolTokens != nil || (identityId != nil && !loginsMap.isEmpty)
         guard shouldWriteLegacyValuesForward(
             hasLegacyValues: hasLegacyValues,
+            legacyHasLogin: legacyHasLogin,
             migration: migration,
             amplifyCredentialStore: amplifyCredentialStore,
             environment: environment
@@ -490,6 +493,7 @@ extension MigrateLegacyCredentialStore {
     /// launch or, if they have been superseded, cleared.
     private func shouldWriteLegacyValuesForward(
         hasLegacyValues: Bool,
+        legacyHasLogin: Bool,
         migration: LegacyStoreMigration,
         amplifyCredentialStore: AmplifyAuthCredentialStoreBehavior,
         environment: Environment
@@ -502,7 +506,7 @@ extension MigrateLegacyCredentialStore {
             return true
         }
 
-        switch existingSession(in: amplifyCredentialStore) {
+        switch existingSession(in: amplifyCredentialStore, legacyHasLogin: legacyHasLogin, migration: migration) {
         case .present:
             // The legacy data is older than the session the new store already holds, so writing it
             // forward would replace a newer session. Drop it instead.
@@ -534,13 +538,27 @@ extension MigrateLegacyCredentialStore {
         return true
     }
 
-    private func existingSession(in amplifyCredentialStore: AmplifyAuthCredentialStoreBehavior) -> ExistingSession {
+    /// Whether the new store holds a session the legacy data must not replace.
+    ///
+    /// A guest (`.identityPoolOnly`) is not a newer login: the plugin saves one on its own, for example after a
+    /// launch before first unlock kept the legacy stores. So it counts as absent when the legacy data holds a
+    /// login (`legacyHasLogin`), or may hold one that could not be read, and the legacy login is migrated over it
+    /// (or kept for a later launch). Against a legacy guest it is the newer guest, and is kept.
+    private func existingSession(
+        in amplifyCredentialStore: AmplifyAuthCredentialStoreBehavior,
+        legacyHasLogin: Bool,
+        migration: LegacyStoreMigration
+    ) -> ExistingSession {
         do {
             let credentials = try amplifyCredentialStore.retrieveCredential()
-            if case .noCredentials = credentials {
+            switch credentials {
+            case .noCredentials:
                 return .absent
+            case .identityPoolOnly:
+                return legacyHasLogin || migration.unreadableError != nil ? .absent : .present
+            case .userPoolOnly, .userPoolAndIdentityPool, .identityPoolWithFederation:
+                return .present
             }
-            return .present
         } catch let error as EngineCredentialStoreError {
             if case .securityError = error {
                 return .unreadable(error)

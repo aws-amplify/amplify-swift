@@ -166,6 +166,66 @@ final class DefaultSessionLegacyLoginTests: XCTestCase {
         assertLegacyLogins(present: false)
     }
 
+    /// - Given: no saved login under `.default`, and AWSMobileClient logins left from an earlier release
+    /// - When: the client signs `.default` out, with nothing to sign out
+    /// - Then:
+    ///    - the result is `.complete`, and the AWSMobileClient logins are cleared, as the plugin's sign-out from signed out
+    ///      clears them
+    func testASignOutWithNoSavedLoginClearsThem() async throws {
+        seedLegacyLogins()
+        let client = try defaultClient()
+        _ = await client.currentSessionState()
+
+        let result = await client.signOut()
+
+        XCTAssertEqual(result, .complete)
+        XCTAssertNil(harness.keychain.value(pluginAccount))
+        assertLegacyLogins(present: false)
+    }
+
+    /// - Given: `.default`'s saved login holding `{"noCredentials":{}}`, and AWSMobileClient logins
+    /// - When: the client signs `.default` out, with nothing to sign out
+    /// - Then:
+    ///    - the result is `.complete`, the saved login still holds `{"noCredentials":{}}`, and the AWSMobileClient logins
+    ///      are cleared
+    func testASignOutOfASignedOutLoginClearsThem() async throws {
+        harness.keychain.put(PluginRecordFixtures.noCredentials, pluginAccount)
+        seedLegacyLogins()
+        let client = try defaultClient()
+        _ = await client.currentSessionState()
+
+        let result = await client.signOut()
+
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(harness.keychain.value(pluginAccount), PluginRecordFixtures.noCredentials)
+        assertLegacyLogins(present: false)
+    }
+
+    /// - Given: AWSMobileClient logins, and `.default` with no saved login, then with `{"noCredentials":{}}`
+    /// - When: `signOutStoredSession(.default, configuration:)` runs each time, with nothing to sign out
+    /// - Then:
+    ///    - each result is `.complete`, and each time the AWSMobileClient logins are cleared
+    func testAStoredSessionSignOutWithNothingToSignOutClearsThem() async throws {
+        for saved in [nil, PluginRecordFixtures.noCredentials] {
+            if let saved {
+                harness.keychain.put(saved, pluginAccount)
+            }
+            seedLegacyLogins()
+
+            let result = await AmplifyCognitoClient.signOutStoredSession(
+                sessionId: .default,
+                configuration: ClientFixtures.configuration,
+                accessGroup: nil,
+                dependencies: dependencies()
+            )
+
+            let context = saved == nil ? "no saved login" : "a signed-out saved login"
+            XCTAssertEqual(result, .complete, context)
+            XCTAssertEqual(harness.keychain.value(pluginAccount), saved, context)
+            assertLegacyLogins(present: false, context)
+        }
+    }
+
     /// - Given: alice signed in on `.default` through the client, and AWSMobileClient logins
     /// - When: she deletes herself
     /// - Then:
@@ -195,6 +255,61 @@ final class DefaultSessionLegacyLoginTests: XCTestCase {
         try await client.clearFederationToIdentityPool()
 
         XCTAssertEqual(harness.keychain.value(pluginAccount), PluginRecordFixtures.noCredentials)
+        assertLegacyLogins(present: false)
+    }
+
+    // MARK: Nothing to sign out
+
+    /// Like the plugin's, a `.default` sign-out clears the AWSMobileClient logins even when it has nothing to sign
+    /// out: otherwise a rollback to a plugin build would migrate the user back in, signed in.
+    ///
+    /// - Given: no saved login under `.default`, and AWSMobileClient logins left from an earlier release
+    /// - When: `.default` signs out through its client
+    /// - Then:
+    ///    - the result is `.complete`, and the AWSMobileClient logins are cleared
+    func testASignOutOfAnAbsentDefaultSessionClearsThem() async throws {
+        seedLegacyLogins()
+        let client = try defaultClient()
+        _ = await client.currentSessionState()
+
+        let result = await client.signOut()
+
+        XCTAssertEqual(result, .complete)
+        assertLegacyLogins(present: false)
+    }
+
+    /// - Given: `.default`'s saved login signed out (`{"noCredentials":{}}`), and AWSMobileClient logins
+    /// - When: `.default` signs out through its client
+    /// - Then:
+    ///    - the result is `.complete`, and the AWSMobileClient logins are cleared
+    func testASignOutOfASignedOutDefaultSessionClearsThem() async throws {
+        harness.keychain.put(PluginRecordFixtures.noCredentials, pluginAccount)
+        seedLegacyLogins()
+        let client = try defaultClient()
+        _ = await client.currentSessionState()
+
+        let result = await client.signOut()
+
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(harness.keychain.value(pluginAccount), PluginRecordFixtures.noCredentials)
+        assertLegacyLogins(present: false)
+    }
+
+    /// - Given: no saved login under `.default`, and AWSMobileClient logins
+    /// - When: `signOutStoredSession(.default)` runs, with no client of it live
+    /// - Then:
+    ///    - the result is `.complete`, and the AWSMobileClient logins are cleared
+    func testAStaticSignOutOfAnAbsentDefaultSessionClearsThem() async throws {
+        seedLegacyLogins()
+
+        let result = await AmplifyCognitoClient.signOutStoredSession(
+            sessionId: .default,
+            configuration: ClientFixtures.configuration,
+            accessGroup: nil,
+            dependencies: dependencies()
+        )
+
+        XCTAssertEqual(result, .complete)
         assertLegacyLogins(present: false)
     }
 

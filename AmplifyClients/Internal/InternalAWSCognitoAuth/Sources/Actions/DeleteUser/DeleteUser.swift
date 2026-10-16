@@ -55,7 +55,8 @@ package struct DeleteUser: Action {
             } catch {
                 let authError = EngineAuthError.service(
                     "Delete user failed with service error",
-                    EngineErrorMessages.reportBugToAWS(),
+                    // The plugin's location before the move, so the text an app sees is unchanged.
+                    EngineErrorMessages.reportBugToAWS(file: "AWSCognitoAuthPlugin/DeleteUser.swift", line: 56),
                     error
                 )
                 event = DeleteUserEvent(eventType: .throwError(authError))

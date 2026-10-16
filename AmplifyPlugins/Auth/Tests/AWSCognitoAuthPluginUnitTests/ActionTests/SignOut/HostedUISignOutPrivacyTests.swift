@@ -11,26 +11,28 @@ import XCTest
 @testable import InternalAWSCognitoAuth
 
 /// The hosted-UI sign-out, engine side: it opens the browser with
-/// the sign-in's own privacy choice, and `SignedInData.signOutPresentsBrowser` says when it opens one at all.
+/// the shared cookie jar, as the plugin always has, and `SignedInData.signOutPresentsBrowser` says when it opens
+/// one at all.
 ///
 /// - Note: `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 ///   `@Sendable` closures the API takes. XCTest runs one test at a time.
 class HostedUISignOutPrivacyTests: XCTestCase, @unchecked Sendable {
 
-    /// Test that the logout browser uses the sign-in's cookie jar
+    /// Test that the logout browser always uses the shared cookie jar
     ///
     /// - Given: Hosted-UI sign-ins that shared the browser's cookies and that preferred a private session, and
-    ///   an API sign-in
+    ///   an API sign-in, as the stored record `ShowHostedUISignOut` is given
     /// - When:
     ///    - `ShowHostedUISignOut` runs for each
     /// - Then:
-    ///    - The browser is opened private exactly when the sign-in was private, and not private for an API
-    ///      sign-in
+    ///    - The browser is never opened private, whatever the stored record says: `InitiateSignOut` only
+    ///      shows it for a sign-in that shared the cookies, and a record replaced by another writer must not
+    ///      move the logout into an ephemeral session
     ///
-    func testLogoutBrowserUsesTheSignInsPrivacy() async {
+    func testLogoutBrowserAlwaysUsesTheSharedCookieJar() async {
         for (signInData, expected) in [
             (Self.hostedUI(preferPrivateSession: false), false),
-            (Self.hostedUI(preferPrivateSession: true), true),
+            (Self.hostedUI(preferPrivateSession: true), false),
             (SignedInData.testData, false)
         ] {
             let session = RecordingHostedUISession()

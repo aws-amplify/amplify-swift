@@ -23,7 +23,9 @@ import XCTest
 /// `AWSCognitoAuthPlugin.log`), not the tests' usual
 /// `awsCognitoAuthPluginTest` category, so every shape resolves as it does in an app. Each line is
 /// normalised (`LogTranscriptNormaliser`), and the scenario's lines are compared, as a sorted multiset,
-/// with `TestResources/GoldenLogs/transcript.json`, recorded before the engine extraction.
+/// with `TestResources/GoldenLogs/transcript.json`, recorded before the engine extraction. It was re-pinned
+/// once since, for a reviewed change: scenario 4's sign-out line masks the refresh token (`tr*****en`), where
+/// the released plugin printed it in full. The file's note keeps its capture-time wording.
 ///
 /// Why a sorted multiset: actions run on their own tasks, so the interleaving of lines from different
 /// tasks is not deterministic. Which lines are logged, how often, and at which scope and level is.
@@ -35,6 +37,10 @@ final class LogTranscriptSnapshotTests: XCTestCase, @unchecked Sendable {
         let note: String
         let scenarios: [String: [CapturingLoggingPlugin.Line]]
     }
+
+    /// SHA-256 of `transcript.json`. Regenerating the transcript changes it, so a regeneration also has to edit
+    /// this line, in review.
+    static let pinnedTranscriptSHA256 = "6193c4562559fb8602ba4516c11ec533f8ee1e57cf65f851fe19afebed925afa"
 
     static var fileURL: URL {
         GoldenFiles.directory("GoldenLogs").appendingPathComponent("transcript.json")
@@ -61,6 +67,19 @@ final class LogTranscriptSnapshotTests: XCTestCase, @unchecked Sendable {
     }
 
     // MARK: The gate
+
+    /// Test that the committed transcript is the pinned one
+    ///
+    /// - Given: The committed `transcript.json`
+    /// - When:
+    ///    - Its SHA-256 is computed
+    /// - Then:
+    ///    - It equals the value pinned in this file
+    ///
+    func testTranscriptIsPinned() throws {
+        try XCTSkipIf(GoldenFiles.isGenerating, "Generating golden files")
+        XCTAssertEqual(try GoldenFiles.sha256Hex(Data(contentsOf: Self.fileURL)), Self.pinnedTranscriptSHA256)
+    }
 
     /// Test that the normalised log transcript of every scenario is unchanged
     ///

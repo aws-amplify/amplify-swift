@@ -18,6 +18,9 @@ class EnginePayloadForkTests: XCTestCase {
 
     // MARK: Values
 
+    // Literal lists: nothing adds a new case to them. The case-name switches below fail to compile on a new
+    // case; when one does, add a value of it here and update the counts the tests check.
+
     static let mfaTypes: [MFAType] = [.sms, .totp, .email]
 
     static var factors: [AuthFactorType] {
@@ -96,7 +99,8 @@ class EnginePayloadForkTests: XCTestCase {
         return steps
     }
 
-    // MARK: Case names (exhaustive switches, so a new case on either side fails to compile)
+    // MARK: Case names (exhaustive switches, so a new case on either side fails to compile; the value lists
+    // and the counts above still have to be extended by hand)
 
     // swiftlint:disable cyclomatic_complexity
 
@@ -142,7 +146,7 @@ class EnginePayloadForkTests: XCTestCase {
 
     // MARK: EngineSignInStep ↔ AuthSignInStep
 
-    /// Test that the step table is exhaustive and that each case maps onto the same case
+    /// Test that the step table covers the 14 cases and that each case maps onto the same case
     ///
     /// - Given: One or more values of every `AuthSignInStep` case
     /// - When:

@@ -44,9 +44,9 @@ import InternalAWSCognitoAuth
 // **And they never write `authConfiguration`**: only the app actually running a configuration, a restore, records
 // it. Otherwise a static purge under Y while the app runs X would record Y, and the app's next restore under X would
 // carry nothing back from Y (purged) and read X's copy as if the login had moved away and come back. **A static sign-out
-// that carried a user's login also signs out the record it carried from** (`signOutCarrySource`), through
-// the byte guard, so neither a restore under X nor a later move to Y brings the signed-out user back. A static purge
-// revokes nothing, so it leaves that record alone.
+// that carried a user's login, or a federated identity, also signs out the record it carried from** (`signOutCarrySource`;
+// a guest's is left), through the byte guard, so neither a restore under X nor a later move to Y
+// brings the signed-out user back. A static purge revokes nothing, so it leaves that record alone.
 //
 // A record the rule reads is read again once if found absent where the keychain's `set` deletes and re-adds (macOS),
 // as the shared record is.
@@ -228,13 +228,15 @@ extension SessionRecordStore {
     /// A static sign-out's last step after it carried a user's login here and signed it out: writes
     /// `{"noCredentials":{}}` over the record it was carried from, so neither a restore under that configuration nor a
     /// later move to this one brings the signed-out user back. Through the byte guard: only while that record still
-    /// holds exactly the bytes carried, the login just signed out; another writer's record is left alone. A guest's
-    /// carried record is left too: nothing of it was revoked.
+    /// holds exactly the bytes carried, the login just signed out; another writer's record is left alone. A user's
+    /// login and a federated identity are signed out there; a guest's carried record is left, as a named session
+    /// leaves a guest's copy: it is nobody's login, and an app extension on that configuration may still use its
+    /// identity.
     ///
     /// - Returns: `true` if the record was signed out; `false` if it no longer holds `carried` (or it is a guest's).
     /// - Throws: `AuthClientError.storageUnavailable` if it could not be read or written.
     func signOutCarrySource(_ account: String, carried bytes: Data) throws -> Bool {
-        guard Self.isUserKind(summarizeSharedRecord(bytes).kind) else {
+        guard summarizeSharedRecord(bytes).kind != .guest else {
             return false
         }
         return try perform("sign out the saved login of the previous configuration") {

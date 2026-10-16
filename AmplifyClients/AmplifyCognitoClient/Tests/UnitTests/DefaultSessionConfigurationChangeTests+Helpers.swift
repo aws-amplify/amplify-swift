@@ -76,7 +76,8 @@ extension DefaultSessionConfigurationChangeTests {
         )
     }
 
-    /// Lets any revoke a restore started run: none is awaited by the restore.
+    /// Lets any revoke a restore started run: none is awaited by the restore. Only a sample for "nothing revoked":
+    /// whether a revoke starts at all is pinned directly by `testRevocablePayload_isOnlyADeletedUserLoginOfTheSameUserPool`.
     func settleRevokes() async throws {
         try await Task.sleep(nanoseconds: 50_000_000)
     }

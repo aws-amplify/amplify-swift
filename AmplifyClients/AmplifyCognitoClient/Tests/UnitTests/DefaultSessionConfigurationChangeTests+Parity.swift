@@ -133,6 +133,37 @@ extension DefaultSessionConfigurationChangeTests {
         }
     }
 
+    /// The one difference between the two orders, pinned so the docs' exception stays true: the plugin copies only
+    /// the record, so a carry the plugin applies leaves the label behind, where the client's own carry takes it
+    /// (`testCarriedRecordKeepsItsLabel`). Cosmetic, and left as it is: copying the sidecar would change the plugin.
+    ///
+    /// - Given: alice labelled "Work" through the client under a user-pool-only configuration
+    /// - When: a plugin build configured with an identity pool added starts first; then the saved sessions are listed
+    ///   under that configuration, and a `.default` client restores there
+    /// - Then:
+    ///    - the plugin carried alice's record; the old namespace keeps its sidecar, and the new one has none
+    ///    - `.default` is alice, signed in, listed with no label; the client carries nothing more
+    func testACarryThePluginAppliesFirst_leavesTheLabelBehind() async throws {
+        try await pluginSignsIn("alice", under: ChangeConfigs.userPoolOnly)
+        var labelled: AmplifyCognitoClient? = makeClient(ChangeConfigs.userPoolOnly)
+        try await labelled?.setSessionLabel("Work")
+        labelled = nil
+        await harness.waitForBaseline()
+        let oldSidecar = SessionRecordKey.metaAccount(in: ChangeConfigs.userPoolOnly.poolNamespace)
+        let newSidecar = SessionRecordKey.metaAccount(in: ChangeConfigs.both.poolNamespace)
+
+        pluginStore(ChangeConfigs.both)
+        let rows = try await listed(ChangeConfigs.both, includingSignedOut: true)
+        let restored = await makeClient(ChangeConfigs.both).currentSessionState()
+
+        XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.both)), harness.keychain.value(account(ChangeConfigs.userPoolOnly)))
+        XCTAssertNotNil(harness.keychain.value(oldSidecar))
+        XCTAssertNil(harness.keychain.value(newSidecar))
+        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: nil, username: "alice", kind: .userPoolOnly)])
+        XCTAssertEqual(restored, .signedIn(alice))
+        XCTAssertNil(try harness.storedRecord(.default)?.label)
+    }
+
     // MARK: Helpers
 
     /// The plugin started with `configuration` over `keychain`: what it then retrieves.

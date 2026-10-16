@@ -16,7 +16,18 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import InternalAWSCognitoAuth
 
-/// The keychain query-parity gate, recorded before the credential store moved into the engine.
+/// The keychain query-parity gate, recorded before the
+/// credential store moved into the engine, and re-pinned since for reviewed plugin changes (listed in
+/// `scripts/cognito-engine/check_fixture_lock.sh`).
+///
+/// The baseline is the plugin as of the engine extraction, not as last released: the released plugin has no
+/// keychain seam, so it was never recorded, and this sequence holds deliberate changes from it (sign-out and
+/// delete user clear the AWSMobileClient services, the legacy migration clears after all its reads, the
+/// access-group migration moves item by item, and the client default session's items move and are removed
+/// with the plugin's login). Two tests pin what the store kept from before:
+/// `AWSCognitoAuthCredentialStoreConfigurationChangeTests.testInitIssuesTheSameQueriesAsBefore` checks the
+/// configuration-change sequences against a copy of the rule before its extraction, and
+/// `AWSCognitoAuthCredentialStoreKeyTests` pins the stored key formats.
 ///
 /// Every scenario runs the plugin's real credential store (`AWSCognitoAuthCredentialStore`, through its
 /// `makeKeychainStore` seam) and the real legacy AWSMobileClient migration (through

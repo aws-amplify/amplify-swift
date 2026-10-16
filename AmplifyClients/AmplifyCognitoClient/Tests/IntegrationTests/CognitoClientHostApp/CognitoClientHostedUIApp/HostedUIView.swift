@@ -9,9 +9,9 @@
 import SwiftUI
 
 /// The plugin's `AuthHostedUIApp` screens (`SignedOutView`, `SignedInView`) as one screen over the client:
-/// sign in with the view's window (HU-1), sign in with a window the app looks up itself (HU-2), and sign
-/// out. Every action reports on the `LastResult` line, `"<action> failed: <error>"` on
-/// failure, as the WebAuthn app does. A sign-out never throws: its `.failed` result is reported the same way, and
+/// sign in with the view's window (HU-1), sign in with a window the app looks up itself (HU-2),
+/// and sign out. Every action reports on the `LastResult` line, `"<action> failed: <error>"` on
+/// failure, as the WebAuthn app does, the error named by its case only (`harnessResultText`). A sign-out never throws: its `.failed` result is reported the same way, and
 /// the session stays signed in.
 struct HostedUIView: View {
     let client: Result<AmplifyCognitoClient, HarnessAppError>
@@ -111,7 +111,7 @@ struct HostedUIView: View {
     private func loadSessionState() async {
         switch client {
         case .failure(let error):
-            lastResult = "Configure failed: \(error)"
+            lastResult = "Configure failed: \(harnessResultText(error))"
             isSignedIn = false
         case .success(let client):
             do {
@@ -120,7 +120,7 @@ struct HostedUIView: View {
             } catch AuthClientError.notSignedIn {
                 isSignedIn = false
             } catch {
-                lastResult = "Load failed: \(error)"
+                lastResult = "Load failed: \(harnessResultText(error))"
                 isSignedIn = false
             }
         }
@@ -189,12 +189,12 @@ struct HostedUIView: View {
             }
             switch client {
             case .failure(let error):
-                lastResult = "\(action) failed: \(error)"
+                lastResult = "\(action) failed: \(harnessResultText(error))"
             case .success(let client):
                 do {
                     lastResult = try await body(client)
                 } catch {
-                    lastResult = "\(action) failed: \(error)"
+                    lastResult = "\(action) failed: \(harnessResultText(error))"
                 }
             }
         }

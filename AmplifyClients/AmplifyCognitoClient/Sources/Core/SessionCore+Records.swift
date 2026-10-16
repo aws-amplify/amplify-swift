@@ -148,6 +148,7 @@ extension SessionCore {
                     store: store,
                     describe: { try? engine.describe($0) },
                     sameCredentials: { engine.sameCredentials($0, $1) },
+                    global: global,
                     revoke: { [self] payload, firstAttempt in
                         guard firstAttempt else {
                             return try await engine.revoke(payload, global: global)

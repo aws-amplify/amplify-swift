@@ -348,4 +348,79 @@ final class InMemoryKeychainTests: XCTestCase {
         XCTAssertNil(keychain.value(service: "service", account: "key"))
         XCTAssertEqual(keychain.mutations, [])
     }
+
+    /// A snapshot taken in a `beforeMove` hook restores the keychain as it was just before that move.
+    ///
+    /// - Given: a fake holding two items in one service, with a hook that snapshots before the second move
+    /// - When: both items are moved to another service, then the snapshot is restored
+    /// - Then:
+    ///    - the hook saw both moves, in order
+    ///    - after the restore, the first item is in the destination and the second is still in the source
+    func testASnapshotBeforeAMoveRestoresTheKeychainAtThatPoint() throws {
+        let keychain = InMemoryKeychain()
+        let source = keychain.store(service: "source")
+        try source.set(first, key: "a")
+        try source.set(second, key: "b")
+        final class Recorder: @unchecked Sendable {
+            let lock = NSLock()
+            var accounts: [String] = []
+            var snapshot: InMemoryKeychain.Snapshot?
+        }
+        let recorder = Recorder()
+        keychain.beforeMove { account in
+            recorder.lock.lock()
+            defer { recorder.lock.unlock() }
+            recorder.accounts.append(account)
+            if recorder.accounts.count == 2 {
+                recorder.snapshot = keychain.snapshot()
+            }
+        }
+
+        for entry in try source.allEntries() {
+            _ = try source.move(entry, to: KeychainItemAttributes(service: "destination"))
+        }
+        keychain.restore(try XCTUnwrap(recorder.snapshot))
+
+        XCTAssertEqual(recorder.accounts, ["a", "b"])
+        XCTAssertEqual(keychain.value(service: "destination", account: "a"), first)
+        XCTAssertNil(keychain.value(service: "destination", account: "b"))
+        XCTAssertEqual(keychain.value(service: "source", account: "b"), second)
+    }
+
+    /// A snapshot taken in a `beforeRemove` hook restores the keychain as it was just before that removal.
+    ///
+    /// - Given: a fake holding two items in one service, with a hook that snapshots before the second
+    ///   removal
+    /// - When: both items are removed one at a time, by account and by entry, then the snapshot is restored
+    /// - Then:
+    ///    - the hook saw both removals, in order, with their service
+    ///    - after the restore, the first item is gone and the second is still there
+    func testASnapshotBeforeARemovalRestoresTheKeychainAtThatPoint() throws {
+        let keychain = InMemoryKeychain()
+        let store = keychain.store(service: "service")
+        try store.set(first, key: "a")
+        try store.set(second, key: "b")
+        final class Recorder: @unchecked Sendable {
+            let lock = NSLock()
+            var removals: [String] = []
+            var snapshot: InMemoryKeychain.Snapshot?
+        }
+        let recorder = Recorder()
+        keychain.beforeRemove { service, account in
+            recorder.lock.lock()
+            defer { recorder.lock.unlock() }
+            recorder.removals.append("\(service)/\(account)")
+            if recorder.removals.count == 2 {
+                recorder.snapshot = keychain.snapshot()
+            }
+        }
+
+        try store.remove("a")
+        try store.remove(XCTUnwrap(store.allEntries().first { $0.account == "b" }))
+        keychain.restore(try XCTUnwrap(recorder.snapshot))
+
+        XCTAssertEqual(recorder.removals, ["service/a", "service/b"])
+        XCTAssertNil(keychain.value(service: "service", account: "a"))
+        XCTAssertEqual(keychain.value(service: "service", account: "b"), second)
+    }
 }

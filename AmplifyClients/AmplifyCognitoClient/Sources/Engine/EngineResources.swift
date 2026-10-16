@@ -384,8 +384,10 @@ struct ClientEngineLogger: EngineScopedLogger {
         return expression.stringByReplacingMatches(in: message, range: range, withTemplate: "$1?<redacted>")
     }
 
-    /// A URL's scheme, host and path (group 1), then its query or fragment, compiled once.
+    /// A URL's scheme, host and path (group 1), then its query or fragment, compiled once. The query runs past `'`, `(`
+    /// and `)`, which a query leaves unencoded (`login_hint=o'brien@example.com`), and ends only at whitespace, `"`, `<`,
+    /// `>` or the end of the message, less a trailing run of `)`, so a URL printed inside `Optional(…)` keeps its `)`.
     private static let urlQueryExpression = try? NSRegularExpression(
-        pattern: #"([A-Za-z][A-Za-z0-9+.\-]*:/[^\s?#"'<>()]*)[?#][^\s"'<>()]*"#
+        pattern: #"([A-Za-z][A-Za-z0-9+.\-]*:/[^\s?#"<>]*)[?#][^\s"<>]*?(?=\)*(?:[\s"<>]|$))"#
     )
 }

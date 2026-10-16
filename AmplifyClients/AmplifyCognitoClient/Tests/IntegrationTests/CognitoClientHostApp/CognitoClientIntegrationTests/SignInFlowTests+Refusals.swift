@@ -45,8 +45,8 @@ extension SignInFlowTests {
         let state = await client.currentSessionState()
         XCTAssertState(state, .signedIn(user))
         let expected = SandboxPool.standard.tracksDevices ? ["InitiateAuth", "ConfirmDevice"] : ["InitiateAuth"]
-        XCTAssertEqual(recorder.operations, expected)
-        XCTAssertEqual(recorder.requests.first?.authFlow, "USER_PASSWORD_AUTH")
+        XCTAssertEqual(recorder.answeredOperations, expected)
+        XCTAssertEqual(recorder.answered.first?.authFlow, "USER_PASSWORD_AUTH")
     }
 
     /// A wrong password fails and writes nothing (SI-3; the plugin's

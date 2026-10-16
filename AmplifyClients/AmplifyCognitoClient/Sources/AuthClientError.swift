@@ -37,7 +37,7 @@ public enum AuthClientError {
     /// is otherwise invalid), so the challenge can never be answered: call `signIn` to start again.
     case challengeExpired(ErrorDescription, RecoverySuggestion, Error? = nil)
 
-    /// The process's one system sheet is held, so nothing was presented. It is held by a hosted-UI sign-in,
+    /// The client's system sheet is held, so nothing was presented. It is held by a hosted-UI sign-in,
     /// a hosted-UI sign-out page or a passkey ceremony (sign-in or registration), of another session or of
     /// this one. Also thrown when this session already has a hosted-UI sign-in in progress or queued, and when
     /// a `WebUIOptions.whenBrowserBusy` `.wait(timeout:)` expired before the sheet was free. `holder` is the
@@ -78,7 +78,8 @@ public enum AuthClientError {
     case userCancelled(ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// A local WebAuthn ceremony failed before Cognito was asked anything. The underlying error is the
-    /// platform's `ASAuthorizationError`. Cognito's own WebAuthn rejections are `.service` instead.
+    /// platform's `ASAuthorizationError` for `.credentialAlreadyExists` and `.failed`, and an internal encoding
+    /// or decoding error for `.invalidCredential`. Cognito's own WebAuthn rejections are `.service` instead.
     case webAuthnCeremonyFailed(AuthClientWebAuthnCeremonyFailure, ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// A hosted-UI sign-in returned a different user than the one asked for

@@ -36,7 +36,7 @@ final class WebAuthnCredentialsIntegrationTests: ClientIntegrationTestCase {
         XCTAssertTrue(defaultPage.nextToken == nil, "The default page has a next token")
         XCTAssertTrue(smallPage.credentials.isEmpty, "The page of 1 is not empty")
         XCTAssertTrue(smallPage.nextToken == nil, "The page of 1 has a next token")
-        XCTAssertEqual(recorder.operations, ["ListWebAuthnCredentials", "ListWebAuthnCredentials"])
+        XCTAssertEqual(recorder.answeredOperations, ["ListWebAuthnCredentials", "ListWebAuthnCredentials"])
     }
 
     /// - Given: a fresh, signed-in user on the WebAuthn pool with no passkey
@@ -63,7 +63,7 @@ final class WebAuthnCredentialsIntegrationTests: ClientIntegrationTestCase {
             XCTAssertEqual(code, .resourceNotFound)
         }
 
-        XCTAssertEqual(recorder.operations, ["DeleteWebAuthnCredential"])
+        XCTAssertEqual(recorder.answeredOperations, ["DeleteWebAuthnCredential"])
         let state = await client.currentSessionState()
         guard case .signedIn = state else {
             return XCTFail("The session is no longer signed in")
@@ -96,7 +96,7 @@ final class WebAuthnCredentialsIntegrationTests: ClientIntegrationTestCase {
         XCTAssertEqual(recorder.operations, [])
 
         _ = try await client.listWebAuthnCredentials(options: .init(pageSize: 20))
-        XCTAssertEqual(recorder.operations, ["ListWebAuthnCredentials"])
+        XCTAssertEqual(recorder.answeredOperations, ["ListWebAuthnCredentials"])
     }
 
     /// - Given: a client on the WebAuthn pool whose session has never signed in

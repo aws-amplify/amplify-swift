@@ -161,8 +161,8 @@ struct FakeRetryable: Error {
 /// for an auto-sign-in session; a cancel's epoch only ever raises the highest one seen; a step a cancel or a
 /// newer sign-in took never becomes the pending attempt, so never returns `.challenge`; and `resumeSignIn` is
 /// refused while a step is in flight.
-/// A step held inside a script instead returns whatever the script returns, which models an engine that
-/// had already finished when the cancel arrived.
+/// A step held inside a script instead returns what the script returns, which models an engine that had
+/// already finished when the cancel arrived, except a `.challenge`, which then throws `CancellationError`.
 final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
 
     typealias SignInScript = @Sendable (EngineSignInRequest, Data?) async throws -> EngineStepResult
@@ -475,7 +475,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         defer { endStepCeremony(ceremony) }
         if let latch {
             await latch.pass()
-            try checkStillWanted(since: started, epoch: epoch, honouringCancellation: honours)
+            try checkStillWanted(step, since: started, epoch: epoch, honouringCancellation: honours)
         }
         return try await settle(step, retryable: false) {
             if let script {
@@ -535,7 +535,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         defer { endStepCeremony(ceremony) }
         if let latch {
             await latch.pass()
-            try checkStillWanted(since: started, epoch: epoch, honouringCancellation: honours)
+            try checkStillWanted(inFlightStep, since: started, epoch: epoch, honouringCancellation: honours)
         }
         return try await settle(inFlightStep, retryable: true) {
             if let script {
@@ -547,14 +547,21 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
 
     /// After a held step is released: the seam's contract makes a step throw once `cancelPendingSignIn`
     /// has run, and the cancellation-honouring mode makes it throw when its task was cancelled.
-    /// Only a cancel for a later epoch than the step's counts, as in the live engine.
-    private func checkStillWanted(since started: Int, epoch: UInt64, honouringCancellation honours: Bool) throws {
+    /// Only a cancel for a later epoch than the step's counts, as in the live engine. As there, the failure drops
+    /// the pending attempt only while `step` is still the one in flight: a step a cancel took leaves the attempt to
+    /// whoever came after it (a resume).
+    private func checkStillWanted(
+        _ step: UInt64,
+        since started: Int,
+        epoch: UInt64,
+        honouringCancellation honours: Bool
+    ) throws {
         let (cancelled, mode) = withLock { (cancels != started && latestCancelBefore > epoch, afterCancel) }
         if cancelled, mode == .returnIssuedTokens {
             return
         }
         if cancelled || (honours && Task.isCancelled) {
-            withLock { challenge = nil }
+            withLock { dropAttemptIfCurrent(step) }
             throw CancellationError()
         }
     }
@@ -922,7 +929,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         defer { withLock { _ = endStep(step) } }
         if let latch {
             await latch.pass()
-            try checkStillWanted(since: started, epoch: epoch, honouringCancellation: honours)
+            try checkStillWanted(step, since: started, epoch: epoch, honouringCancellation: honours)
         }
         return try await settle(step, retryable: false) {
             try await recordAccountOperation(

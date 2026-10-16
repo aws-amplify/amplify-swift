@@ -111,7 +111,7 @@ final class AutoSignInTests: ClientSignUpTestCase {
         } catch {
             XCTFail("expected notAuthorized, got \(error)")
         }
-        XCTAssertEqual(recorder.operations, ["InitiateAuth"])
+        XCTAssertEqual(recorder.answeredOperations, ["InitiateAuth"])
     }
 
     /// The first event `events` delivers, within 10 seconds.

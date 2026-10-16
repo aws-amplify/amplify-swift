@@ -15,8 +15,10 @@ INFRA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib.sh
 source "$INFRA_DIR/lib.sh"
 STATE="$STATE_DIR/state.json"
+# provision.sh writes state.json as soon as it has made the user pool, before anything else exists.
 [[ -f "$STATE" ]] || { echo "No $STATE; nothing to tear down."; exit 0; }
-get() { python3 -c "import json,sys;print(json.load(open(sys.argv[1]))[sys.argv[2]])" "$STATE" "$1"; }
+# A field state.json does not have (a provision.sh that failed part-way) is empty.
+get() { python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get(sys.argv[2],''))" "$STATE" "$1"; }
 REGION=$(get region); TAG="$TAG_VALUE"
 aws() { command aws --region "$REGION" --output json "$@" 2> >(redact >&2); }
 
@@ -63,25 +65,33 @@ read_tag() {
     echo "$out"
 }
 
-if python3 -c "import json,sys;sys.exit(0 if json.load(open(sys.argv[1])).get('parity') else 1)" "$STATE"; then
-    python3 "$INFRA_DIR/parity.py" teardown
-fi
+# Always, even with no parity section: a first provision that failed part-way may have made some of them before
+# recording them, and parity.py finds those by name (each after its tag check).
+python3 "$INFRA_DIR/parity.py" teardown
 
 UP=$(get userPoolId); IP=$(get identityPoolId)
 UP_ARN="arn:aws:cognito-idp:$REGION:$ACCOUNT:userpool/$UP"
-tag=$(read_tag cognito-idp list-tags-for-resource --resource-arn "$UP_ARN" --query "Tags.purpose") || exit 1
+tag="__none__"
+if [[ -n "$UP" ]]; then
+    tag=$(read_tag cognito-idp list-tags-for-resource --resource-arn "$UP_ARN" --query "Tags.purpose") || exit 1
+fi
 if [[ "$tag" == "$TAG" ]]; then
     aws cognito-idp delete-user-pool --user-pool-id "$UP"
     echo "Deleted user pool $NAME"
 elif [[ "$tag" == "__gone__" ]]; then echo "User pool $NAME is already gone"
+elif [[ "$tag" == "__none__" ]]; then echo "No user pool recorded"
 else echo "Skipped user pool $NAME: tag missing"; fi
 
 IP_ARN="arn:aws:cognito-identity:$REGION:$ACCOUNT:identitypool/$IP"
-tag=$(read_tag cognito-identity list-tags-for-resource --resource-arn "$IP_ARN" --query "Tags.purpose") || exit 1
+tag="__none__"
+if [[ -n "$IP" ]]; then
+    tag=$(read_tag cognito-identity list-tags-for-resource --resource-arn "$IP_ARN" --query "Tags.purpose") || exit 1
+fi
 if [[ "$tag" == "$TAG" ]]; then
     aws cognito-identity delete-identity-pool --identity-pool-id "$IP"
     echo "Deleted identity pool ${NAME//-/_}"
 elif [[ "$tag" == "__gone__" ]]; then echo "Identity pool ${NAME//-/_} is already gone"
+elif [[ "$tag" == "__none__" ]]; then echo "No identity pool recorded"
 else echo "Skipped identity pool ${NAME//-/_}: tag missing"; fi
 
 for role in "$TAG-authenticated" "$TAG-unauthenticated"; do

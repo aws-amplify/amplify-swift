@@ -544,31 +544,55 @@ final class SessionRecordStoreTests: XCTestCase {
         )
     }
 
-    /// - Given: corrupt bytes under the session's key
+    /// A record this build cannot read, corrupt or a newer schema's, takes the same branch: its credentials cannot be
+    /// kept past sign-out.
+    ///
+    /// - Given: corrupt bytes, then a newer schema's record, under the session's key
     /// - When: the session is signed out
     /// - Then:
     ///    - the bytes are replaced by a signed-out row, so no unreadable credentials outlive sign-out
     func testSignOutReplacesACorruptRecord() throws {
-        keychain.put(StorageFixtures.corruptRecord, workAccount)
+        for unreadable in [StorageFixtures.corruptRecord, StorageFixtures.futureSchemaRecord] {
+            keychain.put(unreadable, workAccount)
 
-        XCTAssertEqual(try store.signOut(work), .signedOut)
+            XCTAssertEqual(try store.signOut(work), .signedOut)
 
-        XCTAssertEqual(try storedEnvelope(work).record, .signedOut(label: nil, username: nil))
+            XCTAssertEqual(try storedEnvelope(work).record, .signedOut(label: nil, username: nil))
+        }
+    }
+
+    /// A purge deletes a record this build cannot read, as the envelope's doc promises: the only way, beside a
+    /// sign-out, that an older build removes a newer one's record.
+    ///
+    /// - Given: corrupt bytes, then a newer schema's record, under the session's key
+    /// - When: the session is purged
+    /// - Then:
+    ///    - the session reads absent, and nothing is left under its key
+    func testPurgeDeletesARecordThisBuildCannotRead() throws {
+        for unreadable in [StorageFixtures.corruptRecord, StorageFixtures.futureSchemaRecord] {
+            keychain.put(unreadable, workAccount)
+            XCTAssertNotEqual(try store.read(work), .absent)
+
+            try store.purge(work)
+
+            XCTAssertEqual(try store.read(work), .absent)
+            XCTAssertNil(keychain.value(workAccount))
+        }
     }
 
     /// Sign-out's unguarded write only replaces: it must not recreate a record a concurrent purge
     /// removed, which `set` would.
     ///
-    /// - Given: corrupt bytes under the session's key, and a concurrent purge that lands after sign-out
-    ///   reads the record
+    /// - Given: corrupt bytes under the session's key, and a concurrent purge that lands after the second read,
+    ///   the replace's own, so between its last read and its write
     /// - When: the session is signed out
     /// - Then:
-    ///    - the record stays absent
+    ///    - it returns `.noRecord`, and the record stays absent
     func testSignOutDoesNotRecreateARecordPurgedConcurrently() throws {
         keychain.put(StorageFixtures.corruptRecord, workAccount)
         let purger = keychain.recordStore(for: StorageFixtures.namespace)
         let sessionId: SessionID = work
-        keychain.onceAfterReading(workAccount) {
+        keychain.onceAfterReading(workAccount, occurrence: 2) {
             try? purger.purge(sessionId)
         }
 
@@ -576,6 +600,103 @@ final class SessionRecordStoreTests: XCTestCase {
 
         XCTAssertEqual(try store.read(work), .absent)
         XCTAssertNil(keychain.value(workAccount))
+    }
+
+    /// The forced sign-out's unguarded write only replaces too.
+    ///
+    /// - Given: a signed-in record, a writer that changes only its label before every one of sign-out's guarded
+    ///   writes, and a concurrent purge that lands once those attempts are used up, after the forced sign-out's read
+    /// - When: the session is signed out
+    /// - Then:
+    ///    - it returns `.noRecord`, and the record stays absent
+    func testForcedSignOutDoesNotRecreateARecordPurgedConcurrently() throws {
+        try store.write(StorageFixtures.signedIn(), for: work, expecting: nil)
+        let rival = makeRival { envelope in
+            StorageFixtures.signedIn(label: "rival-\(envelope.generation)")
+        }
+        let purger = keychain.recordStore(for: StorageFixtures.namespace)
+        let sessionId: SessionID = work
+        let purged = Flag()
+        keychain.afterEveryRead(of: workAccount) {
+            if rival.commits < rival.budget {
+                rival.move()
+            } else if !purged.isRaised {
+                purged.raise()
+                try? purger.purge(sessionId)
+            }
+        }
+
+        let outcome = try store.signOut(work)
+        keychain.afterEveryRead(of: workAccount, nil)
+
+        XCTAssertEqual(rival.commits, rival.budget, "every guarded attempt lost its race")
+        XCTAssertTrue(purged.isRaised)
+        XCTAssertEqual(outcome, .noRecord)
+        XCTAssertEqual(try store.read(work), .absent)
+        XCTAssertNil(keychain.value(workAccount))
+    }
+
+    /// `.default`'s replace of a shared record this build cannot read only replaces as well: a purge, here another
+    /// writer deleting the plugin's record, is not undone.
+    ///
+    /// - Given: `.default` on a plugin record that is not the plugin's format, with a sidecar, and a concurrent purge
+    ///   that lands after the second read of the record, the replace's own
+    /// - When: it is signed out
+    /// - Then:
+    ///    - it returns `.noRecord`; the plugin's record and the sidecar stay absent, and so does the session, signed-out
+    ///      rows included
+    func testDefaultSignOutDoesNotRecreateAnUnreadableRecordPurgedConcurrently() throws {
+        keychain.put(StorageFixtures.corruptRecord, pluginAccount)
+        let sidecarAccount = SessionRecordKey.metaAccount(in: StorageFixtures.pools)
+        keychain.put(try DefaultSessionMeta(lastWriteTimestamp: TestClock.start, label: "Main", username: "alice", userId: nil).encoded(), sidecarAccount)
+        let purger = keychain.recordStore(for: StorageFixtures.namespace)
+        keychain.onceAfterReading(pluginAccount, occurrence: 2) {
+            try? purger.purge(.default)
+        }
+
+        XCTAssertEqual(try store.signOut(.default), .noRecord)
+
+        XCTAssertNil(keychain.value(pluginAccount))
+        XCTAssertNil(keychain.value(sidecarAccount))
+        XCTAssertEqual(try store.read(.default), .absent)
+        XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [])
+    }
+
+    /// `.default`'s forced sign-out only replaces as well.
+    ///
+    /// - Given: `.default` on the plugin's record, a writer that rewrites the record's bytes, keeping the credentials,
+    ///   before every one of sign-out's guarded writes, and a concurrent purge that lands once those attempts are used
+    ///   up, after the forced sign-out's read
+    /// - When: it is signed out
+    /// - Then:
+    ///    - it returns `.noRecord`; the plugin's record and the sidecar stay absent, and so does the session, signed-out
+    ///      rows included
+    func testForcedDefaultSignOutDoesNotRecreateARecordPurgedConcurrently() throws {
+        let account = pluginAccount
+        let sidecarAccount = SessionRecordKey.metaAccount(in: StorageFixtures.pools)
+        let alice = FakePayload.signedIn("alice").data
+        keychain.put(alice, account)
+        let rewrites = SessionRecordStore.maximumGuardedSignOutAttempts * 2
+        let rival = BytesRival(keychain: keychain, account: account, payload: alice, budget: rewrites)
+        let purger = keychain.recordStore(for: StorageFixtures.namespace)
+        let purged = Flag()
+        keychain.afterEveryRead(of: account) {
+            if !rival.move(), !purged.isRaised {
+                purged.raise()
+                try? purger.purge(.default)
+            }
+        }
+
+        let outcome = try store.signOut(.default)
+        keychain.afterEveryRead(of: account, nil)
+
+        XCTAssertEqual(rival.moves, rewrites, "every guarded attempt lost its race")
+        XCTAssertTrue(purged.isRaised)
+        XCTAssertEqual(outcome, .noRecord)
+        XCTAssertNil(keychain.value(account))
+        XCTAssertNil(keychain.value(sidecarAccount))
+        XCTAssertEqual(try store.read(.default), .absent)
+        XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [])
     }
 
     /// - Given: a signed-in record that carries a user ID
@@ -640,25 +761,52 @@ final class SessionRecordStoreTests: XCTestCase {
         XCTAssertNotNil(keychain.value(leftoverMarker))
     }
 
-    /// A purge that fails part-way is safe to repeat.
+    /// A purge that fails part-way is safe to repeat: the repeat runs over exactly what the failed purge left.
     ///
-    /// - Given: `.default` on the plugin's record with a sidecar, and the delete of each item failing in turn
-    /// - When: the session is purged
+    /// - Given: `.default` on the plugin's record with a sidecar and a challenge record, and the delete of each item
+    ///   failing in turn
+    /// - When: the session is purged, then, once the failure clears, purged again without seeding anything
     /// - Then:
-    ///    - the purge throws `storageUnavailable`, and a purge afterwards leaves it absent
+    ///    - the first purge throws `storageUnavailable`, and the repeat leaves it absent: the plugin's record, the
+    ///      sidecar and the challenge record are all gone, and no row is listed, signed-out rows included
     func testPartlyFailedPurgeOfTheDefaultSessionIsSafeToRepeat() throws {
         let sidecarAccount = SessionRecordKey.metaAccount(in: StorageFixtures.pools)
-        for failingAccount in [pluginAccount, sidecarAccount, store.challengeAccount(for: .default)] {
-            keychain.clearFailures()
+        let challengeAccount = store.challengeAccount(for: .default)
+        for failingAccount in [pluginAccount, sidecarAccount, challengeAccount] {
             keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
-            keychain.put(try DefaultSessionMeta(lastWriteTimestamp: TestClock.start, label: "Main", username: nil, userId: nil).encoded(), sidecarAccount)
+            keychain.put(try DefaultSessionMeta(lastWriteTimestamp: TestClock.start, label: "Main", username: "alice@corp", userId: "1234567890").encoded(), sidecarAccount)
+            keychain.put(Data("challenge".utf8), challengeAccount)
             keychain.failingRemovals(of: failingAccount, with: errSecIO)
 
             assertStorageUnavailable(.interrupted) { try store.purge(.default) }
+            keychain.clearFailures()
+            try store.purge(.default)
+
+            XCTAssertEqual(try store.read(.default), .absent, failingAccount)
+            for account in [pluginAccount, sidecarAccount, challengeAccount] {
+                XCTAssertNil(keychain.value(account), "\(account) after a failed delete of \(failingAccount)")
+            }
+            XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [], failingAccount)
         }
-        keychain.clearFailures()
+    }
+
+    /// The state an interrupted purge, or the plugin's `deleteUser`, leaves: the login gone, the sidecar still there.
+    /// A purge must clear it rather than stop because the shared record is already absent.
+    ///
+    /// - Given: `.default` with no plugin record, only its sidecar naming alice and a label
+    /// - When: it is purged
+    /// - Then:
+    ///    - the sidecar is gone, the read is absent, and no row is listed, signed-out rows included
+    func testPurgeOfADefaultSessionHoldingOnlyItsSidecarClearsIt() throws {
+        let sidecarAccount = SessionRecordKey.metaAccount(in: StorageFixtures.pools)
+        keychain.put(try DefaultSessionMeta(lastWriteTimestamp: TestClock.start, label: "Main", username: "alice", userId: "sub-alice").encoded(), sidecarAccount)
+        XCTAssertEqual(try store.storedSessions(includingSignedOut: true).map(\.sessionId), [.default])
+
         try store.purge(.default)
+
+        XCTAssertNil(keychain.value(sidecarAccount))
         XCTAssertEqual(try store.read(.default), .absent)
+        XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [])
     }
 
     /// - Given: the keychain fails deletes
@@ -794,6 +942,43 @@ private struct UnexpectedResult: Error, CustomStringConvertible {
 
 private extension SessionRecordStore.ReadResult {
     var isAbsent: Bool { self == .absent }
+}
+
+/// Another writer of `.default`'s shared record that rewrites its bytes, keeping the credentials, every time it is
+/// asked, up to a budget: each rewrite appends a space, which the payload's decoder ignores.
+private final class BytesRival: @unchecked Sendable {
+    private let keychain: TestKeychain
+    private let account: String
+    private let budget: Int
+    private let lock = NSLock()
+    private var payload: Data
+    private var count = 0
+
+    init(keychain: TestKeychain, account: String, payload: Data, budget: Int) {
+        self.keychain = keychain
+        self.account = account
+        self.payload = payload
+        self.budget = budget
+    }
+
+    var moves: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return count
+    }
+
+    /// Rewrites the record, or returns `false` once the budget is spent.
+    func move() -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard count < budget else {
+            return false
+        }
+        count += 1
+        payload.append(contentsOf: Data(" ".utf8))
+        keychain.put(payload, account)
+        return true
+    }
 }
 
 /// A writer in another process that moves the record every time it is asked, up to a budget.

@@ -12,8 +12,10 @@ import XCTest
 @_spi(KeychainStore) @testable import AWSPluginsCore
 
 /// `KeychainStore._set` delegates to `KeychainItemStore.set`, so it survives the same lost race: another writer
-/// creating the item between the check and the add. This is how the plugin's credential store writes its
-/// `authConfiguration` item while a Cognito client restoring `.default` writes the same item.
+/// creating the item between the check and the add. This guards `KeychainStore`'s own callers: Pinpoint's
+/// context and endpoint client, `KeychainStoreMigrator`, and SPI users. The Auth plugin's credential store does
+/// not write through `KeychainStore`: it writes through the engine's `EngineKeychainStore`, whose `_set` calls
+/// the same `KeychainItemStore.set`, covered by `KeychainItemStoreSetRaceTests`.
 class KeychainStoreSetRaceTests: XCTestCase {
 
     /// Test that `_set` updates the item when another writer adds it between the check and the add

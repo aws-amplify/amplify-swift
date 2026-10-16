@@ -23,10 +23,21 @@ import XCTest
 /// writes to the new store, what it clears and what it reads are compared with `<name>.migrated.json`,
 /// recorded with the baselines. The migrated session is also compared field by field with `migrations.json`.
 ///
-/// Since the credential store moved into the engine, the seeds go through the `KeychainItemStoreBehavior`
-/// fake instead; the recorded results must not change.
+/// The baseline was recorded before the engine moved, but after the legacy-migration fixes that ship with it, so these
+/// results record the migration as of the engine extraction, not as last released. Two of them differ from
+/// the released plugin, deliberately (see the pending release notes): `locked-keychain` keeps the legacy
+/// stores and saves nothing when a read fails, and `existing-session-present` never writes the legacy session
+/// over the newer saved one.
+///
+/// Since the credential store moved into the engine, the seeds go through the `KeychainItemStoreBehavior` fake instead; the recorded results
+/// must not change.
 @available(*, deprecated, message: "Exercises deprecated token and flow APIs, on purpose")
 final class LegacyMigrationGoldenTests: XCTestCase {
+
+    /// SHA-256 of `filesDigestListing()`: every JSON file in `AWSMobileClient/` with its SHA-256. The stored-format
+    /// manifest lists only the top-level fixtures, so this is the in-test pin for the seeds and the recorded
+    /// results. Changing, adding or removing a file changes it, so that also has to edit this line, in review.
+    static let pinnedFilesSHA256 = "e6b096024c42413e2154a019f5a154731dc98e04f429799a0ddae3022d09949f"
 
     static var directory: URL {
         GoldenFiles.directory("GoldenStoredFormat").appendingPathComponent("AWSMobileClient", isDirectory: true)
@@ -91,7 +102,33 @@ final class LegacyMigrationGoldenTests: XCTestCase {
             .sorted()
     }
 
+    /// One line per JSON file in `AWSMobileClient/`, sorted by name: `<file name> <SHA-256 of its bytes>`.
+    static func filesDigestListing() throws -> Data {
+        let names = try FileManager.default.contentsOfDirectory(atPath: directory.path)
+            .filter { $0.hasSuffix(".json") }
+            .sorted()
+        var listing = ""
+        for name in names {
+            let data = try Data(contentsOf: directory.appendingPathComponent(name))
+            listing += "\(name) \(GoldenFiles.sha256Hex(data))\n"
+        }
+        return Data(listing.utf8)
+    }
+
     // MARK: Tests
+
+    /// Test that the seeds and the recorded results are the pinned ones
+    ///
+    /// - Given: The committed files of `GoldenStoredFormat/AWSMobileClient/`
+    /// - When:
+    ///    - Each file's SHA-256 is listed by name, and the listing is hashed
+    /// - Then:
+    ///    - The hash equals the value pinned in this file
+    ///
+    func testFilesArePinned() throws {
+        try XCTSkipIf(GoldenFiles.isGenerating, "Generating golden files")
+        XCTAssertEqual(try GoldenFiles.sha256Hex(Self.filesDigestListing()), Self.pinnedFilesSHA256)
+    }
 
     /// Test that every AWSMobileClient seed set migrates exactly as it did when the baseline was recorded
     ///
@@ -104,6 +141,12 @@ final class LegacyMigrationGoldenTests: XCTestCase {
     ///    - The saved session's fields equal the ones in `migrations.json`
     ///
     func testLegacySeedSetsMigrateAsRecorded() async throws {
+        if GoldenFiles.isGenerating,
+           FileManager.default.fileExists(atPath: Self.directory.appendingPathComponent("migrations.json").path),
+           ProcessInfo.processInfo.environment["AMPLIFY_GOLDEN_OVERWRITE_FROZEN"] != "1" {
+            XCTFail("The AWSMobileClient migration results are frozen since S0b. Regenerating them defeats gate G2.")
+            return
+        }
         let bundle = try XCTUnwrap(Bundle.main.bundleIdentifier, "The migration needs a bundle identifier")
         let names = try Self.seedNames()
         XCTAssertGreaterThanOrEqual(names.count, 10)
@@ -353,8 +396,9 @@ final class EventBox: @unchecked Sendable {
 }
 
 extension StoredFormatFixtures {
-    /// A session already in the new store, for the "newer session exists" path.
+    /// A session already in the new store, for the "newer session exists" path: a signed-in user. A guest
+    /// (`.identityPoolOnly`) would not count as newer than legacy user-pool tokens, which migrate over it.
     static var presentSession: AmplifyCredentials {
-        .identityPoolOnly(identityID: identityID, credentials: engineCredentials)
+        .userPoolOnly(signedInData: signedInData(inputUsername: "fixture-user"))
     }
 }

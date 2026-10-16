@@ -124,8 +124,9 @@ final class SessionTests: ClientIntegrationTestCase {
     /// - Then:
     ///    - the user pool tokens fail with `.sessionExpired` (the plugin's `AuthError.sessionExpired`)
     ///    - the session stays `.signedIn(alice)` (the plugin's "signed in, tokens `sessionExpired`")
-    ///    - the event stream delivers `.sessionExpired` within the plugin's `networkTimeout`, and nothing more
-    ///      within a further 2 s: exactly one event (the plugin's single Hub `sessionExpired`)
+    ///    - the event stream delivers `.sessionExpired` within the plugin's `networkTimeout`, and, once the handle
+    ///      is released and the stream has finished, nothing more: exactly one event (the plugin's single Hub
+    ///      `sessionExpired`)
     ///
     func testExpiredSessionWithARejectedRefreshTokenReadsSessionExpired() async throws {
         let raw = try RawUserPool()
@@ -152,21 +153,25 @@ final class SessionTests: ClientIntegrationTestCase {
             return XCTFail("the expired record was not planted: the record moved under the test")
         }
 
-        let reloaded = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
-        let events = StreamRecorder(reloaded.listenToAuthEvents())
-        let session = try await reloaded.fetchAuthSession()
+        let events: StreamRecorder<AuthEvent>
+        do {
+            let reloaded = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
+            events = StreamRecorder(reloaded.listenToAuthEvents())
+            let session = try await reloaded.fetchAuthSession()
 
-        guard case .failure(let error) = session.userPoolTokensResult else {
-            return XCTFail("an expired session with a rejected refresh token returned tokens")
+            guard case .failure(let error) = session.userPoolTokensResult else {
+                return XCTFail("an expired session with a rejected refresh token returned tokens")
+            }
+            XCTAssertEqual(error.kind, .sessionExpired, "\(error)")
+            let state = await reloaded.currentSessionState()
+            XCTAssertState(state, .signedIn(user), "an expired session stays signed in as its user")
+            try await events.waitUntil("the sessionExpired event", timeout: Self.networkTimeout) {
+                $0.contains(.sessionExpired)
+            }
         }
-        XCTAssertEqual(error.kind, .sessionExpired, "\(error)")
-        let state = await reloaded.currentSessionState()
-        XCTAssertState(state, .signedIn(user), "an expired session stays signed in as its user")
-        try await events.waitUntil("the sessionExpired event", timeout: Self.networkTimeout) {
-            $0.contains(.sessionExpired)
-        }
-        try await Task.sleep(nanoseconds: 2_000_000_000)
-        XCTAssertEqual(events.elements, [.sessionExpired], "exactly one sessionExpired event")
+        // The handle is gone, so the stream finishes and holds every event it delivered, a late duplicate too.
+        let delivered = try await events.waitUntilFinished()
+        XCTAssertEqual(delivered, [.sessionExpired], "exactly one sessionExpired event")
     }
 
     /// `payload` (the plugin's stored credentials) as `AuthSessionHelper.invalidateSession` leaves the plugin's:

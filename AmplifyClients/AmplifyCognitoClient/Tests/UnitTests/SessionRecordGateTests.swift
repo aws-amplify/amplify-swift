@@ -221,6 +221,100 @@ final class SessionRecordGateTests: XCTestCase {
         XCTAssertEqual(gates.liveGateCount, 0)
         _ = (first, second, otherNamespace, otherSession)
     }
+
+    // MARK: Several gates
+
+    /// The one global order: by pool namespace, then by access group, no group first.
+    ///
+    /// - Given: namespaces over two user pools, each with no access group and two access groups, listed out of order
+    /// - When: they are sorted by `order(_:)`
+    /// - Then:
+    ///    - the first pool's three come first, then the second's, each with no group, then the groups in order
+    func testGateOrderIsByPoolNamespaceThenAccessGroup() {
+        func namespace(_ poolId: String, _ accessGroup: String?) -> SessionStorageNamespace {
+            SessionStorageNamespace(pools: .userPool(poolId), accessGroup: accessGroup)
+        }
+        let expected = [
+            namespace("us-east-1_A", nil),
+            namespace("us-east-1_A", "group.a"),
+            namespace("us-east-1_A", "group.b"),
+            namespace("us-east-1_B", nil),
+            namespace("us-east-1_B", "group.a"),
+            namespace("us-east-1_B", "group.b")
+        ]
+        let shuffled = [expected[4], expected[2], expected[3], expected[0], expected[5], expected[1]]
+
+        let sorted = shuffled.sorted { SessionRecordGates.order($0) < SessionRecordGates.order($1) }
+
+        XCTAssertEqual(sorted, expected)
+    }
+
+    /// Callers that hold several gates (a restore whose marker names another namespace, a static purge or sign-out)
+    /// never deadlock only because every one takes them in the same order, whatever order it lists them in.
+    ///
+    /// - Given: five namespaces' gates for one session, and the third in the global order held from outside
+    /// - When: `holding` is asked for all five, listed in reverse
+    /// - Then:
+    ///    - it waits on the third with exactly the first two taken and the last two free
+    ///    - once the third is released, the body runs holding all five, and afterwards none is held
+    func testHoldingTakesSeveralGatesInTheGlobalOrder() async throws {
+        let gates = SessionRecordGates()
+        let work = try SessionID.named("work")
+        let namespaces = (1 ... 5).map {
+            SessionStorageNamespace(pools: .userPool("us-east-1_Pool\($0)"), accessGroup: nil)
+        }
+        XCTAssertEqual(namespaces, namespaces.sorted { SessionRecordGates.order($0) < SessionRecordGates.order($1) })
+        // Held for the whole test, so `holding` finds these same gates in the weak table.
+        let held = namespaces.map { gates.gate(for: $0, sessionId: work) }
+        let latch = Gate()
+        let outside = hold(held[2], until: latch)
+        await latch.waitForArrivals(1)
+
+        let lockedInBody = Box<[Bool]>()
+        let caller = Task {
+            try await gates.holding(Array(namespaces.reversed()), sessionId: work) {
+                var locked: [Bool] = []
+                for gate in held {
+                    await locked.append(gate.isLocked)
+                }
+                lockedInBody.set(locked)
+            }
+        }
+        await waitUntil("the caller waits on the third gate") { await held[2].waiterCount == 1 }
+
+        var locked: [Bool] = []
+        for gate in held {
+            await locked.append(gate.isLocked)
+        }
+        XCTAssertEqual(locked, [true, true, true, false, false], "only the gates before the held one are taken")
+
+        await latch.open()
+        try await outside.value
+        try await caller.value
+        XCTAssertEqual(lockedInBody.value, [true, true, true, true, true])
+        for gate in held {
+            let isLocked = await gate.isLocked
+            XCTAssertFalse(isLocked)
+        }
+    }
+}
+
+/// A value set from a `@Sendable` closure and read afterwards.
+private final class Box<Value: Sendable>: @unchecked Sendable {
+    private let lock = NSLock()
+    private var stored: Value?
+
+    var value: Value? {
+        lock.lock()
+        defer { lock.unlock() }
+        return stored
+    }
+
+    func set(_ value: Value) {
+        lock.lock()
+        stored = value
+        lock.unlock()
+    }
 }
 
 /// Lets a task be cancelled by code that runs before the task value exists.

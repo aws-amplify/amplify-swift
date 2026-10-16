@@ -90,6 +90,7 @@ final class EngineKeychainStoreTests: XCTestCase {
     ///    - `removeAllExceptSessionRecords(sparingDefaultSessionItems: true)` runs on each
     /// - Then:
     ///    - Both keep only the session record, and the failing listing throws the same error from both
+    ///    - The failing listing logs the same warning from both, with the listing error
     ///
     func testRemoveAllExceptSessionRecordsMatchesKeychainStore() throws {
         func populated() throws -> (InMemoryKeychain, InMemoryKeychainItemStore) {
@@ -113,6 +114,18 @@ final class EngineKeychainStoreTests: XCTestCase {
             try KeychainStore(service: "svc", itemStore: failingItems).removeAllExceptSessionRecords(sparingDefaultSessionItems: true),
             "failed listing"
         )
+
+        capture.clear()
+        try? EngineKeychainStore(failingItems, logger: AmplifyEngineLogRouter())
+            .removeAllExceptSessionRecords(sparingDefaultSessionItems: true)
+        let engineLines = capture.lines
+        capture.clear()
+        try? KeychainStore(service: "svc", itemStore: failingItems)
+            .removeAllExceptSessionRecords(sparingDefaultSessionItems: true)
+        XCTAssertEqual(engineLines, capture.lines)
+        let warning = "[KeychainStore] Could not list keychain items, so none were removed; stale items may remain"
+            + " - \(KeychainAccessError.securityError(errSecInteractionNotAllowed).localizedDescription)"
+        XCTAssertEqual(engineLines.filter { $0.level == "warn" }.map(\.message), [warning])
     }
 
     // MARK: Log lines
@@ -230,6 +243,8 @@ final class EngineKeychainStoreTests: XCTestCase {
     /// - Then:
     ///    - The production store comes back with the same attributes and logs its failures at verbose
     ///      level only; the double comes back as it is
+    ///    - Skipped where the real keychain answers the query (a signed runner), since then nothing fails and
+    ///      the verbose-only check has nothing to check
     ///
     func testQuietMatchesQuietBackingStore() throws {
         let production = EngineKeychainStore.makeItemStore(service: "svc", accessGroup: "grp", logger: AmplifyEngineLogRouter())
@@ -240,13 +255,15 @@ final class EngineKeychainStoreTests: XCTestCase {
             try XCTUnwrap(KeychainStore(service: "svc", accessGroup: "grp").quietBackingStore as? KeychainItemStore).attributes
         )
 
-        // `hasItems()` over the real keychain fails unsigned; whatever it logs must be verbose only.
-        capture.clear()
-        _ = try? quiet.hasItems()
-        XCTAssertEqual(capture.lines.filter { $0.level != "verbose" }, [])
-
         let double = InMemoryKeychain().store(service: "svc")
         XCTAssertTrue(EngineKeychainStore.quiet(double, logger: AmplifyEngineLogRouter()) is InMemoryKeychainItemStore)
+
+        // `hasItems()` over the real keychain fails unsigned; whatever it logs must be verbose only.
+        capture.clear()
+        guard (try? quiet.hasItems()) == nil else {
+            throw XCTSkip("The keychain answered the query, so no failure was logged to check")
+        }
+        XCTAssertEqual(capture.lines.filter { $0.level != "verbose" }, [])
     }
 
     // MARK: Helpers

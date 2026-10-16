@@ -54,10 +54,26 @@ for field in daveTemporary daveNew erin; do
     users_field "$field" >/dev/null
 done
 
+# Creates user $1 (no message sent), unless an overlapping run created it between this run's check and the call
+# (UsernameExistsException): the password reset that follows makes it the user this run needs either way. Any other
+# error still stops the script. Guarded.
+create_user_unless_created() {
+    local create_error
+    require_user_pool_tag "$USER_POOL_ID"
+    if ! create_error=$(command aws --region "$REGION" --output json cognito-idp admin-create-user \
+        --user-pool-id "$USER_POOL_ID" --username "$1" --message-action SUPPRESS 2>&1 >/dev/null); then
+        case "$create_error" in
+            *UsernameExistsException*) echo "$1: already created by another run" ;;
+            *) printf '%s\n' "$create_error" | redact >&2; exit 1 ;;
+        esac
+        return 0
+    fi
+    echo "Created user $1"
+}
+
 # --- dave: FORCE_CHANGE_PASSWORD with the stored temporary password ---------------------------------
 if ! user_exists "$USER_POOL_ID" dave; then
-    create_user "$USER_POOL_ID" dave
-    echo "Created user dave"
+    create_user_unless_created dave
 fi
 set_user_password "$USER_POOL_ID" dave daveTemporary temporary
 
@@ -74,7 +90,7 @@ if user_exists "$USER_POOL_ID" erin; then
         esac
     fi
 fi
-create_user "$USER_POOL_ID" erin
+create_user_unless_created erin
 set_user_password "$USER_POOL_ID" erin erin permanent
 
 # --- Report (read-only) -----------------------------------------------------------------------------

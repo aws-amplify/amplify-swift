@@ -117,6 +117,6 @@ final class PersistenceTests: ClientIntegrationTestCase {
         XCTAssertState(state, .signedIn(bob))
         XCTAssertEqual(recorder.operations, [], "restoring makes no request")
         _ = try await restored.fetchAuthSession(options: .init(forceRefresh: true)).userPoolTokensResult.get()
-        XCTAssertEqual(recorder.operations, ["GetTokensFromRefreshToken"])
+        XCTAssertEqual(recorder.answeredOperations, ["GetTokensFromRefreshToken"])
     }
 }

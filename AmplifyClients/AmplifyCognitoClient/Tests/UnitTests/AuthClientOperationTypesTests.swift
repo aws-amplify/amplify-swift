@@ -13,9 +13,10 @@ import XCTest
 /// their parity with the plugin's types.
 ///
 /// This target cannot import the plugin, so the plugin's case lists and strings are transcribed below,
-/// each citing its file and lines in the plugin. The client enums are walked through exhaustive switches with
-/// no `default`, so a client-side addition does not compile until the pinned list is revisited, and a
-/// plugin-side addition is caught at review against the plugin bridge's mapping table.
+/// each citing its file and lines in the plugin. The client enums are
+/// walked through exhaustive switches with no `default`, so a client-side addition does not compile until
+/// the pinned list is revisited, and a case added to Amplify core (or the plugin) is only caught at review;
+/// the plugin bridge, when it ships, will map them.
 final class AuthClientOperationTypesTests: XCTestCase {
 
     // MARK: - AuthClientError: the three new cases

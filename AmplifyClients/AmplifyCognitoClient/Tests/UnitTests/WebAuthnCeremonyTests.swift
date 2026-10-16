@@ -164,8 +164,13 @@ final class WebAuthnCeremonyTests: XCTestCase {
         try await held.up()
         let holder = await harness.sheetLock.currentHolder
         XCTAssertEqual(holder, work)
-        let signIn = await authClientError { try await client.signIn(username: "alice", password: "password") }
-        let confirm = await authClientError { try await client.confirmSignIn(challengeResponse: "123456") }
+        // Bounded: if associate held `signInLock`, these would wait for a gate opened only below.
+        let signIn = try await withinTime(10, "the sign-in's answer") {
+            await authClientError { try await client.signIn(username: "alice", password: "password") }
+        }
+        let confirm = try await withinTime(10, "the confirmation's answer") {
+            await authClientError { try await client.confirmSignIn(challengeResponse: "123456") }
+        }
         XCTAssertEqual(signIn?.kind, .invalidState)
         XCTAssertEqual(confirm?.kind, .invalidState)
         await held.letAnswer()
@@ -318,6 +323,53 @@ final class WebAuthnCeremonyTests: XCTestCase {
         XCTAssertNil(free)
     }
 
+    /// The other refusal a passkey ceremony can get, its own session's sheet still closing, keeps the passkey
+    /// suggestion and the lock's description of that reason.
+    ///
+    /// - Given: `work` (alice) signed in, and its associate's ceremony up, in a ceremony that does not return at once
+    ///   when interrupted
+    /// - When:
+    ///    - the lock interrupts `work`'s sheet, as `cancelWebUISignIn()` does, and `work` associates again before the
+    ///      interrupted ceremony has returned
+    /// - Then:
+    ///    - the second associate throws `.browserBusy(holder: work)` with the `.stillClosing` description and the passkey
+    ///      suggestion, never `whenBrowserBusy`; only one ceremony ran
+    ///    - once the first ceremony returns, the sheet is free
+    func testACeremonyRefusedWhileItsOwnSheetClosesKeepsThePasskeySuggestion() async throws {
+        try harness.signIn(work, .signedIn("alice"))
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let window = await WebAuthnFixtures.window()
+        let up = Gate(isOpen: true)
+        let release = Gate()
+        let ceremonies = CallCounter()
+        engine.scriptCeremonyBody { _ in
+            ceremonies.increment()
+            await up.pass()
+            // Not ended by the interrupt: the sheet is still closing until the test lets it go.
+            await release.pass()
+            throw CancellationError()
+        }
+
+        let first = Task { @MainActor in try await client.associateWebAuthnCredential(presentationAnchor: window) }
+        try await up.arrivals(1)
+        await harness.sheetLock.cancel(for: work)
+        let second = Task { @MainActor in try await client.associateWebAuthnCredential(presentationAnchor: window) }
+        let busy = await authClientError { try await second.value(within: 10) }
+        await release.open()
+        _ = await authClientError { try await first.value(within: 10) }
+
+        XCTAssertEqual(busy?.kind, .browserBusy(holder: work))
+        XCTAssertEqual(
+            busy?.errorDescription,
+            AuthClientError.browserBusy(heldBy: work, requestedBy: work, reason: .stillClosing).errorDescription
+        )
+        XCTAssertEqual(busy?.recoverySuggestion, SystemSheetFlow.passkeyBrowserBusySuggestion)
+        XCTAssertFalse(busy?.recoverySuggestion.contains("whenBrowserBusy") ?? true)
+        XCTAssertEqual(ceremonies.count, 1)
+        await waitUntil("the sheet is free") { await self.harness.sheetLock.currentHolder == nil }
+    }
+
     // MARK: Who can stop a ceremony
 
     /// A sign-out during a held sign-in ceremony stops it through the engine, and does not wait for
@@ -367,7 +419,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
             )
         }
         try await held.up()
-        await client.signOut()
+        _ = try await withinTime(10, "the sign-out") { await client.signOut() }
         try await unwound.arrivals(1)
 
         XCTAssertFalse(signIn.isCancelled)

@@ -329,7 +329,7 @@ enum InteropEnvironment {
     ///
     /// The plugin builds its credential store after `configure` returns, and a client's `.default` restore writes
     /// the same `authConfiguration` item, so without this the two race for it. Running the plugin and a client
-    /// side by side is not supported (D-i), and a test must not rely on it.
+    /// side by side is not supported, and a test must not rely on it.
     ///
     /// `getCurrentUser()` waits for the plugin to be configured, as every plugin call does, and then only reads.
     /// It throws `signedOut` when no one is signed in, which is ignored. Not `fetchAuthSession()`: signed out, on

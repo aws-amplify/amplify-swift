@@ -38,7 +38,16 @@ class AWSCognitoAuthPluginLifetimeTests: XCTestCase, @unchecked Sendable {
         ]
     ]
 
+    /// Set when the Hub reset deadlocked: its listener lock is then held for good, so `Amplify.reset()` would
+    /// block on it too, and hang the job instead of failing the test.
+    private var hubDeadlocked = false
+
     override func tearDown() async throws {
+        if hubDeadlocked {
+            // Leave the deadlocked Hub plugin behind, and give the next tests a fresh Hub.
+            Amplify.Hub = HubCategory()
+            return
+        }
         await Amplify.reset()
     }
 
@@ -169,6 +178,10 @@ class AWSCognitoAuthPluginLifetimeTests: XCTestCase, @unchecked Sendable {
     ///    - The reset finishes, and the plugin is released; its Hub handler's `deinit` removes its own
     ///      listener from the same Hub plugin while that reset is running
     ///
+    /// A failure here means the Hub plugin's reset releases its listeners while holding its lock again: the
+    /// handler's `deinit` then deadlocks on that lock. The test fails rather than hangs: on timeout it skips
+    /// `Amplify.reset()`, which would block on the same lock, and installs a fresh Hub.
+    ///
     func testHubResetDoesNotDeadlockWhenAListenerOwnsThePlugin() async throws {
         let hubPlugin = try XCTUnwrap(Amplify.Hub.getPlugin(for: AWSHubPlugin.key) as? AWSHubPlugin)
         weak var weakPlugin: AWSCognitoAuthPlugin?
@@ -188,7 +201,11 @@ class AWSCognitoAuthPluginLifetimeTests: XCTestCase, @unchecked Sendable {
             resetFinished.fulfill()
         }
 
-        await fulfillment(of: [resetFinished], timeout: 5)
+        let result = await XCTWaiter().fulfillment(of: [resetFinished], timeout: 5)
+        guard result == .completed else {
+            hubDeadlocked = true
+            return XCTFail("The Hub reset did not finish (\(result)): releasing a listener inside the reset deadlocked")
+        }
         await waitForRelease { weakPlugin == nil }
         XCTAssertNil(weakPlugin)
     }

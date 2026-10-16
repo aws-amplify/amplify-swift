@@ -161,6 +161,9 @@ let amplifyTargets: [Target] = [
             "InternalAmplifyCredentials",
             "AmplifyTestCommon",
             // For the version-parity test: the clients' copy of the version and their user-agent engine.
+            // The unit-test selector maps a test target to its direct dependencies' groups, so an edit to
+            // these tests also selects the AmplifyFoundation and AmplifyFoundationBridge groups, whose
+            // schemes don't run them. That is cheap, and accepted.
             "AmplifyFoundation",
             "AmplifyFoundationBridge",
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
@@ -243,11 +246,10 @@ let authTargets: [Target] = [
         name: "AWSCognitoAuthPlugin",
         dependencies: [
             .target(name: "Amplify"),
-            .target(name: "AmplifyAvailability"),
             .target(name: "AmplifyFoundation"),
-            .target(name: "AmplifySRP"),
             .target(name: "AWSPluginsCore"),
             .target(name: "InternalAmplifyCredentials"),
+            .target(name: "InternalAmplifyKeychain"),
             .target(name: "InternalAWSCognitoAuth"),
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
@@ -487,8 +489,7 @@ let kinesisTargets: [Target] = [
         name: "AmplifyKinesisClientTests",
         dependencies: [
             "AmplifyKinesisClient",
-            "AmplifyRecordCache",
-            .product(name: "SQLite", package: "SQLite.swift")
+            "AmplifyRecordCache"
         ],
         path: "AmplifyClients/AmplifyKinesisClient/Tests/UnitTests"
     )

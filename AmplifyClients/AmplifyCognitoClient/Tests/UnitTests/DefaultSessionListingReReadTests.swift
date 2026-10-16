@@ -92,7 +92,73 @@ final class DefaultSessionListingReReadTests: XCTestCase {
         XCTAssertEqual(other.value(account), payload)
     }
 
+    /// The forced sign-out, the last resort after the guarded writes lost their races, re-reads too.
+    ///
+    /// - Given: the re-read on; alice's login re-encoded after every read, so each guarded write of the sign-out loses
+    ///   its race and the sign-out falls back to the forced replace; and another writer's delete-then-add whose gap the
+    ///   forced replace's first read falls into
+    /// - When: `.default` is signed out
+    /// - Then:
+    ///    - the forced replace finds alice on its re-read and signs her out: `.signedOut`, with `{"noCredentials":{}}`
+    ///      stored, rather than `.noRecord` with her login left signed in
+    func testTheForcedSignOutReReadsARecordFoundAbsent() throws {
+        let encodings = try reencodings(of: alice)
+        // A dry run, where every read re-encodes, counts the reads of the record: the forced replace's is the last.
+        let forcedRead = try signOutReads(encodings)
+        keychain = TestKeychain()
+        let store = keychain.recordStore(for: StorageFixtures.namespace, rereadsAbsentSharedRecord: true)
+        keychain.put(encodings[0], pluginAccount)
+        let other = keychain!
+        let account = pluginAccount
+        let counter = ReadOrdinal()
+        other.afterEveryRead(of: account) {
+            let ordinal = counter.next()
+            if ordinal < forcedRead - 1 {
+                other.put(encodings[ordinal % encodings.count], account)
+            } else if ordinal == forcedRead - 1 {
+                // The other writer's delete, after the last guarded read...
+                try? other.itemStore(service: SessionRecordStore.unsharedService).remove(account)
+            } else if ordinal == forcedRead {
+                // ...and its add, after the forced replace's first read found nothing.
+                other.put(encodings[0], account)
+            }
+        }
+
+        let outcome = try store.signOut(.default)
+        other.afterEveryRead(of: account, nil)
+
+        XCTAssertEqual(outcome, .signedOut)
+        XCTAssertEqual(other.value(account), PluginRecordSummary.signedOutPayload)
+    }
+
     // MARK: Helpers
+
+    /// `.default`'s sign-out over alice's login re-encoded after every read, on a keychain of its own: how many times
+    /// it reads the record. Every guarded write loses, so the last read is the forced replace's.
+    private func signOutReads(_ encodings: [Data]) throws -> Int {
+        let dry = TestKeychain()
+        let account = pluginAccount
+        dry.put(encodings[0], account)
+        let counter = ReadOrdinal()
+        dry.afterEveryRead(of: account) {
+            dry.put(encodings[counter.next() % encodings.count], account)
+        }
+        let outcome = try dry.recordStore(for: StorageFixtures.namespace, rereadsAbsentSharedRecord: true).signOut(.default)
+        dry.afterEveryRead(of: account, nil)
+        XCTAssertEqual(outcome, .signedOut, "the dry run signs out through the forced replace")
+        return dry.readAccounts.count(where: { $0 == account })
+    }
+
+    /// `payload` as stored, and two other encodings of the same credentials, each with different bytes.
+    private func reencodings(of payload: FakePayload) throws -> [Data] {
+        let spaced = Data("{ ".utf8) + payload.data.dropFirst()
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let encodings = try [payload.data, spaced, encoder.encode(payload)]
+        XCTAssertEqual(Set(encodings).count, 3)
+        XCTAssertTrue(encodings.allSatisfy { FakePayload.decode($0) == payload })
+        return encodings
+    }
 
     /// Makes `.default`'s shared record absent for the account listing and its first read, then present with `data`.
     private func landAfterFirstRead(_ data: Data) {

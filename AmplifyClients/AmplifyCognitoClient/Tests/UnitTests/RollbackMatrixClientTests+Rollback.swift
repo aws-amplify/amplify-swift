@@ -13,7 +13,7 @@ import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
 /// The rollback rows, the client's side: rotation, roll-forward, sign-out, mixed binaries, named
-/// sessions and a newer sidecar, each across the `.released` and `.current` plugin binaries. Cognito's refresh-token
+/// sessions, a newer sidecar and a deleting configuration change, each across the `.released` and `.current` plugin binaries. Cognito's refresh-token
 /// rotation is one `RotatingRefreshTokens` shared by the client and the plugin of a row.
 extension RollbackMatrixClientTests {
 
@@ -352,6 +352,58 @@ extension RollbackMatrixClientTests {
         XCTAssertFalse(harness.keychain.removedAccounts.contains(sidecarAccount))
         XCTAssertEqual(harness.keychain.value(sidecarAccount), newerSidecar)
         XCTAssertEqual(hiddenReads.accounts, [])
+    }
+
+    // MARK: - A deleting configuration change on a rollback
+
+    /// Caveat: a released plugin's deleting configuration change leaves the sidecar, which the client then lists as
+    /// a signed-out row, like a plugin `deleteUser`.
+    ///
+    /// - Given: The client's `.default` holds alice under the app's configuration C, labelled "Work"
+    /// - When:
+    ///    - The app rolls back to each plugin binary, built with another user pool, A, whose rule from C to A deletes
+    ///      C's login; then it rolls forward to the client under C, which restores `.default` (running the rule from A
+    ///      to C) and lists its sessions, signed-out rows included
+    /// - Then:
+    ///    - Both binaries delete C's login and ask to remove C's two `$default` items; neither reads a client record
+    ///    - The client restores `.default` signed out either way
+    ///    - After `.current`, which removes the two items, nothing is listed
+    ///    - After `.released`, which keeps them, as 2.62.0 does, a signed-out "Work" row for alice is listed, for a
+    ///      login nobody signed out of
+    ///
+    func testMatrix_releasedPluginDeletingChange_leavesTheSidecar_caveat() async throws {
+        let defaultItems = SessionRecordAccount.defaultSessionItemAccounts(poolNamespace: StorageFixtures.pools.keyComponent)
+        for binary in RollbackPluginBinary.allCases {
+            await relaunchWithAFreshKeychain()
+            var client: AmplifyCognitoClient? = try makeClient()
+            try await signInAlice(XCTUnwrap(client))
+            try await client?.setSessionLabel("Work")
+            client = nil
+            await harness.waitForBaseline()
+            XCTAssertNotNil(harness.keychain.value(sidecarAccount), "\(binary)")
+
+            let hiddenReads = HiddenReads()
+            _ = pluginStore(binary, ChangeConfigs.otherUserPool, recording: hiddenReads)
+
+            XCTAssertNil(harness.keychain.value(pluginAccount), "\(binary): C's login is deleted")
+            XCTAssertEqual(hiddenReads.removedAccounts, defaultItems, "\(binary)")
+            XCTAssertEqual(hiddenReads.accounts, [], "\(binary)")
+
+            let restored = await (try makeClient()).currentSessionState()
+            let listed = try await listed(includingSignedOut: true)
+
+            XCTAssertEqual(restored, .signedOut, "\(binary)")
+            switch binary {
+            case .released:
+                XCTAssertNotNil(harness.keychain.value(sidecarAccount), "\(binary)")
+                XCTAssertEqual(listed, [
+                    StoredSession(sessionId: .default, label: "Work", username: "alice", kind: .signedOut)
+                ], "\(binary)")
+            case .current:
+                XCTAssertNil(harness.keychain.value(sidecarAccount), "\(binary)")
+                XCTAssertEqual(listed, [], "\(binary)")
+            }
+        }
     }
 
     // MARK: - Helpers

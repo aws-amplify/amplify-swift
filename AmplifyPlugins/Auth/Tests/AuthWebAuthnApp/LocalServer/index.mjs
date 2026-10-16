@@ -219,6 +219,8 @@ app.use((error, req, res, next) => {
     res.sendStatus(error.status ?? 500)
 })
 
-app.listen(port, () => {
+// Loopback only: every client is on this Mac (the simulator shares its network), and on any other interface
+// anyone on the network could approve a Face ID prompt or uninstall the app.
+app.listen(port, "127.0.0.1", () => {
     log("Simulator server started!")
 })

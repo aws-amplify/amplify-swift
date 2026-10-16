@@ -1557,6 +1557,66 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         }
     }
 
+    /// The copy rules' other two readers of the engine's format: which swept copies a sign-out revokes first
+    /// (`refreshToken`), and whose a guest or federated copy is (`identityId`).
+    ///
+    /// - Given: the plugin's stored format in each shape, and bytes that are not a payload
+    /// - When: each payload's refresh token and identity ID are read
+    /// - Then:
+    ///    - the refresh token is the fixtures' for the two user pool shapes, and `nil` for the rest
+    ///    - the identity ID is each fixture's own for the three shapes that have one, and `nil` for the rest
+    func testTheLiveReadersFindTheRefreshTokenAndTheIdentityId() throws {
+        let identityIds: [String: String] = [
+            "userPoolAndIdentityPool": "us-east-1:fixture-identity-id",
+            "identityPoolOnly": "us-east-1:fixture-guest-identity-id",
+            "identityPoolWithFederation": "us-east-1:fixture-federated-identity-id"
+        ]
+        for caseName in EnginePayloadFixtures.caseNames {
+            let payload = try EnginePayloadFixtures.data(caseName)
+            let hasUser = caseName == "userPoolOnly" || caseName == "userPoolAndIdentityPool"
+            XCTAssertEqual(CredentialSlot.refreshToken(payload), hasUser ? EnginePayloadFixtures.refreshToken : nil, caseName)
+            XCTAssertEqual(CredentialSlot.identityId(payload), identityIds[caseName], caseName)
+        }
+        XCTAssertNil(CredentialSlot.refreshToken(StorageFixtures.corruptRecord))
+        XCTAssertNil(CredentialSlot.identityId(StorageFixtures.corruptRecord))
+    }
+
+    /// The revoke end to end over the engine's format: a copy left under the previous identity pool whose refresh
+    /// token this side has since rotated is the one a sign-out revokes first.
+    ///
+    /// - Given: the plugin's user pool + identity pool payload for `work` under A, carried to A' (the same user pool,
+    ///   another identity pool), where the tokens are then rotated
+    /// - When: the copies a sign-out at A' would revoke are listed, revoking the rotated payload, then the copy's own
+    /// - Then:
+    ///    - the A copy's credentials are listed against the rotated payload, and nothing against the copy's own
+    func testTheCopyToRevokeIsFoundInTheEnginesFormat() throws {
+        let original = try EnginePayloadFixtures.data("userPoolAndIdentityPool")
+        let record = SessionRecord(
+            label: "Work",
+            username: "fixture-user",
+            userId: "fixture-sub",
+            kind: .userPoolAndIdentityPool,
+            credentials: original
+        )
+        XCTAssertTrue(try store(Self.bothPools).write(record, for: work, expecting: nil).didCommit)
+        guard case .record(let carried) = try store(Self.otherIdentityPool).readCarryingForward(work),
+              let carriedCredentials = carried.record.credentials else {
+            return XCTFail("not carried")
+        }
+        let rotated = Data(
+            String(decoding: carriedCredentials, as: UTF8.self)
+                .replacingOccurrences(of: EnginePayloadFixtures.refreshToken, with: "fixture-refresh-token-rotated")
+                .utf8
+        )
+        XCTAssertEqual(CredentialSlot.refreshToken(rotated), "fixture-refresh-token-rotated")
+        var rotatedRecord = carried.record
+        rotatedRecord.credentials = rotated
+        XCTAssertTrue(try store(Self.otherIdentityPool).write(rotatedRecord, for: work, expecting: carried.version).didCommit)
+
+        XCTAssertEqual(try store(Self.otherIdentityPool).copiesToRevoke(of: work, revoking: rotated), [original])
+        XCTAssertEqual(try store(Self.otherIdentityPool).copiesToRevoke(of: work, revoking: original), [])
+    }
+
     /// - Given: a record, not pending and then pending
     /// - When: each is encoded and decoded
     /// - Then: `identityPending` is written only when set, and round-trips

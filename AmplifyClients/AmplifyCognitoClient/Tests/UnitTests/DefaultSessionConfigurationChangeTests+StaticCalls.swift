@@ -199,6 +199,123 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertEqual(harness.keychain.value(source), bob)
     }
 
+    /// A federated identity is signed out under the configuration it was carried from too: the user
+    /// asked to sign out, so neither configuration may bring the identity back.
+    ///
+    /// - Given: a federated identity under X (identity pool only), the configuration the app last ran with
+    /// - When: `signOutStoredSession(.default)` runs under Y (X with a user pool added, a carrying change); then a
+    ///   `.default` client restores under X; then, released, one restores under Y
+    /// - Then:
+    ///    - the result is `.complete`; X's record and Y's record both hold `{"noCredentials":{}}`, and
+    ///      `authConfiguration` still names X
+    ///    - the restores under X and under Y are both `.signedOut`, and neither lists `.default`
+    func testStaticSignOutUnderACarryingConfiguration_signsOutAFederatedSource() async throws {
+        let appConfiguration = ChangeConfigs.identityPoolOnly
+        let carryingConfiguration = ChangeConfigs.both
+        try pluginSaves(Self.federatedPayload(), under: appConfiguration)
+
+        let result = await AmplifyCognitoClient.signOutStoredSession(
+            sessionId: .default,
+            configuration: carryingConfiguration,
+            accessGroup: nil,
+            dependencies: dependencies
+        )
+
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(harness.keychain.value(account(carryingConfiguration)), PluginRecordSummary.signedOutPayload)
+        XCTAssertEqual(harness.keychain.value(account(appConfiguration)), PluginRecordSummary.signedOutPayload)
+        XCTAssertEqual(harness.keychain.recordedPluginConfiguration(), AuthConfiguration(client: appConfiguration))
+
+        var underApp: AmplifyCognitoClient? = makeClient(appConfiguration)
+        let restoredUnderApp = await underApp?.currentSessionState()
+        let rowsUnderApp = try await listed(appConfiguration)
+        underApp = nil
+        await harness.waitForBaseline()
+        XCTAssertEqual(restoredUnderApp, .signedOut)
+        XCTAssertEqual(rowsUnderApp, [])
+
+        let restoredUnderCarrying = await makeClient(carryingConfiguration).currentSessionState()
+        let rowsUnderCarrying = try await listed(carryingConfiguration)
+        XCTAssertEqual(restoredUnderCarrying, .signedOut)
+        XCTAssertEqual(rowsUnderCarrying, [])
+    }
+
+    /// A guest is left under the configuration it was carried from: it is nobody's login, and an app
+    /// extension on that configuration may still use its identity, as for a named session's guest copy.
+    ///
+    /// - Given: a guest under X (identity pool only), the configuration the app last ran with
+    /// - When: `signOutStoredSession(.default)` runs under Y (X with a user pool added, a carrying change); then a
+    ///   `.default` client restores under X; then, released, one restores under Y
+    /// - Then:
+    ///    - the result is `.complete`; Y's record holds `{"noCredentials":{}}`, X's still holds the guest, and
+    ///      `authConfiguration` still names X
+    ///    - the restore under X is the same guest, and lists it
+    ///    - the restore under Y carries it again from X: the same guest, listed
+    func testStaticSignOutUnderACarryingConfiguration_leavesAGuestSource() async throws {
+        let appConfiguration = ChangeConfigs.identityPoolOnly
+        let carryingConfiguration = ChangeConfigs.both
+        let guest = try pluginSaves(ChangePayloads.guest(), under: appConfiguration)
+        let guestRow = StoredSession(sessionId: .default, label: nil, username: nil, kind: .guest)
+
+        let result = await AmplifyCognitoClient.signOutStoredSession(
+            sessionId: .default,
+            configuration: carryingConfiguration,
+            accessGroup: nil,
+            dependencies: dependencies
+        )
+
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(harness.keychain.value(account(carryingConfiguration)), PluginRecordSummary.signedOutPayload)
+        XCTAssertEqual(harness.keychain.value(account(appConfiguration)), guest)
+        XCTAssertEqual(harness.keychain.recordedPluginConfiguration(), AuthConfiguration(client: appConfiguration))
+
+        var underApp: AmplifyCognitoClient? = makeClient(appConfiguration)
+        let restoredUnderApp = await underApp?.currentSessionState()
+        let rowsUnderApp = try await listed(appConfiguration)
+        underApp = nil
+        await harness.waitForBaseline()
+        XCTAssertEqual(restoredUnderApp, .guest)
+        XCTAssertEqual(rowsUnderApp, [guestRow])
+
+        let restoredUnderCarrying = await makeClient(carryingConfiguration).currentSessionState()
+        let rowsUnderCarrying = try await listed(carryingConfiguration)
+        XCTAssertEqual(restoredUnderCarrying, .guest)
+        XCTAssertEqual(rowsUnderCarrying, [guestRow])
+        XCTAssertEqual(harness.keychain.value(account(carryingConfiguration)), guest)
+    }
+
+    /// A source that cannot be signed out logs one warning, naming no one; the session is still signed out here.
+    ///
+    /// - Given: alice's record under X, the configuration the app last ran with, and every write of X's record failing
+    ///   with `errSecInteractionNotAllowed`
+    /// - When: `signOutStoredSession(.default)` runs under Y (X with an identity pool added, a carrying change)
+    /// - Then:
+    ///    - the result is `.complete`, and Y's record holds `{"noCredentials":{}}`; X's still holds alice
+    ///    - exactly `carrySourceSignOutFailedWarning` is logged under `AmplifyCognitoClient.DefaultSession`, without
+    ///      alice's name
+    func testStaticSignOutUnderACarryingConfiguration_whoseSourceCannotBeWritten_logsOneWarning() async throws {
+        let appConfiguration = ChangeConfigs.userPoolOnly
+        let carryingConfiguration = ChangeConfigs.both
+        let before = try await pluginSignsIn("alice", under: appConfiguration)
+        harness.keychain.failingWrites(of: account(appConfiguration), with: errSecInteractionNotAllowed)
+        let category = ClientLog.category(ClientLog.defaultSession)
+
+        let result = await AmplifyCognitoClient.signOutStoredSession(
+            sessionId: .default,
+            configuration: carryingConfiguration,
+            accessGroup: nil,
+            dependencies: dependencies
+        )
+
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(harness.keychain.value(account(carryingConfiguration)), PluginRecordSummary.signedOutPayload)
+        XCTAssertEqual(harness.keychain.value(account(appConfiguration)), before)
+        await waitUntil("the warning is logged") { !self.sink.lines(in: [category]).isEmpty }
+        XCTAssertEqual(sink.lines(in: [category]), [SessionCore.carrySourceSignOutFailedWarning])
+        XCTAssertFalse(sink.lines(in: [category]).contains { $0.contains("alice") })
+        harness.keychain.clearFailures()
+    }
+
     /// A static call never clears the app's login: it may be made with a configuration other than the app's.
     ///
     /// - Given: alice's record under the app's configuration (user pool A), recorded as the plugin's last
@@ -239,6 +356,8 @@ extension DefaultSessionConfigurationChangeTests {
     ///    - the rule carries first, so the purge deletes the carried record; the old record is kept, as the plugin keeps
     ///      it: a purge revokes nothing, so unlike a static sign-out it leaves the source valid; and
     ///      `authConfiguration` still names the old configuration, which only a restore replaces
+    ///    - so the purge is undone under the new configuration, as the design's §6 states: listing under it still shows
+    ///      alice's row, and a restore under it carries her back signed in
     func testStaticPurgeAfterACarryingChange_carriesFirst() async throws {
         let old = try await pluginSignsIn("alice", under: ChangeConfigs.userPoolOnly)
 
@@ -252,6 +371,13 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertNil(harness.keychain.value(account(ChangeConfigs.both)))
         XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.userPoolOnly)), old)
         XCTAssertEqual(harness.keychain.recordedPluginConfiguration(), AuthConfiguration(client: ChangeConfigs.userPoolOnly))
+
+        let rows = try await listed(ChangeConfigs.both)
+        XCTAssertEqual(rows.map(\.sessionId), [.default])
+        XCTAssertEqual(rows.first?.username, "alice")
+        let restored = await makeClient(ChangeConfigs.both).currentSessionState()
+        XCTAssertEqual(restored, .signedIn(alice))
+        XCTAssertNotNil(harness.keychain.value(account(ChangeConfigs.both)))
     }
 
     /// A static carry never records the configuration: only the app running a
@@ -336,4 +462,18 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertEqual(harness.keychain.writtenAccounts.filter { !$0.hasPrefix("amplify.1.") }, [])
     }
     #endif
+
+    /// A federated identity's record, as the plugin stores one under an identity-pool-only configuration.
+    static func federatedPayload() throws -> Data {
+        try JSONEncoder().encode(AmplifyCredentials.identityPoolWithFederation(
+            federatedToken: FederatedToken(token: "federated-token", provider: .facebook),
+            identityID: "us-east-1:federated-identity",
+            credentials: EngineAWSCredentials(
+                accessKeyId: "AKID-federated",
+                secretAccessKey: "secret-federated",
+                sessionToken: "session-federated",
+                expiration: Date(timeIntervalSince1970: 4_000_000_000)
+            )
+        ))
+    }
 }

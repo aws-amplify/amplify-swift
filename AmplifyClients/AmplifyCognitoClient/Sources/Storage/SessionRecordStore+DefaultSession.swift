@@ -367,12 +367,16 @@ extension SessionRecordStore {
     /// sign-out does (`ClearCredentialStore`): `.default` is the plugin's saved login, and every plugin configure first
     /// migrates those logins into it when it holds no session, so a login kept for a later migration would otherwise
     /// sign its user in again under the next plugin build. Like the plugin's, it runs on a sign-out that had nothing to
-    /// sign out too. Best effort, as the plugin's: each service that fails to clear logs one warning, and none fails the
-    /// sign-out or purge, whose record is already gone.
+    /// sign out too, or that another writer's sign-out beat: `SessionSignOut.run()` calls it when this store's own
+    /// sign-out did not run. Best effort, as the plugin's: each service that fails to clear logs one warning, and none
+    /// fails the sign-out or purge, whose record is already gone.
     ///
-    /// The identity pool's service is named from this store's own pools (`namespace.pools`): an AWSMobileClient app
-    /// that used another identity pool than the client's configuration names keeps that login, which the plugin, built
-    /// with the same configuration, would not clear either.
+    /// Only the identity pool's service is named by pool, from this store's own pools (`namespace.pools`): an
+    /// AWSMobileClient app that used another identity pool than the client's configuration names keeps that login,
+    /// which the plugin, built with the same configuration, would not clear either. The other two are cleared whole, as
+    /// the plugin's `ClearCredentialStore` clears them: `<bundle>.AWSCognitoIdentityUserPool`, which holds every app
+    /// client's logins (`<clientId>.*`), and the AWSMobileClient service. That happens on any `.default` sign-out or
+    /// purge, a static one under another configuration than the app's included.
     func clearLegacyLogins() {
         for store in legacyLoginStores() {
             do {

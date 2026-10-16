@@ -139,7 +139,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
             XCTAssertTrue(sub == alice.userId, "alice's tokens")
             XCTAssertNoThrow(try session.identityIdResult.get(), "the identity is fetched on first use")
             XCTAssertNoThrow(try session.awsCredentialsResult.get(), "with its AWS credentials")
-            XCTAssertEqual(recorder.operations, ["GetTokensFromRefreshToken"])
+            XCTAssertEqual(recorder.answeredOperations, ["GetTokensFromRefreshToken"])
         }
         try await SessionCleanup.waitUntilReleased([sessionId])
 

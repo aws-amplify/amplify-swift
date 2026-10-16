@@ -137,7 +137,7 @@ final class WebUISignOutTests: XCTestCase {
     ///    - the registration is stopped first: it throws `passkeyRegistrationEnded()`, and its ceremony saw the
     ///      cancellation
     ///    - the logout page is presented, under the sheet the session holds once the passkey sheet has closed;
-    ///      the result is `.complete`, not `.partial` with `browserBusy`, and the session is signed out
+    ///      the result is `.complete`, not `.failed(.browserBusy)`, and the session is signed out
     func testASignOutClosesTheSessionsOwnPasskeySheetAndShowsTheLogout() async throws {
         guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
             throw XCTSkip("WebAuthn is not available on this OS version")
@@ -794,7 +794,7 @@ final class WebUISignOutTests: XCTestCase {
     /// As the plugin, a hosted-UI sign-out with no hosted UI to sign out of fails, and the user stays
     /// signed in.
     ///
-    /// - Given: a shared-cookie session (an adopted plugin record) under a configuration with no hosted UI
+    /// - Given: a shared-cookie session under a configuration with no hosted UI
     /// - When: it is signed out with a window
     /// - Then:
     ///    - the result is `.failed(.configuration)`; nothing is revoked; the session is still signed in, and no
@@ -1188,7 +1188,7 @@ final class WebUISignOutTests: XCTestCase {
         await waitUntil("the sheet is free") { await lock.currentHolder == nil }
     }
 
-    // MARK: An interrupt before the lease body starts (verification blocker)
+    // MARK: An interrupt before the lease body starts
 
     /// Where the lock is held when the sign-out's lease is interrupted, before its body runs.
     private enum EarlyWindow {

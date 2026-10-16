@@ -329,16 +329,17 @@ final class LazyUserPoolAnalyticsTests: XCTestCase {
 
     // MARK: Concurrency
 
-    /// A lookup stuck in the keychain holds no lock: the cache read returns at once, and other requests
-    /// wait on the shared lookup, not on a lock.
+    /// A lookup stuck in the keychain holds no lock: the cache read returns at once. A second request started
+    /// just before the read is released may join the shared lookup or find the ID it cached; either way it never
+    /// reads again (`testConcurrentFirstCallersResolveOnce` forces the join).
     ///
     /// - Given: an ID in the keychain, and a keychain read that blocks until released
     /// - When:
     ///    - one request is started and reaches the read; the cache is then read, and a second request is
-    ///      started
+    ///      started as the read is released
     /// - Then:
     ///    - the cache read returns `nil` while the lookup is blocked
-    ///    - once released, both requests get the keychain's ID, after one read
+    ///    - both requests get the keychain's ID, after one read
     ///
     func testStuckLookupHoldsNoLock() async {
         storeInKeychain("keychain-id")

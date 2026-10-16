@@ -28,9 +28,12 @@
 #
 #   A rerun over resources an earlier run made adds what is missing and updates, after their tag checks, only
 #   these of its own: the KMS key's policy and the sender's and triggers' role policies (each to name the new pool
-#   or log group), the invoke permissions of the Lambdas the new pool names, the reset Lambda's role policy (to
-#   decrypt its parameter with the key), and an SSM parameter stored under another key than the script's own,
-#   which it stores again, with the same value, under that key.
+#   or log group), the invoke permissions of the Lambdas the new pool names (one that names another pool's ARN, as
+#   after a pool is deleted and made again, is replaced), the reset Lambda's role policy (to decrypt its parameter
+#   with the key), and an SSM parameter stored under another key than the script's own, which it stores again, with
+#   the same value, under that key. It never updates a pool or a Lambda's code: after a change to a pool template, or
+#   to lambda/triggers/triggers.mjs, lambda/custom-sender or ci/lambda/*, delete that pool or function by hand and
+#   rerun, which makes it again (with its invoke permissions).
 #
 # Every resource is named ccit-ci-… (identity pool ccit_ci_default, parameters /ccit-ci/…) and tagged
 # purpose=amplify-cognito-client-integ. The script finds them by name, creates only what is missing, refuses any
@@ -44,8 +47,10 @@
 #       files); --upload also uploads them to <config>/auth/cognito-client-ci/: a key that exists is left alone when
 #       it holds the same bytes, and any other existing key refuses the whole upload. --scope picks the phase.
 #   infra/ci/provision-ci.sh snapshot
-#       read-only: hashes every existing resource the script must not touch into
-#       $CCIT_CI_DISCOVERY_DIR/snapshot-<time>.json (default /tmp/ci-disc), mode 600
+#       read-only: hashes the metadata it reads of every existing resource of the kinds the script writes (snapshot.py
+#       lists them; AppSync schemas, resolvers and keys, and S3 objects' contents, are not read) into
+#       $CCIT_CI_DISCOVERY_DIR/snapshot-<time>.json (default /tmp/ci-disc), mode 600, beside the documents
+#       themselves, with their secrets hashed, in snapshot-<time>.docs.json, mode 600
 #   infra/ci/provision-ci.sh verify-unchanged <before.json> <after.json> [--allow-foreign-additions]
 #       no AWS call: fails on any changed or removed resource, and on any added one that is not ccit-ci-
 #   infra/ci/provision-ci.sh teardown [--dry-run | --apply]
@@ -189,6 +194,20 @@ ANSWER="" TEMPORARY="" SMS_EXTERNAL_ID=""
 
 # --- Read-only checks first -------------------------------------------------------------------------------
 
+# Dies unless the ccit-ci- resources, when there are any, are in CI_REGION. The roles are global and the rest is
+# regional, so a run in another region would re-point the roles' policies at that region's resources (and a
+# teardown would delete the roles under the first region's). The triggers' role, made first, names its region in
+# its log group ARNs.
+require_recorded_region() {
+    local out regions
+    read_aws_or_missing out NoSuchEntity iam get-role-policy --role-name "$(role_name trigger-exec)" \
+        --policy-name "$(role_name trigger-exec)-policy" || return 0
+    regions=$(jq -r '[.PolicyDocument.Statement[].Resource | if type == "array" then .[] else . end
+        | select(startswith("arn:aws:logs:")) | split(":")[3]] | unique | join(" ")' <<<"$out")
+    [[ -z "$regions" || "$regions" == "$CI_REGION" ]] \
+        || die "the ccit-ci- resources are in $regions, not CCIT_CI_REGION's $CI_REGION. Set CCIT_CI_REGION to theirs."
+}
+
 preflight() {
     local out roles quota apis pools identity rules sandbox
     read_aws out iam get-account-summary
@@ -305,11 +324,12 @@ sender_policy() {
              Resource: "\($api)/types/Mutation/fields/createMfaInfo"}]}'
 }
 
+# The log groups of every function that runs as the triggers' role (fn_role), whatever the scope: the policy is one
+# document, which ensure_role replaces when it differs, so a phase-1 rerun after phase 2 must not drop the phase-2
+# triggers' logs. A group of a function not made yet is only a name no other function writes.
 trigger_policy() {
-    local suffixes=(pre-sign-up discard-sender)
-    [[ "$SCOPE" == "all" ]] && suffixes+=(pre-sign-up-confirmable define-auth-challenge create-auth-challenge \
-        verify-auth-challenge)
-    jq -n -c --argjson logs "$(logs_statement "${suffixes[@]}")" '{Version: "2012-10-17", Statement: [$logs]}'
+    jq -n -c --argjson logs "$(logs_statement pre-sign-up discard-sender pre-sign-up-confirmable \
+        define-auth-challenge create-auth-challenge verify-auth-challenge)" '{Version: "2012-10-17", Statement: [$logs]}'
 }
 
 appsync_trust() {
@@ -326,8 +346,9 @@ appsync_policy() {
 # Cognito's SNS caller role, as the plugin's Gen2 backends' (`sns:Publish` on `*`; Cognito refuses narrower).
 # It never sends: every pool that names it has the custom SMS sender.
 sms_trust() {
-    jq -n -c --arg a "$CI_ACCOUNT" --arg r "$CI_REGION" --arg x "$SMS_EXTERNAL_ID" --argjson arns "$1" '
-        (if ($arns | length) > 0 then {ArnEquals: {"aws:SourceArn": $arns}}
+    CCIT_SECRET_X="$SMS_EXTERNAL_ID" jq -n -c --arg a "$CI_ACCOUNT" --arg r "$CI_REGION" --argjson arns "$1" '
+        $ENV.CCIT_SECRET_X as $x
+        | (if ($arns | length) > 0 then {ArnEquals: {"aws:SourceArn": $arns}}
          else {ArnLike: {"aws:SourceArn": "arn:aws:cognito-idp:\($r):\($a):userpool/*"}} end) as $source
         | {Version: "2012-10-17", Statement: [{Effect: "Allow", Principal: {Service: "cognito-idp.amazonaws.com"},
            Action: "sts:AssumeRole",
@@ -536,10 +557,13 @@ ensure_api_resolvers() {
     done
 }
 
-# The tests' read-only API key: one that lives at least 30 more days is reused, else a new one, for 364 days.
+# The tests' read-only API key: one that lives at least 30 more days is reused; one that lives fewer but has not
+# expired is extended to 364 days from now, keeping its id, so the two uploaded files that name it (the default and
+# alias-codes pools' outputs, which --upload never rewrites) stay valid; else a new one, for 364 days.
 ensure_api_key() {
-    local out now expires
+    local out now expires input
     now=$(date +%s)
+    expires=$((now + 364 * 86400))
     if ! is_new "$API_ID"; then
         read_aws out appsync list-api-keys --api-id "$API_ID"
         API_KEY=$(jq -r --argjson soon "$((now + 30 * 86400))" \
@@ -548,8 +572,18 @@ ensure_api_key() {
             say "  = the code sink API key (lives at least 30 more days)"
             return
         fi
+        API_KEY=$(jq -r --argjson now "$now" \
+            '[.apiKeys[] | select(.description == "ccit-ci tests" and .expires > $now)] | sort_by(.expires) | last | .id // empty' <<<"$out")
+        if [[ -n "$API_KEY" ]]; then
+            require_ours appsync "$API_ARN" "$API_NAME"
+            # The key's id is its secret: in the input file, never on the command line.
+            input=$(CCIT_SECRET_K="$API_KEY" jq -n -c --arg id "$API_ID" --argjson e "$expires" \
+                '{apiId: $id, id: $ENV.CCIT_SECRET_K, expires: $e}')
+            mutate "$API_NAME" "extend the tests' read-only API key to 364 days from now (the same key)" -- \
+                appsync update-api-key --cli-input-json "file://$(input_file "$input")"
+            return
+        fi
     fi
-    expires=$((now + 364 * 86400))
     mutate "$API_NAME" "create the tests' read-only API key, for 364 days" -- appsync create-api-key \
         --api-id "$API_ID" --description "ccit-ci tests" --expires "$expires"
     if [[ "$CI_MODE" == "apply" ]]; then
@@ -599,8 +633,8 @@ ensure_role() {
             return 0
         fi
     else
-        input=$(jq -n -c --arg n "$role" --arg t "$trust" --arg k "$CI_TAG_KEY" --arg v "$CI_TAG_VALUE" \
-            '{RoleName: $n, AssumeRolePolicyDocument: $t, Description: "ccit-ci: Cognito client CI resources",
+        input=$(CCIT_SECRET_T="$trust" jq -n -c --arg n "$role" --arg k "$CI_TAG_KEY" --arg v "$CI_TAG_VALUE" \
+            '{RoleName: $n, AssumeRolePolicyDocument: $ENV.CCIT_SECRET_T, Description: "ccit-ci: Cognito client CI resources",
               Tags: [{Key: $k, Value: $v}]}')
         mutate "$role" "create role $role" -- iam create-role --cli-input-json "file://$(input_file "$input")"
         [[ "$CI_MODE" == "apply" ]] || kv_set PLANNED_TRUST "$role" "$trust"
@@ -645,8 +679,8 @@ ensure_secret() {
             && "$key" != "arn:aws:kms:$CI_REGION:$CI_ACCOUNT:$CI_KMS_ALIAS" ]]; then
             require_ours ssm "$name" "$name"
             # --overwrite takes no tags; the parameter keeps its own.
-            input=$(jq -n -c --arg n "$name" --arg v "$value" --arg key "$KMS_KEY_ARN" \
-                '{Name: $n, Value: $v, Type: "SecureString", KeyId: $key, Overwrite: true,
+            input=$(CCIT_SECRET_V="$value" jq -n -c --arg n "$name" --arg key "$KMS_KEY_ARN" \
+                '{Name: $n, Value: $ENV.CCIT_SECRET_V, Type: "SecureString", KeyId: $key, Overwrite: true,
                   Description: "ccit-ci: Cognito client CI resources"}')
             mutate "$name" "store $name again, the same value, encrypted with $CI_KMS_ALIAS" -- ssm put-parameter \
                 --cli-input-json "file://$(input_file "$input")"
@@ -657,8 +691,8 @@ ensure_secret() {
         else
             value=$(new_id "secret")
         fi
-        input=$(jq -n -c --arg n "$name" --arg v "$value" --arg key "$KMS_KEY_ARN" --arg k "$CI_TAG_KEY" \
-            --arg t "$CI_TAG_VALUE" '{Name: $n, Value: $v, Type: "SecureString", KeyId: $key,
+        input=$(CCIT_SECRET_V="$value" jq -n -c --arg n "$name" --arg key "$KMS_KEY_ARN" --arg k "$CI_TAG_KEY" \
+            --arg t "$CI_TAG_VALUE" '{Name: $n, Value: $ENV.CCIT_SECRET_V, Type: "SecureString", KeyId: $key,
               Description: "ccit-ci: Cognito client CI resources", Tags: [{Key: $k, Value: $t}]}')
         mutate "$name" "store $name (SecureString, encrypted with $CI_KMS_ALIAS)" -- ssm put-parameter \
             --cli-input-json "file://$(input_file "$input")"
@@ -750,13 +784,21 @@ ensure_function() {
     return 0
 }
 
-# Lets $3 (a service principal) invoke function $1, for source ARN $4 only, as statement $2.
+# Lets $3 (a service principal) invoke function $1, for source ARN $4 only, as statement $2. A statement $2 for
+# another source (a pool deleted by hand, or by a teardown that stopped part-way, and made again under a new ARN) is
+# replaced, after the function's tag check: Cognito could not invoke the function for the new pool.
 ensure_invoke_permission() {
-    local suffix="$1" sid="$2" principal="$3" source="$4" name out
+    local suffix="$1" sid="$2" principal="$3" source="$4" name out current=""
     name=$(fn_name "$suffix")
-    if read_aws_or_missing out ResourceNotFoundException lambda get-policy --function-name "$name" \
-        && jq -e --arg s "$sid" '.Policy | fromjson | .Statement[] | select(.Sid == $s)' <<<"$out" >/dev/null; then
-        return
+    if read_aws_or_missing out ResourceNotFoundException lambda get-policy --function-name "$name"; then
+        current=$(jq -r --arg s "$sid" '[.Policy | fromjson | .Statement[] | select(.Sid == $s)][0]
+            | if . == null then "" else .Condition.ArnLike["AWS:SourceArn"] // "<none>" end' <<<"$out")
+    fi
+    [[ "$current" == "$source" ]] && return
+    if [[ -n "$current" ]]; then
+        require_ours lambda "$name" "$name"
+        mutate "$name" "remove $name's invoke permission $sid, which names another source" -- lambda remove-permission \
+            --function-name "$name" --statement-id "$sid"
     fi
     mutate "$name" "let $principal invoke $name ($sid)" -- lambda add-permission --function-name "$name" \
         --statement-id "$sid" --action lambda:InvokeFunction --principal "$principal" --source-arn "$source" \
@@ -793,13 +835,13 @@ pool_definition() {
             tier=LITE
             ;;
     esac
-    variables=$(jq -n -c --arg pre "$(fn_arn "$pre")" --arg def "$(fn_arn define-auth-challenge)" \
+    variables=$(CCIT_SECRET_EXT="$SMS_EXTERNAL_ID" jq -n -c --arg pre "$(fn_arn "$pre")" --arg def "$(fn_arn define-auth-challenge)" \
         --arg cre "$(fn_arn create-auth-challenge)" --arg ver "$(fn_arn verify-auth-challenge)" \
         --arg snd "$(fn_arn "$sender")" --arg kms "$KMS_KEY_ARN" --arg sms "$(role_arn cognito-sms)" \
-        --arg ext "$SMS_EXTERNAL_ID" --arg r "$CI_REGION" \
+        --arg r "$CI_REGION" \
         '{PRE_SIGN_UP_ARN: $pre, DEFINE_AUTH_CHALLENGE_ARN: $def, CREATE_AUTH_CHALLENGE_ARN: $cre,
           VERIFY_AUTH_CHALLENGE_ARN: $ver, CUSTOM_SENDER_ARN: $snd, KMS_KEY_ARN: $kms, SMS_ROLE_ARN: $sms,
-          SMS_EXTERNAL_ID: $ext, SMS_REGION: $r}')
+          SMS_EXTERNAL_ID: $ENV.CCIT_SECRET_EXT, SMS_REGION: $r}')
     jq -c --argjson v "$variables" 'walk(if type == "string"
         then gsub("\\$\\{(?<name>[A-Z_]+)\\}"; $v[.name] // error("unknown placeholder \(.name)")) else . end)
         | if $tier != "" then .userPool.UserPoolTier = $tier else . end' --arg tier "$tier" "$(pool_template "$key")"
@@ -990,7 +1032,8 @@ outputs_document() {
 }
 
 with_code_sink() {
-    jq -c --arg r "$CI_REGION" --arg u "$API_URL" --arg k "$API_KEY" '. + {data: {aws_region: $r, url: $u, api_key: $k,
+    CCIT_SECRET_K="$API_KEY" jq -c --arg r "$CI_REGION" --arg u "$API_URL" '. + {data: {aws_region: $r, url: $u,
+        api_key: $ENV.CCIT_SECRET_K,
         default_authorization_type: "API_KEY", authorization_types: []}}'
 }
 
@@ -1014,8 +1057,9 @@ write_config() {
             | jq -c --arg id "$IDENTITY_POOL_ID" '.auth += {identity_pool_id: $id, unauthenticated_identities_enabled: true}' \
             | write_private_json "$CONFIG_DIR/ccit-ci-default-amplify_outputs.json"
         outputs_document default rotation | write_private_json "$CONFIG_DIR/ccit-ci-rotation-amplify_outputs.json"
-        jq -n --arg a "$ANSWER" --arg u "$(new_password_users | paste -sd, -)" --arg t "$TEMPORARY" \
-            '{custom_challenge_answer: $a, new_password_required_usernames: $u, new_password_required_temporary_password: $t}' \
+        CCIT_SECRET_A="$ANSWER" CCIT_SECRET_T="$TEMPORARY" jq -n --arg u "$(new_password_users | paste -sd, -)" \
+            '{custom_challenge_answer: $ENV.CCIT_SECRET_A, new_password_required_usernames: $u,
+              new_password_required_temporary_password: $ENV.CCIT_SECRET_T}' \
             | write_private_json "$CONFIG_DIR/ccit-ci-default-credentials.json"
         # Added after the four above were first uploaded, as files of their own: an uploaded key is never
         # rewritten, so those four keep their bytes, and these are new keys.
@@ -1174,15 +1218,14 @@ provision() {
 # --- snapshot ---------------------------------------------------------------------------------------------
 
 # Appends one resource to the snapshot's raw list: kind, id, name (both masked before anything prints them) and
-# its document.
+# its document, which may hold a secret, so it reaches jq on stdin.
 record() {
-    jq -n -c --arg kind "$1" --arg id "$2" --arg name "$3" --argjson doc "$4" \
-        '{kind: $kind, id: $id, name: $name, doc: $doc}' >> "$RAW"
+    jq -c --arg kind "$1" --arg id "$2" --arg name "$3" '{kind: $kind, id: $id, name: $name, doc: .}' <<<"$4" >> "$RAW"
 }
 
 snapshot() {
     local dir="${CCIT_CI_DISCOVERY_DIR:-/tmp/ci-disc}" stamp out pool pools clients client describe lambdas arn doc
-    local identity_pools identity name client_name
+    local identity_pools identity name client_name aliases key key_arn settings
     umask 077
     mkdir -p "$dir"
     chmod 700 "$dir"
@@ -1243,20 +1286,73 @@ snapshot() {
     jq -c --arg p "$CI_PREFIX_PATH/" '.Contents[]? | {kind: "s3-object", id: .Key, name: (.Key | ltrimstr($p)),
         doc: {Key, ETag, Size, LastModified, StorageClass}}' <<<"$out" >> "$RAW"
 
-    # Wider nets: every role, function, alias, API, table and rule, so an unexpected change anywhere shows.
+    # Wider nets, each with what the script writes on its own resources of that kind, so a change of the same kind
+    # to another's shows: every role (its trust, and its inline and attached policies), function (its configuration
+    # and resource policy), KMS alias and key policy, AppSync API (as listed: its schema, resolvers, data sources
+    # and keys are not read), table (its key schema, billing mode and TTL), rule (and its targets), SSM parameter
+    # (its metadata, never its value) and log group (its retention).
     read_aws out iam list-roles
     jq -c '.Roles[] | {kind: "iam-role", id: .RoleId, name: .RoleName, doc: (. | del(.RoleLastUsed))}' <<<"$out" >> "$RAW"
+    read_aws out iam get-account-authorization-details --filter Role
+    jq -c '.RoleDetailList[] | {kind: "iam-role-policies", id: .RoleId, name: .RoleName,
+        doc: {inline: ([.RolePolicyList[]? | {(.PolicyName): .PolicyDocument}] | add // {}),
+              attached: ([.AttachedManagedPolicies[]?.PolicyArn] | sort)}}' <<<"$out" >> "$RAW"
     read_aws out lambda list-functions
     jq -c '.Functions[] | {kind: "lambda", id: .FunctionArn, name: .FunctionName, doc: (. | del(.State, .StateReason,
         .StateReasonCode, .LastUpdateStatus, .LastUpdateStatusReason, .LastUpdateStatusReasonCode))}' <<<"$out" >> "$RAW"
-    read_aws out kms list-aliases
-    jq -c '.Aliases[] | {kind: "kms-alias", id: .AliasArn, name: .AliasName, doc: .}' <<<"$out" >> "$RAW"
+    for arn in $(jq -r '.Functions[].FunctionArn' <<<"$out"); do
+        if aws_into doc lambda get-policy --function-name "$arn"; then
+            doc=$(jq -c '.Policy | fromjson' <<<"$doc")
+        else
+            doc=$(jq -n -c --arg e "${AWS_ERR_CODE:-unknown}" '{error: $e}')
+        fi
+        record lambda-policy "$arn" "${arn##*:function:}" "$doc"
+    done
+    read_aws aliases kms list-aliases
+    jq -c '.Aliases[] | {kind: "kms-alias", id: .AliasArn, name: .AliasName, doc: .}' <<<"$aliases" >> "$RAW"
+    read_aws out kms list-keys
+    while read -r key key_arn; do
+        [[ -n "$key" ]] || continue
+        # Named by its first alias (the label only; the id is the key's ARN).
+        name=$(jq -r --arg id "$key" '[.Aliases[] | select(.TargetKeyId == $id) | .AliasName] | sort | .[0] // $id' <<<"$aliases")
+        if aws_into doc kms get-key-policy --key-id "$key" --policy-name default; then
+            doc=$(jq -c '.Policy | fromjson' <<<"$doc")
+        else
+            doc=$(jq -n -c --arg e "${AWS_ERR_CODE:-unknown}" '{error: $e}')
+        fi
+        record kms-key-policy "$key_arn" "$name" "$doc"
+    done < <(jq -r '.Keys[] | "\(.KeyId) \(.KeyArn)"' <<<"$out")
     read_aws out appsync list-graphql-apis
     jq -c '.graphqlApis[] | {kind: "appsync-api", id: .apiId, name: .name, doc: .}' <<<"$out" >> "$RAW"
     read_aws out dynamodb list-tables
     jq -c '.TableNames[] | {kind: "dynamodb-table", id: ., name: ., doc: {name: .}}' <<<"$out" >> "$RAW"
+    for name in $(jq -r '.TableNames[]' <<<"$out"); do
+        if aws_into doc dynamodb describe-table --table-name "$name"; then
+            settings=$(jq -c '.Table | {KeySchema, AttributeDefinitions, BillingMode: .BillingModeSummary.BillingMode,
+                StreamSpecification, DeletionProtectionEnabled}' <<<"$doc")
+            aws_into doc dynamodb describe-time-to-live --table-name "$name" || doc='{}'
+            doc=$(jq -c --argjson s "$settings" '$s + {TimeToLive: .TimeToLiveDescription}' <<<"$doc")
+        else
+            doc=$(jq -n -c --arg e "${AWS_ERR_CODE:-unknown}" '{error: $e}')
+        fi
+        record dynamodb-table-settings "$name" "$name" "$doc"
+    done
     read_aws out events list-rules
     jq -c '.Rules[] | {kind: "events-rule", id: .Arn, name: .Name, doc: .}' <<<"$out" >> "$RAW"
+    while read -r name arn; do
+        [[ -n "$name" ]] || continue
+        if aws_into doc events list-targets-by-rule --rule "$name"; then
+            doc=$(jq -c '.Targets | sort_by(.Id)' <<<"$doc")
+        else
+            doc=$(jq -n -c --arg e "${AWS_ERR_CODE:-unknown}" '{error: $e}')
+        fi
+        record events-rule-targets "$arn" "$name" "$doc"
+    done < <(jq -r '.Rules[] | "\(.Name) \(.Arn)"' <<<"$out")
+    read_aws out ssm describe-parameters
+    jq -c '.Parameters[] | {kind: "ssm-parameter", id: .Name, name: .Name, doc: .}' <<<"$out" >> "$RAW"
+    read_aws out logs describe-log-groups
+    jq -c '.logGroups[] | {kind: "log-group", id: .logGroupName, name: .logGroupName, doc: (. | del(.storedBytes))}' \
+        <<<"$out" >> "$RAW"
 
     python3 "$CI_DIR/snapshot.py" build "$RAW" "$dir/snapshot-$stamp.json" "$CI_TAG_VALUE"
 }
@@ -1338,9 +1434,14 @@ teardown() {
     id=$(jq -r --arg a "$CI_KMS_ALIAS" '[.Aliases[] | select(.AliasName == $a) | .TargetKeyId][0] // empty' <<<"$out")
     if [[ -n "$id" ]]; then
         require_ours kms "$id" "$CI_KMS_ALIAS"
+        # The deletion is scheduled before the alias goes: provision and teardown find the key only by its alias, so
+        # a failed schedule leaves the alias, and a rerun finds the key and schedules it again (as parity.py does).
+        read_aws out kms describe-key --key-id "$id"
+        if [[ "$(jq -r '.KeyMetadata.KeyState' <<<"$out")" != "PendingDeletion" ]]; then
+            mutate "$CI_KMS_ALIAS" "schedule the key's deletion in 7 days" -- kms schedule-key-deletion --key-id "$id" \
+                --pending-window-in-days 7
+        fi
         mutate "$CI_KMS_ALIAS" "delete alias $CI_KMS_ALIAS" -- kms delete-alias --alias-name "$CI_KMS_ALIAS"
-        mutate "$CI_KMS_ALIAS" "schedule the key's deletion in 7 days" -- kms schedule-key-deletion --key-id "$id" \
-            --pending-window-in-days 7
     fi
     for suffix in "${TRIGGERS_ALL[@]}" discard-sender custom-sender new-password-reset; do
         file=$(log_group "$suffix")
@@ -1359,8 +1460,11 @@ teardown() {
 
 case "$COMMAND" in
     provision|teardown)
-        # --apply runs the whole dry run first, quietly, so a refusal anywhere (a ccit-ci- name without the tag, an
-        # S3 key that exists, too little quota) stops it before its first change.
+        require_recorded_region
+        # --apply runs the whole dry run first, quietly, so a refusal anywhere (a ccit-ci- name without the tag, too
+        # little quota, another region) stops it before its first change. An uploaded key with other contents is
+        # not among them: the dry run has no file to compare it with, so --apply finds it, and refuses the whole
+        # upload, only once it has made its other changes and written the files.
         if [[ "$CI_MODE" == "apply" ]]; then
             say "Checking with a dry run first; nothing is changed if it refuses."
             ( CI_MODE="plan"; "$COMMAND" >/dev/null ) || die "the dry run refused (above); nothing was changed."

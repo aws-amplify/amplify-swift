@@ -11,7 +11,7 @@ import Dispatch
 /// suspends until it returns.
 ///
 /// The one bridge every blocking keychain call in the client goes through (`SessionRecordIO`,
-/// `DeviceRecordIO`, `LazyUserPoolAnalytics.prepare()`). See `SessionRecordIO` for why the client makes
+/// `DeviceRecordIO`, `LazyUserPoolAnalytics`). See `SessionRecordIO` for why the client makes
 /// this exception to the rule against new `DispatchQueue`s: a stuck keychain call must pin a Dispatch
 /// thread, never one of the pool's few cooperative threads.
 ///

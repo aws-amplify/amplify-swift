@@ -475,6 +475,91 @@ extension MigrateLegacyCredentialStoreTests {
         XCTAssertEqual(result.loadEventCount, 1)
     }
 
+    /// Test that a guest in the new store does not stop a legacy login from migrating
+    ///
+    /// - Given: A legacy store in which every value can be read (user-pool tokens included), and a new
+    ///   credential store that holds only a guest (`.identityPoolOnly`), as the plugin saves on its own
+    /// - When:
+    ///    - The migration legacy store action is executed
+    /// - Then:
+    ///    - The legacy login is saved over the guest, and the legacy stores are each removed once
+    ///
+    func testExecute_whenNewStoreHasOnlyAGuest_shouldMigrateTheLegacyLogin() async {
+        let result = await runMigration(
+            legacyKeychainStore: MockKeychainStoreBehavior(data: "mock"),
+            existingCredentials: { AmplifyCredentials.testDataIdentityPool }
+        )
+        XCTAssertEqual(result.savedCredentialCount, 1)
+        XCTAssertEqual(result.removeAllCount, 3)
+        XCTAssertEqual(result.loadEventCount, 1)
+    }
+
+    /// Test that a guest saved after a locked launch does not discard the legacy login on the next launch
+    ///
+    /// - Given: A first launch whose legacy reads fail with `errSecInteractionNotAllowed` (before first
+    ///   unlock), with an empty new store, and then a guest saved in the new store in that process
+    /// - When:
+    ///    - The migration runs on the first launch, and again on the next launch, when the legacy store
+    ///      is readable
+    /// - Then:
+    ///    - The first launch keeps the legacy stores and saves nothing
+    ///    - The next launch migrates the legacy login over the guest and removes the legacy stores
+    ///
+    func testExecute_whenAGuestIsSavedAfterALockedLaunch_shouldMigrateTheLegacyLoginOnTheNextLaunch() async {
+        let lockedLaunch = await runMigration(
+            legacyKeychainStore: MockKeychainStoreBehavior(
+                data: "mock",
+                readErrorForKey: { _ in EngineCredentialStoreError.securityError(errSecInteractionNotAllowed) }
+            ),
+            existingCredentials: { AmplifyCredentials.noCredentials }
+        )
+        XCTAssertEqual(lockedLaunch.savedCredentialCount, 0)
+        XCTAssertEqual(lockedLaunch.removeAllCount, 0)
+
+        let lockedLaunchWithGuest = await runMigration(
+            legacyKeychainStore: MockKeychainStoreBehavior(
+                data: "mock",
+                readErrorForKey: { _ in EngineCredentialStoreError.securityError(errSecInteractionNotAllowed) }
+            ),
+            existingCredentials: { AmplifyCredentials.testDataIdentityPool }
+        )
+        XCTAssertEqual(lockedLaunchWithGuest.savedCredentialCount, 0, "A still-locked launch must not migrate")
+        XCTAssertEqual(lockedLaunchWithGuest.removeAllCount, 0, "A still-locked launch must keep the legacy stores")
+
+        let unlockedLaunch = await runMigration(
+            legacyKeychainStore: MockKeychainStoreBehavior(data: "mock"),
+            existingCredentials: { AmplifyCredentials.testDataIdentityPool }
+        )
+        XCTAssertEqual(unlockedLaunch.savedCredentialCount, 1)
+        XCTAssertEqual(unlockedLaunch.removeAllCount, 3)
+        XCTAssertEqual(unlockedLaunch.loadEventCount, 1)
+    }
+
+    /// Test that a legacy guest does not replace the guest the new store already holds
+    ///
+    /// - Given: A legacy store holding only a guest (an identity ID and AWS credentials, with no user-pool
+    ///   tokens and no logins map), and a new credential store that holds a guest
+    /// - When:
+    ///    - The migration legacy store action is executed
+    /// - Then:
+    ///    - Nothing is saved, and the legacy stores are each removed once
+    ///
+    func testExecute_whenBothStoresHoldAGuest_shouldKeepTheNewGuest() async {
+        let result = await runMigration(
+            legacyKeychainStore: MockKeychainStoreBehavior(
+                data: "mock",
+                readErrorForKey: { key in
+                    key.hasSuffix(".currentUser") || key == "loginsMap" ? EngineCredentialStoreError.itemNotFound : nil
+                }
+            ),
+            existingCredentials: { AmplifyCredentials.testDataIdentityPool }
+        )
+        XCTAssertEqual(result.savedCredentialCount, 0)
+        XCTAssertEqual(result.savedDeviceCount, 0)
+        XCTAssertEqual(result.removeAllCount, 3)
+        XCTAssertEqual(result.loadEventCount, 1)
+    }
+
     /// Test that a legacy value which cannot be decoded is still treated as absent, as before
     ///
     /// - Given: A legacy store whose refresh token cannot be converted to a string

@@ -30,6 +30,13 @@ package struct AWSCognitoAuthCredentialStore {
         "\(userDefaultsNameSpace).accessGroup"
     }
 
+    /// Set while the access-group migration moves items, to the access group it moves them to (`""` for
+    /// none), and removed once the access group is recorded. Found set on a later launch, it means that
+    /// migration was interrupted part-way, so it resumes (`migrateKeychainItemsToAccessGroup()`).
+    var migrationInProgressKey: String {
+        "\(userDefaultsNameSpace).accessGroupMigrationInProgress"
+    }
+
     /// Creates the item store behind every keychain store this type uses, from a service and an optional
     /// access group.
     package typealias KeychainStoreFactory = @Sendable (_ service: String, _ accessGroup: String?) -> any KeychainItemStoreBehavior
@@ -100,6 +107,7 @@ package struct AWSCognitoAuthCredentialStore {
         }
 
         saveStoredAccessGroup()
+        clearMigrationInProgress()
 
         // NOTE: We intentionally do NOT clear keychain credentials on app reinstall.
         // Previously, this code checked a UserDefaults flag (isKeychainConfiguredKey) to detect

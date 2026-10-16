@@ -21,15 +21,15 @@ extension AuthFactorType: DefaultLogger {
             if #available(iOS 17.4, macOS 13.5, *) {
                 self = .webAuthn
             } else {
-                EngineLog.logger(.category("AuthFactorType")).error("WEB_AUTHN is not supported in this OS version.")
+                Self.log.error("WEB_AUTHN is not supported in this OS version.")
                 return nil
             }
         #else
-            EngineLog.logger(.category("AuthFactorType")).error("WEB_AUTHN is only available in iOS and macOS.")
+            Self.log.error("WEB_AUTHN is only available in iOS and macOS.")
             return nil
         #endif
         default:
-            EngineLog.logger(.category("AuthFactorType")).error("Tried to initialize an unsupported MFA type with value: \(rawValue)")
+            Self.log.error("Tried to initialize an unsupported MFA type with value: \(rawValue)")
             return nil
         }
     }

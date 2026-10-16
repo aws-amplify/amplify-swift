@@ -123,6 +123,24 @@ final class LiveEngineWebUITests: XCTestCase {
         XCTAssertEqual(values["resource"], "https://api.example.com")
     }
 
+    /// A request's own scopes replace the configuration's, an empty list included: nothing falls back.
+    ///
+    /// - Given: options asking for `profile` and `aws.cognito.signin.user.admin`, then options asking for no scopes
+    /// - When: a hosted-UI sign-in runs with each
+    /// - Then:
+    ///    - the first authorize URL's `scope` is exactly those two, sorted; the second's is empty
+    func testTheRequestsScopesReplaceTheConfiguredOnes() async throws {
+        for (scopes, expected) in [(["profile", "aws.cognito.signin.user.admin"], "aws.cognito.signin.user.admin profile"), ([], "")] {
+            let engine = try harness.engine()
+            let request = await request(WebUIOptions(scopes: scopes))
+
+            _ = try await engine.signInWithWebUI(request, current: nil, epoch: 0)
+
+            let items = try XCTUnwrap(presenter.shown.last?.queryItems)
+            XCTAssertEqual(items.filter { $0.name == "scope" }.map(\.value), [expected], "\(scopes)")
+        }
+    }
+
     /// - Given: a provider alone, and a prompt list
     /// - When: a hosted-UI sign-in runs
     /// - Then:
@@ -196,7 +214,8 @@ final class LiveEngineWebUITests: XCTestCase {
     /// - Given: a browser that stays up
     /// - When: the calling task is cancelled
     /// - Then:
-    ///    - the presenter's `cancel()` is reached, and the call ends
+    ///    - the presenter's `cancel()` is reached, and the call throws `CancellationError`, as the seam says, not the
+    ///      `.userCancelled` the dismissed browser reports
     func testCancellingTheCallerReachesThePresentersCancel() async throws {
         presenter.behave(.hold)
         let engine = try harness.engine()
@@ -206,14 +225,17 @@ final class LiveEngineWebUITests: XCTestCase {
 
         signIn.cancel()
 
-        _ = await signIn.result
+        let result = await signIn.result
+        guard case .failure(let error) = result, error is CancellationError else {
+            return XCTFail("expected CancellationError, got \(result)")
+        }
         XCTAssertGreaterThanOrEqual(presenter.cancelCount, 1)
     }
 
     /// - Given: a browser that stays up
     /// - When: the session's pending sign-in is cancelled (a sign-out of the session)
     /// - Then:
-    ///    - the presenter's `cancel()` is reached, and the call throws
+    ///    - the presenter's `cancel()` is reached, and the call throws `CancellationError`
     func testCancellingThePendingSignInReachesThePresentersCancel() async throws {
         presenter.behave(.hold)
         let engine = try harness.engine()
@@ -224,7 +246,9 @@ final class LiveEngineWebUITests: XCTestCase {
         await engine.cancelPendingSignIn(before: 1)
 
         let result = await signIn.result
-        XCTAssertThrowsError(try result.get())
+        guard case .failure(let error) = result, error is CancellationError else {
+            return XCTFail("expected CancellationError, got \(result)")
+        }
         XCTAssertGreaterThanOrEqual(presenter.cancelCount, 1)
     }
 

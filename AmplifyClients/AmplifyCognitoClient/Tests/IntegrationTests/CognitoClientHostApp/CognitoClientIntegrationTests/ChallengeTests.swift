@@ -10,7 +10,8 @@ import XCTest
 
 /// Sign-in challenges over the live engine: dave's new-password challenge (P-3), and
 /// TOTP MFA for fresh users enrolled per test (instead of carol, P-2, whose codes concurrent runs would
-/// share). The pending challenge lives in memory, per session.
+/// share). The pending challenge is per session, and persisted with it (design §4.11), so a new client over the
+/// same session can answer it (`ChallengeResumeTests`).
 final class ChallengeTests: ClientIntegrationTestCase {
 
     private var configuration: AuthClientConfiguration!

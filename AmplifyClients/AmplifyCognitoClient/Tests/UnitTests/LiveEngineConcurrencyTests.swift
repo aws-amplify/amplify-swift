@@ -309,7 +309,8 @@ final class LiveEngineConcurrencyTests: XCTestCase {
         XCTAssertEqual(harness.cognito.operations, [])
     }
 
-    /// A confirmation in flight ends on a cancel, and never comes back as a challenge.
+    /// A confirmation cancelled while it waits on Cognito ends: the cancel stops its machine, so Cognito's late
+    /// answer never becomes a step.
     ///
     /// - Given: a pending SMS challenge, and the answer's `RespondToAuthChallenge` held on a gate, scripted
     ///   to answer with another challenge
@@ -318,7 +319,7 @@ final class LiveEngineConcurrencyTests: XCTestCase {
     /// - Then:
     ///    - the confirmation throws `CancellationError`, and nothing is pending afterwards
     ///
-    func testACancelledConfirmationNeverBecomesTheChallenge() async throws {
+    func testAConfirmationCancelledWhileItWaitsOnCognitoEnds() async throws {
         let engine = try harness.engine()
         let gate = Gate()
         harness.scriptSRP(then: LiveEngineFixtures.challenge(.smsMfa, parameters: LiveEngineFixtures.smsParameters))
@@ -333,6 +334,40 @@ final class LiveEngineConcurrencyTests: XCTestCase {
         await engine.cancelPendingSignIn()
         await gate.open()
         let result = await confirm.result
+
+        guard case .failure(let error) = result, error is CancellationError else {
+            return XCTFail("expected CancellationError, got \(result)")
+        }
+        let pending = await engine.pendingChallenge
+        XCTAssertNil(pending)
+    }
+
+    /// A step that reaches a challenge after a cancel took it never becomes the pending attempt: `run`'s own
+    /// guard, for a step whose body does not see the cancel (the step returns `.challenge` while the cancel has the
+    /// actor).
+    ///
+    /// - Given: a step run through `run` whose body is held on a gate, ignores cancellation, and then returns a
+    ///   TOTP challenge
+    /// - When:
+    ///    - `cancelPendingSignIn` runs while the body is held, then the gate opens
+    /// - Then:
+    ///    - the step throws `CancellationError`, and nothing is pending afterwards
+    ///
+    func testAChallengeAStepReachesAfterACancelTookItIsNeverPending() async throws {
+        let engine = try harness.engine()
+        let operation = try engine.resources.makeOperation(seed: nil)
+        let gate = Gate()
+        let step = Task {
+            try await engine.run(epoch: 0, on: operation) {
+                await gate.pass()
+                return .challenge(.confirmSignInWithTOTPCode, operation)
+            }
+        }
+        await gate.waitForArrivals(1)
+
+        await engine.cancelPendingSignIn()
+        await gate.open()
+        let result = await step.result
 
         guard case .failure(let error) = result, error is CancellationError else {
             return XCTFail("expected CancellationError, got \(result)")

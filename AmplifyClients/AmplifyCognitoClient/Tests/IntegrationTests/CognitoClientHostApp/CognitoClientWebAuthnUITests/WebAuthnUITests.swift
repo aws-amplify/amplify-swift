@@ -316,7 +316,8 @@ final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
     }
 
     /// Taps until the passkey sheet shows its confirming button, retrying only what a fresh simulator does:
-    /// - the relying party's association not verified yet (`Code=1004` in the result line);
+    /// - `Code=1004` in the result line: `ASAuthorizationError.failed`, the generic failure code, which on a
+    ///   fresh simulator is usually the relying party's association not verified yet;
     /// - a sheet that never appeared while the action is still running: the action is cancelled first;
     /// - `browserBusy`, but only on the try after such a cancel, whose sheet may still be closing. A
     ///   `browserBusy` with no cancel before it means a lease leaked, which must fail the test.

@@ -8,9 +8,9 @@
 /// The signed-in user of a session.
 ///
 /// The client's own counterpart of Amplify core's `AuthUser` protocol. The client does not depend
-/// on Amplify core, so it owns this type and the plugin bridge maps it. It is a concrete value
-/// rather than a protocol so that `AuthSessionState` can be `Equatable` and so that two sessions'
-/// users can be compared or used as dictionary keys.
+/// on Amplify core, so it owns this type; a plugin bridge would map between the two (not built yet).
+/// It is a concrete value rather than a protocol so that `AuthSessionState` can be `Equatable` and so
+/// that two sessions' users can be compared or used as dictionary keys.
 @_spi(AmplifyExperimental)
 public struct AuthClientUser: Sendable, Equatable, Hashable {
 

@@ -10,6 +10,7 @@ import AmplifyKeychainTestCommon
 @testable import AmplifyTestCommon
 import Foundation
 import InternalAmplifyKeychain
+import Security
 import XCTest
 @_spi(KeychainStore) @testable import AWSPluginsCore
 
@@ -72,5 +73,26 @@ class KeychainStoreLogLineTests: XCTestCase {
             XCTAssertFalse(line.contains(account), line)
             XCTAssertFalse(line.contains("key="), line)
         }
+    }
+
+    /// Test that the failed-listing warning carries the listing error
+    ///
+    /// - Given: A capturing logging plugin and a `KeychainStore` over an in-memory keychain whose listing fails
+    /// - When:
+    ///    - `removeAllExceptSessionRecords(sparingDefaultSessionItems:)` runs
+    /// - Then:
+    ///    - The warning is the message, then ` - ` and the listing error's `localizedDescription`, as the
+    ///      plugin's engine keychain store logs it
+    ///
+    func testFailedListingWarningCarriesTheError() {
+        let keychain = InMemoryKeychain()
+        let store = KeychainStore(service: "svc", itemStore: keychain.store(service: "svc"))
+        keychain.failing(.listAccounts, with: errSecInteractionNotAllowed)
+
+        XCTAssertThrowsError(try store.removeAllExceptSessionRecords(sparingDefaultSessionItems: true))
+
+        let description = KeychainAccessError.securityError(errSecInteractionNotAllowed).localizedDescription
+        let warning = "[KeychainStore] Could not list keychain items, so none were removed; stale items may remain"
+        XCTAssertEqual(lines.get().filter { $0.hasPrefix("warn") }, ["warn(_:): \(warning) - \(description)"])
     }
 }

@@ -42,7 +42,7 @@ public class AmplifyAWSCredentialsProvider: AwsCommonRuntimeKit.CredentialsProvi
     /// The current session's AWS credentials — the shared body of both entry points below.
     ///
     /// Every failure is an `AuthError` that says why: the session's own error when it has one
-    /// (expired, signed out without guest access, no identity pool, keychain unreadable), otherwise
+    /// (expired, signed out without guest access, no identity pool, a failed keychain write), otherwise
     /// `invalidState` or `configuration` derived from the session. See `AuthSession.resolveAWSCredentials()`.
     static func fetchAWSCredentials() async throws -> AWSPluginsCore.AWSCredentials {
         try await fetchAuthSession().resolveAWSCredentials()

@@ -32,11 +32,17 @@ final class FakeBrowser: @unchecked Sendable {
     /// One arrival per sign-in shown.
     let shown = Gate(isOpen: true)
 
+    /// One `show(_:answering:)` call's own state, shared by its body and its cancellation handler, so a cancel
+    /// reaches only the sign-in it was for, and none that has already ended. Only touched while holding `lock`.
+    private final class ShowCall: @unchecked Sendable {
+        var cancelledBeforeWaiting = false
+        var ended = false
+    }
+
     private let lock = NSLock()
     private var afterCancel: AfterCancel
-    private var waiting: CheckedContinuation<EngineStepResult, Error>?
+    private var waiting: (call: ShowCall, continuation: CheckedContinuation<EngineStepResult, Error>)?
     private var answer: Result<EngineStepResult, Error>?
-    private var cancelledBeforeWaiting = false
     private var cancels = 0
     private var requests: [EngineWebUISignInRequest] = []
     private var answersWith: EngineStepResult?
@@ -67,20 +73,21 @@ final class FakeBrowser: @unchecked Sendable {
             answersWith = result
         }
         await shown.pass()
+        let call = ShowCall()
         return try await withTaskCancellationHandler {
             try await withCheckedThrowingContinuation { continuation in
                 let ready: Result<EngineStepResult, Error>? = withLock {
-                    // This sign-in's own early cancel, taken here so it never reaches a later sign-in.
-                    let cancelledEarly = cancelledBeforeWaiting
-                    cancelledBeforeWaiting = false
                     if let answer {
                         self.answer = nil
+                        call.ended = true
                         return answer
                     }
-                    if cancelledEarly, afterCancel == .dismiss {
+                    // This sign-in's own early cancel, kept on its call so it never reaches another sign-in.
+                    if call.cancelledBeforeWaiting, afterCancel == .dismiss {
+                        call.ended = true
                         return .failure(CancellationError())
                     }
-                    waiting = continuation
+                    waiting = (call, continuation)
                     return nil
                 }
                 if let ready {
@@ -88,7 +95,7 @@ final class FakeBrowser: @unchecked Sendable {
                 }
             }
         } onCancel: {
-            cancelled()
+            cancelled(call)
         }
     }
 
@@ -100,7 +107,8 @@ final class FakeBrowser: @unchecked Sendable {
                 return nil
             }
             self.waiting = nil
-            return waiting
+            waiting.call.ended = true
+            return waiting.continuation
         }
         continuation?.resume(with: result)
     }
@@ -113,18 +121,24 @@ final class FakeBrowser: @unchecked Sendable {
         finish(.success(result))
     }
 
-    private func cancelled() {
+    /// `call`'s cancellation handler. A cancel that lands after its sign-in ended (finished, or answered by a stored
+    /// `answer`) is not counted and marks nothing.
+    private func cancelled(_ call: ShowCall) {
         let continuation = withLock { () -> CheckedContinuation<EngineStepResult, Error>? in
+            guard !call.ended else {
+                return nil
+            }
             cancels += 1
             guard afterCancel == .dismiss else {
                 return nil
             }
-            guard let waiting else {
-                cancelledBeforeWaiting = true
+            guard let waiting, waiting.call === call else {
+                call.cancelledBeforeWaiting = true
                 return nil
             }
             self.waiting = nil
-            return waiting
+            call.ended = true
+            return waiting.continuation
         }
         continuation?.resume(throwing: CancellationError())
     }

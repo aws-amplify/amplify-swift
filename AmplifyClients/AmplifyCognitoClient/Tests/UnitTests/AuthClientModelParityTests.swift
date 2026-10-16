@@ -15,7 +15,8 @@ import XCTest
 /// enum is then enumerated through an exhaustive `switch` with no `default`, so:
 ///
 /// - a case added to the client breaks compilation here until the pinned list is revisited, and
-/// - a case added to Amplify core is caught at review against the plugin bridge's mapping table.
+/// - a case added to Amplify core (or the plugin) is only caught at review; the plugin bridge, when it
+///   ships, will map them.
 final class AuthClientModelParityTests: XCTestCase {
 
     // MARK: - AuthClientSignInStep

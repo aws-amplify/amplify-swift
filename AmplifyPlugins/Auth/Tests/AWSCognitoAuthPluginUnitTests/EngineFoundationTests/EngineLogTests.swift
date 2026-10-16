@@ -10,7 +10,8 @@ import Foundation
 @testable import InternalAWSCognitoAuth
 import XCTest
 
-/// Tests for the engine's global log router. Nothing in the engine logs through it yet.
+/// Tests for the engine's global log router, which engine code without a logger of its own
+/// logs through (for example `EngineAuthFactorType(decodingRawValue:)`, see `EngineFlowTypeForkTests`).
 class EngineLogTests: XCTestCase {
 
     private var previousRouter: (any EngineLogRouter)?

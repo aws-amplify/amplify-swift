@@ -2166,5 +2166,117 @@ sys.exit(2)
         self.assertEqual(parity.with_detail("line", refused.exception), "line")
 
 
+class SandboxRecordsTests(unittest.TestCase):
+    """The name lookups read every page; a new KMS key gets its alias before anything that can fail; the code sink's
+    API is recorded as soon as it exists; and teardown finds by name the key and API a failed first run did not
+    record. Over a scripted AWS (placeholder ids only), every call recorded."""
+
+    def setUp(self):
+        self.state = tempfile.mkdtemp()
+        os.environ["COGNITO_CLIENT_INTEG_DIR"] = self.state
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        self.parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.parity)
+        self.parity.REGION, self.parity.ACCOUNT = "us-west-2", "000000000000"
+        self.parity.say = lambda *_: None
+        self.parity.require_cli_history_off = lambda: None
+        self.parity.save_json(self.parity.STATE_FILE, {"account": "000000000000", "region": "us-west-2"})
+        self.calls = []
+        self.answers = {}
+        self.parity.aws = self.fake_aws
+
+    def tearDown(self):
+        shutil.rmtree(self.state)
+        del os.environ["COGNITO_CLIENT_INTEG_DIR"]
+
+    def fake_aws(self, *args, stdin=None, **kwargs):
+        """Answers from self.answers by operation (a value, a function of the arguments, or an AwsError to
+        raise); any other get or describe is a resource that does not exist."""
+        operation = args[1]
+        self.calls.append(args)
+        answer = self.answers.get(operation)
+        if callable(answer):
+            answer = answer(args)
+        if isinstance(answer, self.parity.AwsError):
+            raise answer
+        if answer is not None:
+            return answer
+        if operation.startswith(("get-", "describe-")):
+            raise self.parity.AwsError("ResourceNotFoundException", "scripted: not found")
+        return {}
+
+    def operations(self):
+        return [args[1] for args in self.calls]
+
+    def test_a_user_pool_past_the_first_page_is_found(self):
+        """Given: 150 user pools, the sandbox's on the third page of 60.
+        When: find_user_pool looks it up by name, with no id recorded.
+        Then: it follows NextToken to that page, and finds it; a name no page has reads every page and is None."""
+        pools = [{"Id": f"us-west-2_Placeholder{i:03}", "Name": f"pool-{i}"} for i in range(150)]
+
+        def page(args):
+            start = int(args[args.index("--next-token") + 1]) if "--next-token" in args else 0
+            size = int(args[args.index("--max-results") + 1])
+            result = {"UserPools": pools[start:start + size]}
+            if start + size < len(pools):
+                result["NextToken"] = str(start + size)
+            return result
+        self.answers["list-user-pools"] = page
+        self.assertEqual(self.parity.find_user_pool(None, "pool-130"), "us-west-2_Placeholder130")
+        self.assertEqual(self.operations(), ["list-user-pools"] * 3)
+        self.calls.clear()
+        self.assertIsNone(self.parity.find_user_pool(None, "pool-none"))
+        self.assertEqual(len(self.calls), 3)
+
+    def test_a_new_kms_key_is_given_its_alias_before_its_tag_is_read(self):
+        """Given: no key yet, and a tag read that fails (throttled) after the key is made.
+        When: ensure_kms_key runs.
+        Then: it fails, but only after the alias names the new key, so a rerun and teardown find it."""
+        self.answers.update({"list-aliases": {"Aliases": []},
+                             "create-key": {"KeyMetadata": {"KeyId": "placeholder-key"}},
+                             "list-resource-tags": self.parity.AwsError("ThrottlingException", "scripted")})
+        with self.assertRaises(self.parity.AwsError):
+            self.parity.ensure_kms_key(None)
+        self.assertEqual(self.operations(), ["list-aliases", "create-key", "create-alias", "list-resource-tags"])
+
+    def test_a_new_code_sink_api_is_recorded_before_its_schema_is_applied(self):
+        """Given: no code sink API yet, and a schema creation that fails.
+        When: ensure_api creates the API.
+        Then: state.json records its id before the failure, so teardown finds it."""
+        api = {"apiId": "placeholder-api", "arn": "arn:aws:appsync:us-west-2:000000000000:apis/placeholder-api",
+               "uris": {"GRAPHQL": "https://placeholder.example/graphql"}, "authenticationType": "API_KEY",
+               "additionalAuthenticationProviders": [{"authenticationType": "AWS_IAM"}]}
+        self.answers.update({"list-graphql-apis": {"graphqlApis": []}, "create-graphql-api": {"graphqlApi": api},
+                             "list-tags-for-resource": {"tags": {self.parity.TAG_KEY: self.parity.TAG_VALUE}},
+                             "start-schema-creation": self.parity.AwsError("BadRequestException", "scripted")})
+        with self.assertRaises(self.parity.AwsError):
+            self.parity.ensure_api({})
+        recorded = self.parity.load_json(self.parity.STATE_FILE)["parity"]
+        self.assertEqual(recorded["codeSinkApiId"], "placeholder-api")
+
+    def test_teardown_finds_an_unrecorded_key_and_api_by_name(self):
+        """Given: state.json with no parity section (a first run that failed before recording anything), and the
+        sandbox's tagged key (by its alias) and code sink API (by its name) in the account.
+        When: parity.py teardown runs.
+        Then: the key is scheduled for deletion before its alias goes, and the API is deleted."""
+        tags = {self.parity.TAG_KEY: self.parity.TAG_VALUE}
+        api_arn = "arn:aws:appsync:us-west-2:000000000000:apis/placeholder-api"
+        self.answers.update({
+            "get-caller-identity": {"Account": "000000000000"},
+            "list-graphql-apis": {"graphqlApis": [{"name": "someone-elses-api", "apiId": "placeholder-other"},
+                                                  {"name": self.parity.APPSYNC_NAME, "apiId": "placeholder-api"}]},
+            "get-graphql-api": lambda args: {"graphqlApi": {"arn": api_arn}} if "placeholder-api" in args else None,
+            "list-tags-for-resource": {"tags": tags},
+            "list-aliases": {"Aliases": [{"AliasName": self.parity.KMS_ALIAS, "TargetKeyId": "placeholder-key"}]},
+            "describe-key": {"KeyMetadata": {"KeyState": "Enabled"}},
+            "list-resource-tags": {"Tags": [{"TagKey": k, "TagValue": v} for k, v in tags.items()]},
+            "describe-log-groups": {"logGroups": []}})
+        self.parity.teardown()
+        operations = self.operations()
+        self.assertIn(("appsync", "delete-graphql-api", "--api-id", "placeholder-api"), self.calls)
+        self.assertNotIn("placeholder-other", json.dumps([c for c in self.calls if c[1].startswith("delete")]))
+        self.assertLess(operations.index("schedule-key-deletion"), operations.index("delete-alias"))
+
+
 if __name__ == "__main__":
     unittest.main()

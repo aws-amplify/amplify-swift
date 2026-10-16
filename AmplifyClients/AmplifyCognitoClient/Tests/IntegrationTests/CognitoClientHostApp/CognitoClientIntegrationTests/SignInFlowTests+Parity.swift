@@ -94,7 +94,7 @@ extension SignInFlowTests {
         XCTAssertTrue(user.username == alice.username, "signed in as another user")
         let state = await client.currentSessionState()
         XCTAssertState(state, .signedIn(user))
-        let signIn = Array(recorder.requests.prefix(2))
+        let signIn = Array(recorder.answered.prefix(2))
         XCTAssertEqual(signIn.map(\.operation), ["InitiateAuth", "RespondToAuthChallenge"])
         for request in signIn {
             XCTAssertEqual(request.clientMetadata, metadata, "\(request.operation ?? "a request") carries the metadata")

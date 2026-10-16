@@ -18,7 +18,14 @@
 @_spi(AmplifyExperimental)
 public enum AuthClientProvider {
 
-    /// A provider name as configured on the user pool.
+    /// A provider name, which means one thing for each use:
+    /// - for `WebUIOptions.provider`, the provider's name as configured on the user pool;
+    /// - for `federateToIdentityPool(withProviderToken:for:options:)`, the identity pool's login key for the
+    ///   provider, sent unchanged as the key of the identity pool's `Logins` map: the issuer host for OIDC
+    ///   (`mycorp.auth0.com`), the provider's ARN for SAML, and for any other provider the key the identity pool
+    ///   expects (`cognito-idp.<region>.amazonaws.com/<user pool ID>` for a user pool, for example).
+    ///
+    /// So the same provider usually has a different name for each use.
     public typealias ProviderName = String
 
     /// Login with Amazon.
@@ -36,42 +43,19 @@ public enum AuthClientProvider {
     /// Twitter Sign-In.
     case twitter
 
-    /// An OpenID Connect provider, by the name configured on the user pool.
+    /// An OpenID Connect provider: by the name configured on the user pool for `WebUIOptions.provider`, by its
+    /// issuer host (`mycorp.auth0.com`) for `federateToIdentityPool` (`ProviderName`).
     case oidc(ProviderName)
 
-    /// A SAML provider, by the name configured on the user pool.
+    /// A SAML provider: by the name configured on the user pool for `WebUIOptions.provider`, by its ARN for
+    /// `federateToIdentityPool` (`ProviderName`).
     case saml(ProviderName)
 
-    /// Any other provider, by the name configured on the user pool.
+    /// Any other provider: by the name configured on the user pool for `WebUIOptions.provider`, by the identity
+    /// pool's login key for it for `federateToIdentityPool` (`ProviderName`).
     case custom(ProviderName)
 }
 
 extension AuthClientProvider: Sendable {}
 
 extension AuthClientProvider: Hashable {}
-
-extension AuthClientProvider {
-
-    /// The value sent as the `identity_provider` query item of the authorize request.
-    ///
-    /// The same strings as the plugin's `AuthProvider.userPoolProviderName`
-    /// (`InternalAWSCognitoAuth/Support/Helpers/AuthProvider+Cognito.swift`).
-    var userPoolProviderName: String {
-        switch self {
-        case .amazon:
-            return "LoginWithAmazon"
-        case .apple:
-            return "SignInWithApple"
-        case .facebook:
-            return "Facebook"
-        case .google:
-            return "Google"
-        case .twitter:
-            return "Twitter"
-        case .oidc(let providerName),
-             .saml(let providerName),
-             .custom(let providerName):
-            return providerName
-        }
-    }
-}

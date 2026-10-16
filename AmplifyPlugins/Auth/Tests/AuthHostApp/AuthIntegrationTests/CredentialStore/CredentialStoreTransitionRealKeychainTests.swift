@@ -68,11 +68,10 @@ final class CredentialStoreTransitionRealKeychainTests: XCTestCase {
     }
 
     override func tearDown() async throws {
+        // Releases the plugin, and with it its `AuthHubEventHandler`, whose `deinit` removes its listener from
+        // the global Hub. `Amplify.reset()` stays as a precaution, for listeners other suites leave behind; it
+        // removes every Hub listener, as `AWSAuthBaseTest` does.
         plugin = nil
-        // A configured plugin is never released (its environment's factories capture it), and its
-        // `AuthHubEventHandler` keeps listening on the global Hub. This suite never registers it with
-        // Amplify, so nothing resets it: left alone, each one re-sends the next suite's sign-in as another
-        // `signedIn` event. Resetting Amplify removes every Hub listener, as `AWSAuthBaseTest` does.
         await Amplify.reset()
         resetPluginState()
         try await super.tearDown()

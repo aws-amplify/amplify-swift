@@ -166,7 +166,11 @@ final class EngineCredentialStoreErrorTests: XCTestCase {
 
     // MARK: Conversions
 
-    /// Test that the engine's copy converts to the same `AuthError` as `KeychainStoreError`
+    /// Test that the glue's entry point converts the engine's copy and `KeychainStoreError` alike
+    ///
+    /// `KeychainStoreError.engineError` goes through the engine's copy, so this checks that
+    /// `AuthError(converting:)` takes both types down the same path, not the strings themselves: the error
+    /// catalogue (`ErrorCatalogueSnapshotTests`, its `KeychainStoreError/*` entries) pins those.
     ///
     /// - Given: Every case as an engine and a public error
     /// - When:

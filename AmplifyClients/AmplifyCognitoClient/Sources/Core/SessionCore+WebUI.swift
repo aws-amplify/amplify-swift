@@ -303,7 +303,7 @@ extension SessionCore {
     /// A sign-in step, run as `signIn` runs one: under the session's `signInLock`, refused when this session is
     /// signed in, a guest's payload handed to the engine (the signed-in identity ID is the login's, not the
     /// guest's), committed by `commitSignIn`. A password sign-in waiting on a
-    /// challenge is cancelled first, so the state stops reporting it.
+    /// challenge is cancelled once the sheet is this session's, so the state stops reporting it.
     ///
     /// **Nothing ends until the sheet is this session's.** The refusal, the `.distinctFromOtherSessions` listing
     /// and the wait for the sheet all come before the attempt begins, so a busy sheet, a `.wait` that times out
@@ -406,9 +406,10 @@ extension SessionCore {
             )
             // A sign-out, purge or deletion from here on stops this flow, its wait for the sheet included, and only
             // this one. Registered under the epoch before the attempt's: an ending stops a flow
-            // registered under any earlier epoch.
+            // registered under any earlier epoch. One that came since the lock was taken (during the listing, say),
+            // which stopped nothing, refuses the registration.
             let registered = await signInEpoch
-            guard await registerWebUIFlow(epoch: registered, cancel: { caller.cancel(.sessionEnded) }) else {
+            guard await registerWebUIFlow(epoch: registered, endedSince: endings, cancel: { caller.cancel(.sessionEnded) }) else {
                 throw Self.signInCancelled()
             }
             let result: Result<AuthClientSignInResult, Error>

@@ -208,8 +208,8 @@ public struct KeychainStore: KeychainStoreBehavior {
         try KeychainStoreError.mapping { try backingStore.hasItems() }
     }
 
-    /// The shared implementation every member delegates to. Built per call from `attributes`, so this
-    /// type's stored layout is unchanged, and logging through `KeychainStore.log` as it always has.
+    /// The shared implementation every member delegates to. Built per call from `attributes` rather than
+    /// stored, and logging through `KeychainStore.log` as it always has.
     var itemStore: KeychainItemStore {
         KeychainItemStore(attributes: attributes.itemAttributes, logger: AmplifyLoggerBridge<KeychainStore>())
     }

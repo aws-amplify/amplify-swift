@@ -15,8 +15,9 @@ import InternalAWSCognitoAuth
 @_spi(AmplifyExperimental)
 public struct AuthClientFetchSessionOptions {
 
-    /// Refreshes the session's credentials even if they are still valid. A refresh already in flight
-    /// for this session is joined rather than duplicated.
+    /// Refreshes the session's credentials even if they are still valid. A forced refresh joins only
+    /// another forced refresh in flight for this session; it runs after a normal refresh in flight, so it
+    /// always calls Cognito.
     public var forceRefresh: Bool
 
     /// - Parameter forceRefresh: Whether to refresh credentials that are still valid. `false` by default.

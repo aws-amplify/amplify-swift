@@ -119,29 +119,19 @@ enum RollbackMatrixBytes {
 extension XCTestCase {
 
     /// A plugin as `configure(using:)` builds it, except that its credential store runs over `keychainStore`
-    /// and the Cognito service calls are mocked.
+    /// and the Cognito service calls are mocked: both environments come from `AuthEnvironmentFactory` with
+    /// `authConfiguration`, as `configure(using:)` builds them, so the plugin's Cognito calls name its own pools and
+    /// app client.
     func makePluginOverKeychain(
         _ keychainStore: any KeychainItemStoreBehavior,
         authConfiguration: AuthConfiguration = Defaults.makeDefaultAuthConfigData(),
         userPool: CognitoUserPoolBehavior
     ) -> AWSCognitoAuthPlugin {
-        let credentialStoreMachine = CredentialStoreStateMachine(
-            resolver: CredentialStoreState.Resolver(),
-            environment: CredentialEnvironment(
-                authConfiguration: authConfiguration,
-                credentialStoreEnvironment: BasicCredentialStoreEnvironment(
-                    amplifyCredentialStoreFactory: {
-                        AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration, keychain: keychainStore, logger: AmplifyEngineLogRouter())
-                    },
-                    legacyKeychainStoreFactory: Defaults.makeLegacyStore(service:)
-                ),
-                logger: AmplifyEngineLogRouter(scope: .category("awsCognitoAuthPluginTest"))
-            ),
-            initialState: .idle
-        )
+        // Every login gets `client-identity-id` from `GetId`; `GetCredentialsForIdentity` answers for the identity
+        // it is asked about, as Cognito does.
         let identity = MockIdentity(
             mockGetIdResponse: { _ in .init(identityId: "client-identity-id") },
-            mockGetCredentialsResponse: { _ in
+            mockGetCredentialsResponse: { input in
                 .init(
                     credentials: CognitoIdentityClientTypes.Credentials(
                         accessKeyId: "refreshedAccessKey",
@@ -149,19 +139,30 @@ extension XCTestCase {
                         secretKey: "refreshedSecret",
                         sessionToken: "refreshedSession"
                     ),
-                    identityId: "client-identity-id"
+                    identityId: input.identityId
                 )
             }
         )
-        let defaults = Defaults.makeDefaultAuthEnvironment(identityPoolFactory: { identity }, userPoolFactory: { userPool })
-        let authEnvironment = AuthEnvironment(
-            configuration: defaults.configuration,
-            userPoolConfigData: defaults.userPoolConfigData,
-            identityPoolConfigData: defaults.identityPoolConfigData,
-            authenticationEnvironment: defaults.authenticationEnvironment,
-            authorizationEnvironment: defaults.authorizationEnvironment,
-            credentialsClient: CredentialStoreOperationClient(credentialStoreStateMachine: credentialStoreMachine),
-            logger: defaults.logger
+        let factory = AuthEnvironmentFactory(
+            authConfiguration: authConfiguration,
+            makeUserPool: { userPool },
+            makeIdentityClient: { identity },
+            credentialStoreFactory: {
+                AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration, keychain: keychainStore, logger: AmplifyEngineLogRouter())
+            },
+            legacyKeychainStoreFactory: Defaults.makeLegacyStore(service:),
+            logger: AmplifyEngineLogRouter(scope: .category("awsCognitoAuthPluginTest")),
+            userPoolAnalytics: { MockAnalyticsHandler() },
+            makeURLSession: { URLSession(configuration: .ephemeral) },
+            makeAdvancedSecurity: Defaults.makeDefaultASF
+        )
+        let credentialStoreMachine = CredentialStoreStateMachine(
+            resolver: CredentialStoreState.Resolver(),
+            environment: factory.makeCredentialEnvironment(),
+            initialState: .idle
+        )
+        let authEnvironment = factory.makeAuthEnvironment(
+            credentialsClient: CredentialStoreOperationClient(credentialStoreStateMachine: credentialStoreMachine)
         )
         let plugin = AWSCognitoAuthPlugin()
         plugin.configure(

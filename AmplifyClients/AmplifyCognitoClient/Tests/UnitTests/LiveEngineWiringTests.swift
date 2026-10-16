@@ -47,10 +47,12 @@ final class LiveEngineWiringTests: XCTestCase {
     /// The live dependencies revoke a login deleted by a configuration change with that configuration's own clients.
     ///
     /// - Given: a previous configuration in another region, with its own app client
-    /// - When: the live dependencies build its revoker, and its resources are built
+    /// - When: the live dependencies build its revoker; and the two calls the revoker's `init(previous:)` composes,
+    ///   `CognitoServiceClients(previous:)` and `LiveSessionRevoker.resources(previous:clients:)`, run on it
     /// - Then:
-    ///    - it is the live revoker; its engine configuration is the previous one, and its user pool client is in, and
-    ///      signs for, the previous region, with no identity client
+    ///    - the live dependencies build the live revoker
+    ///    - those calls give the previous configuration as the engine's, and a user pool client in, and signing for,
+    ///      the previous region, with no identity client
     func testLiveDependenciesBuildThePreviousConfigurationsRevoker() throws {
         let previous = AuthConfiguration.userPools(UserPoolConfigurationData(
             poolId: "eu-west-1_Previous1",

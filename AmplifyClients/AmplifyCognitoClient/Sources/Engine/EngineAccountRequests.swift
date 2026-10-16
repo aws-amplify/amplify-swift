@@ -11,10 +11,22 @@ import InternalAWSCognitoAuth
 // The account-operation requests and results as the engine receives and returns them.
 // Public inputs are mapped here once, by the facade, so every engine gets Cognito's names.
 //
-// **An empty dictionary means none.** The public options default `validationData`, `clientMetadata` and the
-// user attributes to `[:]` / `[]` where the plugin's are `nil`. The live engine must send an empty one as
-// omitted (`nil` on the SDK input, as the plugin's `nil` options do), never as an empty map: a Lambda trigger
-// may treat an empty `ClientMetadata` differently from none.
+// **An empty dictionary means none, and each call sends none as the plugin does.** The public options default
+// `validationData`, `clientMetadata` and the user attributes to `[:]` / `[]` where the plugin's are `nil`. The
+// plugin does not send a `nil` option the same way on every call, and a Lambda trigger can tell an omitted
+// `ClientMetadata` from an empty one, so the live engine follows it call by call:
+// - omitted (`nil` on the SDK input): `signUp` and `confirmSignUp`, for client metadata and validation data
+//   (`LiveSessionEngine.omittedIfEmpty`);
+// - `[:]`: `signIn`, `resetPassword`, `confirmResetPassword`, `resendSignUpCode` and the attribute calls, which the
+//   plugin's tasks send as `?? [:]`. `confirmSignIn` hands the engine `nil`, as the plugin's confirm task does
+//   (`LiveSignInSteps.eventData(for:)`), and the engine fills in what goes on the wire as it does for the plugin
+//   (`[:]` when it verifies an answer);
+// - user attributes always as a list, `[]` for none.
+// Pinned by `LiveEngineSignUpTests.testSignUpOmitsEmptyOptions` and `.testResendSignUpCodeSendsThePluginsRequest`,
+// `LiveEngineSignInTests.testSignInWithoutClientMetadataSendsAnEmptyMap` and
+// `.testConfirmSignInWithoutClientMetadataHandsTheEngineNone`, `LiveEngineResetPasswordTests` (both
+// `SendsThePluginsRequest` tests), and `LiveEngineAttributesTests.testUpdateUserAttributesSendsThePluginsRequest` and
+// `.testSendVerificationCode`.
 
 /// A sign-up, as the engine receives it.
 struct EngineSignUpRequest: Sendable, Equatable {

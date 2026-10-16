@@ -52,7 +52,7 @@ struct SignUpScreen: Screen {
         if !successText.waitForExistence(timeout: 60) {
             // Surface the app's error label so a failure says *why* instead of just "failed".
             let errorText = app.staticTexts[Identifiers.errorLabel]
-            let detail = errorText.exists ? errorText.label : "no error label shown"
+            let detail = errorText.exists ? SignInScreen.redacted(errorText.label) : "no error label shown"
             XCTFail("Signup operation failed: \(detail)")
         }
         return self

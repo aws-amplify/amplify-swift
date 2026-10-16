@@ -203,7 +203,8 @@ protocol SessionEngine: Sendable {
     /// one. It supersedes a pending sign-in, `current` is the guest payload that seeds the operation, as for
     /// `signIn` (the signed-in identity ID is the login's, not the guest's), and
     /// `epoch` is the core's sign-in epoch for this attempt. `cancelPendingSignIn(before:)` ends it, and so
-    /// does cancelling the calling task; either dismisses the browser.
+    /// does cancelling the calling task; either dismisses the browser and throws `CancellationError` (only the user
+    /// closing the browser is `.userCancelled`).
     ///
     /// The whole round trip runs here: the authorize URL, the browser in `request.anchor`'s window, the
     /// `state` check, the code exchange, and the identity checks of `request.identity` (the token claims are

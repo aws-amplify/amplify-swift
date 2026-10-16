@@ -20,7 +20,9 @@ import InternalAmplifyKeychain
 ///   compares the case only. The state machine suppresses transitions whose states compare equal, so this
 ///   is load-bearing.
 /// - The recovery text that embeds a source location passes `KeychainStoreError`'s own location as
-///   literals, so the text an app sees, and the log lines that print it, are unchanged.
+///   literals, so the text an app sees, and the log lines that print it, are `KeychainStoreError`'s. Those
+///   lines are one below 2.62.0's (78, 88 and 91 where they were 77, 87 and 90): `KeychainStoreError.swift`
+///   gained an import of `InternalAmplifyKeychain`, and the release notes record the change.
 ///   `EngineCredentialStoreErrorTests` compares every case with `KeychainStoreError`.
 /// - `debugDescription` prints the literal name `KeychainStoreError`, never `type(of: self)`.
 package enum EngineCredentialStoreError {

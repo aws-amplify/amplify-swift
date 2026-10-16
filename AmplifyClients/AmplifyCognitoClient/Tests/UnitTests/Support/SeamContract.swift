@@ -186,6 +186,32 @@ enum SeamContractCases {
         XCTAssertTrue(isNewPassword(pending), "the newer attempt must still be pending: \(String(describing: pending))")
     }
 
+    /// A sign-in older than the step in flight stops nothing either: the newer step, held on its way to Cognito,
+    /// finishes untouched. The older calls are bounded, so a fake that let the older sign-in in (where it would wait
+    /// on the same held script) fails rather than hangs.
+    static func anOlderEpochSignInStopsNothingInFlight(_ driver: SeamContractDriver) async throws {
+        let gate = Gate()
+        try driver.scriptNewPasswordChallenge(heldOn: gate)
+        let engine = driver.engine
+        let signInRequest = request
+        let newer = Task { try await engine.signIn(signInRequest, current: nil, epoch: 2) }
+        await gate.waitForArrivals(1)
+
+        await assertThrowsAsync({
+            try await bounded(5, "older sign-in") { try await engine.signIn(signInRequest, current: nil, epoch: 1) }
+        }) { error in
+            XCTAssertTrue(error is CancellationError, "expected CancellationError, got \(error)")
+        }
+        await assertThrowsAsync({ try await bounded(5, "older auto sign-in") { try await engine.autoSignIn(current: nil, epoch: 1) } }) { error in
+            XCTAssertTrue(error is CancellationError, "expected CancellationError, got \(error)")
+        }
+        await gate.open()
+
+        guard case .challenge(let step) = try await newer.value, isNewPassword(step) else {
+            return XCTFail("the newer sign-in must finish untouched")
+        }
+    }
+
     /// `autoSignIn` with no auto-sign-in session ends the pending attempt before it refuses, as every new
     /// sign-in does, so no attempt from before its epoch outlives it.
     static func anAutoSignInWithoutASessionEndsAnEarlierAttempt(_ driver: SeamContractDriver) async throws {

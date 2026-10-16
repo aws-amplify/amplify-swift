@@ -119,7 +119,7 @@ extension EngineAuthError: CustomDebugStringConvertible {
     /// underlying `EngineAuthError` through its `debugDescription` and everything else through
     /// interpolation. The output is the same: an Amplify error without `CustomStringConvertible`
     /// (`AuthError`, `KeychainStoreError`) interpolates as its `debugDescription`.
-    /// `EngineAuthErrorTests` checks both paths against `AuthError`.
+    /// `EngineAuthErrorBridgeTests` checks both paths against `AuthError`.
     package var debugDescription: String {
         var components = ["AuthError: \(errorDescription)"]
 

@@ -43,8 +43,9 @@ class EnginePayloadLogTextTests: XCTestCase {
 
     /// Test that printed sign-up results and delivery details normalise to the public text
     ///
-    /// - Given: Sign-up results for every step, and delivery details for every destination with and without
-    ///   an attribute
+    /// - Given: Sign-up results for every step, and delivery details for every destination, without an
+    ///   attribute. With one the texts differ (see the test above), and no plugin log prints a sign-up result
+    ///   or its delivery details, so the attribute-free texts are the ones worth pinning
     /// - When:
     ///    - Each public value and its engine conversion are interpolated into a string
     /// - Then:

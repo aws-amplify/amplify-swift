@@ -17,7 +17,8 @@ import XCTest
 /// never produce `unknown`.
 ///
 /// This scans the plugin sources so a new downcast fails CI rather than depending on review. It runs in
-/// `AWSPluginsCoreTests`, which the `AWSPluginsCore` scheme already runs.
+/// `AWSPluginsCoreTests`, which the `AWSPluginsCore` scheme runs, and pull-request CI selects that scheme for a
+/// change anywhere under `AmplifyPlugins/` (the group's `paths` in `scripts/python/unit_test_groups.json`).
 ///
 /// **What it matches:** `as?`, `as!`, `as` (as in `case let p as AuthCognitoTokensProvider`) and `is`,
 /// followed by one of the three protocols, optionally parenthesised or prefixed with `any`.

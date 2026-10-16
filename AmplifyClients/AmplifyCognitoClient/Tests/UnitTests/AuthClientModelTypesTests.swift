@@ -152,6 +152,80 @@ final class AuthClientModelTypesTests: XCTestCase {
         XCTAssertEqual(details.sharedSecret, secret, "the property itself is unchanged")
     }
 
+    // MARK: - AuthClientSignUpStep
+
+    /// Cognito's auto sign-in session never reaches text: stricter than core's `AuthSignUpStep`, which is not
+    /// redacted.
+    ///
+    /// - Given: `completeAutoSignIn` with a session, alone and inside a sign-up result with a user ID
+    /// - When: each is rendered by interpolation, `String(describing:)`, `String(reflecting:)`, `print`,
+    ///   `debugPrint` and `dump`, and the step is read through its mirror
+    /// - Then:
+    ///    - no rendering contains the session, each says `<redacted>`, and the result's user ID is kept
+    ///    - the payload itself is unchanged
+    func testSignUpStepRedactsTheAutoSignInSessionInEveryRendering() {
+        let session = "AYABeCAutoSignInSessionValue"
+        let step = AuthClientSignUpStep.completeAutoSignIn(session)
+        let result = AuthClientSignUpResult(step, userId: "alice-sub")
+        let values: [(String, Any)] = [("step", step), ("result", result)]
+
+        for (name, value) in values {
+            var printed = ""
+            print(value, to: &printed)
+            var debugPrinted = ""
+            debugPrint(value, to: &debugPrinted)
+            var dumped = ""
+            dump(value, to: &dumped)
+            let renderings = [
+                ("interpolation", "\(value)"),
+                ("describing", String(describing: value)),
+                ("reflecting", String(reflecting: value)),
+                ("print", printed),
+                ("debugPrint", debugPrinted),
+                ("dump", dumped)
+            ]
+            for (form, text) in renderings {
+                XCTAssertFalse(text.contains(session), "\(name), \(form): the session is rendered")
+                XCTAssertTrue(text.contains("completeAutoSignIn"), "\(name), \(form): the case is not named")
+                XCTAssertTrue(text.contains("<redacted>"), "\(name), \(form): no redaction marker")
+                if name == "result" {
+                    XCTAssertTrue(text.contains("alice-sub"), "\(name), \(form): the user ID is kept")
+                }
+            }
+        }
+        let children = Mirror(reflecting: step).children
+        XCTAssertFalse(children.contains { "\($0.value)".contains(session) }, "the mirror holds the session")
+        guard case .completeAutoSignIn(let payload) = step else {
+            return XCTFail("expected completeAutoSignIn")
+        }
+        XCTAssertEqual(payload, session, "the payload itself is unchanged")
+    }
+
+    /// The other sign-up steps still render their payloads.
+    ///
+    /// - Given: `confirmUser` with delivery details, additional information and a user ID, and `done`
+    /// - When: each is rendered by `String(describing:)` and `dump`
+    /// - Then:
+    ///    - `confirmUser`'s renderings name the case and include the destination, the information and the user ID
+    ///    - `done` renders as `done`
+    func testSignUpStepRendersTheOtherCasesInFull() {
+        let step = AuthClientSignUpStep.confirmUser(
+            AuthClientCodeDeliveryDetails(destination: .email("a***@e***")),
+            ["key": "info"],
+            "alice-sub"
+        )
+        var dumped = ""
+        dump(step, to: &dumped)
+
+        for (form, text) in [("describing", String(describing: step)), ("dump", dumped)] {
+            XCTAssertTrue(text.contains("confirmUser"), "\(form): the case is not named")
+            XCTAssertTrue(text.contains("a***@e***"), "\(form): the destination is missing")
+            XCTAssertTrue(text.contains("info"), "\(form): the additional information is missing")
+            XCTAssertTrue(text.contains("alice-sub"), "\(form): the user ID is missing")
+        }
+        XCTAssertEqual(String(describing: AuthClientSignUpStep.done), "done")
+    }
+
     /// The URI format is copied from Amplify core's `TOTPSetupDetails.getSetupURI`, so an app
     /// moving from the plugin to the client gets the same URI for the same inputs.
     ///

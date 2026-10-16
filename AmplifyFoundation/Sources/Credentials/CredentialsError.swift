@@ -51,10 +51,13 @@ public extension CredentialsError {
     /// Read this instead of switching on the case, so that adding a case later does not
     /// silently change behaviour at every call site.
     ///
-    /// May gain cases in a minor release: include `@unknown default` when you switch over it.
+    /// May gain cases in a minor release: include `@unknown default` when you switch over it, and
+    /// treat a disposition you do not recognise as `.retryWithBackoff`. Like `.unknown`, it must never
+    /// cost buffered work.
     enum Disposition: Sendable, Equatable {
 
-        /// Permanent for this session. Discard buffered work; do not retry.
+        /// Discard the work buffered so far and do not retry it. Not permanent: once the session is
+        /// signed in again, new work can succeed.
         case discard
 
         /// Recoverable by re-authentication. Retain buffered work and retry after sign-in.

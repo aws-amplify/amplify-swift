@@ -609,11 +609,15 @@ final class ChallengeTests: XCTestCase {
         XCTAssertEqual(events.received, [])
     }
 
-    /// - Given: a sign-in held before the engine starts it, in an engine that still reaches a challenge
-    ///   after a cancel (a sign-out landing between the core's epoch capture and the engine step)
-    /// - When: the session signs out while it is held, then it is let go, and the challenge is answered
+    /// The core's own guard on a `.challenge`: the live engine returns one as current when the sign-out's cancel
+    /// reaches it only after the step (`beginSignIn` checks only for a cancel during its own suspension).
+    ///
+    /// - Given: a sign-in held in the engine; a sign-out that has moved the core's epoch, with its cancel held before
+    ///   the engine hears of it
+    /// - When: the sign-in is let go, so the engine returns the challenge as current; then the sign-out's cancel
+    ///   arrives, and the challenge is answered
     /// - Then:
-    ///    - the sign-in throws `invalidState`, and the engine's attempt is cancelled, so nothing is pending
+    ///    - the sign-in throws `invalidState`, and the core cancels the engine's attempt itself, so nothing is pending
     ///    - answering afterwards throws `invalidState` and never signs the session in
     func testAChallengeReachedAfterASignOutIsCancelledNotKept() async throws {
         let client = try harness.client(work)
@@ -622,12 +626,19 @@ final class ChallengeTests: XCTestCase {
         engine.scriptSignIn { _, _ in .challenge(step) }
         let latch = Gate()
         engine.holdSignIns(on: latch, afterCancel: .returnIssuedTokens)
+        let heldCancel = Gate()
+        engine.holdCancels(on: heldCancel)
 
         let signIn = Task { try await client.signInForTest("alice") }
-        await latch.waitForArrivals(1)
-        _ = await client.signOut()
+        try await latch.arrivals(1)
+        let signOut = Task { await client.signOut() }
+        try await heldCancel.arrivals(1)
+        // The core's own cancel, from the guard, must not be held too.
+        engine.holdCancels(on: nil)
         await latch.open()
-        let error = await authClientError { try await signIn.value }
+        let error = try await withinTime(10, "the sign-in's answer") { await authClientError { try await signIn.value } }
+        await heldCancel.open()
+        _ = try await withinTime(10, "the sign-out") { await signOut.value }
 
         XCTAssertEqual(error?.kind, .invalidState)
         let pending = await engine.pendingChallenge

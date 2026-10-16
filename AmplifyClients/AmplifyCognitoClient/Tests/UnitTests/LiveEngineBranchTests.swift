@@ -227,7 +227,9 @@ final class LiveEngineBranchTests: XCTestCase {
     /// refresh-token rotation the engine stores the rotated tokens before it reports an identity pool
     /// failure.
     ///
-    /// - Given: an operation whose slot the engine wrote with new credentials, and one whose slot it did not
+    /// - Given: an operation over a both-pools seed whose slot holds what the engine stores there after a rotated
+    ///   refresh (the new user pool tokens, with the seed's identity and AWS credentials), and one whose slot was
+    ///   not written
     /// - When:
     ///    - each is classified for the same identity pool service failure
     /// - Then:
@@ -236,11 +238,22 @@ final class LiveEngineBranchTests: XCTestCase {
     ///
     func testARefreshFailureAfterTheSlotWasWrittenCarriesThePayload() throws {
         let resources = try harness.resources()
-        let old = try AmplifyCredentials.decoded(EnginePayloadFixtures.data("userPoolAndIdentityPool"))
+        let seed = try EnginePayloadFixtures.data("userPoolAndIdentityPool")
+        let old = try AmplifyCredentials.decoded(seed)
         let failure = AuthorizationError.sessionError(.service(AWSCognitoIdentity.InternalErrorException(message: "boom")), old)
 
-        let written = try resources.makeOperation(seed: EnginePayloadFixtures.data("userPoolAndIdentityPool"))
-        let rotated = try AmplifyCredentials.decoded(EnginePayloadFixtures.data("userPoolOnly"))
+        let written = try resources.makeOperation(seed: seed)
+        let rotatedBytes = Data(
+            String(decoding: seed, as: UTF8.self)
+                .replacingOccurrences(of: EnginePayloadFixtures.refreshToken, with: "fixture-refresh-token-rotated")
+                .utf8
+        )
+        let rotated = try AmplifyCredentials.decoded(rotatedBytes)
+        guard case .userPoolAndIdentityPool(let signedIn, let identityId, _) = rotated else {
+            return XCTFail("expected both-pools credentials")
+        }
+        XCTAssertEqual(signedIn.cognitoUserPoolTokens.refreshToken, "fixture-refresh-token-rotated")
+        XCTAssertEqual(identityId, old.identityId)
         written.slot.write(rotated)
         XCTAssertThrowsError(try LiveSessionEngine.refreshResult(for: failure, in: written)) { error in
             guard case SessionEngineError.refreshedThenFailed(let payload, .service) = error else {

@@ -154,7 +154,8 @@ public extension AmplifyCognitoClient {
     /// This session's credentials, refreshed if they need it, each field with its own result.
     ///
     /// A signed-out session with an identity pool that allows guest access becomes `.guest` here, and
-    /// only here. A refresh already in flight for this session is joined, never duplicated.
+    /// only here. Concurrent refreshes of the same kind share one call: a normal fetch joins a normal
+    /// refresh in flight, and a forced one (`forceRefresh`) joins only a forced one, running after a normal one.
     ///
     /// - Throws: only for failures that are not per field: `AuthClientError.storageUnavailable`; `.unknown`
     ///   when the session's saved record cannot be read by this version; `CancellationError` if the calling

@@ -168,6 +168,39 @@ final class ClientLogCategoryTests: XCTestCase {
         }
     }
 
+    /// A query leaves `'`, `(` and `)` unencoded, so the redaction runs past them: an apostrophe in an email address or a
+    /// parenthesis in the app's nonce must not end the query and leak the rest of it.
+    ///
+    /// - Given: the engine's logger in the client
+    /// - When:
+    ///    - an authorize URL whose `nonce` holds `(` and whose `login_hint` holds `'` is logged, then a redirect inside
+    ///      `Optional(…)` whose code holds `(` and `)`, then a redirect whose path holds `'`
+    /// - Then:
+    ///    - each whole query is `?<redacted>`, the `)` that closes `Optional(…)` is kept, and no value reaches the sink
+    func testTheEngineLoggerRedactsAQueryPastItsSubDelimiters() throws {
+        let scope = EngineLogScope.categoryNamespace("Authentication", "SubDelimiterProbe-\(UUID().uuidString)")
+        let logger = ClientEngineLogger().scoped(scope)
+        let category = try XCTUnwrap(logger as? ClientEngineLogger).name
+        let authorize = "https://app.auth.us-east-1.amazoncognito.com/oauth2/authorize?response_type=code"
+            + "&nonce=NONCE(SECRET&lang=en&login_hint=o'brien@example.com&prompt=login"
+
+        logger.verbose("Showing url \(authorize)", nil)
+        logger.verbose("Redirect Optional(myapp://callback/?code=CODE(SECRET)&state=STATE-SECRET)", nil)
+        logger.verbose("Redirect myapp://o'brien/callback?code=CODE-SECRET done", nil)
+
+        let lines = sink.lines(in: [category])
+        XCTAssertEqual(lines, [
+            "Showing url https://app.auth.us-east-1.amazoncognito.com/oauth2/authorize?<redacted>",
+            "Redirect Optional(myapp://callback/?<redacted>)",
+            "Redirect myapp://o'brien/callback?<redacted> done"
+        ])
+        for line in lines {
+            for secret in ["SECRET", "brien@example.com", "prompt", "lang"] {
+                XCTAssertFalse(line.contains(secret), line)
+            }
+        }
+    }
+
     /// The client's logger also redacts the user identifiers the engine's verbose lines print in clear: `InitiateAuth`'s
     /// challenge parameters (`USERNAME`, `USER_ID_FOR_SRP`), a sign-in event's username, and the user's attributes, in
     /// each form the engine prints them. Everything else on the line is kept.

@@ -197,7 +197,10 @@ final class ClientOverKeychain: @unchecked Sendable {
 
 /// Cognito's side of refresh-token rotation for one login, shared by every binary a row runs: the one refresh token
 /// it accepts now. A refresh with it succeeds and rotates it; a refresh with any other is refused with
-/// `RefreshTokenReuseException`, as Cognito refuses a refresh token rotated away.
+/// `RefreshTokenReuseException`, as Cognito refuses a refresh token rotated away. The login is
+/// `ClientOverKeychain`'s app's, so a refresh from any other app client (or with a client secret, which that app
+/// client has none of) is refused with `NotAuthorizedException`, as Cognito refuses another client's token: every
+/// binary of a row must be the same app.
 ///
 /// - Note: `@unchecked Sendable`: the properties below are only touched while holding `lock`.
 final class RotatingRefreshTokens: @unchecked Sendable {
@@ -223,6 +226,11 @@ final class RotatingRefreshTokens: @unchecked Sendable {
 
     /// Answers a refresh of `username`'s login, rotating the live token to `next`.
     func refresh(_ input: GetTokensFromRefreshTokenInput, username: String, rotatingTo next: String) throws -> GetTokensFromRefreshTokenOutput {
+        guard input.clientId == ClientOverKeychain.configuration.userPool?.appClientId, input.clientSecret == nil else {
+            throw AWSCognitoIdentityProvider.NotAuthorizedException(
+                message: "Refresh from another app client: \(input.clientId ?? "none")"
+            )
+        }
         try lock.withLock {
             let token = input.refreshToken ?? ""
             sentTokens.append(token)

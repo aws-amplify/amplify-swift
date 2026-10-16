@@ -20,9 +20,9 @@ import Foundation
 /// forward (a pool added beside the same user pool or identity pool, or an identity pool changed or removed beside
 /// the same user pool) carry the session into the new configuration. So two configurations that share a user pool
 /// but differ in their identity pool are one carried session: a sign-out in either ends it in both. The rule
-/// compares pool IDs only, so a named session also carries across a change of app client, where the plugin's rule
-/// would not; the carried session then reports `sessionExpired` at its first refresh, and signs in again. For runtime
-/// switching between backends, use named sessions.
+/// compares pool IDs only, so a named session also carries across an identity pool change that comes with a change of
+/// app client, where the plugin's rule deletes the login; the carried session then reports `sessionExpired` at its
+/// first refresh, and signs in again. For runtime switching between backends, use named sessions.
 ///
 /// `.default` follows the Auth plugin's own rule instead, since it uses the plugin's saved login: see `default`.
 ///

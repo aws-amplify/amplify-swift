@@ -44,7 +44,9 @@ extension SessionCore {
 
     /// The session's user pool access token, refreshed first if the session's credentials need it. With an
     /// identity pool that includes its AWS credentials, refreshed with the tokens as the plugin does, so an
-    /// identity pool failure fails the call even while the token itself is valid.
+    /// identity pool failure fails the call even while the token itself is valid. Except for a session still waiting
+    /// for its first identity (`isIdentityPending`): a pending identity starts no refresh here, and a refresh whose
+    /// identity step fails still hands out the refreshed token (`freshPayload(for:)`).
     ///
     /// - Throws: `CredentialsError.notConfigured` if the session has no user pool, or is federated (before any
     ///   refresh); otherwise `AuthClientError` (`notSignedIn` for a signed-out or guest session, and while a sign-in
@@ -56,8 +58,10 @@ extension SessionCore {
         // A federated session is signed in, through an identity pool, but has no user pool tokens. Not "signed
         // out", whose disposition would have a consumer discard its buffered work: this session cannot provide a
         // token at all. Answered before any refresh, which could only spend the provider token, and, if the identity
-        // pool refused it, mark the session expired.
+        // pool refused it, mark the session expired. An expired session re-reads first (a read, not a refresh), so a
+        // user-pool sign-in another process stored over it is answered, not refused.
         _ = try await restoredSnapshot()
+        try await rereadIfExpired()
         if await isFederated {
             throw Self.federatedHasNoAccessToken()
         }
@@ -190,13 +194,13 @@ extension SessionCore {
     /// The in-memory payload, if the session's state allows `purpose`.
     ///
     /// **A sign-in waiting on a challenge answers `notSignedIn` first**, whatever the record holds: a guest's
-    /// credentials, or an expired user's tokens. The providers answer from the state the app sees, and that is
-    /// `.awaitingChallenge`: the session is moving to whoever answers the challenge, with that login's credentials
-    /// and identity ID, not the guest's or the expired user's. `.discard` marks that boundary, so a consumer drops
-    /// what it buffered as the principal the session is leaving rather than send it later with the next one's
-    /// credentials (a provider is bound to a session, not to a user). The plugin keeps vending a guest's
-    /// credentials here; an app that wants a guest's buffered work sent flushes it before it starts the sign-in.
-    /// `fetchAuthSession()` still reports what the record holds.
+    /// credentials, or an expired user's tokens, which answer `notSignedIn` here, not `sessionExpired`. That is the
+    /// rule: the providers answer from the state the app sees, which is `.awaitingChallenge` until the challenge is
+    /// answered or the sign-in ends. It does not keep a consumer's buffered work from being sent with the next login's
+    /// credentials: a provider is bound to a session, not to a user, and a sign-in that completes without a challenge
+    /// goes straight to the new login's. The plugin keeps vending a guest's credentials here; an app that wants a
+    /// guest's buffered work sent flushes it before it starts the sign-in. `fetchAuthSession()` still reports what the
+    /// record holds.
     func usableCredentials(for purpose: CredentialPurpose) throws -> Data {
         if pendingChallenge != nil {
             throw Self.notSignedIn(sessionId)

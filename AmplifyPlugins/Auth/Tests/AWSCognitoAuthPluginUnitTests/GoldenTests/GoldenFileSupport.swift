@@ -71,11 +71,14 @@ private func _swiftEnumCaseName<T>(_ value: T) -> UnsafePointer<CChar>?
 /// names, so a fork with the same shape (`EngineUserPoolTokens` for `AWSCognitoUserPoolTokens`) dumps
 /// identically.
 ///
-/// Each stored property is recorded under its encoded key, which is what the stored format pins. That is its
-/// own name, except for the entries of `encodedKeyAliases`.
+/// Each stored property is recorded under its property name (the `Mirror` label), as captured, not under its
+/// encoded key: `HostedUIOptions` encodes `language` and `loginHint` as `lang` and `login_hint`, and the
+/// manifest records `language` and `loginHint`. `encodedKeyAliases` maps a property renamed since the capture
+/// back to the name it was captured under, which is its encoded key.
 enum FieldDump {
 
-    /// The stored properties whose name is not their encoded key, by type: property name to encoded key.
+    /// The stored properties renamed since the capture, by type: current property name to the name the
+    /// manifest records, which is the property's encoded key.
     ///
     /// A type's `CodingKeys` can't be read at run time (they are private to the type), so the exceptions are
     /// listed here, explicitly. Keep this table short, and add to it only when a property is renamed while its
@@ -88,7 +91,8 @@ enum FieldDump {
         ObjectIdentifier(AWSCognitoUserPoolTokens.self): ["legacyExpiration": "expiration"]
     ]
 
-    /// The name `label`, a stored property of `type`, is recorded under: its encoded key.
+    /// The name `label`, a stored property of `type`, is recorded under: the label itself, or the captured
+    /// name if the property was renamed since (`encodedKeyAliases`).
     static func recordedName(of label: String, in type: Any.Type) -> String {
         encodedKeyAliases[ObjectIdentifier(type)]?[label] ?? label
     }

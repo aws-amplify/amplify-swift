@@ -106,17 +106,19 @@ class AWSAuthFetchSessionTokenRotationTests: XCTestCase, @unchecked Sendable {
         ])
     }
 
-    /// A later fetch retries the identity pool after the refreshed tokens were kept
+    /// A later fetch returns the kept tokens without a request, until they need refreshing
     ///
     /// - Given: A signed-in user with expired user-pool tokens and no identity-pool credentials yet
     /// - When:
     ///    - fetchAuthSession refreshes the user-pool tokens and GetId fails
     ///    - fetchAuthSession is called again, without force refresh
+    ///    - fetchAuthSession is then called with force refresh
     /// - Then:
-    ///    - The second call retries GetId instead of returning the stored tokens with no AWS credentials
-    ///    - It refreshes with the rotated refresh token
+    ///    - The second call makes no request: it returns the kept (rotated) tokens, and fails the identity ID
+    ///      and AWS credentials as the plugin does for valid user-pool-only tokens
+    ///    - The forced call refreshes with the rotated refresh token and retries GetId
     ///
-    func testNextFetchRetriesTheIdentityPoolAfterIdentityIdFetchFails() async throws {
+    func testNextFetchReturnsTheKeptTokensAfterIdentityIdFetchFails() async throws {
         let getIdCalls = RecordedValues()
         let harness = makeHarness(
             existing: .userPoolOnly(signedInData: .expiredTestData),
@@ -129,12 +131,58 @@ class AWSAuthFetchSessionTokenRotationTests: XCTestCase, @unchecked Sendable {
         _ = try await harness.plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
         let session = try await harness.plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
 
-        XCTAssertEqual(getIdCalls.values.count, 2, "The second fetch did not retry the identity pool")
-        assertIdentityPoolServiceError(session)
+        XCTAssertEqual(getIdCalls.values.count, 1, "The second fetch sent a request")
+        XCTAssertEqual(harness.refreshTokensSent.values, [SignedInData.expiredTestData.cognitoUserPoolTokens.refreshToken])
+        assertKeptUserPoolTokens(session, accessToken: harness.issuedAccessTokens.values.first)
+
+        _ = try await harness.plugin.fetchAuthSession(options: .forceRefresh())
+
+        XCTAssertEqual(getIdCalls.values.count, 2, "The forced fetch did not retry the identity pool")
         XCTAssertEqual(harness.refreshTokensSent.values, [
             SignedInData.expiredTestData.cognitoUserPoolTokens.refreshToken,
             rotatedRefreshTokens[0]
         ])
+    }
+
+    /// Valid user-pool-only tokens left by a failed identity step are returned without a request
+    ///
+    /// - Given: A session error holding valid user-pool-only tokens, as a `confirmSignIn` whose identity-pool
+    ///   step failed leaves it, with an identity pool configured
+    /// - When:
+    ///    - fetchAuthSession is called without force refresh
+    /// - Then:
+    ///    - No refresh and no identity-pool request is made
+    ///    - The tokens succeed, and the identity ID and AWS credentials fail, as the plugin has always returned
+    ///
+    func testValidUserPoolOnlyTokensAfterAFailedIdentityStepAreReturnedWithoutARequest() async throws {
+        let getIdCalls = RecordedValues()
+        let accessToken = Self.issuedToken(0)
+        let signedInData = SignedInData(
+            signedInDate: Date(),
+            signInMethod: .apiBased(.userSRP),
+            cognitoUserPoolTokens: EngineUserPoolTokens(
+                idToken: Self.issuedToken(0),
+                accessToken: accessToken,
+                refreshToken: "refreshToken"
+            )
+        )
+        let identityError = FetchSessionError.service(
+            AWSCognitoIdentity.InternalErrorException(message: "identity pool is down")
+        )
+        let harness = makeHarness(
+            existing: .userPoolOnly(signedInData: signedInData),
+            identity: MockIdentity(mockGetIdResponse: { _ in
+                _ = getIdCalls.append("GetId")
+                throw AWSCognitoIdentity.InternalErrorException(message: "identity pool is down")
+            }),
+            authorization: .error(.sessionError(identityError, .userPoolOnly(signedInData: signedInData)))
+        )
+
+        let session = try await harness.plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+
+        XCTAssertEqual(getIdCalls.values, [])
+        XCTAssertEqual(harness.refreshTokensSent.values, [])
+        assertKeptUserPoolTokens(session, accessToken: accessToken)
     }
 
     /// The refreshed user-pool tokens are kept when the identity step fails with an authorization error
@@ -361,7 +409,8 @@ class AWSAuthFetchSessionTokenRotationTests: XCTestCase, @unchecked Sendable {
         existing: AmplifyCredentials,
         identity: MockIdentity,
         userPoolRefresh: UserPoolRefresh = .rotate,
-        identityClientFails: Bool = false
+        identityClientFails: Bool = false,
+        authorization: AuthorizationState? = nil
     ) -> Harness {
         let refreshTokensSent = RecordedValues()
         let issuedAccessTokens = RecordedValues()
@@ -407,7 +456,7 @@ class AWSAuthFetchSessionTokenRotationTests: XCTestCase, @unchecked Sendable {
         )
         let initialState = AuthState.configured(
             .signedIn(.testData),
-            .sessionEstablished(existing),
+            authorization ?? .sessionEstablished(existing),
             .notStarted
         )
         let stateMachine = AuthStateMachine(
@@ -433,7 +482,7 @@ class AWSAuthFetchSessionTokenRotationTests: XCTestCase, @unchecked Sendable {
         )
     }
 
-    /// The result the plugin has always returned for an identity-pool service error after sign-in: every
+    /// The result of the fetch whose identity-pool step fails with a service error after sign-in: every
     /// result fails with `AuthError.unknown`, carrying the service error's message and no underlying error.
     private func assertIdentityPoolServiceError(
         _ session: AuthSession,
@@ -454,6 +503,39 @@ class AWSAuthFetchSessionTokenRotationTests: XCTestCase, @unchecked Sendable {
             XCTAssertTrue(description.contains("identity pool is down"), "\(name): \(description)", file: file, line: line)
             XCTAssertNil(underlying, "\(name): underlying error", file: file, line: line)
         }
+    }
+
+    /// The result for valid user-pool-only tokens: the tokens succeed (with `accessToken`, when given), and the
+    /// identity ID and AWS credentials fail as for a configuration without an identity pool.
+    private func assertKeptUserPoolTokens(
+        _ session: AuthSession,
+        accessToken: String?,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertTrue(session.isSignedIn, file: file, line: line)
+        do {
+            let tokens = try XCTUnwrap(session as? AuthCognitoTokensProvider, file: file, line: line).getCognitoTokens().get()
+            if let accessToken {
+                XCTAssertEqual(tokens.accessToken, accessToken, file: file, line: line)
+            }
+        } catch {
+            XCTFail("tokens: expected success, got \(error)", file: file, line: line)
+        }
+        let identityError = (session as? AuthCognitoIdentityProvider)?.getIdentityId().failure
+        let credentialsError = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().failure
+        XCTAssertEqual(
+            identityError?.errorDescription,
+            AuthCognitoSignedInSessionHelper.identityIdErrorForInvalidConfiguration().errorDescription,
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(
+            credentialsError?.errorDescription,
+            AuthCognitoSignedInSessionHelper.awsCredentialsErrorForInvalidConfiguration().errorDescription,
+            file: file,
+            line: line
+        )
     }
 }
 

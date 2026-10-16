@@ -25,10 +25,13 @@ import XCTest
 ///
 /// Where a row says "each plugin binary", the plugin's store runs over `RollbackPluginBinary.released` (a released
 /// plugin, 2.62.0) and `.current`. The two run identical code on every read, save, delete and refresh path: the
-/// plugin's credential store, which touches only its own key. `.released` differs only in its view of the keychain,
-/// which refuses it any read of a client record (a guard on the emulation; 2.62.0 never asks), and in the
-/// access-group transition rows, where it runs 2.62.0's service-wide `_removeAll()`. So the columns are not double
-/// coverage: the recorded client-record reads (`HiddenReads`) and the keychain's mutations are the evidence. The
+/// plugin's credential store, which touches only its own key, except on a configuration change that deletes the old
+/// login, where `.current` also removes the old namespace's two `$default` items (`$default.meta` and
+/// `$default.challenge`) and `.released` doesn't. `.released` differs only in its view of the keychain, which refuses
+/// it any read of a client record (a guard on the emulation; 2.62.0 never asks) and keeps any client record it asks
+/// to remove (2.62.0 never removes one), and in the access-group transition rows, where it runs 2.62.0's
+/// service-wide `_removeAll()`. So the columns are not double coverage: the recorded client-record reads and removals
+/// (`HiddenReads`) and the keychain's mutations are the evidence. The
 /// released access-group migration (`migrateKeychainItemsOfUserSession: true`) is not emulated. The plugin's own
 /// refresh is the engine's, which the plugin runs, over the credentials its store read.
 final class RollbackMatrixClientTests: XCTestCase {

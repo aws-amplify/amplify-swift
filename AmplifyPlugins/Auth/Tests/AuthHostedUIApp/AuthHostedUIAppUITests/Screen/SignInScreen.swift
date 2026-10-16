@@ -78,8 +78,13 @@ struct SignInScreen: Screen {
                 lastFrame = nil
             }
             target = tapTarget(for: button)
-            let frame = button.frame
-            if case .hittable = target, !app.keyboards.firstMatch.exists, frame == lastFrame {
+            // Read only on a hittable poll: reading a frame fails the test when the button no longer resolves,
+            // and a blocked poll's frame must not count as the first of the two.
+            var frame: CGRect?
+            if case .hittable = target {
+                frame = button.frame
+            }
+            if frame != nil, !app.keyboards.firstMatch.exists, frame == lastFrame {
                 break
             }
             lastFrame = frame
@@ -285,12 +290,31 @@ struct SignInScreen: Screen {
         return "\(app.webViews.count) web views, fields: [\(described.joined(separator: ", "))]\(error)"
     }
 
+    /// The app's error label, redacted: the app writes an underlying error's full text, and an `NSError`'s
+    /// names the URL it failed on, the hosted-UI domain among them. Failure messages go to the public CI log.
     private func signInError() -> String? {
         let errorText = app.staticTexts[Identifiers.errorLabel]
         guard errorText.exists else {
             return nil
         }
-        return errorText.value as? String ?? "unknown"
+        return Self.redacted(errorText.value as? String ?? "unknown")
+    }
+
+    /// `text` with the hosted-UI domain, URLs, pool IDs, UUIDs and email addresses replaced.
+    static func redacted(_ text: String) -> String {
+        let rules: [(String, String)] = [
+            (#"[a-z0-9-]+\.auth\.[a-z0-9-]+\.amazoncognito\.com"#, "<hosted-ui-domain>"),
+            (#"[a-z]+://[^\s'"]+"#, "<url>"),
+            (#"[a-z]{2}-[a-z]+-[0-9]:[0-9a-f-]{36}"#, "<identity-pool>"),
+            (#"[a-z]{2}-[a-z]+-[0-9]_[A-Za-z0-9]{6,}"#, "<user-pool>"),
+            (#"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"#, "<id>"),
+            (#"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+"#, "<email>"),
+        ]
+        var text = text
+        for (pattern, template) in rules {
+            text = text.replacingOccurrences(of: pattern, with: template, options: .regularExpression)
+        }
+        return text
     }
 
     // iOS 26: first tap raises the keyboard, second moves focus to this field.

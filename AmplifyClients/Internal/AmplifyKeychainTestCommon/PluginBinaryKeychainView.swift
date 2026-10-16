@@ -17,6 +17,12 @@ import InternalAmplifyKeychain
 /// never reads one. That is a guard on the emulation, which makes a row fail if a plugin ever does; it is not
 /// something 2.62.0 does, since it never asks.
 ///
+/// Every removal of a client record by its account is reported to `onClientRecordRemove`. With `hidesClientRecords`
+/// such a removal does nothing: 2.62.0 never removes a client record outside `removeAll()`. This plugin's credential
+/// store, which both binaries run, does remove two on a configuration change that deletes the old login (the Cognito
+/// client's `$default.meta` and `$default.challenge` of the old namespace), so without this the `.released` column
+/// would remove them as 2.62.0 never does.
+///
 /// Everything else passes through unchanged, including listing (2.62.0 has no listing API to emulate) and
 /// `removeAll()`, which, like the service-wide `_removeAll()` of 2.62.0's access-group transition, reaches every item,
 /// client records included.
@@ -25,15 +31,18 @@ package struct PluginBinaryKeychainView: KeychainItemStoreBehavior {
     package let base: any KeychainItemStoreBehavior
     package let hidesClientRecords: Bool
     package let onClientRecordRead: @Sendable (String) -> Void
+    package let onClientRecordRemove: @Sendable (String) -> Void
 
     package init(
         base: any KeychainItemStoreBehavior,
         hidesClientRecords: Bool,
-        onClientRecordRead: @escaping @Sendable (String) -> Void
+        onClientRecordRead: @escaping @Sendable (String) -> Void,
+        onClientRecordRemove: @escaping @Sendable (String) -> Void = { _ in }
     ) {
         self.base = base
         self.hidesClientRecords = hidesClientRecords
         self.onClientRecordRead = onClientRecordRead
+        self.onClientRecordRemove = onClientRecordRemove
     }
 
     package func getData(_ key: String) throws -> Data {
@@ -67,10 +76,16 @@ package struct PluginBinaryKeychainView: KeychainItemStoreBehavior {
     }
 
     package func remove(_ key: String) throws {
+        if keepsClientRecord(key) {
+            return
+        }
         try base.remove(key)
     }
 
     package func remove(_ entry: KeychainEntry) throws {
+        if keepsClientRecord(entry.account) {
+            return
+        }
         try base.remove(entry)
     }
 
@@ -88,5 +103,15 @@ package struct PluginBinaryKeychainView: KeychainItemStoreBehavior {
 
     package func allEntries() throws -> [KeychainEntry] {
         try base.allEntries()
+    }
+
+    /// Reports a removal of a client record, and whether this view keeps it: `.released` (2.62.0) never removes one
+    /// outside `removeAll()`.
+    private func keepsClientRecord(_ account: String) -> Bool {
+        guard SessionRecordAccount.isClientSessionRecord(account) else {
+            return false
+        }
+        onClientRecordRemove(account)
+        return hidesClientRecords
     }
 }

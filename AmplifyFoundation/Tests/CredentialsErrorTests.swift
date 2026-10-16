@@ -10,7 +10,8 @@ import XCTest
 
 final class CredentialsErrorTests: XCTestCase {
 
-    /// A signed-out session is permanent for that session, so buffered work is worthless.
+    /// Work buffered against a signed-out session cannot be sent, so it is discarded. Work recorded
+    /// after the session signs in again is not affected.
     ///
     /// - Given: a `notSignedIn` failure
     /// - When: a consumer asks what to do

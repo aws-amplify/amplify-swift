@@ -345,6 +345,20 @@ def aws_or_none(*args, missing=("ResourceNotFoundException", "NotFoundException"
         raise
 
 
+def aws_all_pages(field, *args, **kwargs):
+    """Every item of a Cognito list call (ListUserPools, ListIdentityPools, ListUserPoolClients), whose list is
+    `field`. They must be given --max-results, which turns the CLI's own pagination off, so this follows NextToken
+    itself, 60 items a page (as lib-ci.sh's read_all_pages): a pool past the first page is still found by name."""
+    items, token = [], None
+    for _ in range(1000):
+        page = aws(*args, "--max-results", "60", *(("--next-token", token) if token else ()), **kwargs)
+        items += page.get(field) or []
+        token = page.get("NextToken")
+        if not token:
+            return items
+    fail(f"aws {args[0]} {args[1]} returned more than 1000 pages.")
+
+
 def run_step(description, function, *args, **kwargs):
     try:
         return function(*args, **kwargs)
@@ -696,8 +710,10 @@ def ensure_kms_key(pool_ids):
         key = aws("kms", "create-key", "--description", f"{NAME}: Cognito custom sender codes",
                   "--policy", json.dumps(policy), "--tags", f"TagKey={TAG_KEY},TagValue={TAG_VALUE}")["KeyMetadata"]
         key_id = key["KeyId"]
-        require_kms_tag(key_id)
+        # The alias at once, before anything that can fail (a lagging tag read, throttling, Ctrl-C): a rerun finds
+        # the key only by its alias, and without one would make a second key that teardown never schedules.
         aws("kms", "create-alias", "--alias-name", KMS_ALIAS, "--target-key-id", key_id)
+        require_kms_tag(key_id)
         say(f"Created KMS key {KMS_ALIAS}")
     else:
         key_id = alias["TargetKeyId"]
@@ -753,9 +769,14 @@ def ensure_api(parity):
                   "--tags", f"{TAG_KEY}={TAG_VALUE}")["graphqlApi"]
         say(f"Created AppSync API {APPSYNC_NAME}")
     api_id, api_arn = api["apiId"], api["arn"]
+    if created:
+        # Recorded at once, before the tag read, so a teardown after any later failure finds the API.
+        parity["codeSinkApiId"] = api_id
+        save_parity(parity)
     require_appsync_tag(api_arn)
     parity["codeSinkApiId"] = api_id
     parity["codeSinkUrl"] = api["uris"]["GRAPHQL"]
+    save_parity(parity)
     modes = [p.get("authenticationType") for p in api.get("additionalAuthenticationProviders") or []]
     if api.get("authenticationType") != "API_KEY" or modes != ["AWS_IAM"]:
         # UpdateGraphqlApi resets what it is not given; the API has no other settings.
@@ -1725,7 +1746,7 @@ def same(desired, current):
 def find_user_pool(recorded_id, pool_name):
     if recorded_id and aws_or_none("cognito-idp", "describe-user-pool", "--user-pool-id", recorded_id):
         return recorded_id
-    pools = aws("cognito-idp", "list-user-pools", "--max-results", "60")["UserPools"]
+    pools = aws_all_pages("UserPools", "cognito-idp", "list-user-pools")
     matches = [p["Id"] for p in pools if p["Name"] == pool_name]
     if len(matches) > 1:
         fail(f"{len(matches)} user pools are named {pool_name}; remove the extras by hand.")
@@ -1782,8 +1803,7 @@ def set_mfa(pool_id, pool_name, mfa):
 
 def ensure_client(pool_id, pool_name, client_key, desired):
     client_name = f"{pool_name}-{client_key}"
-    clients = aws("cognito-idp", "list-user-pool-clients", "--user-pool-id", pool_id,
-                  "--max-results", "60")["UserPoolClients"]
+    clients = aws_all_pages("UserPoolClients", "cognito-idp", "list-user-pool-clients", "--user-pool-id", pool_id)
     client_id = next((c["ClientId"] for c in clients if c["ClientName"] == client_name), None)
     full = dict(desired, ClientName=client_name, UserPoolId=pool_id)
     if client_id is None:
@@ -1863,7 +1883,7 @@ def ensure_identity_only_pool(parity):
     if pool_id and aws_or_none("cognito-identity", "describe-identity-pool", "--identity-pool-id", pool_id) is None:
         pool_id = None
     if not pool_id:
-        pools = aws("cognito-identity", "list-identity-pools", "--max-results", "60")["IdentityPools"]
+        pools = aws_all_pages("IdentityPools", "cognito-identity", "list-identity-pools")
         pool_id = next((p["IdentityPoolId"] for p in pools if p["IdentityPoolName"] == IDENTITY_ONLY_POOL), None)
     if not pool_id:
         pool_id = aws("cognito-identity", "create-identity-pool", "--identity-pool-name", IDENTITY_ONLY_POOL,
@@ -1937,7 +1957,7 @@ def ensure_plugin_identity_pool(parity):
     if pool_id and aws_or_none("cognito-identity", "describe-identity-pool", "--identity-pool-id", pool_id) is None:
         pool_id = None
     if not pool_id:
-        pools = aws("cognito-identity", "list-identity-pools", "--max-results", "60")["IdentityPools"]
+        pools = aws_all_pages("IdentityPools", "cognito-identity", "list-identity-pools")
         pool_id = next((p["IdentityPoolId"] for p in pools if p["IdentityPoolName"] == PLUGIN_IDENTITY_POOL), None)
     update = {"IdentityPoolName": PLUGIN_IDENTITY_POOL, "AllowUnauthenticatedIdentities": True,
               "CognitoIdentityProviders": desired, "IdentityPoolTags": {TAG_KEY: TAG_VALUE}}
@@ -2011,6 +2031,8 @@ def provision_locked():
     ids_now = live_pool_ids(parity)
     kms_key_id, kms_key_arn = run_step("KMS key", ensure_kms_key, ids_now)
     parity["kmsKeyId"] = kms_key_id
+    # Each id is recorded as soon as it exists: teardown.sh removes what a failed first run had already made.
+    save_parity(parity)
     run_step("Codes table", ensure_table)
     # The API first: the sender's and the data source's roles name its ARN.
     api_id, api_arn = run_step("Code sink API", ensure_api, parity)
@@ -2629,8 +2651,7 @@ def verify():
     for key, pool_id in pool_ids(state).items():
         pool = aws("cognito-idp", "describe-user-pool", "--user-pool-id", pool_id)["UserPool"]
         mfa = aws("cognito-idp", "get-user-pool-mfa-config", "--user-pool-id", pool_id)
-        clients = aws("cognito-idp", "list-user-pool-clients", "--user-pool-id", pool_id,
-                      "--max-results", "60")["UserPoolClients"]
+        clients = aws_all_pages("UserPoolClients", "cognito-idp", "list-user-pool-clients", "--user-pool-id", pool_id)
         lambdas = sorted(k for k, v in (pool.get("LambdaConfig") or {}).items() if v and k != "KMSKeyID")
         factors = pool.get("Policies", {}).get("SignInPolicy", {}).get("AllowedFirstAuthFactors")
         methods = [m for m, k in (("TOTP", "SoftwareTokenMfaConfiguration"), ("SMS", "SmsMfaConfiguration"),
@@ -2772,7 +2793,9 @@ def teardown():
         attempt(f"log group {suffix}", delete_log_group)
 
     def delete_api():
-        api_id = parity.get("codeSinkApiId")
+        # The recorded id, else the name (a first run that failed before recording it): the tag check decides.
+        api_id = parity.get("codeSinkApiId") or next(
+            (a["apiId"] for a in aws("appsync", "list-graphql-apis")["graphqlApis"] if a["name"] == APPSYNC_NAME), None)
         api = api_id and aws_or_none("appsync", "get-graphql-api", "--api-id", api_id)
         if api:
             require_appsync_tag(api["graphqlApi"]["arn"])
@@ -2804,7 +2827,9 @@ def teardown():
         attempt(f"role {suffix}", delete_role)
 
     def delete_key():
-        key_id = parity.get("kmsKeyId")
+        # The recorded id, else the alias's key (a first run that failed before recording it).
+        key_id = parity.get("kmsKeyId") or next(
+            (a.get("TargetKeyId") for a in aws("kms", "list-aliases")["Aliases"] if a["AliasName"] == KMS_ALIAS), None)
         if not key_id:
             return
         metadata = aws_or_none("kms", "describe-key", "--key-id", key_id)

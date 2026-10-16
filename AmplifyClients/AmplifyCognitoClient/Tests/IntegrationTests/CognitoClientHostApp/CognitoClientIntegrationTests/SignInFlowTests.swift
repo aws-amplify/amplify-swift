@@ -47,31 +47,35 @@ final class SignInFlowTests: ClientIntegrationTestCase {
     func testSRPSignInForAlice() async throws {
         let alice = try await makeSignInUser()
         let sessionId = try makeSessionID("alice")
-        let legacyAccount = SessionRecordKey.pluginSessionAccount(in: pools)
-        let legacyBefore = try IntegrationTestEnvironment.rawKeychainAccounts().contains(legacyAccount)
+        let defaultRecordAccount = SessionRecordKey.pluginSessionAccount(in: pools)
+        let defaultRecordBefore = try IntegrationTestEnvironment.rawKeychainAccounts().contains(defaultRecordAccount)
         let recorder = RecordingHTTPClient()
-        let client = try AmplifyCognitoClient(
-            configuration: configuration,
-            options: .init(sessionId: sessionId, configureUserPoolClient: recorder.configureUserPoolClient)
-        )
-        let events = StreamCollector(client.listenToAuthEvents())
+        let events: StreamRecorder<AuthEvent>
+        do {
+            let client = try AmplifyCognitoClient(
+                configuration: configuration,
+                options: .init(sessionId: sessionId, configureUserPoolClient: recorder.configureUserPoolClient)
+            )
+            events = StreamRecorder(client.listenToAuthEvents())
 
-        let result = try await client.signIn(username: alice.username, password: alice.password)
+            let result = try await client.signIn(username: alice.username, password: alice.password)
 
-        XCTAssertEqual(result.nextStep, .done)
-        let idToken = try await client.fetchAuthSession().userPoolTokensResult.get().idToken
-        let sub = try XCTUnwrap(IntegrationTestEnvironment.jwtClaims(idToken)["sub"] as? String)
-        let state = await client.currentSessionState()
-        XCTAssertTrue(
-            state == .signedIn(AuthClientUser(username: alice.username, userId: sub)),
-            "the state should be .signedIn as alice, with her id token's sub"
-        )
-        try await events.waitFor(1)
-        XCTAssertEqual(events.elements, [.signedIn], "one .signedIn, and nothing else")
+            XCTAssertEqual(result.nextStep, .done)
+            let idToken = try await client.fetchAuthSession().userPoolTokensResult.get().idToken
+            let sub = try XCTUnwrap(IntegrationTestEnvironment.jwtClaims(idToken)["sub"] as? String)
+            let state = await client.currentSessionState()
+            XCTAssertTrue(
+                state == .signedIn(AuthClientUser(username: alice.username, userId: sub)),
+                "the state should be .signedIn as alice, with her id token's sub"
+            )
+        }
+        // The handle is gone, so the stream finishes and holds every event it delivered, a late duplicate too.
+        let delivered = try await events.waitUntilFinished()
+        XCTAssertEqual(delivered, [.signedIn], "one .signedIn, and nothing else")
         let accounts = try IntegrationTestEnvironment.rawKeychainAccounts()
         XCTAssertTrue(accounts.contains(SessionRecordKey.account(for: sessionId, in: pools, kind: .session)))
-        XCTAssertEqual(accounts.contains(legacyAccount), legacyBefore, "the sign-in wrote no plugin record")
-        let signIn = Array(recorder.requests.prefix(2))
+        XCTAssertEqual(accounts.contains(defaultRecordAccount), defaultRecordBefore, "the sign-in wrote no plugin record")
+        let signIn = Array(recorder.answered.prefix(2))
         XCTAssertEqual(signIn.map(\.operation), ["InitiateAuth", "RespondToAuthChallenge"])
         XCTAssertEqual(signIn.first?.authFlow, "USER_SRP_AUTH")
         XCTAssertEqual(signIn.last?.challengeName, "PASSWORD_VERIFIER")
@@ -80,7 +84,6 @@ final class SignInFlowTests: ClientIntegrationTestCase {
             XCTAssertTrue(userAgent.contains("lib/amplify-swift#"), "no Amplify lib token")
             XCTAssertTrue(userAgent.contains("md/amplify-cognito"), "no amplify-cognito metadata")
         }
-        events.stop()
     }
 
     /// A forced refresh commits new tokens, with one network refresh and no event (RF-1).
@@ -113,38 +116,43 @@ final class SignInFlowTests: ClientIntegrationTestCase {
     private func refreshAndDrop(_ sessionId: SessionID) async throws -> String {
         let alice = try await makeSignInUser()
         let recorder = RecordingHTTPClient()
-        let client = try AmplifyCognitoClient(
-            configuration: configuration,
-            options: .init(sessionId: sessionId, configureUserPoolClient: recorder.configureUserPoolClient)
-        )
-        _ = try await client.signIn(username: alice.username, password: alice.password)
-        let user = try await client.getCurrentUser()
-        recorder.reset()
-        let events = StreamCollector(client.listenToAuthEvents())
-        let first = try await client.fetchAuthSession()
-        let second = try await client.fetchAuthSession()
-        XCTAssertTrue(first == second, "unforced fetches return the same session")
-        XCTAssertEqual(recorder.operations, [], "unforced fetches of fresh tokens make no request")
+        let events: StreamRecorder<AuthEvent>
+        let after: String
+        do {
+            let client = try AmplifyCognitoClient(
+                configuration: configuration,
+                options: .init(sessionId: sessionId, configureUserPoolClient: recorder.configureUserPoolClient)
+            )
+            _ = try await client.signIn(username: alice.username, password: alice.password)
+            let user = try await client.getCurrentUser()
+            recorder.reset()
+            events = StreamRecorder(client.listenToAuthEvents())
+            let first = try await client.fetchAuthSession()
+            let second = try await client.fetchAuthSession()
+            XCTAssertTrue(first == second, "unforced fetches return the same session")
+            XCTAssertEqual(recorder.operations, [], "unforced fetches of fresh tokens make no request")
 
-        let forced = try await client.fetchAuthSession(options: .init(forceRefresh: true))
-        let cached = try await client.fetchAuthSession()
+            let forced = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+            let cached = try await client.fetchAuthSession()
 
-        XCTAssertFalse(second == forced, "a forced refresh should return a new session")
-        XCTAssertTrue(forced == cached, "an unforced fetch after the refresh should serve the refreshed session")
-        let before = try second.userPoolTokensResult.get().accessToken
-        let after = try forced.userPoolTokensResult.get().accessToken
-        let beforeClaims = try IntegrationTestEnvironment.jwtClaims(before)
-        let afterClaims = try IntegrationTestEnvironment.jwtClaims(after)
-        XCTAssertFalse(fingerprint(before) == fingerprint(after), "a forced refresh should mint a new access token")
-        let beforeJti = try XCTUnwrap(beforeClaims["jti"] as? String, "the old access token has no jti")
-        let afterJti = try XCTUnwrap(afterClaims["jti"] as? String, "the new access token has no jti")
-        XCTAssertTrue(beforeJti != afterJti, "the refreshed access token should have a new jti")
-        XCTAssertGreaterThanOrEqual(afterClaims["iat"] as? Int ?? 0, beforeClaims["iat"] as? Int ?? .max)
-        XCTAssertEqual(recorder.operations, ["GetTokensFromRefreshToken"])
-        let state = await client.currentSessionState()
-        XCTAssertTrue(state == .signedIn(user), "the state should stay .signedIn as alice")
-        XCTAssertEqual(events.elements, [], "a refresh emits no event")
-        events.stop()
+            XCTAssertFalse(second == forced, "a forced refresh should return a new session")
+            XCTAssertTrue(forced == cached, "an unforced fetch after the refresh should serve the refreshed session")
+            let before = try second.userPoolTokensResult.get().accessToken
+            after = try forced.userPoolTokensResult.get().accessToken
+            let beforeClaims = try IntegrationTestEnvironment.jwtClaims(before)
+            let afterClaims = try IntegrationTestEnvironment.jwtClaims(after)
+            XCTAssertFalse(fingerprint(before) == fingerprint(after), "a forced refresh should mint a new access token")
+            let beforeJti = try XCTUnwrap(beforeClaims["jti"] as? String, "the old access token has no jti")
+            let afterJti = try XCTUnwrap(afterClaims["jti"] as? String, "the new access token has no jti")
+            XCTAssertTrue(beforeJti != afterJti, "the refreshed access token should have a new jti")
+            XCTAssertGreaterThanOrEqual(afterClaims["iat"] as? Int ?? 0, beforeClaims["iat"] as? Int ?? .max)
+            XCTAssertEqual(recorder.answeredOperations, ["GetTokensFromRefreshToken"])
+            let state = await client.currentSessionState()
+            XCTAssertTrue(state == .signedIn(user), "the state should stay .signedIn as alice")
+        }
+        // The handle is gone, so the stream finishes and holds every event it delivered, a late one too.
+        let delivered = try await events.waitUntilFinished()
+        XCTAssertEqual(delivered, [], "a refresh emits no event")
         return fingerprint(after)
     }
 
@@ -242,7 +250,7 @@ final class SignInFlowTests: ClientIntegrationTestCase {
             _ = try await client.fetchAuthSession(options: .init(forceRefresh: true)).userPoolTokensResult.get()
         }
 
-        XCTAssertEqual(recorder.operations, ["GetTokensFromRefreshToken"], "the restored refresh token refreshes")
+        XCTAssertEqual(recorder.answeredOperations, ["GetTokensFromRefreshToken"], "the restored refresh token refreshes")
     }
 
     /// Opens `sessionId` through a new client over `outputs`, and asserts it restores `.signedIn(alice)`

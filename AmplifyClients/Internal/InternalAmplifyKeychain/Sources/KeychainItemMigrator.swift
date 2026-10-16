@@ -54,16 +54,21 @@ package struct KeychainItemMigrator: Sendable {
         })
     }
 
-    /// Migrates, calling `clearDestination` first if the destination already holds items.
+    /// Migrates, calling `clearDestination` first if the destination already holds items, then `willMove`.
     ///
     /// - `clearDestination` cannot report failure: a failed clear has always been ignored here.
+    /// - `willMove` runs once, after the clear has returned (or when there was nothing to clear) and before
+    ///   the source is listed, so before the first move. A caller that records there that a migration is in
+    ///   progress never finds that record from a run that stopped during the clear.
     /// - The source's items are listed with their access groups, then each one that is not a client
     ///   session record is moved with its own `SecItemUpdate`, scoped to that item's group. If the listing
     ///   fails, nothing is moved and the error is thrown.
     /// - An account the destination already holds is skipped with a warning and left in the source; the
-    ///   rest still move, and nothing is thrown. The result does not depend on listing order.
+    ///   rest still move, and nothing is thrown. The set of accounts moved does not depend on listing
+    ///   order; for an account listed in two groups, the copy listed first moves (below), and the keychain
+    ///   does not specify which that is.
     /// - Any other failure stops the migration and is thrown. Accounts moved before it stay moved.
-    package func migrate(clearingDestinationWith clearDestination: () -> Void) throws {
+    package func migrate(clearingDestinationWith clearDestination: () -> Void, willMove: () -> Void = {}) throws {
         logger.verbose("[KeychainStoreMigrator] Starting to migrate items")
 
         // Check if there are any existing items under the new service and access group. A failed check
@@ -72,11 +77,13 @@ package struct KeychainItemMigrator: Sendable {
             // Remove existing items to avoid duplicate item error
             clearDestination()
         }
+        willMove()
 
         // A failed listing or move is logged once, by the store that saw its status, and thrown here.
         let entries = try sourceStore.allEntries()
 
         var movedCount = 0
+        var skippedCount = 0
         // Each listed item is moved on its own, scoped to its access group. An account stored in two
         // visible groups is listed twice. Moved unscoped, such an account would match both copies, and the
         // keychain refuses that update with `errSecDuplicateItem` and moves neither (observed on iOS 26.5
@@ -99,10 +106,18 @@ package struct KeychainItemMigrator: Sendable {
             case .destinationOccupied:
                 // Skip it and keep going, so one collision strands only the colliding item. The account
                 // is never logged: device-record accounts contain usernames.
+                skippedCount += 1
                 logger.warn("[KeychainStoreMigrator] An item already exists in the destination, so it was not migrated")
             }
         }
 
+        // A run that skipped items reports that, rather than claiming a cleared destination or full success.
+        guard skippedCount == 0 else {
+            logger.verbose(
+                "[KeychainStoreMigrator] Migrated \(movedCount) item(s); \(skippedCount) already existed in the destination and were not migrated"
+            )
+            return
+        }
         if movedCount == 0 {
             logger.verbose("[KeychainStoreMigrator] No items to migrate, keychain under new access group is cleared")
         }

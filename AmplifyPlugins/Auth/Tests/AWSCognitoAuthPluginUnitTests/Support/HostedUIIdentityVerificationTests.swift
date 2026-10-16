@@ -116,6 +116,41 @@ class HostedUIIdentityVerificationTests: XCTestCase {
         ))
     }
 
+    /// Test that Cognito's updated issuer and every partition's DNS suffix are accepted
+    ///
+    /// - Given: Id tokens issued by this pool under the original (`cognito-idp`) and the updated
+    ///   (`issuer-cognito-idp`) issuer, in each AWS partition's DNS suffix
+    /// - When:
+    ///    - Each is verified, and so are look-alikes: another pool's path, a trailing path, another host prefix,
+    ///      an unknown suffix and plain HTTP
+    /// - Then:
+    ///    - Every issuer of this pool is accepted, and every look-alike throws `issuer`
+    ///
+    func testIssuerAcceptsTheUpdatedIssuerAndEveryPartition() throws {
+        for prefix in ["cognito-idp", "issuer-cognito-idp"] {
+            for suffix in [
+                "amazonaws.com", "amazonaws.com.cn", "amazonaws.eu", "c2s.ic.gov", "sc2s.sgov.gov",
+                "cloud.adc-e.uk", "csp.hci.ic.gov"
+            ] {
+                let issuer = "https://\(prefix).\(region).\(suffix)/\(poolId)"
+                XCTAssertNoThrow(
+                    try verify(idToken: idToken(["iss": issuer]), accessToken: accessToken(), policy: claimsOnly),
+                    issuer
+                )
+            }
+        }
+        for issuer in [
+            "https://issuer-cognito-idp.\(region).amazonaws.com/us-east-1_other",
+            "https://issuer-cognito-idp.\(region).amazonaws.com/\(poolId)/extra",
+            "https://evil-cognito-idp.\(region).amazonaws.com/\(poolId)",
+            "https://issuer-cognito-idp.\(region).amazonaws.example/\(poolId)",
+            "https://issuer-cognito-idp.\(region).amazonaws.eu.example.com/\(poolId)",
+            "http://issuer-cognito-idp.\(region).amazonaws.eu/\(poolId)"
+        ] {
+            assertMismatch(.issuer, idToken: idToken(["iss": issuer]))
+        }
+    }
+
     /// Test that the issuer's region is the pool's, not the configured one
     ///
     /// - Given: A pool in `eu-west-1` configured with region `us-east-1`, and a pool ID with no region prefix

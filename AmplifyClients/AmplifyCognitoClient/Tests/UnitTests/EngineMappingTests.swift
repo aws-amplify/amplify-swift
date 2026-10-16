@@ -31,7 +31,8 @@ final class EngineMappingTests: XCTestCase {
 
     /// Test that every engine sign-in step maps to the client step of the same name and payload
     ///
-    /// - Given: one engine step per case, in declaration order, with every payload filled
+    /// - Given: one engine step per case, in declaration order, with every payload filled, and
+    ///   the optional payloads also empty
     /// - When:
     ///    - each is mapped
     /// - Then:
@@ -43,6 +44,7 @@ final class EngineMappingTests: XCTestCase {
             (.confirmSignInWithSMSMFACode(Self.details, Self.info), .confirmSignInWithSMSMFACode(Self.clientDetails, Self.info)),
             (.confirmSignInWithSMSMFACode(Self.details, nil), .confirmSignInWithSMSMFACode(Self.clientDetails, nil)),
             (.confirmSignInWithCustomChallenge(Self.info), .confirmSignInWithCustomChallenge(Self.info)),
+            (.confirmSignInWithNewPassword(Self.info), .confirmSignInWithNewPassword(Self.info)),
             (.confirmSignInWithNewPassword(nil), .confirmSignInWithNewPassword(nil)),
             (.confirmSignInWithPassword, .confirmSignInWithPassword),
             (.confirmSignInWithTOTPCode, .confirmSignInWithTOTPCode),
@@ -59,6 +61,7 @@ final class EngineMappingTests: XCTestCase {
                 .continueSignInWithFirstFactorSelection([.password, .passwordSRP, .smsOTP, .emailOTP])
             ),
             (.resetPassword(Self.info), .resetPassword(Self.info)),
+            (.confirmSignUp(Self.info), .confirmSignUp(Self.info)),
             (.confirmSignUp(nil), .confirmSignUp(nil)),
             (.done, .done)
         ]

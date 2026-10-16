@@ -11,7 +11,8 @@ import Security
 import XCTest
 
 /// Pins the real keychain behaviour the shared keychain module's enumeration primitive
-/// is designed against, using raw `SecItem` calls so it does not depend on that module landing.
+/// is designed against, using raw `SecItem` calls so it pins the keychain itself, not that module
+/// (`InternalAmplifyKeychain`, which `KeychainModuleRealKeychainTests` covers).
 ///
 /// Every query carries `kSecUseDataProtectionKeychain: true`, as `KeychainStoreAttributes` does.
 /// Every item is written the way `KeychainStore._set` writes one — generic password,

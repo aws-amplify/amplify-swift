@@ -28,7 +28,8 @@ public struct KeychainStoreMigrator {
         )
     }
 
-    /// `package` so the auth plugin's credential store can pass its own test seam through.
+    /// A test seam: `makeStore` is always `KeychainStore(service:accessGroup:)` outside tests. `package`, so
+    /// apps cannot reach it.
     package init(
         oldService: String,
         newService: String,

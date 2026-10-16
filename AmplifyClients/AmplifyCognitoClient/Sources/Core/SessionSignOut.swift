@@ -110,6 +110,8 @@ struct SessionSignOut: Sendable {
     /// Whether two payloads hold the same credentials, however they are encoded (`SessionEngine.sameCredentials`):
     /// the Auth plugin saving `.default`'s credentials again in other bytes during the revoke has not moved them.
     var sameCredentials: @Sendable (Data, Data) -> Bool = CredentialSlot.sameCredentials
+    /// Whether `revoke` signs the user out globally: what a sign-out that could not revoke at all reports as failed too.
+    var global = false
     /// One revoke attempt. `firstAttempt` is `true` for the first only: a sign-out shows the hosted UI's
     /// logout page on its first attempt at most, and its retries never do.
     let revoke: @Sendable (_ payload: Data, _ firstAttempt: Bool) async throws -> EngineSignOutOutcome
@@ -132,17 +134,25 @@ struct SessionSignOut: Sendable {
     ///
     /// A sign-out that ends the session ends its interrupted sign-in too: the store's sign-out deletes that record when
     /// it writes the signed-out row, and this deletes it, once, when the session ended without one (nothing to sign out,
-    /// or another writer signed it out first). Best effort, with one warning on failure.
+    /// or another writer signed it out first). Best effort, with one warning on failure. For `.default`, the same goes for
+    /// the AWSMobileClient logins (`SessionRecordStore.clearLegacyLogins()`): cleared on every sign-out that ends the
+    /// session, nothing to sign out included, as the plugin's sign-out from `.signedOut` clears them.
     func run() async throws -> Outcome {
         var challengeDeleted = false
         let outcome = try await signOut(challengeDeleted: &challengeDeleted)
         if outcome.endedSession, !challengeDeleted {
-            _ = try? await store.perform { [sessionId] in $0.deleteChallengeAfterSignOut(sessionId) }
+            _ = try? await store.perform { [sessionId] store in
+                store.deleteChallengeAfterSignOut(sessionId)
+                if sessionId == .default {
+                    store.clearLegacyLogins()
+                }
+            }
         }
         return outcome
     }
 
-    /// `run()`, with `challengeDeleted` set once the store's own sign-out has deleted the interrupted-sign-in record.
+    /// `run()`, with `challengeDeleted` set once the store's own sign-out has run (it deletes the interrupted-sign-in
+    /// record, and for `.default` clears the AWSMobileClient logins).
     private func signOut(challengeDeleted: inout Bool) async throws -> Outcome {
         var target: (payload: Data, principal: CredentialSummary)
         switch try await held(store.read(sessionId)) {
@@ -158,8 +168,13 @@ struct SessionSignOut: Sendable {
                     return .nothingToSignOut
                 }
                 // A newer version's record may have held tokens, which this build could neither read nor revoke: the
-                // sign-out is partial, not complete, so the app knows a refresh token may stay valid.
-                return .signedOut(server: EngineSignOutOutcome(revokeError: Self.unrevokedNewerRecordError(version: version)))
+                // sign-out is partial, not complete, so the app knows a refresh token may stay valid. A global sign-out
+                // asked for was not sent either, so the user's other sessions stay signed in.
+                let unrevoked = Self.unrevokedNewerRecordError(version: version)
+                return .signedOut(server: EngineSignOutOutcome(
+                    revokeError: unrevoked,
+                    globalSignOutError: global ? unrevoked : nil
+                ))
             case .superseded:
                 return .superseded
             }

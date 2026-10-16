@@ -73,7 +73,7 @@ package final class InMemoryKeychain: @unchecked Sendable {
         case listAccounts
     }
 
-    private struct ItemKey: Hashable {
+    fileprivate struct ItemKey: Hashable {
         let service: String
         let accessGroup: String?
         let account: String
@@ -86,6 +86,8 @@ package final class InMemoryKeychain: @unchecked Sendable {
     private var injectedFailures: [Operation: OSStatus] = [:]
     private var injectedAccountFailures: [Operation: [String: OSStatus]] = [:]
     private var afterReadHook: (@Sendable (_ service: String, _ account: String) -> Void)?
+    private var beforeMoveHook: (@Sendable (_ account: String) -> Void)?
+    private var beforeRemoveHook: (@Sendable (_ service: String, _ account: String) -> Void)?
     private let unscopedMatching: UnscopedMatching
 
     package init(unscopedMatching: UnscopedMatching = .exactGroup) {
@@ -150,6 +152,37 @@ package final class InMemoryKeychain: @unchecked Sendable {
         withLock { afterReadHook = hook }
     }
 
+    /// Runs `hook` before every move, ahead of any injected failure. Use it, with `snapshot()`, to capture
+    /// the keychain as an app terminated just before that move would leave it.
+    package func beforeMove(_ hook: (@Sendable (_ account: String) -> Void)?) {
+        withLock { beforeMoveHook = hook }
+    }
+
+    /// Runs `hook` before every single-item removal, ahead of any injected failure. Use it, with
+    /// `snapshot()`, to capture the keychain as an app terminated just before that removal would leave it.
+    package func beforeRemove(_ hook: (@Sendable (_ service: String, _ account: String) -> Void)?) {
+        withLock { beforeRemoveHook = hook }
+    }
+
+    // MARK: Snapshots
+
+    /// The stored items at one moment, for `restore(_:)`.
+    package struct Snapshot: @unchecked Sendable {
+        fileprivate let items: [ItemKey: Data]
+    }
+
+    /// The stored items now. Recorded mutations and injected failures are not part of it.
+    package func snapshot() -> Snapshot {
+        withLock { Snapshot(items: items) }
+    }
+
+    /// Puts back the items of `snapshot`, as if nothing had happened since, without recording a mutation.
+    /// With `snapshot()` taken in a `beforeMove` or `beforeRemove` hook, this models the app being
+    /// terminated at that point.
+    package func restore(_ snapshot: Snapshot) {
+        withLock { items = snapshot.items }
+    }
+
     // MARK: Operations used by `InMemoryKeychainItemStore`
 
     fileprivate func read(service: String, accessGroup: String?, account: String) throws -> Data {
@@ -187,6 +220,8 @@ package final class InMemoryKeychain: @unchecked Sendable {
     }
 
     fileprivate func remove(service: String, accessGroup: String?, account: String) throws {
+        let hook = withLock { beforeRemoveHook }
+        hook?(service, account)
         try withLock {
             try throwIfInjected(.remove, account: account)
             if let key = firstMatch(service: service, accessGroup: accessGroup, account: account) {
@@ -203,7 +238,9 @@ package final class InMemoryKeychain: @unchecked Sendable {
         from source: (service: String, accessGroup: String?),
         to destination: (service: String, accessGroup: String?)
     ) throws -> KeychainMoveOutcome {
-        try withLock {
+        let hook = withLock { beforeMoveHook }
+        hook?(account)
+        return try withLock {
             try throwIfInjected(.move, account: account)
             let matchCount = items.keys.count(where: {
                 $0.account == account && matches($0, service: source.service, accessGroup: source.accessGroup)
@@ -253,6 +290,8 @@ package final class InMemoryKeychain: @unchecked Sendable {
     /// Acts on exactly the item at (`service`, `accessGroup`, `account`): an entry-scoped query matches
     /// one item whatever the mode.
     fileprivate func removeExactly(service: String, accessGroup: String?, account: String) throws {
+        let hook = withLock { beforeRemoveHook }
+        hook?(service, account)
         try withLock {
             try throwIfInjected(.remove, account: account)
             items[ItemKey(service: service, accessGroup: accessGroup, account: account)] = nil
@@ -265,7 +304,9 @@ package final class InMemoryKeychain: @unchecked Sendable {
         from source: (service: String, accessGroup: String?),
         to destination: (service: String, accessGroup: String?)
     ) throws -> KeychainMoveOutcome {
-        try withLock {
+        let hook = withLock { beforeMoveHook }
+        hook?(account)
+        return try withLock {
             try throwIfInjected(.move, account: account)
             let sourceKey = ItemKey(service: source.service, accessGroup: source.accessGroup, account: account)
             guard let value = items[sourceKey] else {

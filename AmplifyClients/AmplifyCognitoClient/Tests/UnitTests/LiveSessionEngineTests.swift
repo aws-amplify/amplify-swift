@@ -144,7 +144,9 @@ final class LiveSessionEngineTests: XCTestCase {
             ("awsCredentials", { _ = try self.engine.checkedAWSCredentials(in: payload) }),
             ("accessToken", { _ = try self.engine.checkedAccessToken(in: payload) }),
             ("userPoolTokens", { _ = try self.engine.checkedUserPoolTokens(in: payload) }),
-            ("needsRefresh", { _ = try self.engine.checkedNeedsRefresh(payload, at: Date()) })
+            ("needsRefresh", { _ = try self.engine.checkedNeedsRefresh(payload, at: Date()) }),
+            ("userPoolTokensNeedRefresh", { _ = try self.engine.checkedUserPoolTokensNeedRefresh(payload, at: Date()) }),
+            ("signOutPresentsBrowser", { _ = try self.engine.checkedSignOutPresentsBrowser(payload) })
         ]
         for (name, read) in reads {
             XCTAssertThrowsError(try read(), name) { error in

@@ -43,7 +43,7 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
 
     // MARK: - AWSCredentialsProvider + Smithy AWSCredentialIdentityResolver Tests
 
-    /// - Given: An Smithy AWSCredentialIdentityResolver that also conforms to  AWSCredentialsProvider
+    /// - Given: A Smithy AWSCredentialIdentityResolver that also conforms to AWSCredentialsProvider
     /// - When: I call resolve()
     /// - Then: It should return AWSCredentials by converting from Smithy credentials
     func testSmithyCredentialIdentityResolverResolve() async throws {
@@ -54,7 +54,7 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
         XCTAssertEqual(credentials.secretAccessKey, "smithy-secret-key")
     }
 
-    /// - Given: An Smithy AWSCredentialIdentityResolver that also conforms to  AWSCredentialsProvider
+    /// - Given: A Smithy AWSCredentialIdentityResolver that also conforms to AWSCredentialsProvider
     /// - When: getIdentity() throws an error
     /// - Then: resolve() should propagate the error
     func testSmithyCredentialIdentityResolverResolveThrowsError() async throws {
@@ -110,7 +110,7 @@ class AWSCredentialsProviderSDKTests: XCTestCase {
 
     // MARK: - Smithy AWSCredentialIdentityResolver + AWSCredentialsProvider Tests
 
-    /// - Given: A  Static AWSCredentialIdentityResolver that also conforms to Smithy AWSCredentialIdentityResolver
+    /// - Given: A static AWSCredentialsProvider that also conforms to Smithy AWSCredentialIdentityResolver
     /// - When: I call getIdentity()
     /// - Then: It should return Smithy AWSCredentialIdentity by converting from AWSCredentials
     func testStaticAWSCredentialsProviderGetSmithyIdentity() async throws {

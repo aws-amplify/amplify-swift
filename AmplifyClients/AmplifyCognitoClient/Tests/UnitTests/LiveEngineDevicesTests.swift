@@ -169,6 +169,90 @@ final class LiveEngineDevicesTests: XCTestCase {
         XCTAssertEqual(harness.cognito.operations, ["ListDevices", "UpdateDeviceStatus", "ForgetDevice"])
     }
 
+    // MARK: A sign-in's device
+
+    /// Test that a sign-in confirms the new device Cognito gives it, and the next sign-in uses that device.
+    ///
+    /// The other tests here write the device record by hand; this one drives a client sign-in through the engine's
+    /// `ConfirmDevice` and device SRP steps, which the sign-in passes through on its way to `.signedIn`.
+    ///
+    /// - Given: an email alias typed for alice, and SRP whose final answer carries new device metadata
+    /// - When:
+    ///    - she signs in; then `rememberDevice`; then she signs in again, and Cognito asks for device SRP
+    /// - Then:
+    ///    - the first sign-in sends `ConfirmDevice` for the new key with her access token and a verifier, and the
+    ///      device record is saved under the typed name, not the token's username
+    ///    - `rememberDevice` sends that key
+    ///    - the second sign-in sends the key as `DEVICE_KEY`, answers `DEVICE_SRP_AUTH` and then
+    ///      `DEVICE_PASSWORD_VERIFIER` with it, and finishes signed in
+    ///
+    func testASignInConfirmsItsDeviceAndTheNextSignInUsesIt() async throws {
+        let typed = "alice@example.com"
+        let deviceKey = "us-east-1_device-alice"
+        let engine = try harness.engine()
+        let tokens = LiveEngineFixtures.tokens("alice")
+        let withDevice = CognitoIdentityProviderClientTypes.AuthenticationResultType(
+            accessToken: tokens.accessToken,
+            expiresIn: tokens.expiresIn,
+            idToken: tokens.idToken,
+            newDeviceMetadata: .init(deviceGroupKey: "group-alice", deviceKey: deviceKey),
+            refreshToken: tokens.refreshToken,
+            tokenType: tokens.tokenType
+        )
+        harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in LiveEngineFixtures.passwordVerifier("alice") }
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in
+            RespondToAuthChallengeOutput(authenticationResult: withDevice, challengeParameters: [:])
+        }
+        harness.cognito.once("ConfirmDevice") { (_: ConfirmDeviceInput) in ConfirmDeviceOutput() }
+        harness.scriptIdentityPool()
+        scriptDeviceCalls()
+
+        guard case .done(let payload) = try await engine.signIn(.srp(typed), current: nil) else {
+            return XCTFail("the first sign-in did not finish")
+        }
+
+        let confirm = try XCTUnwrap(harness.cognito.inputs("ConfirmDevice", as: ConfirmDeviceInput.self).first)
+        XCTAssertEqual(confirm.deviceKey, deviceKey)
+        XCTAssertEqual(confirm.accessToken, try accessToken(in: payload))
+        XCTAssertNotNil(confirm.deviceSecretVerifierConfig?.passwordVerifier)
+        let store = harness.keychain.deviceStore(for: harness.namespace)
+        guard case .value(.metadata(let device)) = try store.deviceMetadata(DeviceMetadata.self, for: typed) else {
+            return XCTFail("no device record under the typed name")
+        }
+        XCTAssertEqual(device.deviceKey, deviceKey)
+        XCTAssertEqual(device.deviceGroupKey, "group-alice")
+        guard case .absent = try store.deviceMetadata(DeviceMetadata.self, for: "alice") else {
+            return XCTFail("the device record is under the token's username")
+        }
+
+        harness.cognito.clearCalls()
+        try await engine.rememberDevice(payload)
+        XCTAssertEqual(harness.cognito.inputs("UpdateDeviceStatus", as: UpdateDeviceStatusInput.self).map(\.deviceKey), [deviceKey])
+
+        harness.cognito.clearCalls()
+        harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in LiveEngineFixtures.passwordVerifier("alice") }
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in
+            LiveEngineFixtures.challenge(.deviceSrpAuth, session: "device-srp-session")
+        }
+        let verifier = LiveEngineFixtures.passwordVerifier("alice").challengeParameters ?? [:]
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in
+            LiveEngineFixtures.challenge(.devicePasswordVerifier, parameters: verifier, session: "device-verifier-session")
+        }
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in LiveEngineFixtures.signedIn("alice", version: 2) }
+
+        guard case .done = try await engine.signIn(.srp(typed), current: nil) else {
+            return XCTFail("the second sign-in did not finish")
+        }
+
+        let initiate = try XCTUnwrap(harness.cognito.inputs("InitiateAuth", as: InitiateAuthInput.self).first)
+        XCTAssertEqual(initiate.authParameters?["DEVICE_KEY"], deviceKey)
+        let answers = harness.cognito.inputs("RespondToAuthChallenge", as: RespondToAuthChallengeInput.self)
+        XCTAssertEqual(answers.map(\.challengeName), [.passwordVerifier, .deviceSrpAuth, .devicePasswordVerifier])
+        XCTAssertEqual(answers.dropFirst().map { $0.challengeResponses?["DEVICE_KEY"] }, [deviceKey, deviceKey])
+        XCTAssertEqual(harness.cognito.inputs("ConfirmDevice", as: ConfirmDeviceInput.self).count, 0)
+        harness.cognito.assertConsumed()
+    }
+
     // MARK: rememberDevice
 
     /// Test that remembering marks this device, from the user's device record, remembered.

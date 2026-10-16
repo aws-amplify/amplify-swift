@@ -81,6 +81,12 @@ final class RecordingHTTPClient: Sendable {
         requests.filter { !$0.failedTransiently }
     }
 
+    /// The operation names of `answered`, in the order sent. Exact lists and counts read this; `operations`
+    /// stays for the `== []` checks, where a retried attempt is a request too.
+    var answeredOperations: [String] {
+        answered.compactMap(\.operation)
+    }
+
     func reset() {
         recorded.removeAll()
     }

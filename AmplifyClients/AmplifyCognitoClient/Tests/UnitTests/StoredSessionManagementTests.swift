@@ -538,13 +538,16 @@ final class StoredSessionManagementTests: XCTestCase {
         }
     }
 
+    /// A superseded sign-out ends nothing of the live session: not even its pending sign-in, which may be the newer
+    /// sign-in's.
+    ///
     /// - Given: a live session holding alice, and another process that signs bob in right after the
     ///   store's sign-out reads the record
     /// - When: the session is signed out through the static call
     /// - Then:
-    ///    - the result is `.failed(.invalidState)`, no `.signedOut` event is sent, and the session now reports bob
-    ///    - see also `testLiveSignOutCancelsAPendingChallenge`
-    func testLiveSignOutSupersededKeepsThePendingChallenge() async throws {
+    ///    - the result is `.failed(.invalidState)`, and the engine's pending sign-in was never cancelled
+    ///    - see also `testLiveSignOutCancelsAPendingChallenge` and `testLiveSignOutSupersededByADifferentUser`
+    func testLiveSignOutSupersededCancelsNoPendingSignIn() async throws {
         let bob = FakePayload.signedIn("bob")
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)

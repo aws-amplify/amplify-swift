@@ -29,6 +29,8 @@ extension AuthClientVerifyTOTPSetupOptions: Sendable {}
 /// How `AmplifyCognitoClient.updateMFAPreference(sms:totp:email:)` sets one MFA type.
 ///
 /// Mirrors the plugin's `MFAPreference` case for case.
+///
+/// May gain cases in a minor release: include `@unknown default` when you switch over it.
 @_spi(AmplifyExperimental)
 public enum AuthClientMFAPreference {
 

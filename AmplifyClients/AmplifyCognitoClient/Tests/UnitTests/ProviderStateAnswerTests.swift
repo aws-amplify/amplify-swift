@@ -54,9 +54,9 @@ final class ProviderStateAnswerTests: XCTestCase {
 
     // MARK: A pending challenge
 
-    /// The providers answer from the state the app sees: while a sign-in waits on a challenge the session is moving
-    /// to whoever answers it, with that login's identity ID, so a guest's credentials are not vended, and `.discard`
-    /// has a consumer drop what it buffered as the guest. `fetchAuthSession()` still reports what the record holds.
+    /// The providers answer from the state the app sees: while a sign-in waits on a challenge, that is
+    /// `.awaitingChallenge`, so a guest's credentials are not vended. `fetchAuthSession()` still reports what the
+    /// record holds.
     ///
     /// - Given: a guest session whose sign-in waits on an SMS code
     /// - When: both providers are asked, and the session is fetched
@@ -82,8 +82,8 @@ final class ProviderStateAnswerTests: XCTestCase {
         XCTAssertEqual(engine.refreshCalls.count, 0)
     }
 
-    /// The same rule for an expired session whose user signs in again: whoever answers the challenge may be another
-    /// user, so the session's answer is `notSignedIn`, not `sessionExpired`, until the sign-in ends.
+    /// The same rule for an expired session whose user signs in again: the session's answer is `notSignedIn`, not
+    /// `sessionExpired`, until the sign-in ends.
     ///
     /// - Given: a signed-in session whose refresh token is dead, and then a sign-in on it waiting on an SMS code
     /// - When: both providers are asked; then the challenge is answered and both are asked again

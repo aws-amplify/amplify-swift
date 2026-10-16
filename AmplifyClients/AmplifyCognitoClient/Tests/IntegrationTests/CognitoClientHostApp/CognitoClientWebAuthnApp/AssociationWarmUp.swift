@@ -11,22 +11,24 @@ import MachO
 
 /// Waits until the simulator has verified this app's association with its relying party.
 ///
-/// On a freshly booted or erased simulator, the first passkey requests fail with `ASAuthorizationError` code
-/// 1004 ("Unable to verify webcredentials association") while the device fetches the relying party's
-/// apple-app-site-association (again after every install), and a sheet shown in that window can stall. The
-/// UI tests run this after every launch, before the flow, so the flow's first ceremony meets a verified association.
+/// On a freshly booted or erased simulator, the first passkey requests fail with `ASAuthorizationError.failed`
+/// (code 1004, the generic failure code; here "Unable to verify webcredentials association") while the device
+/// fetches the relying party's apple-app-site-association (again after every install), and a sheet shown in that
+/// window can stall. On a fresh simulator `.failed` is usually that unverified association. The UI tests run this
+/// after every launch, before the flow, so the flow's first ceremony meets a verified association.
 ///
 /// Each probe is an assertion for the relying party with a random challenge, performed with
 /// `.preferImmediatelyAvailableCredentials`: with no passkey for the relying party on the device it answers at
 /// once and shows nothing; with one (a passkey left by an earlier run) the sheet may appear, and the probe
-/// closes it after a moment. Either answer other than 1004 means the association is verified.
+/// closes it after a moment. Either answer other than `.failed` (1004) means the association is verified.
 @MainActor
 final class AssociationWarmUp: NSObject {
 
     /// How long the warm-up tries, and how long a probe waits for its answer before closing its sheet.
     static let limit: TimeInterval = 120
     private static let probeTimeout: TimeInterval = 3
-    private static let associationErrorCode = 1_004
+    /// `ASAuthorizationError.failed`: generic, but on a fresh simulator usually the unverified association.
+    private static let failedErrorCode = ASAuthorizationError.Code.failed.rawValue
 
     private let anchor: ASPresentationAnchor
     private var continuation: CheckedContinuation<Error?, Never>?
@@ -46,14 +48,14 @@ final class AssociationWarmUp: NSObject {
         while true {
             probes += 1
             let error = await probe(relyingParty)
-            // A probe the controller never answered tells nothing: it counts as unverified, like 1004.
+            // A probe the controller never answered tells nothing: it counts as unverified, like `.failed`.
             let unverified = error is ProbeUnanswered
-                || (error as? ASAuthorizationError)?.code.rawValue == Self.associationErrorCode
+                || (error as? ASAuthorizationError)?.code.rawValue == Self.failedErrorCode
             guard unverified else {
                 return probes
             }
             guard Date() < deadline else {
-                throw HarnessAppError("The relying party's association was still unverified (1004, or no answer) after \(probes) probes")
+                throw HarnessAppError("The relying party's association was still unverified (.failed, 1004, or no answer) after \(probes) probes")
             }
             try await Task.sleep(nanoseconds: 3_000_000_000)
         }
@@ -86,6 +88,16 @@ final class AssociationWarmUp: NSObject {
         closer.cancel()
         self.controller = nil
         return error
+    }
+
+    /// Ends the probe in flight with `controller`'s answer. A finished probe's controller (one that never
+    /// answered its cancel in time) can answer late, during the next probe: that answer is dropped, so it never
+    /// ends a probe that is not its own.
+    private func finish(_ error: Error?, from controller: ObjectIdentifier) {
+        guard let current = self.controller, controller == ObjectIdentifier(current) else {
+            return
+        }
+        finish(error)
     }
 
     private func finish(_ error: Error?) {
@@ -140,11 +152,14 @@ extension AssociationWarmUp: ASAuthorizationControllerDelegate {
         controller: ASAuthorizationController,
         didCompleteWithAuthorization authorization: ASAuthorization
     ) {
-        MainActor.assumeIsolated { finish(nil) }
+        // The controller's identity, not the controller, crosses into the main actor.
+        let answering = ObjectIdentifier(controller)
+        MainActor.assumeIsolated { finish(nil, from: answering) }
     }
 
     nonisolated func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        MainActor.assumeIsolated { finish(error) }
+        let answering = ObjectIdentifier(controller)
+        MainActor.assumeIsolated { finish(error, from: answering) }
     }
 }
 

@@ -11,7 +11,7 @@ import Security
 import XCTest
 @testable import AWSPluginsCore
 
-/// Pins every query `KeychainStore` sends to the keychain, as literal dictionaries.
+/// Pins, as literal dictionaries, the queries every `KeychainStore` member is built from.
 ///
 /// The expected values are what `KeychainStore` and `KeychainStoreAttributes` built before the keychain
 /// code moved into `InternalAmplifyKeychain`. They are written out from the Security

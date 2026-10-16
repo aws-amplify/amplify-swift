@@ -54,16 +54,6 @@ final class FetchAuthSessionOperationHelper: @unchecked Sendable {
                     underlyingError: error)
                 return session
             } else if case .sessionError(_, let credentials) = error {
-                // User-pool-only credentials with an identity pool configured mean the identity-pool step
-                // failed. Their tokens can be valid (a refresh that failed at that step keeps its refreshed
-                // tokens), so retry the refresh rather than returning a session without AWS credentials.
-                if case .userPoolOnly = credentials,
-                   (environment as? AuthEnvironment)?.identityPoolConfigData != nil {
-                    log.verbose("Session has no identity pool credentials, refreshing")
-                    let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
-                    await authStateMachine.send(event)
-                    return try await listenForSession(authStateMachine: authStateMachine)
-                }
                 return try await refreshIfRequired(
                     existingCredentials: credentials,
                     authStateMachine: authStateMachine,

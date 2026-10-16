@@ -340,9 +340,10 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
     /// minus `ceremonyResultTime`; nil when there is none by then, or when the ceremony fails with anything
     /// but a transient failure.
     ///
-    /// The one transient failure is `Code=1004` in the result line: on a freshly booted simulator a ceremony
-    /// fails with it at once, before any sheet, until the device has verified the relying party's association
-    /// (the plugin reports "Unable to complete the association"). The client's WebAuthn UI test retries the
+    /// The one transient failure is `Code=1004` in the result line. That is `ASAuthorizationError.failed`, the
+    /// generic failure code, not an association-specific one; but on a freshly booted simulator a ceremony fails
+    /// with it at once, before any sheet, until the device has verified the relying party's association (the
+    /// plugin reports "Unable to complete the association"), and that is what it usually means there. The client's WebAuthn UI test retries the
     /// same failure; its other retries (a sheet that never appeared, and `browserBusy` right after that) follow
     /// a cancel that this app has no way to make. Every other failure ends the ceremony at once.
     ///

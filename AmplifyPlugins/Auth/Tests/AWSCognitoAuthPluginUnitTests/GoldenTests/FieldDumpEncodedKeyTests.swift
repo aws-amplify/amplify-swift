@@ -9,9 +9,10 @@ import Foundation
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-/// `FieldDump` records a stored property under its encoded key (`FieldDump.encodedKeyAliases`). These tests
-/// check that each alias is exactly the type's encoded key, and that the stored-format gate still catches a
-/// changed key or value.
+/// `FieldDump` records a stored property under its property name, as captured; `FieldDump.encodedKeyAliases`
+/// maps a property renamed since the capture back to that name, which is its encoded key. These tests check
+/// that each alias is exactly the type's encoded key, and that the stored-format gate still catches a changed
+/// key or value.
 final class FieldDumpEncodedKeyTests: XCTestCase {
 
     static var storedFormat: URL { GoldenFiles.directory("GoldenStoredFormat") }

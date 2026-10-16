@@ -32,14 +32,17 @@ public struct CognitoUserPoolTokenProvider: Sendable {
 
     /// A currently valid access token for the session's signed-in user, refreshed first if the session's
     /// credentials need it. With an identity pool that includes its AWS credentials, refreshed with the tokens
-    /// as the plugin does, so an identity pool failure fails the call even while the token itself is valid.
+    /// as the plugin does, so an identity pool failure fails the call even while the token itself is valid. The
+    /// exception is a session still waiting for its first identity (carried forward from a previous configuration
+    /// without one, or `.default` holding a user-pool-only login under a configuration with an identity pool): the
+    /// token fetches no identity, and when its refresh succeeds but the identity step fails, the token is still returned.
     ///
     /// - Throws: `CredentialsError`, whose `disposition` says what to do with buffered work:
     ///   - `.notConfigured` if the configuration has no user pool, or the session is federated to the
     ///     identity pool (answered before any refresh);
     ///   - `.notSignedIn` for a signed-out or guest session, and while a sign-in on it waits on a challenge,
-    ///     whatever the session held before, an expired user's tokens included: the session is moving to whoever
-    ///     answers the challenge, so a consumer drops what it buffered for the user it is leaving;
+    ///     whatever the session held before, an expired user's tokens included (`.notSignedIn` there, not
+    ///     `.sessionExpired`), until the challenge is answered or the sign-in ends;
     ///   - `.sessionExpired` if the refresh token is dead;
     ///   - `.storageUnavailable` if secure storage could not be read or written;
     ///   - `.unknown` for anything else, such as a refresh that failed on the network, or a saved record

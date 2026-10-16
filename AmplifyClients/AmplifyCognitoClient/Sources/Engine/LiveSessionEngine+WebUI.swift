@@ -57,16 +57,25 @@ extension LiveSessionEngine {
         // Both handlers dismiss the browser: the outer one when the caller is cancelled (the core's lease
         // body, interrupted), which `run`'s unstructured task does not inherit; the inner one when
         // `cancelPendingSignIn` cancels that task.
-        return try await withTaskCancellationHandler {
-            try await run(epoch: epoch, on: operation) {
-                try await withTaskCancellationHandler {
-                    try await LiveHostedUISteps.signIn(options, on: operation, resources: resources)
-                } onCancel: {
-                    presenter.cancel()
+        do {
+            return try await withTaskCancellationHandler {
+                try await run(epoch: epoch, on: operation) {
+                    try await withTaskCancellationHandler {
+                        try await LiveHostedUISteps.signIn(options, on: operation, resources: resources)
+                    } onCancel: {
+                        presenter.cancel()
+                    }
                 }
+            } onCancel: {
+                presenter.cancel()
             }
-        } onCancel: {
-            presenter.cancel()
+        } catch {
+            // The seam's contract: a cancelled caller gets `CancellationError`, not the `.userCancelled` its
+            // dismissed browser reports, which would read as the user closing it.
+            if Task.isCancelled {
+                throw CancellationError()
+            }
+            throw error
         }
         #else
         throw Self.hostedUIUnavailable()

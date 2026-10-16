@@ -206,6 +206,48 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest, @unchecked Sendable
         }
     }
 
+    /// Test that deleteUser's catch-all recovery suggestion names the location it always has
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mocked service throws an error that is not a
+    ///   Cognito service error
+    ///
+    /// - When:
+    ///    - I invoke deleteUser
+    /// - Then:
+    ///    - I should get a .service error whose recovery suggestion names
+    ///      `AWSCognitoAuthPlugin/DeleteUser.swift`, line 56, as before the engine moved
+    ///
+    func testDeleteUserWithANonServiceErrorKeepsItsReportBugLocation() async {
+        struct NonServiceError: Error {}
+        mockIdentityProvider = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                RevokeTokenOutput()
+            }, mockGlobalSignOutResponse: { _ in
+                GlobalSignOutOutput()
+            },
+            mockDeleteUserOutput: { _ in
+                throw NonServiceError()
+            }
+        )
+
+        do {
+            try await plugin.deleteUser()
+            XCTFail("Should not get success")
+        } catch {
+            guard case AuthError.service(let description, let recoverySuggestion, _) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            XCTAssertEqual(description, "Delete user failed with service error")
+            XCTAssertTrue(
+                recoverySuggestion.hasSuffix(
+                    "file: AWSCognitoAuthPlugin/DeleteUser.swift\nfunction: execute(withDispatcher:environment:)\nline: 56"
+                ),
+                recoverySuggestion
+            )
+        }
+    }
+
     /// Test a deleteUser with `InvalidParameterException` from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a

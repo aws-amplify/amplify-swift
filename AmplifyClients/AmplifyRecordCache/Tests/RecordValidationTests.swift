@@ -116,16 +116,16 @@ class RecordValidationTests: XCTestCase, @unchecked Sendable {
 
     // MARK: - Cache size limit respects full record size
 
-    /// - Given: a storage with an 80-byte cache limit, and records of a 10-byte partition key and 30 bytes of data
-    /// - When: three such records are added
+    /// - Given: a storage with a 70-byte cache limit, and records of a 10-byte partition key and 30 bytes of data
+    /// - When: two such records are added
     /// - Then:
-    ///    - the first two (80 bytes in total) are accepted, and the third throws
-    ///      `RecordCacheError.limitExceeded`, because the partition keys count towards the cache size
+    ///    - the first (40 bytes) is accepted, and the second throws `RecordCacheError.limitExceeded`: 40 + 40 = 80
+    ///      bytes is over the limit, where the 70 bytes of 40 + 30 would fit if the second key did not count
     func testCacheLimitAccountsForPartitionKeyInCumulativeSize() async throws {
         let tightStorage = try SQLiteRecordStorage(
             identifier: "test_tight",
             maxRecords: 500,
-            cacheMaxBytes: 80,
+            cacheMaxBytes: 70,
             maxRecordSizeBytes: maxRecordSize,
             maxBytesPerStream: 10_000,
             maxPartitionKeyLength: Self.kinesisMaxPartitionKeyLength,
@@ -136,13 +136,10 @@ class RecordValidationTests: XCTestCase, @unchecked Sendable {
         let data = Data(repeating: 0x41, count: 30) // 30 bytes
         // Total per record = 40 bytes
 
-        // First record: 40 bytes — fits in 80-byte cache
+        // First record: 40 bytes — fits in the 70-byte cache
         try await tightStorage.addRecord(RecordInput(streamName: "stream", partitionKey: partitionKey, data: data))
 
-        // Second record: 40 more → total 80 — still fits
-        try await tightStorage.addRecord(RecordInput(streamName: "stream", partitionKey: partitionKey, data: data))
-
-        // Third record: 40 more → total 120 > 80 limit
+        // Second record: 40 more → total 80 > 70 limit. Counting only its data (30) would give 70, which fits.
         do {
             try await tightStorage.addRecord(RecordInput(streamName: "stream", partitionKey: partitionKey, data: data))
             XCTFail("Expected cache limit error")
@@ -203,13 +200,17 @@ class RecordValidationTests: XCTestCase, @unchecked Sendable {
     }
 
     /// - Given: a storage with a 256-character partition key limit
-    /// - When: a record with a partition key of 10 emoji (10 Unicode scalars, 40 bytes) is added
+    /// - When: a record with a partition key of 200 emoji (200 Unicode scalars, 400 UTF-16 code units, 800 UTF-8
+    ///   bytes) and 1 byte of data is added
     /// - Then:
-    ///    - it is accepted: the key's length is counted in Unicode scalars, not bytes
+    ///    - it is accepted: the key's length is counted in Unicode scalars, not UTF-16 code units or bytes
     func testPartitionKeyWithMultiByteUnicodeCountsScalarsNotBytes() async throws {
-        // Each emoji (😀) is 1 Unicode scalar but 4 bytes in UTF-8.
-        // 10 emoji = 10 scalars (within 256 limit).
-        let partitionKey = String(repeating: "😀", count: 10)
+        // Each emoji (😀) is 1 Unicode scalar, 2 UTF-16 code units and 4 UTF-8 bytes.
+        // 200 emoji = 200 scalars (within the 256 limit), but 400 UTF-16 code units and 800 bytes (over it).
+        // The record is 801 bytes, under the 1,000-byte record limit, so only the key's length decides.
+        let partitionKey = String(repeating: "😀", count: 200)
+        XCTAssertGreaterThan(partitionKey.utf16.count, Self.kinesisMaxPartitionKeyLength)
+        XCTAssertGreaterThan(partitionKey.utf8.count, Self.kinesisMaxPartitionKeyLength)
         try await storage.addRecord(
             RecordInput(streamName: "stream", partitionKey: partitionKey, data: Data([1]))
         )

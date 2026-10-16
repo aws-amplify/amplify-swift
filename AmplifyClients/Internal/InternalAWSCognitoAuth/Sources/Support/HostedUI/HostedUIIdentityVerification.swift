@@ -291,11 +291,34 @@ package enum HostedUIIdentityVerifier {
         return claims["aud"] as? [String] ?? []
     }
 
-    /// `https://cognito-idp.<region>.amazonaws.com/<poolId>`, or the `.com.cn` partition's form, where the
-    /// region is the pool ID's prefix. A custom endpoint does not change the issuer.
+    /// `https://<prefix>.<region>.<dnsSuffix>/<poolId>`, where the region is the pool ID's prefix, the prefix is
+    /// `cognito-idp` (Cognito's original issuer) or `issuer-cognito-idp` (its updated issuer, `IssuerConfigurationType`
+    /// `UPDATED`), and the suffix is one of `issuerDNSSuffixes`. The exact `/<poolId>` path is what ties the
+    /// token to this pool. A custom endpoint does not change the issuer.
     private static func isIssuer(_ issuer: String, userPoolId: String, region: String) -> Bool {
         let issuerRegion = issuerRegion(userPoolId: userPoolId, configuredRegion: region)
-        let host = "cognito-idp.\(issuerRegion).amazonaws.com"
-        return issuer == "https://\(host)/\(userPoolId)" || issuer == "https://\(host).cn/\(userPoolId)"
+        let path = "/\(userPoolId)"
+        guard issuer.hasPrefix("https://"), issuer.hasSuffix(path) else {
+            return false
+        }
+        let host = issuer.dropFirst("https://".count).dropLast(path.count)
+        return issuerHostPrefixes.contains { prefix in
+            issuerDNSSuffixes.contains { suffix in host == "\(prefix).\(issuerRegion).\(suffix)" }
+        }
     }
+
+    /// The host prefixes of Cognito's issuers: the original issuer, and the updated one.
+    static let issuerHostPrefixes = ["cognito-idp", "issuer-cognito-idp"]
+
+    /// The DNS suffix of each AWS partition, as the AWS SDK's partition table lists them (`aws`, `aws-cn`,
+    /// `aws-eusc`, `aws-iso`, `aws-iso-b`, `aws-iso-e`, `aws-iso-f`; `aws-us-gov` shares `amazonaws.com`).
+    static let issuerDNSSuffixes = [
+        "amazonaws.com",
+        "amazonaws.com.cn",
+        "amazonaws.eu",
+        "c2s.ic.gov",
+        "sc2s.sgov.gov",
+        "cloud.adc-e.uk",
+        "csp.hci.ic.gov"
+    ]
 }

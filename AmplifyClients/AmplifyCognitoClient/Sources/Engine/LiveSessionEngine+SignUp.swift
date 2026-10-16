@@ -254,7 +254,8 @@ extension LiveSessionEngine {
         }
     }
 
-    /// An empty dictionary is sent as omitted, as the plugin's `nil` options are (`EngineAccountRequests.swift`).
+    /// An empty dictionary is sent as omitted, as the plugin's sign-up tasks send their `nil` options. Only sign-up and
+    /// confirm-sign-up use it: the other calls send `[:]`, as the plugin does (`EngineAccountRequests.swift`).
     static func omittedIfEmpty(_ values: [String: String]) -> [String: String]? {
         values.isEmpty ? nil : values
     }

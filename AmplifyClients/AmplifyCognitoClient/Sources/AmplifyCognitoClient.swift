@@ -20,9 +20,10 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 
 /// A handle onto one Cognito session.
 ///
-/// Construction is synchronous and throwing, like every client in the family, and does no file or
-/// keychain I/O: the saved session is restored in the background, and every operation waits for that
-/// restore internally, bounded, so a caller never has to sequence around it.
+/// Construction is synchronous and throwing, like every client in the family. Built from an
+/// `AuthClientConfiguration`, it does no file or keychain I/O (`init(from:bundle:options:)` reads the
+/// configuration file first): the saved session is restored in the background, and every operation waits
+/// for that restore internally, bounded, so a caller never has to sequence around it.
 ///
 /// **Two clients with the same session ID are two handles onto one session.** Constructing a second
 /// does not create a second session and does not throw; both share one state, one stream of events and

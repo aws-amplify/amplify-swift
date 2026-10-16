@@ -10,6 +10,7 @@ import Foundation
 import InternalAmplifyKeychain
 import Security
 import XCTest
+@_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 @_spi(KeychainStore) import AWSPluginsCore
 @testable import AWSCognitoAuthPlugin
 import InternalAWSCognitoAuth
@@ -448,21 +449,129 @@ class AWSCognitoAuthCredentialStoreWipeTests: XCTestCase {
         }
     }
 
-    /// A plugin item in the shared service still means "already migrated", as it always has.
+    /// The plugin's session record in the shared service still means "already migrated", as it always has.
     ///
     /// - Given: an unshared service holding every plugin item, and a shared service already holding the
-    ///   plugin's configuration record (another process, such as the main app, migrated first)
+    ///   plugin's session record and configuration record (the main app migrated first)
     /// - When:
     ///    - an app extension configures the plugin with the access group, with migration
     /// - Then:
-    ///    - nothing is moved out of the unshared service
-    func testPluginItemInSharedServiceStillSkipsMigration() throws {
+    ///    - nothing is moved out of the unshared service, and the shared service's login is untouched
+    func testPluginSessionInSharedServiceStillSkipsMigration() throws {
         let pluginAccounts = try populateUnsharedServiceAsAPluginWould()
-        try keychain.store(service: sharedService, accessGroup: accessGroup).set(Data("config".utf8), key: "authConfiguration")
+        let shared = keychain.store(service: sharedService, accessGroup: accessGroup)
+        let sessionAccount = "amplify.us-east-1_Pool.us-east-1:identity-pool.session"
+        try shared.set(Data("migrated".utf8), key: sessionAccount)
+        try shared.set(AWSCognitoAuthCredentialStore.encodeAuthConfiguration(authConfiguration), key: "authConfiguration")
 
         _ = makeStore(accessGroup: accessGroup, migrate: true)
 
         XCTAssertEqual(try keychain.store(service: service).allAccounts(), pluginAccounts.sorted())
+        XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: sessionAccount), Data("migrated".utf8))
+    }
+
+    /// A plugin device record in the shared service still means "already migrated".
+    ///
+    /// - Given: an unshared service holding every plugin item, and a shared service holding only a device
+    ///   record of the plugin's
+    /// - When:
+    ///    - the plugin is configured with the access group, with migration
+    /// - Then:
+    ///    - nothing is moved out of the unshared service, and the device record is untouched
+    func testPluginDeviceRecordInSharedServiceStillSkipsMigration() throws {
+        let pluginAccounts = try populateUnsharedServiceAsAPluginWould()
+        let deviceAccount = makeStore(accessGroup: nil).generateDeviceMetadataKey(for: username)
+        try keychain.store(service: sharedService, accessGroup: accessGroup).set(Data("device".utf8), key: deviceAccount)
+
+        _ = makeStore(accessGroup: accessGroup, migrate: true)
+
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), pluginAccounts.sorted())
+        XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: deviceAccount), Data("device".utf8))
+    }
+
+    /// The Cognito client's default session restoring first in the access group (a widget that runs before the
+    /// app) does not make the plugin skip its migration.
+    ///
+    /// - Given: an unshared service holding every plugin item, and the client's `.default` record store over the
+    ///   access group's shared service applying the plugin's configuration rule, as its restore does: with no
+    ///   configuration recorded yet, it records `authConfiguration` there, and nothing else
+    /// - When:
+    ///    - the app's plugin is configured with the access group for the first time, with migration
+    /// - Then:
+    ///    - every plugin item moves into the shared service, the configuration record included, and the new
+    ///      store reads the session
+    func testDefaultSessionRestoredFirstInTheGroupDoesNotSkipMigration() throws {
+        let pluginAccounts = try populateUnsharedServiceAsAPluginWould()
+        let shared = keychain.store(service: sharedService, accessGroup: accessGroup)
+        let defaultSession = SessionRecordStore(
+            namespace: SessionStorageNamespace(pools: PoolNamespace(authConfiguration), accessGroup: accessGroup),
+            keychain: shared
+        )
+        _ = try defaultSession.applyPluginConfigurationRule(current: authConfiguration)
+        XCTAssertEqual(try shared.allAccounts(), ["authConfiguration"])
+
+        let store = makeStore(accessGroup: accessGroup, migrate: true)
+
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), [])
+        XCTAssertEqual(try shared.allAccounts(), pluginAccounts.sorted())
+        XCTAssertNoThrow(try store.retrieveCredential())
+    }
+
+    /// A configuration record alone in the shared service does not make the plugin skip its transition clear
+    /// either: like the migration, the clear only stops for a login another process already keeps there.
+    ///
+    /// - Given: an unshared service holding every plugin item, and a shared service holding only
+    ///   `authConfiguration` (an app extension's plugin, configured with the access group first, recorded it)
+    /// - When:
+    ///    - the app's plugin is configured with the access group for the first time, without migration
+    /// - Then:
+    ///    - the unshared plugin items are removed, as they are with an empty shared service
+    func testConfigurationRecordAloneInSharedServiceDoesNotSkipTheClear() throws {
+        _ = try populateUnsharedServiceAsAPluginWould()
+        try keychain.store(service: sharedService, accessGroup: accessGroup)
+            .set(AWSCognitoAuthCredentialStore.encodeAuthConfiguration(authConfiguration), key: "authConfiguration")
+
+        _ = makeStore(accessGroup: accessGroup)
+
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), [])
+    }
+
+    /// An app extension whose plugin is configured with the access group before the app no longer makes the
+    /// app's migration abort.
+    ///
+    /// - Given: the app's unshared service holding every plugin item, and an app extension, with its own
+    ///   unshared service and `UserDefaults`, whose plugin is configured with the access group and migration
+    ///   first: it migrates nothing and records its configuration in the shared service
+    /// - When:
+    ///    - the app's plugin is then configured with the access group for the first time, with migration
+    /// - Then:
+    ///    - the app's plugin items move into the shared service, and the new store reads the app's session
+    func testExtensionConfiguredFirstDoesNotSkipTheAppsMigration() throws {
+        let pluginAccounts = try populateUnsharedServiceAsAPluginWould()
+        let extensionKeychain = InMemoryKeychain()
+        let extensionDefaultsSuite = "AWSCognitoAuthCredentialStoreWipeTests.extension.\(UUID().uuidString)"
+        let extensionDefaults = try XCTUnwrap(UserDefaults(suiteName: extensionDefaultsSuite))
+        defer { extensionDefaults.removePersistentDomain(forName: extensionDefaultsSuite) }
+        let keychain = keychain!
+        _ = AWSCognitoAuthCredentialStore(
+            authConfiguration: authConfiguration,
+            accessGroup: accessGroup,
+            migrateKeychainItemsOfUserSession: true,
+            userDefaults: extensionDefaults,
+            makeKeychainStore: { service, accessGroup in
+                // The extension's unshared service is its own; the access group's shared service is the app's.
+                accessGroup == nil ? extensionKeychain.store(service: service) : keychain.store(service: service, accessGroup: accessGroup)
+            },
+            logger: AmplifyEngineLogRouter()
+        )
+        let shared = keychain.store(service: sharedService, accessGroup: accessGroup)
+        XCTAssertEqual(try shared.allAccounts(), ["authConfiguration"])
+
+        let store = makeStore(accessGroup: accessGroup, migrate: true)
+
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), [])
+        XCTAssertEqual(try shared.allAccounts(), pluginAccounts.sorted())
+        XCTAssertNoThrow(try store.retrieveCredential())
     }
 
     /// The interop Q7 migration's sequence: the migration moves `.default`'s two items with the configuration the

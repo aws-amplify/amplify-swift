@@ -16,8 +16,8 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import InternalAWSCognitoAuth
 
-/// The rollback rows, the plugin's side: rotation, roll-forward, mixed binaries, named sessions and a
-/// newer sidecar, each across the `.released` and `.current` plugin binaries. The sign-out rows are in
+/// The rollback rows, the plugin's side: rotation, roll-forward, mixed binaries, named sessions, a
+/// newer sidecar and a deleting configuration change, each across the `.released` and `.current` plugin binaries. The sign-out rows are in
 /// `RollbackMatrixPluginTests+SignOut.swift`.
 ///
 /// Where a row runs the client as an app does, it is `ClientOverKeychain`: a real `AmplifyCognitoClient` over the
@@ -281,5 +281,62 @@ extension RollbackMatrixPluginTests {
         XCTAssertEqual(keychain.value(service: pluginKeychainService, account: sidecarAccount), newerSidecar)
         XCTAssertEqual(keychain.value(service: pluginKeychainService, account: futureAccount), versionTwo)
         XCTAssertEqual(pluginKeychain.hiddenReadAccounts, [])
+    }
+
+    // MARK: - A deleting configuration change on a rollback
+
+    /// A released plugin's deleting configuration change leaves the sidecar, which the client then lists as a
+    /// signed-out row (a caveat, like a plugin `deleteUser`)
+    ///
+    /// - Given: The client's `.default` ran under configuration C and holds alice, labelled "Work", with her sidecar
+    /// - When:
+    ///    - The app rolls back to each plugin binary, built with configuration A (another user pool), whose rule from C
+    ///      to A deletes C's login; then it rolls forward to the client under C, which runs the rule from A to C and
+    ///      lists its sessions, signed-out rows included
+    /// - Then:
+    ///    - Both binaries delete C's login, and ask to remove C's two `$default` items
+    ///    - `.current` removes them, so the client lists nothing under C
+    ///    - `.released` keeps them, as 2.62.0 does, so the client lists a signed-out "Work" row for alice under C, for
+    ///      a login nobody signed out of; the roll-forward's own rule removes only A's items
+    ///
+    func testMatrix_releasedPluginDeletingChange_leavesTheSidecar_caveat() throws {
+        let configurationC = ConfigurationChangeCase.both()
+        let configurationA = ConfigurationChangeCase.userPool(poolId: "us-east-1_PoolB")
+        let poolsC = PoolNamespace(configurationC)
+        let defaultItemsC = SessionRecordAccount.defaultSessionItemAccounts(
+            poolNamespace: AWSCognitoAuthCredentialStore.poolNamespace(of: configurationC)
+        )
+        let alice = try RollbackMatrixBytes.pluginPayload("userPoolAndIdentityPool")
+        for binary in RollbackPluginBinary.allCases {
+            resetKeychain()
+            let underC = clientStore(for: configurationC)
+            _ = try underC.applyPluginConfigurationRule(current: configurationC)
+            try RollbackMatrixBytes.writeClientRecord(alice, label: "Work", in: keychain, pools: poolsC)
+            let sidecarC = SessionRecordKey.metaAccount(in: poolsC)
+            XCTAssertNotNil(keychain.value(service: pluginKeychainService, account: sidecarC), "\(binary)")
+
+            _ = pluginStore(binary, configurationA)
+
+            XCTAssertNil(
+                keychain.value(service: pluginKeychainService, account: AWSCognitoAuthCredentialStore.sessionAccount(for: configurationC)),
+                "\(binary): C's login is deleted"
+            )
+            XCTAssertEqual(pluginKeychain.hiddenRemoveAccounts, defaultItemsC, "\(binary)")
+            XCTAssertEqual(pluginKeychain.hiddenReadAccounts, [], "\(binary)")
+
+            _ = try underC.applyPluginConfigurationRule(current: configurationC)
+            let listed = try underC.storedSessions(includingSignedOut: true)
+
+            switch binary {
+            case .released:
+                XCTAssertNotNil(keychain.value(service: pluginKeychainService, account: sidecarC), "\(binary)")
+                XCTAssertEqual(listed, [
+                    StoredSession(sessionId: .default, label: "Work", username: "fixture-user", kind: .signedOut)
+                ], "\(binary)")
+            case .current:
+                XCTAssertNil(keychain.value(service: pluginKeychainService, account: sidecarC), "\(binary)")
+                XCTAssertEqual(listed, [], "\(binary)")
+            }
+        }
     }
 }

@@ -15,28 +15,51 @@ import AmplifyFoundation
 /// always resolved it, so messages keep their namespace and still honour a logging plugin that was
 /// configured after the store was created.
 ///
+/// A line that carries an error is printed as `AWSCognitoAuthPlugin`'s engine log router prints it: the
+/// message, then ` - ` and the error's `localizedDescription`. So the shared keychain module's lines read the
+/// same through `KeychainStore` as through the plugin's engine keychain store.
+///
 /// Kept in its own file because both modules declare `Logger` and `LogLevel`; here they are always
 /// qualified.
 struct AmplifyLoggerBridge<Source: DefaultLogger>: AmplifyFoundation.Logger {
 
     func error(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        Source.log.error(message())
+        guard let error = error() else {
+            Source.log.error(message())
+            return
+        }
+        let text = message()
+        if text.isEmpty {
+            Source.log.error(error: error)
+        } else {
+            Source.log.error(Self.render(text, error))
+        }
     }
 
     func warn(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        Source.log.warn(message())
+        Source.log.warn(Self.render(message(), error()))
     }
 
     func info(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        Source.log.info(message())
+        Source.log.info(Self.render(message(), error()))
     }
 
     func debug(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        Source.log.debug(message())
+        Source.log.debug(Self.render(message(), error()))
     }
 
     func verbose(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
-        Source.log.verbose(message())
+        Source.log.verbose(Self.render(message(), error()))
+    }
+
+    /// The text of a line that carries an error. Without an error, the message unchanged. Only called from
+    /// inside the autoclosures passed to Amplify, so it runs only when a target logs the line.
+    static func render(_ message: String, _ error: Error?) -> String {
+        guard let error else {
+            return message
+        }
+        let description = error.localizedDescription
+        return message.isEmpty ? description : "\(message) - \(description)"
     }
 
     func log(_ logLevel: AmplifyFoundation.LogLevel, _ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {

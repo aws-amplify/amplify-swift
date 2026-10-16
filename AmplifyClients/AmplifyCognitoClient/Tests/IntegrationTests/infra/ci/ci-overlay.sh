@@ -32,7 +32,7 @@
 #
 # Exit 0 with <dest-dir> made (mode 700, files 600) when at least one role was overlaid, and exit 0 with no
 # <dest-dir> when there is nothing to overlay (no subfolder, or none of the roles' files): the caller then leaves
-# COGNITO_CLIENT_INTEG_DIR unset, and the suites skip on CI as before. A file that does not check out (not JSON,
+# COGNITO_CLIENT_INTEG_DIR unset, and the tests that need those files fail. A file that does not check out (not JSON,
 # no user pool, the sandbox's mark, a credentials file that is not all strings, a rotation client on another
 # pool, an alias-codes pool without email as the username or a code API, capabilities that are not the known
 # ones) refuses the whole overlay: exit 1, no <dest-dir>. Prints file names and roles, never their contents.
