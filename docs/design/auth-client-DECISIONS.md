@@ -35,10 +35,13 @@ saved login, so there is no second key, no read-through and no `completeAdoption
 works better: a rolled-back plugin reads the newest login. The caveats that remain are #18.
 
 **#8 follow-ons, now that the long key is settled:**
-- **Validate `SessionID` eagerly** against `[A-Za-z0-9_-]`, non-empty, with a typed error naming the
+- **Validate `SessionID` eagerly** against `[A-Za-z0-9_-]`, 1 to 64 characters, with a typed error naming the
   offending character. This is what removes the delimiter ambiguity from the long key — no `.` or `/` can
   reach a key segment. Two independent vendors already agree on this exact charset (Firebase's
-  `applicationNameAllowedCharacters`, and the AWS shared-config profile-name rule).
+  `applicationNameAllowedCharacters`, and the AWS shared-config profile-name rule). One exception:
+  `named("$default")` returns `.default`, so a persisted `stringValue` round-trips; every other `$` is refused. An
+  app that builds session IDs from outside input rejects `"$default"` first, or that input lands on the plugin's
+  saved login.
 - **`SessionID` is case-sensitive.** Lowercasing would silently merge `.named("Work")` and `.named("work")`
   into **one** session — a credential-crossover bug of exactly the class flagged in
   `AWSCognitoIdentityPoolOperations.kt:61`. Keychain accounts are case-sensitive, so case-sensitive is also
@@ -76,8 +79,9 @@ iPhone cannot provide two foreground-active anchors) rather than by an OS guaran
 **Two caveats that still apply:**
 - **Ephemeral is best-effort, and failure is silent.** Apple: a non-Safari default browser *"might or might
   not respect the request."* androidx: *"and if the browser supports it."* When it is not honoured the user
-  signs in as the **wrong account**. §9 says: request ephemeral **and verify the returned identity against
-  the requested one.**
+  signs in as the **wrong account**. §9 says: request ephemeral, and verify the returned identity where it
+  matters. *As built,* the verification is opt-in, through `WebUIOptions.identityExpectation` (`.none` by
+  default; `.matches(_:)` or `.distinctFromOtherSessions`), with `prompt: [.login]` beside it.
 - **Serialization is not inherited.** Hosted-UI flows are serialized today *only* by the single global auth
   state machine (`HostedUIASWebAuthenticationSession` is minted fresh per action, with no in-flight guard of
   its own). Splitting into N sessions removes the only serialization that exists, on a seam with a five-issue
@@ -86,17 +90,16 @@ iPhone cannot provide two foreground-active anchors) rather than by an OS guaran
   cancel/reset, because Auth0 documented that a lock held by a session the OS silently tore down bricks
   sign-in until app restart.
 
-**As built.** The rule has an explicit home, a process-wide system-sheet lock, with `cancelWebUISignIn()` (this
-session's sheet) and the static `resetSystemSheet()` (whoever holds it) as the public cancel and reset. Its scope
-was widened on 2026-10-02: see #16.
+**As built.** The rule has an explicit home, a system-sheet lock across the client's sessions in the process, with
+`cancelWebUISignIn()` (this session's sheet) and the static `resetSystemSheet()` (whichever session holds it) as the
+public cancel and reset. Its scope was widened on 2026-10-02: see #16.
 
 ## Knock-on effects of deferring sign-out-all (#3)
 
 - There is no `.others` scope. §11 Limits records that there is no sign-out-all, so nobody reads its absence
   as an oversight.
-- `SignOutScope` as a `RawRepresentable` struct is **still worth doing** even for a two-value set — it is
-  what makes adding `.global`/`.others` later a non-breaking change rather than a minor bump plus an
-  exhaustive-switch break.
+- *As built,* there is no `SignOutScope`: the option is `AuthClientSignOutOptions.globalSignOut: Bool`, as in
+  the plugin, beside `purgeStoredSession`.
 - `AuthSignOutResult` having zero requirements is **less urgent but not moot**: a purging sign-out can still
   partially fail — revoke succeeds and local clear fails, or revoke fails and we purge anyway — and there was
   nowhere to say so. (The client returns its own `AuthClientSignOutResult`; design §14.8.)
@@ -118,8 +121,7 @@ Each is written into the design; the sections after #8 below give the detail.
 | 16 | "One browser sign-in at a time" | **One system sheet per process, as library policy, on iOS, macOS and visionOS**: browser sign-in, the browser sign-out page and the passkey sheet (2026-10-02). |
 | 17 | The default session's own items in the plugin's keychain operations | **They belong to the plugin's session**, wherever the plugin moves or clears its login (2026-10-02 to 2026-10-05). |
 | 18 | Rollback caveats that remain | **Accepted for the beta and documented**, because the plugin behaves the same way (2026-10-05). |
-| 19 | How long the client stays experimental | **Behind `@_spi(AmplifyExperimental)` until the other clients act on the provider's error contract** (2026-10-05). |
-| 20 | Smaller decisions | Listed in [20](#20-smaller-decisions). |
+| 19 | Smaller decisions | Listed in [19](#19-smaller-decisions). |
 
 ---
 
@@ -191,7 +193,7 @@ a namespace change (`AWSCognitoAuthCredentialStore.swift:103-105`).
 | | Option | Cost |
 |---|---|---|
 | **A** ✅ | **Read-old / write-new / don't delete.** Rollback works. | Stale old copy; sign-out must delete both keys. |
-| **B** | **Migrate and delete, the Amplify v2 precedent.** No rollback. | "Customer rolls back a bad release, all users are signed out." Android saw a one-way migration fail 5–10% of the time, and couldn't root-cause it *because* the migration was one-way and unversioned. |
+| **B** | **Migrate and delete, the Amplify v2 precedent.** No rollback. | "Customer rolls back a bad release, all users are signed out." Android saw a one-way migration fail in the field, and couldn't root-cause it *because* the migration was one-way and unversioned. |
 
 **Also:** add a **version segment to the key now** (see #8's follow-ons).
 
@@ -214,8 +216,8 @@ nothing to bridge from.
 
 *Changed while building (#12, #13).* The bridge is not built for the beta, and the "reader ships first" rule is
 gone with the reader: the default session is the plugin's own saved login, so there is no new format for the
-plugin to read. A different release-order rule holds instead: the plugin's scoped keychain wipe ships before the
-client writes records (#17).
+plugin to read. A different release-order rule holds instead: the plugin's scoped keychain wipe ships with the
+client, in the same release (#17).
 
 ---
 
@@ -261,8 +263,8 @@ the follow-ons in the summary.
 ## 9. Which consumers does multi-session reach?
 
 Decided 2026-09-23, checking the design against the code. **The standalone clients.** Every client in the
-`AmplifyClients` family already takes a credentials provider at construction, so a session's
-`credentialsProvider` binds it to that session. The category plugins resolve auth through `Amplify.Auth`, so they
+`AmplifyClients` family that calls AWS (Kinesis, Firehose, Connect and CloudWatch) takes a credentials provider at
+construction, so a session's `credentialsProvider` binds it to that session. The category plugins resolve auth through `Amplify.Auth`, so they
 keep following the plugin's session however many Auth Clients exist; DataStore is out of scope. The failure is
 silent (a Storage call succeeds, against the plugin user's prefix), so the design's limit 2 and the release notes
 say so loudly.
@@ -281,8 +283,8 @@ Decided 2026-09-25.
 
 - **Gen2 configuration only.** A Gen1 `amplifyconfiguration.json` is refused with `AuthClientError.configuration`,
   naming Gen2 `amplify_outputs` as what to use.
-- **iOS first.** The beta is tested end to end on iOS. It builds for macOS, visionOS, tvOS and watchOS, which are
-  untested in the beta.
+- **iOS first.** iOS is the beta's first platform; the client also builds for macOS, visionOS, tvOS and
+  watchOS.
 - **Passkeys (WebAuthn) end to end**, sign-in and credential management, rather than deferred.
 
 ## 12. Where is the default session saved?
@@ -333,7 +335,9 @@ The conditions that came with it:
 - **The static `signOutStoredSession` and `purgeStoredSession` apply the rule only when it would carry**, because
   they may be called with a configuration other than the app's. They never record a configuration: only a restore
   does. A static sign-out that carried a user's login also writes the signed-out value over the login it carried
-  from, while that still holds the user it signed out (2026-10-03). A static purge revokes nothing and leaves it.
+  from, while that still holds the user it signed out (2026-10-03). A static purge revokes nothing and leaves it,
+  so until `.default` first restores under the configuration the purge carried to, the purge is undone there: the
+  login is still listed, and the next restore carries it back signed in. `signOutStoredSession` ends it.
 - **A deleted login takes the default session's label item and interrupted sign-in with it**, whoever applies the
   change. The plugin does it too (2026-10-05): when its change deletes the login, it removes them under the old
   configuration, best effort, right after the login. Without that, the client would list a signed-out row for a
@@ -365,32 +369,29 @@ to the plugin's session.** So the plugin's access-group migration and the public
 with the login, and an access-group transition wipe and the migration's destination clear remove them. Every
 other client record is spared by the plugin's wipes and migrations.
 
-**Release order.** The plugin's scoped wipe ships in a plugin release before the client writes records, because a
-released plugin's access-group transition wipes the whole keychain service, the client's records included.
+**Release order.** The plugin's scoped wipe ships with the client, in the same release, because a released
+plugin's access-group transition wipes the whole keychain service, the client's records included.
 
 ## 18. Rollback caveats that remain
 
-Accepted for the beta on 2026-10-05, because the plugin behaves the same way, and documented in the design's
-rollback matrix (§4.8):
+Documented in the design's rollback matrix (§4.8). The first two were accepted for the beta on 2026-10-05,
+because the plugin behaves the same way; the third is the client's own:
 
 - **A purge, or the plugin's own sign-out, after a configuration carry** leaves the earlier configuration's copy,
   because a carry keeps its source. A rollback to the build with that configuration then reads the user signed in.
   A sign-out through the client does not do this: it writes the signed-out value, which every build carries.
 - **A later change that the rule does not carry, onto an earlier configuration's key,** deletes the signed-out
   login and can find the user's old copy there, which then restores signed in.
+- **A rollback to a released plugin while AWSMobileClient logins are still on the device** replaces whatever
+  `.default` holds with the old AWSMobileClient user: a released plugin migrates that data at configure with no
+  check. The plugin's own migration deletes those logins at its first configure, so a plugin-only app has none
+  left; a client-only app keeps them until `.default` signs out or is purged. An app moving from AWSMobileClient
+  ships a plugin release that migrated them first.
 
 Also stated, not fixable by the client: plugins older than 2.51.0 cannot refresh at all on an app client with
 refresh-token rotation on.
 
-## 19. How long the client stays experimental
-
-Decided 2026-10-05. **The client stays behind `@_spi(AmplifyExperimental)` until Kinesis, Firehose, Connect and
-CloudWatch read `CredentialsError.disposition` and act on it.** The error contract (design §15.2) does nothing for a
-consumer that does not read it, so the client is not offered as stable before its consumers honour it.
-AmplifyFoundation's `CredentialsError` and `StorageUnavailableReason` are behind the same SPI (2026-09-27), so they
-do not become stable API with the next release either.
-
-## 20. Smaller decisions
+## 19. Smaller decisions
 
 - **The dead-token rule keeps 30 seconds** (2026-10-02). A refresh refused as a reused refresh token is retryable
   the first time; a second, at least 30 seconds later, with nothing saved meanwhile, reports `sessionExpired`.

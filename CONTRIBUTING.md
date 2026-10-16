@@ -6,6 +6,7 @@ Thank you for your interest in contributing to our project! <3 Whether it's a bu
   - [Our Design](#our-design)
 - [Semantic versioning](#semantic-versioning)
   - [Semantic versioning and enumeration cases](#semantic-versioning-and-enumeration-cases)
+- [Releasing](#releasing)
 - [Getting Started](#getting-started)
 - [Testing](#testing)
 - [Tools](#tools)
@@ -39,6 +40,19 @@ When Amplify adds a new enumeration value, we will publish a new **minor** versi
 of the library.
 
 Applications that evaluate all members of an enumeration using a `switch` statement can add a `default` case to prevent new cases from causing compile warnings or errors.
+
+## Releasing
+
+Releases are cut with the Fastlane `release` lane (`bundle exec fastlane ios release`). It bumps the versions, generates
+the `CHANGELOG.md` entry from the commits since the last release, which keeps only `feat` and `fix` commits and breaking
+changes, tags the release and pushes it. Release checklist:
+
+1. Fold the pending release notes into the release notes. Copy every row of
+   [`docs/design/RELEASE-NOTES-PENDING.md`](docs/design/RELEASE-NOTES-PENDING.md) that describes a
+   change this release ships (the Auth plugin's table, and the `AmplifyCognitoClient` table when the client ships) into
+   the GitHub release body, under the product it changes, and remove those rows from the file in the release's
+   follow-up commit. The generated changelog never lists a change that landed in a `refactor`, `chore` or `test`
+   commit, so this step is how such changes reach customers.
 
 ## Getting Started
 

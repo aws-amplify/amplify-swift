@@ -5,7 +5,7 @@ earlier. The caveats that remain are accepted for the beta, because the plugin b
 Earlier status: documented — for later discussion (2026-09-27).
 **Source:** the executable rollback matrix (`RollbackMatrixPluginTests` and `RollbackMatrixClientTests`).
 
-## 1. Rolling back to the plugin with refresh-token rotation on (matrix 03, row 3)
+## 1. Rolling back to the plugin with refresh-token rotation on
 
 After an app has used the client with rotation on, a rollback to the plugin leaves the plugin holding a refresh
 token the client has since rotated away. The plugin's next refresh gets `RefreshTokenReuseException`, which it
@@ -59,7 +59,7 @@ rule: a later configuration change that the rule does not carry deletes the sign
 earlier configuration's key that still holds the user's old copy, which then restores the user signed in (design
 §4.8). Both caveats are accepted for the beta (2026-10-05).
 
-## 3. Rolling forward to the client after 1 (matrix 03, row 9) — resolved
+## 3. Rolling forward to the client after 1 — resolved
 
 The client used to stay `.signedIn` on a retryable error forever. It now reports `sessionExpired` when a second
 reuse, spaced from the first, finds its record unchanged.

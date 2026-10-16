@@ -1,6 +1,6 @@
-# Open issues for later discussion
+# Issues for later discussion
 
-Issues found while building `AmplifyCognitoClient` that are outside the branch's scope or need a decision later. Each file is one issue: what happens, who is affected, what we know, and the options.
+Issues found while building `AmplifyCognitoClient` that are outside the branch's scope or need a decision later. Each file is one issue: what happens, who is affected, what we know, and the options. The table gives each one's status.
 
 | Issue | Area | Status |
 |---|---|---|

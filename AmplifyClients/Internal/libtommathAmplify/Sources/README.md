@@ -4,5 +4,5 @@ This is the fork for [LibTomMath](https://github.com/libtom/libtommath). Fork is
 With the following changes:
 
 - Renamed files and variables with `amplify` prefix.
-- Removed unsupported platform code from Sources/libtommath/amplify_bn_s_mp_rand_platform.c
-- Removed compile time warning due to unreachable code in Sources/libtommath/amplify_bn_mp_set_double.c
+- Removed unsupported platform code from amplify_bn_s_mp_rand_platform.c
+- Removed compile time warning due to unreachable code in amplify_bn_mp_set_double.c
