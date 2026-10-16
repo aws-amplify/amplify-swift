@@ -1,10 +1,22 @@
 # Fails any change to the Auth plugin's behavior snapshots: recorded outputs of AWSCognitoAuthPlugin (stored format, error catalogue,
 # log transcript, keychain queries, configuration), or to this lock itself.
-# The snapshots were recorded once, before the shared Cognito code moved out of the plugin, so any change to
-# the plugin's behavior shows up as a diff. See scripts/cognito-engine/check_fixture_lock.sh.
+# The snapshots record the plugin as of the move of the shared Cognito code out of the plugin (a few were
+# re-pinned since, for reviewed changes), so any later change to these recorded outputs shows up as a diff. They
+# are not a record of the last release: scripts/cognito-engine/check_fixture_lock.sh lists the fixtures that
+# hold deliberate changes from it.
 #
-# Runs on every pull request and on every push to main (no paths filter), so it can be made a required check. It runs the base
-# branch's copy of the script when there is one, so a PR cannot weaken the check that judges it.
+# Runs on every pull request and on every push to main (no paths filter), so it can be made a required check; until
+# it is one, a failing run does not block a merge. It runs the base branch's copy of the script when there is one,
+# so a PR cannot weaken the script that judges it. This workflow file is a different matter: on `pull_request`,
+# GitHub runs the PR's own copy of it, so a PR that edits the check step (to skip the base script, say) judges
+# itself. The script's self-file check fails a PR that edits this file but still calls the base script; only the
+# admin review CODEOWNERS requires for this file guards against one that does not. `edited` is among the triggers
+# so that retargeting a PR re-runs the check against the new base's copy of the script.
+#
+# A deliberate re-lock (new snapshots and their new pins, admin-approved) fails this check by design: the base
+# script still has the old pins, and the script itself changed. An admin merges it past the failure (with a bypass,
+# once the check is required), and the push run of that merge on main, which runs the pre-merge script, fails once.
+# The next push runs the merged script and passes.
 #
 # A second job checks that scripts/cognito-engine/engine_paths.txt (the files that belong to the shared Cognito module) matches
 # what scripts/cognito-engine/gen_engine_paths.py generates, so a hand edit or a move without a regeneration fails.
@@ -16,6 +28,7 @@ name: Auth | Plugin Behavior Snapshots
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, edited]
   push:
     branches:
       - main

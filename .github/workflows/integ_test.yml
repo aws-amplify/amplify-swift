@@ -32,6 +32,7 @@ jobs:
       predictions: ${{ steps.sel.outputs.predictions }}
       auth: ${{ steps.sel.outputs.auth }}
       auth_client: ${{ steps.sel.outputs.auth_client }}
+      auth_client_interop: ${{ steps.sel.outputs.auth_client_interop }}
       geo: ${{ steps.sel.outputs.geo }}
       storage: ${{ steps.sel.outputs.storage }}
       logging: ${{ steps.sel.outputs.logging }}
@@ -108,8 +109,11 @@ jobs:
   auth-client-test:
     name: Auth Cognito Client Integration Tests
     needs: detect
-    if: ${{ needs.detect.outputs.auth_client == 'true' }}
+    if: ${{ needs.detect.outputs.auth_client == 'true' || needs.detect.outputs.auth_client_interop == 'true' }}
     uses: ./.github/workflows/integ_test_auth_client.yml
+    with:
+      # auth_client_interop alone (a plugin-only change) runs only the plugin interop job.
+      skip-client-suites: ${{ needs.detect.outputs.auth_client != 'true' }}
     secrets: inherit
 
   geo-test:

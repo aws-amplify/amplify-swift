@@ -21,6 +21,8 @@ which is the grep half of G6, and fails if any target in the engine's closure ha
 `AmplifyPlugins/` (the client must never build a target that lives in a plugin directory).
 It also greps the client's Sources/ for `import` of a module the client must not use: SwiftPM lets a target
 import a module built in the same graph without declaring it, so the dependency graph alone can miss one.
+And it fails if any non-test target other than the client reaches AmplifyCognitoClient, or imports it from its
+sources: the plugin and every other shipped module must never pull the client into an app (test targets may).
 """
 import argparse
 import json
@@ -110,8 +112,12 @@ def forbidden_imports(root, forbidden, sources=ENGINE_DIR):
 def check(package, stage, root=None):
     forbidden = FINAL_FORBIDDEN if stage == "final" else ALWAYS_FORBIDDEN
     reached, products = closure(package, ENGINE)
-    problems = [f"{ENGINE} depends on {name}: {' -> '.join(path)}"
-                for name, path in sorted({**reached, **products}.items()) if name in forbidden]
+    problems = []
+    if ENGINE not in {target["name"] for target in package["targets"]}:
+        # A renamed or removed engine target would walk as an empty target and pass.
+        problems.append(f"{ENGINE} is not a target of the package, so its dependencies cannot be checked")
+    problems += [f"{ENGINE} depends on {name}: {' -> '.join(path)}"
+                 for name, path in sorted({**reached, **products}.items()) if name in forbidden]
     if stage == "final":
         problems += [f"{name} is under {PLUGIN_ROOT} ({directory}): {' -> '.join(path)}"
                      for name, directory, path in plugin_path_targets(package, reached)]
@@ -125,7 +131,29 @@ def check(package, stage, root=None):
         problems += [f"forbidden import: {hit}" for hit in forbidden_imports(root, forbidden)]
     if stage == "final":
         problems += client_problems(package, root)
+        problems += client_dependent_problems(package, root)
     return problems, reached, products
+
+
+def client_dependent_problems(package, root=None):
+    """Every non-test target other than the client (the plugin included) that reaches the client through its
+    dependencies, and, with `root`, every one whose sources import it."""
+    targets = {target["name"]: target for target in package["targets"]}
+    if CLIENT not in targets:
+        return []
+    problems = []
+    for name in sorted(targets):
+        target = targets[name]
+        if name == CLIENT or target.get("type") == "test":
+            continue
+        reached, products = closure(package, name)
+        path = {**reached, **products}.get(CLIENT)
+        if path:
+            problems.append(f"{name} depends on {CLIENT}: {' -> '.join(path)}")
+        if root:
+            problems += [f"{name} imports {CLIENT}: {hit}"
+                         for hit in forbidden_imports(root, {CLIENT}, target_path(target))]
+    return problems
 
 
 def client_forbidden(package):
@@ -202,6 +230,11 @@ def self_test():
     ]}
     problems, _, _ = check(client_located, "final")
     assert problems == [f"Helper is under AmplifyPlugins/ (AmplifyPlugins/Auth/Sources/Helper): {CLIENT} -> Helper"], problems
+    # A package without the engine target (a rename, say) fails at every stage instead of reporting clean.
+    renamed = {"targets": [{"name": "RenamedEngine", "dependencies": []}]}
+    for stage in ("pre-sever", "final"):
+        problems, _, _ = check(renamed, stage)
+        assert problems == [f"{ENGINE} is not a target of the package, so its dependencies cannot be checked"], problems
     import tempfile
     clean = {"targets": [{"name": ENGINE, "path": ENGINE_DIR, "dependencies": []}]}
     with tempfile.TemporaryDirectory() as root:
@@ -278,6 +311,45 @@ def self_test():
         with_client["targets"][1]["path"] = "Elsewhere/Client"
         problems, _, _ = check(with_client, "final", root)
         assert problems == [f"{CLIENT}'s path is Elsewhere/Client, but CLIENT_DIR is {CLIENT_DIR}"], problems
+    # No shipped target may reach the client, directly or through another target, nor import it; a test target may.
+    with tempfile.TemporaryDirectory() as root:
+        plugin_dir = "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin"
+        dependents = {"targets": [
+            {"name": ENGINE, "path": ENGINE_DIR, "dependencies": []},
+            {"name": CLIENT, "path": CLIENT_DIR, "dependencies": [{"target": [ENGINE, None]}]},
+            {"name": "AWSCognitoAuthPlugin", "path": plugin_dir, "dependencies": [{"target": [ENGINE, None]}]},
+            {"name": "AWSCognitoAuthPluginUnitTests", "type": "test", "path": "AmplifyPlugins/Auth/Tests/Unit",
+             "dependencies": [{"target": ["AWSCognitoAuthPlugin", None]}, {"byName": [CLIENT, None]}]},
+        ]}
+        os.makedirs(os.path.join(root, ENGINE_DIR))
+        os.makedirs(os.path.join(root, CLIENT_DIR))
+        os.makedirs(os.path.join(root, plugin_dir))
+        os.makedirs(os.path.join(root, "AmplifyPlugins/Auth/Tests/Unit"))
+        with open(os.path.join(root, "AmplifyPlugins/Auth/Tests/Unit", "T.swift"), "w") as f:
+            f.write("@_spi(AmplifyExperimental) @testable import AmplifyCognitoClient\n")
+        problems, _, _ = check(dependents, "final", root)
+        assert problems == [], problems
+        problems, _, _ = check(dependents, "pre-sever", root)
+        assert problems == [], problems
+        dependents["targets"][2]["dependencies"].append({"byName": [CLIENT, None]})
+        problems, _, _ = check(dependents, "final", root)
+        assert problems == [f"AWSCognitoAuthPlugin depends on {CLIENT}: AWSCognitoAuthPlugin -> {CLIENT}"], problems
+        dependents["targets"][2]["dependencies"].pop()
+        dependents["targets"].append({"name": "Bridge", "path": "AmplifyFoundationBridge/Sources",
+                                      "dependencies": [{"target": [CLIENT, None]}]})
+        dependents["targets"][2]["dependencies"].append({"target": ["Bridge", None]})
+        problems, _, _ = check(dependents, "final", root)
+        assert problems == [
+            f"AWSCognitoAuthPlugin depends on {CLIENT}: AWSCognitoAuthPlugin -> Bridge -> {CLIENT}",
+            f"Bridge depends on {CLIENT}: Bridge -> {CLIENT}",
+        ], problems
+        dependents["targets"][2]["dependencies"].pop()
+        dependents["targets"].pop()
+        with open(os.path.join(root, plugin_dir, "P.swift"), "w") as f:
+            f.write("import Foundation\ninternal import AmplifyCognitoClient\n")
+        problems, _, _ = check(dependents, "final", root)
+        assert len(problems) == 1 and problems[0].startswith(f"AWSCognitoAuthPlugin imports {CLIENT}: ") \
+            and "P.swift:2" in problems[0], problems
     print("check_engine_deps.py self-test passed")
 
 

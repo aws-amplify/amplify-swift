@@ -54,6 +54,7 @@ def patterns_for(name):
         (f"as! {name}", re.compile(rf"\bas!\s*{t}")),
         (f"is {name}", re.compile(rf"(?<!catch )\bis\s+{t}")),
         (f"case {name}.x", re.compile(rf"\bcase\s+(?:let\s+)?{name}\.")),
+        (f"case let … as {name}", re.compile(rf"\bcase\s+(?:let|var)\s+\w+\s+as\s+{t}")),
     ]
 
 
@@ -200,7 +201,8 @@ def self_test():
                                      "if let c = u as? AWSCognitoAuthError {}\n"
                                      "} catch let error as AuthError {\n"
                                      "} catch AuthError.signedOut {\n"
-                                     "if e is AuthErrorConvertible {}\n",
+                                     "if e is AuthErrorConvertible {}\n"
+                                     "case let c as AuthErrorConvertible:\n",
             plugin + "Support/EngineBridge/B.swift": "let k = e as? KeychainStoreError\nlet c = e as? AuthErrorConvertible\n",
             engine + "E.swift": "} catch let error as KeychainStoreError {\n"
                                 "} catch is KeychainStoreError {\n"
@@ -226,6 +228,7 @@ def self_test():
             ("catch let … as AuthError", "glue", "T.swift"),
             ("catch AuthError.case", "glue", "T.swift"),
             ("is AuthErrorConvertible", "glue", "T.swift"),
+            ("case let … as AuthErrorConvertible", "glue", "T.swift"),
             ("as? KeychainStoreError", "glue", "B.swift"),
             ("as? AuthErrorConvertible", "glue", "B.swift"),
             ("catch let … as KeychainStoreError", "engine", "E.swift"),
@@ -236,11 +239,12 @@ def self_test():
         assert summary == expected, "\n".join(map(str, summary))
         assert check("S2", found, enforced, split) == []
         s3 = check("S3", found, enforced, split)
-        # engine tokens: A.swift:2, E.swift:3, E.swift:4; glue matches outside EngineBridge: T.swift:1, T.swift:5
-        assert len(s3) == 5, "\n".join(s3)
+        # engine tokens: A.swift:2, E.swift:3, E.swift:4; glue matches outside EngineBridge: T.swift:1, T.swift:5,
+        # T.swift:6
+        assert len(s3) == 6, "\n".join(s3)
         s4 = check("S4", found, enforced, split)
         # + KeychainStoreError tokens: A.swift:1, A.swift:4, E.swift:1, E.swift:2 (B.swift is allowed)
-        assert len(s4) == 9, "\n".join(s4)
+        assert len(s4) == 10, "\n".join(s4)
         report = report_lines(found)
         removed, added = diff(report, report + ["glue\tX.swift:1\tcatch KeychainStoreError.itemNotFound"])
         assert removed == [] and len(added) == 1

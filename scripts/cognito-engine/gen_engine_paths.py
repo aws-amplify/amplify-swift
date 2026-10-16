@@ -24,18 +24,12 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 PLUGIN = "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin"
 ENGINE = "AmplifyClients/Internal/InternalAWSCognitoAuth/Sources"
 
-# Directories that move whole, with the files kept back in the plugin. All of StateMachine/, Actions/
-# (Action+Logging included) and ASF/ has moved, so they are listed from Engine/.
-MOVED_DIRECTORIES = {
-    "CredentialStorage": ["CredentialStorage/AmplifyCredentials+CognitoSession.swift"],
-    "Service": [
-        "Service/ErrorMapping/AuthErrorConvertible.swift",        # the plugin keeps the protocol
-        "Service/SdkTypealiases.swift",                           # public `NetworkResult` (no public type moves)
-        "Service/Helpers/ListDevicesOutputResponse+Helper.swift",  # glue, builds `AWSAuthDevice`
-    ],
-}
-# Single files to move. Files already moved (Support/Constants, Models/AuthChallengeType.swift) are listed
-# from Engine/ and must not be repeated here.
+# Directories that move whole, with the files kept back in the plugin. Every directory has moved,
+# so the engine's files are listed from Engine/ and none is listed from the plugin: what is left of the plugin's
+# CredentialStorage/ and Service/ is glue, and a new file there must not be checked as engine code.
+MOVED_DIRECTORIES = {}
+# Single files to move. Files already moved (Support/Constants,
+# Models/AuthChallengeType.swift) are listed from Engine/ and must not be repeated here.
 MOVED_FILES = []
 # Directories whose engine halves move after a split: reported, not enforced. The engine halves of
 # Support/Helpers and Support/HostedUI, and all of Support/CustomEndpoint, have moved; what is left in the

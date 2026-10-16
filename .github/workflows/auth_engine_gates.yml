@@ -11,10 +11,10 @@
 #   longer throws, which would compile and never match (scripts/cognito-engine/error_match_gate.sh check S9,
 #   over the file list in scripts/cognito-engine/engine_paths.txt).
 #
-# Runs on every pull request and on every push to main (no paths filter), so it can be made a required check. The
-# first two jobs run on ubuntu in the official swift image, as unit_test.yml's detect job does: they need only
-# python3 and `swift package dump-package`, and the manifest has no host-OS conditionals. The error-match job
-# needs only bash and python3. A missing script fails the job.
+# Runs on every pull request and on every push to main (no paths filter), so it can be made a required check; until
+# it is one, a failing run does not block a merge. The first two jobs run on ubuntu in the official swift image, as
+# unit_test.yml's detect job does: they need only python3 and `swift package dump-package`, and the manifest has no
+# host-OS conditionals. The error-match job needs only bash and python3. A missing script fails the job.
 
 name: Auth | Shared Cognito Module
 

@@ -22,7 +22,16 @@ on:
         required: true
         default: true
         type: boolean
+  # integ_test.yml calls this when the auth_client group is selected, or the auth_client_interop group, which adds
+  # the Auth plugin's sources: a plugin-only change runs the interop suite, which checks the login the plugin and
+  # the client share, and skips the rest. A call without inputs runs every job.
   workflow_call:
+    inputs:
+      skip-client-suites:
+        description: 'Skip the client suite, the hosted UI and the WebAuthn jobs, and run only the plugin interop job'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
     id-token: write
@@ -30,7 +39,7 @@ permissions:
 
 jobs:
   auth-client-integration-tests:
-    if: ${{ github.event.inputs.integration-ios != 'false' }}
+    if: ${{ github.event.inputs.integration-ios != 'false' && !inputs.skip-client-suites }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
       scheme: CognitoClientIntegrationTests
@@ -78,7 +87,7 @@ jobs:
     secrets: inherit
 
   auth-client-ui-integration-test-iOS:
-    if: ${{ github.event.inputs.hostedui-ios != 'false' }}
+    if: ${{ github.event.inputs.hostedui-ios != 'false' && !inputs.skip-client-suites }}
     strategy:
       fail-fast: false
       matrix:
@@ -101,7 +110,7 @@ jobs:
     secrets: inherit
 
   auth-client-webauthn-integration-tests:
-    if: ${{ github.event.inputs.webauthn-ios != 'false' }}
+    if: ${{ github.event.inputs.webauthn-ios != 'false' && !inputs.skip-client-suites }}
     name: iOS Tests | CognitoClientWebAuthnUITests
     runs-on: macos-26
     timeout-minutes: 60
@@ -141,7 +150,8 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
         with:
-          node-version: 16.x
+          # 18 or later: the server's tests use `node --test`.
+          node-version: 20.x
 
       - name: Attempt to use the dependencies cache
         id: dependencies-cache
@@ -169,6 +179,8 @@ jobs:
         run: |
           cd ./AmplifyPlugins/Auth/Tests/AuthWebAuthnApp/LocalServer
           npm install
+          # The server's own tests (request joining, ordering, the time limit), against a fake xcrun.
+          npm test
           # Its log is uploaded when a test attempt fails (below).
           npm start > "$RUNNER_TEMP/localserver.log" 2>&1 &
         shell: bash
@@ -219,6 +231,8 @@ jobs:
       # the app's bundle ID, Face ID notification names), their durations and simctl's own errors.
       - name: Upload the simulator server log
         if: always() && (steps.run-tests.outcome == 'failure' || steps.retry-tests.outcome == 'failure')
+        # A failed upload must not fail a job whose retry passed.
+        continue-on-error: true
         uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
         with:
           name: CognitoClientWebAuthnUITests-localserver-log-${{ github.run_id }}-${{ github.run_attempt }}
@@ -226,8 +240,19 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-      - name: Save the build cache
+      # The copy phases put the downloaded test configuration (outputs, credentials) into the test bundles under
+      # Build/. Removed before the save, so no cache entry holds it; a build restored from the cache copies it again.
+      # If it cannot be removed, the build is not cached, and the job's result is unchanged.
+      - name: Remove the test configuration from the build before caching it
+        id: remove-test-configuration
+        continue-on-error: true
         if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success')
+        uses: ./.github/composite_actions/remove_test_configuration
+        with:
+          build_path: ${{ github.workspace }}/Build
+
+      - name: Save the build cache
+        if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success') && steps.remove-test-configuration.outcome == 'success'
         uses: actions/cache/save@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ${{ github.workspace }}/Build
