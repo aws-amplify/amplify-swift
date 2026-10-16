@@ -392,6 +392,13 @@ class StorageMultipartUploadSession: @unchecked Sendable {
                 }
 
                 if let uploadId = snapshot.uploadId {
+                    // Every part has been uploaded and only CompleteMultipartUpload remains. That
+                    // request is issued by the S3 client, not by this session's URLSession, so no
+                    // further progress events can arrive to re-arm the timer. The timer was just
+                    // reset by the final part's `.completed` event above; leaving it armed lets it
+                    // expire while completion is in flight and abort an upload whose bytes have
+                    // already been delivered in full.
+                    cancelProgressStallTimer()
                     try client.completeMultipartUpload(uploadId: uploadId)
                 } else {
                     throw Failure.invalidStateTransition

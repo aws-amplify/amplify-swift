@@ -39,6 +39,10 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
     var shouldFailPartUpload: ((StorageMultipartUploadSession, PartNumber) -> Bool)?
     /// When true, uploadPart only reports started but never progress/completed (for stall timeout testing)
     var shouldStallPartUpload = false
+    /// Delays the `.completed` event that `completeMultipartUpload` reports back, simulating a slow
+    /// CompleteMultipartUpload request. No progress events can arrive during this window, so it is
+    /// the gap in which an armed progress-stall timer would expire.
+    var completeMultipartUploadDelay: TimeInterval = 0
     var didCompletePartUpload: ((StorageMultipartUploadSession, PartNumber, String, TaskIdentifier) -> Void)?
     var didFailPartUpload: ((StorageMultipartUploadSession, PartNumber, Error) -> Void)?
     var didCompleteMultipartUpload: ((StorageMultipartUploadSession, UploadID) -> Void)?
@@ -105,8 +109,16 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
 
         increment(\.completeMultipartUploadCount)
 
-        session.handle(multipartUploadEvent: .completed(uploadId: uploadId))
-        didCompleteMultipartUpload?(session, uploadId)
+        guard completeMultipartUploadDelay > 0 else {
+            session.handle(multipartUploadEvent: .completed(uploadId: uploadId))
+            didCompleteMultipartUpload?(session, uploadId)
+            return
+        }
+
+        DispatchQueue.global().asyncAfter(deadline: .now() + completeMultipartUploadDelay) { [weak self] in
+            session.handle(multipartUploadEvent: .completed(uploadId: uploadId))
+            self?.didCompleteMultipartUpload?(session, uploadId)
+        }
     }
 
     func abortMultipartUpload(uploadId: UploadID, error: Error?) throws {

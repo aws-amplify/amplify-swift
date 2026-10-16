@@ -61,6 +61,44 @@ class StorageMultipartUploadSessionTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(client.abortMultipartUploadCount, 1)
     }
 
+    /// Given: A StorageMultipartUploadSession with a progress stall timeout, whose parts all upload
+    ///   successfully and whose CompleteMultipartUpload takes longer than the stall interval
+    /// When: the final part completes and completion is in flight
+    /// Then: the upload completes and is never aborted — the stall timer must not be armed across
+    ///   CompleteMultipartUpload, because no progress event can arrive to reset it
+    func testProgressStallTimeoutDoesNotAbortWhileCompletionIsInFlight() throws {
+        let stallInterval: TimeInterval = 0.1
+        let completedExp = expectation(description: "Completed")
+
+        let client = MockMultipartUploadClient()
+        client.completeMultipartUploadDelay = stallInterval * 3
+
+        let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { event in
+            switch event {
+            case .initiated, .inProcess:
+                break
+            case .failed(let error):
+                XCTFail("Must not fail while completion is in flight: \(error)")
+            case .completed:
+                completedExp.fulfill()
+            }
+        }
+
+        let session = StorageMultipartUploadSession(
+            client: client,
+            bucket: "bucket",
+            key: "key",
+            onEvent: onEvent,
+            progressStallTimeoutSeconds: stallInterval
+        )
+        session.startUpload()
+
+        wait(for: [completedExp], timeout: client.completeMultipartUploadDelay + 1.0)
+        XCTAssertFalse(session.isAborted)
+        XCTAssertEqual(client.abortMultipartUploadCount, 0)
+        XCTAssertEqual(client.completeMultipartUploadCount, 1)
+    }
+
     func testSessionCreation() throws {
         let bucket = "my-bucket"
         let key = "key.txt"
