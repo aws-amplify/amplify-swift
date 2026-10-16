@@ -45,9 +45,11 @@ public struct CognitoCredentialsProvider: AWSCredentialsProvider, Sendable {
     ///     user pool only;
     ///   - `.notSignedIn` for a signed-out session, and while a sign-in on it waits on a challenge, whatever the
     ///     session held before: a guest's credentials or an expired session's tokens, which answer `.notSignedIn`
-    ///     there, not `.sessionExpired`, until the challenge is answered or the sign-in ends. The provider is bound
-    ///     to the session, not to a user, so this does not keep buffered work from being sent with the next login's
-    ///     credentials. To send a guest's buffered work as the guest, flush it before starting the sign-in.
+    ///     there, not `.sessionExpired`, until the challenge is answered or the sign-in ends. This `.discard` marks
+    ///     the change of principal only when the sign-in stops on a challenge: the provider is bound to the session,
+    ///     not to a user, so a sign-in that completes at once (no challenge, or a hosted-UI sign-in) hands the user's
+    ///     credentials to a consumer still holding a guest's buffer. Flush a guest's buffered work before any
+    ///     sign-in: without a challenge it is sent as the user, and with one the provider answers `.discard`.
     ///     `AmplifyCognitoClient.fetchAuthSession()` still reports what the session holds;
     ///   - `.sessionExpired` if the refresh token (or a federated session's provider token) is dead;
     ///   - `.storageUnavailable` if secure storage could not be read or written;

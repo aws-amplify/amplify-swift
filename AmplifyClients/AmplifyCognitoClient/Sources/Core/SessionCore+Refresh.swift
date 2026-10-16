@@ -196,11 +196,12 @@ extension SessionCore {
     /// **A sign-in waiting on a challenge answers `notSignedIn` first**, whatever the record holds: a guest's
     /// credentials, or an expired user's tokens, which answer `notSignedIn` here, not `sessionExpired`. That is the
     /// rule: the providers answer from the state the app sees, which is `.awaitingChallenge` until the challenge is
-    /// answered or the sign-in ends. It does not keep a consumer's buffered work from being sent with the next login's
-    /// credentials: a provider is bound to a session, not to a user, and a sign-in that completes without a challenge
-    /// goes straight to the new login's. The plugin keeps vending a guest's credentials here; an app that wants a
-    /// guest's buffered work sent flushes it before it starts the sign-in. `fetchAuthSession()` still reports what the
-    /// record holds.
+    /// answered or the sign-in ends. So `notSignedIn` (`.discard`) marks the change of principal only when the sign-in
+    /// stops on a challenge. A provider is bound to a session, not to a user, and a sign-in that completes at once (no
+    /// challenge, or a hosted-UI sign-in) goes straight to the new login's credentials, handing them to a consumer
+    /// still holding a guest's buffer. The plugin keeps vending a guest's credentials here. Flush a guest's buffered
+    /// work before any sign-in: without a challenge it is sent as the user, and with one the provider answers
+    /// `.discard`. `fetchAuthSession()` still reports what the record holds.
     func usableCredentials(for purpose: CredentialPurpose) throws -> Data {
         if pendingChallenge != nil {
             throw Self.notSignedIn(sessionId)

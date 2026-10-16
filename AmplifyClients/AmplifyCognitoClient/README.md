@@ -853,7 +853,9 @@ and `oauth` sends the secret with the hosted UI's token exchange (`Authorization
 
 One system sheet (a hosted-UI sign-in, a hosted-UI sign-out page, or a passkey sheet) is shown at a time across the
 client's sessions: every session of every `AmplifyCognitoClient` in the process. By default a second request throws
-`.browserBusy(holder:)`, naming the session that holds it. `.wait(timeout:)` queues instead, for at most one hour.
+`.browserBusy(holder:)`, naming the session that holds it. A hosted-UI sign-in can queue with `.wait(timeout:)`
+instead, for at most one hour; a passkey sheet or the sign-out page fails at once while another session holds the
+sheet.
 
 The Auth plugin's hosted UI and passkey sheets don't take part: one can be up beside a client sheet, and
 `systemSheetHolder` doesn't report it.
@@ -906,13 +908,14 @@ where user identifiers must not appear.
 ### Cancelling and recovering
 
 ```swift
-await client.cancelWebUISignIn()                        // this session's sign-in or passkey sheet
+await client.cancelWebUISignIn()                        // this session's sign-in, sign-out page or passkey sheet
 let holder = await AmplifyCognitoClient.systemSheetHolder // who holds the sheet, or nil
 let freed = await AmplifyCognitoClient.resetSystemSheet() // free the sheet, whoever holds it
 ```
 
-`resetSystemSheet()` is a recovery tool for a sheet that stopped responding. The call holding the sheet throws
-`.userCancelled`.
+`resetSystemSheet()` is a recovery tool for a sheet that stopped responding. A sign-in or passkey call holding it
+throws `.userCancelled`; a sign-out page is closed, and its sign-out reports what it did (`.failed(.userCancelled)`
+if it had not finished).
 
 ## Tokens, sessions and credentials
 
@@ -970,9 +973,11 @@ The provider:
   `fetchAuthSession()` first if you want a signed-out session to become a guest;
 - vends nothing while a sign-in on the session waits on a challenge, whatever the session held, a guest's
   credentials included: it throws `notSignedIn` (`.discard`), so a consumer that follows it drops what it has
-  buffered so far. A sign-in that needs no challenge, or a hosted-UI sign-in, moves the session to the new login with
-  no `notSignedIn` in between, and a buffer is then flushed as the new login. Flush a guest's buffered work before
-  you start a sign-in if you want it sent as the guest. `fetchAuthSession()` still reports what the session holds.
+  buffered so far. `.discard` marks the change of principal only when the sign-in stops on a challenge. A sign-in
+  that completes at once (one that needs no challenge, or a hosted-UI sign-in) moves the session to the new login
+  with no `notSignedIn` in between, and so hands the user's credentials to a consumer still holding a guest's buffer,
+  which is then sent as the user. Flush a guest's buffered work before any sign-in: without a challenge it is sent as
+  the user, and with one the provider answers `.discard`. `fetchAuthSession()` still reports what the session holds.
   The Auth plugin keeps vending a guest's credentials here;
 - holds no credentials of its own: each call resolves through the live session, refreshing if needed.
 
@@ -1282,7 +1287,8 @@ func hostedUISignOut(client: AmplifyCognitoClient, window: AuthClientPresentatio
   `.partial` as `hostedUIError` (`.validation`).
 - If the user closes the sign-out page, the result is `.failed(.userCancelled)` and the session stays signed in,
   as with the plugin, unless the session had already expired. Then it signs out anyway and returns `.partial` with
-  `hostedUIError` `.userCancelled`.
+  `hostedUIError` `.userCancelled`. The same goes when `cancelWebUISignIn()` closes this session's sign-out page, or
+  `resetSystemSheet()` closes it before it finished.
 - If the page can't be shown or completed, the result is `.failed` and the session stays signed in, with nothing
   revoked, as with the plugin: `.configuration` when the configuration has no hosted UI or no usable sign-out
   redirect URI, `.browserBusy` when another sheet holds the browser, `.validation` when the window has closed, or
@@ -1673,7 +1679,11 @@ The client keeps the plugin's semantics except where listed here.
   its own credentials. Until those clients can scope their cache, don't give two sessions a record-caching client
   for the same region.
 - **A provider is bound to a session ID, not to a user.** After a sign-out and a different user's sign-in on the
-  same session ID, a consumer holding buffered data gets the new user's credentials without notice.
+  same session ID, a consumer holding buffered data gets the new user's credentials without notice. The same goes for
+  a guest's sign-in: one that completes at once (no challenge, or a hosted-UI sign-in) hands the user's credentials to
+  a consumer still holding the guest's buffer, which is then sent as the user. `notSignedIn` (`.discard`) marks the
+  change of principal only when the sign-in stops on a challenge. Flush a guest's buffered work before any sign-in:
+  without a challenge it is sent as the user, and with one the provider answers `.discard`.
 - **One system sheet at a time** across the client's sessions: no concurrent hosted-UI sign-ins. The Auth plugin's
   sheets are not counted.
 - **No "sign out of every session".** Loop over `storedSessions`.

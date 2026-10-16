@@ -1079,9 +1079,11 @@ public struct WebUIOptions: Sendable {
 public func signInWithWebUI(presentationAnchor: AuthClientPresentationAnchor,
                             options: WebUIOptions = .init()) async throws -> AuthClientSignInResult
 
-// The public cancel and reset. cancelWebUISignIn closes this session's sheet; the
-// sign-in throws `userCancelled`. resetSystemSheet frees the client's sheet, whichever
-// session holds it, and returns the session that held it.
+// The public cancel and reset. cancelWebUISignIn closes this session's sheet (its
+// sign-in, sign-out page or passkey sheet): a sign-in or passkey call throws
+// `userCancelled`, and a closed sign-out page is `.failed(.userCancelled)`.
+// resetSystemSheet frees the client's sheet, whichever session holds it, and returns
+// the session that held it.
 public func cancelWebUISignIn() async
 @discardableResult
 public static func resetSystemSheet() async -> SessionID?
@@ -1096,7 +1098,7 @@ do {
 }
 ```
 
-**New API:** `WebUIOptions`, with `whenBrowserBusy` (and its nested `BrowserBusyPolicy`), `prefersEphemeralSession`, `prompt`, and `identityExpectation` (`.none`, `.matches(_:)` or `.distinctFromOtherSessions`); `cancelWebUISignIn()` and `resetSystemSheet()`; and the `browserBusy(holder:)` and `unexpectedIdentity(expected:returned:)` errors. `browserBusy` carries the session ID holding the lock so an app can name it in the message. `WebUIOptions` is declared just above rather than in 14.6, because the option and the call it modifies read better together; the errors are in 14.8.
+**New API:** `WebUIOptions`, with `whenBrowserBusy` (and its nested `BrowserBusyPolicy`), `prefersEphemeralSession`, `prompt`, and `identityExpectation` (`.none`, `.matches(_:)` or `.distinctFromOtherSessions`); `cancelWebUISignIn()` and `resetSystemSheet()`; and the `browserBusy(holder:)` and `unexpectedIdentity(expected:returned:)` errors. `browserBusy` carries the session ID holding the lock so an app can name it in the message. Only a hosted-UI sign-in can queue with `.wait(timeout:)`: a passkey sheet or the sign-out page fails at once while another session holds the sheet. `WebUIOptions` is declared just above rather than in 14.6, because the option and the call it modifies read better together; the errors are in 14.8.
 
 **Why `.fail` is the default.** A browser sign-in needs the foreground and the user's attention. Queuing one silently means the user finishes one sign-in and a *second* browser appears unprompted, which reads as a bug. Failing fast lets the app say something useful. `.wait` exists for apps that genuinely want to serialize two sign-ins back to back, and it is bounded, because an unbounded wait turns a stuck operation into a hang with no error.
 
@@ -1608,7 +1610,7 @@ Keying on session ID alone is deliberate. Keying on the configuration would make
 
 One operation returning currently-valid credentials, refreshing on demand. Five rules, and rule 2 is the one with a security consequence:
 
-1. **Bound to its session for life.** No ambient lookup. Which session a provider resolves is fixed when it is handed over. It is bound to the session, not to the user: after a sign-out and another user's sign-in on the same session ID, it serves the new user, and nothing tells the consumer the user changed.
+1. **Bound to its session for life.** No ambient lookup. Which session a provider resolves is fixed when it is handed over. It is bound to the session, not to the user: after a sign-out and another user's sign-in on the same session ID, it serves the new user, and nothing tells the consumer the user changed. The same holds for a guest's sign-in that completes at once: the guest's buffered work is sent as the user (rule 5).
 
 2. **Fail rather than fall back.** If the session is signed out, or a sign-in on it is waiting on a challenge, resolution *fails* with `notSignedIn`. It must not quietly return guest credentials. A consumer wired to an authenticated identity receiving unauthenticated credentials is a privilege bug dressed as graceful degradation.
 
@@ -1621,7 +1623,7 @@ One operation returning currently-valid credentials, refreshing on demand. Five 
 | Error | What a downstream client should do |
 |---|---|
 | `notSignedIn` | The session has no principal to send as: it is signed out, or a sign-in on it is waiting on a challenge (next row). Discard the records buffered so far; do not retry them. Not permanent: the provider is bound to the session, not the user, so once the session is signed in again new records can succeed. |
-| `notSignedIn`, while a sign-in is in progress | Until a sign-in that stops on a challenge (an MFA code, say) is answered, the provider answers `notSignedIn`, whatever the session held before: a guest's credentials or an expired session's tokens included. It never answers `sessionExpired` or the guest's credentials there. A sign-in that needs no challenge, or a hosted-UI sign-in, moves the session to the new login with no `notSignedIn` in between. So a buffer kept through `sessionExpired` is flushed as whoever signs in to the session next, unless a flush lands while that sign-in waits on a challenge, which discards it. To send a guest's buffered work as the guest, flush it before starting the sign-in. |
+| `notSignedIn`, while a sign-in is in progress | Until a sign-in that stops on a challenge (an MFA code, say) is answered, the provider answers `notSignedIn`, whatever the session held before: a guest's credentials or an expired session's tokens included. It never answers `sessionExpired` or the guest's credentials there. So `.discard` marks the change of principal only when the sign-in stops on a challenge. A sign-in that completes at once (one that needs no challenge, or a hosted-UI sign-in) moves the session to the new login with no `notSignedIn` in between, and so hands the user's credentials to a consumer still holding a guest's buffer. A buffer kept through `sessionExpired` is likewise flushed as whoever signs in to the session next, unless a flush lands while that sign-in waits on a challenge, which discards it. Flush a guest's buffered work before any sign-in: without a challenge it is sent as the user, and with one the provider answers `.discard`. |
 | `sessionExpired` | Recoverable by re-auth. Retain the buffer and retry the flush after sign-in. |
 | `storageUnavailable(.locked / .interrupted)` | Transient. Retry with backoff. |
 | `storageUnavailable(.denied)` | Permanent, and a misconfiguration. Fail loudly. |
