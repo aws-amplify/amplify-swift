@@ -23,7 +23,8 @@ final class FakeSessionEngineCancelledStepTests: XCTestCase {
         let engine = try makeEngine()
         let aliceGate = Gate()
         engine.holdSignIns(on: aliceGate)
-        let alice = Task { try await engine.signIn(Self.request("alice"), current: nil, epoch: 1) }
+        let aliceRequest = Self.request("alice")
+        let alice = Task { try await engine.signIn(aliceRequest, current: nil, epoch: 1) }
         await aliceGate.waitForArrivals(1)
         await engine.cancelPendingSignIn(before: 2)
 
