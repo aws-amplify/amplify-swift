@@ -1,0 +1,1010 @@
+{
+  "note" : "Recorded at M2 step S0b. Lines are normalised (LogTranscriptNormaliser) and sorted per scenario.",
+  "scenarios" : {
+    "1-srpSignIn" : [
+      {
+        "category" : "AWSAuthSignInTask",
+        "level" : "info",
+        "message" : "Starting execution for Auth.signInAPI",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthSignInTask",
+        "level" : "info",
+        "message" : "Successfully completed execution for Auth.signInAPI with result:\nAuthSignInResult(nextStep: Amplify.AuthSignInStep.done)",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthSignInTask",
+        "level" : "verbose",
+        "message" : "Received result",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthSignInTask",
+        "level" : "verbose",
+        "message" : "Sending signIn event",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthSignInTask",
+        "level" : "verbose",
+        "message" : "Signing with userSRP",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthSignInTask",
+        "level" : "verbose",
+        "message" : "Validating current state",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthSignInTask",
+        "level" : "verbose",
+        "message" : "Waiting for signin to complete",
+        "shape" : "category"
+      },
+      {
+        "category" : "UserPoolSignInHelper",
+        "level" : "verbose",
+        "message" : "Checking next step for: notStarted",
+        "shape" : "category"
+      },
+      {
+        "category" : "UserPoolSignInHelper",
+        "level" : "verbose",
+        "message" : "Checking next step for: signingInWithSRP(AWSCognitoAuthPlugin.SRPSignInState.initiatingSRPA([\"clientMetadata\": [:], \"password\": \"<REDACTED>\", \"session\": \"\", \"signInMethod\": AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP), \"username\": \"tr***********er\"]), [\"clientMetadata\": [:], \"password\": \"<REDACTED>\", \"session\": \"\", \"signInMethod\": AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP), \"username\": \"tr***********er\"])",
+        "shape" : "category"
+      },
+      {
+        "category" : "UserPoolSignInHelper",
+        "level" : "verbose",
+        "message" : "Checking next step for: signingInWithSRP(AWSCognitoAuthPlugin.SRPSignInState.notStarted, [\"clientMetadata\": [:], \"password\": \"<REDACTED>\", \"session\": \"\", \"signInMethod\": AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP), \"username\": \"tr***********er\"])",
+        "shape" : "category"
+      },
+      {
+        "category" : "UserPoolSignInHelper",
+        "level" : "verbose",
+        "message" : "Checking next step for: signingInWithSRP(AWSCognitoAuthPlugin.SRPSignInState.respondingPasswordVerifier([\"NHexValue\": \"FF********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************FF\", \"clientTimestamp\": <date>, \"gHexValue\": \"*\", \"password\": \"<REDACTED>\", \"srpKeyPair\": \"<privateKey <random>>, <publicKey <random>>\", \"username\": \"tr***********er\"]), [\"clientMetadata\": [:], \"password\": \"<REDACTED>\", \"session\": \"\", \"signInMethod\": AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP), \"username\": \"tr***********er\"])",
+        "shape" : "category"
+      },
+      {
+        "category" : "UserPoolSignInHelper",
+        "level" : "verbose",
+        "message" : "Checking next step for: signingInWithSRP(AWSCognitoAuthPlugin.SRPSignInState.signedIn([\"deviceMetadata\": [\"noData\": \"noData\"], \"inputUsername\": \"tr***********er\", \"refreshTokenExpired\": false, \"signInMethod\": AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP), \"signedInDate\": <date>, \"tokens\": [\"accessToken\": \"ey*****re\", \"expiry\": <date>, \"idToken\": \"ey*****re\", \"refreshToken\": \"tr*****en\"], \"userId\": \"tr**********ub\", \"userName\": \"tr***********er\"]), [\"clientMetadata\": [:], \"password\": \"<REDACTED>\", \"session\": \"\", \"signInMethod\": AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP), \"username\": \"tr***********er\"])",
+        "shape" : "category"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state configured",
+        "namespace" : "AWSAuthTaskHelper",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Check if authstate configured",
+        "namespace" : "AWSAuthTaskHelper",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/FetchAuthAWSCredentials.swift Sending event FetchAuthSessionEvent.fetchedAWSCredentials",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/FetchAuthAWSCredentials.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/FetchAuthIdentityId.swift Sending event FetchAuthSessionEvent.fetchedIdentityID",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/FetchAuthIdentityId.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InformSessionFetched.swift Sending event AuthorizationEvent.fetched",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InformSessionFetched.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitializeFetchAuthSessionWithUserPool.swift Sending event FetchAuthSessionEvent.fetchAuthenticatedIdentityID",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitializeFetchAuthSessionWithUserPool.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitiateAuthSRP.swift InitiateAuth response success",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitiateAuthSRP.swift Sending event SignInEvent(data: nil, id: \"<uuid>\", eventType: AWSCognitoAuthPlugin.SignInEvent.EventType.respondPasswordVerifier([\"NHexValue\": \"FF********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************FF\", \"clientTimestamp\": <date>, \"gHexValue\": \"*\", \"password\": \"<REDACTED>\", \"srpKeyPair\": \"<privateKey <random>>, <publicKey <random>>\", \"username\": \"tr***********er\"], InitiateAuthOutput(ChallengeName: \"PASSWORD_VERIFIER\", ChallengeParameters: [\"SALT\": \"79b00c90ebb6221ab4cad530f41441ed\", \"SECRET_BLOCK\": \"CDX6lsfSfPHwLUJpDSXIfkoLHEPmRc0e+g8riKvQzoqhA8UxgAKGQxx9NG5iKMpWtlRNqviaz0SOm3smLgVYrzwbkMYlrtqD2E1PO9/1GSQsV/Kqddum/p+y4CMFujQZE4TWH/VbxD0BtZOfKL9M/dr1Pw7aOwxAlNKung5+KW3sFMdj7GNvU6MMNGXspx7u8d2L0de1GuAlF0YSxTE5NOrrFuatU/rPRetJN5c/vvgBZr+5eoGVdYLuDL/8gk2QHgS/+SIR88OBbs1h5zb8GKnhQk/eib2PozCd96L/TTEGU0Lxg89UOnQ/HNQnNiKHBRym/1zUsNW0bjQex4K4y9Ap2tZJgODy5yzNrpa21mMskYK5Ryv8zn+G36Otp2tdWwGxV8MkJPyW56LLY5Gbbr3T5xOSUavVAGgGU/1ikV3V1BPITwikCpVZdxwnldNCBh98en60Uz+o9Q+k+/PtfbyhenfNCn61umTofEc78Lo6SL9WRmkTyabBrR+iX4YjGBAyxURLChdhnA+StCkGq+cDmgJuMO9rAV1BWh4fMCvykQww6ZnFHHWkL3PSyPzfTiOIcnPT6QIb5jxDut/lZm5JJiyGi1FqjCjuhMrwKilwP92zm15WvGy74LWMVtwa5Qy+KwZS1cvNULGL9QaOs+H+xbI1Hu+heLPPUsfAFZwOH2vDlkmRSD1B7cSxtsY4Zb54j3+vrz1rT4EAWLZCwZ9OJhVPPK68llsH2NWKzKKbfvEdxwDNMXll2D1GCTkhvTw7jmuzKD5k4vQyvmLduuhr4NpyaAzgmNfVIljhjjz7yJjiF8/JKuPHMLMrBV8kXeJqlDfhqa/0sDKhkIdAcuGLPnUHiVWG5pdzyp0ELUwSwoS0p5HmOd8Mv/sXX/ZNqMDTTYm0G7IXrTtKWWQAvMw2bVMFC5f4fSbSpIoVjbTChumqLqDrT0zeC6whXT1NWL1RDrIyWN5BQBH5hpF5HPsxkPVEskQzeNjeFTvHA4sgSlbSVoSP8TnTkwwBxoLG6kH2JMn3ar5K2lCf2VSd+wcgztAIVgiSc6eDVZEnXThX2j2ZJObPwcN7d21R1l6+FgH7XA7kbBWUV/dVchXuflNa+K2/ubmO/ofsasdw1+4JkJzjJVecX/KN/E79m1TDLzWSb1jnTrQpw5fCu+bAXtADzHdo7gynnek5gr9jzfZfPZ1Niu6/IVmTN/ClBt/hbr42VUnDw0liYqXe0/2m4ah2t/w1PYIeCnFUtNU+19PfCzXnLOCwFwNNAj4JA7mX03nwvWKBMTjqv2Rx5h0dicuRZJKxjbzS/NrRjVTeaLJ+dg8iM0zXGxVGVNcc7WfmpngTDxGQyxUWeOTx53CL543xIZpTlsuR50uHc0/epmg5WpCQsKMAAyO3Fv2PRS378XaNMGNIyb7ZRuik+7IHbCNOB6B4Uqry3QJUg9dycsumcLqJw4Z3EvAuj5EMO6FMA0Gre8GVhICluhCmkNwbfe/UfsBSGffohGMMDHO/4IVn1pGiNRix6aAhiRdTtRgeFHq4fl/swCbhKecSbdzHlvCPjpfaidWI7ZYBALwTeWIDbFP21Rdk1BuU79bCwmuZ9No5y52oyAbA7jMS0q3ld4sAAw8YfRNf0KggdA9Iolz9qdI/8xVLTLWsdvv1NA1JIPb8lPtlkqTlFYDpinYbJk4W/1BOS85TSWPBwadRpVhEIDeH42hIgnvEPA==\", \"SRP_B\": \"b39ff004593719894a4d2d79146aa19be1e45992f44392fdf13dab2c4765ecefc8627f2e7ac8f30f136116f848f9606119ee4cd7e2e617caa21cf7c53b2e9b07bda875cf10f69344c97916cd640b2a207bd54b28b2893c0f4d2273ecdc1f8bcd693f3d929e4038ae217d0a83daa5c782879558e0e9c66b7d1e851801f5190e5c226dd613c5234740039f9ed1e732f2c4f57660025fd84275313f0b0a93642daeb2ab9f414a01fb973eaa9c9e940ff2e5ffb56e03171d88969f93d57c30afdead8c5ac095d9c0a94ce04dba97404f993821cfb7aa5b7e7d3461c4ef09462a3bdbc1002e3b9f2803a3dac11b2cbcb1353381ed35731a13f60adadb6b33cf3d31a2b102c507265cede30e5bc84bb0b6ed1005c1cdc72cf87efa96eec45283edfc75060a4bd0dc31544eb424cd25939626c014199ad433079b26a0ecab129c2eef61d22994ad70c96d286e6e8c1abc65e7060ba69cb0d8c4a31cc08cc7d76ef92f757b2a34e7ae236aadbced9bb7a4a06e67da3a084833e0f3a0b903af0a74816031\", \"USERNAME\": \"royji2\", \"USER_ID_FOR_SRP\": \"royji2\"], Session: [CONTENT_REDACTED]), [:]), time: nil)",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitiateAuthSRP.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitiateAuthSRP.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/IntializeSignInFlow.swift Sending event SignInEvent.initiateSignInWithSRP",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/IntializeSignInFlow.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/PersistCredentials.swift Sending event AuthorizationEvent.sessionEstablished",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/PersistCredentials.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/SignInComplete.swift Sending event AuthenticationEvent.signInCompleted",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/SignInComplete.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/StartSRPFlow.swift Sending event SignInEvent.initiateSignInWithSRP",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/StartSRPFlow.swift Start execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/VerifyPasswordSRP.swift Sending event SignInEvent(data: nil, id: \"<uuid>\", eventType: AWSCognitoAuthPlugin.SignInEvent.EventType.finalizeSignIn([\"deviceMetadata\": [\"noData\": \"noData\"], \"inputUsername\": \"tr***********er\", \"refreshTokenExpired\": false, \"signInMethod\": AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP), \"signedInDate\": <date>, \"tokens\": [\"accessToken\": \"ey*****re\", \"expiry\": <date>, \"idToken\": \"ey*****re\", \"refreshToken\": \"tr*****en\"], \"userId\": \"tr**********ub\", \"userName\": \"tr***********er\"]), time: nil)",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/VerifyPasswordSRP.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"tr***********er\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.fetchingAuthSessionWithUserPool\" =         {\n            \"FetchSessionState.fetched\" =             {\n            };\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"tr***********er\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.fetchingAuthSessionWithUserPool\" =         {\n            \"FetchSessionState.fetchingAWSCredentials\" =             {\n            };\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"tr***********er\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.fetchingAuthSessionWithUserPool\" =         {\n            \"FetchSessionState.fetchingIdentityID\" =             {\n            };\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"tr***********er\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.fetchingAuthSessionWithUserPool\" =         {\n            \"FetchSessionState.notStarted\" =             {\n            };\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"tr***********er\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.sessionEstablished\" = userPoolAndIdentityPool;\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"tr***********er\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.storingCredentials\" = userPoolAndIdentityPool;\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedOut\" =         {\n            lastKnownUserName = \"(nil)\";\n        };\n        \"AuthorizationState.configured\" =         {\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signingIn\" =         {\n            \"SignInState.notStarted\" =             {\n            };\n        };\n        \"AuthorizationState.configured\" =         {\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signingIn\" =         {\n            \"SignInState.signingInWithSRP\" =             {\n                \"SRPSignInState.initiatingSRPA\" =                 {\n                    clientMetadata =                     {\n                    };\n                    password = \"<REDACTED>\";\n                    session = \"\";\n                    signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n                    username = \"tr***********er\";\n                };\n                clientMetadata =                 {\n                };\n                password = \"<REDACTED>\";\n                session = \"\";\n                signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n                username = \"tr***********er\";\n            };\n        };\n        \"AuthorizationState.configured\" =         {\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signingIn\" =         {\n            \"SignInState.signingInWithSRP\" =             {\n                \"SRPSignInState.notStarted\" =                 {\n                };\n                clientMetadata =                 {\n                };\n                password = \"<REDACTED>\";\n                session = \"\";\n                signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n                username = \"tr***********er\";\n            };\n        };\n        \"AuthorizationState.configured\" =         {\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signingIn\" =         {\n            \"SignInState.signingInWithSRP\" =             {\n                \"SRPSignInState.respondingPasswordVerifier\" =                 {\n                    NHexValue = \"FF********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************FF\";\n                    clientTimestamp = \"<date>\";\n                    gHexValue = \"*\";\n                    password = \"<REDACTED>\";\n                    srpKeyPair = \"<privateKey <random>>, <publicKey <random>>\";\n                    username = \"tr***********er\";\n                };\n                clientMetadata =                 {\n                };\n                password = \"<REDACTED>\";\n                session = \"\";\n                signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n                username = \"tr***********er\";\n            };\n        };\n        \"AuthorizationState.configured\" =         {\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signingIn\" =         {\n            \"SignInState.signingInWithSRP\" =             {\n                \"SRPSignInState.signedIn\" =                 {\n                    deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n                    inputUsername = \"tr***********er\";\n                    refreshTokenExpired = 0;\n                    signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n                    signedInDate = \"<date>\";\n                    tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n                    userId = \"tr**********ub\";\n                    userName = \"tr***********er\";\n                };\n                clientMetadata =                 {\n                };\n                password = \"<REDACTED>\";\n                session = \"\";\n                signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n                username = \"tr***********er\";\n            };\n        };\n        \"AuthorizationState.configured\" =         {\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Credential Store state change:\n\n{\n    \"CredentialStoreState.idle\" =     {\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      }
+    ],
+    "2-refresh" : [
+      {
+        "category" : "AWSAuthFetchSessionTask",
+        "level" : "info",
+        "message" : "Starting execution for Auth.fetchSessionAPI",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthFetchSessionTask",
+        "level" : "info",
+        "message" : "Successfully completed execution for Auth.fetchSessionAPI with result:\n{\n    \"AWS Credentials\" = \"[\\\"accessKey\\\": \\\"TR*****EY\\\", \\\"expiration\\\": <date>, \\\"secretAccessKey\\\": \\\"tr*****et\\\", \\\"sessionToken\\\": \\\"tr*****on\\\"]\";\n    cognitoTokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n    identityId = \"us-ea*****ntity\";\n    isSignedIn = true;\n    userSub = \"trans****t-sub\";\n}",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthFetchSessionTask",
+        "level" : "verbose",
+        "message" : "Starting execution",
+        "shape" : "category"
+      },
+      {
+        "category" : "FetchAuthSessionOperationHelper",
+        "level" : "verbose",
+        "message" : "Fetching current state",
+        "shape" : "category"
+      },
+      {
+        "category" : "FetchAuthSessionOperationHelper",
+        "level" : "verbose",
+        "message" : "Session exists, checking validity",
+        "shape" : "category"
+      },
+      {
+        "category" : "FetchAuthSessionOperationHelper",
+        "level" : "verbose",
+        "message" : "Waiting for session to establish",
+        "shape" : "category"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state configured",
+        "namespace" : "AWSAuthTaskHelper",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Check if authstate configured",
+        "namespace" : "AWSAuthTaskHelper",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/FetchAuthAWSCredentials.swift Sending event FetchAuthSessionEvent.fetchedAWSCredentials",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/FetchAuthAWSCredentials.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InformSessionRefreshed.swift Sending event AuthorizationEvent.refreshed",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InformSessionRefreshed.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitializeRefreshSession.swift Sending event RefreshSessionEvent.refreshCognitoUserPoolWithIdentityId",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitializeRefreshSession.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/PersistCredentials.swift Sending event AuthorizationEvent.sessionEstablished",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/PersistCredentials.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/RefreshUserPoolTokens.swift Get tokens from refresh token complete",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/RefreshUserPoolTokens.swift Get tokens from refresh token response received",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/RefreshUserPoolTokens.swift Sending event RefreshSessionEvent.refreshIdentityInfo",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/RefreshUserPoolTokens.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/RefreshUserPoolTokens.swift Starting get tokens from refresh token",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"(nil)\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.refreshingSession\" =         {\n            existing = userPoolAndIdentityPool;\n            refreshState =             {\n                \"RefreshSessionState.notStarted\" =                 {\n                };\n            };\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"(nil)\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.refreshingSession\" =         {\n            existing = userPoolAndIdentityPool;\n            refreshState =             {\n                \"RefreshSessionState.refreshed\" =                 {\n                };\n            };\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"(nil)\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.refreshingSession\" =         {\n            existing = userPoolAndIdentityPool;\n            refreshState =             {\n                \"RefreshSessionState.refreshingAWSCredentialsWithUserPoolTokens\" =                 {\n                };\n            };\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"(nil)\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.refreshingSession\" =         {\n            existing = userPoolAndIdentityPool;\n            refreshState =             {\n                \"RefreshSessionState.refreshingUserPoolTokenWithIdentity\" =                 {\n                };\n            };\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"(nil)\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.sessionEstablished\" = userPoolAndIdentityPool;\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"(nil)\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.sessionEstablished\" = userPoolAndIdentityPool;\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"(nil)\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.storingCredentials\" = userPoolAndIdentityPool;\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Credential Store state change:\n\n{\n    \"CredentialStoreState.idle\" =     {\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      }
+    ],
+    "3a-fetchSession-signedIn" : [
+      {
+        "category" : "AWSAuthFetchSessionTask",
+        "level" : "info",
+        "message" : "Starting execution for Auth.fetchSessionAPI",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthFetchSessionTask",
+        "level" : "info",
+        "message" : "Successfully completed execution for Auth.fetchSessionAPI with result:\n{\n    \"AWS Credentials\" = \"[\\\"accessKey\\\": \\\"TR*****EY\\\", \\\"expiration\\\": <date>, \\\"secretAccessKey\\\": \\\"tr*****et\\\", \\\"sessionToken\\\": \\\"tr*****on\\\"]\";\n    cognitoTokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n    identityId = \"us-ea*****ntity\";\n    isSignedIn = true;\n    userSub = \"trans****t-sub\";\n}",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthFetchSessionTask",
+        "level" : "verbose",
+        "message" : "Starting execution",
+        "shape" : "category"
+      },
+      {
+        "category" : "FetchAuthSessionOperationHelper",
+        "level" : "verbose",
+        "message" : "Fetching current state",
+        "shape" : "category"
+      },
+      {
+        "category" : "FetchAuthSessionOperationHelper",
+        "level" : "verbose",
+        "message" : "Session exists, checking validity",
+        "shape" : "category"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state configured",
+        "namespace" : "AWSAuthTaskHelper",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Check if authstate configured",
+        "namespace" : "AWSAuthTaskHelper",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"(nil)\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.sessionEstablished\" = userPoolAndIdentityPool;\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Credential Store state change:\n\n{\n    \"CredentialStoreState.idle\" =     {\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      }
+    ],
+    "3b-fetchSession-signedOut" : [
+      {
+        "category" : "AWSAuthFetchSessionTask",
+        "level" : "info",
+        "message" : "Starting execution for Auth.fetchSessionAPI",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthFetchSessionTask",
+        "level" : "info",
+        "message" : "Successfully completed execution for Auth.fetchSessionAPI with result:\n{\n    \"AWS Credentials\" = \"[\\\"accessKey\\\": \\\"TR*****EY\\\", \\\"expiration\\\": <date>, \\\"secretAccessKey\\\": \\\"tr*****et\\\", \\\"sessionToken\\\": \\\"tr*****on\\\"]\";\n    cognitoTokensError = \"AuthError: There is no user signed in to retreive cognito tokens\\nRecovery suggestion: Call Auth.signIn to sign in a user and then call Auth.fetchSession\";\n    identityId = \"us-ea*****ntity\";\n    isSignedIn = false;\n    userSubError = \"AuthError: There is no user signed in to retreive user sub\\nRecovery suggestion: Call Auth.signIn to sign in a user and then call Auth.fetchSession\";\n}",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthFetchSessionTask",
+        "level" : "verbose",
+        "message" : "Starting execution",
+        "shape" : "category"
+      },
+      {
+        "category" : "FetchAuthSessionOperationHelper",
+        "level" : "verbose",
+        "message" : "Fetching current state",
+        "shape" : "category"
+      },
+      {
+        "category" : "FetchAuthSessionOperationHelper",
+        "level" : "verbose",
+        "message" : "No session found, fetching unauth session",
+        "shape" : "category"
+      },
+      {
+        "category" : "FetchAuthSessionOperationHelper",
+        "level" : "verbose",
+        "message" : "Waiting for session to establish",
+        "shape" : "category"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state configured",
+        "namespace" : "AWSAuthTaskHelper",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Check if authstate configured",
+        "namespace" : "AWSAuthTaskHelper",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/FetchAuthAWSCredentials.swift Sending event FetchAuthSessionEvent.fetchedAWSCredentials",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/FetchAuthAWSCredentials.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/FetchAuthIdentityId.swift Sending event FetchAuthSessionEvent.fetchedIdentityID",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/FetchAuthIdentityId.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InformSessionFetched.swift Sending event AuthorizationEvent.fetched",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InformSessionFetched.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitializeFetchUnAuthSession.swift Sending event FetchAuthSessionEvent.fetchUnAuthIdentityID",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitializeFetchUnAuthSession.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/PersistCredentials.swift Sending event AuthorizationEvent.sessionEstablished",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/PersistCredentials.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedOut\" =         {\n            lastKnownUserName = \"(nil)\";\n        };\n        \"AuthorizationState.configured\" =         {\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedOut\" =         {\n            lastKnownUserName = \"(nil)\";\n        };\n        \"AuthorizationState.fetchingUnAuthSession\" =         {\n            \"FetchSessionState.fetched\" =             {\n            };\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedOut\" =         {\n            lastKnownUserName = \"(nil)\";\n        };\n        \"AuthorizationState.fetchingUnAuthSession\" =         {\n            \"FetchSessionState.fetchingAWSCredentials\" =             {\n            };\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedOut\" =         {\n            lastKnownUserName = \"(nil)\";\n        };\n        \"AuthorizationState.fetchingUnAuthSession\" =         {\n            \"FetchSessionState.fetchingIdentityID\" =             {\n            };\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedOut\" =         {\n            lastKnownUserName = \"(nil)\";\n        };\n        \"AuthorizationState.fetchingUnAuthSession\" =         {\n            \"FetchSessionState.notStarted\" =             {\n            };\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedOut\" =         {\n            lastKnownUserName = \"(nil)\";\n        };\n        \"AuthorizationState.sessionEstablished\" = identityPoolOnly;\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedOut\" =         {\n            lastKnownUserName = \"(nil)\";\n        };\n        \"AuthorizationState.storingCredentials\" = identityPoolOnly;\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Credential Store state change:\n\n{\n    \"CredentialStoreState.idle\" =     {\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      }
+    ],
+    "4-globalSignOut-revokeFailure" : [
+      {
+        "category" : "Authentication",
+        "level" : "error",
+        "message" : "Unable to update credentials with error: KeychainStoreError: Unable to find the keychain item",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "AWSAuthSignOutTask",
+        "level" : "info",
+        "message" : "Starting execution for Auth.signOutAPI",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthSignOutTask",
+        "level" : "info",
+        "message" : "Successfully completed execution for Auth.signOutAPI with result:\npartial(revokeTokenError: Optional(AWSCognitoAuthPlugin.AWSCognitoRevokeTokenError(refreshToken: \"tr*****en\", error: AuthError: Unexpected error occurred with message: transcript revoke failure\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.)), globalSignOutError: nil, hostedUIError: nil)",
+        "shape" : "category"
+      },
+      {
+        "category" : "AWSAuthSignOutTask",
+        "level" : "verbose",
+        "message" : "Sending signOut event",
+        "shape" : "category"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state configured",
+        "namespace" : "AWSAuthTaskHelper",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Check if authstate configured",
+        "namespace" : "AWSAuthTaskHelper",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Waiting for signOut completion",
+        "namespace" : "AWSAuthTaskHelper",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitiateSignOut.swift Sending event SignOutEvent.signOutGlobally",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitiateSignOut.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/RevokeToken.swift Revoke token failed InternalErrorException(message: \"transcript revoke failure\")",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/RevokeToken.swift Sending event SignOutEvent.signOutLocally",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/RevokeToken.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/RevokeToken.swift Starting revoke token api",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/SignOutGlobally.swift Global SignOut success",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/SignOutGlobally.swift Sending event SignOutEvent.revokeToken",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/SignOutGlobally.swift Starting Global signOut",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/SignOutGlobally.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/SignOutLocally.swift Sending event SignOutEvent.signedOutSuccess",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/SignOutLocally.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedIn\" =         {\n            deviceMetadata = \"[\\\"noData\\\": \\\"noData\\\"]\";\n            inputUsername = \"(nil)\";\n            refreshTokenExpired = 0;\n            signInMethod = \"AWSCognitoAuthPlugin.SignInMethod.apiBased(AWSCognitoAuthPlugin.AuthFlowType.userSRP)\";\n            signedInDate = \"<date>\";\n            tokens = \"[\\\"accessToken\\\": \\\"ey*****re\\\", \\\"expiry\\\": <date>, \\\"idToken\\\": \\\"ey*****re\\\", \\\"refreshToken\\\": \\\"tr*****en\\\"]\";\n            userId = \"tr**********ub\";\n            userName = \"tr***********er\";\n        };\n        \"AuthorizationState.sessionEstablished\" = userPoolAndIdentityPool;\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signedOut\" =         {\n            lastKnownUserName = \"tr***********er\";\n        };\n        \"AuthorizationState.configured\" =         {\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signingOut\" =         {\n            \"SignOutState.notStarted\" =             {\n            };\n        };\n        \"AuthorizationState.signingOut\" =         {\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signingOut\" =         {\n            \"SignOutState.revokingToken\" =             {\n            };\n        };\n        \"AuthorizationState.signingOut\" =         {\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signingOut\" =         {\n            \"SignOutState.signingOutGlobally\" =             {\n            };\n        };\n        \"AuthorizationState.signingOut\" =         {\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Auth state change:\n\n{\n    \"AuthState.configured\" =     {\n        \"AuthenticationState.signingOut\" =         {\n            \"SignOutState.signingOutLocally\" =             {\n            };\n        };\n        \"AuthorizationState.signingOut\" =         {\n        };\n        \"SignUpState.notStarted\" =         {\n        };\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "Credential Store state change:\n\n{\n    \"CredentialStoreState.idle\" =     {\n    };\n}\n",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      }
+    ],
+    "5-firstLaunch-noStoredSession" : [
+      {
+        "category" : "Authentication",
+        "level" : "info",
+        "message" : "No existing session found.",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitializeAuthConfiguration.swift Sending event AuthEvent.validateCredentialAndConfiguration",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitializeAuthConfiguration.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      }
+    ],
+    "6-credentialStoreLoadFailure" : [
+      {
+        "category" : "Authentication",
+        "level" : "error",
+        "message" : "Error when loading amplify credentials: KeychainStoreError: Unexpected error has occurred with status: -25308.\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: AWSPluginsCore/KeychainStoreError.swift\nfunction: recoverySuggestion\nline: 78",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitializeAuthConfiguration.swift Sending event AuthEvent.validateCredentialAndConfiguration",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      },
+      {
+        "category" : "Authentication",
+        "level" : "verbose",
+        "message" : "<module>/InitializeAuthConfiguration.swift Starting execution",
+        "namespace" : "AWSCognitoAuthPlugin",
+        "shape" : "category+namespace"
+      }
+    ],
+    "7-unsupportedAuthFactorType" : [
+      {
+        "category" : "AuthFactorType",
+        "level" : "error",
+        "message" : "Tried to initialize an unsupported MFA type with value: X",
+        "shape" : "category"
+      }
+    ]
+  }
+}

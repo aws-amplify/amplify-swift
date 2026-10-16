@@ -9,6 +9,7 @@ import Amplify
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmationCodeTask, DefaultLogger, @unchecked Sendable {
@@ -36,9 +37,10 @@ final class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfi
             let accessToken = try await taskHelper.getAccessToken()
             let devices = try await initiateGettingVerificationCode(with: accessToken)
             return devices
-        } catch let error as AuthErrorConvertible {
-            throw error.authError
         } catch {
+            if let authError = AuthError(converting: error) {
+                throw authError
+            }
             throw AuthError.configuration(
                 "Unable to execute auth task",
                 AuthPluginErrorConstants.configurationError,

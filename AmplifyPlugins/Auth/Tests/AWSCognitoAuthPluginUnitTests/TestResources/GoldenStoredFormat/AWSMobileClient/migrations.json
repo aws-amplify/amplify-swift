@@ -1,0 +1,170 @@
+{
+  "bundlePlaceholder" : "<bundle>",
+  "migrations" : [
+    {
+      "credentialFields" : {
+
+      },
+      "name" : "empty",
+      "summary" : "No legacy records at all"
+    },
+    {
+      "credentialFields" : {
+
+      },
+      "name" : "existing-session-present",
+      "summary" : "User pool records while the new store already holds a session: legacy data is discarded"
+    },
+    {
+      "credentialFields" : {
+        "$.identityPoolWithFederation.credentials.accessKeyId" : "\"LEGACYACCESSKEYID\"",
+        "$.identityPoolWithFederation.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolWithFederation.credentials.secretAccessKey" : "\"legacy/secret+key\"",
+        "$.identityPoolWithFederation.credentials.sessionToken" : "\"legacy-session-token\"",
+        "$.identityPoolWithFederation.federatedToken.provider" : ".facebook",
+        "$.identityPoolWithFederation.federatedToken.token" : "\"legacy-facebook-token\"",
+        "$.identityPoolWithFederation.identityID" : "\"us-east-1:00000000-0000-4000-8000-00000000abcd\""
+      },
+      "name" : "identityPool-federated",
+      "summary" : "Identity pool records plus a loginsMap: a federated session (graph.facebook.com)"
+    },
+    {
+      "credentialFields" : {
+        "$.identityPoolOnly.credentials.accessKeyId" : "\"LEGACYACCESSKEYID\"",
+        "$.identityPoolOnly.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolOnly.credentials.secretAccessKey" : "\"legacy/secret+key\"",
+        "$.identityPoolOnly.credentials.sessionToken" : "\"legacy-session-token\"",
+        "$.identityPoolOnly.identityID" : "\"us-east-1:00000000-0000-4000-8000-00000000abcd\""
+      },
+      "name" : "identityPool-guest-without-userPool",
+      "summary" : "The identity pool part without the user pool part: a guest session"
+    },
+    {
+      "credentialFields" : {
+
+      },
+      "name" : "locked-keychain",
+      "summary" : "The refresh token read fails with errSecInteractionNotAllowed: nothing is migrated or cleared"
+    },
+    {
+      "credentialFields" : {
+        "$.userPoolAndIdentityPool.credentials.accessKeyId" : "\"LEGACYACCESSKEYID\"",
+        "$.userPoolAndIdentityPool.credentials.expiration" : "Date(-978307200.0)",
+        "$.userPoolAndIdentityPool.credentials.secretAccessKey" : "\"legacy/secret+key\"",
+        "$.userPoolAndIdentityPool.credentials.sessionToken" : "\"legacy-session-token\"",
+        "$.userPoolAndIdentityPool.identityID" : "\"us-east-1:00000000-0000-4000-8000-00000000abcd\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.expiration" : "Date(-978307200.0)",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.refreshToken" : "\"fixture-legacy-refresh-token\"",
+        "$.userPoolAndIdentityPool.signedInData.deviceMetadata" : ".noData",
+        "$.userPoolAndIdentityPool.signedInData.inputUsername" : "nil",
+        "$.userPoolAndIdentityPool.signedInData.isRefreshTokenExpired" : "false",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.apiBased" : ".userSRP",
+        "$.userPoolAndIdentityPool.signedInData.signedInDate" : "Date(-63114076800.0)",
+        "$.userPoolAndIdentityPool.signedInData.userId" : "\"fixture-sub-0001\"",
+        "$.userPoolAndIdentityPool.signedInData.username" : "\"fixture-user\""
+      },
+      "name" : "malformed-expirations",
+      "summary" : "A token expiration that is not a date and a credentials expiration that is not a number"
+    },
+    {
+      "credentialFields" : {
+        "$.identityPoolOnly.credentials.accessKeyId" : "\"LEGACYACCESSKEYID\"",
+        "$.identityPoolOnly.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolOnly.credentials.secretAccessKey" : "\"legacy/secret+key\"",
+        "$.identityPoolOnly.credentials.sessionToken" : "\"legacy-session-token\"",
+        "$.identityPoolOnly.identityID" : "\"us-east-1:00000000-0000-4000-8000-00000000abcd\""
+      },
+      "name" : "malformed-loginsMap",
+      "summary" : "A loginsMap that is not JSON: treated as no logins map"
+    },
+    {
+      "credentialFields" : {
+        "$.userPoolAndIdentityPool.credentials.accessKeyId" : "\"LEGACYACCESSKEYID\"",
+        "$.userPoolAndIdentityPool.credentials.expiration" : "Date(721700000.0)",
+        "$.userPoolAndIdentityPool.credentials.secretAccessKey" : "\"legacy/secret+key\"",
+        "$.userPoolAndIdentityPool.credentials.sessionToken" : "\"legacy-session-token\"",
+        "$.userPoolAndIdentityPool.identityID" : "\"us-east-1:00000000-0000-4000-8000-00000000abcd\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.expiration" : "Date(721696400.0)",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.refreshToken" : "\"fixture-legacy-refresh-token\"",
+        "$.userPoolAndIdentityPool.signedInData.deviceMetadata" : ".noData",
+        "$.userPoolAndIdentityPool.signedInData.inputUsername" : "nil",
+        "$.userPoolAndIdentityPool.signedInData.isRefreshTokenExpired" : "false",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.apiBased" : ".userSRP",
+        "$.userPoolAndIdentityPool.signedInData.signedInDate" : "Date(-63114076800.0)",
+        "$.userPoolAndIdentityPool.signedInData.userId" : "\"fixture-sub-0001\"",
+        "$.userPoolAndIdentityPool.signedInData.username" : "\"fixture-user\""
+      },
+      "name" : "userPool-identityPool-apiBased",
+      "summary" : "User pool and identity pool records, no AWSMobileClient records (signInMethod defaults to userSRP)"
+    },
+    {
+      "credentialFields" : {
+        "$.userPoolAndIdentityPool.credentials.accessKeyId" : "\"LEGACYACCESSKEYID\"",
+        "$.userPoolAndIdentityPool.credentials.expiration" : "Date(721700000.0)",
+        "$.userPoolAndIdentityPool.credentials.secretAccessKey" : "\"legacy/secret+key\"",
+        "$.userPoolAndIdentityPool.credentials.sessionToken" : "\"legacy-session-token\"",
+        "$.userPoolAndIdentityPool.identityID" : "\"us-east-1:00000000-0000-4000-8000-00000000abcd\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.expiration" : "Date(721696400.0)",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.userPoolAndIdentityPool.signedInData.cognitoUserPoolTokens.refreshToken" : "\"fixture-legacy-refresh-token\"",
+        "$.userPoolAndIdentityPool.signedInData.deviceMetadata" : ".noData",
+        "$.userPoolAndIdentityPool.signedInData.inputUsername" : "nil",
+        "$.userPoolAndIdentityPool.signedInData.isRefreshTokenExpired" : "false",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.language" : "nil",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.loginHint" : "nil",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.nonce" : "nil",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.preferPrivateSession" : "false",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.presentationAnchor" : "nil",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.prompt" : "nil",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.providerInfo.authProvider" : "nil",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.providerInfo.idpIdentifier" : "nil",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.resource" : "nil",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.scopes.count" : "5",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.scopes[0]" : "\"openid\"",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.scopes[1]" : "\"email\"",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.scopes[2]" : "\"phone\"",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.scopes[3]" : "\"profile\"",
+        "$.userPoolAndIdentityPool.signedInData.signInMethod.hostedUI.scopes[4]" : "\"aws.cognito.signin.user.admin\"",
+        "$.userPoolAndIdentityPool.signedInData.signedInDate" : "Date(-63114076800.0)",
+        "$.userPoolAndIdentityPool.signedInData.userId" : "\"fixture-sub-0001\"",
+        "$.userPoolAndIdentityPool.signedInData.username" : "\"fixture-user\""
+      },
+      "name" : "userPool-identityPool-hostedUI-device",
+      "summary" : "User pool and identity pool records, hosted-UI federationProvider, device and ASF records"
+    },
+    {
+      "credentialFields" : {
+        "$.identityPoolOnly.credentials.accessKeyId" : "\"LEGACYACCESSKEYID\"",
+        "$.identityPoolOnly.credentials.expiration" : "Date(721700000.0)",
+        "$.identityPoolOnly.credentials.secretAccessKey" : "\"legacy/secret+key\"",
+        "$.identityPoolOnly.credentials.sessionToken" : "\"legacy-session-token\"",
+        "$.identityPoolOnly.identityID" : "\"us-east-1:00000000-0000-4000-8000-00000000abcd\""
+      },
+      "name" : "userPool-missing-refreshToken",
+      "summary" : "User pool records missing the refresh token, plus identity pool records"
+    },
+    {
+      "credentialFields" : {
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.accessToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\"",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.expiration" : "Date(721696400.0)",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.idToken" : "\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\"",
+        "$.userPoolOnly.signedInData.cognitoUserPoolTokens.refreshToken" : "\"fixture-legacy-refresh-token\"",
+        "$.userPoolOnly.signedInData.deviceMetadata" : ".noData",
+        "$.userPoolOnly.signedInData.inputUsername" : "nil",
+        "$.userPoolOnly.signedInData.isRefreshTokenExpired" : "false",
+        "$.userPoolOnly.signedInData.signInMethod.apiBased" : ".userSRP",
+        "$.userPoolOnly.signedInData.signedInDate" : "Date(-63114076800.0)",
+        "$.userPoolOnly.signedInData.userId" : "\"fixture-sub-0001\"",
+        "$.userPoolOnly.signedInData.username" : "\"fixture-user\""
+      },
+      "name" : "userPoolOnly",
+      "summary" : "User pool records only, user-pool-only configuration"
+    }
+  ],
+  "note" : "Recorded at M2 step S0b by running MigrateLegacyCredentialStore over each seed set. Never regenerate."
+}

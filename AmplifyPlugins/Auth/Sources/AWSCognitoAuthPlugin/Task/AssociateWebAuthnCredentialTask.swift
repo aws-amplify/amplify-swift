@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import InternalAWSCognitoAuth
 #if os(iOS) || os(macOS) || os(visionOS)
 import Amplify
 import AuthenticationServices
@@ -27,7 +28,7 @@ final class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCred
         authStateMachine: AuthStateMachine,
         userPoolFactory: @escaping UserPoolEnvironment.CognitoUserPoolFactory,
         registrantFactory: (AuthUIPresentationAnchor?) -> CredentialRegistrantProtocol = { anchor in
-            PlatformWebAuthnCredentials(presentationAnchor: anchor)
+            PlatformWebAuthnCredentials(presentationAnchor: anchor, logger: AmplifyEngineLogRouter())
         }
     ) {
         self.request = request
@@ -37,56 +38,44 @@ final class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCred
         self.credentialRegistrant = registrantFactory(request.presentationAnchor)
     }
 
+    /// The engine's `WebAuthnCredentialOperations.associate` does the work. It rethrows the token lookup's
+    /// `AuthError` unchanged and re-expresses every other error as an `EngineAuthError`, which
+    /// `AuthError(converting:)` bridges back to the `AuthError` this task has always thrown.
+    ///
+    /// The anchor is strong here (`request` holds it for the whole task), so its weak box never empties,
+    /// and the registrant stays the one made at init from that same anchor. The plugin takes no lease:
+    /// its task queue already runs one operation at a time.
     func execute() async throws {
         do {
             await taskHelper.didStateMachineConfigured()
-            let credential = try await createWebAuthnCredential(
-                accessToken: taskHelper.getAccessToken(),
-                userPoolService: userPoolFactory()
+            let registrant = credentialRegistrant
+            try await WebAuthnCredentialOperations.associate(
+                accessToken: { try await self.taskHelper.getAccessToken() },
+                userPool: userPoolFactory,
+                anchor: await boxedPresentationAnchor(),
+                ceremony: WebAuthnCredentialOperations.runCeremonyDirectly,
+                registrant: { _ in registrant }
             )
-            try await associateWebAuthCredential(
-                credential: credential,
-                accessToken: taskHelper.getAccessToken(),
-                userPoolService: userPoolFactory()
-            )
-        } catch let error as AuthErrorConvertible {
-            throw error.authError
         } catch {
+            if let authError = AuthError(converting: error) {
+                throw authError
+            }
             let webAuthnError = WebAuthnError.unknown(
-                message: "Unable to associate WebAuthn credential",
+                message: WebAuthnCredentialOperations.associateFailureMessage,
                 error: error
             )
             throw webAuthnError.authError
         }
     }
 
-    private func createWebAuthnCredential(
-        accessToken: String,
-        userPoolService: CognitoUserPoolBehavior
-    ) async throws -> Data {
-        let result = try await userPoolService.startWebAuthnRegistration(
-            input: .init(accessToken: accessToken)
-        )
-
-        let options = try CredentialCreationOptions(
-            from: result.credentialCreationOptions?.asStringMap()
-        )
-
-        let credential = try await credentialRegistrant.create(with: options)
-        return try credential.asData()
-    }
-
-    private func associateWebAuthCredential(
-        credential: Data,
-        accessToken: String,
-        userPoolService: CognitoUserPoolBehavior
-    ) async throws {
-        _ = try await userPoolService.completeWebAuthnRegistration(
-            input: .init(
-                accessToken: accessToken,
-                credential: .make(from: credential)
-            )
-        )
+    /// `request`'s anchor in the engine's box, made on the main actor; `nil` when none was given.
+    private func boxedPresentationAnchor() async -> EnginePresentationAnchorBox? {
+        guard request.presentationAnchor != nil else {
+            return nil
+        }
+        return await MainActor.run {
+            self.request.presentationAnchor.map { EnginePresentationAnchorBox($0) }
+        }
     }
 }
 #endif

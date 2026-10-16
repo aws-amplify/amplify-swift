@@ -8,6 +8,7 @@
 import Foundation
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 struct MockRandomStringGenerator: RandomStringBehavior {
 

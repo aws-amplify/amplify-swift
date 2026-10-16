@@ -10,6 +10,7 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger, @unchecked Sendable {
@@ -38,9 +39,10 @@ final class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger, @unchecked Sendable
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
             return try await setUpTOTP(with: accessToken)
-        } catch let error as AuthErrorConvertible {
-            throw error.authError
         } catch {
+            if let authError = AuthError(converting: error) {
+                throw authError
+            }
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }

@@ -84,7 +84,7 @@ Mock services using behavior protocols, not concrete types. Use `AWSPluginsTestC
 ## Auth Plugin Notes
 
 The Auth plugin (`AWSCognitoAuthPlugin`) is the most complex — it includes:
-- SRP protocol implementation (`AmplifySRP`, `AmplifyBigInteger`, `libtommath`)
+- SRP protocol implementation (`AmplifySRP`, `AmplifyBigInteger`, `libtommathAmplify`; these live in `AmplifyClients/Internal/`, shared with the client)
 - State machine architecture for auth flows
 - WebAuthn and HostedUI support
 - Credential storage and keychain integration

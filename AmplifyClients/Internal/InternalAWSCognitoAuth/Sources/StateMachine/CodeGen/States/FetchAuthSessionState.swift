@@ -1,0 +1,53 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import Foundation
+
+package enum FetchAuthSessionState: State {
+
+    case notStarted
+
+    case fetchingIdentityID(LoginsMapProvider)
+
+    case fetchingAWSCredentials(String, LoginsMapProvider)
+
+    case fetched(IdentityID, EngineAWSCredentials)
+
+    case error(FetchSessionError)
+}
+
+extension FetchAuthSessionState: Equatable {
+
+    package static func == (lhs: FetchAuthSessionState, rhs: FetchAuthSessionState) -> Bool {
+        switch (lhs, rhs) {
+        case (.notStarted, .notStarted),
+            (.fetchingIdentityID, .fetchingIdentityID),
+            (.fetchingAWSCredentials, .fetchingAWSCredentials),
+            (.fetched, .fetched),
+            (.error, .error):
+            return true
+
+        default:
+            return false
+        }
+    }
+
+    package var type: String {
+        switch self {
+        case .notStarted:
+            return "FetchSessionState.notStarted"
+        case .fetchingIdentityID:
+            return "FetchSessionState.fetchingIdentityID"
+        case .fetchingAWSCredentials:
+            return "FetchSessionState.fetchingAWSCredentials"
+        case .fetched:
+            return "FetchSessionState.fetched"
+        case .error:
+            return "FetchSessionState.error"
+        }
+    }
+}

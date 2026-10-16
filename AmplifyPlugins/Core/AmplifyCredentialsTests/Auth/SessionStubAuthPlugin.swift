@@ -50,8 +50,10 @@ struct StubUserPoolOnlySession: AuthSession, AuthCognitoTokensProvider {
     }
 }
 
-/// A session that conforms to every provider protocol and fails each with a locked keychain, shaped
-/// the way `AWSCognitoAuthPlugin` reports it (`KeychainStoreError.securityError` → `AuthError.service`).
+/// A session that conforms to every provider protocol and fails each with its own error, one with an
+/// underlying error, which must pass through unchanged. The underlying `KeychainStoreError` is only a
+/// recognisable value: `AWSCognitoAuthPlugin` itself reports a keychain failure as `AuthError.service` with
+/// no underlying error.
 struct StubKeychainLockedSession: AuthSession, AuthAWSCredentialsProvider, AuthCognitoTokensProvider,
     AuthCognitoIdentityProvider {
 

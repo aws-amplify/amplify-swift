@@ -13,6 +13,7 @@ import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable @preconcurrency import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 class AWSAuthSignInOptionsTestCase: BasePluginTest, @unchecked Sendable {
     override var initialState: AuthState {

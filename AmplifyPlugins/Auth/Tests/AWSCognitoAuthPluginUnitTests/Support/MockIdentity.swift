@@ -8,6 +8,7 @@
 import AWSCognitoIdentity
 import ClientRuntime
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 struct MockIdentity: CognitoIdentityBehavior {
 

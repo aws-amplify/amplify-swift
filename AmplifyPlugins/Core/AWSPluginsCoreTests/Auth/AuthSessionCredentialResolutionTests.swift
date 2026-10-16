@@ -39,7 +39,8 @@ class AuthSessionCredentialResolutionTests: XCTestCase {
     /// - When:
     ///    - `resolveAWSCredentials()` is called
     /// - Then:
-    ///    - It throws `AuthError.configuration` that names the missing identity pool
+    ///    - It throws `AuthError.configuration` that names the session's type, the protocol it lacks and
+    ///      the likely cause, a missing identity pool
     ///
     func testResolveAWSCredentials_userPoolOnlySession_throwsNoIdentityPoolConfiguration() {
         let error = resolutionError { try UserPoolOnlySession().resolveAWSCredentials() }
@@ -47,6 +48,8 @@ class AuthSessionCredentialResolutionTests: XCTestCase {
             return XCTFail("Expected AuthError.configuration, got \(String(describing: error))")
         }
         XCTAssertTrue(description.contains("no identity pool"), description)
+        XCTAssertTrue(description.contains("UserPoolOnlySession"), description)
+        XCTAssertTrue(description.contains("AuthAWSCredentialsProvider"), description)
     }
 
     /// A signed-in session that vends nothing is the Auth plugin's misconfiguration.
@@ -66,13 +69,13 @@ class AuthSessionCredentialResolutionTests: XCTestCase {
         XCTAssertFalse(description.contains("no identity pool"), description)
     }
 
-    /// A keychain failure the session already reported is propagated, not re-derived.
+    /// A conforming session's own error is propagated, not re-derived.
     ///
-    /// - Given: A conforming session whose credentials result is a keychain-locked storage failure
+    /// - Given: A conforming session whose credentials result is an error with an underlying error
     /// - When:
     ///    - `resolveAWSCredentials()` is called
     /// - Then:
-    ///    - It throws the session's own error: same case, description and underlying keychain error
+    ///    - It throws the session's own error: same case, description and underlying error
     ///
     func testResolveAWSCredentials_keychainLockedSession_propagatesSessionError() {
         let error = resolutionError { try ProvidingSession.keychainLocked.resolveAWSCredentials() }
@@ -189,9 +192,9 @@ class AuthSessionCredentialResolutionTests: XCTestCase {
         XCTAssertTrue(description.contains("AuthCognitoTokensProvider"), description)
     }
 
-    /// A keychain failure the session already reported is propagated for tokens too.
+    /// A conforming session's own error is propagated for tokens too.
     ///
-    /// - Given: A conforming session whose tokens result is a keychain-locked storage failure
+    /// - Given: A conforming session whose tokens result is an error with an underlying error
     /// - When:
     ///    - `resolveCognitoTokens()` is called
     /// - Then:
@@ -238,7 +241,8 @@ class AuthSessionCredentialResolutionTests: XCTestCase {
     /// - When:
     ///    - `resolveIdentityID()` is called
     /// - Then:
-    ///    - It throws `AuthError.configuration` that names the missing identity pool
+    ///    - It throws `AuthError.configuration` that names the session's type, the protocol it lacks and
+    ///      the likely cause, a missing identity pool
     ///
     func testResolveIdentityID_userPoolOnlySession_throwsNoIdentityPoolConfiguration() {
         let error = resolutionError { try UserPoolOnlySession().resolveIdentityID() }
@@ -246,6 +250,8 @@ class AuthSessionCredentialResolutionTests: XCTestCase {
             return XCTFail("Expected AuthError.configuration, got \(String(describing: error))")
         }
         XCTAssertTrue(description.contains("no identity pool"), description)
+        XCTAssertTrue(description.contains("UserPoolOnlySession"), description)
+        XCTAssertTrue(description.contains("AuthCognitoIdentityProvider"), description)
     }
 
     /// A signed-in session that vends nothing is the Auth plugin's misconfiguration.
@@ -264,9 +270,9 @@ class AuthSessionCredentialResolutionTests: XCTestCase {
         XCTAssertTrue(description.contains("AuthCognitoIdentityProvider"), description)
     }
 
-    /// A keychain failure the session already reported is propagated for the identity ID too.
+    /// A conforming session's own error is propagated for the identity ID too.
     ///
-    /// - Given: A conforming session whose identity ID result is a keychain-locked storage failure
+    /// - Given: A conforming session whose identity ID result is an error with an underlying error
     /// - When:
     ///    - `resolveIdentityID()` is called
     /// - Then:
@@ -287,6 +293,42 @@ class AuthSessionCredentialResolutionTests: XCTestCase {
     ///
     func testResolveIdentityID_sessionWithIdentityID_returnsIt() throws {
         XCTAssertEqual(try ProvidingSession.valid.resolveIdentityID(), "identityId")
+    }
+
+    // MARK: - Signed-out sessions that conform
+
+    /// A guest session vends credentials and an identity ID even though no one is signed in: a session
+    /// that conforms is asked before `isSignedIn` is looked at.
+    ///
+    /// - Given: A signed-out session shaped like Cognito's guest session, which conforms to every provider
+    ///   protocol and vends credentials and an identity ID
+    /// - When:
+    ///    - `resolveAWSCredentials()` and `resolveIdentityID()` are called
+    /// - Then:
+    ///    - They return the session's credentials and identity ID, not `AuthError.invalidState`
+    ///
+    func testResolve_signedOutGuestSession_returnsCredentialsAndIdentityID() throws {
+        let session = GuestSession()
+        XCTAssertEqual(try session.resolveAWSCredentials().accessKeyId, "accessKeyId")
+        XCTAssertEqual(try session.resolveIdentityID(), "identityId")
+    }
+
+    /// A signed-out session that conforms reports its own `.signedOut` for tokens, which DataStore holds a
+    /// mutation on until sign-in.
+    ///
+    /// - Given: A signed-out session shaped like Cognito's guest session, whose tokens result is
+    ///   `AuthError.signedOut`
+    /// - When:
+    ///    - `resolveCognitoTokens()` is called
+    /// - Then:
+    ///    - It throws `AuthError.signedOut`, not the `AuthError.invalidState` derived for a session that
+    ///      does not conform
+    ///
+    func testResolveCognitoTokens_signedOutGuestSession_propagatesSignedOut() {
+        let error = resolutionError { try GuestSession().resolveCognitoTokens() }
+        guard case .signedOut = error else {
+            return XCTFail("Expected AuthError.signedOut, got \(String(describing: error))")
+        }
     }
 
     // MARK: - Helpers
@@ -367,14 +409,27 @@ private struct UserPoolOnlySession: AuthSession, AuthCognitoTokensProvider {
     }
 }
 
+/// Cognito's guest session: signed out, with credentials and an identity ID, and `.signedOut` for the user
+/// pool tokens and the user's sub.
+private struct GuestSession: AuthSession, AuthAWSCredentialsProvider, AuthCognitoTokensProvider,
+    AuthCognitoIdentityProvider {
+    let isSignedIn = false
+
+    func getAWSCredentials() -> Result<AWSCredentials, AuthError> { .success(Credentials()) }
+    func getIdentityId() -> Result<String, AuthError> { .success("identityId") }
+    func getUserSub() -> Result<String, AuthError> { .failure(.signedOut("signed out", "sign in")) }
+    func getCognitoTokens() -> Result<AuthCognitoTokens, AuthError> { .failure(.signedOut("signed out", "sign in")) }
+}
+
 /// A session that conforms to every provider protocol and reports `failure`, if any, for each.
 private struct ProvidingSession: AuthSession, AuthAWSCredentialsProvider, AuthCognitoTokensProvider,
     AuthCognitoIdentityProvider {
 
     static let keychainLockedDescription = "The keychain could not be read"
 
-    /// A storage failure shaped the way `AWSCognitoAuthPlugin` reports a locked keychain:
-    /// `KeychainStoreError.securityError` mapped to `AuthError.service`.
+    /// A conforming session's error with an underlying error, which must pass through unchanged. The
+    /// underlying `KeychainStoreError` is only a recognisable value: `AWSCognitoAuthPlugin` itself reports a
+    /// keychain failure as `AuthError.service` with no underlying error.
     static let keychainLocked = ProvidingSession(failure: .service(
         keychainLockedDescription,
         "Unlock the device and retry",

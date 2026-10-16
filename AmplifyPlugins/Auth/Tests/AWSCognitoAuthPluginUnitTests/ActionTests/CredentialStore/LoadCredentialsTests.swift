@@ -10,6 +10,7 @@ import XCTest
 import Amplify
 import AWSPluginsCore
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
@@ -52,7 +53,7 @@ class LoadCredentialsTests: XCTestCase, @unchecked Sendable {
         let environment = CredentialEnvironment(
             authConfiguration: authConfig,
             credentialStoreEnvironment: credentialStoreEnv,
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+            logger: AmplifyEngineLogRouter(scope: .category("awsCognitoAuthPluginTest"))
         )
 
         let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
@@ -89,7 +90,7 @@ class LoadCredentialsTests: XCTestCase, @unchecked Sendable {
     func testLoadCredentialsInvalidEnvironment() async {
         let expectation = expectation(description: "throwLoadCredentialConfigurationError")
 
-        let expectedError = KeychainStoreError.configuration(
+        let expectedError = EngineCredentialStoreError.configuration(
             message: AuthPluginErrorConstants.configurationError)
 
         let environment = MockInvalidEnvironment()
@@ -125,7 +126,7 @@ class LoadCredentialsTests: XCTestCase, @unchecked Sendable {
         let mockedData = "mock"
         let expectation = expectation(description: "loadCredentialErrorInvoked")
 
-        let expectedError = KeychainStoreError.securityError(30_534)
+        let expectedError = EngineCredentialStoreError.securityError(30_534)
 
         let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior(data: mockedData)
         let legacyKeychainStoreFactory: BasicCredentialStoreEnvironment.KeychainStoreFactory = { _ in
@@ -153,7 +154,7 @@ class LoadCredentialsTests: XCTestCase, @unchecked Sendable {
         let environment = CredentialEnvironment(
             authConfiguration: authConfig,
             credentialStoreEnvironment: credentialStoreEnv,
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+            logger: AmplifyEngineLogRouter(scope: .category("awsCognitoAuthPluginTest"))
         )
 
         let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
@@ -188,7 +189,7 @@ class LoadCredentialsTests: XCTestCase, @unchecked Sendable {
         let expectation = expectation(description: "loadCredentialErrorInvoked")
 
         let unknownError = AuthorizationError.invalidState(message: "")
-        let expectedError = KeychainStoreError.unknown("An unknown error occurred", unknownError)
+        let expectedError = EngineCredentialStoreError.unknown("An unknown error occurred", unknownError)
 
         let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior(data: mockedData)
         let legacyKeychainStoreFactory: BasicCredentialStoreEnvironment.KeychainStoreFactory = { _ in
@@ -216,7 +217,7 @@ class LoadCredentialsTests: XCTestCase, @unchecked Sendable {
         let environment = CredentialEnvironment(
             authConfiguration: authConfig,
             credentialStoreEnvironment: credentialStoreEnv,
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+            logger: AmplifyEngineLogRouter(scope: .category("awsCognitoAuthPluginTest"))
         )
 
         let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)

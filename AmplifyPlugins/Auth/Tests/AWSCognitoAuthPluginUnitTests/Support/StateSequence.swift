@@ -9,6 +9,7 @@ import XCTest
 
 import AWSCognitoIdentityProvider
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 struct StateSequence<MyState, MyEvent>: CustomStringConvertible where MyState: State, MyEvent: StateMachineEvent {
     let resolver: AnyResolver<MyState>

@@ -22,11 +22,11 @@ import Foundation
 /// | Session | Error |
 /// |---|---|
 /// | `isSignedIn == false` | `AuthError.invalidState` — no one is signed in; a signed-in session may be able to vend the value |
-/// | signed in, vends user pool tokens | `AuthError.configuration` — no identity pool is configured (credentials and identity ID only) |
+/// | signed in, vends user pool tokens | `AuthError.configuration` — usually no identity pool is configured; names the session's type and the protocol it lacks (credentials and identity ID only) |
 /// | signed in, otherwise | `AuthError.configuration` — the Auth plugin's session type does not vend the value |
 ///
-/// None of these paths produce `AuthError.unknown`. `AWSPluginsCoreTests` scans the plugin sources to
-/// keep every credential and token downcast routed through here.
+/// None of these paths produce `AuthError.unknown`. `CredentialDowncastGateTests` scans the plugin sources
+/// to keep every credential and token downcast routed through here.
 ///
 /// **Why not `.signedOut` or `.notAuthorized` for a signed-out session.** These errors replace
 /// `AuthError.unknown`, and consumers branch on the case. `.signedOut` would make DataStore retry a
@@ -35,8 +35,9 @@ import Foundation
 /// `ProcessMutationErrorFromCloudOperation` and Pinpoint's `EventRecorder`. `.notAuthorized` would make
 /// `RetryableGraphQLOperation` try the next auth type where it used to stop. `.invalidState` and
 /// `.configuration` take the same path as `.unknown` in every one of them, so only the error's
-/// description changes. `AuthSessionCredentialResolutionTests` and
-/// `SyncMutationToCloudOperationTests` pin that.
+/// description changes. `AuthSessionCredentialResolutionTests` pins that the errors derived here are
+/// only ever those two cases, and `SyncMutationToCloudOperationTests` runs a signed-out session's
+/// `.invalidState` through `SyncMutationToCloudOperation` and `RetryableGraphQLOperation`.
 ///
 /// `package` rather than `public`: this is shared between the plugin modules in this repo and is not
 /// API.
@@ -72,7 +73,7 @@ package extension AuthSession {
 private extension AuthSession {
 
     /// Whether the session vends user pool tokens. A signed-in session that does, but vends no
-    /// credentials or identity ID, is user-pool-only: no identity pool is configured.
+    /// credentials or identity ID, is usually user-pool-only: no identity pool is configured.
     var vendsUserPoolTokens: Bool {
         self is AuthCognitoTokensProvider
     }
@@ -90,8 +91,8 @@ private extension AuthSession {
         if vendsUserPoolTokens {
             return .configuration(
                 """
-                The Auth session includes user pool tokens but no AWS credentials: no identity pool is \
-                configured.
+                The Auth session includes user pool tokens but no AWS credentials: its type, \(type(of: self)), \
+                does not conform to AuthAWSCredentialsProvider (usually because no identity pool is configured).
                 """,
                 """
                 Add an identity pool to the Auth configuration, or use a user pool authorization mode for \
@@ -143,8 +144,8 @@ private extension AuthSession {
         if vendsUserPoolTokens {
             return .configuration(
                 """
-                The Auth session includes user pool tokens but no identity ID: no identity pool is \
-                configured.
+                The Auth session includes user pool tokens but no identity ID: its type, \(type(of: self)), \
+                does not conform to AuthCognitoIdentityProvider (usually because no identity pool is configured).
                 """,
                 "Add an identity pool to the Auth configuration."
             )

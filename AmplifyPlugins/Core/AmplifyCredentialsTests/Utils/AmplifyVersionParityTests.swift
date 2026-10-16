@@ -15,7 +15,9 @@ import XCTest
 /// The plugins and the standalone clients each carry their own copy of the library version and platform
 /// name: `AmplifyAWSServiceConfiguration` (plugins) and `AmplifyMetadata` (clients). Both go into the
 /// `lib/` token of the `User-Agent`, which is what attribution keys on, so they must never split. The
-/// release workflow bumps both; these tests fail if it, or a hand edit, bumps only one.
+/// release lane bumps both. These tests catch a hand edit to one of them in a PR; a release bump that
+/// changes only one shows up on the next run on `main`, since the release lane runs the unit tests before
+/// it bumps the version.
 final class AmplifyVersionParityTests: XCTestCase {
 
     /// Pins the two copies of the version constants to each other.

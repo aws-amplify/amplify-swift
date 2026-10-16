@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import InternalAmplifyKeychain
 
 struct KeychainStoreAttributes {
 
@@ -17,23 +18,16 @@ struct KeychainStoreAttributes {
 
 extension KeychainStoreAttributes {
 
-    func defaultGetQuery() -> [String: Any] {
-        var query: [String: Any] = [
-            KeychainStore.Constants.Class: itemClass,
-            KeychainStore.Constants.AttributeService: service,
-            KeychainStore.Constants.UseDataProtectionKeyChain: kCFBooleanTrue as Any
-        ]
+    /// The same attributes as the shared keychain module's type, which builds every query.
+    var itemAttributes: KeychainItemAttributes {
+        KeychainItemAttributes(itemClass: itemClass, service: service, accessGroup: accessGroup)
+    }
 
-        if let accessGroup {
-            query[KeychainStore.Constants.AttributeAccessGroup] = accessGroup
-        }
-        return query
+    func defaultGetQuery() -> [String: Any] {
+        itemAttributes.defaultGetQuery()
     }
 
     func defaultSetQuery() -> [String: Any] {
-        var query: [String: Any] = defaultGetQuery()
-        query[KeychainStore.Constants.AttributeAccessible] = KeychainStore.Constants.AttributeAccessibleAfterFirstUnlockThisDeviceOnly
-        query[KeychainStore.Constants.UseDataProtectionKeyChain] = kCFBooleanTrue
-        return query
+        itemAttributes.defaultSetQuery()
     }
 }

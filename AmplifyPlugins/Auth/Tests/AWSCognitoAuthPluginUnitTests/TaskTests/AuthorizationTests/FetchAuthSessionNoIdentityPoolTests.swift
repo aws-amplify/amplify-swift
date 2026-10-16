@@ -11,6 +11,7 @@ import AWSPluginsCore
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 class FetchAuthSessionNoIdentityPoolTests: XCTestCase {
 
@@ -33,13 +34,13 @@ class FetchAuthSessionNoIdentityPoolTests: XCTestCase {
             authenticationState: .signedIn(.testData)
         )
 
-        let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
+        let tokensResult = session.getCognitoTokens()
         guard case .success = tokensResult else {
             XCTFail("getCognitoTokens() should succeed, got \(String(describing: tokensResult))")
             return
         }
 
-        let awsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+        let awsResult = session.getAWSCredentials()
         guard case .failure = awsResult else {
             XCTFail("getAWSCredentials() should fail without an identity pool")
             return
@@ -64,7 +65,7 @@ class FetchAuthSessionNoIdentityPoolTests: XCTestCase {
             authenticationState: .signedIn(.testData)
         )
 
-        let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
+        let tokensResult = session.getCognitoTokens()
         guard case .failure = tokensResult else {
             XCTFail("non-noIdentityPool error should still fail the token result")
             return

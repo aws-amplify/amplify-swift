@@ -10,6 +10,7 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
 import Foundation
+import InternalAWSCognitoAuth
 
 protocol AuthUpdateMFAPreferenceTask: AmplifyAuthTask where Request == Never,
                                                             Success == Void,
@@ -56,9 +57,10 @@ final class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger,
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
             return try await updateMFAPreference(with: accessToken)
-        } catch let error as AuthErrorConvertible {
-            throw error.authError
         } catch {
+            if let authError = AuthError(converting: error) {
+                throw authError
+            }
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }

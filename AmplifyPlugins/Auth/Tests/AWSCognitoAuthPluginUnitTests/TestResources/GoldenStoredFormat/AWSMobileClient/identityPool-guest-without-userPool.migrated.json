@@ -1,0 +1,26 @@
+{
+  "clearedServices" : [
+    "<bundle>.AWSCognitoIdentityUserPool",
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff",
+    "Optional(\"<bundle>\").AWSMobileClient"
+  ],
+  "event" : "loadCredentialStore",
+  "reads" : [
+    "<bundle>.AWSCognitoIdentityUserPool | fixture-client-id.currentUser",
+    "<bundle>.AWSCognitoIdentityUserPool | fixture-client-id.currentUser",
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | accessKey",
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | secretKey",
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | sessionKey",
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | expiration",
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | identityId",
+    "Optional(\"<bundle>\").AWSMobileClient | loginsMap",
+    "Optional(\"<bundle>\").AWSMobileClient | federationProvider"
+  ],
+  "savedASFDevices" : {
+
+  },
+  "savedCredentials" : "{\"identityPoolOnly\":{\"credentials\":{\"accessKeyId\":\"LEGACYACCESSKEYID\",\"expiration\":721700000,\"secretAccessKey\":\"legacy/secret+key\",\"sessionToken\":\"legacy-session-token\"},\"identityID\":\"us-east-1:00000000-0000-4000-8000-00000000abcd\"}}",
+  "savedDevices" : {
+
+  }
+}

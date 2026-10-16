@@ -19,7 +19,7 @@ Detailed conventions and patterns live closer to the code. Read the relevant gui
 
 **Always run `swiftformat` on changed files before every commit.** The SwiftFormat and SwiftLint workflows run on pushes to non-default branches (not on `pull_request`), so format locally rather than relying on a PR check to catch it. See `.swiftlint.yml` and `.swiftformat` for full rules.
 
-Note that `.swiftlint.yml` only lints `Amplify/` and `AmplifyPlugins/` — `AmplifyClients/`, `AmplifyFoundation/`, and `AmplifyFoundationBridge/` are outside SwiftLint's `included:` scope, though SwiftFormat covers the whole repo.
+Note that `.swiftlint.yml` lints `Amplify/`, `AmplifyPlugins/` and the `Sources` of four modules under `AmplifyClients/Internal/` (`InternalAmplifyKeychain`, `InternalAWSCognitoAuth`, `AmplifySRP`, `AmplifyBigInteger`), which moved there from `AmplifyPlugins/`. The rest of `AmplifyClients/`, and `AmplifyFoundation/` and `AmplifyFoundationBridge/`, are outside SwiftLint's `included:` scope, though SwiftFormat covers the whole repo.
 
 ```bash
 swiftformat <changed-files>   # Format changed files before committing

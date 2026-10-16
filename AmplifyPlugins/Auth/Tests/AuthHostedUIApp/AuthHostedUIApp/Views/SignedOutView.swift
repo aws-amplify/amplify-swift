@@ -13,6 +13,9 @@ struct SignedOutView: View {
 
     @State var errorLabel: String? = nil
     @State var successLabel: String? = nil
+    /// Set when a sign-in button's tap reaches the app, so the UI tests can tell a lost tap from a
+    /// slow hosted UI and only tap again for the former.
+    @State var signInStarted = false
 
     private enum Identifiers {
         static let signUpNav = "hostedUI_signUp_view_nav"
@@ -21,18 +24,21 @@ struct SignedOutView: View {
 
         static let successLabel = "hostedUI_success_text"
         static let errorLabel = "hostedUI_error_text"
+        static let signInStartedLabel = "hostedUI_signIn_started_text"
     }
 
     var body: some View {
         VStack {
             Spacer()
             Button("Sign In") {
+                signInStarted = true
                 Task {
                     await signInWithWebUI(anchor: getWindow())
                 }
             }.accessibility(identifier: Identifiers.signInButton)
 
             Button("Sign In Without Window") {
+                signInStarted = true
                 Task {
                     await signInWithWebUI(anchor: nil)
                 }
@@ -43,9 +49,14 @@ struct SignedOutView: View {
             }
             .accessibility(identifier: Identifiers.signUpNav)
             Spacer()
+            if signInStarted {
+                Text("Sign in started")
+                    .accessibilityIdentifier(Identifiers.signInStartedLabel)
+            }
             if let error = errorLabel {
                 Text("Error occured: \(error)")
                     .accessibilityLabel(Identifiers.errorLabel)
+                    .accessibilityValue(error)
             }
             if let successLabel {
                 Text("Succeeded: \(successLabel)")

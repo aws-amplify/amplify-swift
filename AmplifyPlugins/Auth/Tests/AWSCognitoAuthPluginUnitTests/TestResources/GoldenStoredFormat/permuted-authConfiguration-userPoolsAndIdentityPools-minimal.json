@@ -1,0 +1,1 @@
+{"userPools":{"verificationMechanisms":[],"usernameAttributes":[],"signUpAttributes":[],"region":"us-east-1","poolId":"us-east-1_FixturePool","clientId":"fixture-client-id","authFlowType":{"type":"USER_SRP_AUTH"}},"identityPools":{"region":"us-east-1","poolId":"us-east-1:00000000-0000-4000-8000-00000000ffff"}}

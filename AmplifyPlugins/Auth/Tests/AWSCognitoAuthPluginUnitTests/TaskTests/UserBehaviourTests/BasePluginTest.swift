@@ -9,6 +9,7 @@ import AWSCognitoIdentity
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 /// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` closures the
 ///   production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
@@ -44,7 +45,7 @@ class BasePluginTest: XCTestCase, @unchecked Sendable {
                 SignedInData(
                     signedInDate: Date(),
                     signInMethod: .apiBased(.userSRP),
-                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                    cognitoUserPoolTokens: EngineUserPoolTokens.testData
                 )),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
             .notStarted
@@ -73,6 +74,7 @@ class BasePluginTest: XCTestCase, @unchecked Sendable {
             hubEventHandler: MockAuthHubEventBehavior(),
             analyticsHandler: MockAnalyticsHandler()
         )
+        settleConfigureOperationOnTeardown(of: plugin)
     }
 
     func configureCustomPluginWith(
@@ -87,7 +89,7 @@ class BasePluginTest: XCTestCase, @unchecked Sendable {
                 userPoolFactory: userPool
             )
             let statemachine = AuthStateMachine(
-                resolver: AuthState.Resolver(),
+                resolver: AuthState.Resolver(logger: AmplifyEngineLogRouter()),
                 environment: environment,
                 initialState: initialState
             )
@@ -99,6 +101,7 @@ class BasePluginTest: XCTestCase, @unchecked Sendable {
                 hubEventHandler: MockAuthHubEventBehavior(),
                 analyticsHandler: MockAnalyticsHandler()
             )
+            settleConfigureOperationOnTeardown(of: plugin)
             return plugin
     }
 

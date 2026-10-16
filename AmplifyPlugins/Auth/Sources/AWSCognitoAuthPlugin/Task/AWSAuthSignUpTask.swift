@@ -8,6 +8,7 @@
 import Amplify
 import AWSCognitoIdentityProvider
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger, @unchecked Sendable {
@@ -60,9 +61,9 @@ final class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger, @unchecked Sendabl
 
             switch signUpState {
             case .awaitingUserConfirmation(_, let result):
-                return result
+                return AuthSignUpResult(result)
             case .signedUp(_, let result):
-                return result
+                return AuthSignUpResult(result)
             case .error(let signUpError, _):
                 throw signUpError.authError
             default:
@@ -86,7 +87,7 @@ final class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger, @unchecked Sendabl
         let event = SignUpEvent(eventType: .initiateSignUp(
             signUpEventData,
             request.password,
-            attributes
+            attributes?.map { EngineUserAttribute($0) }
         )
         )
         await authStateMachine.send(event)

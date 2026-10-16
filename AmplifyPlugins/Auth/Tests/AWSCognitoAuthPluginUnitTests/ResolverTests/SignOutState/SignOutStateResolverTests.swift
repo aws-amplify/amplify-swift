@@ -8,6 +8,7 @@
 import XCTest
 
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 typealias SignOutStateSequence = StateSequence<SignOutState, SignOutEvent>
 

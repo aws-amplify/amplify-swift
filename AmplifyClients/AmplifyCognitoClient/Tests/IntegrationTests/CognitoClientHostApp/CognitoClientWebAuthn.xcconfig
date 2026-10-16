@@ -1,0 +1,13 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// Shared by CognitoClientWebAuthnApp and CognitoClientWebAuthnUITests.
+//
+// COGNITO_CLIENT_WEBAUTHN_API compiles the client driver (ClientWebAuthnDriver.swift) and WA-1
+// (`testWebAuthnAPIs`), which call the client's WebAuthn API. It was turned on in the same change as the
+// API. WA-0 still runs the same flow over the raw Cognito API.
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) COGNITO_CLIENT_WEBAUTHN_API

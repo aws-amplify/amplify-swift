@@ -37,6 +37,13 @@
             BlueprintName = "AWSCognitoAuthPlugin"
             ReferencedContainer = "container:">
          </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "InternalAWSCognitoAuth"
+            BuildableName = "InternalAWSCognitoAuth"
+            BlueprintName = "InternalAWSCognitoAuth"
+            ReferencedContainer = "container:">
+         </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
          <TestableReference

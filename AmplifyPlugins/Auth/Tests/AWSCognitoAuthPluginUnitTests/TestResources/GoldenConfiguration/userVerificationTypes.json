@@ -1,0 +1,1 @@
+{"userPools":{"authFlowType":{"type":"USER_SRP_AUTH"},"clientId":"verifyclientid0123456789","poolId":"eu-central-1_verify0001","region":"eu-central-1","signUpAttributes":[],"usernameAttributes":[],"verificationMechanisms":["PHONE_NUMBER","EMAIL"]}}

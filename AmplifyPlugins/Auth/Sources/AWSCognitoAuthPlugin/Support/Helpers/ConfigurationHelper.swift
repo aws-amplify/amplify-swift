@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+import InternalAWSCognitoAuth
 
 struct ConfigurationHelper {
 
@@ -39,7 +40,9 @@ struct ConfigurationHelper {
             if case .string(let endpoint) = cognitoUserPoolJSON.value(at: "Endpoint") {
                 return try .init(
                     endpoint: endpoint,
-                    validator: EndpointResolving.userPool.run
+                    validator: { input in
+                        try AuthError.rethrowingEngineError { try EndpointResolving.userPool.run(input) }
+                    }
                 )
             }
             return nil
@@ -78,7 +81,7 @@ struct ConfigurationHelper {
             endpoint: endpoint,
             clientSecret: clientSecret,
             pinpointAppId: pinpointId,
-            authFlowType: authFlowType,
+            authFlowType: EngineAuthFlowType(authFlowType),
             hostedUIConfig: hostedUIConfig,
             passwordProtectionSettings: nil,
             usernameAttributes: [],

@@ -11,6 +11,7 @@ import struct AWSCognitoIdentityProvider.WebAuthnRelyingPartyMismatchException
 import Amplify
 import XCTest
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 /// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` closures the
 ///   production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
@@ -42,7 +43,7 @@ class ListWebAuthnCredentialsTaskTests: XCTestCase, @unchecked Sendable {
                 SignedInData(
                     signedInDate: Date(),
                     signInMethod: .apiBased(.userSRP),
-                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                    cognitoUserPoolTokens: EngineUserPoolTokens.testData
                 )
             ),
             .sessionEstablished(AmplifyCredentials.testData),
