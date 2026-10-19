@@ -38,9 +38,21 @@ extension AuthClientConfiguration {
             throw Self.gen1ConfigurationUnsupported(resourceName)
         }
         func required(_ key: String) throws -> String {
-            guard let value = auth[key] as? String, !value.isEmpty else {
+            guard let raw = auth[key], !(raw is NSNull) else {
                 throw AuthClientError.configuration(
                     "\(resourceName).json is missing \"auth.\(key)\".",
+                    "Regenerate \(resourceName).json from your Amplify backend."
+                )
+            }
+            guard let value = raw as? String else {
+                throw AuthClientError.configuration(
+                    "\(resourceName).json has an invalid \"auth.\(key)\".",
+                    "Regenerate \(resourceName).json from your Amplify backend."
+                )
+            }
+            guard !value.isEmpty else {
+                throw AuthClientError.configuration(
+                    "\(resourceName).json has an empty \"auth.\(key)\".",
                     "Regenerate \(resourceName).json from your Amplify backend."
                 )
             }

@@ -30,7 +30,9 @@ public extension AmplifyCognitoClient {
     ///   - provider: The provider that issued it.
     ///   - options: A developer-provided identity ID, if the backend already has one.
     /// - Returns: The federated identity's credentials and ID.
-    /// - Throws: `AuthClientError.configuration` without an identity pool; `.invalidState` if this session is
+    /// - Throws: `AuthClientError.validation(field: "withProviderToken")` for an empty token, and
+    ///   `.validation(field: "provider")` for an `.oidc`, `.saml` or `.custom` provider with an empty name, before
+    ///   anything else is checked or sent; `.configuration` without an identity pool; `.invalidState` if this session is
     ///   signed in to the user pool or waiting on a challenge, before any request (sign out first); if a
     ///   user or another federated identity was stored for it meanwhile; or if a sign-out, purge, deletion or
     ///   clear of this session ended it while the call was in progress ("The federation was cancelled…",
@@ -41,6 +43,7 @@ public extension AmplifyCognitoClient {
         for provider: AuthClientProvider,
         options: AuthClientFederateToIdentityPoolOptions = AuthClientFederateToIdentityPoolOptions()
     ) async throws -> AuthClientFederateToIdentityPoolResult {
+        try Self.validateFederation(token: withProviderToken, provider: provider)
         let request = EngineFederationRequest(
             token: withProviderToken,
             provider: provider,
@@ -59,5 +62,32 @@ public extension AmplifyCognitoClient {
     func clearFederationToIdentityPool() async throws {
         let core = core
         try await core.clearFederationToIdentityPool()
+    }
+}
+
+extension AmplifyCognitoClient {
+
+    /// `federateToIdentityPool`'s argument checks, before anything else: the identity pool rejects an empty token or
+    /// login key only with a validation error the client doesn't recognise.
+    static func validateFederation(token: String, provider: AuthClientProvider) throws {
+        guard !token.isEmpty else {
+            throw AuthClientError.validation(
+                field: "withProviderToken",
+                "A provider token is required to federate to the identity pool.",
+                "Pass the token the identity provider issued."
+            )
+        }
+        switch provider {
+        case .oidc(let name), .saml(let name), .custom(let name):
+            guard !name.isEmpty else {
+                throw AuthClientError.validation(
+                    field: "provider",
+                    "The provider's name is required to federate to the identity pool.",
+                    "Pass the identity pool's login key for the provider: the issuer host for OIDC, the provider's ARN for SAML."
+                )
+            }
+        case .amazon, .apple, .facebook, .google, .twitter:
+            break
+        }
     }
 }

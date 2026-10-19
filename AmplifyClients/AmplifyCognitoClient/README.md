@@ -1087,6 +1087,7 @@ if case .confirmAttributeWithCode(let details, _) = result.nextStep {
     try await client.confirm(userAttribute: .email, confirmationCode: "123456")
 }
 
+An empty token, or an empty name for `.oidc`, `.saml` or `.custom`, throws `.validation` before anything is sent.
 let results = try await client.update(userAttributes: [
     AuthClientUserAttribute(.givenName, value: "Sam"),
     AuthClientUserAttribute(.custom("plan"), value: "pro")

@@ -29,6 +29,39 @@ final class FederationTests: XCTestCase {
 
     // MARK: Federating
 
+    /// Empty inputs are refused up front, as `.validation`, before the identity pool is asked.
+    ///
+    /// - Given: a signed-out session
+    /// - When: it federates with an empty token, and with an `.oidc`, `.saml` and `.custom` provider of empty name
+    /// - Then:
+    ///    - each throws `.validation`, naming `withProviderToken` or `provider`; the engine is never called, nothing
+    ///      is stored, and the session stays signed out
+    func testEmptyFederationInputsAreValidationErrors() async throws {
+        let client = try harness.client(work)
+        let cases: [(String, AuthClientProvider, String)] = [
+            ("", .google, "withProviderToken"),
+            ("", .oidc("issuer.example.com"), "withProviderToken"),
+            ("token", .oidc(""), "provider"),
+            ("token", .saml(""), "provider"),
+            ("token", .custom(""), "provider")
+        ]
+        for (token, provider, field) in cases {
+            do {
+                _ = try await client.federateToIdentityPool(withProviderToken: token, for: provider)
+                XCTFail("\(provider): expected a validation error")
+            } catch AuthClientError.validation(let named, let description, let suggestion, _) {
+                XCTAssertEqual(named, field, "\(provider)")
+                XCTAssertFalse(description.contains("bug"), description)
+                XCTAssertFalse(suggestion.isEmpty, "\(provider)")
+            }
+        }
+
+        XCTAssertEqual(harness.engine(for: work)?.accountOperationCalls, [])
+        XCTAssertNil(try harness.storedRecord(work))
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedOut)
+    }
+
     /// - Given: two signed-out sessions, `work` and `home`
     /// - When: `work` federates
     /// - Then:

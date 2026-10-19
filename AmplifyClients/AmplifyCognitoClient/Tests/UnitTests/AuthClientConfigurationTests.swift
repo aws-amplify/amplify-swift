@@ -64,6 +64,79 @@ final class AuthClientConfigurationTests: XCTestCase {
         }
     }
 
+    /// A required key of the wrong type is reported as invalid, and an empty one as empty, not as missing.
+    ///
+    /// - Given: documents whose required key is in turn a number, an array, `null` and an empty string
+    /// - When: parsed
+    /// - Then:
+    ///    - the wrong types throw `configuration` "has an invalid", `null` "is missing", and the empty string
+    ///      "has an empty", each naming the key
+    func testAWrongTypedRequiredKeyIsInvalidNotMissing() throws {
+        let cases: [(Any, String)] = [
+            (5, "x.json has an invalid \"auth.aws_region\"."),
+            (["us-east-1"], "x.json has an invalid \"auth.aws_region\"."),
+            (NSNull(), "x.json is missing \"auth.aws_region\"."),
+            ("", "x.json has an empty \"auth.aws_region\".")
+        ]
+        for (value, expected) in cases {
+            var auth = fullAuth
+            auth["aws_region"] = value
+            XCTAssertThrowsError(try AuthClientConfiguration(outputsData: outputs(auth), resourceName: "x"), expected) { error in
+                guard case AuthClientError.configuration(let description, _, _) = error else {
+                    return XCTFail("Expected configuration error, got \(error)")
+                }
+                XCTAssertEqual(description, expected)
+            }
+        }
+    }
+
+    /// An empty resource name is refused: `Bundle` would take it as "any", and load the first `.json` it finds.
+    ///
+    /// - Given: a bundle holding a valid outputs file under another name
+    /// - When: a configuration is loaded from it with an empty name, and one of spaces
+    /// - Then:
+    ///    - each throws `configuration` "The resource name is empty."
+    func testAnEmptyResourceNameIsRefused() throws {
+        let bundle = try Self.bundle(with: ["some_outputs.json": outputs(fullAuth)])
+        XCTAssertNoThrow(try AuthClientConfiguration(from: "some_outputs", bundle: bundle))
+        for name in ["", "  "] {
+            XCTAssertThrowsError(try AuthClientConfiguration(from: name, bundle: bundle), "\"\(name)\"") { error in
+                guard case AuthClientError.configuration(let description, let suggestion, _) = error else {
+                    return XCTFail("Expected configuration error, got \(error)")
+                }
+                XCTAssertEqual(description, "The resource name is empty.")
+                XCTAssertEqual(suggestion, "Pass the file name without .json, e.g. \"amplify_outputs\".")
+            }
+        }
+    }
+
+    /// `AuthClientConfiguration()` compiles, and loads `amplify_outputs` from the main bundle.
+    ///
+    /// - Given: the test host's main bundle, which has no `amplify_outputs.json`
+    /// - When: `AuthClientConfiguration()` is called
+    /// - Then:
+    ///    - it is `init(from:bundle:)` with its defaults: it throws that the file was not found, not that a pool is
+    ///      missing
+    func testTheNoArgumentInitializerLoadsAmplifyOutputs() {
+        XCTAssertThrowsError(try AuthClientConfiguration()) { error in
+            guard case AuthClientError.configuration(let description, _, _) = error else {
+                return XCTFail("Expected configuration error, got \(error)")
+            }
+            XCTAssertEqual(description, "amplify_outputs.json was not found in the bundle.")
+        }
+    }
+
+    /// A bundle directory holding `files`, in the temporary directory.
+    private static func bundle(with files: [String: Data]) throws -> Bundle {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("AuthClientConfigurationTests-\(UUID().uuidString).bundle")
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        for (name, data) in files {
+            try data.write(to: directory.appendingPathComponent(name))
+        }
+        return try XCTUnwrap(Bundle(url: directory))
+    }
+
     /// - Given: a document with no `auth` section, and bytes that are not JSON
     /// - When: parsed
     /// - Then:

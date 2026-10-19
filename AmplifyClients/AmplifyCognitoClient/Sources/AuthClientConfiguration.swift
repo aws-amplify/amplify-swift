@@ -121,6 +121,15 @@ public struct AuthClientConfiguration: Sendable, Equatable {
         self.identityPool = identityPool
     }
 
+    /// Loads the `auth` section of `amplify_outputs.json` in the main bundle: `init(from:bundle:)` with its
+    /// defaults. Declared so that `AuthClientConfiguration()` is not ambiguous between that initializer and
+    /// `init(userPool:identityPool:)`, which needs a pool.
+    ///
+    /// - Throws: as `init(from:bundle:)`.
+    public init() throws {
+        try self.init(from: "amplify_outputs", bundle: .main)
+    }
+
     /// Loads the `auth` section of a Gen2 `amplify_outputs` JSON resource.
     ///
     /// Gen2 `amplify_outputs` only: a Gen1 `amplifyconfiguration.json` is not supported, and is refused with
@@ -130,10 +139,17 @@ public struct AuthClientConfiguration: Sendable, Equatable {
     ///   - resource: The file name **without** its `.json` extension, which is implied: `"amplify_outputs"` for
     ///     `amplify_outputs.json`, `"amplify_outputs.staging"` for `amplify_outputs.staging.json`.
     ///   - bundle: The bundle containing it.
-    /// - Throws: `AuthClientError.configuration` naming the specific problem: a name ending in `.json`, a
-    ///   missing or unreadable file, a document that is not a JSON object, a Gen1 configuration, a missing
+    /// - Throws: `AuthClientError.configuration` naming the specific problem: an empty name, a name ending in
+    ///   `.json`, a missing or unreadable file, a document that is not a JSON object, a Gen1 configuration, a missing
     ///   `auth` section or required key, or a value outside the schema.
     public init(from resource: String = "amplify_outputs", bundle: Bundle = .main) throws {
+        // `Bundle` takes an empty name as "any", and would return the first `.json` file in the bundle.
+        guard !resource.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw AuthClientError.configuration(
+                "The resource name is empty.",
+                "Pass the file name without .json, e.g. \"amplify_outputs\"."
+            )
+        }
         // A name ending in ".json" would silently look for "amplify_outputs.json.json". Any other dot is part of
         // the name, as `Bundle` and core's `.resource(named:)` read it.
         let resourceURL = URL(fileURLWithPath: resource)
