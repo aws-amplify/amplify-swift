@@ -201,7 +201,8 @@ class GuestFirstAccessGroupMigrationTests: XCTestCase {
         for account in try shared.allAccounts() where account.hasSuffix(".deviceASF") || account.hasSuffix(".deviceMetadata") {
             try shared.remove(account)
         }
-        XCTAssertEqual(try shared.allAccounts().filter { !SessionRecordAccount.isClientSessionRecord($0) }.sorted(), ["authConfiguration", sessionAccount].sorted())
+        let pluginAccounts = try shared.allAccounts().filter { !SessionRecordAccount.isClientSessionRecord($0) }
+        XCTAssertEqual(pluginAccounts.sorted(), ["authConfiguration", sessionAccount].sorted())
         let signedOut = try XCTUnwrap(keychain.value(service: sharedService, accessGroup: accessGroup, account: sessionAccount))
         let extensionKeychain = InMemoryKeychain()
         let bob = try JSONEncoder().encode(LongLivedCredentials.userPoolAndIdentityPool(username: "bob"))
