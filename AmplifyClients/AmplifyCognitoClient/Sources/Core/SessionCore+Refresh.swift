@@ -27,7 +27,8 @@ extension SessionCore {
     /// - Throws: `CredentialsError.notConfigured` if the session has no identity pool, or holds only user
     ///   pool tokens; otherwise `AuthClientError` (`notSignedIn`, `sessionExpired`, `storageUnavailable`,
     ///   or `unknown`). A session carried forward from a previous configuration, waiting for its identity, throws
-    ///   its identity step's last failure while that step may not be tried again.
+    ///   its identity step's last failure while that step may not be tried again: as `notConfigured` if it is a known
+    ///   refusal (`providerIdentityFailure`).
     nonisolated func resolveAWSCredentials() async throws -> CognitoAWSCredentials {
         guard configuration.identityPool != nil else {
             throw Self.notConfigured("AWS credentials", missing: "identity pool", article: "an")
@@ -100,7 +101,7 @@ extension SessionCore {
             // A carried session waiting for its identity, whose identity step may not be tried again yet: its
             // last failure answers, not "no AWS credentials".
             if identity, let blocked = await identityBlocked(payload) {
-                throw blocked
+                throw Self.providerIdentityFailure(blocked)
             }
             return payload
         }
@@ -117,7 +118,7 @@ extension SessionCore {
                try failure.committed(payload) || !engine.checkedUserPoolTokensNeedRefresh(payload, at: now()) {
                 return payload
             }
-            throw failure.error
+            throw identity ? Self.providerIdentityFailure(failure.error) : failure.error
         }
         let refreshed = try await usableCredentials(for: purpose)
         // The refresh's own result is handed out as it is, as the plugin hands out what its refresh established
@@ -447,6 +448,19 @@ extension SessionCore {
     /// An identity-step failure as the error the identity fields and AWS credentials report.
     static func identityStepError(_ error: Error) -> AuthClientError {
         (error as? AuthClientError) ?? .unknown("The identity pool step failed.", "Retry the operation.", error)
+    }
+
+    /// A waiting session's identity-step failure as the AWS credentials provider reports it. A known refusal, which
+    /// this process never retries (`isTransient` is false), is `CredentialsError.notConfigured` (`.failLoudly`), with
+    /// the refusal's description and recovery suggestion, and the refusal as its underlying error: the identity pool
+    /// gives this user no identity, so a consumer's retries would only get the same answer, and a sign-in under the
+    /// same configuration asks the same pool. Anything else is returned unchanged. `fetchAuthSession`'s identity
+    /// fields and the access-token path keep the refusal itself.
+    static func providerIdentityFailure(_ error: Error) -> Error {
+        guard !isTransient(error), let refusal = error as? AuthClientError else {
+            return error
+        }
+        return CredentialsError.notConfigured(refusal.errorDescription, refusal.recoverySuggestion, refusal)
     }
 
     /// Whether a failure is a cancellation: a `CancellationError`, or an error the engine reports for one (a

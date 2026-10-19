@@ -87,6 +87,23 @@ final class SessionCopyForwardTests: XCTestCase {
         }
     }
 
+    /// The `CredentialsError` `body` throws, or `nil` (and a failure) if it throws none or another error.
+    private func providerError(
+        _ body: () async throws -> some Any,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async -> CredentialsError? {
+        do {
+            _ = try await body()
+            XCTFail("expected an error", file: file, line: line)
+        } catch let error as CredentialsError {
+            return error
+        } catch {
+            XCTFail("expected a CredentialsError, got \(error)", file: file, line: line)
+        }
+        return nil
+    }
+
     /// A refresh that stores new user pool tokens, then fails the identity step with `error`.
     private func scriptIdentityFailure(_ engine: FakeSessionEngine, _ error: AuthClientError) {
         let stored = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 2)
@@ -272,6 +289,7 @@ final class SessionCopyForwardTests: XCTestCase {
     ///   fetched after `PendingIdentityRetry.interval`
     /// - Then:
     ///    - the first fetch and the last refresh; the second fetch and the provider do not
+    ///    - the provider's failure keeps the disposition `.retryWithBackoff`
     ///    - the second fetch returns the tokens and fails its identity and credentials with the first fetch's
     ///      error, and so does the provider (not "no identity pool", not "sign in again")
     ///    - the record keeps waiting throughout
@@ -293,6 +311,8 @@ final class SessionCopyForwardTests: XCTestCase {
             let first = try await client.fetchAuthSession()
             let second = try await client.fetchAuthSession()
             let provider = await authClientErrorDescription { try await client.credentialsProvider.resolve() }
+            let disposition = await providerError { try await client.credentialsProvider.resolve() }?.disposition
+            XCTAssertEqual(disposition, .retryWithBackoff, "\(name): a transient failure is retried")
             XCTAssertEqual(engine.refreshCalls.count, 1, "\(name): no retry within the interval")
             XCTAssertTrue(try XCTUnwrap(currentRecord()).identityPending, name)
             harness.advanceClock(by: PendingIdentityRetry.interval + 1)
@@ -309,6 +329,64 @@ final class SessionCopyForwardTests: XCTestCase {
             assertFails(second.awsCredentialsResult, with: error, name)
             XCTAssertEqual(provider, error.errorDescription, name)
             XCTAssertTrue(try XCTUnwrap(currentRecord()).identityPending, name)
+        }
+    }
+
+    /// A known refusal of the identity step, which this process never retries, fails the AWS credentials provider
+    /// loudly: a consumer retrying it with backoff would only get the same answer until the app restarts.
+    ///
+    /// - Given: alice's session carried from the user pool alone, and a refresh that stores new tokens then fails the
+    ///   identity step, in turn with `.notAuthorized`, `.service(.resourceNotFound)`, `.service(.invalidParameter)`
+    ///   and `.configuration`
+    /// - When:
+    ///    - the credentials provider resolves twice (the refresh's own failure, then the stored refusal), then the
+    ///      session is fetched and the token provider asked
+    ///    - on a fresh session, the session is fetched first and the credentials provider resolves after it
+    /// - Then:
+    ///    - every resolve throws `CredentialsError.notConfigured` (`.failLoudly`) with the refusal's description and
+    ///      recovery suggestion, and the refusal as its underlying error
+    ///    - `fetchAuthSession`'s identity and credentials still fail with the refusal itself, and its tokens succeed
+    ///    - the token provider still vends the refreshed access token
+    func testAKnownIdentityRefusalFailsTheProviderLoudly() async throws {
+        let refusals: [(String, AuthClientError)] = [
+            ("notAuthorized", .notAuthorized("Invalid login token.", "Check the identity pool's providers.")),
+            ("resourceNotFound", .service(.resourceNotFound, "IdentityPool not found.", "Check the identity pool ID.")),
+            ("invalidParameter", .service(.invalidParameter, "Invalid identity pool configuration.", "Check the identity pool.")),
+            ("configuration", .configuration("The identity pool is misconfigured.", "Check the configuration."))
+        ]
+        for (name, refusal) in refusals {
+            for providerFirst in [true, false] {
+                let label = "\(name), provider first: \(providerFirst)"
+                harness = ClientHarness()
+                try aliceUnderTheUserPoolOnly()
+                let client = try harness.client(work)
+                let engine = try XCTUnwrap(harness.engine(for: work))
+                scriptIdentityFailure(engine, refusal)
+
+                var resolved: [CredentialsError?] = []
+                if providerFirst {
+                    resolved.append(await providerError { try await client.credentialsProvider.resolve() })
+                }
+                resolved.append(await providerError { try await client.credentialsProvider.resolve() })
+                let session = try await client.fetchAuthSession()
+                if !providerFirst {
+                    resolved.append(await providerError { try await client.credentialsProvider.resolve() })
+                }
+                let token = try await client.userPoolTokenProvider.accessToken()
+
+                for error in resolved {
+                    XCTAssertEqual(error?.isNotConfigured, true, "\(label): \(String(describing: error))")
+                    XCTAssertEqual(error?.disposition, .failLoudly, label)
+                    XCTAssertEqual(error?.errorDescription, refusal.errorDescription, label)
+                    XCTAssertEqual(error?.recoverySuggestion, refusal.recoverySuggestion, label)
+                    XCTAssertEqual((error?.underlyingError as? AuthClientError)?.errorDescription, refusal.errorDescription, label)
+                }
+                assertFails(session.identityIdResult, with: refusal, label)
+                assertFails(session.awsCredentialsResult, with: refusal, label)
+                XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, "access-alice-v2", label)
+                XCTAssertEqual(token, "access-alice-v2", label)
+                XCTAssertEqual(engine.refreshCalls.count, 1, "\(label): the refusal is not retried")
+            }
         }
     }
 

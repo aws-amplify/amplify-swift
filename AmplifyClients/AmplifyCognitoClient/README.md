@@ -1013,7 +1013,7 @@ do {
 | `.notSignedIn` | `.discard` | Signed out, or a sign-in on the session waiting on a challenge, whatever the session held (a guest, or an expired session, included). For the token provider also a guest |
 | `.sessionExpired` | `.retryAfterReauthentication` | The refresh token (or a federated provider token) is dead |
 | `.storageUnavailable(reason)` | `.retryWithBackoff`, or `.failLoudly` for `.denied` | The keychain could not be read or written |
-| `.notConfigured` | `.failLoudly` | No identity pool, or a user-pool-only sign-in (credentials provider); no user pool, or a federated session (token provider) |
+| `.notConfigured` | `.failLoudly` | No identity pool, or a user-pool-only sign-in, or a session carried to a new identity pool that refuses its user (`notAuthorized`, `resourceNotFound`, `invalidParameter` or `configuration`; the refusal is the underlying error) (credentials provider); no user pool, or a federated session (token provider) |
 | `.unknown` | `.retryWithBackoff` | Anything else, such as a network failure during refresh |
 
 `CancellationError` passes through unwrapped.
