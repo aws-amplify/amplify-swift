@@ -47,7 +47,9 @@ public enum SessionKind: Sendable, Equatable {
 
     /// A user signed in to the user pool, with no identity pool credentials: user pool tokens only. Also a
     /// session carried forward from a configuration without this identity pool, until its identity is
-    /// fetched on first use (see "Changing the configuration" on `AmplifyCognitoClient`).
+    /// fetched on first use (see "Changing the configuration" on `AmplifyCognitoClient`). A row's kind follows the
+    /// current configuration: after a change that removes the identity pool, `.default`'s copied login is listed as
+    /// `.userPoolOnly`, as a named session is.
     case userPoolOnly
 
     /// A user signed in to the user pool, with identity pool credentials for that user.

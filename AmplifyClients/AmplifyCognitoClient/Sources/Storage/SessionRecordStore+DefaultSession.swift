@@ -178,11 +178,15 @@ extension SessionRecordStore {
         }
         let user = Self.user(of: summary)
         let applies = sidecar?.applies(toRecordUser: user, recordIsSignedOut: false) == true
+        // Derived, as `identityPending` is: a login the plugin's rule copied as it was from a configuration with an
+        // identity pool still holds that pool's identity, which a configuration without one never uses. The bytes are
+        // unchanged.
+        let kind = summary.kind == .userPoolAndIdentityPool && !namespace.pools.hasIdentityPool ? .userPoolOnly : summary.kind
         return SessionRecord(
             label: applies ? sidecar?.label : nil,
             username: summary.username,
             userId: summary.userId,
-            kind: summary.kind,
+            kind: kind,
             credentials: bytes,
             // Derived: `.default` has no envelope to hold the flag.
             identityPending: summary.kind == .userPoolOnly && namespace.pools.hasIdentityPool

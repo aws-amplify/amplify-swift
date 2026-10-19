@@ -285,6 +285,46 @@ final class DefaultSessionConfigurationChangeTests: XCTestCase {
         XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.both)), old)
     }
 
+    /// A row's kind follows the current configuration: `.default`'s login copied to a configuration without an
+    /// identity pool is listed as `.userPoolOnly`, as a named session is, while its bytes stay the old ones.
+    ///
+    /// - Given: the plugin under both pools, holding alice
+    /// - When:
+    ///    1. the saved sessions are listed under a configuration that changes the identity pool instead, before any
+    ///       restore
+    ///    2. they are listed with the identity pool removed, before any restore (the copy the rule will make)
+    ///    3. a `.default` client restores under that configuration, and the sessions are listed again (the copy made)
+    /// - Then:
+    ///    - both listings without an identity pool give `.default` as `.userPoolOnly`, alice
+    ///    - the bytes at the new account still equal the old ones, and the credentials provider throws `notConfigured`
+    ///    - with the other identity pool the row stays `.userPoolAndIdentityPool`: the copied identity still vends
+    ///      credentials there
+    func testIdentityPoolRemovedUnderTheSameUserPool_listsTheCopyAsUserPoolOnly() async throws {
+        let old = try await pluginSignsIn("alice", under: ChangeConfigs.both)
+
+        let otherIdentityPool = try await listed(ChangeConfigs.bothOtherIdentityPool)
+        let beforeRestore = try await listed(ChangeConfigs.userPoolOnly)
+        let client = makeClient(ChangeConfigs.userPoolOnly)
+        _ = await client.currentSessionState()
+        let afterRestore = try await listed(ChangeConfigs.userPoolOnly)
+        let credentials: Error?
+        do {
+            _ = try await client.credentialsProvider.resolve()
+            credentials = nil
+        } catch {
+            credentials = error
+        }
+
+        for (name, listing) in [("before the restore", beforeRestore), ("after the restore", afterRestore)] {
+            let row = listing.first { $0.sessionId == .default }
+            XCTAssertEqual(row?.kind, .userPoolOnly, name)
+            XCTAssertEqual(row?.username, "alice", name)
+        }
+        XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.userPoolOnly)), old)
+        XCTAssertEqual((credentials as? CredentialsError)?.isNotConfigured, true, "\(String(describing: credentials))")
+        XCTAssertEqual(otherIdentityPool.first { $0.sessionId == .default }?.kind, .userPoolAndIdentityPool)
+    }
+
     /// - Given: alice's `.default` labelled "Work" under a user-pool-only configuration
     /// - When: a `.default` client restores with an identity pool added
     /// - Then:

@@ -298,6 +298,8 @@ if let picked = rows.first {
 - A failure throws `AuthClientError.storageUnavailable`. You never get an empty list for a failure.
 
 ### Signing out or purging a saved session without a client
+- A row's kind follows the current configuration: after a change that removes the identity pool, `.default`'s copied
+  login is listed as `.userPoolOnly`, as a named session is, although its saved bytes are the plugin's as they were.
 
 ```swift
 let id = try SessionID.named("work")
