@@ -22,7 +22,7 @@ import XCTest
 ///
 /// The app runs the plugin's real credential store, through its test seam, over an in-memory keychain shared with the
 /// extension. The extension's own unshared service and `UserDefaults` are its own.
-class AWSCognitoAuthCredentialStoreGuestFirstMigrationTests: XCTestCase {
+class GuestFirstAccessGroupMigrationTests: XCTestCase {
 
     private let service = "com.amplify.awsCognitoAuthPlugin"
     private let sharedService = "com.amplify.awsCognitoAuthPluginShared"
@@ -44,7 +44,7 @@ class AWSCognitoAuthCredentialStoreGuestFirstMigrationTests: XCTestCase {
     override func setUp() {
         super.setUp()
         keychain = InMemoryKeychain()
-        userDefaultsSuite = "AWSCognitoAuthCredentialStoreGuestFirstMigrationTests.\(UUID().uuidString)"
+        userDefaultsSuite = "GuestFirstAccessGroupMigrationTests.\(UUID().uuidString)"
         userDefaults = UserDefaults(suiteName: userDefaultsSuite)
     }
 
@@ -183,6 +183,37 @@ class AWSCognitoAuthCredentialStoreGuestFirstMigrationTests: XCTestCase {
         XCTAssertEqual(try makeStore(accessGroup: accessGroup).retrieveCredential(), appsGuest)
     }
 
+    /// A signed-out record in the shared service is not a guest's: it still stops the migration, so an app extension's
+    /// stale login never signs a user back in who signed out.
+    ///
+    /// - Given: alice signed in through the client's `.default` in the access group, then signed out, which saves
+    ///   the signed-out record in the shared service, with no device record left beside it (a device record alone
+    ///   would stop the migration); and an app extension whose own unshared service still holds bob's stale login,
+    ///   and whose `UserDefaults` hold no access group
+    /// - When:
+    ///    - the extension's plugin is configured with the access group and migration for the first time
+    /// - Then:
+    ///    - the migration is skipped: the shared service still holds the signed-out record, and the new store reads
+    ///      no login; bob's login stays in the extension's own service
+    func testASignedOutRecordInTheSharedServiceStillStopsTheMigration() async throws {
+        try await signOutThroughTheClientsDefaultSession()
+        let shared = keychain.store(service: sharedService, accessGroup: accessGroup)
+        for account in try shared.allAccounts() where account.hasSuffix(".deviceASF") || account.hasSuffix(".deviceMetadata") {
+            try shared.remove(account)
+        }
+        XCTAssertEqual(try shared.allAccounts().filter { !SessionRecordAccount.isClientSessionRecord($0) }.sorted(), ["authConfiguration", sessionAccount].sorted())
+        let signedOut = try XCTUnwrap(keychain.value(service: sharedService, accessGroup: accessGroup, account: sessionAccount))
+        let extensionKeychain = InMemoryKeychain()
+        let bob = try JSONEncoder().encode(LongLivedCredentials.userPoolAndIdentityPool(username: "bob"))
+        try extensionKeychain.store(service: service).set(bob, key: sessionAccount)
+
+        let store = makeExtensionStore(migrate: true, extensionKeychain: extensionKeychain)
+
+        XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: sessionAccount), signedOut)
+        XCTAssertEqual(try store.retrieveCredential(), .noCredentials)
+        XCTAssertEqual(extensionKeychain.value(service: service, account: sessionAccount), bob)
+    }
+
     // MARK: Resumed migration
 
     /// A migration interrupted before its first move resumes over a guest an app extension's `.default` saved since.
@@ -261,7 +292,49 @@ class AWSCognitoAuthCredentialStoreGuestFirstMigrationTests: XCTestCase {
         )
     }
 
+    /// A resumed migration does not replace a signed-out record either.
+    ///
+    /// - Given: alice signed in through the client's `.default` in the access group, then signed out, which saves
+    ///   the signed-out record in the shared service; and the state a migration killed just before its first move
+    ///   leaves, with bob's stale login still in the unshared service and the mark naming the access group
+    /// - When:
+    ///    - the migration resumes on the next launch with the access group and migration
+    /// - Then:
+    ///    - the shared service still holds the signed-out record, and the new store reads no login; bob's login
+    ///      collides with it and stays in the unshared service; the access group is recorded and the mark is gone
+    func testAResumedMigrationDoesNotReplaceASignedOutRecord() async throws {
+        try await signOutThroughTheClientsDefaultSession()
+        let signedOut = try XCTUnwrap(keychain.value(service: sharedService, accessGroup: accessGroup, account: sessionAccount))
+        let bob = try JSONEncoder().encode(LongLivedCredentials.userPoolAndIdentityPool(username: "bob"))
+        try keychain.store(service: service).set(bob, key: sessionAccount)
+        userDefaults.set(accessGroup, forKey: migrationInProgressKey)
+
+        let store = makeStore(accessGroup: accessGroup, migrate: true)
+
+        XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: sessionAccount), signedOut)
+        XCTAssertEqual(try store.retrieveCredential(), .noCredentials)
+        XCTAssertEqual(keychain.value(service: service, account: sessionAccount), bob)
+        XCTAssertEqual(userDefaults.string(forKey: accessGroupKey), accessGroup)
+        XCTAssertNil(userDefaults.object(forKey: migrationInProgressKey))
+    }
+
     // MARK: Helpers
+
+    /// alice signs in through the client's `.default` in the access group, then signs out: the shared service holds
+    /// the signed-out record, `{"noCredentials":{}}`.
+    private func signOutThroughTheClientsDefaultSession() async throws {
+        let app = ClientOverKeychain(keychain: keychain)
+        app.script(userPool: ClientOverKeychain.userPool(signingIn: "alice"))
+        var client: AmplifyCognitoClient? = try app.client(accessGroup: accessGroup)
+        let signedIn = try await XCTUnwrap(client).signIn(username: "alice", password: "password", options: .init(authFlowType: .userPassword))
+        XCTAssertEqual(signedIn.nextStep, .done)
+        let signedOut = try await XCTUnwrap(client).signOut()
+        XCTAssertEqual(signedOut, .complete)
+        client = nil
+        await app.waitForBaseline()
+        let saved = try XCTUnwrap(keychain.value(service: sharedService, accessGroup: accessGroup, account: sessionAccount))
+        XCTAssertEqual(try JSONDecoder().decode(AmplifyCredentials.self, from: saved), .noCredentials)
+    }
 
     /// The app's plugin, without an access group, signed in as alice with device records. Returns her login.
     private func signInTheAppWithoutAnAccessGroup() throws -> AmplifyCredentials {
@@ -299,12 +372,14 @@ class AWSCognitoAuthCredentialStoreGuestFirstMigrationTests: XCTestCase {
         )
     }
 
-    /// An app extension's credential store with the access group: its unshared service and `UserDefaults` are its
-    /// own, empty; the access group's shared service is the app's.
-    private func makeExtensionStore(migrate: Bool) -> AWSCognitoAuthCredentialStore {
+    /// An app extension's credential store with the access group: its unshared service (`extensionKeychain`, empty
+    /// by default) and `UserDefaults` are its own; the access group's shared service is the app's.
+    private func makeExtensionStore(
+        migrate: Bool,
+        extensionKeychain: InMemoryKeychain = InMemoryKeychain()
+    ) -> AWSCognitoAuthCredentialStore {
         let keychain = keychain!
-        let extensionKeychain = InMemoryKeychain()
-        let suite = "AWSCognitoAuthCredentialStoreGuestFirstMigrationTests.extension.\(UUID().uuidString)"
+        let suite = "GuestFirstAccessGroupMigrationTests.extension.\(UUID().uuidString)"
         let extensionDefaults = UserDefaults(suiteName: suite)!
         defer { extensionDefaults.removePersistentDomain(forName: suite) }
         return AWSCognitoAuthCredentialStore(

@@ -164,9 +164,12 @@ extension AWSCognitoAuthCredentialStore {
     /// Cognito client's default session, that fetches a session before the app's first launch after the
     /// update finds the shared service empty, gets a guest identity and saves it there. Counting that
     /// record aborted the migration, and left the app's login in the old service. The destination clear
-    /// removes it, and the login moves. A guest's record is one without user pool tokens or a federated
-    /// identity (an identity-pool-only configuration's included). With no login to move, it still counts,
-    /// so a launch with nothing to migrate never clears another process's guest identity. Any other item
+    /// removes it, and the login moves. A guest's record is an identity pool identity without user pool tokens
+    /// or a federated identity (an identity-pool-only configuration's included). A signed-out record
+    /// (`{"noCredentials":{}}`, which a sign-out through the Cognito client's default session saves) is not a
+    /// guest's: it counts, as a login does, so a user who signed out is never signed back in by the migration.
+    /// With no login to move, a guest's record still counts, so a launch with nothing to migrate never clears
+    /// another process's guest identity. Any other item
     /// counts as before; a device record without reading it, since only a sign-in writes one. A session
     /// record that cannot be read or decoded counts as a login.
     ///
@@ -195,7 +198,9 @@ extension AWSCognitoAuthCredentialStore {
     /// `sharedKeychainHasItems(accessGroup:)` counts. Empty without an access group, and when they cannot
     /// be listed.
     private func sharedKeychainPluginAccounts(accessGroup: String?) -> [String] {
-        guard let accessGroup else { return [] }
+        guard let accessGroup else {
+            return []
+        }
 
         let sharedKeychain = Self.keychainStore(sharedService, accessGroup, makeKeychainStore, logger: logger)
         // A failed check counts as "no items", as it always has.
@@ -211,7 +216,7 @@ extension AWSCognitoAuthCredentialStore {
     /// which `source` holds a login under the same account, so the login moves instead of being skipped as
     /// a collision. The run that was interrupted cleared the destination before its first move, so such a
     /// record was saved since, by an app extension or the Cognito client's default session that fetched a
-    /// session first. A login in the destination is never removed, and nothing else is. Best effort: a
+    /// session first. A login or a signed-out record in the destination is never removed, and nothing else is. Best effort: a
     /// record that cannot be read or removed stays, and the move skips it.
     func removeGuestSessionsReplacedByALogin(
         destination: any KeychainItemStoreBehavior,
@@ -235,8 +240,10 @@ extension AWSCognitoAuthCredentialStore {
     enum SavedSession: Equatable {
         /// User pool tokens or a federated identity: a user signed in.
         case login
-        /// No user pool tokens and no federated identity: a guest's identity, or a signed-out record.
+        /// An identity pool identity with no user pool tokens and no federated identity: a guest's.
         case guest
+        /// A signed-out record (`noCredentials`): it weighs as a login does, so nothing replaces it.
+        case signedOut
         /// Missing, unreadable or not a session record.
         case unknown
     }
@@ -257,8 +264,10 @@ extension AWSCognitoAuthCredentialStore {
         switch credentials {
         case .userPoolOnly, .userPoolAndIdentityPool, .identityPoolWithFederation:
             return .login
-        case .identityPoolOnly, .noCredentials:
+        case .identityPoolOnly:
             return .guest
+        case .noCredentials:
+            return .signedOut
         }
     }
 
