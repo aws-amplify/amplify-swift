@@ -414,7 +414,8 @@ final class EngineMappingTests: XCTestCase {
     /// or a revoke's empty texts).
     ///
     /// - Given: engine `.unknown` and `.service` errors with URL loading, CFNetwork and POSIX network failures
-    ///   underneath; a cancelled load; a POSIX error that is not a network failure; an `.unknown` with a service code;
+    ///   underneath; URL loading failures about a response, App Transport Security, authentication and a
+    ///   cancellation; a POSIX error that is not a network failure; an `.unknown` with a service code;
     ///   the global sign-out's placeholder revoke error (empty texts, nothing underneath); and a code-less `.service`
     ///   with empty texts over an error that is not a network failure
     /// - When:
@@ -422,7 +423,9 @@ final class EngineMappingTests: XCTestCase {
     /// - Then:
     ///    - every network failure is `.service` with no code, the network description and suggestion, and the engine
     ///      error underneath
-    ///    - the cancelled load and the other POSIX error stay `.unknown`, as does the coded one
+    ///    - a cancelled load, a response that arrived but was bad, an App Transport Security or authentication
+    ///      failure, a bad URL and the other POSIX error stay `.unknown`, as does the coded one, and a code-less
+    ///      `.service` over one of them keeps its description
     ///    - the placeholder keeps its empty texts; the other empty one gets the generic service description
     func testANetworkFailureIsARetryableServiceError() {
         let network: [Error] = [
@@ -431,7 +434,11 @@ final class EngineMappingTests: XCTestCase {
             URLError(.timedOut),
             URLError(.notConnectedToInternet),
             URLError(.networkConnectionLost),
+            URLError(.dnsLookupFailed),
+            URLError(.dataNotAllowed),
+            URLError(.secureConnectionFailed),
             NSError(domain: "kCFErrorDomainCFNetwork", code: 2),
+            NSError(domain: "kCFErrorDomainCFNetwork", code: NSURLErrorCannotFindHost),
             NSError(domain: NSPOSIXErrorDomain, code: Int(ECONNREFUSED)),
             NSError(domain: NSPOSIXErrorDomain, code: Int(ETIMEDOUT))
         ]
@@ -444,8 +451,22 @@ final class EngineMappingTests: XCTestCase {
                 XCTAssertNotNil(mapped.underlyingError as? EngineAuthError, "\(engine)")
             }
         }
-        for notNetwork in [URLError(.cancelled) as Error, NSError(domain: NSPOSIXErrorDomain, code: Int(ENOENT))] {
-            XCTAssertEqual(AuthClientError(engine: .unknown("", notNetwork)).kind, .unknown, "\(notNetwork)")
+        // A response that did arrive, App Transport Security, authentication and cancellation keep the engine's mapping.
+        let notNetwork: [Error] = [
+            URLError(.cancelled),
+            URLError(.badServerResponse),
+            URLError(.cannotParseResponse),
+            URLError(.userCancelledAuthentication),
+            URLError(.userAuthenticationRequired),
+            URLError(.appTransportSecurityRequiresSecureConnection),
+            URLError(.badURL),
+            NSError(domain: "kCFErrorDomainCFNetwork", code: NSURLErrorBadServerResponse),
+            NSError(domain: NSPOSIXErrorDomain, code: Int(ENOENT))
+        ]
+        for failure in notNetwork {
+            XCTAssertEqual(AuthClientError(engine: .unknown("", failure)).kind, .unknown, "\(failure)")
+            let service = AuthClientError(engine: .service("Service error occurred", "", failure))
+            XCTAssertEqual(service.errorDescription, "Service error occurred", "\(failure)")
         }
         XCTAssertEqual(AuthClientError(engine: .unknown("d", EngineServiceErrorCode.codeMismatch)).kind, .unknown)
 

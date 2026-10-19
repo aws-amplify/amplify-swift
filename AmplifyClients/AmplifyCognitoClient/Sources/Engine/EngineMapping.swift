@@ -439,24 +439,46 @@ extension AuthClientError {
         return description.isEmpty ? emptyServiceFailureDescription : description
     }
 
-    /// Whether `error` says the request never reached the service, or got no answer: a URL loading failure other
-    /// than a cancellation (`NSURLErrorDomain`, `kCFErrorDomainCFNetwork`), or a socket error of the POSIX domain
-    /// that means the network or host is unreachable, the connection was refused, reset or not made, or it timed
-    /// out. A cancellation is never one: the caller's own cancellation is `CancellationError`.
+    /// Whether `error` says the request never reached the service, or got no answer: a URL loading failure of
+    /// `networkURLErrorCodes` (offline, a failed DNS lookup, a refused, lost or timed-out connection, a failed secure
+    /// connection), in `NSURLErrorDomain` or `kCFErrorDomainCFNetwork`, a CFNetwork host-lookup failure, or a socket
+    /// error of the POSIX domain that means the network or host is unreachable, the connection was refused, reset or
+    /// not made, or it timed out. A failure about a response that did arrive (`badServerResponse`,
+    /// `cannotParseResponse`), App Transport Security, authentication, or a cancellation, is not one. The caller's
+    /// own cancellation is `CancellationError`.
     static func isNetworkFailure(_ error: Error?) -> Bool {
         guard let error, !(error is CancellationError), !(error is AuthClientError), !(error is EngineAuthError) else {
             return false
         }
         let nsError = error as NSError
         switch nsError.domain {
-        case NSURLErrorDomain, Self.cfNetworkErrorDomain:
-            return nsError.code != NSURLErrorCancelled
+        case NSURLErrorDomain:
+            return networkURLErrorCodes.contains(nsError.code)
+        case Self.cfNetworkErrorDomain:
+            return networkURLErrorCodes.contains(nsError.code) || cfNetworkHostLookupCodes.contains(nsError.code)
         case NSPOSIXErrorDomain:
             return networkPOSIXCodes.contains(Int32(truncatingIfNeeded: nsError.code))
         default:
             return false
         }
     }
+
+    /// The URL loading errors `isNetworkFailure` counts: the request never reached the service, or got no answer.
+    static let networkURLErrorCodes: Set<Int> = [
+        NSURLErrorTimedOut,
+        NSURLErrorCannotFindHost,
+        NSURLErrorCannotConnectToHost,
+        NSURLErrorNetworkConnectionLost,
+        NSURLErrorDNSLookupFailed,
+        NSURLErrorNotConnectedToInternet,
+        NSURLErrorInternationalRoamingOff,
+        NSURLErrorCallIsActive,
+        NSURLErrorDataNotAllowed,
+        NSURLErrorSecureConnectionFailed
+    ]
+
+    /// CFNetwork's host-lookup errors, by value: `kCFHostErrorHostNotFound` and `kCFHostErrorUnknown`.
+    static let cfNetworkHostLookupCodes: Set<Int> = [1, 2]
 
     /// CFNetwork's error domain, `kCFErrorDomainCFNetwork`, by value.
     static let cfNetworkErrorDomain = "kCFErrorDomainCFNetwork"
