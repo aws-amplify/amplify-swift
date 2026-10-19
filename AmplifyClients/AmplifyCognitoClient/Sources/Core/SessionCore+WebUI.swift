@@ -450,7 +450,9 @@ extension SessionCore {
         let step: Result<EngineStepResult, Error>
         do {
             step = try await .success(caller.run {
-                try await lock.withLease(for: sessionId, policy: options.whenBrowserBusy) { _ in
+                // A `cancelWebUISignIn()` answers once the browser has closed (bounded), so the caller told
+                // `.userCancelled` finds the sheet free (`systemSheetHolder` is `nil`).
+                try await lock.withLease(for: sessionId, policy: options.whenBrowserBusy, waitsForReleaseWhenInterrupted: true) { _ in
                     // An interrupt that landed while this waited for the sheet: begin nothing.
                     guard !Task.isCancelled, !caller.isCancelled, begun.begin() else {
                         throw CancellationError()

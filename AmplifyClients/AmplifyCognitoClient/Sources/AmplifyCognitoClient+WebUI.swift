@@ -108,7 +108,9 @@ public extension AmplifyCognitoClient {
     }
 
     /// Cancels this session's hosted-UI sign-in, once it holds or is queued for the system sheet: the browser
-    /// is dismissed and the call throws `userCancelled`. Idempotent; never throws; a no-op when there is none.
+    /// is dismissed and the call throws `userCancelled`, once the browser has closed, so `systemSheetHolder` no
+    /// longer names this session by then; if it hasn't closed within a second, the call throws anyway, and the
+    /// sheet is freed when it closes. Idempotent; never throws; a no-op when there is none.
     ///
     /// It also closes this session's hosted-UI sign-out page, if one is showing: that sign-out is then
     /// `.failed(.userCancelled)` and the session stays signed in, as when the user closes the page (a session

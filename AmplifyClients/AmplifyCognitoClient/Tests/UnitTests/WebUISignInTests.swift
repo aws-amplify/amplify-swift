@@ -100,7 +100,7 @@ final class WebUISignInTests: XCTestCase {
     /// - When:
     ///    - `cancelWebUISignIn()` interrupts it, and the flow then returns tokens
     /// - Then:
-    ///    - the caller gets `.userCancelled` at once
+    ///    - the caller gets `.userCancelled` once the sheet's release wait has passed: the flow keeps running
     ///    - the late tokens are revoked with the hosted UI skipped, nothing is committed, no event is sent
     func testALateDoneAfterAnInterruptIsRevokedAndNotCommitted() async throws {
         let client = try client(work)
@@ -729,6 +729,34 @@ final class WebUISignInTests: XCTestCase {
         XCTAssertEqual(error?.kind, .userCancelled)
         XCTAssertEqual(browser.cancelCount, 1)
         await waitForFreeSheet()
+    }
+
+    /// A sign-in cancelled with `cancelWebUISignIn()` is answered once its browser has closed, so the caller told
+    /// `.userCancelled` finds the sheet free.
+    ///
+    /// - Given: a hosted-UI sign-in showing its browser, whose browser takes a moment to close after it is cancelled
+    /// - When: `cancelWebUISignIn()` runs, and the browser closes 200 ms later
+    /// - Then:
+    ///    - the call throws `.userCancelled`, and at that moment the sheet has no holder
+    func testACancelledSignInIsAnsweredOnceTheSheetIsFree() async throws {
+        let client = try client(work)
+        let browser = FakeBrowser(afterCancel: .keepRunning)
+        try XCTUnwrap(harness.engine(for: work)).showWebUISignIns(in: browser)
+        let signIn = await startSignIn(client)
+        await browser.shown.waitForArrivals(1)
+        let lock = harness.sheetLock
+        let answered = Task { () -> (AuthClientError?, SessionID?) in
+            let error = await authClientError { try await signIn.value }
+            return (error, await lock.currentHolder)
+        }
+
+        await client.cancelWebUISignIn()
+        try await Task.sleep(nanoseconds: 200_000_000)
+        browser.finish(.failure(CancellationError()))
+        let (error, holderWhenAnswered) = await answered.value
+
+        XCTAssertEqual(error?.kind, .userCancelled)
+        XCTAssertNil(holderWhenAnswered)
     }
 
     /// - Given: a hosted-UI sign-in showing its browser

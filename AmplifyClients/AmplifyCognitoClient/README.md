@@ -927,6 +927,11 @@ if it had not finished).
 
 ### fetchAuthSession
 
+A hosted-UI sign-in cancelled with `cancelWebUISignIn()` throws `.userCancelled` once its browser has closed, so
+`systemSheetHolder` is `nil` by then and another sign-in can start at once. If the browser hasn't closed within a
+second (its code exchange was already in flight, say), the call throws anyway, and the sheet stays held until it
+closes.
+
 `fetchAuthSession` returns the session's credentials, refreshed if needed. Each field has its own result.
 
 ```swift

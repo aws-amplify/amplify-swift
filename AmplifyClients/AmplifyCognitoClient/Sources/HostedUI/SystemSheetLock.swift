@@ -113,6 +113,10 @@ actor SystemSheetLock {
     private let beforeRelease: Seam
     private let beforeBody: Seam
     private let beforeAcquire: RequestSeam
+    /// How long `waitForRelease(of:)` waits at most.
+    private let releaseWaitNanoseconds: UInt64
+    /// The callers waiting for a lease to be released (`waitForRelease(of:)`), by lease ID.
+    private var releaseWaits: [UInt64: [CheckedContinuation<Void, Never>]] = [:]
 
     /// - Parameters:
     ///   - sleep: how a waiter's timeout waits.
@@ -126,14 +130,18 @@ actor SystemSheetLock {
     ///     a flow here to interrupt it after it started but before its body's first step.
     ///   - beforeAcquire: runs in the caller's task as `withLease` is called, before it asks for the lock. A test
     ///     holds a caller here to change who holds the sheet just before it asks.
+    ///   - releaseWaitNanoseconds: how long an interrupted caller of `withLease(…, waitsForReleaseWhenInterrupted:)`
+    ///     waits at most for its sheet to close: a second.
     init(
         sleep: @escaping Sleep = { try await Task.sleep(nanoseconds: $0) },
         afterAcquire: @escaping Seam = { _ in },
         afterAttach: @escaping Seam = { _ in },
         beforeRelease: @escaping Seam = { _ in },
         beforeBody: @escaping Seam = { _ in },
-        beforeAcquire: @escaping RequestSeam = { _ in }
+        beforeAcquire: @escaping RequestSeam = { _ in },
+        releaseWaitNanoseconds: UInt64 = 1_000_000_000
     ) {
+        self.releaseWaitNanoseconds = releaseWaitNanoseconds
         self.beforeBody = beforeBody
         self.beforeAcquire = beforeAcquire
         self.sleep = sleep
@@ -194,12 +202,18 @@ actor SystemSheetLock {
     /// - Parameter waitsOnlyForItself: with `.wait(timeout:)`, queue only behind this session's own closing
     ///   sheet. Another session holding the lock refuses the call at once, as `.fail` does, and so does the lock
     ///   passing to another session while the call waits. `false` by default.
+    /// - Parameter waitsForReleaseWhenInterrupted: when `cancel(for:)` interrupts the flow, answer the caller only
+    ///   once the flow has unwound and released the lease (its sheet closed), or after `releaseWaitNanoseconds`,
+    ///   whichever comes first, so a caller told its sign-in was cancelled finds the sheet free. The caller's own
+    ///   cancellation, and `reset()`, which frees the lock at once, still answer at once. `false` by default:
+    ///   the caller is answered at once, while the flow may still be unwinding.
     /// - Throws: `AuthClientError.browserBusy(holder:)` if the lock could not be acquired under
     ///   `policy`; `CancellationError` as above; otherwise whatever `body` throws.
     nonisolated func withLease<T: Sendable>(
         for session: SessionID,
         policy: WebUIOptions.BrowserBusyPolicy,
         waitsOnlyForItself: Bool = false,
+        waitsForReleaseWhenInterrupted: Bool = false,
         _ body: @escaping @Sendable (BrowserLease) async throws -> T
     ) async throws -> T {
         await beforeAcquire(session)
@@ -231,10 +245,40 @@ actor SystemSheetLock {
             await release(lease)
             return result
         }
-        return try await withTaskCancellationHandler {
-            try await flow.value()
-        } onCancel: {
-            flow.interrupt()
+        do {
+            return try await withTaskCancellationHandler {
+                try await flow.value()
+            } onCancel: {
+                flow.interrupt()
+            }
+        } catch {
+            if waitsForReleaseWhenInterrupted, flow.isInterrupted, !Task.isCancelled {
+                await waitForRelease(of: lease)
+            }
+            throw error
+        }
+    }
+
+    /// Suspends until `lease` no longer holds the lock (released, or reset away), or `releaseWaitNanoseconds` have
+    /// passed. Returns at once if it no longer holds it.
+    private func waitForRelease(of lease: BrowserLease) async {
+        guard holder?.lease.id == lease.id else {
+            return
+        }
+        let timeout = releaseWaitNanoseconds
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            releaseWaits[lease.id, default: []].append(continuation)
+            Task {
+                try? await Task.sleep(nanoseconds: timeout)
+                self.endReleaseWaits(for: lease.id)
+            }
+        }
+    }
+
+    /// Answers every caller waiting for the lease `id` to be released. Each is answered once.
+    private func endReleaseWaits(for id: UInt64) {
+        for continuation in releaseWaits.removeValue(forKey: id) ?? [] {
+            continuation.resume()
         }
     }
 
@@ -276,6 +320,7 @@ actor SystemSheetLock {
             return nil
         }
         holder = nil
+        endReleaseWaits(for: current.lease.id)
         // With no flow registered yet, the flow finds its lease gone when it tries to register, and
         // stops there.
         current.flow?.interrupt()
@@ -390,9 +435,11 @@ actor SystemSheetLock {
         // someone else.
         guard holder?.lease.id == lease.id else {
             ignoredReleaseCount += 1
+            endReleaseWaits(for: lease.id)
             return
         }
         holder = nil
+        endReleaseWaits(for: lease.id)
         grantNext()
     }
 
