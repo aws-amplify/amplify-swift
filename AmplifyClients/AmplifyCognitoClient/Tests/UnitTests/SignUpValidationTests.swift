@@ -30,26 +30,38 @@ final class SignUpValidationTests: XCTestCase {
     ///    - `signUp`, `confirmSignUp` and `resendSignUpCode` are called with an empty username, and
     ///      `confirmSignUp` with an empty code
     /// - Then:
-    ///    - each throws `validation` with the plugin's field, description and suggestion
+    ///    - each throws `validation`: `signUp` and the resend with the plugin's field, description and suggestion;
+    ///      `confirmSignUp` with texts that name it and its `confirmationCode` parameter
     ///    - the engine receives nothing
     ///
     func testEmptyArgumentsAreRefusedBeforeTheEngine() async throws {
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let cases: [(String, AuthPluginValidationErrorString, () async throws -> Any)] = [
-            ("signUp", AuthPluginErrorConstants.signUpUsernameError, {
+        let plugin = { (constant: AuthPluginValidationErrorString) in
+            (constant.field, constant.errorDescription, constant.recoverySuggestion)
+        }
+        let cases: [(String, (String, String, String), () async throws -> Any)] = [
+            ("signUp", plugin(AuthPluginErrorConstants.signUpUsernameError), {
                 try await client.signUp(username: "", password: "Password1!")
             }),
-            ("passwordless signUp", AuthPluginErrorConstants.signUpUsernameError, {
+            ("passwordless signUp", plugin(AuthPluginErrorConstants.signUpUsernameError), {
                 try await client.signUp(username: "")
             }),
-            ("confirmSignUp username", AuthPluginErrorConstants.signUpUsernameError, {
+            ("confirmSignUp username", (
+                "username",
+                "Username is required to confirmSignUp",
+                "Make sure that a valid username is passed for confirmSignUp"
+            ), {
                 try await client.confirmSignUp(for: "", confirmationCode: "123456")
             }),
-            ("confirmSignUp code", AuthPluginErrorConstants.confirmSignUpCodeError, {
+            ("confirmSignUp code", (
+                "confirmationCode",
+                "confirmationCode is required to confirmSignUp",
+                "Make sure that a valid confirmationCode is passed for confirmSignUp"
+            ), {
                 try await client.confirmSignUp(for: "carol", confirmationCode: "")
             }),
-            ("resendSignUpCode", AuthPluginErrorConstants.resendSignUpCodeUsernameError, {
+            ("resendSignUpCode", plugin(AuthPluginErrorConstants.resendSignUpCodeUsernameError), {
                 try await client.resendSignUpCode(for: "")
             })
         ]
@@ -59,12 +71,30 @@ final class SignUpValidationTests: XCTestCase {
                 guard case .validation(let field, let description, let suggestion, _) = authError(error) else {
                     return XCTFail("\(name): \(error)")
                 }
-                XCTAssertEqual(field, expected.field, name)
-                XCTAssertEqual(description, expected.errorDescription, name)
-                XCTAssertEqual(suggestion, expected.recoverySuggestion, name)
+                XCTAssertEqual(field, expected.0, name)
+                XCTAssertEqual(description, expected.1, name)
+                XCTAssertEqual(suggestion, expected.2, name)
             }
         }
         XCTAssertEqual(engine.accountOperationCalls, [])
+    }
+
+    /// The sign-up machine's refusal of a confirmation code names the `confirmationCode` parameter.
+    ///
+    /// - Given: the sign-up machine's `invalidConfirmationCode` failure
+    /// - When:
+    ///    - it is mapped
+    /// - Then:
+    ///    - it is `validation` for `confirmationCode`, with the machine's message and a suggestion naming the parameter
+    func testAnInvalidConfirmationCodeNamesTheParameter() {
+        let error = AuthClientError(signUp: .invalidConfirmationCode(message: "Invalid code"))
+
+        guard case .validation(let field, let description, let suggestion, _) = error else {
+            return XCTFail("\(error)")
+        }
+        XCTAssertEqual(field, "confirmationCode")
+        XCTAssertEqual(description, "Invalid code")
+        XCTAssertEqual(suggestion, "Make sure that a valid confirmationCode is passed for confirmSignUp")
     }
 
     /// The username is checked before the code, as the plugin checks them.

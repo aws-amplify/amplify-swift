@@ -432,17 +432,28 @@ final class AuthClientConfigurationTests: XCTestCase {
     /// - When:
     ///    - A configuration is constructed with each
     /// - Then:
-    ///    - Each throws `configuration`; every one of the eighteen standard attributes is accepted
+    ///    - Each throws `configuration`, naming the attribute as Cognito does; every one of the eighteen standard
+    ///      attributes is accepted
     ///
     func testStandardRequiredAttributesMustBeStandard() throws {
-        for key in [AuthClientUserAttributeKey.emailVerified, .phoneNumberVerified, .custom("team"), .unknown("x")] {
+        let cases: [(AuthClientUserAttributeKey, String)] = [
+            (.emailVerified, "email_verified"),
+            (.phoneNumberVerified, "phone_number_verified"),
+            (.custom("team"), "custom:team"),
+            (.unknown("x"), "x")
+        ]
+        for (key, name) in cases {
             let userPool = AuthClientConfiguration.UserPool(
                 poolId: "p", appClientId: "c", region: "r", standardRequiredAttributes: [key]
             )
             XCTAssertThrowsError(try AuthClientConfiguration(userPool: userPool), "\(key)") { error in
-                guard case AuthClientError.configuration = error else {
+                guard case AuthClientError.configuration(let description, _, _) = error else {
                     return XCTFail("Expected configuration error, got \(error)")
                 }
+                XCTAssertEqual(
+                    description,
+                    "\"\(name)\" is not a Cognito standard attribute, so it cannot be a standard required attribute."
+                )
             }
         }
         let all = Array(AuthClientConfiguration.standardAttributes.values)

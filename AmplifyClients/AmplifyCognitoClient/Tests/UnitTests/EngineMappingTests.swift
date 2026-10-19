@@ -503,11 +503,40 @@ final class EngineMappingTests: XCTestCase {
                 XCTAssertEqual(client.recoverySuggestion, clientText, "\(engine)")
             }
         }
-        XCTAssertEqual(Set(AuthClientError.clientRecoverySuggestions.keys), Set(rows.map(\.1)))
+        XCTAssertEqual(
+            Set(AuthClientError.clientRecoverySuggestions.keys),
+            Set(rows.map(\.1) + [AuthPluginErrorConstants.configurationError])
+        )
         for text in AuthClientError.clientRecoverySuggestions.values {
             XCTAssertFalse(text.contains("Auth."), text)
             XCTAssertFalse(text.contains("Amplify."), text)
+            XCTAssertFalse(text.contains("plugin"), text)
         }
+    }
+
+    /// The engine's configuration suggestion, which names "Auth plugin", names the client's settings instead.
+    ///
+    /// - Given: the engine's `.configuration` for a user pool without device tracking (Cognito's
+    ///   `InvalidUserPoolConfigurationException`), with the engine's configuration suggestion
+    /// - When:
+    ///    - it is mapped
+    /// - Then:
+    ///    - it is `.configuration` with Cognito's description, and a suggestion about the user pool's settings and the
+    ///      client's configuration that doesn't name the plugin
+    func testTheConfigurationSuggestionNamesTheClient() {
+        XCTAssertEqual(AuthPluginErrorConstants.configurationError, "Make sure that the amplify configuration passed to Auth plugin is valid")
+
+        let mapped = AuthClientError(engine: .configuration(
+            "Device tracking not currently enabled for this pool.",
+            AuthPluginErrorConstants.configurationError
+        ))
+
+        XCTAssertEqual(mapped.kind, .configuration)
+        XCTAssertEqual(mapped.errorDescription, "Device tracking not currently enabled for this pool.")
+        XCTAssertEqual(
+            mapped.recoverySuggestion,
+            "Check the user pool's settings (device tracking, for the device calls) and the client's configuration."
+        )
     }
 
     /// Test that an engine text naming the plugin's MFA type names the client's

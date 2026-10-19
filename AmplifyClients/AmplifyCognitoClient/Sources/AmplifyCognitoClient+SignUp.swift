@@ -62,7 +62,7 @@ public extension AmplifyCognitoClient {
         confirmationCode: String,
         options: AuthClientConfirmSignUpOptions = AuthClientConfirmSignUpOptions()
     ) async throws -> AuthClientSignUpResult {
-        try Self.requireSignUpArgument(username, SignUpValidation.signUpUsername)
+        try Self.requireSignUpArgument(username, SignUpValidation.confirmUsername)
         try Self.requireSignUpArgument(confirmationCode, SignUpValidation.confirmationCode)
         let request = EngineConfirmSignUpRequest(
             username: username,
@@ -132,8 +132,9 @@ extension AmplifyCognitoClient {
     }
 }
 
-/// The plugin's sign-up validation errors, string for string (`AuthPluginErrorConstants`), including the
-/// resend's, which names `confirmSignUp`.
+/// The sign-up validation errors: the plugin's for `signUp` and the resend, string for string
+/// (`AuthPluginErrorConstants`), the resend's naming `confirmSignUp` as the plugin's does; the client's own for
+/// `confirmSignUp`, which name that call and its `confirmationCode` parameter.
 struct SignUpValidation: Sendable {
     let field: String
     let description: String
@@ -145,10 +146,16 @@ struct SignUpValidation: Sendable {
         suggestion: "Make sure that a valid username is passed for signUp"
     )
 
+    static let confirmUsername = SignUpValidation(
+        field: "username",
+        description: "Username is required to confirmSignUp",
+        suggestion: "Make sure that a valid username is passed for confirmSignUp"
+    )
+
     static let confirmationCode = SignUpValidation(
-        field: "code",
-        description: "code is required to confirmSignUp",
-        suggestion: "Make sure that a valid code is passed for confirmSignUp"
+        field: "confirmationCode",
+        description: "confirmationCode is required to confirmSignUp",
+        suggestion: "Make sure that a valid confirmationCode is passed for confirmSignUp"
     )
 
     static let resendUsername = SignUpValidation(

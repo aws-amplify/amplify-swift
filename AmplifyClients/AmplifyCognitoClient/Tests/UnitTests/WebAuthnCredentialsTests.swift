@@ -161,7 +161,7 @@ final class WebAuthnCredentialsTests: XCTestCase {
                         return XCTFail("\(pageSize): \(error)")
                     }
                     XCTAssertEqual(field, "pageSize")
-                    XCTAssertEqual(description, "pageSize must be from 1 to 20 to listWebAuthnCredentials")
+                    XCTAssertEqual(description, "pageSize must be from 1 to 20.")
                 }
             }
         }

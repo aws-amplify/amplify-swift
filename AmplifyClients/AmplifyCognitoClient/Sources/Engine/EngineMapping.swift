@@ -385,7 +385,9 @@ extension AuthClientError {
         "Call Auth.signIn to sign in a user and then call Auth.fetchSession":
             "Call signIn to sign a user in, then call fetchAuthSession.",
         "Get the current user Auth.getCurrentUser() and make the request":
-            "Call getCurrentUser to get the signed-in user, then make the request again."
+            "Call getCurrentUser to get the signed-in user, then make the request again.",
+        "Make sure that the amplify configuration passed to Auth plugin is valid":
+            "Check the user pool's settings (device tracking, for the device calls) and the client's configuration."
     ]
 
     /// How the engine names an MFA type in a text (`EngineMFAType.legacyDescription(of:)`, in the MFA setup
@@ -411,8 +413,6 @@ extension AuthClientError {
     static let clientServiceSuggestion =
         "A network or service problem occurred. Check the connection and retry the operation."
 
-    /// How the engine's "report a bug" recovery text (`EngineErrorMessages.reportBugToAWS`) begins.
-    static let reportBugPrefix = "There is a possibility that there is a bug"
     /// `.service` with no code and the client's network texts, if `error` is a network failure (`isNetworkFailure`),
     /// else `nil`: how the client reports a request that never reached the service, wherever it lands.
     static func networkFailure(_ error: Error) -> AuthClientError? {
@@ -467,6 +467,8 @@ extension AuthClientError {
         EHOSTDOWN, EHOSTUNREACH
     ]
 
+    /// How the engine's "report a bug" recovery text (`EngineErrorMessages.reportBugToAWS`) begins.
+    static let reportBugPrefix = "There is a possibility that there is a bug"
 
     /// Whether a service error's engine recovery suggestion says nothing an app can act on.
     static func isUnhelpfulServiceSuggestion(_ suggestion: String) -> Bool {

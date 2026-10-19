@@ -176,7 +176,7 @@ extension AuthClientError {
         let maximum = AuthClientListWebAuthnCredentialsOptions.maximumPageSize
         return .validation(
             field: "pageSize",
-            "pageSize must be from 1 to \(maximum) to listWebAuthnCredentials",
+            "pageSize must be from 1 to \(maximum).",
             "Pass a pageSize from 1 to \(maximum), or leave the default of \(maximum)."
         )
     }

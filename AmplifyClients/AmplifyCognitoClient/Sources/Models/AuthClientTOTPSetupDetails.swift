@@ -44,8 +44,8 @@ public struct AuthClientTOTPSetupDetails {
         ) else {
             throw AuthClientError.validation(
                 field: "appName or accountName",
-                "Invalid Parameters. Cannot form URL from the supplied appName or accountName",
-                "Please make sure that the supplied parameters don't contain any characters that are illegal in a URL or is an empty String"
+                "A setup URI could not be formed from the given appName and accountName.",
+                "Pass an appName and accountName that are not empty and hold no characters that are illegal in a URL."
             )
         }
         return url

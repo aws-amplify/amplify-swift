@@ -113,7 +113,7 @@ public struct AuthClientConfiguration: Sendable, Equatable {
         let standard = Set(Self.standardAttributes.values)
         if let invalid = userPool?.standardRequiredAttributes.first(where: { !standard.contains($0) }) {
             throw AuthClientError.configuration(
-                "\(invalid) is not a Cognito standard attribute, so it cannot be a standard required attribute.",
+                "\"\(invalid.cognitoName)\" is not a Cognito standard attribute, so it cannot be a standard required attribute.",
                 "Pass standard attributes only, such as .email or .givenName."
             )
         }

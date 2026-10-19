@@ -20,8 +20,9 @@ public extension AmplifyCognitoClient {
     ///
     /// - Throws: `AuthClientError.notSignedIn` for a signed-out, guest or federated session, or while a
     ///   sign-in waits on a challenge; `.sessionExpired` when the refresh token is no longer valid;
-    ///   `.storageUnavailable` if storage could not be read; `.configuration` without a user pool;
-    ///   `.notAuthorized` or `.service` as Cognito answers; `.unknown` if Cognito answers without a device
+    ///   `.storageUnavailable` if storage could not be read; `.configuration` without a user pool, and when
+    ///   the user pool doesn't track devices (Cognito's `InvalidUserPoolConfigurationException`); `.notAuthorized`
+    ///   or `.service` as Cognito answers; `.unknown` if Cognito answers without a device
     ///   list.
     func fetchDevices() async throws -> [AuthClientDevice] {
         let core = core

@@ -226,7 +226,7 @@ final class CredentialProviderTests: XCTestCase {
     /// - When: both providers are asked
     /// - Then:
     ///    - the AWS credentials are vended; the access token throws `notConfigured` (disposition
-    ///      `.failLoudly`), not `notSignedIn`
+    ///      `.failLoudly`), not `notSignedIn`, with texts that say the session is federated
     func testFederatedSessionAskedForATokenIsNotConfigured() async throws {
         let federated = FakePayload.federated()
         try harness.signIn(work, federated)
@@ -238,6 +238,14 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(credentials as? CognitoAWSCredentials, federated.awsCredentials)
         XCTAssertEqual(token?.isNotConfigured, true, "\(String(describing: token))")
         XCTAssertEqual(token?.disposition, .failLoudly)
+        XCTAssertEqual(
+            token?.errorDescription,
+            "This session cannot provide an access token: it is federated to the identity pool, with no user pool sign-in."
+        )
+        XCTAssertEqual(
+            token?.recoverySuggestion,
+            "Sign the session in through the user pool to get an access token, or ask a different provider."
+        )
     }
 
     /// - Given: a stored session whose storage is locked

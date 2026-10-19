@@ -24,13 +24,23 @@ extension AuthClientError {
         }
         let keychainError = error as? KeychainAccessError
         let reason = keychainError?.storageUnavailableReason ?? .interrupted
-        let detail = (keychainError?.errorDescription).map { ": \($0)" } ?? ""
+        let detail = (keychainError?.errorDescription).map(storageDetail).flatMap { $0.isEmpty ? nil : ": \($0)" } ?? ""
         return .storageUnavailable(
             reason,
             "Secure storage could not \(operation)\(detail).",
             recoverySuggestion(for: reason),
             error
         )
+    }
+
+    /// The keychain's own text as one line of the description: every run of whitespace, newlines included, becomes
+    /// one space, and the trailing periods are dropped, since the description ends with its own.
+    static func storageDetail(_ text: String) -> String {
+        var detail = text.split(whereSeparator: \.isWhitespace).joined(separator: " ")
+        while detail.hasSuffix(".") {
+            detail.removeLast()
+        }
+        return detail
     }
 
     private static func recoverySuggestion(for reason: StorageUnavailableReason) -> RecoverySuggestion {

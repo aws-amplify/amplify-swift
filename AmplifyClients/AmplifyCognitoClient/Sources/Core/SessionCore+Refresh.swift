@@ -86,7 +86,10 @@ extension SessionCore {
     }
 
     static func federatedHasNoAccessToken() -> CredentialsError {
-        notConfigured("an access token", missing: "user pool sign-in (it is federated)")
+        .notConfigured(
+            "This session cannot provide an access token: it is federated to the identity pool, with no user pool sign-in.",
+            "Sign the session in through the user pool to get an access token, or ask a different provider."
+        )
     }
 
     /// The payload to read credentials from: restored, checked usable for `purpose`, and refreshed
@@ -504,12 +507,12 @@ extension SessionCore {
         case SessionEngineError.notSignedIn:
             return AuthClientError.notSignedIn("The session is not signed in.", "Sign in first.", error)
         default:
-            return AuthClientError.unknown("The session's credentials could not be refreshed.", "Retry the operation.", error)
-        }
-    }
             if let network = AuthClientError.networkFailure(error) {
                 return network
             }
+            return AuthClientError.unknown("The session's credentials could not be refreshed.", "Retry the operation.", error)
+        }
+    }
 }
 
 /// A refresh of a carried session waiting for its identity stored new user pool tokens, then failed the identity

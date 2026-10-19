@@ -1142,7 +1142,8 @@ if let other = devices.first {
 ```
 
 Device records on this device are kept per user, at the plugin's keys, so two sessions with the same user share
-them. `rememberDevice()` and `forgetDevice()` for this device throw `.unknown` ("Unable to get device metadata")
+them. On a user pool that doesn't track devices, `fetchDevices()`, `rememberDevice()` and `forgetDevice(_:)` of
+another device throw `.configuration` ("Device tracking not currently enabled for this pool."). `rememberDevice()` and `forgetDevice()` for this device throw `.unknown` ("Unable to get device metadata")
 when this device has no device record for the user, as the plugin does.
 
 ## MFA preferences and TOTP

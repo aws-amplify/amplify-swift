@@ -346,7 +346,7 @@ extension AuthClientError {
         case .invalidState(let message):
             self = .invalidState(message, "Call signUp, then confirmSignUp.")
         case .invalidConfirmationCode(let message):
-            self = .validation(field: "code", message, "Make sure that a valid code is passed for confirmSignUp")
+            self = .validation(field: "confirmationCode", message, "Make sure that a valid confirmationCode is passed for confirmSignUp")
         case .invalidUsername, .invalidPassword, .service:
             self.init(engine: error.engineError)
         }
