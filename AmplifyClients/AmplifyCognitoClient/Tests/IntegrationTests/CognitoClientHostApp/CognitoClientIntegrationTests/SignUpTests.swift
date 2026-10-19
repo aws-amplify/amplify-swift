@@ -122,13 +122,13 @@ final class SignUpTests: ClientSignUpTestCase {
     /// - When:
     ///    - it confirms a username with an empty code
     /// - Then:
-    ///    - it throws `validation` for `code`, and no request was sent
+    ///    - it throws `validation` for `confirmationCode`, and no request was sent
     ///
     func testConfirmSignUpValidation() async throws {
         let recorder = RecordingHTTPClient()
         let client = try makeClient("su-6", pool: .standard, configureUserPoolClient: recorder.configureUserPoolClient)
 
-        await assertValidation("code") {
+        await assertValidation("confirmationCode") {
             try await client.confirmSignUp(for: SandboxSignUp.identity().username, confirmationCode: "")
         }
         XCTAssertEqual(recorder.operations, [])
@@ -302,13 +302,13 @@ final class SignUpTests: ClientSignUpTestCase {
     /// - When:
     ///    - it confirms a username with an empty code
     /// - Then:
-    ///    - it throws `validation` for `code`, and no request was sent
+    ///    - it throws `validation` for `confirmationCode`, and no request was sent
     ///
     func testFailurePasswordlessConfirmSignUpEmptyCode() async throws {
         let recorder = RecordingHTTPClient()
         let client = try makeClient("su-13", pool: .passwordless, configureUserPoolClient: recorder.configureUserPoolClient)
 
-        await assertValidation("code") {
+        await assertValidation("confirmationCode") {
             try await client.confirmSignUp(for: SandboxSignUp.identity().username, confirmationCode: "")
         }
         XCTAssertEqual(recorder.operations, [])
