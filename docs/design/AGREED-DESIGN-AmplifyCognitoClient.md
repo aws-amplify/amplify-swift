@@ -251,11 +251,11 @@ The app holds two Auth Clients. Each signs in independently; both stay live; nei
 let work = try AmplifyCognitoClient(configuration: config, options: .init(sessionId: .named("work")))
 let home = try AmplifyCognitoClient(configuration: config, options: .init(sessionId: .named("home")))
 
-try await work.signIn(username: "alice@corp",     password: pw1)
-try await home.signIn(username: "alice@personal", password: pw2)
+_ = try await work.signIn(username: "alice@corp",     password: pw1)
+_ = try await home.signIn(username: "alice@personal", password: pw2)
 
-try await work.getCurrentUser()   // alice@corp
-try await home.getCurrentUser()   // alice@personal
+_ = try await work.getCurrentUser()   // alice@corp
+_ = try await home.getCurrentUser()   // alice@personal
 ```
 
 **New API:** `AmplifyCognitoClient.init(configuration:options:)` and `Options.sessionId`. The session ID is the only thing that distinguishes these two clients, which is why it is a construction parameter rather than something you set later - an Auth Client is never briefly pointed at the wrong session. Declared in 14.1.
@@ -379,7 +379,7 @@ let client = try AmplifyCognitoClient(configuration: config)   // default sessio
 _ = try await client.fetchAuthSession()                         // becomes .guest
 let feed = try await loadPublicFeed(using: client.credentialsProvider)
 
-try await client.signIn(username: entered, password: pw)    // same session, now signed in
+_ = try await client.signIn(username: entered, password: pw)    // same session, now signed in
 ```
 
 **New API:** none. `SessionID.default` is what an omitted `sessionId` resolves to, and it is a stable value, so this is the single-account case with no session-ID thinking required at all.
@@ -397,6 +397,8 @@ A different request from the flow above, and the answer is short: **that is two 
 This is the payoff, and the target shape already ships in the newer clients: they take a credential provider at construction.
 
 ```swift
+import AmplifyConnectClient
+
 // Two Connect clients, same region, two different users. Each holds its own
 // session and signs with its own credentials.
 let workConnect = AmplifyConnectClient(configuration: connectConfig,
@@ -420,10 +422,10 @@ The most common multi-account flow, and the one that forces a real design questi
 ```swift
 // The library mints the ID; the app does not have to invent or remember one.
 let added = try AmplifyCognitoClient(configuration: config, options: .init(sessionId: .new()))
-try await added.signIn(username: entered, password: pw)   // the session is saved here, not before
+_ = try await added.signIn(username: entered, password: pw)   // the session is saved here, not before
 try await added.setSessionLabel("Acme Corp")              // optional; see below
 
-added.sessionId   // the durable handle, if the app wants to deep-link into this session
+_ = added.sessionId   // the durable handle, if the app wants to deep-link into this session
 ```
 
 **New API:** `SessionID.new()`, `SessionID.named(_:)`, and `setSessionLabel(_:)`. `new()` exists because of the ordering problem above. `setSessionLabel` is separate from construction because the label is usually only knowable after sign-in has told you which tenant you got. Declared in 14.6 (`SessionID`) and 14.3 (`setSessionLabel`).
@@ -450,7 +452,7 @@ Note what this rules out: **keying a session by user id cannot work**, because t
 // Sign-out does not throw: it returns .complete, .partial(...) or .failed(error).
 let result = await work.signOut()
 if !result.signedOutLocally { showRetry() }   // .failed: the session is still signed in
-try await home.getCurrentUser()   // still alice@personal
+_ = try await home.getCurrentUser()   // still alice@personal
 
 // Sign out AND forget the row, in one call. Opt-in, because deleting is not recoverable.
 await work.signOut(options: .init(purgeStoredSession: true))
@@ -458,7 +460,7 @@ await work.signOut(options: .init(purgeStoredSession: true))
 // Signing out a session the app is not currently holding, straight from the picker.
 // named(_:) throws for an invalid ID, so it needs `try`.
 let workID = try SessionID.named("work")
-await AmplifyCognitoClient.signOutStoredSession(sessionId: workID, configuration: config)
+_ = await AmplifyCognitoClient.signOutStoredSession(sessionId: workID, configuration: config)
 
 // Removing a saved row entirely, without contacting Cognito. The refresh token stays
 // valid server-side until it expires, so where you can, call signOutStoredSession
@@ -683,7 +685,7 @@ let client = try AmplifyCognitoClient(configuration: config, options: .init(sess
 if case .awaitingChallenge(let step) = await client.currentSessionState() {
     // The app's choice: resume, or call signIn again and start over.
     presentChallengePrompt(for: step)
-    do    { try await client.confirmSignIn(challengeResponse: code) }
+    do    { _ = try await client.confirmSignIn(challengeResponse: code) }
     catch AuthClientError.challengeExpired { restartSignIn() }
 }
 ```
@@ -981,6 +983,9 @@ Every level above is already how the code works today. The two changes are addin
 **What using them looks like.** A provider is a value the app hands to whatever needs credentials. Which session it resolves is fixed when it is handed over, so the receiving code cannot end up acting as a different user. Each session refreshes its own tokens on demand with no coordination between sessions, so an app holding several needs to do nothing to keep them all live. A rule worth stating here rather than leaving to 15.2: on a signed-out session, resolution **fails** with `notSignedIn` rather than falling back to guest credentials.
 
 ```swift
+import AmplifyFoundationBridge
+import AWSS3
+
 // 1. AWS credentials -> anything that signs AWS requests. A sibling Amplify
 //    client takes the provider directly; a raw AWS SDK client takes it through
 //    AmplifyFoundationBridge's adapter.
@@ -1023,7 +1028,7 @@ for await event in work.listenToAuthEvents() {
 }
 
 // A second session's events arrive on its own stream, concurrently.
-for await event in home.listenToAuthEvents() { ... }
+for await event in home.listenToAuthEvents() { _ = event }
 ```
 
 **New API:** `listenToAuthEvents()`, returning an `AsyncStream<AuthEvent>` per Auth Client. `AuthEvent` carries the same four cases the Hub sends today. The Hub path is unchanged for the plugin, so an app migrating one screen at a time can use both (over named sessions until the bridge; see 4.9). Declared in 14.2 (`listenToAuthEvents()`) and 14.6 (`AuthEvent`).
@@ -1092,7 +1097,7 @@ public static func resetSystemSheet() async -> SessionID?
 
 ```swift
 do {
-    try await work.signInWithWebUI(presentationAnchor: anchor)
+    _ = try await work.signInWithWebUI(presentationAnchor: anchor)
 } catch AuthClientError.browserBusy(let holder, _, _, _) {
     // Another session is mid-sign-in. Surface it; do not silently queue.
     showAlert("Finish signing in to \(name(for: holder)) first.")
@@ -1671,7 +1676,7 @@ With the Auth Client, the session is a value you hold. Nothing is implicit, and 
 // No global configure step, no plugin registry. Same construction as Kinesis or Connect.
 let work = try AmplifyCognitoClient(configuration: config, options: .init(sessionId: .named("work")))
 
-try await work.signIn(username: "alice", password: pw)
+_ = try await work.signIn(username: "alice", password: pw)
 let user = try await work.getCurrentUser()                      // unambiguously work's user
 let session = try await work.fetchAuthSession()                  // unambiguously work's session
 
@@ -1705,6 +1710,8 @@ let session = try await Amplify.Auth.fetchAuthSession()   // follows whoever is 
 **After**, a consumer is handed a provider bound to one session, at construction:
 
 ```swift
+import AmplifyConnectClient
+
 let connect = AmplifyConnectClient(configuration: connectConfig,
                                    credentialsProvider: work.credentialsProvider)
 ```

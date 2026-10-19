@@ -95,7 +95,7 @@ Import the client with the SPI:
 ```swift
 @_spi(AmplifyExperimental) import AmplifyCognitoClient
 
-// Only where you match StorageUnavailableReason or read CredentialsError.disposition:
+// Only where you name CredentialsError or match a StorageUnavailableReason:
 @_spi(AmplifyExperimental) import AmplifyFoundation
 ```
 
@@ -324,7 +324,9 @@ never throws. It never signs out a user who signs in while the call runs: if som
 meanwhile, it returns `.failed(.invalidState)` and they stay signed in. A client for that session live with other
 pools in the same access group makes it `.failed(.sessionConfigurationMismatch)` (a purge throws it); a client live
 in another access group holds a different saved session, and is left alone. A purge leaves the refresh token valid
-on the server until it expires, so prefer `signOutStoredSession`.
+on the server until it expires, so prefer `signOutStoredSession`. A named session's purge deletes the session's
+small configuration marker last; an app terminated just before that leaves the marker, which holds no credentials,
+and the next purge of that session removes it.
 
 There is no "sign out of every session" call. Loop over the listing, once per configuration and access group the
 app has used:
@@ -528,6 +530,12 @@ if result.nextStep == .done {
     print("Next:", result.nextStep)
 }
 ```
+
+An SRP sign-in is two Cognito calls, and Cognito accepts the password proof only for about 25 to 30 seconds after
+its challenge. If the app is suspended between the two (the user switches away right after tapping Sign in) and
+the proof reaches Cognito later than that, the sign-in fails with `.notAuthorized` "Incorrect username or
+password." although the password is right. The session stays signed out. The client doesn't retry it: ask the
+user to sign in again.
 
 ### Password (USER_PASSWORD_AUTH)
 
@@ -919,6 +927,11 @@ let holder = await AmplifyCognitoClient.systemSheetHolder // who holds the sheet
 let freed = await AmplifyCognitoClient.resetSystemSheet() // free the sheet, whoever holds it
 ```
 
+A hosted-UI sign-in cancelled with `cancelWebUISignIn()` throws `.userCancelled` once its browser has closed, so
+`systemSheetHolder` is `nil` by then and another sign-in can start at once. If the browser hasn't closed within a
+second (its code exchange was already in flight, say), the call throws anyway, and the sheet stays held until it
+closes.
+
 `resetSystemSheet()` is a recovery tool for a sheet that stopped responding. A sign-in or passkey call holding it
 throws `.userCancelled`; a sign-out page is closed, and its sign-out reports what it did (`.failed(.userCancelled)`
 if it had not finished).
@@ -926,11 +939,6 @@ if it had not finished).
 ## Tokens, sessions and credentials
 
 ### fetchAuthSession
-
-A hosted-UI sign-in cancelled with `cancelWebUISignIn()` throws `.userCancelled` once its browser has closed, so
-`systemSheetHolder` is `nil` by then and another sign-in can start at once. If the browser hasn't closed within a
-second (its code exchange was already in flight, say), the call throws anyway, and the sheet stays held until it
-closes.
 
 `fetchAuthSession` returns the session's credentials, refreshed if needed. Each field has its own result.
 
@@ -969,6 +977,7 @@ federated session, and `.invalidState` while a sign-in waits on a challenge.
 ### Credentials for other AmplifyClients
 
 `credentialsProvider` vends this session's AWS credentials to any client that takes an `AWSCredentialsProvider`.
+Link that client's product too: `AmplifyKinesisClient` for the example below.
 
 ```swift
 import AmplifyKinesisClient
@@ -978,6 +987,11 @@ let kinesis = try AmplifyKinesisClient(
     credentialsProvider: work.credentialsProvider
 )
 ```
+
+In Swift 6, calling `AmplifyKinesisClient`'s `record(…)` from a `@MainActor` type (a SwiftUI view model, say) or an
+actor that holds the Kinesis client fails to compile with "sending 'kinesis' risks causing data races": the Kinesis
+client isn't `Sendable`. Use `@preconcurrency import AmplifyKinesisClient`, or create and use the Kinesis client in
+one nonisolated function.
 
 The provider:
 
@@ -1073,6 +1087,7 @@ try await client.clearFederationToIdentityPool()
   does.
 
 Providers: `.amazon`, `.apple`, `.facebook`, `.google`, `.twitter`, `.oidc(name)`, `.saml(name)`, `.custom(name)`.
+An empty token, or an empty name for `.oidc`, `.saml` or `.custom`, throws `.validation` before anything is sent.
 
 ## User attributes
 
@@ -1092,7 +1107,6 @@ if case .confirmAttributeWithCode(let details, _) = result.nextStep {
     try await client.confirm(userAttribute: .email, confirmationCode: "123456")
 }
 
-An empty token, or an empty name for `.oidc`, `.saml` or `.custom`, throws `.validation` before anything is sent.
 let results = try await client.update(userAttributes: [
     AuthClientUserAttribute(.givenName, value: "Sam"),
     AuthClientUserAttribute(.custom("plan"), value: "pro")
@@ -1624,7 +1638,9 @@ let client = try AmplifyCognitoClient(
 )
 ```
 
-(`RetryStrategyOptions` needs `import SmithyRetriesAPI`.)
+(`RetryStrategyOptions` needs `import SmithyRetriesAPI`, and the closure's `config`, the SDK's
+`CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig`, needs `import AWSCognitoIdentityProvider`
+where member import visibility is on, as in new Xcode projects.)
 The closure runs after the client sets the region, signing region and credential resolver, so it can override
 them. Only the handle that builds the session applies it. It runs after the SDK has built its retry options and
 HTTP client from the configuration, so some settings have no effect there:
