@@ -33,7 +33,8 @@ extension SessionCore {
         }
     }
 
-    private nonisolated func fetchSession(forceRefresh: Bool) async throws -> AuthClientSession {
+    /// - Parameter adopted: this call already adopted another writer's saved credentials, so it adopts no more.
+    private nonisolated func fetchSession(forceRefresh: Bool, adopted: Bool = false) async throws -> AuthClientSession {
         _ = try await restoredSnapshot()
         try await rereadIfExpired()
         let (snapshot, expired) = await snapshotAndExpiry
@@ -43,6 +44,12 @@ extension SessionCore {
         case .failed(let error):
             throw error
         case .signedOut, .awaitingChallenge:
+            // A forced refresh calls Cognito. A signed-out session adopts what another writer (an app extension, or
+            // the Auth plugin) has saved since (`acquireGuestOnce`), and would hand those tokens out as they are: so a
+            // forced one adopts them first, then refreshes them as the signed-in session it now is.
+            if forceRefresh, !adopted, try await adoptSavedCredentials() {
+                return try await fetchSession(forceRefresh: true, adopted: true)
+            }
             return try await signedOutSession()
         case .guest, .federated, .signedIn:
             if expired {
@@ -124,6 +131,23 @@ extension SessionCore {
             return Self.signedOutSession(sessionId)
         }
         return try session(of: snapshot)
+    }
+
+    /// Adopts the credentials another writer saved in the record since this session last read it, under the record's
+    /// gate, as `acquireGuestOnce` does; `true` if it did. Only with an identity pool, where a signed-out session's
+    /// fetch adopts them (`signedOutSession`): without one, that fetch reads nothing.
+    private nonisolated func adoptSavedCredentials() async throws -> Bool {
+        guard configuration.identityPool != nil else {
+            return false
+        }
+        return try await withRecord { [self] store in
+            let current = try await store.load(sessionId)
+            guard let credentials = current.credentials, await credentials != restoredSnapshotIfAny?.credentials else {
+                return false
+            }
+            await apply(current, event: nil)
+            return true
+        }
     }
 
     /// Fetches and commits guest credentials, under the record's gate. If the record meanwhile holds

@@ -948,7 +948,9 @@ let accessToken = try await client.userPoolTokenProvider.accessToken()
   saved record (`unknown`), or cancellation.
 - A signed-out session whose identity pool allows guests becomes `.guest` here, and only here.
 - Concurrent refreshes of the same kind share one call. A forced refresh (`forceRefresh: true`) joins only other
-  forced refreshes, and runs after a normal refresh already in flight, so it always calls Cognito.
+  forced refreshes, and runs after a normal refresh already in flight, so it always calls Cognito. That includes a
+  session signed out in this process after an app extension or the Auth plugin saved a login in its record: it
+  adopts that login, then refreshes it, where an unforced fetch hands out the saved tokens as they are.
 - There is no `isSignedIn` field. Use `currentSessionState()`.
 - Tokens and AWS credentials print redacted.
 

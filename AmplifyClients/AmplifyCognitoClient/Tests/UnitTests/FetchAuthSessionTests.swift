@@ -274,6 +274,36 @@ final class FetchAuthSessionTests: XCTestCase {
         XCTAssertEqual(try forced.userPoolTokensResult.get().accessToken, "access-alice-v2")
     }
 
+    /// A forced refresh of a session signed out in this process still calls Cognito when another writer has saved a
+    /// login since: the session adopts that login, then refreshes it.
+    ///
+    /// - Given: a session restored signed out, with an identity pool; then another writer (an app extension, or the
+    ///   Auth plugin over `.default`) saves bob's login in its record
+    /// - When: its session is fetched with `forceRefresh`, and on a second such session, without it
+    /// - Then:
+    ///    - the forced fetch refreshes bob's saved login once and reports the refreshed tokens; no guest is fetched
+    ///    - the unforced fetch adopts bob's saved tokens as they are, with no refresh
+    func testAForcedFetchOfASignedOutSessionRefreshesAnotherWritersLogin() async throws {
+        let bob = FakePayload.signedIn("bob")
+        let forcedClient = try harness.client(work)
+        let unforcedClient = try harness.client(home)
+        _ = await forcedClient.currentSessionState()
+        _ = await unforcedClient.currentSessionState()
+        try harness.signIn(work, bob)
+        try harness.signIn(home, bob)
+        let forcedEngine = try XCTUnwrap(harness.engine(for: work))
+        let unforcedEngine = try XCTUnwrap(harness.engine(for: home))
+
+        let forced = try await forcedClient.fetchAuthSession(options: .init(forceRefresh: true))
+        let unforced = try await unforcedClient.fetchAuthSession()
+
+        XCTAssertEqual(forcedEngine.refreshCalls, [bob.data])
+        XCTAssertEqual(try forced.userPoolTokensResult.get().accessToken, "access-bob-v2")
+        XCTAssertEqual(forcedEngine.guestFetchCount, 0)
+        XCTAssertEqual(unforcedEngine.refreshCalls, [])
+        XCTAssertEqual(try unforced.userPoolTokensResult.get().accessToken, bob.accessToken)
+    }
+
     /// - Given: a signed-in session whose refresh token is dead
     /// - When: its session is fetched twice
     /// - Then:
