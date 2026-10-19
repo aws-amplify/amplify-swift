@@ -72,6 +72,46 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
         }
     }
 
+    /// A sign-in that reaches something but can't read its answer, or that App Transport Security refuses, is a
+    /// readable service error, as a refresh reports it: never `.unknown` with an empty description.
+    ///
+    /// - Given: `InitiateAuth` failing in turn with URL loading's `badServerResponse` (-1011), `cannotParseResponse`
+    ///   (-1017) and `appTransportSecurityRequiresSecureConnection` (-1022), and with a body that is not JSON
+    /// - When: a client over the live engine signs in
+    /// - Then:
+    ///    - each throws `.service` with no code and a description that isn't empty and isn't the network one: the
+    ///      unreadable responses "The service returned a response that could not be read." with the retry
+    ///      suggestion, the refusal "The service request failed." with the network-or-service suggestion; no
+    ///      suggestion asks for a bug report, and the session stays signed out
+    func testASignInThatReachesSomethingUnreadableIsAReadableServiceError() async throws {
+        let unreadable = (AuthClientError.unreadableResponseDescription, AuthClientError.unreadableServiceResponseSuggestion)
+        let failed = (AuthClientError.emptyServiceFailureDescription, AuthClientError.clientServiceSuggestion)
+        let cases: [(String, Error, (String, String))] = [
+            ("-1011", URLError(.badServerResponse), unreadable),
+            ("-1017", URLError(.cannotParseResponse), unreadable),
+            ("-1022", URLError(.appTransportSecurityRequiresSecureConnection), failed),
+            ("not JSON", NSError(domain: NSCocoaErrorDomain, code: NSPropertyListReadCorruptError), unreadable)
+        ]
+        for (name, failure, expected) in cases {
+            harness = LiveEngineHarness()
+            harness.cognito.always("InitiateAuth") { (_: InitiateAuthInput) -> InitiateAuthOutput in throw failure }
+            let client = try makeClient(over: ClientHarness())
+
+            do {
+                _ = try await client.signIn(username: "alice", password: "password")
+                XCTFail("\(name): expected an error")
+            } catch AuthClientError.service(nil, let description, let suggestion, _) {
+                XCTAssertEqual(description, expected.0, name)
+                XCTAssertEqual(suggestion, expected.1, name)
+                XCTAssertFalse(suggestion.contains("bug"), name)
+            } catch {
+                XCTFail("\(name): expected a service error with no code, got \(error)")
+            }
+            let state = await client.currentSessionState()
+            XCTAssertEqual(state, .signedOut, name)
+        }
+    }
+
     /// A client of `work` over this test's live engine.
     private func makeClient(over clientHarness: ClientHarness) throws -> AmplifyCognitoClient {
         let base = clientHarness.dependencies

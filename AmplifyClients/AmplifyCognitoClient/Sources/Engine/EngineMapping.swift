@@ -350,11 +350,11 @@ extension AuthClientError {
                 self = .service(code, description, suggestion, error)
             }
         case .unknown(_, let underlying):
-            // A request that never reached the service (no network, a DNS failure, a refused connection, a timeout)
-            // is a service failure an app may retry, as the refresh path reports it, not "a bug". The sign-in
-            // flows' state machines report it as `.unknown` with an empty message.
-            if Self.isNetworkFailure(underlying) {
-                self = .service(nil, Self.networkFailureDescription, Self.clientServiceSuggestion, error)
+            // A transport failure (a request that never reached the service, a response that could not be read, a
+            // URL loading failure) is a service failure an app may retry, as the refresh path reports it, not "a
+            // bug". The sign-in flows' state machines report it as `.unknown` with an empty message.
+            if let underlying, let transport = Self.transportFailure(underlying, wrapping: error) {
+                self = transport
             } else {
                 self = .unknown(description, suggestion, error)
             }
@@ -413,13 +413,49 @@ extension AuthClientError {
     static let clientServiceSuggestion =
         "A network or service problem occurred. Check the connection and retry the operation."
 
-    /// `.service` with no code and the client's network texts, if `error` is a network failure (`isNetworkFailure`),
-    /// else `nil`: how the client reports a request that never reached the service, wherever it lands.
-    static func networkFailure(_ error: Error) -> AuthClientError? {
-        guard isNetworkFailure(error) else {
+    /// How the client reports a transport failure `underlying`, with `wrapping` (the engine's error, or `underlying`
+    /// itself) underneath, or `nil` if it isn't one:
+    /// - a request that never reached the service (`isNetworkFailure`): `networkFailure`'s texts;
+    /// - a response that could not be read (`isUnreadableResponse`): `.service` with no code,
+    ///   `unreadableResponseDescription` and `unreadableServiceResponseSuggestion`, as the refresh path suggests;
+    /// - any other URL loading failure but a cancellation (App Transport Security, say): `.service` with no code,
+    ///   `emptyServiceFailureDescription` and the client's network-or-service suggestion.
+    static func transportFailure(_ underlying: Error, wrapping: Error) -> AuthClientError? {
+        if isNetworkFailure(underlying) {
+            return .service(nil, networkFailureDescription, clientServiceSuggestion, wrapping)
+        }
+        if isUnreadableResponse(underlying) {
+            return .service(nil, unreadableResponseDescription, unreadableServiceResponseSuggestion, wrapping)
+        }
+        let nsError = underlying as NSError
+        if [NSURLErrorDomain, cfNetworkErrorDomain].contains(nsError.domain), nsError.code != NSURLErrorCancelled,
+           !(underlying is CancellationError) {
+            return .service(nil, emptyServiceFailureDescription, clientServiceSuggestion, wrapping)
+        }
+        return nil
+    }
+
+    /// `transportFailure(error, wrapping: error)`, for an error the engine did not wrap: what the core's fallbacks
+    /// report for a transport failure.
+    static func transportFailure(_ error: Error) -> AuthClientError? {
+        guard !(error is AuthClientError), !(error is EngineAuthError), !(error is CancellationError) else {
             return nil
         }
-        return .service(nil, networkFailureDescription, clientServiceSuggestion, error)
+        return transportFailure(error, wrapping: error)
+    }
+
+    /// The description of a response that arrived but could not be read (`isUnreadableResponse`).
+    static let unreadableResponseDescription = "The service returned a response that could not be read."
+
+    /// Whether `error` says a response arrived but could not be read: a body that is not JSON
+    /// (`isUnreadableServiceResponse`), or URL loading's `badServerResponse` or `cannotParseResponse`.
+    static func isUnreadableResponse(_ error: Error) -> Bool {
+        if isUnreadableServiceResponse(error) {
+            return true
+        }
+        let nsError = error as NSError
+        return [NSURLErrorDomain, cfNetworkErrorDomain].contains(nsError.domain)
+            && [NSURLErrorBadServerResponse, NSURLErrorCannotParseResponse].contains(nsError.code)
     }
 
     /// The description of a request that never reached the service (`isNetworkFailure`).

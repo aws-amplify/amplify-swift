@@ -424,8 +424,8 @@ final class EngineMappingTests: XCTestCase {
     ///    - every network failure is `.service` with no code, the network description and suggestion, and the engine
     ///      error underneath
     ///    - a cancelled load, a response that arrived but was bad, an App Transport Security or authentication
-    ///      failure, a bad URL and the other POSIX error stay `.unknown`, as does the coded one, and a code-less
-    ///      `.service` over one of them keeps its description
+    ///      failure, a bad URL and the other POSIX error don't get the network description, and a code-less
+    ///      `.service` over one of them keeps its own; the coded `.unknown` stays `.unknown`
     ///    - the placeholder keeps its empty texts; the other empty one gets the generic service description
     func testANetworkFailureIsARetryableServiceError() {
         let network: [Error] = [
@@ -451,7 +451,8 @@ final class EngineMappingTests: XCTestCase {
                 XCTAssertNotNil(mapped.underlyingError as? EngineAuthError, "\(engine)")
             }
         }
-        // A response that did arrive, App Transport Security, authentication and cancellation keep the engine's mapping.
+        // Failures that reached the service, or never left the device for another reason, are not "could not reach":
+        // a code-less `.service` over one keeps its description.
         let notNetwork: [Error] = [
             URLError(.cancelled),
             URLError(.badServerResponse),
@@ -464,7 +465,7 @@ final class EngineMappingTests: XCTestCase {
             NSError(domain: NSPOSIXErrorDomain, code: Int(ENOENT))
         ]
         for failure in notNetwork {
-            XCTAssertEqual(AuthClientError(engine: .unknown("", failure)).kind, .unknown, "\(failure)")
+            XCTAssertNotEqual(AuthClientError(engine: .unknown("", failure)).errorDescription, AuthClientError.networkFailureDescription, "\(failure)")
             let service = AuthClientError(engine: .service("Service error occurred", "", failure))
             XCTAssertEqual(service.errorDescription, "Service error occurred", "\(failure)")
         }
@@ -476,6 +477,54 @@ final class EngineMappingTests: XCTestCase {
         let emptyOther = AuthClientError(engine: .service("", "", FixtureError(description: "x")))
         XCTAssertEqual(emptyOther.errorDescription, AuthClientError.emptyServiceFailureDescription)
         XCTAssertEqual(emptyOther.recoverySuggestion, AuthClientError.clientServiceSuggestion)
+    }
+
+    /// A transport failure that is not a network failure is a readable, retryable service error too, never an empty
+    /// `.unknown`: an unreadable response gets the refresh path's suggestion, any other URL loading failure the
+    /// client's network-or-service one.
+    ///
+    /// - Given: engine `.unknown` errors with an empty message over a body that is not JSON, URL loading's
+    ///   `badServerResponse` and `cannotParseResponse` (also in the CFNetwork domain), and over an App Transport
+    ///   Security refusal, an authentication failure and a bad URL; and over a cancelled load, a POSIX error that is
+    ///   not a network failure, and a service code
+    /// - When:
+    ///    - each is mapped
+    /// - Then:
+    ///    - the unreadable responses are `.service` with no code, "The service returned a response that could not be
+    ///      read." and the retry suggestion; the other URL failures are `.service` with no code, "The service request
+    ///      failed." and the network-or-service suggestion; each has the engine error underneath, and none asks for a
+    ///      bug report
+    ///    - the cancelled load, the POSIX error and the coded one stay `.unknown`
+    func testATransportFailureIsAReadableServiceError() {
+        let unreadable: [Error] = [
+            NSError(domain: NSCocoaErrorDomain, code: NSPropertyListReadCorruptError),
+            URLError(.badServerResponse),
+            URLError(.cannotParseResponse),
+            NSError(domain: "kCFErrorDomainCFNetwork", code: NSURLErrorBadServerResponse)
+        ]
+        for failure in unreadable {
+            let mapped = AuthClientError(engine: .unknown("", failure))
+            XCTAssertEqual(mapped.kind, .service(nil), "\(failure)")
+            XCTAssertEqual(mapped.errorDescription, "The service returned a response that could not be read.", "\(failure)")
+            XCTAssertEqual(mapped.recoverySuggestion, AuthClientError.unreadableServiceResponseSuggestion, "\(failure)")
+            XCTAssertNotNil(mapped.underlyingError as? EngineAuthError, "\(failure)")
+        }
+        let otherURLFailures: [Error] = [
+            URLError(.appTransportSecurityRequiresSecureConnection),
+            URLError(.userCancelledAuthentication),
+            URLError(.userAuthenticationRequired),
+            URLError(.badURL)
+        ]
+        for failure in otherURLFailures {
+            let mapped = AuthClientError(engine: .unknown("", failure))
+            XCTAssertEqual(mapped.kind, .service(nil), "\(failure)")
+            XCTAssertEqual(mapped.errorDescription, "The service request failed.", "\(failure)")
+            XCTAssertEqual(mapped.recoverySuggestion, AuthClientError.clientServiceSuggestion, "\(failure)")
+            XCTAssertFalse(mapped.recoverySuggestion.contains("bug"), "\(failure)")
+        }
+        for failure in [URLError(.cancelled) as Error, NSError(domain: NSPOSIXErrorDomain, code: Int(ENOENT)), EngineServiceErrorCode.codeMismatch] {
+            XCTAssertEqual(AuthClientError(engine: .unknown("", failure)).kind, .unknown, "\(failure)")
+        }
     }
 
     /// Test that an engine recovery suggestion naming the plugin's `Auth.*` calls names the client's calls

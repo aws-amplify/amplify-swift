@@ -441,10 +441,11 @@ migrated by a later plugin build as a guest holding the old user's identity ID a
 the app's keychain services (attributes only) to find them; a failed listing logs one warning and clears the
 configured services only.
 
-**#24.** The sign-in flows reported a transport failure as `.unknown` with an empty description and a "report a
-bug" suggestion. Only failures that never reached the service count: no network, DNS, a refused, lost or timed-out
-connection, a failed secure connection. A response that arrived, App Transport Security and authentication failures
-keep the engine's mapping. A sign-out's revoke that failed this way keeps the sign-out's context in its suggestion.
+**#24.** The sign-in flows reported a transport failure as `.unknown` with an empty description and a "report a bug"
+suggestion. Only failures that never reached the service count: offline, a failed DNS or host lookup, a refused or
+lost connection, a timeout, or a failed secure connection. A response that arrived but couldn't be read, App
+Transport Security and authentication failures are `.service` with no code and their own texts, never an empty
+`.unknown`. A sign-out's revoke that failed on the network keeps the sign-out's context in its suggestion.
 
 **#25.** The caller was answered at once while the browser was still closing, so `systemSheetHolder` still named the
 session and an immediate retry got `browserBusy`. The caller's own task cancellation and `resetSystemSheet()` still

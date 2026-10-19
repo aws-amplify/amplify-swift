@@ -450,7 +450,7 @@ extension SessionCore {
 
     /// An identity-step failure as the error the identity fields and AWS credentials report.
     static func identityStepError(_ error: Error) -> AuthClientError {
-        (error as? AuthClientError) ?? AuthClientError.networkFailure(error)
+        (error as? AuthClientError) ?? AuthClientError.transportFailure(error)
             ?? .unknown("The identity pool step failed.", "Retry the operation.", error)
     }
 
@@ -507,7 +507,7 @@ extension SessionCore {
         case SessionEngineError.notSignedIn:
             return AuthClientError.notSignedIn("The session is not signed in.", "Sign in first.", error)
         default:
-            if let network = AuthClientError.networkFailure(error) {
+            if let network = AuthClientError.transportFailure(error) {
                 return network
             }
             return AuthClientError.unknown("The session's credentials could not be refreshed.", "Retry the operation.", error)

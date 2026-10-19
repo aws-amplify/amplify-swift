@@ -1370,7 +1370,7 @@ Every operation throws `AuthClientError`, which conforms to `AmplifyError`: each
 | `browserBusy(holder:)` | The one system sheet is held, or a `.wait(timeout:)` expired | Finish or cancel the holder's sheet |
 | `sessionConfigurationMismatch(SessionID)` | The session is live under a different configuration | Release its handles and providers, or use the same configuration |
 | `validation(field:)` | An argument was invalid; `field` names it | Fix the argument |
-| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request, with the code if the client recognises it; or the request never reached Cognito (no network, a DNS failure, a refused connection, a timeout), with no code | Depends on the code; with no code, retry when the network is back |
+| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request, with the code if the client recognises it; or the request never reached Cognito (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), or its answer couldn't be read, with no code | Depends on the code; with no code, retry later |
 | `notAuthorized` | Wrong password, disabled user, revoked token | Ask the user again, or sign in |
 | `invalidState` | Not valid in this state: already signed in, federated, no sign-in in progress, or cancelled by a sign-out | Check `currentSessionState()` |
 | `userCancelled` | The user closed a system sheet, or it was cancelled | Nothing changed; let the user retry |
@@ -1404,13 +1404,17 @@ do {
 `.codeMismatch`, `.codeExpired`, `.usernameExists`, `.invalidPassword`, `.limitExceeded`, `.userNotFound`,
 `.webAuthnNotEnabled`). A cancellation is never `.service(.userCancelled?, …)`: it is always `.userCancelled`.
 
-A service response that isn't JSON (for example an HTML error page) is `.service` with no code and a suggestion to
-retry. The client doesn't retry it itself. So is a request that never reached Cognito, in every call: offline, a
-failed DNS lookup, a refused connection or a timeout is `.service` with no code, the description "The request could
-not reach the service." and the suggestion "A network or service problem occurred. Check the connection and retry
-the operation.", with the network error underneath. A sign-out's `revokeTokenError` that failed on the network is `.service` with no code too, described as "The
-refresh token could not be revoked: the request could not reach the service.", with the suggestion "The session was
-signed out on this device. Retry later to revoke it."
+A request that never reached Cognito is `.service` with no code in every call: offline, a failed DNS or host lookup,
+a refused or lost connection, a timeout, or a failed secure connection gives the description "The request could not
+reach the service." and the suggestion "A network or service problem occurred. Check the connection and retry the
+operation.", with the network error underneath. A transport failure that isn't a network failure is `.service` with
+no code too, never `.unknown`: a response that couldn't be read (one that isn't JSON, such as an HTML error page, or
+a malformed one) is "The service returned a response that could not be read." with a suggestion to retry, and any
+other URL loading failure (an App Transport Security refusal, say) is "The service request failed." with the
+network-or-service suggestion. The client doesn't retry any of them itself. A sign-out's `revokeTokenError` that
+failed on the network is `.service` with no code too, described as "The refresh token could not be revoked: the
+request could not reach the service.", with the suggestion "The session was signed out on this device. Retry later
+to revoke it."
 
 Recovery suggestions name the client's calls (for example "Call signIn …"), not the plugin's.
 
