@@ -447,7 +447,8 @@ extension SessionCore {
 
     /// An identity-step failure as the error the identity fields and AWS credentials report.
     static func identityStepError(_ error: Error) -> AuthClientError {
-        (error as? AuthClientError) ?? .unknown("The identity pool step failed.", "Retry the operation.", error)
+        (error as? AuthClientError) ?? AuthClientError.networkFailure(error)
+            ?? .unknown("The identity pool step failed.", "Retry the operation.", error)
     }
 
     /// A waiting session's identity-step failure as the AWS credentials provider reports it. A known refusal, which
@@ -506,6 +507,9 @@ extension SessionCore {
             return AuthClientError.unknown("The session's credentials could not be refreshed.", "Retry the operation.", error)
         }
     }
+            if let network = AuthClientError.networkFailure(error) {
+                return network
+            }
 }
 
 /// A refresh of a carried session waiting for its identity stored new user pool tokens, then failed the identity

@@ -345,12 +345,19 @@ extension AuthClientError {
                 // Cancellation has one shape in the client, whatever sheet the user closed.
                 self = .userCancelled(description, suggestion, error)
             } else if code == nil, let underlying, !(underlying is DecodingError), Self.isUnhelpfulServiceSuggestion(suggestion) {
-                self = .service(nil, description, Self.clientServiceSuggestion, error)
+                self = .service(nil, Self.serviceDescription(description, underlying: underlying), Self.clientServiceSuggestion, error)
             } else {
                 self = .service(code, description, suggestion, error)
             }
-        case .unknown:
-            self = .unknown(description, suggestion, error)
+        case .unknown(_, let underlying):
+            // A request that never reached the service (no network, a DNS failure, a refused connection, a timeout)
+            // is a service failure an app may retry, as the refresh path reports it, not "a bug". The sign-in
+            // flows' state machines report it as `.unknown` with an empty message.
+            if Self.isNetworkFailure(underlying) {
+                self = .service(nil, Self.networkFailureDescription, Self.clientServiceSuggestion, error)
+            } else {
+                self = .unknown(description, suggestion, error)
+            }
         case .validation(let field, _, _, _):
             self = .validation(field: field, description, suggestion, error)
         case .notAuthorized:
@@ -406,6 +413,60 @@ extension AuthClientError {
 
     /// How the engine's "report a bug" recovery text (`EngineErrorMessages.reportBugToAWS`) begins.
     static let reportBugPrefix = "There is a possibility that there is a bug"
+    /// `.service` with no code and the client's network texts, if `error` is a network failure (`isNetworkFailure`),
+    /// else `nil`: how the client reports a request that never reached the service, wherever it lands.
+    static func networkFailure(_ error: Error) -> AuthClientError? {
+        guard isNetworkFailure(error) else {
+            return nil
+        }
+        return .service(nil, networkFailureDescription, clientServiceSuggestion, error)
+    }
+
+    /// The description of a request that never reached the service (`isNetworkFailure`).
+    static let networkFailureDescription = "The request could not reach the service."
+
+    /// The description of a code-less service failure whose engine description is empty and whose error underneath
+    /// is not a network failure.
+    static let emptyServiceFailureDescription = "The service request failed."
+
+    /// A code-less service failure's description: the network text when the error underneath is a network failure
+    /// (the engine's is "Service error occurred", or empty for a revoke), else the engine's, or client text when that
+    /// is empty.
+    static func serviceDescription(_ description: String, underlying: Error) -> String {
+        if isNetworkFailure(underlying) {
+            return networkFailureDescription
+        }
+        return description.isEmpty ? emptyServiceFailureDescription : description
+    }
+
+    /// Whether `error` says the request never reached the service, or got no answer: a URL loading failure other
+    /// than a cancellation (`NSURLErrorDomain`, `kCFErrorDomainCFNetwork`), or a socket error of the POSIX domain
+    /// that means the network or host is unreachable, the connection was refused, reset or not made, or it timed
+    /// out. A cancellation is never one: the caller's own cancellation is `CancellationError`.
+    static func isNetworkFailure(_ error: Error?) -> Bool {
+        guard let error, !(error is CancellationError), !(error is AuthClientError), !(error is EngineAuthError) else {
+            return false
+        }
+        let nsError = error as NSError
+        switch nsError.domain {
+        case NSURLErrorDomain, Self.cfNetworkErrorDomain:
+            return nsError.code != NSURLErrorCancelled
+        case NSPOSIXErrorDomain:
+            return networkPOSIXCodes.contains(Int32(truncatingIfNeeded: nsError.code))
+        default:
+            return false
+        }
+    }
+
+    /// CFNetwork's error domain, `kCFErrorDomainCFNetwork`, by value.
+    static let cfNetworkErrorDomain = "kCFErrorDomainCFNetwork"
+
+    /// The POSIX errors `isNetworkFailure` counts.
+    static let networkPOSIXCodes: Set<Int32> = [
+        ECONNREFUSED, ECONNRESET, ECONNABORTED, ENOTCONN, ETIMEDOUT, ENETDOWN, ENETUNREACH, ENETRESET,
+        EHOSTDOWN, EHOSTUNREACH
+    ]
+
 
     /// Whether a service error's engine recovery suggestion says nothing an app can act on.
     static func isUnhelpfulServiceSuggestion(_ suggestion: String) -> Bool {

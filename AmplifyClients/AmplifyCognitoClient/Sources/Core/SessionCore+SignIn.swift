@@ -492,7 +492,8 @@ extension SessionCore {
         case SessionEngineError.notSignedIn:
             return AuthClientError.notSignedIn("The session is not signed in.", "Sign in first.", error)
         default:
-            return AuthClientError.unknown("The sign-in could not be completed.", "Retry the sign-in.", error)
+            return AuthClientError.networkFailure(error)
+                ?? AuthClientError.unknown("The sign-in could not be completed.", "Retry the sign-in.", error)
         }
     }
 }

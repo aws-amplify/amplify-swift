@@ -380,6 +380,9 @@ struct SessionSignOut: Sendable {
         case SessionEngineError.service(let error):
             return error
         default:
+            if let network = AuthClientError.networkFailure(error) {
+                return network
+            }
             return .unknown(
                 "The session's tokens could not be revoked, so its refresh token stays valid until it expires.",
                 "The session was signed out on this device. Retry later to revoke it.",

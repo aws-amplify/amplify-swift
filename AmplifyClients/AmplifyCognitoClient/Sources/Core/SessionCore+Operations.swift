@@ -95,6 +95,9 @@ extension SessionCore {
         case SessionEngineError.notSignedIn:
             return AuthClientError.notSignedIn("The session is not signed in.", "Sign in first.", error)
         default:
+            if let network = AuthClientError.networkFailure(error) {
+                return network
+            }
             return AuthClientError.unknown("The client could not \(operation).", "Retry the operation.", error)
         }
     }

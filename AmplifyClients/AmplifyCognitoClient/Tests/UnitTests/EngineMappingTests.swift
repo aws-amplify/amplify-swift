@@ -387,7 +387,7 @@ final class EngineMappingTests: XCTestCase {
         XCTAssertTrue(reportBug.hasPrefix(AuthClientError.reportBugPrefix), "the engine's text changed: \(reportBug)")
 
         for suggestion in [reportBug, ""] {
-            let mapped = AuthClientError(engine: .service("Service error occurred", suggestion, URLError(.timedOut)))
+            let mapped = AuthClientError(engine: .service("Service error occurred", suggestion, FixtureError(description: "x")))
             XCTAssertEqual(mapped.kind, .service(nil))
             XCTAssertEqual(mapped.errorDescription, "Service error occurred")
             XCTAssertEqual(mapped.recoverySuggestion, AuthClientError.clientServiceSuggestion)
@@ -407,6 +407,54 @@ final class EngineMappingTests: XCTestCase {
         XCTAssertFalse(emptyConfiguration.recoverySuggestion.isEmpty)
         let configuration = AuthClientError(engine: .configuration("d", "Add a user pool."))
         XCTAssertEqual(configuration.recoverySuggestion, "Add a user pool.")
+    }
+
+    /// A failure to reach Cognito is a retryable service error with the client's network texts, wherever the engine
+    /// reports it: as `.unknown` with an empty message (the sign-in flows), or as a code-less `.service` (a refresh,
+    /// or a revoke's empty texts).
+    ///
+    /// - Given: engine `.unknown` and `.service` errors with URL loading, CFNetwork and POSIX network failures
+    ///   underneath; a cancelled load; a POSIX error that is not a network failure; an `.unknown` with a service code;
+    ///   the global sign-out's placeholder revoke error (empty texts, nothing underneath); and a code-less `.service`
+    ///   with empty texts over an error that is not a network failure
+    /// - When:
+    ///    - each is mapped
+    /// - Then:
+    ///    - every network failure is `.service` with no code, the network description and suggestion, and the engine
+    ///      error underneath
+    ///    - the cancelled load and the other POSIX error stay `.unknown`, as does the coded one
+    ///    - the placeholder keeps its empty texts; the other empty one gets the generic service description
+    func testANetworkFailureIsARetryableServiceError() {
+        let network: [Error] = [
+            URLError(.cannotFindHost),
+            URLError(.cannotConnectToHost),
+            URLError(.timedOut),
+            URLError(.notConnectedToInternet),
+            URLError(.networkConnectionLost),
+            NSError(domain: "kCFErrorDomainCFNetwork", code: 2),
+            NSError(domain: NSPOSIXErrorDomain, code: Int(ECONNREFUSED)),
+            NSError(domain: NSPOSIXErrorDomain, code: Int(ETIMEDOUT))
+        ]
+        for failure in network {
+            for engine in [EngineAuthError.unknown("", failure), .service("", "", failure), .service("Service error occurred", "", failure)] {
+                let mapped = AuthClientError(engine: engine)
+                XCTAssertEqual(mapped.kind, .service(nil), "\(engine)")
+                XCTAssertEqual(mapped.errorDescription, AuthClientError.networkFailureDescription, "\(engine)")
+                XCTAssertEqual(mapped.recoverySuggestion, AuthClientError.clientServiceSuggestion, "\(engine)")
+                XCTAssertNotNil(mapped.underlyingError as? EngineAuthError, "\(engine)")
+            }
+        }
+        for notNetwork in [URLError(.cancelled) as Error, NSError(domain: NSPOSIXErrorDomain, code: Int(ENOENT))] {
+            XCTAssertEqual(AuthClientError(engine: .unknown("", notNetwork)).kind, .unknown, "\(notNetwork)")
+        }
+        XCTAssertEqual(AuthClientError(engine: .unknown("d", EngineServiceErrorCode.codeMismatch)).kind, .unknown)
+
+        let placeholder = AuthClientError(engine: .service("", "", nil))
+        XCTAssertEqual(placeholder.errorDescription, "")
+        XCTAssertEqual(placeholder.recoverySuggestion, "")
+        let emptyOther = AuthClientError(engine: .service("", "", FixtureError(description: "x")))
+        XCTAssertEqual(emptyOther.errorDescription, AuthClientError.emptyServiceFailureDescription)
+        XCTAssertEqual(emptyOther.recoverySuggestion, AuthClientError.clientServiceSuggestion)
     }
 
     /// Test that an engine recovery suggestion naming the plugin's `Auth.*` calls names the client's calls
