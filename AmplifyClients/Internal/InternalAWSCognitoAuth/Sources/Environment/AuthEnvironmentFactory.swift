@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import InternalAmplifyKeychain
 
 /// Builds the engine's two environments from an engine configuration and the pieces a host supplies
 /// `AWSCognitoAuthPlugin.configure(using:)` calls it, and so does the client, once per
