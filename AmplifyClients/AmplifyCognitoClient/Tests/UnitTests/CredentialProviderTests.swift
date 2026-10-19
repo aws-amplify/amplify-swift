@@ -174,6 +174,29 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(token?.isNotConfigured, true)
     }
 
+    /// The two "not configured" messages name the missing pool in plain English.
+    ///
+    /// - Given: a signed-in session whose configuration has no identity pool, and a session whose configuration has
+    ///   no user pool
+    /// - When: the first is asked for AWS credentials, and the second for an access token
+    /// - Then:
+    ///    - each throws `notConfigured` with a description and recovery suggestion that name its missing pool, with
+    ///      the article only where English needs one
+    func testNotConfiguredMessagesNameTheMissingPool() async throws {
+        try harness.store(configuration: ClientFixtures.userPoolOnlyConfiguration)
+            .write(FakePayload.signedIn("alice", kind: .userPoolOnly).record(), for: home, expecting: nil)
+        let noIdentityPool = try harness.client(home, configuration: ClientFixtures.userPoolOnlyConfiguration)
+        let noUserPool = try harness.client(work, configuration: ClientFixtures.identityPoolOnlyConfiguration)
+
+        let aws = await credentialsError { try await noIdentityPool.credentialsProvider.resolve() }
+        let token = await credentialsError { try await noUserPool.userPoolTokenProvider.accessToken() }
+
+        XCTAssertEqual(aws?.errorDescription, "This session cannot provide AWS credentials: it has no identity pool.")
+        XCTAssertEqual(aws?.recoverySuggestion, "Configure an identity pool for this client, or ask a different provider.")
+        XCTAssertEqual(token?.errorDescription, "This session cannot provide an access token: it has no user pool.")
+        XCTAssertEqual(token?.recoverySuggestion, "Configure a user pool for this client, or ask a different provider.")
+    }
+
     /// A refresh that succeeded on the network but could not be saved must say so, not hand out tokens
     /// that storage does not hold.
     ///

@@ -30,7 +30,7 @@ extension SessionCore {
     ///   its identity step's last failure while that step may not be tried again.
     nonisolated func resolveAWSCredentials() async throws -> CognitoAWSCredentials {
         guard configuration.identityPool != nil else {
-            throw Self.notConfigured("AWS credentials", missing: "an identity pool")
+            throw Self.notConfigured("AWS credentials", missing: "identity pool", article: "an")
         }
         let payload = try await freshPayload(for: .awsCredentials)
         guard let credentials = try engine.checkedAWSCredentials(in: payload) else {
@@ -53,7 +53,7 @@ extension SessionCore {
     ///   waits on a challenge; `sessionExpired`, `storageUnavailable`, or `unknown`).
     nonisolated func accessToken() async throws -> String {
         guard configuration.userPool != nil else {
-            throw Self.notConfigured("an access token", missing: "a user pool")
+            throw Self.notConfigured("an access token", missing: "user pool", article: "a")
         }
         // A federated session is signed in, through an identity pool, but has no user pool tokens. Not "signed
         // out", whose disposition would have a consumer discard its buffered work: this session cannot provide a
@@ -471,10 +471,12 @@ extension SessionCore {
         )
     }
 
-    static func notConfigured(_ what: String, missing: String) -> CredentialsError {
+    /// `missing` reads after "it has no", so without an article; the recovery suggestion puts `article`, if any,
+    /// before it ("Configure an identity pool").
+    static func notConfigured(_ what: String, missing: String, article: String? = nil) -> CredentialsError {
         .notConfigured(
             "This session cannot provide \(what): it has no \(missing).",
-            "Configure \(missing) for this client, or ask a different provider."
+            "Configure \(article.map { "\($0) " } ?? "")\(missing) for this client, or ask a different provider."
         )
     }
 
