@@ -12,7 +12,9 @@ final class AuthClientConfigurationTests: XCTestCase {
 
     private func outputs(_ auth: [String: Any]?) throws -> Data {
         var document: [String: Any] = ["version": "1.4"]
-        if let auth { document["auth"] = auth }
+        if let auth {
+            document["auth"] = auth
+        }
         return try JSONSerialization.data(withJSONObject: document)
     }
 
