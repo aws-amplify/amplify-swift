@@ -56,12 +56,18 @@ final class ClientOverKeychain: @unchecked Sendable {
         }
     }
 
-    /// A client of `sessionId`, as an app builds it with `configuration`.
+    /// A client of `sessionId`, as an app builds it with `configuration`, in `accessGroup` if given: its records
+    /// are then in the shared service under that group.
     func client(
         _ sessionId: SessionID = .default,
-        configuration: AuthClientConfiguration = ClientOverKeychain.configuration
+        configuration: AuthClientConfiguration = ClientOverKeychain.configuration,
+        accessGroup: String? = nil
     ) throws -> AmplifyCognitoClient {
-        try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId), dependencies: dependencies)
+        try AmplifyCognitoClient(
+            configuration: configuration,
+            options: .init(sessionId: sessionId, accessGroup: accessGroup),
+            dependencies: dependencies
+        )
     }
 
     /// The saved sessions `AmplifyCognitoClient.storedSessions` lists for `configuration`.
@@ -96,7 +102,10 @@ final class ClientOverKeychain: @unchecked Sendable {
             makeStore: { namespace in
                 SessionRecordStore(
                     namespace: namespace,
-                    keychain: keychain.store(service: SessionRecordStore.service(forAccessGroup: namespace.accessGroup))
+                    keychain: keychain.store(
+                        service: SessionRecordStore.service(forAccessGroup: namespace.accessGroup),
+                        accessGroup: namespace.accessGroup
+                    )
                 )
             },
             makeClients: { try CognitoServiceClients(configuration: $0, configureUserPoolClient: $1) },
@@ -108,7 +117,10 @@ final class ClientOverKeychain: @unchecked Sendable {
                     clients: context.clients,
                     devices: DeviceRecordIO(store: DeviceRecordStore(
                         namespace: context.namespace,
-                        keychain: keychain.store(service: SessionRecordStore.service(forAccessGroup: context.namespace.accessGroup))
+                        keychain: keychain.store(
+                            service: SessionRecordStore.service(forAccessGroup: context.namespace.accessGroup),
+                            accessGroup: context.namespace.accessGroup
+                        )
                     )),
                     analytics: LazyUserPoolAnalytics(
                         pinpointAppId: nil,
