@@ -1399,8 +1399,9 @@ A service response that isn't JSON (for example an HTML error page) is `.service
 retry. The client doesn't retry it itself. So is a request that never reached Cognito, in every call: offline, a
 failed DNS lookup, a refused connection or a timeout is `.service` with no code, the description "The request could
 not reach the service." and the suggestion "A network or service problem occurred. Check the connection and retry
-the operation.", with the network error underneath. A sign-out's `revokeTokenError` that failed on the network says
-the same.
+the operation.", with the network error underneath. A sign-out's `revokeTokenError` that failed on the network is `.service` with no code too, described as "The
+refresh token could not be revoked: the request could not reach the service.", with the suggestion "The session was
+signed out on this device. Retry later to revoke it."
 
 Recovery suggestions name the client's calls (for example "Call signIn …"), not the plugin's.
 

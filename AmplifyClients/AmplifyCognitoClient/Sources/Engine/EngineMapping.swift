@@ -591,6 +591,28 @@ extension AuthClientError {
     }
 }
 
+extension AuthClientError {
+
+    /// A failed revoke under a sign-out, mapped as `init(engine:)` maps it, except a network failure, which keeps the
+    /// sign-out's context: the session is signed out on this device, and the revoke can be retried later.
+    static func revokeFailure(engine error: EngineAuthError) -> AuthClientError {
+        let mapped = AuthClientError(engine: error)
+        guard case .service(nil, networkFailureDescription, _, let underlying) = mapped else {
+            return mapped
+        }
+        return revokeNetworkFailure(underlying ?? error)
+    }
+
+    /// A revoke that could not reach the service.
+    static func revokeNetworkFailure(_ error: Error) -> AuthClientError {
+        .service(nil, revokeNetworkFailureDescription, revokeRetrySuggestion, error)
+    }
+
+    static let revokeNetworkFailureDescription =
+        "The refresh token could not be revoked: the request could not reach the service."
+    static let revokeRetrySuggestion = "The session was signed out on this device. Retry later to revoke it."
+}
+
 extension EngineSignOutOutcome {
 
     /// The sign-out failures, mapped. The refresh and access tokens they carry are dropped (not
@@ -601,7 +623,7 @@ extension EngineSignOutOutcome {
         hostedUIFailure: EngineHostedUISignOutFailure? = nil
     ) {
         self.init(
-            revokeError: revokeFailure.map { AuthClientError(engine: $0.error) },
+            revokeError: revokeFailure.map { AuthClientError.revokeFailure(engine: $0.error) },
             globalSignOutError: globalSignOutFailure.map { AuthClientError(engine: $0.error) },
             hostedUIError: hostedUIFailure.map { AuthClientError(engine: $0.error) }
         )

@@ -97,7 +97,8 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
     /// - Given: alice signed in, and `RevokeToken` failing with each network failure
     /// - When: the session is revoked, as a sign-out does
     /// - Then:
-    ///    - the outcome's revoke error is `.service` with no code and the network texts: its description is not empty
+    ///    - the outcome's revoke error is `.service` with no code, a description that says the token could not be
+    ///      revoked because the service could not be reached, and a suggestion that keeps the sign-out's context
     func testARevokeThatCannotReachCognitoHasTheNetworkText() async throws {
         for (name, failure) in networkErrors {
             harness = LiveEngineHarness()
@@ -108,14 +109,18 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
             let outcome = try await engine.revoke(payload, global: false)
 
             let revokeError = try XCTUnwrap(outcome.revokeError, name)
-            assertNetworkFailure(revokeError, name, checkingUnderlying: false)
+            guard case .service(nil, let description, let suggestion, _) = revokeError else {
+                XCTFail("\(name): expected a service error with no code, got \(revokeError)")
+                continue
+            }
+            XCTAssertEqual(description, "The refresh token could not be revoked: the request could not reach the service.", name)
+            XCTAssertEqual(suggestion, "The session was signed out on this device. Retry later to revoke it.", name)
         }
     }
 
     private func assertNetworkFailure(
         _ error: AuthClientError,
         _ label: String,
-        checkingUnderlying: Bool = true,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
@@ -125,10 +130,8 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
         XCTAssertEqual(description, AuthClientError.networkFailureDescription, label, file: file, line: line)
         XCTAssertEqual(suggestion, AuthClientError.clientServiceSuggestion, label, file: file, line: line)
         XCTAssertFalse(suggestion.contains("bug"), label, file: file, line: line)
-        if checkingUnderlying {
-            // The network error itself, or the engine's error over it.
-            let network = (underlying as? EngineAuthError)?.underlyingError ?? underlying
-            XCTAssertTrue(AuthClientError.isNetworkFailure(network), "\(label): \(String(describing: underlying))", file: file, line: line)
-        }
+        // The network error itself, or the engine's error over it.
+        let network = (underlying as? EngineAuthError)?.underlyingError ?? underlying
+        XCTAssertTrue(AuthClientError.isNetworkFailure(network), "\(label): \(String(describing: underlying))", file: file, line: line)
     }
 }
