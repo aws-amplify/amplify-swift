@@ -1275,14 +1275,17 @@ clears the AWSMobileClient (Amplify v1) logins, as the Auth plugin's sign-out do
 can't bring an old login back over the signed-out one. Like the plugin's, it runs even when there was nothing to
 sign out. It is best effort: each service that fails to clear logs one warning (up to three) under
 `AmplifyCognitoClient.SessionRecordStore`, and it never fails the sign-out. The services cleared follow the client's
-pools: the user pool's with a user pool, the identity pool's with an identity pool, and AWSMobileClient's own. Only
-the identity pool's is chosen by pool, so if the AWSMobileClient app used an identity pool the client isn't
-configured with (another one, or any when the client has none), that login isn't cleared. The other two are cleared
-whole, as the plugin's sign-out clears them: the user pool service (`<bundle>.AWSCognitoIdentityUserPool`) holds the
-logins of every app client, and the AWSMobileClient service everything AWSMobileClient saved. The user pool service
-is cleared only when the client's configuration has a user pool: an identity-pool-only configuration leaves it, and
-any user pool login in it. The AWSMobileClient service is cleared on every `.default` sign-out or purge, a static
-one under another configuration than the app's included. Named sessions never touch those logins.
+pools: the user pool's with a user pool, every identity pool's, and AWSMobileClient's own. The identity pools'
+services (`<bundle>.AWSCognitoCredentialsProvider.<identity pool ID>`) are cleared for every identity pool the app's
+keychain holds one for, whatever the client is configured with: the client lists the app's keychain services to find
+them, and the plugin's sign-out clears only the configured one's. Left behind, such a login would come back under a
+plugin build as a guest holding the old user's identity and AWS credentials. If the listing fails, a warning says so
+and only the configured identity pool's is cleared. The other two are cleared whole, as the plugin's sign-out clears
+them: the user pool service (`<bundle>.AWSCognitoIdentityUserPool`) holds the logins of every app client, and the
+AWSMobileClient service everything AWSMobileClient saved. The user pool service is cleared only when the client's
+configuration has a user pool: an identity-pool-only configuration leaves it, and any user pool login in it. The
+AWSMobileClient service is cleared on every `.default` sign-out or purge, a static one under another configuration
+than the app's included. Named sessions never touch those logins.
 
 ### Hosted-UI sign-out
 

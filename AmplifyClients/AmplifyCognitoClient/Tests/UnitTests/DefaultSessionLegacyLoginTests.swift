@@ -148,6 +148,107 @@ final class DefaultSessionLegacyLoginTests: XCTestCase {
         )
     }
 
+    /// A `.default` sign-out or purge also clears the AWSMobileClient credentials of every other identity pool the app's
+    /// keychain holds, which the plugin's services for the configuration don't name.
+    ///
+    /// - Given: in turn, a configuration with both pools, one with the user pool only and one with the identity pool
+    ///   only; `.default` saved; AWSMobileClient logins in the configuration's services, and in two other identity
+    ///   pools' credentials services of this app; and two services that are not this app's AWSMobileClient
+    ///   credentials (another app's, and an unrelated one of this app)
+    /// - When: `.default` is signed out, and in another run purged
+    /// - Then:
+    ///    - every `<bundle>.AWSCognitoCredentialsProvider.*` service of this app is empty, and so are the
+    ///      configuration's own services; the two other services keep their items
+    ///    - the user pool service is cleared only with a user pool configured
+    func testASignOutOrPurgeClearsEveryIdentityPoolsAWSMobileClientCredentials() throws {
+        let bundle = try XCTUnwrap(Bundle.main.bundleIdentifier, "the test host has a bundle identifier")
+        let otherIdentityPools = [
+            "\(bundle).AWSCognitoCredentialsProvider.us-east-1:other-a",
+            "\(bundle).AWSCognitoCredentialsProvider.us-east-1:other-b"
+        ]
+        let notThisApps = ["other.bundle.AWSCognitoCredentialsProvider.us-east-1:other-a", "\(bundle).SomethingElse"]
+        let userPoolService = "\(bundle).AWSCognitoIdentityUserPool"
+        let configurations = [
+            ClientFixtures.configuration,
+            ClientFixtures.userPoolOnlyConfiguration,
+            ClientFixtures.identityPoolOnlyConfiguration
+        ]
+        for configuration in configurations {
+            for purge in [false, true] {
+                harness = ClientHarness()
+                let namespace = SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: nil)
+                let own = SessionRecordStore.legacyLoginServices(for: namespace.pools)
+                let listed = own + otherIdentityPools + notThisApps + [userPoolService]
+                let keychain = harness.keychain
+                for service in Set(listed) {
+                    keychain.put(Data("legacy".utf8), "tokens.alice", service: service)
+                }
+                keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, SessionRecordKey.pluginSessionAccount(in: namespace.pools))
+                let store = store(for: namespace, legacyLoginStores: {
+                    SessionRecordStore.legacyLoginStores(
+                        for: namespace.pools,
+                        listServices: { listed.shuffled() },
+                        makeStore: { keychain.itemStore(service: $0) }
+                    )
+                })
+
+                if purge {
+                    try store.purge(.default)
+                } else {
+                    _ = try store.signOut(.default)
+                }
+
+                let label = "\(namespace.pools), purge: \(purge)"
+                for service in Set(own + otherIdentityPools) {
+                    XCTAssertNil(keychain.value(service: service, account: "tokens.alice"), "\(label): \(service)")
+                }
+                for service in notThisApps {
+                    XCTAssertNotNil(keychain.value(service: service, account: "tokens.alice"), "\(label): \(service)")
+                }
+                XCTAssertEqual(
+                    keychain.value(service: userPoolService, account: "tokens.alice") == nil,
+                    configuration.userPool != nil,
+                    label
+                )
+            }
+        }
+    }
+
+    /// - Given: `.default` saved, AWSMobileClient logins in the configuration's services and another identity pool's,
+    ///   and a keychain listing that fails
+    /// - When: `.default` is signed out
+    /// - Then:
+    ///    - the configuration's services are still cleared, the other identity pool's is kept, and one warning says the
+    ///      listing failed, naming no one
+    func testAFailedListingStillClearsTheConfigurationsServices() throws {
+        let bundle = try XCTUnwrap(Bundle.main.bundleIdentifier, "the test host has a bundle identifier")
+        let other = "\(bundle).AWSCognitoCredentialsProvider.us-east-1:other-a"
+        seedLegacyLogins()
+        harness.keychain.put(Data("legacy".utf8), "tokens.alice", service: other)
+        harness.keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
+        let keychain = harness.keychain
+        let pools = pools
+        let store = store(legacyLoginStores: {
+            SessionRecordStore.legacyLoginStores(
+                for: pools,
+                listServices: { throw KeychainAccessError.securityError(errSecInteractionNotAllowed) },
+                makeStore: { keychain.itemStore(service: $0) }
+            )
+        })
+        let sink = CategoryCapture()
+        AmplifyLogging.addSink(sink)
+        defer { AmplifyLogging.removeSink(sink) }
+
+        _ = try store.signOut(.default)
+
+        assertLegacyLogins(present: false)
+        XCTAssertNotNil(harness.keychain.value(service: other, account: "tokens.alice"))
+        XCTAssertEqual(
+            sink.lines(in: [ClientLog.category(ClientLog.sessionRecordStore)]),
+            [SessionRecordStore.legacyLoginListingFailedWarning]
+        )
+    }
+
     // MARK: Through the client
 
     /// - Given: alice signed in on `.default` through the client, and AWSMobileClient logins left from an earlier release

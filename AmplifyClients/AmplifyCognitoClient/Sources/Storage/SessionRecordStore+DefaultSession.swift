@@ -375,12 +375,14 @@ extension SessionRecordStore {
     /// sign-out did not run. Best effort, as the plugin's: each service that fails to clear logs one warning, and none
     /// fails the sign-out or purge, whose record is already gone.
     ///
-    /// Only the identity pool's service is named by pool, from this store's own pools (`namespace.pools`): an
-    /// AWSMobileClient app that used another identity pool than the client's configuration names keeps that login,
-    /// which the plugin, built with the same configuration, would not clear either. The other two are cleared whole, as
-    /// the plugin's `ClearCredentialStore` clears them: `<bundle>.AWSCognitoIdentityUserPool`, which holds every app
-    /// client's logins (`<clientId>.*`), and the AWSMobileClient service. That happens on any `.default` sign-out or
-    /// purge, a static one under another configuration than the app's included.
+    /// The services are the plugin's for this store's own pools (`namespace.pools`), plus every other identity pool's
+    /// AWSMobileClient credentials service found in the app's keychain (`legacyLoginStores(for:listServices:makeStore:)`),
+    /// which the plugin doesn't clear: a login an AWSMobileClient app kept for another identity pool than the client's
+    /// configuration names would otherwise be migrated by a plugin build as a guest holding that user's identity and AWS
+    /// credentials. The user pool service is cleared whole, as the plugin's `ClearCredentialStore` clears it, only with a
+    /// user pool configured: `<bundle>.AWSCognitoIdentityUserPool` holds every app client's logins (`<clientId>.*`).
+    /// The AWSMobileClient service is cleared whole on any `.default` sign-out or purge, a static one under another
+    /// configuration than the app's included.
     func clearLegacyLogins() {
         for store in legacyLoginStores() {
             do {
@@ -391,13 +393,43 @@ extension SessionRecordStore {
         }
     }
 
-    /// Item stores over the real keychain for `legacyLoginServices(for:)`, with no access group, as the plugin builds
-    /// them (`AWSCognitoAuthPlugin.makeLegacyKeychainStore(service:)`). Building one reads nothing.
-    static func legacyLoginStores(for pools: PoolNamespace) -> [any KeychainItemStoreBehavior] {
-        legacyLoginServices(for: pools).map {
+    /// What a failed listing of the app's keychain services logs, when the other identity pools' AWSMobileClient
+    /// logins could not be looked for.
+    static let legacyLoginListingFailedWarning =
+        "The keychain could not be listed, so AWSMobileClient logins of other identity pools were not cleared after the default session was signed out."
+
+    /// Item stores for the AWSMobileClient logins a `.default` sign-out or purge clears: the plugin's services for
+    /// `pools` (`legacyLoginServices(for:)`), then every other `<bundle>.AWSCognitoCredentialsProvider.<identity pool>`
+    /// service `listServices` finds, sorted. Over the real keychain by default, with no access group, as the plugin
+    /// builds them (`AWSCognitoAuthPlugin.makeLegacyKeychainStore(service:)`): the listing reads attributes only, and a
+    /// failed one logs one warning and leaves only the plugin's services.
+    static func legacyLoginStores(
+        for pools: PoolNamespace,
+        bundleIdentifier: String? = Bundle.main.bundleIdentifier,
+        listServices: () throws -> [String] = {
+            try KeychainItemStore.allServices(logger: ClientLog.logger(ClientLog.keychainItemStore))
+        },
+        makeStore: (String) -> any KeychainItemStoreBehavior = {
             KeychainItemStore(service: $0, logger: ClientLog.logger(ClientLog.keychainItemStore))
         }
+    ) -> [any KeychainItemStoreBehavior] {
+        var services = legacyLoginServices(for: pools)
+        if let bundleIdentifier {
+            let prefix = "\(bundleIdentifier).\(legacyCredentialsProviderService)."
+            do {
+                for service in try listServices().sorted() where service.hasPrefix(prefix) && !services.contains(service) {
+                    services.append(service)
+                }
+            } catch {
+                ClientLog.logger(ClientLog.sessionRecordStore).warn(Self.legacyLoginListingFailedWarning)
+            }
+        }
+        return services.map(makeStore)
     }
+
+    /// The middle part of AWSMobileClient's per-identity-pool credentials services,
+    /// `<bundle>.AWSCognitoCredentialsProvider.<identity pool ID>`.
+    static let legacyCredentialsProviderService = "AWSCognitoCredentialsProvider"
 
     /// The keychain services of the AWSMobileClient logins the Auth plugin migrates and clears for `pools`: the
     /// engine's own list (`MigrateLegacyCredentialStore.legacyServiceKeys(for:)`). It names a service from which pools
