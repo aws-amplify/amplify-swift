@@ -105,11 +105,18 @@ final class SystemSheetLockTests: XCTestCase {
         _ policy: WebUIOptions.BrowserBusyPolicy,
         after gate: Gate? = nil,
         waitsOnlyForItself: Bool = false,
+        waitsForRelease: Bool = false,
         _ body: @escaping @Sendable (BrowserLease) async throws -> T
     ) -> Task<T, Error> {
         Task {
             await gate?.pass()
-            return try await lock.withLease(for: session, policy: policy, waitsOnlyForItself: waitsOnlyForItself, body)
+            return try await lock.withLease(
+                for: session,
+                policy: policy,
+                waitsOnlyForItself: waitsOnlyForItself,
+                waitsForReleaseWhenInterrupted: waitsForRelease,
+                body
+            )
         }
     }
 
@@ -1181,6 +1188,66 @@ final class SystemSheetLockTests: XCTestCase {
         XCTAssertNil(holder)
         let queued = await lock.waiterCount
         XCTAssertEqual(queued, 0)
+    }
+
+    // MARK: - Waiting for the release
+
+    /// A caller interrupted by `cancel(for:)` that waits for its release is answered when the flow releases the
+    /// lease, not when the wait's bound expires.
+    ///
+    /// - Given: a lock whose release wait lasts 30 seconds, and alice holding it with a flow that ignores
+    ///   cancellation, held at a gate, under a lease that waits for its release
+    /// - When:
+    ///    - `cancel(for: alice)` is called, and the gate opens once alice's caller waits for the release
+    /// - Then:
+    ///    - alice throws `CancellationError` well within the bound, and the lock is free by then; no wait is left
+    func testAReleaseAnswersTheCallerWaitingForIt() async throws {
+        let lock = SystemSheetLock(releaseWaitNanoseconds: 30_000_000_000)
+        let gate = Gate()
+        let alice = Self.start(lock, Self.alice, .fail, waitsForRelease: true, Self.heldBody(gate))
+        await gate.waitForArrivals(1)
+        let started = Date()
+
+        await lock.cancel(for: Self.alice)
+        await waitUntil("alice's caller waits for the release") { await lock.releaseWaitCount == 1 }
+        await gate.open()
+        await Self.assertCancelled(alice)
+
+        XCTAssertLessThan(Date().timeIntervalSince(started), 5)
+        let holder = await lock.currentHolder
+        XCTAssertNil(holder)
+        let waits = await lock.releaseWaitCount
+        XCTAssertEqual(waits, 0)
+    }
+
+    /// The caller's own cancellation ends its wait for the release at once.
+    ///
+    /// - Given: a lock whose release wait lasts 30 seconds, and alice holding it with a flow that ignores
+    ///   cancellation, held at a gate, under a lease that waits for its release
+    /// - When:
+    ///    - `cancel(for: alice)` is called, and once alice's caller waits for the release, its task is cancelled
+    /// - Then:
+    ///    - alice throws `CancellationError` well within the bound, while her flow still holds the lock; no wait is
+    ///      left; the lock is free once the gate opens
+    func testTheCallersCancellationEndsItsWaitForTheRelease() async throws {
+        let lock = SystemSheetLock(releaseWaitNanoseconds: 30_000_000_000)
+        let gate = Gate()
+        let alice = Self.start(lock, Self.alice, .fail, waitsForRelease: true, Self.heldBody(gate))
+        await gate.waitForArrivals(1)
+        let started = Date()
+
+        await lock.cancel(for: Self.alice)
+        await waitUntil("alice's caller waits for the release") { await lock.releaseWaitCount == 1 }
+        alice.cancel()
+        await Self.assertCancelled(alice)
+
+        XCTAssertLessThan(Date().timeIntervalSince(started), 5)
+        let holder = await lock.currentHolder
+        XCTAssertEqual(holder, Self.alice)
+        let waits = await lock.releaseWaitCount
+        XCTAssertEqual(waits, 0)
+        await gate.open()
+        await waitUntil("the lock is released once the flow finishes") { await lock.currentHolder == nil }
     }
 }
 #endif

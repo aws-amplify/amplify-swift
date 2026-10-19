@@ -737,8 +737,12 @@ final class WebUISignInTests: XCTestCase {
     /// - Given: a hosted-UI sign-in showing its browser, whose browser takes a moment to close after it is cancelled
     /// - When: `cancelWebUISignIn()` runs, and the browser closes 200 ms later
     /// - Then:
-    ///    - the call throws `.userCancelled`, and at that moment the sheet has no holder
+    ///    - the call throws `.userCancelled`, and at that moment the sheet has no holder; the answer comes with the
+    ///      release, well within the sheet's 30-second bound
     func testACancelledSignInIsAnsweredOnceTheSheetIsFree() async throws {
+        // A bound far past the browser's close, so only the release can answer the call in time.
+        harness.sheetLock = SystemSheetLock(releaseWaitNanoseconds: 30_000_000_000)
+        let started = Date()
         let client = try client(work)
         let browser = FakeBrowser(afterCancel: .keepRunning)
         try XCTUnwrap(harness.engine(for: work)).showWebUISignIns(in: browser)
@@ -757,6 +761,7 @@ final class WebUISignInTests: XCTestCase {
 
         XCTAssertEqual(error?.kind, .userCancelled)
         XCTAssertNil(holderWhenAnswered)
+        XCTAssertLessThan(Date().timeIntervalSince(started), 5, "answered by the release, not the bound")
     }
 
     /// - Given: a hosted-UI sign-in showing its browser

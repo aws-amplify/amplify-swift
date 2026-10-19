@@ -115,8 +115,20 @@ actor SystemSheetLock {
     private let beforeAcquire: RequestSeam
     /// How long `waitForRelease(of:)` waits at most.
     private let releaseWaitNanoseconds: UInt64
+    /// A caller waiting for a lease to be released (`waitForRelease(of:)`), and the timer that ends its wait.
+    private struct ReleaseWait {
+        let id: UInt64
+        let continuation: CheckedContinuation<Void, Never>
+        let timer: Task<Void, Never>
+    }
+
     /// The callers waiting for a lease to be released (`waitForRelease(of:)`), by lease ID.
-    private var releaseWaits: [UInt64: [CheckedContinuation<Void, Never>]] = [:]
+    private var releaseWaits: [UInt64: [ReleaseWait]] = [:]
+
+    /// How many callers wait for a lease to be released. For tests.
+    var releaseWaitCount: Int {
+        releaseWaits.values.reduce(0) { $0 + $1.count }
+    }
 
     /// - Parameters:
     ///   - sleep: how a waiter's timeout waits.
@@ -259,26 +271,52 @@ actor SystemSheetLock {
         }
     }
 
-    /// Suspends until `lease` no longer holds the lock (released, or reset away), or `releaseWaitNanoseconds` have
-    /// passed. Returns at once if it no longer holds it.
+    /// Suspends until `lease` no longer holds the lock (released, or reset away), `releaseWaitNanoseconds` have
+    /// passed, or the calling task is cancelled. Returns at once if it no longer holds it, or the task is cancelled.
     private func waitForRelease(of lease: BrowserLease) async {
-        guard holder?.lease.id == lease.id else {
+        guard holder?.lease.id == lease.id, !Task.isCancelled else {
             return
         }
+        let id = mintID()
         let timeout = releaseWaitNanoseconds
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            releaseWaits[lease.id, default: []].append(continuation)
-            Task {
-                try? await Task.sleep(nanoseconds: timeout)
-                self.endReleaseWaits(for: lease.id)
+        await withTaskCancellationHandler {
+            // Runs on this actor before the wait suspends, so a cancellation, a release or the timer, each of which
+            // has to hop onto the actor, always finds the wait registered.
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                guard !Task.isCancelled else {
+                    continuation.resume()
+                    return
+                }
+                let timer = Task {
+                    try? await Task.sleep(nanoseconds: timeout)
+                    guard !Task.isCancelled else {
+                        return
+                    }
+                    self.endReleaseWait(id, of: lease.id)
+                }
+                releaseWaits[lease.id, default: []].append(ReleaseWait(id: id, continuation: continuation, timer: timer))
             }
+        } onCancel: {
+            Task { await self.endReleaseWait(id, of: lease.id) }
         }
     }
 
-    /// Answers every caller waiting for the lease `id` to be released. Each is answered once.
+    /// Answers the caller waiting with `id` for the lease `leaseId`, if it still waits, and stops its timer.
+    private func endReleaseWait(_ id: UInt64, of leaseId: UInt64) {
+        guard var waits = releaseWaits[leaseId], let index = waits.firstIndex(where: { $0.id == id }) else {
+            return
+        }
+        let wait = waits.remove(at: index)
+        releaseWaits[leaseId] = waits.isEmpty ? nil : waits
+        wait.timer.cancel()
+        wait.continuation.resume()
+    }
+
+    /// Answers every caller waiting for the lease `id` to be released, and stops their timers. Each is answered once.
     private func endReleaseWaits(for id: UInt64) {
-        for continuation in releaseWaits.removeValue(forKey: id) ?? [] {
-            continuation.resume()
+        for wait in releaseWaits.removeValue(forKey: id) ?? [] {
+            wait.timer.cancel()
+            wait.continuation.resume()
         }
     }
 
