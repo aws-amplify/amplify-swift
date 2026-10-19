@@ -4,8 +4,10 @@ The decisions taken in review of the Auth Client design
 ([AGREED-DESIGN-AmplifyCognitoClient.md](AGREED-DESIGN-AmplifyCognitoClient.md)), with the options that were
 weighed and the evidence behind each choice. All of them are written into the design.
 
-Decisions 1–8 were taken in review on 2026-09-22. Decisions 9–20 were taken while the client was built, up to
-the beta (2026-09-23 to 2026-10-05); they are summarised [below](#later-decisions-2026-09-23-to-2026-10-05). Where
+Decisions 1–8 were taken in review on 2026-09-22. Decisions 9–19 were taken while the client was built, up to
+the beta (2026-09-23 to 2026-10-05); they are summarised [below](#later-decisions-2026-09-23-to-2026-10-05).
+Decisions 20–25 were taken on 2026-10-19, after end-to-end testing of the beta; they are summarised
+[below](#decisions-of-2026-10-19). Where
 a later decision changes an earlier one, the earlier entry says so and is kept as the record.
 
 ## Summary (decided 2026-09-22)
@@ -404,3 +406,47 @@ refresh-token rotation on.
 - **A non-JSON service response** (an HTML error page from the service's edge, say) gets a "retry" recovery
   suggestion in the client. The plugin's error text is not changed (2026-10-02;
   [the issue](issues/sdk-non-json-response-not-retried.md)).
+
+## Decisions of 2026-10-19
+
+Taken after end-to-end testing of the beta on devices and simulators, each a change to the client or to the plugin's
+access-group migration. Each is written into the design, the client's README and the release notes.
+
+| # | Decision | Answer |
+|---|---|---|
+| 20 | A guest's session record in the shared service at the access-group migration | **It doesn't stop the migration of a login.** An app extension, or the client's `.default`, that fetched a session before the app's first launch after the update saved it; the app's login replaces it, on a fresh or a resumed migration. A login in the shared service is never replaced, and only a login replaces a guest. |
+| 21 | A signed-out record in the shared service at the access-group migration | **It still stops the migration**, as a login does, so a user who signed out is never signed back in by another process's old login. |
+| 22 | A known refusal of a carried session's identity step | **The AWS credentials provider fails loudly**: `CredentialsError.notConfigured` (`.failLoudly`), with the refusal underneath. `fetchAuthSession` and the token provider keep the refusal itself. |
+| 23 | Which AWSMobileClient credentials a `.default` sign-out clears | **Every identity pool's** credentials service the app's keychain holds, not only the configured one's. The plugin is unchanged. |
+| 24 | A request that never reached Cognito | **A retryable `.service` with no code**, in every call, with the client's network texts. The plugin keeps its mapping. |
+| 25 | When a hosted-UI sign-in cancelled with `cancelWebUISignIn()` answers | **Once its browser has closed and the system sheet is free**, within a second. |
+
+**#20 and #21.** An extension that fetches a session first finds the shared service empty and saves a guest identity
+there. Counting that record as a migrated login aborted the app's migration and stranded its login in the old
+service, so the user started as a guest. A guest's record is an identity pool identity without user pool tokens or a
+federated identity. It is weighed against what the migration would move: with a login to move, the guest is
+replaced; with nothing but a guest or nothing to move, the shared guest is kept, as before, so an extension's first
+migration never discards a guest identity the app already migrated. A signed-out record is not a guest's: it keeps
+blocking, so a stale login in another process's old service cannot undo a sign-out. The access-group transition
+without migration is unchanged.
+
+**#22.** The client never retries a known refusal (`notAuthorized`, `resourceNotFound`, `invalidParameter`,
+`configuration`) in the same process, so reporting it as `.unknown` (`.retryWithBackoff`) made a consumer that
+follows the disposition buffer forever. It is a misconfiguration of the identity pool for this user, not a user
+state, which is what `.failLoudly` means. A sign-in under the same configuration asks the same pool, so it is not
+`.retryAfterReauthentication` either.
+
+**#23.** An AWSMobileClient login kept for an identity pool the client isn't configured with would otherwise be
+migrated by a later plugin build as a guest holding the old user's identity ID and AWS credentials. The client lists
+the app's keychain services (attributes only) to find them; a failed listing logs one warning and clears the
+configured services only.
+
+**#24.** The sign-in flows reported a transport failure as `.unknown` with an empty description and a "report a
+bug" suggestion. Only failures that never reached the service count: no network, DNS, a refused, lost or timed-out
+connection, a failed secure connection. A response that arrived, App Transport Security and authentication failures
+keep the engine's mapping. A sign-out's revoke that failed this way keeps the sign-out's context in its suggestion.
+
+**#25.** The caller was answered at once while the browser was still closing, so `systemSheetHolder` still named the
+session and an immediate retry got `browserBusy`. The caller's own task cancellation and `resetSystemSheet()` still
+answer at once; a browser that hasn't closed within a second (its code exchange already in flight) doesn't hold the
+caller longer.

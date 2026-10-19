@@ -112,6 +112,9 @@ The configuration is the `auth` section of `amplify_outputs.json`. The file is r
 // Reads amplify_outputs.json from the main bundle; uses the default session.
 let client = try AmplifyCognitoClient()
 
+// The same configuration on its own: AuthClientConfiguration() loads amplify_outputs.json from the main bundle.
+let defaultConfiguration = try AuthClientConfiguration()
+
 // Or load the configuration once and pass it to every client.
 let configuration = try AuthClientConfiguration(from: "amplify_outputs", bundle: .main)
 let work = try AmplifyCognitoClient(
@@ -121,9 +124,9 @@ let work = try AmplifyCognitoClient(
 ```
 
 Pass the resource name without `.json`; a dotted name such as `"amplify_outputs.staging"` loads
-`amplify_outputs.staging.json`. The initializer throws `AuthClientError.configuration` naming the problem: a name
-ending in `.json` (in any case), a missing file, a Gen1 file, a missing `auth` section or key, or a value outside the
-schema.
+`amplify_outputs.staging.json`. The initializer throws `AuthClientError.configuration` naming the problem: an empty
+name, a name ending in `.json` (in any case), a missing file, a Gen1 file, a missing `auth` section or key, or a
+value outside the schema.
 
 To configure without a file:
 
@@ -965,9 +968,11 @@ let accessToken = try await client.userPoolTokenProvider.accessToken()
   saved record (`unknown`), or cancellation.
 - A signed-out session whose identity pool allows guests becomes `.guest` here, and only here.
 - Concurrent refreshes of the same kind share one call. A forced refresh (`forceRefresh: true`) joins only other
-  forced refreshes, and runs after a normal refresh already in flight, so it always calls Cognito. That includes a
-  session signed out in this process after an app extension or the Auth plugin saved a login in its record: it
-  adopts that login, then refreshes it, where an unforced fetch hands out the saved tokens as they are.
+  forced refreshes, and runs after a normal refresh already in flight, so it always calls Cognito. With an identity
+  pool configured, that includes a session signed out in this process after an app extension or the Auth plugin
+  saved a login in its record: it adopts that login, then refreshes it, where an unforced fetch hands out the saved
+  tokens as they are. Without an identity pool, a signed-out session's fetch doesn't read the record, and stays
+  signed out in this process.
 - There is no `isSignedIn` field. Use `currentSessionState()`.
 - Tokens and AWS credentials print redacted.
 
@@ -1156,9 +1161,11 @@ if let other = devices.first {
 ```
 
 Device records on this device are kept per user, at the plugin's keys, so two sessions with the same user share
-them. On a user pool that doesn't track devices, `fetchDevices()`, `rememberDevice()` and `forgetDevice(_:)` of
-another device throw `.configuration` ("Device tracking not currently enabled for this pool."). `rememberDevice()` and `forgetDevice()` for this device throw `.unknown` ("Unable to get device metadata")
-when this device has no device record for the user, as the plugin does.
+them. `rememberDevice()` and `forgetDevice()` for this device throw `.unknown` ("Unable to get device metadata")
+when this device has no device record for the user, as the plugin does, which is always the case on a user pool
+that doesn't track devices: no request is sent. On such a pool only the calls that reach Cognito, `fetchDevices()`
+and `forgetDevice(_:)` of another device, throw `.configuration` ("Device tracking not currently enabled for this
+pool.").
 
 ## MFA preferences and TOTP
 
@@ -1294,7 +1301,7 @@ any other, with `.complete`.
 Signing `.default` out or purging it (so also `deleteUser` and `clearFederationToIdentityPool` on `.default`) also
 clears the AWSMobileClient (Amplify v1) logins, as the Auth plugin's sign-out does, so a plugin build's migration
 can't bring an old login back over the signed-out one. Like the plugin's, it runs even when there was nothing to
-sign out. It is best effort: each service that fails to clear logs one warning (up to three) under
+sign out. It is best effort: each service that fails to clear logs one warning under
 `AmplifyCognitoClient.SessionRecordStore`, and it never fails the sign-out. The services cleared follow the client's
 pools: the user pool's with a user pool, every identity pool's, and AWSMobileClient's own. The identity pools'
 services (`<bundle>.AWSCognitoCredentialsProvider.<identity pool ID>`) are cleared for every identity pool the app's
@@ -1304,7 +1311,9 @@ plugin build as a guest holding the old user's identity and AWS credentials. If 
 and only the configured identity pool's is cleared. The other two are cleared whole, as the plugin's sign-out clears
 them: the user pool service (`<bundle>.AWSCognitoIdentityUserPool`) holds the logins of every app client, and the
 AWSMobileClient service everything AWSMobileClient saved. The user pool service is cleared only when the client's
-configuration has a user pool: an identity-pool-only configuration leaves it, and any user pool login in it. The
+configuration has a user pool: an identity-pool-only configuration leaves it, and any user pool login in it, which a
+plugin build then migrates without AWS credentials (see
+[The default session uses the plugin's saved login](#the-default-session-uses-the-plugins-saved-login)). The
 AWSMobileClient service is cleared on every `.default` sign-out or purge, a static one under another configuration
 than the app's included. Named sessions never touch those logins.
 
@@ -1423,6 +1432,13 @@ Before you switch:
 - **Ship the plugin's migrations first.** The client does not migrate AWSMobileClient (Amplify v1) logins or move
   items between access groups: ship a plugin release first if your users may still need those migrations. It only
   clears the AWSMobileClient logins when `.default` signs out or is purged, as the plugin's sign-out does.
+- **A migrated AWSMobileClient login without AWS credentials** fails the plugin's AWS credentials for a while. When
+  the Auth plugin migrates an AWSMobileClient login that has user pool tokens but no saved AWS credentials (its user
+  never fetched any, or an identity-pool-only client configuration's `.default` sign-out cleared them and kept the
+  user pool login), every unforced `fetchAuthSession` of the plugin fails the AWS credentials with
+  `invalidAccountTypeException` ("…Identity Pool is not configured"), across relaunches, until a refresh. Call the
+  plugin's `fetchAuthSession` with `forceRefresh: true` once to fetch them. This client, reading the same login,
+  fetches the identity on first use.
 - **Migrating back to no access group keeps the items in the group.** The plugin's migration back
   (`AccessGroup.none(migrateKeychainItemsOfUserSession: true)`) changes only the items' keychain service, so they
   stay in the shared access group: the app, and `.default` without an access group, still read them, and so can an
@@ -1496,8 +1512,8 @@ never log it. The warning is temporary: it goes when the plugin uses the client 
 | A sign-out through the client, then a later configuration change that the rule doesn't copy across, onto a configuration whose key still holds an earlier copy of the user | **That copy is restored signed in**, as with the plugin: the change deletes the signed-out login and lands on the old copy. For example: alice signs in under A; B adds an identity pool and copies her, keeping A's copy; she signs out under B; D (the same user pool with a new app client, and A's identity pool) deletes B's signed-out login, and its key is A's, which still holds her |
 | Back to a plugin release before 2.51.0, with refresh-token rotation on | That plugin can't refresh on the app client at all, whatever the client did |
 | Forward from the plugin to the client, with refresh-token rotation on, after the plugin rotated the token | **The user stays signed in**: `.default` reads the plugin's record in place, so the client refreshes with the newest token the plugin saved |
-| Back to a released plugin while AWSMobileClient (Amplify v1) logins are still on the device | **The plugin migrates the old login over whatever `.default` holds**: released plugins write it with no check, so a user signed in through the client is replaced by the old AWSMobileClient user. A sign-out or purge of `.default` through the client clears those logins, so after one there is nothing to migrate. Ship a plugin release that has migrated them before you move to the client |
-| To a plugin release that ships with this client, while AWSMobileClient (Amplify v1) logins are still on the device | **A user signed in through the client is kept**: the plugin clears the old logins without migrating them. **A guest the client saved is replaced**: an old user-pool or federated login migrates over it, as over a guest the plugin saved, and the guest identity is lost. An old guest doesn't replace it. After a sign-out or purge of `.default` through the client there is nothing to migrate |
+| Back to a released plugin while AWSMobileClient (Amplify v1) logins are still on the device | **The plugin migrates the old login over whatever `.default` holds**: released plugins write it with no check, so a user signed in through the client is replaced by the old AWSMobileClient user. A sign-out or purge of `.default` through the client clears those logins, so after one there is nothing to migrate. Ship a plugin release that has migrated them before you move to the client. A migrated login with no AWS credentials saved fails the plugin's unforced AWS credentials until a forced refresh |
+| To a plugin release that ships with this client, while AWSMobileClient (Amplify v1) logins are still on the device | **A user signed in through the client is kept**: the plugin clears the old logins without migrating them. **A guest the client saved is replaced**: an old user-pool or federated login migrates over it, as over a guest the plugin saved, and the guest identity is lost. An old guest doesn't replace it. After a sign-out or purge of `.default` through the client there is nothing to migrate. A migrated login with no AWS credentials saved fails the plugin's unforced AWS credentials until a forced refresh (`fetchAuthSession` with `forceRefresh: true`) |
 
 ## Changing the configuration
 
@@ -1748,8 +1764,11 @@ The client keeps the plugin's semantics except where listed here.
   sign-in again. Nor does a running app see the extension's sign-in or sign-out at once: its session keeps what it
   holds in memory until it reads the saved login again. A signed-in or guest session reads it at its next refresh
   (`fetchAuthSession(options: .init(forceRefresh: true))` forces one; a sign-out elsewhere is then reported as signed
-  out), and a signed-out session at its next `fetchAuthSession`. The Auth plugin with an access group reads it at
-  every `fetchAuthSession`.
+  out), and, with an identity pool configured, a signed-out session at its next `fetchAuthSession` (without one, a
+  signed-out session doesn't pick up another writer's login in that process). The Auth plugin with an access group
+  reads it at every `fetchAuthSession`. An extension on the Auth plugin that keeps running across the app's first
+  launch after an update, holding a guest in memory, can write that guest back over the login the app's
+  access-group migration just moved when it next refreshes: relaunch the extension after an update.
 - **The plugin and the client side by side over `.default`** in one app are not supported: they share one saved
   login, but each keeps its tokens in memory. See [Side by side is not supported](#side-by-side-is-not-supported).
 - **`.default`'s signed-out row names the last user the client wrote**, not the plugin's: after the plugin deletes

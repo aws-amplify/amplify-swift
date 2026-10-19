@@ -583,6 +583,7 @@ Where a row names a test (in brackets), it is pinned in both rollback matrices (
 | The plugin and the client in one process, over `.default` | Not supported (§4.9). The plugin keeps its tokens in memory, so with rotation on a refresh by one side can break the other's token until relaunch |
 | A client-only app upgraded from AWSMobileClient, or changing its access group | No migration. That is the plugin's job. A sign-out or purge of `.default` clears the AWSMobileClient logins, as the plugin's sign-out does |
 | Back to a released plugin while AWSMobileClient logins are still on the device | **Caveat: the old login replaces whatever `.default` holds.** A released plugin migrates the legacy data at configure over any record, with no check (main's `MigrateLegacyCredentialStore`), so a user signed in through the client is replaced by the old AWSMobileClient user. After a `.default` sign-out or purge through the client there is nothing left to migrate. An app moving from AWSMobileClient ships a plugin release that migrated first (the README says so) |
+| To a plugin release that ships with this client, while AWSMobileClient logins are still on the device | A user signed in through the client is kept: the plugin clears the old logins without migrating them. A guest the client saved is replaced: an old user-pool or federated login migrates over it, as over a guest the plugin saved, and the guest identity is lost. An old guest does not replace it. After a sign-out or purge of `.default` through the client there is nothing to migrate |
 
 The bytes the client writes (each `AmplifyCredentials` shape, `noCredentials` and `authConfiguration`) decode with the released plugin's own types, and the client's items have the plugin's keychain attributes.
 
@@ -927,7 +928,11 @@ user-pool-only tokens only when they need refreshing or a fetch forces a refresh
 alike; until then it returns the tokens and fails the identity as not configured.) In the process (per record, shared by every client of it: `SessionRecordGates.memory`), a
 known refusal (`notAuthorized`, `invalidParameter`, `resourceNotFound`, `configuration`) stops the retries for the
 refused user until the app restarts or the session is signed out or purged, any other failure (a cancellation aside)
-delays the next by 30 seconds, and until then the last failure answers for the identity fields and AWS credentials. A
+delays the next by 30 seconds, and until then the last failure answers for the identity fields and AWS credentials.
+The AWS credentials provider wraps a known refusal: it throws `CredentialsError.notConfigured` (`.failLoudly`), with
+the refusal's description and recovery suggestion and the refusal as the underlying error, since a consumer's retries
+would only get the same answer until the app restarts; `fetchAuthSession`'s fields and the token provider keep the
+refusal itself, and any other failure keeps the provider's usual mapping (`.unknown`, `.retryWithBackoff`). A
 sign-out or purge also forgets the reused refresh token the dead-token check holds.
 Only an identity-step failure keeps the tokens: a refused or expired refresh token, or tokens that still need a
 refresh, fail every field with `sessionExpired`. If the refresh's commit lost to another writer whose record has its
@@ -1572,7 +1577,7 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
 | `browserBusy(holder:)` | The one system sheet across the client's sessions (hosted-UI sign-in or sign-out page, or passkey sheet) is held, or a `.wait(timeout:)` expired first. The Auth plugin's sheets don't take part. |
 | `sessionConfigurationMismatch(SessionID)` | A session ID already live under a different user pool, identity pool, keychain access group or settings. Thrown instead of silently attaching - see D.1. |
 | `validation(field:)` | An argument the caller passed is invalid. Names the offending field. |
-| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request; the code when the client recognises the exception. `AuthClientServiceErrorCode` is a plain value this error carries: it is not an `Error`, so it is never thrown or caught on its own, and its `errorDescription` is an ordinary property. Match it inside the case: `catch AuthClientError.service(.userNotConfirmed?, _, _, _)`. |
+| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request; the code when the client recognises the exception. `AuthClientServiceErrorCode` is a plain value this error carries: it is not an `Error`, so it is never thrown or caught on its own, and its `errorDescription` is an ordinary property. Match it inside the case: `catch AuthClientError.service(.userNotConfirmed?, _, _, _)`. A request that never reached Cognito (offline, a failed DNS lookup, a refused, lost or timed-out connection, a failed secure connection) is `service` with no code in every call, with the client's network description and suggestion and the network error underneath; a sign-out's revoke that failed that way keeps the sign-out's context in its suggestion. |
 | `notAuthorized` | The caller is not allowed to perform the operation: a wrong password, a disabled user, a revoked token. |
 | `invalidState` | The operation is not valid in the session's state: signed in already, federated, no sign-in in progress, or cancelled by a sign-out. |
 | `userCancelled` | The user closed a system sheet, or `cancelWebUISignIn()` or `resetSystemSheet()` closed it. |
