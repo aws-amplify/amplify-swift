@@ -77,6 +77,35 @@ final class SignOutResultShapeTests: XCTestCase {
         }
     }
 
+    /// A revoke call that itself throws a network failure is reported as an offline revoke, with the sign-out's
+    /// context, and the session is still signed out locally.
+    ///
+    /// - Given: a signed-in session whose engine's revoke throws `URLError(.notConnectedToInternet)`, not a mapped
+    ///   outcome
+    /// - When: it signs out
+    /// - Then:
+    ///    - the result is `.partial`, signed out locally, and its `revokeTokenError` is `.service` with no code, "The
+    ///      refresh token could not be revoked: the request could not reach the service." and "The session was
+    ///      signed out on this device. Retry later to revoke it.", with the network error underneath
+    func testARevokeThatThrowsANetworkFailureIsAnOfflineRevoke() async throws {
+        try harness.signIn(work, .signedIn("alice"))
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptRevoke { _ in throw URLError(.notConnectedToInternet) }
+
+        let result = await client.signOut()
+
+        XCTAssertTrue(result.signedOutLocally)
+        let partial = try XCTUnwrap(result.partialErrors, "\(result)")
+        guard case .service(nil, let description, let suggestion, let underlying) = partial.revokeTokenError else {
+            return XCTFail("expected a service error with no code, got \(String(describing: partial.revokeTokenError))")
+        }
+        XCTAssertEqual(description, "The refresh token could not be revoked: the request could not reach the service.")
+        XCTAssertEqual(suggestion, "The session was signed out on this device. Retry later to revoke it.")
+        XCTAssertEqual((underlying as? URLError)?.code, .notConnectedToInternet)
+        XCTAssertNil(try harness.storedRecord(work)?.credentials)
+    }
+
     /// `.superseded` is gone. Another sign-in that replaced the session during the sign-out is a failure,
     /// and that user stays signed in.
     ///
