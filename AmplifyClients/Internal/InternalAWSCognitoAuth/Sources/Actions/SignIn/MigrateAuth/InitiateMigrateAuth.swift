@@ -44,24 +44,29 @@ package struct InitiateMigrateAuth: Action {
                 credentialStoreClient: authEnv.credentialsClient
             )
 
-            let responseEvent: StateMachineEvent
-            if let session = respondToAuthChallenge?.session {
-                let request = await RespondToAuthChallengeInput.userPasswordInputForUserAuth(
-                    username: username,
-                    password: password,
-                    session: session,
-                    clientMetadata: clientMetadata,
-                    asfDeviceId: asfDeviceId,
-                    deviceMetadata: deviceMetadata,
-                    environment: userPoolEnv
-                )
-                responseEvent = try await sendRequest(
-                    request: request,
-                    environment: userPoolEnv,
-                    logger: environment.engineLogger
-                )
-
-            } else {
+            // A device key Cognito no longer knows (the device was forgotten) is dropped, and the request sent again
+            // without it, as the SRP flow does.
+            let responseEvent: StateMachineEvent = try await DeviceMetadataHelper.retryingWithoutStaleDevice(
+                deviceMetadata,
+                for: username,
+                with: environment
+            ) { deviceMetadata in
+                if let session = respondToAuthChallenge?.session {
+                    let request = await RespondToAuthChallengeInput.userPasswordInputForUserAuth(
+                        username: username,
+                        password: password,
+                        session: session,
+                        clientMetadata: clientMetadata,
+                        asfDeviceId: asfDeviceId,
+                        deviceMetadata: deviceMetadata,
+                        environment: userPoolEnv
+                    )
+                    return try await sendRequest(
+                        request: request,
+                        environment: userPoolEnv,
+                        logger: environment.engineLogger
+                    )
+                }
                 let request = await InitiateAuthInput.migrateAuth(
                     username: username,
                     password: password,
@@ -70,7 +75,7 @@ package struct InitiateMigrateAuth: Action {
                     deviceMetadata: deviceMetadata,
                     environment: userPoolEnv
                 )
-                responseEvent = try await sendRequest(
+                return try await sendRequest(
                     request: request,
                     environment: userPoolEnv,
                     logger: environment.engineLogger

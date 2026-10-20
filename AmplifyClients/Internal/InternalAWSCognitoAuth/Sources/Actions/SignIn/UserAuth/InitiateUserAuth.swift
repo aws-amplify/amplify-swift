@@ -63,18 +63,26 @@ package struct InitiateUserAuth: Action {
                 for: username,
                 credentialStoreClient: authEnv.credentialsClient
             )
-            let request = await InitiateAuthInput.userAuth(
-                username: username,
-                preferredChallengeAuthParams: preferredChallengeAuthParams,
-                clientMetadata: signInEventData.clientMetadata,
-                asfDeviceId: asfDeviceId,
-                deviceMetadata: deviceMetadata,
-                environment: userPoolEnv
-            )
-
             let cognitoClient = try userPoolEnv.cognitoUserPoolFactory()
             logVerbose("\(#fileID) Starting execution", environment: environment)
-            let response = try await cognitoClient.initiateAuth(input: request)
+            // A device key Cognito no longer knows (the device was forgotten) is dropped, and the request sent again
+            // without it, as the SRP flow does.
+            let clientMetadata = signInEventData.clientMetadata
+            let response = try await DeviceMetadataHelper.retryingWithoutStaleDevice(
+                deviceMetadata,
+                for: username,
+                with: environment
+            ) { deviceMetadata in
+                let request = await InitiateAuthInput.userAuth(
+                    username: username,
+                    preferredChallengeAuthParams: preferredChallengeAuthParams,
+                    clientMetadata: clientMetadata,
+                    asfDeviceId: asfDeviceId,
+                    deviceMetadata: deviceMetadata,
+                    environment: userPoolEnv
+                )
+                return try await cognitoClient.initiateAuth(input: request)
+            }
             let responseEvent = UserPoolSignInHelper.parseResponse(
                 response,
                 for: username,

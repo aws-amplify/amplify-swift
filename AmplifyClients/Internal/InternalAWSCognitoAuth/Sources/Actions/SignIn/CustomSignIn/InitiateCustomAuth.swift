@@ -37,19 +37,26 @@ package struct InitiateCustomAuth: Action {
                 for: username,
                 credentialStoreClient: authEnv.credentialsClient
             )
-            let request = await InitiateAuthInput.customAuth(
-                username: username,
-                clientMetadata: clientMetadata,
-                asfDeviceId: asfDeviceId,
-                deviceMetadata: deviceMetadata,
-                environment: userPoolEnv
-            )
-
-            let responseEvent = try await sendRequest(
-                request: request,
-                environment: userPoolEnv,
-                logger: environment.engineLogger
-            )
+            // A device key Cognito no longer knows (the device was forgotten) is dropped, and the request sent again
+            // without it, as the SRP flow does.
+            let responseEvent = try await DeviceMetadataHelper.retryingWithoutStaleDevice(
+                deviceMetadata,
+                for: username,
+                with: environment
+            ) { deviceMetadata in
+                let request = await InitiateAuthInput.customAuth(
+                    username: username,
+                    clientMetadata: clientMetadata,
+                    asfDeviceId: asfDeviceId,
+                    deviceMetadata: deviceMetadata,
+                    environment: userPoolEnv
+                )
+                return try await sendRequest(
+                    request: request,
+                    environment: userPoolEnv,
+                    logger: environment.engineLogger
+                )
+            }
             logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
             await dispatcher.send(responseEvent)
 
