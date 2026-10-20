@@ -6,7 +6,7 @@ weighed and the evidence behind each choice. All of them are written into the de
 
 Decisions 1–8 were taken in review on 2026-09-22. Decisions 9–19 were taken while the client was built, up to
 the beta (2026-09-23 to 2026-10-05); they are summarised [below](#later-decisions-2026-09-23-to-2026-10-05).
-Decisions 20–25 were taken on 2026-10-19, after end-to-end testing of the beta; they are summarised
+Decisions 20–28 were taken on 2026-10-19, after end-to-end testing of the beta; they are summarised
 [below](#decisions-of-2026-10-19). Where
 a later decision changes an earlier one, the earlier entry says so and is kept as the record.
 
@@ -397,6 +397,8 @@ refresh-token rotation on.
 
 - **The dead-token rule keeps 30 seconds** (2026-10-02). A refresh refused as a reused refresh token is retryable
   the first time; a second, at least 30 seconds later, with nothing saved meanwhile, reports `sessionExpired`.
+  *Refined 2026-10-19 (#28):* the rule holds within one launch, and a refused forced refresh fails rather than
+  returning the tokens it sent.
 - **`AuthClientServiceErrorCode` is not an `Error`** (2026-10-02). It is a plain value carried by
   `AuthClientError.service`, never thrown on its own; `errorDescription` stays as a property.
 - **Logging** (2026-10-02). Every client log line is under an `AmplifyCognitoClient.<area>` category, and the
@@ -420,6 +422,9 @@ access-group migration. Each is written into the design, the client's README and
 | 23 | Which AWSMobileClient credentials a `.default` sign-out clears | **Every identity pool's** credentials service the app's keychain holds, not only the configured one's. The plugin is unchanged. |
 | 24 | A request that never reached Cognito | **A retryable `.service` with no code**, in every call, with the client's network texts. The plugin keeps its mapping. |
 | 25 | When a hosted-UI sign-in cancelled with `cancelWebUISignIn()` answers | **Once its browser has closed and the system sheet is free**, within a second. |
+| 26 | A forgotten device key on a sign-in that isn't SRP | **Dropped and retried once**, in the shared engine: the password (`USER_PASSWORD_AUTH`), `USER_AUTH` and custom flows remove the device record and resend without a device key, by SRP's rule. Plugin and client alike. |
+| 27 | The user ID of a sign-up that completes with auto sign-in | **Carried**: Cognito's sub, as `.done` and `.confirmUser` already carried it. Plugin and client alike. |
+| 28 | A refresh refused as a reused refresh token | **The 30-second dead-token rule holds within one launch**, and is not persisted; a refused forced refresh fails with the retryable error instead of returning the tokens it sent. |
 
 **#20 and #21.** An extension that fetches a session first finds the shared service empty and saves a guest identity
 there. Counting that record as a migrated login aborted the app's migration and stranded its login in the old
@@ -451,3 +456,19 @@ Transport Security and authentication failures are `.service` with no code and t
 session and an immediate retry got `browserBusy`. The caller's own task cancellation and `resetSystemSheet()` still
 answer at once; a browser that hasn't closed within a second (its code exchange already in flight) doesn't hold the
 caller longer.
+
+**#26.** `forgetDevice` keeps this device's record, as the plugin does, so the next sign-in sends the forgotten
+key. Only SRP handled Cognito's answer; a `USER_PASSWORD_AUTH` sign-in failed on every attempt with "Device does not
+exist." The flows that send a device key in their first request now use SRP's rule: any `ResourceNotFoundException`
+to a request that sent a device key removes the record, and the request is sent once more without one. The rule
+doesn't read the message, so a `ResourceNotFoundException` for another reason also deletes the record before the
+second attempt reports it, as SRP has always done.
+
+**#27.** Cognito returns the sub in every `SignUp` answer, and an app keying anything on the new user needs it in the
+auto sign-in case too.
+
+**#28.** The rule needs two refusals in one launch, because a second writer (an app extension between Cognito's
+answer and its keychain write) may still save the refresh that used the token. Persisting the first refusal was not
+taken: it would make a launch-time race look like a dead token. Instead apps are told to offer sign-in after
+repeated refresh failures. A forced refresh asks Cognito for new tokens, so answering it with the tokens it sent hid
+the refusal; it now fails, and an unforced fetch still returns valid saved tokens.

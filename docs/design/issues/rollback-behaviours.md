@@ -1,7 +1,7 @@
 # Rollback behaviours with refresh-token rotation and old plugin releases
 
-**Status:** §1 and §2 solved for the default session by the shared saved login (2026-10-02). §3 was resolved
-earlier. The caveats that remain are accepted for the beta, because the plugin behaves the same way (2026-10-05).
+**Status:** §1 and §2 solved for the default session by the shared saved login (2026-10-02). §3 is resolved within
+one launch only (2026-10-19). The caveats that remain are accepted for the beta, because the plugin behaves the same way (2026-10-05).
 Earlier status: documented — for later discussion (2026-09-27).
 **Source:** the executable rollback matrix (`RollbackMatrixPluginTests` and `RollbackMatrixClientTests`).
 
@@ -59,7 +59,12 @@ rule: a later configuration change that the rule does not carry deletes the sign
 earlier configuration's key that still holds the user's old copy, which then restores the user signed in (design
 §4.8). Both caveats are accepted for the beta (2026-10-05).
 
-## 3. Rolling forward to the client after 1 — resolved
+## 3. Rolling forward to the client after 1 — resolved within one launch
 
 The client used to stay `.signedIn` on a retryable error forever. It now reports `sessionExpired` when a second
-reuse, spaced from the first, finds its record unchanged.
+reuse in the same launch, at least 30 seconds after the first, finds its record unchanged. The rule is kept in
+memory: after an app terminated in the middle of a rotating refresh (Cognito rotated the token, and the new one was
+never saved), the retired token gives the retryable error at its first refusal in every launch, never
+`sessionExpired`, until the user signs out or signs in again. Apps should offer sign-in after repeated refresh
+failures. A forced refresh refused as reused fails with that retryable error, and never answers with the saved
+tokens it sent (decided 2026-10-19: forced refresh only; persisting the first refusal across launches was not taken).

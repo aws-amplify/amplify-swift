@@ -1172,6 +1172,9 @@ that doesn't track devices: no request is sent. On such a pool only the calls th
 and `forgetDevice(_:)` of another device, throw `.configuration` ("Device tracking not currently enabled for this
 pool.").
 
+`forgetDevice()` keeps this device's record, as the plugin does. The next sign-in, in any flow, sends its device key,
+finds that Cognito no longer knows it, drops the record and starts again without it.
+
 ## MFA preferences and TOTP
 
 ```swift
@@ -1392,8 +1395,8 @@ do {
     _ = try await client.signIn(username: "user@example.com", password: "<password>")
 } catch AuthClientError.notAuthorized(let description, _, _) {
     print("Wrong username or password:", description)
-} catch AuthClientError.service(.limitExceeded?, _, _, _) {
-    print("Too many attempts; try again later")
+} catch AuthClientError.service(.requestLimitExceeded?, _, _, _) {
+    print("Too many requests; try again later")
 } catch AuthClientError.invalidState {
     print("This session is already signed in")
 } catch AuthClientError.storageUnavailable(let reason, _, _, _) {
