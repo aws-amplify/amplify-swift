@@ -519,7 +519,9 @@ memory only: after a relaunch, or once every handle and provider for the session
 with `.invalidState` again until a token request finds the dead token again, so sign out first, as with the plugin.
 
 The result's `nextStep` is `.done` when the user is signed in. Otherwise it is the step to present; see
-[Sign-in steps and confirmSignIn](#sign-in-steps-and-confirmsignin).
+[Sign-in steps and confirmSignIn](#sign-in-steps-and-confirmsignin). A user who hasn't confirmed their sign-up
+comes back as the `.confirmSignUp` step, not as a thrown `.service(.userNotConfirmed?)`, and so does one whose
+password must be reset (`.resetPassword`).
 
 ### Password (SRP)
 
@@ -1385,8 +1387,8 @@ do {
     _ = try await client.signIn(username: "user@example.com", password: "<password>")
 } catch AuthClientError.notAuthorized(let description, _, _) {
     print("Wrong username or password:", description)
-} catch AuthClientError.service(.userNotConfirmed?, _, _, _) {
-    print("Confirm the sign-up first")
+} catch AuthClientError.service(.limitExceeded?, _, _, _) {
+    print("Too many attempts; try again later")
 } catch AuthClientError.invalidState {
     print("This session is already signed in")
 } catch AuthClientError.storageUnavailable(let reason, _, _, _) {
