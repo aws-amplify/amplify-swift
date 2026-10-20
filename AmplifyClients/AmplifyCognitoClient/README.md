@@ -1008,7 +1008,8 @@ The provider:
 - never falls back: a signed-out session throws `notSignedIn` and never quietly returns guest credentials. Call
   `fetchAuthSession()` first if you want a signed-out session to become a guest;
 - vends nothing while a sign-in on the session waits on a challenge, whatever the session held, a guest's
-  credentials included: it throws `notSignedIn` (`.discard`), so a consumer that follows it drops what it has
+  credentials included: it throws `notSignedIn` (`.discard`), or `notConfigured` when the configuration has no
+  identity pool, so a consumer that follows it drops what it has
   buffered so far. `.discard` marks the change of principal only when the sign-in stops on a challenge. A sign-in
   that completes at once (one that needs no challenge, or a hosted-UI sign-in) moves the session to the new login
   with no `notSignedIn` in between, and so hands the user's credentials to a consumer still holding a guest's buffer,
@@ -1356,7 +1357,9 @@ Deletes the signed-in user from the user pool, removes this session's row, and s
 with the same user find out at their next refresh. It never shows the hosted-UI sign-out, so after a shared-cookie
 hosted-UI sign-in the browser keeps its cookie. Once Cognito is asked, the deletion runs to its end even if the task
 is cancelled. If the user is deleted but the row can't be removed, it throws `.storageUnavailable` after the
-deletion; purge or sign out to remove the row.
+deletion; purge or sign out to remove the row. The deleted user's device records stay in the keychain, as with the
+plugin. They are harmless: if the same username signs in on this device again, a device key Cognito no longer knows
+is dropped and the sign-in starts again without it.
 
 ## Errors
 
@@ -1537,10 +1540,10 @@ deletes the old login on most changes; named sessions keep each configuration's 
 restore under a new configuration, it compares the configuration the plugin or the client last recorded with the
 current one:
 
-| Change | `.default` after the change, as with the plugin |
+| Change | `.default` after the change, as with the plugin except where a row says otherwise |
 |---|---|
 | Identity pool only, then a user pool added (same identity pool) | The guest or federated identity, copied as it was; the old record is kept |
-| An identity pool added, changed or removed, same user pool, app client and region | Signed in, copied as it was; the old record is kept. With an identity pool added, the identity is fetched on first use |
+| An identity pool added, changed or removed, same user pool, app client and region | Signed in, copied as it was; the old record is kept. With an identity pool added, the client fetches the identity on first use, and that first fetch also refreshes the user pool tokens; the plugin instead fails its unforced fetches' AWS credentials (`invalidAccountTypeException`, "…Identity Pool is not configured") until a forced refresh. With the identity pool removed, the client reports AWS credentials as `notConfigured`, while the plugin still hands out the AWS credentials and identity copied with the login |
 | Only the app client changed, same pools | Nothing is deleted or revoked: the record stays where it is. Its next refresh fails with `sessionExpired`, as the old app client's refresh token is refused, and the user signs in again |
 | Anything else that changes the pools (another user pool, say) | **The old login is deleted**, and `.default` is signed out |
 
@@ -1577,7 +1580,9 @@ current one:
     configuration finds the same guest.
   - `purgeStoredSession` revokes nothing, so it leaves the login it copied from as it was: the app's login under its
     own configuration. The next restore under the new configuration copies it again, over the deleted copy. To end
-    that login, sign it out instead.
+    that login, sign it out instead. A named session differs: purged under a new configuration before its first
+    restore there, its carry ends, so it comes up signed out under the new configuration, while the old
+    configuration's login stays as it was (see [Named sessions](#named-sessions-each-configuration-keeps-its-login)).
 - **An app and its extensions sharing an access group must use the same configuration for `.default`.** They share
   the plugin's saved login and its recorded configuration, so with two configurations each launch applies the rule
   against the other's. Where the rule deletes, each launch deletes the other's login, and on the same user pool
@@ -1601,12 +1606,14 @@ along with one of the changes below, where the plugin's rule would not carry. Th
 | Change | The session after the change |
 |---|---|
 | Identity pool only, then a user pool added | The guest or federated identity, as it was |
-| User pool only, then an identity pool added | Signed in; the identity is fetched on first use |
+| User pool only, then an identity pool added | Signed in; the identity is fetched on first use, and that first fetch also refreshes the user pool tokens |
 | Identity pool changed, same user pool | Signed in with **user pool tokens only**; the new identity pool issues a new identity on first use. (The plugin, and `.default`, keep the old pool's identity ID) |
 | Identity pool removed, same user pool | Signed in with user pool tokens only |
 | Anything else (another user pool, another access group) | Nothing carried. **The old record is kept**, where the plugin and `.default` delete it on another user pool |
 
 - Nothing is carried from a session whose last saved state is signed out.
+- A purge under a new configuration, before the session's first restore there, ends the carry for that session: it
+  comes up signed out under the new configuration, and the old configuration's login is left as it was.
 - The old record is kept, so each configuration keeps its own session: switching back finds it as it was, unless
   it was signed out there. An app can switch configurations at runtime under one named session ID.
 - Two configurations that share a user pool but differ in identity pool are one carried session: a sign-out in
@@ -1787,7 +1794,15 @@ The client keeps the plugin's semantics except where listed here.
 - **Rollback to an older plugin release**: plugin releases before 2.51.0 can't refresh at all on an app client with
   rotation on. Releases before 2.53.3 can wipe the plugin's keychain service, every saved session included, the
   first time they configure on an install that never ran one of them. Roll back to 2.53.3 or later.
-- **A second refresh-token reuse counts as a dead token after 30 seconds.** Until then the failure is retryable.
+- **After a relaunch, a session whose refresh token was revoked elsewhere refuses `signIn`.** Its expiry is known in
+  memory only, so it restores signed in as its user, and `signIn` throws `.invalidState` ("There is already a user
+  in signedIn state") until the session signs out, or a refresh in that launch reports `sessionExpired`. What to do:
+  on `sessionExpired`, or on that refusal, sign the session out before showing sign-in.
+- **A second refresh-token reuse counts as a dead token after 30 seconds, within one launch.** Until then the
+  failure is retryable. The rule is kept in memory: after an app terminated in the middle of a refresh with
+  refresh-token rotation on (Cognito rotated the token, and the new one was never saved), the saved, retired refresh
+  token gives the retryable `unknown` at its first refusal in every launch, and never `sessionExpired`, until the
+  user signs out or signs in again. What to do: after repeated refresh failures, offer the user to sign in again.
 - **A sign-in after an expired session can't be resumed after a relaunch.** This affects a session whose refresh
   token expired (it reported `sessionExpired`) when its user signs in again, that sign-in stops on a challenge
   (an MFA code, say), and the app is closed before the user answers. The saved login still holds the expired user,
