@@ -118,7 +118,7 @@ final class LiveEngineSignUpTests: XCTestCase {
     /// - When:
     ///    - carol signs up
     /// - Then:
-    ///    - the result is `.completeAutoSignIn` with the session, complete
+    ///    - the result is `.completeAutoSignIn` with the session and the new user's sub, complete
     ///    - the engine holds an auto-sign-in session
     ///
     func testAConfirmedSignUpWithASessionCompletesAutoSignIn() async throws {
@@ -129,7 +129,7 @@ final class LiveEngineSignUpTests: XCTestCase {
 
         let result = try await engine.signUp(.carol)
 
-        XCTAssertEqual(result, AuthClientSignUpResult(.completeAutoSignIn("auto-session"), userId: nil))
+        XCTAssertEqual(result, AuthClientSignUpResult(.completeAutoSignIn("auto-session"), userId: "sub-carol"))
         XCTAssertTrue(result.isSignUpComplete)
         let hasSession = await engine.hasAutoSignInSession
         XCTAssertTrue(hasSession)

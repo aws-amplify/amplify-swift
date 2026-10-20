@@ -53,7 +53,8 @@ package struct InitiateSignUp: Action {
             let event: SignUpEvent
             if response.authResponse.isSignUpComplete {
                 if let session = response.session {
-                    event = SignUpEvent(eventType: .signedUp(dataToSend, .init(.completeAutoSignIn(session))))
+                    // The new user's sub, as `.done` and `.confirmUser` carry it.
+                    event = SignUpEvent(eventType: .signedUp(dataToSend, .init(.completeAutoSignIn(session), userID: response.userSub)))
                 } else {
                     event = SignUpEvent(eventType: .signedUp(dataToSend, response.authResponse))
                 }
