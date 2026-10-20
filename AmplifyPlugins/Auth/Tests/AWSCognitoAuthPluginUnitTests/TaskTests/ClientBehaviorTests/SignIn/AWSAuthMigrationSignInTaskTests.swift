@@ -279,8 +279,21 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase, @unchecked Sendable {
         await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
+    /// Test a `USER_PASSWORD_AUTH` sign-in that Cognito refuses with `ResourceNotFoundException`
+    ///
+    /// - Given: Cognito refusing every `InitiateAuth` with `ResourceNotFoundException`, and a device record for the
+    ///   user, as the test environment holds one
+    /// - When:
+    ///    - the user signs in with `.userPassword`
+    /// - Then:
+    ///    - `InitiateAuth` is called twice, the second time without the device key, and the sign-in fails with
+    ///      `.service` and `.resourceNotFound`
+    ///
     func testSignInOperationResourceNotFound() async throws {
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
+        // The test environment holds a device record, so a refusal is taken for a forgotten device key: the request
+        // is sent once more without it, and the second refusal is reported.
+        initiateAuthExpectation.expectedFulfillmentCount = 2
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
