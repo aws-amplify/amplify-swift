@@ -55,8 +55,12 @@ final class StaleDeviceKeyRetryTests: XCTestCase {
 
                 let events = await run(flow, environment, device: device)
 
-                let sentAKey = if case .metadata = device { true } else { false }
-                let expected: [String?] = sentAKey ? ["stale-key", nil] : [nil]
+                let expected: [String?]
+                if case .metadata = device {
+                    expected = ["stale-key", nil]
+                } else {
+                    expected = [nil]
+                }
                 XCTAssertEqual(requests.deviceKeys, expected, name)
                 XCTAssertTrue(events.contains(where: Self.isAuthError), "\(name): \(events)")
             }

@@ -507,7 +507,9 @@ final class ChallengeTests: XCTestCase {
         }
         let reads = CallCounter()
         engine.duringPendingChallengeRead {
-            guard reads.count < 1 else { return }
+            guard reads.count < 1 else {
+                return
+            }
             reads.increment()
             _ = await client.signOut()
         }
