@@ -25,18 +25,59 @@ final class StaleDeviceKeyRetryTests: XCTestCase {
     /// - Then:
     ///    - it sends its request twice, the first with the stale key and the second with none, and dispatches the
     ///      second's outcome, not an error
+    ///    - it removes alice's device record, once
     func testEachFlowRetriesOnceWithoutAStaleDeviceKey() async throws {
         for (name, flow) in flows {
             let requests = DeviceKeyRecorder()
-            let environment = Defaults.makeDefaultAuthEnvironment(userPoolFactory: {
+            let removals = DeviceRecordRemovals()
+            let environment = Self.environment(removals) {
                 Self.userPool(requests, refusingOnlyDeviceKeys: true)
-            })
+            }
 
             let events = await run(flow, environment)
 
             XCTAssertEqual(requests.deviceKeys, ["stale-key", nil], name)
             XCTAssertFalse(events.contains(where: Self.isAuthError), "\(name): \(events)")
+            XCTAssertEqual(removals.usernames, ["alice"], name)
         }
+    }
+
+    /// On an alias pool, the password answer in `USER_AUTH` removes the device record under the name the user typed,
+    /// the one it was read with, not Cognito's echoed username.
+    ///
+    /// - Given: a `USER_AUTH` password challenge whose username is Cognito's echo, a sub-like ID, and whose input
+    ///   username is the email the user typed; Cognito refusing the stale device key
+    /// - When: the password answer is sent
+    /// - Then:
+    ///    - the retry sends no device key, and the device record removed is the email's
+    func testThePasswordAnswerOnAnAliasPoolRemovesTheRecordItWasReadWith() async throws {
+        let requests = DeviceKeyRecorder()
+        let removals = DeviceRecordRemovals()
+        let environment = Self.environment(removals) {
+            Self.userPool(requests, refusingOnlyDeviceKeys: true)
+        }
+        let sub = "4213df5e-f70b-4405-b8b4-963324a6e0b8"
+        let action = InitiateMigrateAuth(
+            username: sub,
+            password: "password",
+            clientMetadata: [:],
+            deviceMetadata: staleDevice,
+            respondToAuthChallenge: RespondToAuthChallenge(
+                challenge: .password,
+                availableChallenges: [],
+                username: sub,
+                session: "session",
+                parameters: [:],
+                inputUsername: "alice@example.com"
+            )
+        )
+
+        let events = DispatchedEvents()
+        await action.execute(withDispatcher: MockDispatcher { events.record($0) }, environment: environment)
+
+        XCTAssertEqual(requests.deviceKeys, ["stale-key", nil])
+        XCTAssertEqual(removals.usernames, ["alice@example.com"])
+        XCTAssertFalse(events.events.contains(where: Self.isAuthError), "\(events.events)")
     }
 
     /// - Given: Cognito refusing every request with `ResourceNotFoundException`, and each action holding the stale
@@ -109,6 +150,23 @@ final class StaleDeviceKeyRetryTests: XCTestCase {
         return events.events
     }
 
+    /// The default auth environment over `userPool`, with a credential store that records each device-record removal.
+    private static func environment(
+        _ removals: DeviceRecordRemovals,
+        userPool: @escaping @Sendable () throws -> CognitoUserPoolBehavior
+    ) -> AuthEnvironment {
+        let base = Defaults.makeDefaultAuthEnvironment(userPoolFactory: userPool)
+        return AuthEnvironment(
+            configuration: base.configuration,
+            userPoolConfigData: base.userPoolConfigData,
+            identityPoolConfigData: base.identityPoolConfigData,
+            authenticationEnvironment: base.authenticationEnvironment,
+            authorizationEnvironment: base.authorizationEnvironment,
+            credentialsClient: RecordingCredentialStore(base: base.credentialsClient, removals: removals),
+            logger: base.logger
+        )
+    }
+
     private static func isAuthError(_ event: StateMachineEvent) -> Bool {
         guard let event = event as? SignInEvent, case .throwAuthError = event.eventType else {
             return false
@@ -171,5 +229,41 @@ private final class DispatchedEvents: @unchecked Sendable {
 
     func record(_ event: StateMachineEvent) {
         lock.withLock { recorded.append(event) }
+    }
+}
+
+/// The usernames whose device records were removed, in order.
+private final class DeviceRecordRemovals: @unchecked Sendable {
+    // `@unchecked Sendable`: `removed` is only touched while holding `lock`.
+    private let lock = NSLock()
+    private var removed: [String] = []
+
+    var usernames: [String] {
+        lock.withLock { removed }
+    }
+
+    func record(_ username: String) {
+        lock.withLock { removed.append(username) }
+    }
+}
+
+/// A credential store that forwards to `base` and records each device-record removal.
+private struct RecordingCredentialStore: CredentialStoreStateBehavior {
+    let base: CredentialStoreStateBehavior
+    let removals: DeviceRecordRemovals
+
+    func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData {
+        try await base.fetchData(type: type)
+    }
+
+    func storeData(data: CredentialStoreData) async throws {
+        try await base.storeData(data: data)
+    }
+
+    func deleteData(type: CredentialStoreDataType) async throws {
+        if case .deviceMetadata(let username) = type {
+            removals.record(username)
+        }
+        try await base.deleteData(type: type)
     }
 }

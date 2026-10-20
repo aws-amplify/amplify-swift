@@ -45,10 +45,12 @@ package struct InitiateMigrateAuth: Action {
             )
 
             // A device key Cognito no longer knows (the device was forgotten) is dropped, and the request sent again
-            // without it, as the SRP flow does.
+            // without it, as the SRP flow does. The record is removed under the name it was read with: for the
+            // password answer in USER_AUTH, the username the user typed, where `username` is Cognito's echo (the sub
+            // on an alias pool).
             let responseEvent: StateMachineEvent = try await DeviceMetadataHelper.retryingWithoutStaleDevice(
                 deviceMetadata,
-                for: username,
+                for: respondToAuthChallenge?.inputUsername ?? username,
                 with: environment
             ) { deviceMetadata in
                 if let session = respondToAuthChallenge?.session {
