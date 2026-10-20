@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(AmplifyExperimental) import AmplifyFoundation
+@_spi(AmplifyExperimental) @testable import AmplifyFoundation
 import Security
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
@@ -366,6 +366,55 @@ final class ChallengeTests: XCTestCase {
         XCTAssertFalse(bad?.recoverySuggestion.contains("MFAType.totp") ?? true, "names the plugin's type")
         XCTAssertEqual(state, .awaitingChallenge(step))
         XCTAssertEqual(engine.confirmSignInCalls.map(\.challengeResponse), ["sms_mfa"])
+    }
+
+    /// An MFA setup selection is checked against the step's choices before it is sent, and the attempt survives.
+    ///
+    /// - Given: a sign-in waiting on an MFA setup selection of email or TOTP, and a log sink
+    /// - When: it is answered with a code typed into the wrong prompt, with `SMS_MFA` (not one of the step's choices),
+    ///   then with `email_otp`
+    /// - Then:
+    ///    - the first two throw `validation(field: "challengeResponse")` naming the step's two types, without
+    ///      reaching the engine, and the challenge is still pending
+    ///    - no log line holds the answer
+    ///    - the third (case-insensitive) is sent
+    func testABadMFASetupSelectionIsRefusedBeforeItIsSent() async throws {
+        let step = AuthClientSignInStep.continueSignInWithMFASetupSelection([.email, .totp])
+        let (client, engine) = try await challengedClient(work, step: step)
+        let sink = CategoryCapture()
+        AmplifyLogging.addSink(sink)
+        defer { AmplifyLogging.removeSink(sink) }
+
+        let code = await authClientError { try await client.confirmSignIn(challengeResponse: "000000") }
+        let sms = await authClientError { try await client.confirmSignIn(challengeResponse: "SMS_MFA") }
+        let state = await client.currentSessionState()
+        _ = try await client.confirmSignIn(challengeResponse: "email_otp")
+
+        for bad in [code, sms] {
+            XCTAssertEqual(bad?.kind, .validation(field: "challengeResponse"))
+            XCTAssertEqual(
+                bad?.errorDescription,
+                "challengeResponse for MFA setup selection can only be EMAIL_OTP or SOFTWARE_TOKEN_MFA."
+            )
+            XCTAssertTrue(bad?.recoverySuggestion.contains("`AuthClientMFAType.<type>.challengeResponse`") == true)
+            XCTAssertFalse(bad?.recoverySuggestion.contains("username") ?? true)
+        }
+        XCTAssertEqual(state, .awaitingChallenge(step))
+        XCTAssertEqual(engine.confirmSignInCalls.map(\.challengeResponse), ["email_otp"])
+        XCTAssertEqual(sink.categories(containing: "000000"), [], "the answer was logged")
+    }
+
+    /// The step's choices read as English alternatives.
+    ///
+    /// - Given: no, one, two and three names
+    /// - When: they are joined
+    /// - Then:
+    ///    - they read "one of the step's types", "A", "A or B" and "A, B or C"
+    func testChoicesReadAsAlternatives() {
+        XCTAssertEqual(SessionCore.choices([]), "one of the step's types")
+        XCTAssertEqual(SessionCore.choices(["A"]), "A")
+        XCTAssertEqual(SessionCore.choices(["A", "B"]), "A or B")
+        XCTAssertEqual(SessionCore.choices(["A", "B", "C"]), "A, B or C")
     }
 
     /// The plugin validates a first-factor selection before sending it

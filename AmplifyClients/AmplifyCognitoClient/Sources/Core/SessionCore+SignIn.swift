@@ -207,6 +207,20 @@ extension SessionCore {
                     """
                 )
             }
+        case .continueSignInWithMFASetupSelection(let allowed):
+            // Checked here, so a wrong answer is refused with the step's choices, and never reaches the engine, whose
+            // MFA-type parser logs what it was given at error level.
+            let names = allowed.map(\.challengeResponse).sorted()
+            guard names.contains(where: { response.caseInsensitiveCompare($0) == .orderedSame }) else {
+                throw AuthClientError.validation(
+                    field: "challengeResponse",
+                    "challengeResponse for MFA setup selection can only be \(Self.choices(names)).",
+                    """
+                    Make sure that a valid challenge response is passed for confirmSignIn.
+                    Try using `AuthClientMFAType.<type>.challengeResponse` of a type the step allows as the challenge response.
+                    """
+                )
+            }
         case .continueSignInWithFirstFactorSelection:
             guard ["PASSWORD", "PASSWORD_SRP", "SMS_OTP", "EMAIL_OTP", "WEB_AUTHN"].contains(response) else {
                 throw AuthClientError.validation(
@@ -221,6 +235,15 @@ extension SessionCore {
         default:
             return
         }
+    }
+
+    /// `names` as English alternatives: "A", "A or B", "A, B or C".
+    static func choices(_ names: [String]) -> String {
+        guard let last = names.last else {
+            return "one of the step's types"
+        }
+        let rest = names.dropLast()
+        return rest.isEmpty ? last : "\(rest.joined(separator: ", ")) or \(last)"
     }
 
     /// Whether a sign-in asks for a WebAuthn first factor, which needs a presentation anchor: without one it
