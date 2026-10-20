@@ -418,6 +418,39 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(events.received, [.signedOut])
     }
 
+    /// A forced refresh that Cognito refuses as a reused refresh token is not answered with the saved tokens it sent,
+    /// even while they are valid: it fails as the unforced refresh does on that refusal. An unforced fetch still
+    /// returns them.
+    ///
+    /// - Given: a signed-in session with valid tokens, whose refresh is refused as reused, with nothing saved meanwhile
+    /// - When: the session is fetched with `forceRefresh`, then without it
+    /// - Then:
+    ///    - the forced fetch's fields fail with the retryable `unknown` "…refresh token was used by another writer…",
+    ///      not the old tokens; no `.sessionExpired` is sent
+    ///    - the unforced fetch returns the saved tokens with no refresh
+    func testAForcedRefreshRefusedAsReusedFailsInsteadOfReturningTheOldTokens() async throws {
+        let fresh = FakePayload.signedIn("alice")
+        try harness.signIn(work, fresh)
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
+        let events = StreamRecorder(client.listenToAuthEvents())
+
+        let forced = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+        let unforced = try await client.fetchAuthSession()
+
+        guard case .failure(let error) = forced.userPoolTokensResult else {
+            return XCTFail("the forced refresh answered with the old tokens")
+        }
+        XCTAssertEqual(error.kind, .unknown)
+        XCTAssertTrue(error.errorDescription.contains("refresh token was used by another writer"), error.errorDescription)
+        XCTAssertEqual(try unforced.userPoolTokensResult.get().accessToken, fresh.accessToken)
+        XCTAssertEqual(engine.refreshCalls.count, 1)
+        _ = await client.signOut()
+        await events.waitFor(1)
+        XCTAssertEqual(events.received, [.signedOut])
+    }
+
     /// - Given: a session needing a refresh, whose refresh fails as reused with nothing fresher stored
     /// - When: credentials are requested
     /// - Then:

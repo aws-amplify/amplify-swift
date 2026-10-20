@@ -259,7 +259,7 @@ extension SessionCore {
     ///    fresh record, keeping its label, so the refreshed tokens are not thrown away. At most
     ///    `maximumRecordWriteAttempts` writes.
     /// 3. `refreshTokenReused` means another writer used the token: re-read and adopt if that left fresh
-    ///    credentials, else fail as retryable. Never signed out. A second reuse in a row, at least
+    ///    credentials (for a forced refresh, only credentials other than the ones it sent), else fail as retryable. Never signed out. A second reuse in a row, at least
     ///    `RefreshTokenReuse.minimumGap` after the first, whose re-read record's credentials are still exactly
     ///    the ones sent, means nobody else refreshed: the token is dead (a record rolled forward over a token
     ///    the plugin rotated away), so, as for step 4, `sessionExpired`.
@@ -295,7 +295,10 @@ extension SessionCore {
                 return try await .adopted(keepRefreshedTokens(stored, failure: failure, over: current, replacing: payload, store: store))
             } catch SessionEngineError.refreshTokenReused {
                 let reread = try await store.load(sessionId)
-                if let fresh = reread.credentials, try !needsRefresh(fresh, of: reread) {
+                // A forced refresh asked Cognito for new tokens, so it never answers with the very credentials it
+                // sent: those are adopted only if another writer saved a refresh, and otherwise the refusal stands.
+                if let fresh = reread.credentials, try !needsRefresh(fresh, of: reread),
+                   !(force && engine.sameCredentials(fresh, payload)) {
                     refreshTokenReuse.reset()
                     return await .adopted(apply(reread, event: nil))
                 }
