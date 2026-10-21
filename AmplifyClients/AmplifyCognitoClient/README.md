@@ -737,8 +737,9 @@ func completeSignIn(client: AmplifyCognitoClient, startingAt first: AuthClientSi
             result = try await client.confirmSignIn(challengeResponse: type.challengeResponse)
 
         case .continueSignInWithTOTPSetup(let details):
+            // The URI holds the shared secret: show it as a QR code or open it in an authenticator app, never log it.
             let uri = try details.getSetupURI(appName: "ExampleApp")
-            print("Open in an authenticator app:", uri)
+            await showQRCode(uri)
             result = try await client.confirmSignIn(
                 challengeResponse: await ask("Authenticator code"),
                 options: .init(friendlyDeviceName: "My phone")
@@ -782,7 +783,7 @@ func completeSignIn(client: AmplifyCognitoClient, startingAt first: AuthClientSi
 }
 ```
 
-`ask(_:)` and `pick(_:)` stand for your UI. If the first factor could be a passkey, use the
+`ask(_:)`, `pick(_:)` and `showQRCode(_:)` stand for your UI. If the first factor could be a passkey, use the
 `confirmSignIn(challengeResponse:presentationAnchor:options:)` overload for that answer.
 
 Errors to expect from `confirmSignIn`:
@@ -1184,8 +1185,9 @@ let preference = try await client.fetchMFAPreference()
 print(preference.enabled ?? [], preference.preferred as Any)
 
 let setup = try await client.setUpTOTP()
+// The URI holds the shared secret: show it as a QR code or open it in an authenticator app, never log it.
 let uri = try setup.getSetupURI(appName: "ExampleApp", accountName: "user@example.com")
-print(uri)
+await showQRCode(uri)
 try await client.verifyTOTPSetup(code: "123456", options: .init(friendlyDeviceName: "My phone"))
 
 try await client.updateMFAPreference(sms: .enabled, totp: .preferred)
@@ -1201,7 +1203,8 @@ try await client.updateMFAPreference(email: .disabled)
 | `.notPreferred` | On, not preferred |
 
 A wrong TOTP code is `.service(.softwareTokenMFANotEnabled, …)`; verify again with a right one. Preferring more
-than one type is `.service(.invalidParameter, …)`. `AuthClientTOTPSetupDetails` prints its secret redacted.
+than one type is `.service(.invalidParameter, …)`. `AuthClientTOTPSetupDetails` prints its secret redacted, but the
+setup URI carries the secret in clear, so never print or log it. `showQRCode(_:)` stands for your UI.
 
 ## Passkeys (WebAuthn credentials)
 
