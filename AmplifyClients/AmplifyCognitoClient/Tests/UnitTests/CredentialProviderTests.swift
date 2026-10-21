@@ -451,6 +451,54 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(events.received, [.signedOut])
     }
 
+    /// A forced refresh refused as a reused refresh token adopts what another writer saved meanwhile only if that
+    /// writer saved a refresh, with a new refresh token. A writer that refreshed only the AWS credentials left the
+    /// user pool tokens the forced refresh sent, which it never answers with.
+    ///
+    /// - Given: a signed-in session with valid tokens, whose forced refresh is refused as reused after another writer
+    ///   saved, in turn, new AWS credentials alone, and a refresh of the tokens
+    /// - When: the session is fetched with `forceRefresh`
+    /// - Then:
+    ///    - after new AWS credentials alone, the fields fail with the retryable `unknown` "…refresh token was used by
+    ///      another writer…", not the tokens sent
+    ///    - after a refresh of the tokens, the fields report the other writer's tokens and AWS credentials
+    func testAForcedRefreshRefusedAsReusedAdoptsOnlyANewRefreshToken() async throws {
+        let fresh = FakePayload.signedIn("alice")
+        var newAWSCredentials = fresh
+        newAWSCredentials.awsVersion = 2
+        let cases: [(String, FakePayload, Bool)] = [
+            ("new AWS credentials alone", newAWSCredentials, false),
+            ("a refresh of the tokens", fresh.refreshed, true)
+        ]
+        for (name, otherWriter, adopted) in cases {
+            harness = ClientHarness()
+            try harness.signIn(work, fresh)
+            let client = try harness.client(work)
+            let store = harness.store()
+            let work = work
+            harness.engine(for: work)?.scriptRefresh { _ in
+                if case .record(let envelope) = try store.read(work) {
+                    try store.write(otherWriter.record(), for: work, expecting: envelope.version)
+                }
+                throw SessionEngineError.refreshTokenReused
+            }
+
+            let forced = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+
+            if adopted {
+                XCTAssertEqual(try forced.userPoolTokensResult.get().accessToken, otherWriter.accessToken, name)
+                XCTAssertEqual(try forced.awsCredentialsResult.get(), AuthClientAWSCredentials(otherWriter.awsCredentials), name)
+                continue
+            }
+            guard case .failure(let error) = forced.userPoolTokensResult else {
+                XCTFail("\(name): the forced refresh answered with the tokens it sent")
+                continue
+            }
+            XCTAssertEqual(error.kind, .unknown, name)
+            XCTAssertTrue(error.errorDescription.contains("refresh token was used by another writer"), "\(name): \(error)")
+        }
+    }
+
     /// - Given: a session needing a refresh, whose refresh fails as reused with nothing fresher stored
     /// - When: credentials are requested
     /// - Then:

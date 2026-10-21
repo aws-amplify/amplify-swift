@@ -29,6 +29,9 @@ struct FakePayload: Codable, Equatable {
     var hostedUIShared: Bool? = nil
     /// The user pool refresh token, if a test needs one other than the default `refresh-<username>` (a rotation).
     var refreshToken: String? = nil
+    /// The version of the AWS credentials, if a test needs them refreshed apart from the user pool tokens (`nil`:
+    /// `version`).
+    var awsVersion: Int? = nil
 
     static func signedIn(
         _ username: String = "alice",
@@ -109,7 +112,8 @@ struct FakePayload: Codable, Equatable {
 
     /// The AWS credentials the fake vends for this payload.
     var awsCredentials: CognitoAWSCredentials {
-        CognitoAWSCredentials(
+        let version = awsVersion ?? version
+        return CognitoAWSCredentials(
             accessKeyId: "AKID-\(username ?? "guest")-v\(version)",
             secretAccessKey: "secret-v\(version)",
             sessionToken: "session-v\(version)",

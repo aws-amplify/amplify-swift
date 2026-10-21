@@ -259,7 +259,8 @@ extension SessionCore {
     ///    fresh record, keeping its label, so the refreshed tokens are not thrown away. At most
     ///    `maximumRecordWriteAttempts` writes.
     /// 3. `refreshTokenReused` means another writer used the token: re-read and adopt if that left fresh
-    ///    credentials (for a forced refresh, only credentials other than the ones it sent), else fail as retryable. Never signed out. A second reuse in a row, at least
+    ///    credentials (for a forced refresh, only credentials with a refresh token other than the one it sent), else fail
+    ///    as retryable. Never signed out. A second reuse in a row, at least
     ///    `RefreshTokenReuse.minimumGap` after the first, whose re-read record's credentials are still exactly
     ///    the ones sent, means nobody else refreshed: the token is dead (a record rolled forward over a token
     ///    the plugin rotated away), so, as for step 4, `sessionExpired`.
@@ -295,10 +296,12 @@ extension SessionCore {
                 return try await .adopted(keepRefreshedTokens(stored, failure: failure, over: current, replacing: payload, store: store))
             } catch SessionEngineError.refreshTokenReused {
                 let reread = try await store.load(sessionId)
-                // A forced refresh asked Cognito for new tokens, so it never answers with the very credentials it
-                // sent: those are adopted only if another writer saved a refresh, and otherwise the refusal stands.
+                // A forced refresh asked Cognito for new tokens, so it never answers with the tokens it sent: a
+                // re-read record is adopted only if another writer saved a refresh (a new refresh token), and
+                // otherwise the refusal stands. A writer that refreshed only the AWS credentials, or saved the same
+                // credentials again, leaves the refresh token as it was.
                 if let fresh = reread.credentials, try !needsRefresh(fresh, of: reread),
-                   !(force && engine.sameCredentials(fresh, payload)) {
+                   try !(force && sameRefreshToken(fresh, payload)) {
                     refreshTokenReuse.reset()
                     return await .adopted(apply(reread, event: nil))
                 }
@@ -375,6 +378,11 @@ extension SessionCore {
             )
         }
         throw IdentityStepFailure(error: error, commit: result)
+    }
+
+    /// Whether two payloads hold the same user pool refresh token, or neither holds one.
+    nonisolated func sameRefreshToken(_ lhs: Data, _ rhs: Data) throws -> Bool {
+        try engine.checkedUserPoolTokens(in: lhs)?.refreshToken == engine.checkedUserPoolTokens(in: rhs)?.refreshToken
     }
 
     /// What a refresh left: the record it committed, or another one, adopted: a re-read record, or another
