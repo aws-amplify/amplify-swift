@@ -26,10 +26,13 @@ public enum AuthClientSignOutResult: Sendable, Equatable {
     /// work failed. Each value is `nil` when its part succeeded or was not needed.
     ///
     /// - revokeTokenError: Why revoking the session's tokens failed. The refresh token stays valid
-    ///   server-side until it expires. After a failed global sign-out the tokens are not revoked, and this
+    ///   server-side until it expires, unless a global sign-out succeeded (`globalSignOutError` is `nil`),
+    ///   which already invalidated it. After a failed global sign-out the tokens are not revoked, and this
     ///   holds a placeholder `.service` error with an empty description, as the plugin's does.
     /// - globalSignOutError: Why the global sign-out failed, when one was asked for. The user's other
-    ///   sessions, on this device or elsewhere, stay signed in.
+    ///   sessions, on this device or elsewhere, stay signed in. Neither failure is retried, and signing out
+    ///   again does not retry it: the session is signed out on this device, so a second sign-out finds
+    ///   nothing to sign out and is `.complete`.
     /// - hostedUIError: Why the hosted UI's sign-out did not run. Needed only after a hosted-UI sign-in that
     ///   shared the browser's cookies (`WebUIOptions.prefersEphemeralSession` off). **The hosted UI's cookie
     ///   survives in the browser**, so the next hosted-UI sign-in may silently return the same account: sign

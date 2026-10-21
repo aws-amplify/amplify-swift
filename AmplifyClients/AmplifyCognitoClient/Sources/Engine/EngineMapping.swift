@@ -350,7 +350,7 @@ extension AuthClientError {
                 self = .service(code, description, suggestion, error)
             }
         case .unknown(_, let underlying):
-            // A transport failure (a request that never reached the service, a response that could not be read, a
+            // A transport failure (a network failure, a response that could not be read, a
             // URL loading failure) is a service failure an app may retry, as the refresh path reports it, not "a
             // bug". The sign-in flows' state machines report it as `.unknown` with an empty message.
             if let underlying, let transport = Self.transportFailure(underlying, wrapping: error) {
@@ -415,7 +415,7 @@ extension AuthClientError {
 
     /// How the client reports a transport failure `underlying`, with `wrapping` (the engine's error, or `underlying`
     /// itself) underneath, or `nil` if it isn't one:
-    /// - a request that never reached the service (`isNetworkFailure`): `networkFailure`'s texts;
+    /// - a network failure (`isNetworkFailure`): `networkFailure`'s texts;
     /// - a response that could not be read (`isUnreadableResponse`): `.service` with no code,
     ///   `unreadableResponseDescription` and `unreadableServiceResponseSuggestion`, as the refresh path suggests;
     /// - any other URL loading failure but a cancellation (App Transport Security, say): `.service` with no code,
@@ -458,8 +458,10 @@ extension AuthClientError {
             && [NSURLErrorBadServerResponse, NSURLErrorCannotParseResponse].contains(nsError.code)
     }
 
-    /// The description of a request that never reached the service (`isNetworkFailure`).
-    static let networkFailureDescription = "The request could not reach the service."
+    /// The description of a network failure (`isNetworkFailure`). It does not say the request never reached the
+    /// service: a timed-out or lost connection, or an SDK retry that failed offline, may follow a request the service
+    /// acted on, whose answer was lost.
+    static let networkFailureDescription = "A network problem stopped the request. It may not have reached the service."
 
     /// The description of a code-less service failure whose engine description is empty and whose error underneath
     /// is not a network failure.
@@ -630,7 +632,8 @@ extension AuthClientError {
 extension AuthClientError {
 
     /// A failed revoke under a sign-out, mapped as `init(engine:)` maps it, except a network failure, which keeps the
-    /// sign-out's context: the session is signed out on this device, and the revoke can be retried later.
+    /// sign-out's context: the session is signed out on this device, and nothing retries the revoke (a second sign-out
+    /// finds nothing to sign out).
     static func revokeFailure(engine error: EngineAuthError) -> AuthClientError {
         let mapped = AuthClientError(engine: error)
         guard case .service(nil, networkFailureDescription, _, let underlying) = mapped else {
@@ -639,14 +642,37 @@ extension AuthClientError {
         return revokeNetworkFailure(underlying ?? error)
     }
 
-    /// A revoke that could not reach the service.
+    /// A revoke that failed on the network.
     static func revokeNetworkFailure(_ error: Error) -> AuthClientError {
-        .service(nil, revokeNetworkFailureDescription, revokeRetrySuggestion, error)
+        .service(nil, revokeNetworkFailureDescription, revokeNotRetriedSuggestion, error)
     }
 
     static let revokeNetworkFailureDescription =
-        "The refresh token could not be revoked: the request could not reach the service."
-    static let revokeRetrySuggestion = "The session was signed out on this device. Retry later to revoke it."
+        "The refresh token may not have been revoked: a network problem stopped the request, which may not have "
+            + "reached the service. Unless it did, or a global sign-out succeeded, the refresh token stays valid until "
+            + "it expires."
+    /// What a failed revoke under a sign-out suggests: the session is signed out on this device, so nothing is left to
+    /// retry the revoke with.
+    static let revokeNotRetriedSuggestion =
+        "The session was signed out on this device, and the revoke will not be retried. To end the refresh token on "
+            + "the server, sign in again and sign out with globalSignOut: true."
+
+    /// A failed global sign-out under a sign-out, mapped as `init(engine:)` maps it, except a network failure, which
+    /// keeps the sign-out's context, as a revoke's does (`revokeFailure(engine:)`).
+    static func globalSignOutFailure(engine error: EngineAuthError) -> AuthClientError {
+        let mapped = AuthClientError(engine: error)
+        guard case .service(nil, networkFailureDescription, _, let underlying) = mapped else {
+            return mapped
+        }
+        return .service(nil, networkFailureDescription, globalSignOutNotRetriedSuggestion, underlying ?? error)
+    }
+
+    /// What a global sign-out that failed on the network suggests: the session is signed out on this device, so
+    /// nothing is left to retry it with.
+    static let globalSignOutNotRetriedSuggestion =
+        "The session was signed out on this device, and the global sign-out will not be retried: unless the request "
+            + "reached the service, the user's other sessions stay signed in until their tokens expire. To sign them "
+            + "out, sign in again and sign out with globalSignOut: true."
 }
 
 extension EngineSignOutOutcome {
@@ -660,7 +686,7 @@ extension EngineSignOutOutcome {
     ) {
         self.init(
             revokeError: revokeFailure.map { AuthClientError.revokeFailure(engine: $0.error) },
-            globalSignOutError: globalSignOutFailure.map { AuthClientError(engine: $0.error) },
+            globalSignOutError: globalSignOutFailure.map { AuthClientError.globalSignOutFailure(engine: $0.error) },
             hostedUIError: hostedUIFailure.map { AuthClientError(engine: $0.error) }
         )
     }

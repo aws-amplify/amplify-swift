@@ -21,8 +21,9 @@ import Foundation
 ///   asked to sign out a session that now holds someone else.
 ///
 /// A failed revoke still clears locally, as the plugin does, and is reported as partial: the refresh
-/// token stays valid server-side until it expires. So is a failed global sign-out: the user's other
-/// sessions stay signed in.
+/// token stays valid server-side until it expires, unless a global sign-out succeeded, which already
+/// invalidated it. So is a failed global sign-out: the user's other sessions stay signed in. Neither is
+/// retried: once the record is cleared, a second sign-out finds nothing to sign out.
 struct SessionSignOut: Sendable {
 
     enum Outcome: Sendable {
@@ -384,8 +385,9 @@ struct SessionSignOut: Sendable {
                 return AuthClientError.revokeNetworkFailure(error)
             }
             return .unknown(
-                "The session's tokens could not be revoked, so its refresh token stays valid until it expires.",
-                AuthClientError.revokeRetrySuggestion,
+                "The session's tokens could not be revoked, so its refresh token stays valid until it expires, unless a "
+                    + "global sign-out succeeded.",
+                AuthClientError.revokeNotRetriedSuggestion,
                 error
             )
         }

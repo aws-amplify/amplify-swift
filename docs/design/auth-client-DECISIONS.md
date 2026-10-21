@@ -420,7 +420,7 @@ access-group migration. Each is written into the design, the client's README and
 | 21 | A signed-out record in the shared service at the access-group migration | **It still stops the migration**, as a login does, so a user who signed out is never signed back in by another process's old login. |
 | 22 | A known refusal of a carried session's identity step | **The AWS credentials provider fails loudly**: `CredentialsError.notConfigured` (`.failLoudly`), with the refusal underneath. `fetchAuthSession` and the token provider keep the refusal itself. |
 | 23 | Which AWSMobileClient credentials a `.default` sign-out clears | **Every identity pool's** credentials service the app's keychain holds, not only the configured one's. The plugin is unchanged. |
-| 24 | A request that never reached Cognito | **A retryable `.service` with no code**, in every call, with the client's network texts. The plugin keeps its mapping. |
+| 24 | A network failure (the request may not have reached Cognito) | **A retryable `.service` with no code**, in every call, with the client's network texts. The plugin keeps its mapping. |
 | 25 | When a hosted-UI sign-in cancelled with `cancelWebUISignIn()` answers | **Once its browser has closed and the system sheet is free**, within a second. |
 | 26 | A forgotten device key on a sign-in that isn't SRP | **Dropped and retried once**, in the shared engine: the password (`USER_PASSWORD_AUTH`), `USER_AUTH` and custom flows remove the device record and resend without a device key, by SRP's rule. Plugin and client alike. |
 | 27 | The user ID of a sign-up that completes with auto sign-in | **Carried**: Cognito's sub, as `.done` and `.confirmUser` already carried it. Plugin and client alike. |
@@ -447,10 +447,12 @@ the app's keychain services (attributes only) to find them; a failed listing log
 configured services only.
 
 **#24.** The sign-in flows reported a transport failure as `.unknown` with an empty description and a "report a bug"
-suggestion. Only failures that never reached the service count: offline, a failed DNS or host lookup, a refused or
-lost connection, a timeout, or a failed secure connection. A response that arrived but couldn't be read, App
-Transport Security and authentication failures are `.service` with no code and their own texts, never an empty
-`.unknown`. A sign-out's revoke that failed on the network keeps the sign-out's context in its suggestion.
+suggestion. Only network failures count: offline, a failed DNS or host lookup, a refused or lost connection, a
+timeout, or a failed secure connection. The text doesn't say the request never reached the service, since a lost
+connection may follow a request the service acted on. A response that arrived but couldn't be read, App Transport
+Security and authentication failures are `.service` with no code and their own texts, never an empty `.unknown`. A
+sign-out's revoke or global sign-out that failed on the network keeps the sign-out's context in its suggestion: it is
+not retried.
 
 **#25.** The caller was answered at once while the browser was still closing, so `systemSheetHolder` still named the
 session and an immediate retry got `browserBusy`. The caller's own task cancellation and `resetSystemSheet()` still

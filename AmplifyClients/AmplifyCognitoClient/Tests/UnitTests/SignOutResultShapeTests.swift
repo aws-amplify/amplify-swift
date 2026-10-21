@@ -84,9 +84,9 @@ final class SignOutResultShapeTests: XCTestCase {
     ///   outcome
     /// - When: it signs out
     /// - Then:
-    ///    - the result is `.partial`, signed out locally, and its `revokeTokenError` is `.service` with no code, "The
-    ///      refresh token could not be revoked: the request could not reach the service." and "The session was
-    ///      signed out on this device. Retry later to revoke it.", with the network error underneath
+    ///    - the result is `.partial`, signed out locally, and its `revokeTokenError` is `.service` with no code, with
+    ///      the revoke's network description and the suggestion that the revoke will not be retried, and the network
+    ///      error underneath
     func testARevokeThatThrowsANetworkFailureIsAnOfflineRevoke() async throws {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
@@ -100,10 +100,50 @@ final class SignOutResultShapeTests: XCTestCase {
         guard case .service(nil, let description, let suggestion, let underlying) = partial.revokeTokenError else {
             return XCTFail("expected a service error with no code, got \(String(describing: partial.revokeTokenError))")
         }
-        XCTAssertEqual(description, "The refresh token could not be revoked: the request could not reach the service.")
-        XCTAssertEqual(suggestion, "The session was signed out on this device. Retry later to revoke it.")
+        XCTAssertEqual(description, SignOutTexts.revokeNetworkFailure)
+        XCTAssertEqual(suggestion, SignOutTexts.revokeNotRetried)
         XCTAssertEqual((underlying as? URLError)?.code, .notConnectedToInternet)
         XCTAssertNil(try harness.storedRecord(work)?.credentials)
+    }
+
+    /// A revoke or global sign-out that failed on the network is not retried, as its suggestion says: signing out
+    /// again finds nothing to sign out, and sends nothing.
+    ///
+    /// - Given: a signed-in session whose revoke throws `URLError(.notConnectedToInternet)`; and one whose global
+    ///   sign-out fails on the network
+    /// - When: each signs out (the second globally), then signs out again the same way once the network is back
+    /// - Then:
+    ///    - the first sign-out is `.partial`, with the suggestion that the revoke, or the global sign-out, will not be
+    ///      retried
+    ///    - the second is `.complete`, and the engine was asked to revoke only once
+    func testASignOutAfterAnOfflineOneSendsNothing() async throws {
+        let offline = URLError(.notConnectedToInternet)
+        let cases: [(String, Bool)] = [("revoke", false), ("global sign-out", true)]
+        for (name, global) in cases {
+            harness = ClientHarness()
+            try harness.signIn(work, .signedIn("alice"))
+            let client = try harness.client(work)
+            let engine = try XCTUnwrap(harness.engine(for: work))
+            engine.scriptRevokeOutcome { _, _ in
+                guard global else {
+                    throw offline
+                }
+                return EngineSignOutOutcome(
+                    revokeFailure: nil,
+                    globalSignOutFailure: EngineGlobalSignOutFailure(accessToken: "access", error: .unknown("", offline))
+                )
+            }
+
+            let first = await client.signOut(options: .init(globalSignOut: global))
+            engine.scriptRevokeOutcome { _, _ in .complete }
+            let second = await client.signOut(options: .init(globalSignOut: global))
+
+            let partial = try XCTUnwrap(first.partialErrors, "\(name): \(first)")
+            let error = try XCTUnwrap(global ? partial.globalSignOutError : partial.revokeTokenError, name)
+            XCTAssertEqual(error.recoverySuggestion, global ? SignOutTexts.globalSignOutNotRetried : SignOutTexts.revokeNotRetried, name)
+            XCTAssertEqual(second, .complete, name)
+            XCTAssertEqual(engine.revokeCalls.count, 1, "\(name): the second sign-out sends nothing")
+        }
     }
 
     /// `.superseded` is gone. Another sign-in that replaced the session during the sign-out is a failure,
