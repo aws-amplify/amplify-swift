@@ -267,7 +267,8 @@ struct EngineOperation: Sendable {
 /// such key (`userIdentifierKeys`) in its message replaced by `<redacted>` (`redactingUserIdentifiers(_:)`), in each
 /// form the engine prints one: a dictionary entry or a labelled field, optional (at any depth) or not, quoted, quoted
 /// inside another quoted string, or bare in a property-list dump, its key quoted or not. Values the engine already
-/// masks (`tr***er`) are replaced too.
+/// masks (`tr***er`) are replaced too, and so is the username a sign-in event carries without a label
+/// (`unlabelledUsernameEvents`), such as `initiateDeviceSRP("alice@example.com", …)`.
 ///
 /// Only the message is redacted: an error passed with a line reaches the sink as it is. The lines are otherwise the
 /// plugin's own, unchanged: debug and verbose lines can still hold Cognito's other challenge parameters and
@@ -331,6 +332,10 @@ struct ClientEngineLogger: EngineScopedLogger {
         "email", "phone_number", "preferred_username", "login_hint", "loginHint"
     ]
 
+    /// The sign-in events whose first value is the username, printed without a label: the name the user typed (an
+    /// email address or phone number on an alias pool, or a preferred username) or the one Cognito returned.
+    static let unlabelledUsernameEvents = ["initiateDeviceSRP", "respondDeviceSRPChallenge", "initiateTOTPSetup"]
+
     /// `message` with the value of every `userIdentifierKeys` key replaced by `<redacted>`, keeping the key and its
     /// quoting:
     ///
@@ -339,10 +344,12 @@ struct ClientEngineLogger: EngineScopedLogger {
     /// | `"USERNAME": "alice"`, `username: Optional(Optional("alice"))`, `userName = "alice";` | `"USERNAME": "<redacted>"`, … |
     /// | `\"username\": \"alice\"` (a dictionary printed inside another string) | `\"username\": \"<redacted>\"` |
     /// | `userName = alice;`, `"USER_ID_FOR_SRP" = alice;` (a property-list dump) | `userName = <redacted>;`, … |
+    /// | `initiateDeviceSRP("alice", …)` (an `unlabelledUsernameEvents` event) | `initiateDeviceSRP("<redacted>", …)` |
     ///
-    /// A message that names none of the keys' stems is returned as it is, without a regular expression.
+    /// A message that names none of the keys' stems and none of those events is returned as it is, without a regular
+    /// expression.
     static func redactingUserIdentifiers(_ message: String) -> String {
-        guard ["user", "sub", "email", "phone", "hint"].contains(where: {
+        guard (["user", "sub", "email", "phone", "hint"] + unlabelledUsernameEvents).contains(where: {
             message.range(of: $0, options: .caseInsensitive) != nil
         }) else {
             return message
@@ -365,7 +372,10 @@ struct ClientEngineLogger: EngineScopedLogger {
             (#"(?i)(\\"\b(?:"# + keys + #")\b\\"\s*[:=]\s*(?:Optional\()*)\\"(?:[^"\\]|\\[^"])*\\""#,
              #"$1\\"<redacted>\\""#),
             // A bare value in a property-list dump, its key quoted or not: `key = value;`, `"key" = value;`.
-            (#"(?i)("?\b(?:"# + keys + #")\b"?\s*=\s*)(?!["\\])[^;\s]+;"#, #"$1<redacted>;"#)
+            (#"(?i)("?\b(?:"# + keys + #")\b"?\s*=\s*)(?!["\\])[^;\s]+;"#, #"$1<redacted>;"#),
+            // The username a sign-in event carries without a label, as its first value:
+            // `initiateDeviceSRP("alice", …)`, `respondDeviceSRPChallenge("alice", …)`, `initiateTOTPSetup("alice", …)`.
+            (#"(\b(?:"# + unlabelledUsernameEvents.joined(separator: "|") + #")\()"(?:[^"\\]|\\.)*""#, #"$1"<redacted>""#)
         ]
         return rules.compactMap { rule in
             (try? NSRegularExpression(pattern: rule.pattern)).map { ($0, rule.template) }

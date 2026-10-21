@@ -7,6 +7,7 @@
 
 @_spi(AmplifyExperimental) import AmplifyFoundation
 @testable import AmplifyFoundation
+import AWSCognitoIdentityProvider
 import InternalAmplifyKeychain
 import InternalAWSCognitoAuth
 import Security
@@ -259,6 +260,57 @@ final class ClientLogCategoryTests: XCTestCase {
         }
     }
 
+    /// The engine's sign-in events that carry the username without a label, as its verbose lines print them: Swift
+    /// prints the value without its label, so only the rule for these events redacts it.
+    ///
+    /// - Given: the client's engine logger, and the engine's `initiateDeviceSRP`, `respondDeviceSRPChallenge` and
+    ///   `initiateTOTPSetup` events, one of them for a username holding a quote
+    /// - When:
+    ///    - each is logged as the engine's actions log the events they send
+    /// - Then:
+    ///    - each line is the engine's, with every username, labelled or not, replaced by `<redacted>`
+    func testTheEngineLoggerRedactsTheUsernameOfTheSignInEventsThatCarryItUnlabelled() throws {
+        let scope = EngineLogScope.categoryNamespace("Authentication", "UnlabelledProbe-\(UUID().uuidString)")
+        let logger = ClientEngineLogger().scoped(scope)
+        let category = try XCTUnwrap(logger as? ClientEngineLogger).name
+        let response = RespondToAuthChallengeOutput(
+            challengeName: .deviceSrpAuth,
+            challengeParameters: ["USERNAME": "alice-cognito"],
+            session: "device-srp-session"
+        )
+        let challenge = RespondToAuthChallenge(
+            challenge: .mfaSetup,
+            availableChallenges: [],
+            username: "alice-cognito",
+            session: "setup-session",
+            parameters: nil,
+            inputUsername: #"o"brien@example.com"#
+        )
+        let events: [SignInEvent.EventType] = [
+            .initiateDeviceSRP("alice@example.com", response),
+            .respondDeviceSRPChallenge("+15555550100", response),
+            .initiateTOTPSetup(#"o"brien@example.com"#, challenge)
+        ]
+
+        for eventType in events {
+            let event = SignInEvent(id: "event-1", eventType: eventType)
+            logger.verbose("InternalAWSCognitoAuth/VerifyPasswordSRP.swift Sending event \(event)", nil)
+        }
+
+        let device = #"RespondToAuthChallengeOutput(ChallengeName: "DEVICE_SRP_AUTH", "#
+            + #"ChallengeParameters: ["USERNAME": "<redacted>"], Session: [CONTENT_REDACTED])), time: nil)"#
+        let prefix = #"InternalAWSCognitoAuth/VerifyPasswordSRP.swift Sending event SignInEvent(data: nil, id: "event-1", "#
+            + "eventType: InternalAWSCognitoAuth.SignInEvent.EventType."
+        XCTAssertEqual(sink.lines(in: [category]), [
+            prefix + #"initiateDeviceSRP("<redacted>", "# + device,
+            prefix + #"respondDeviceSRPChallenge("<redacted>", "# + device,
+            prefix + #"initiateTOTPSetup("<redacted>", InternalAWSCognitoAuth.RespondToAuthChallenge(challenge: "#
+                + "AWSCognitoIdentityProvider.CognitoIdentityProviderClientTypes.ChallengeNameType.mfaSetup, "
+                + #"availableChallenges: [], username: "<redacted>", session: Optional("setup-session"), "#
+                + #"parameters: nil, inputUsername: Optional("<redacted>"))), time: nil)"#
+        ])
+    }
+
     /// The forms the first identifier and URL rules missed: a quoted key with a bare value (a property-list dump of a
     /// dictionary), a doubly optional value, and a custom-scheme redirect without `//`.
     ///
@@ -316,6 +368,11 @@ final class CategoryCapture: LogSinkBehavior, @unchecked Sendable {
     /// The lines logged under any of `categories`.
     func lines(in categories: [String]) -> [String] {
         lock.withLock { messages.filter { categories.contains($0.name) }.map(\.content) }
+    }
+
+    /// Every line logged, under any category.
+    func allLines() -> [String] {
+        lock.withLock { messages.map(\.content) }
     }
 
 }
