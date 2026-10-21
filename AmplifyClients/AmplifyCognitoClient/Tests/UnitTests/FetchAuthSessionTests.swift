@@ -304,6 +304,110 @@ final class FetchAuthSessionTests: XCTestCase {
         XCTAssertEqual(try unforced.userPoolTokensResult.get().accessToken, bob.accessToken)
     }
 
+    /// A forced fetch of a session signed out in this process still refreshes another writer's login when an unforced
+    /// fetch running alongside adopted it first.
+    ///
+    /// - Given: a session restored signed out, with an identity pool; another writer then saves bob's login in its
+    ///   record; an unforced fetch holds the record's gate, its read of bob's login stalled
+    /// - When: a forced fetch starts while the session is still signed out, and queues for the gate; then the read
+    ///   finishes
+    /// - Then:
+    ///    - the forced fetch refreshes bob's login once and reports the refreshed tokens; no guest is fetched
+    ///    - the unforced fetch reports bob's saved tokens
+    func testAForcedFetchRefreshesALoginAnUnforcedFetchAdoptedFirst() async throws {
+        let bob = FakePayload.signedIn("bob")
+        let client = try harness.client(work)
+        _ = await client.currentSessionState()
+        try harness.signIn(work, bob)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let stall = Stall()
+        defer { stall.release() }
+        harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work)) { stall.block() }
+
+        let unforced = Task { try await client.fetchAuthSession() }
+        await waitUntil("the unforced fetch reads the record") { stall.hasBeenReached }
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedOut, "the forced fetch starts while the session is signed out")
+        let forced = Task { try await client.fetchAuthSession(options: .init(forceRefresh: true)) }
+        await waitUntil("the forced fetch queues for the record's gate") { await client.core.gate.waiterCount == 1 }
+        stall.release()
+
+        let forcedSession = try await forced.value
+        let unforcedSession = try await unforced.value
+        XCTAssertEqual(engine.refreshCalls, [bob.data])
+        XCTAssertEqual(try forcedSession.userPoolTokensResult.get().accessToken, "access-bob-v2")
+        XCTAssertEqual(engine.guestFetchCount, 0)
+        XCTAssertEqual(try unforcedSession.userPoolTokensResult.get().accessToken, bob.accessToken)
+    }
+
+    /// A forced fetch of a session signed out in this process never joins an unforced fetch's guest acquisition: it
+    /// waits for it, then refreshes the guest it saved.
+    ///
+    /// - Given: a session restored signed out, with an identity pool and no saved login; an unforced fetch whose guest
+    ///   fetch is held in the engine
+    /// - When: a forced fetch starts while it is held, then the guest fetch finishes
+    /// - Then: one guest is fetched, and the forced fetch refreshes it once and reports the refreshed guest's
+    ///   credentials; the unforced fetch reports the guest it fetched
+    func testAForcedFetchDoesNotJoinAnUnforcedGuestAcquisition() async throws {
+        let guest = FakePayload.guest(identityId: "us-east-1:guest")
+        let client = try harness.client(work)
+        _ = await client.currentSessionState()
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let latch = Gate()
+        engine.scriptGuestCredentials { _ in
+            await latch.pass()
+            return guest.data
+        }
+
+        let unforced = Task { try await client.fetchAuthSession() }
+        await latch.waitForArrivals(1)
+        let forced = Task { try await client.fetchAuthSession(options: .init(forceRefresh: true)) }
+        await waitUntil("the forced fetch queues for the record's gate") { await client.core.gate.waiterCount == 1 }
+        await latch.open()
+
+        let forcedSession = try await forced.value
+        let unforcedSession = try await unforced.value
+        XCTAssertEqual(engine.guestFetchCount, 1)
+        XCTAssertEqual(engine.refreshCalls, [guest.data])
+        XCTAssertEqual(try forcedSession.awsCredentialsResult.get(), AuthClientAWSCredentials(guest.refreshed.awsCredentials))
+        XCTAssertEqual(try unforcedSession.awsCredentialsResult.get(), AuthClientAWSCredentials(guest.awsCredentials))
+    }
+
+    /// A forced fetch of a session signed out in this process never takes an unforced fetch's guest acquisition as its
+    /// answer: that one may adopt a login another writer saved, which the forced fetch refreshes instead.
+    ///
+    /// - Given: a session restored signed out, with an identity pool and no saved login; a forced fetch holds the
+    ///   record's gate, its read of the empty record stalled; an unforced fetch has started its guest acquisition and
+    ///   queues for the gate
+    /// - When: another writer saves bob's login, then the read finishes
+    /// - Then:
+    ///    - the forced fetch refreshes bob's login once and reports the refreshed tokens, not bob's saved ones; the
+    ///      guest it fetched is not saved over bob's login
+    func testAForcedFetchNeverAnswersWithAnUnforcedFetchsGuestAcquisition() async throws {
+        let bob = FakePayload.signedIn("bob")
+        let client = try harness.client(work)
+        _ = await client.currentSessionState()
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let stall = Stall()
+        defer { stall.release() }
+        harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work)) { stall.block() }
+
+        let forced = Task { try await client.fetchAuthSession(options: .init(forceRefresh: true)) }
+        await waitUntil("the forced fetch reads the record") { stall.hasBeenReached }
+        let unforced = Task { try await client.fetchAuthSession() }
+        await waitUntil("the unforced fetch's guest acquisition queues for the record's gate") {
+            await client.core.gate.waiterCount == 1
+        }
+        try harness.signIn(work, bob)
+        stall.release()
+
+        let forcedSession = try await forced.value
+        _ = try await unforced.value
+        XCTAssertEqual(engine.refreshCalls, [bob.data])
+        XCTAssertEqual(try forcedSession.userPoolTokensResult.get().accessToken, "access-bob-v2")
+        XCTAssertEqual(FakePayload.decode(try XCTUnwrap(harness.storedRecord(work)?.credentials))?.username, "bob")
+    }
+
     /// - Given: a signed-in session whose refresh token is dead
     /// - When: its session is fetched twice
     /// - Then:

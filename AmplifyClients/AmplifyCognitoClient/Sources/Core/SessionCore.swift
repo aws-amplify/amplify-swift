@@ -53,9 +53,10 @@ actor SessionCore {
     nonisolated let refreshFlight = SingleFlight<RefreshCommit>()
     /// ... a refresh whatever the credentials' expiry (`fetchAuthSession(forceRefresh: true)`), ...
     nonisolated let forcedRefreshFlight = SingleFlight<RefreshCommit>()
-    /// ... and guest acquisition on a signed-out session. All three take the record's gate, so they
-    /// serialize against each other; each re-reads first, so a later one builds on an earlier one.
-    nonisolated let guestFlight = SingleFlight<SessionSnapshot>()
+    /// ... and guest acquisition on a signed-out session, which a forced fetch never joins. All three take the
+    /// record's gate, so they serialize against each other; each re-reads first, so a later one builds on an earlier
+    /// one.
+    nonisolated let guestFlight = SingleFlight<GuestAcquisition>()
     nonisolated let bounds: SessionCoreDependencies.Bounds
     nonisolated let now: @Sendable () -> Date
     /// Revokes a login `.default`'s configuration-change rule deleted (`SessionCore+PluginConfiguration.swift`).

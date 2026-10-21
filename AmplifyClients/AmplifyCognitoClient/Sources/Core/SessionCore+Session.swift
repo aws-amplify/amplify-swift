@@ -44,13 +44,15 @@ extension SessionCore {
         case .failed(let error):
             throw error
         case .signedOut, .awaitingChallenge:
-            // A forced refresh calls Cognito. A signed-out session adopts what another writer (an app extension, or
-            // the Auth plugin) has saved since (`acquireGuestOnce`), and would hand those tokens out as they are: so a
-            // forced one adopts them first, then refreshes them as the signed-in session it now is.
-            if forceRefresh, !adopted, try await adoptSavedCredentials() {
+            // A forced refresh calls Cognito. A signed-out session adopts what another writer (an app extension, the
+            // Auth plugin, or another call of this session) has saved since (`acquireGuestOnce`), and an unforced fetch
+            // hands those credentials out as they are: so a forced one adopts them, then refreshes them as the
+            // signed-in session it now is.
+            let forced = forceRefresh && !adopted
+            guard let session = try await signedOutSession(forced: forced) else {
                 return try await fetchSession(forceRefresh: true, adopted: true)
             }
-            return try await signedOutSession()
+            return session
         case .guest, .federated, .signedIn:
             if expired {
                 return Self.session(failingWith: Self.sessionExpired(sessionId))
@@ -109,14 +111,21 @@ extension SessionCore {
 
     /// A signed-out session's answer: guest credentials if the identity pool allows them, else every field
     /// failing with `notSignedIn`.
-    private nonisolated func signedOutSession() async throws -> AuthClientSession {
+    ///
+    /// - Parameter forced: A forced fetch, which never joins an unforced one's guest flight, whose result may be
+    ///   credentials it adopted, and answers `nil` when it adopts credentials the record already holds, so the
+    ///   caller refreshes them instead of handing them out.
+    private nonisolated func signedOutSession(forced: Bool) async throws -> AuthClientSession? {
         guard configuration.identityPool != nil else {
             return Self.signedOutSession(sessionId)
         }
+        let acquired: GuestAcquisition
         do {
-            _ = try await guestFlight.run { [self] in
-                try await acquireGuestOnce()
-            }
+            acquired = forced
+                ? try await acquireGuestOnce()
+                : try await guestFlight.run { [self] in
+                    try await acquireGuestOnce()
+                }
         } catch SessionEngineError.notSignedIn {
             // The identity pool allows no guest access. The session stays signed out.
             return Self.signedOutSession(sessionId)
@@ -130,34 +139,28 @@ extension SessionCore {
         if snapshot.credentials == nil {
             return Self.signedOutSession(sessionId)
         }
+        if forced, acquired == .adopted {
+            return nil
+        }
         return try session(of: snapshot)
     }
 
-    /// Adopts the credentials another writer saved in the record since this session last read it, under the record's
-    /// gate, as `acquireGuestOnce` does; `true` if it did. Only with an identity pool, where a signed-out session's
-    /// fetch adopts them (`signedOutSession`): without one, that fetch reads nothing.
-    private nonisolated func adoptSavedCredentials() async throws -> Bool {
-        guard configuration.identityPool != nil else {
-            return false
-        }
-        return try await withRecord { [self] store in
-            let current = try await store.load(sessionId)
-            guard let credentials = current.credentials, await credentials != restoredSnapshotIfAny?.credentials else {
-                return false
-            }
-            await apply(current, event: nil)
-            return true
-        }
+    /// What `acquireGuestOnce` did: fetched guest credentials and committed them, or adopted the record another
+    /// writer saved.
+    enum GuestAcquisition: Sendable {
+        case fetched
+        case adopted
     }
 
     /// Fetches and commits guest credentials, under the record's gate. If the record meanwhile holds
     /// credentials — another handle signed in or became a guest — it adopts them instead, and a lost write
     /// race is answered by adopting the re-read record, never by overwriting it.
-    private nonisolated func acquireGuestOnce() async throws -> SessionSnapshot {
+    private nonisolated func acquireGuestOnce() async throws -> GuestAcquisition {
         try await withRecord { [self] store in
             let current = try await store.load(sessionId)
             if current.credentials != nil {
-                return await apply(current, event: nil)
+                await apply(current, event: nil)
+                return .adopted
             }
             let guest: Data
             do {
@@ -179,9 +182,11 @@ extension SessionCore {
             )
             switch try await store.write(record, for: sessionId, expecting: current.version) {
             case .committed(let committed):
-                return await apply(SessionSnapshot(committed), event: nil)
+                await apply(SessionSnapshot(committed), event: nil)
+                return .fetched
             case .discarded:
-                return try await apply(store.load(sessionId), event: nil)
+                try await apply(store.load(sessionId), event: nil)
+                return .adopted
             }
         }
     }

@@ -973,10 +973,12 @@ let accessToken = try await client.userPoolTokenProvider.accessToken()
   forced refreshes, and runs after a normal refresh already in flight, so it always calls Cognito. With an identity
   pool configured, that includes a session signed out in this process after an app extension or the Auth plugin
   saved a login in its record: it adopts that login, then refreshes it, where an unforced fetch hands out the saved
-  tokens as they are. Without an identity pool, a signed-out session's fetch doesn't read the record, and stays
-  signed out in this process. A forced refresh that Cognito refuses as a reused refresh token never answers with
-  the saved tokens it sent: its fields fail with the same retryable `unknown` an unforced refresh gets there (unless
-  another writer saved a refresh meanwhile, which it adopts). An unforced fetch still returns valid saved tokens.
+  tokens as they are. It does so even when an unforced fetch running alongside adopted the login first, and never
+  joins that fetch's guest acquisition. Without an identity pool, a signed-out session's fetch doesn't read the
+  record, and stays signed out in this process. A forced refresh that Cognito refuses as a reused refresh token
+  never answers with the saved tokens it sent: its fields fail with the same retryable `unknown` an unforced refresh
+  gets there (unless another writer saved a refresh meanwhile, which it adopts). An unforced fetch still returns
+  valid saved tokens.
 - There is no `isSignedIn` field. Use `currentSessionState()`.
 - Tokens and AWS credentials print redacted.
 
