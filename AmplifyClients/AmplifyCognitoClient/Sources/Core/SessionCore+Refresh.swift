@@ -560,6 +560,8 @@ final class PendingIdentityRetry: @unchecked Sendable {
     private var userId: String?
 
     /// The identity step failed with `error` for the user `userId`: for good (`transient: false`), or for `interval`.
+    /// A transient failure replaces an earlier refusal: the step was tried again (a refresh of expired tokens tries
+    /// it), and its latest answer says to retry, so it may be tried once `interval` has passed.
     func failed(_ error: AuthClientError, at now: Date, transient: Bool, userId: String?) {
         lock.withLock {
             if self.userId != userId {
@@ -569,6 +571,7 @@ final class PendingIdentityRetry: @unchecked Sendable {
             self.userId = userId
             lastError = error
             if transient {
+                refused = false
                 notBefore = now.addingTimeInterval(Self.interval)
             } else {
                 refused = true

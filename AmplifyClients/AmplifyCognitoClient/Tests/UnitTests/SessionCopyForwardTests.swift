@@ -998,6 +998,78 @@ final class SessionCopyForwardTests: XCTestCase {
         XCTAssertNil(retry.blockingError(at: now, userId: "sub-alice"))
     }
 
+    /// A transient failure after a refusal replaces it: the identity step was tried again, and its latest answer says
+    /// to retry, so it is blocked for `PendingIdentityRetry.interval` only.
+    ///
+    /// - Given: a record's memory with alice's identity step refused, then, about an hour later, failing with throttling
+    /// - When: it is asked about alice just before the interval since the throttling ends, and once it has
+    /// - Then: alice is blocked with the throttling error before, and not after
+    func testATransientIdentityFailureAfterARefusalIsRetriedAfterItsInterval() {
+        let retry = PendingIdentityRetry()
+        let refusal = AuthClientError.notAuthorized("Refused.", "Check the providers.")
+        let throttled = AuthClientError.service(.limitExceeded, "Rate exceeded.", "Retry.")
+        let refusedAt = Date()
+        let throttledAt = refusedAt.addingTimeInterval(3_480)
+        retry.failed(refusal, at: refusedAt, transient: false, userId: "sub-alice")
+        retry.failed(throttled, at: throttledAt, transient: true, userId: "sub-alice")
+
+        let within = throttledAt.addingTimeInterval(PendingIdentityRetry.interval - 1)
+        XCTAssertEqual(retry.blockingError(at: within, userId: "sub-alice")?.errorDescription, throttled.errorDescription)
+        XCTAssertNil(retry.blockingError(at: throttledAt.addingTimeInterval(PendingIdentityRetry.interval), userId: "sub-alice"))
+    }
+
+    /// The AWS credentials provider of a carried session whose identity step was refused, then failed transiently when
+    /// a refresh of its expired tokens tried it again, answers as for a transient failure, and tries the step again
+    /// once the interval has passed.
+    ///
+    /// - Given: alice's session carried from the user pool alone; a refresh that stores new tokens, which expire at
+    ///   once, then fails the identity step with `.notAuthorized`; a second that stores new tokens then fails it with
+    ///   throttling; and a third that succeeds with an identity
+    /// - When: the credentials provider resolves twice (the refusal, then the throttling, as the expired tokens are
+    ///   refreshed), again within `PendingIdentityRetry.interval`, then once the interval has passed
+    /// - Then:
+    ///    - the first fails loudly with the refusal; the second and third throw the throttling error, retryable, and
+    ///      the third refreshes nothing
+    ///    - the fourth refreshes, and returns the AWS credentials
+    func testAProviderRetriesATransientIdentityFailureAfterARefusal() async throws {
+        try aliceUnderTheUserPoolOnly()
+        let refusal = AuthClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
+        let throttled = AuthClientError.service(.limitExceeded, "Rate exceeded.", "Retry.")
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let identified = FakePayload.signedIn("alice", version: 4, identityId: "us-east-1:alice")
+        let calls = CallCounter()
+        engine.scriptRefresh { _ in
+            calls.increment()
+            switch calls.count {
+            case 1:
+                let expiring = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 2, stale: true)
+                throw SessionEngineError.refreshedThenFailed(payload: expiring.data, error: .service(refusal))
+            case 2:
+                let stored = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 3)
+                throw SessionEngineError.refreshedThenFailed(payload: stored.data, error: .service(throttled))
+            default:
+                return identified.data
+            }
+        }
+
+        let refused = await providerError { try await client.credentialsProvider.resolve() }
+        let failed = await providerError { try await client.credentialsProvider.resolve() }
+        let within = await providerError { try await client.credentialsProvider.resolve() }
+        XCTAssertEqual(engine.refreshCalls.count, 2, "no retry within the interval")
+        harness.advanceClock(by: PendingIdentityRetry.interval)
+        let credentials = try await client.credentialsProvider.resolve()
+
+        XCTAssertEqual(refused?.disposition, .failLoudly)
+        XCTAssertEqual(refused?.errorDescription, refusal.errorDescription)
+        for error in [failed, within] {
+            XCTAssertEqual(error?.disposition, .retryWithBackoff)
+            XCTAssertEqual(error?.errorDescription, throttled.errorDescription)
+        }
+        XCTAssertEqual(engine.refreshCalls.count, 3)
+        XCTAssertEqual(credentials as? CognitoAWSCredentials, identified.awsCredentials)
+    }
+
     /// Every call that ends the session forgets what the process remembers about its record: the identity refusal,
     /// and the credentials of the last reused refresh token (a refresh token among them). The calls are a sign-out and
     /// a purge through a live client, a user deletion, and a stored-session sign-out and purge.
