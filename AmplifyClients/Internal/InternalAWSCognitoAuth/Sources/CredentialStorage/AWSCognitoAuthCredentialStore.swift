@@ -41,7 +41,8 @@ package struct AWSCognitoAuthCredentialStore {
     /// access group.
     package typealias KeychainStoreFactory = @Sendable (_ service: String, _ accessGroup: String?) -> any KeychainItemStoreBehavior
 
-    private let authConfiguration: AuthConfiguration
+    /// Internal, not private: the access-group migration weighs only this configuration's login.
+    let authConfiguration: AuthConfiguration
     private let keychain: EngineKeychainStore
     let userDefaults: UserDefaults
     let accessGroup: String?

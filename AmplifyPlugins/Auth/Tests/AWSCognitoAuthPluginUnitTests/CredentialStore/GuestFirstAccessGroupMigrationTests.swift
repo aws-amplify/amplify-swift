@@ -37,6 +37,15 @@ class GuestFirstAccessGroupMigrationTests: XCTestCase {
         AWSCognitoAuthCredentialStore.sessionAccount(for: authConfiguration)
     }
 
+    /// The app's user pool without its identity pool: a configuration the app ran with before it added the identity
+    /// pool, whose login the plugin carries to `authConfiguration`'s account.
+    private var userPoolOnlyConfiguration: AuthConfiguration {
+        guard case .userPoolsAndIdentityPools(let userPool, _) = authConfiguration else {
+            preconditionFailure("the fixture configuration has both pools")
+        }
+        return .userPools(userPool)
+    }
+
     private var keychain: InMemoryKeychain!
     private var userDefaults: UserDefaults!
     private var userDefaultsSuite: String!
@@ -181,6 +190,81 @@ class GuestFirstAccessGroupMigrationTests: XCTestCase {
         _ = makeExtensionStore(migrate: true)
 
         XCTAssertEqual(try makeStore(accessGroup: accessGroup).retrieveCredential(), appsGuest)
+    }
+
+    /// A login another configuration left in the app's unshared service does not replace an app extension's guest.
+    ///
+    /// - Given: the app's plugin, without an access group, signed in as bob on a user-pool-only configuration; then
+    ///   the identity pool added, which carries bob's login to the new configuration's account and keeps the old one;
+    ///   then bob signed out, which removes only the new account's login. And an app extension, with the access group
+    ///   and the current configuration, that saved its guest identity in the shared service
+    /// - When:
+    ///    - the app's plugin is configured with the access group and migration
+    /// - Then:
+    ///    - the migration is skipped: the shared service keeps the extension's guest, which the new store reads
+    ///    - bob's stale login stays under the old configuration's account in the unshared service
+    func testALoginUnderAnotherConfigurationDoesNotReplaceAnExtensionsGuest() throws {
+        let staleAccount = AWSCognitoAuthCredentialStore.sessionAccount(for: userPoolOnlyConfiguration)
+        try makeStore(accessGroup: nil, authConfiguration: userPoolOnlyConfiguration)
+            .saveCredential(LongLivedCredentials.userPoolAndIdentityPool(username: "bob"))
+        try makeStore(accessGroup: nil).deleteCredential()
+        let stale = try XCTUnwrap(keychain.value(service: service, account: staleAccount))
+        XCTAssertNil(keychain.value(service: service, account: sessionAccount))
+        let extensionsGuest = AmplifyCredentials.identityPoolOnly(identityID: "extensions-guest", credentials: LongLivedCredentials.awsCredentials())
+        try makeExtensionStore(migrate: true).saveCredential(extensionsGuest)
+
+        let store = makeStore(accessGroup: accessGroup, migrate: true)
+
+        XCTAssertEqual(try store.retrieveCredential(), extensionsGuest)
+        XCTAssertEqual(keychain.value(service: service, account: staleAccount), stale)
+    }
+
+    /// A login under the current configuration's account still replaces an app extension's guest, with a stale login
+    /// under another configuration's account beside it.
+    ///
+    /// - Given: the app's plugin, without an access group, signed in as bob on a user-pool-only configuration; then
+    ///   the identity pool added, which carries bob's login and keeps the old one, and alice signed in under the new
+    ///   configuration. And an app extension, with the access group and the current configuration, that saved its
+    ///   guest identity in the shared service
+    /// - When:
+    ///    - the app's plugin is configured with the access group and migration
+    /// - Then:
+    ///    - alice's login moves into the shared service, replacing the guest, and the new store reads it
+    ///    - nothing of the plugin's is left in the unshared service
+    func testALoginUnderTheCurrentConfigurationStillReplacesAnExtensionsGuest() throws {
+        try makeStore(accessGroup: nil, authConfiguration: userPoolOnlyConfiguration)
+            .saveCredential(LongLivedCredentials.userPoolAndIdentityPool(username: "bob"))
+        let alice = LongLivedCredentials.userPoolAndIdentityPool()
+        try makeStore(accessGroup: nil).saveCredential(alice)
+        try makeExtensionStore(migrate: true)
+            .saveCredential(.identityPoolOnly(identityID: "extensions-guest", credentials: LongLivedCredentials.awsCredentials()))
+
+        let store = makeStore(accessGroup: accessGroup, migrate: true)
+
+        XCTAssertEqual(try store.retrieveCredential(), alice)
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), [])
+    }
+
+    /// A login the configuration change after the migration carries still replaces an app extension's guest.
+    ///
+    /// - Given: the app's plugin, without an access group, signed in as alice on a user-pool-only configuration; and
+    ///   an app extension, with the access group and the configuration that adds the identity pool, that saved its
+    ///   guest identity in the shared service
+    /// - When:
+    ///    - the app's plugin is configured with the access group, migration and the identity pool added, in the same
+    ///      update
+    /// - Then:
+    ///    - alice's login moves into the shared service, replacing the guest, and is carried to the new
+    ///      configuration's account, where the new store reads it
+    func testALoginTheConfigurationChangeCarriesStillReplacesAnExtensionsGuest() throws {
+        let alice = LongLivedCredentials.userPoolAndIdentityPool()
+        try makeStore(accessGroup: nil, authConfiguration: userPoolOnlyConfiguration).saveCredential(alice)
+        try makeExtensionStore(migrate: true)
+            .saveCredential(.identityPoolOnly(identityID: "extensions-guest", credentials: LongLivedCredentials.awsCredentials()))
+
+        let store = makeStore(accessGroup: accessGroup, migrate: true)
+
+        XCTAssertEqual(try store.retrieveCredential(), alice)
     }
 
     /// A signed-out record in the shared service is not a guest's: it still stops the migration, so an app extension's
@@ -359,10 +443,14 @@ class GuestFirstAccessGroupMigrationTests: XCTestCase {
         }
     }
 
-    private func makeStore(accessGroup: String?, migrate: Bool = false) -> AWSCognitoAuthCredentialStore {
+    private func makeStore(
+        accessGroup: String?,
+        migrate: Bool = false,
+        authConfiguration: AuthConfiguration? = nil
+    ) -> AWSCognitoAuthCredentialStore {
         let keychain = keychain!
         return AWSCognitoAuthCredentialStore(
-            authConfiguration: authConfiguration,
+            authConfiguration: authConfiguration ?? self.authConfiguration,
             accessGroup: accessGroup,
             migrateKeychainItemsOfUserSession: migrate,
             userDefaults: userDefaults,

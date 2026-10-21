@@ -160,7 +160,8 @@ extension AWSCognitoAuthCredentialStore {
     /// The migration's form of `sharedKeychainHasItems(accessGroup:)`: whether the shared service holds a
     /// login another process has already migrated or saved there, so the migration must not clear it.
     ///
-    /// A guest's session record does not count when `source` holds a login. An app extension, or the
+    /// A guest's session record does not count when `source` holds a login this store goes on to use
+    /// (`holdsALoginToMigrate(_:)`). An app extension, or the
     /// Cognito client's default session, that fetches a session before the app's first launch after the
     /// update finds the shared service empty, gets a guest identity and saves it there. Counting that
     /// record aborted the migration, and left the app's login in the old service. The destination clear
@@ -187,7 +188,7 @@ extension AWSCognitoAuthCredentialStore {
         guard accounts.allSatisfy({ Self.savedSession(at: $0, in: shared) == .guest }) else {
             return true
         }
-        guard Self.holdsALogin(source()) else {
+        guard holdsALoginToMigrate(source()) else {
             return true
         }
         log.info("[AWSCognitoAuthCredentialStore] Shared keychain holds only a guest session, migrating the signed-in session over it")
@@ -271,11 +272,18 @@ extension AWSCognitoAuthCredentialStore {
         }
     }
 
-    /// Whether `store` holds a plugin session record with a login. `false` when it cannot be listed.
-    static func holdsALogin(_ store: any KeychainItemStoreBehavior) -> Bool {
-        guard let accounts = try? store.allAccounts() else {
-            return false
+    /// Whether `store`, the migration's source, holds a login under this configuration's account
+    /// (`sessionAccount(for: authConfiguration)`), or under the account the configuration change that follows the
+    /// migration carries from, by the configuration `store` last ran with. A login under any other configuration's
+    /// account is a stale copy an earlier configuration change left behind (a carry keeps the old record, and a
+    /// sign-out removes only the current one). The store never reads it, so it does not replace a guest.
+    func holdsALoginToMigrate(_ store: any KeychainItemStoreBehavior) -> Bool {
+        var accounts = [Self.sessionAccount(for: authConfiguration)]
+        let previous = (try? store.dataIfPresent(Self.authConfigurationAccount))
+            .flatMap { try? Self.decodeAuthConfiguration($0) }
+        if case .carry(let fromAccount, _) = Self.configurationChange(from: previous, to: authConfiguration) {
+            accounts.append(fromAccount)
         }
-        return accounts.contains { isPluginSessionAccount($0) && savedSession(at: $0, in: store) == .login }
+        return accounts.contains { Self.savedSession(at: $0, in: store) == .login }
     }
 }
