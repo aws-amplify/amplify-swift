@@ -249,16 +249,23 @@ extension SessionCore {
 
     // MARK: Errors
 
-    /// The hosted UI's cookie could not be cleared: no window was given to show its logout page in.
+    /// The hosted UI's cookie could not be cleared: no window was given to show its logout page in. Reported once
+    /// the session is signed out on this device, so signing it out again finds nothing to sign out, and shows no page.
     static func noSignOutWindow() -> AuthClientError {
         .validation(
             field: "presentationAnchor",
-            "The session was signed out, but not from the hosted UI: its sign-in shared the browser's cookies, and "
-                + "no window was given to show the hosted UI's sign-out in, so the browser still holds its sign-in.",
-            "Sign out with signOut(presentationAnchor:options:). Until then, sign in to the hosted UI with "
-                + "prompt: [.login] or prefersEphemeralSession: true, or it may sign the same user in again."
+            noSignOutWindowDescription,
+            noSignOutWindowSuggestion
         )
     }
+
+    static let noSignOutWindowDescription =
+        "The session was signed out on this device, but not from the hosted UI: its sign-in shared the browser's "
+            + "cookies, and no window was given to show the hosted UI's sign-out in."
+    static let noSignOutWindowSuggestion =
+        "The hosted UI's session cookie may remain in the browser until it expires or the user signs out in the "
+            + "browser; signing this session out again will not clear it. Until then, sign in to the hosted UI with "
+            + "prompt: [.login] or prefersEphemeralSession: true, or it may sign the same user in again."
 
     /// The hosted UI's sign-out cannot run: the configuration has no hosted UI, or no sign-out redirect URI. The
     /// sign-out is `.failed` and the session stays signed in, as with the plugin. One value whether the core

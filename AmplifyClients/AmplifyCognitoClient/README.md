@@ -1344,7 +1344,10 @@ func hostedUISignOut(client: AmplifyCognitoClient, window: AuthClientPresentatio
 
 - A private (default) hosted-UI sign-in left no cookie, so nothing is shown.
 - `signOut(options:)` and `signOutStoredSession` have no window, so they can't clear the cookie, and report it in
-  `.partial` as `hostedUIError` (`.validation`).
+  `.partial` as `hostedUIError` (`.validation`). The session is signed out on this device by then, so signing out
+  again, even with a window, is `.complete` and shows no page: the cookie may remain until it expires or the user
+  signs out in the browser. Until then, sign in to the hosted UI with `prompt: [.login]` or
+  `prefersEphemeralSession: true`.
 - If the user closes the sign-out page, the result is `.failed(.userCancelled)` and the session stays signed in,
   as with the plugin, unless the session had already expired. Then it signs out anyway and returns `.partial` with
   `hostedUIError` `.userCancelled`. The same goes when `cancelWebUISignIn()` closes this session's sign-out page, or

@@ -772,23 +772,40 @@ final class WebUISignOutTests: XCTestCase {
         }
     }
 
+    /// The error says what is left, not a sign-out that can no longer run: the session is already signed out on this
+    /// device, so a second sign-out, even with a window, shows no page.
+    ///
     /// - Given: a shared-cookie session
-    /// - When: it is signed out without a window (`signOut(options:)`)
+    /// - When: it is signed out without a window (`signOut(options:)`), then again with one
     /// - Then:
     ///    - the engine skips the hosted UI; the result is `.partial` with `hostedUIError`
-    ///      `.validation(field: "presentationAnchor")`, whose suggestion names the anchored sign-out
+    ///      `.validation(field: "presentationAnchor")`, with the exact texts: signed out on this device, and the
+    ///      hosted UI's session cookie may remain until it expires or the user signs out in the browser
+    ///    - the second sign-out is `.complete`, and the engine is asked for nothing more
     func testASignOutWithoutAWindowSkipsTheLogoutAndReportsIt() async throws {
         try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
 
         let result = await client.signOut()
+        let again = await signOut(client)
 
         XCTAssertEqual(plans(engine), ["skip"])
         let error = try XCTUnwrap(hostedUIError(result))
         XCTAssertEqual(error.kind, .validation(field: "presentationAnchor"))
-        XCTAssertTrue(error.recoverySuggestion.contains("signOut(presentationAnchor:options:)"))
+        XCTAssertEqual(
+            error.errorDescription,
+            "The session was signed out on this device, but not from the hosted UI: its sign-in shared the browser's "
+                + "cookies, and no window was given to show the hosted UI's sign-out in."
+        )
+        XCTAssertEqual(
+            error.recoverySuggestion,
+            "The hosted UI's session cookie may remain in the browser until it expires or the user signs out in the "
+                + "browser; signing this session out again will not clear it. Until then, sign in to the hosted UI with "
+                + "prompt: [.login] or prefersEphemeralSession: true, or it may sign the same user in again."
+        )
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
+        XCTAssertEqual(again, .complete)
     }
 
     /// As the plugin, a hosted-UI sign-out with no hosted UI to sign out of fails, and the user stays
