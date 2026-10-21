@@ -83,7 +83,9 @@ import Foundation
 //
 // **Whose each copy is.** The marker records each copy's user (`userKey`: `user:<userId>`, else
 // `identity:<identityId>`) and the user of the record under the namespace it names, as additive keys (schema 1 still;
-// earlier builds ignore them). Copies are kept whoever starts a session afterwards, and each is taken only by its own
+// earlier builds ignore them). The latter follows the record: a write here of another user's record over one with
+// credentials (a sign-in over a guest, or over another user's expired session) records the new user
+// (`recordUserChangedHere`). Copies are kept whoever starts a session afterwards, and each is taken only by its own
 // user: a sweep, and a revoke, only when the copy's user is the session's (the record signed out or purged, else the
 // marker's user for this namespace); a rollback's "read as swept" only when the copy's user is the user whose session
 // ended under the namespace the marker names (the marker's user, else the signed-out row's). A copy with no recorded
@@ -154,8 +156,9 @@ extension SessionRecordStore {
         /// configurations this app has kept the session under. Kept whoever starts a session afterwards: each names
         /// its user, and only that user's sign-out, purge or rollback check takes it.
         var copies: [Copy] = []
-        /// The user of the record kept under `poolNamespace` when the marker was last written there: whose session
-        /// ended if that record is later signed out without a user, or purged. An additive key, like `Copy.user`.
+        /// The user of the record kept under `poolNamespace`, recorded when the session is kept there (a start, a
+        /// carry, a restore back) and whenever a write there changes the record's user: whose session ended if that
+        /// record is later signed out without a user, or purged. An additive key, like `Copy.user`.
         var user: String?
 
         /// This marker with the session kept under `own` by `user`, and `copy` (if any) remembered.
@@ -337,6 +340,28 @@ extension SessionRecordStore {
                 user: userKey(stored.record)
             )
             return current.keptHere(own, user: user, remembering: copy)
+        }
+    }
+
+    /// Records that `record`, of another user than the record it replaced here (a sign-in over a guest, or over
+    /// another user's expired session), now holds the session: the marker's user becomes its user, so a later
+    /// rollback reads the session that ends here as this user's, not the replaced one's. Only while the marker names
+    /// this namespace: one naming another records that namespace's user, which this write did not change, and with
+    /// no marker there is nothing to correct. The copies are kept, each for its own user. Best effort, as every
+    /// marker update.
+    func recordUserChangedHere(_ sessionId: SessionID, record: SessionRecord) {
+        do {
+            guard case .marker(var marker) = try readMarker(for: sessionId),
+                  marker.poolNamespace == namespace.pools.keyComponent,
+                  marker.user != userKey(record) else {
+                return
+            }
+            marker.user = userKey(record)
+            try writeMarker(marker, for: sessionId)
+        } catch {
+            ClientLog.logger(ClientLog.sessionRecordStore).warn(
+                "The session's namespace marker could not be written. A later configuration change may not carry the session forward."
+            )
         }
     }
 

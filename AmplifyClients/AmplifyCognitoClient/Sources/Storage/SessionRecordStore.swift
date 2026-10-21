@@ -209,8 +209,9 @@ struct SessionRecordStore: Sendable {
     /// - Throws: `AuthClientError.storageUnavailable` if the record could not be read or written.
     ///
     /// Creating a record with credentials, or writing one over a signed-out row, also records, in the session's
-    /// namespace marker, that the session is kept here (`SessionRecordStore+CopyForward.swift`);
-    /// `recordingMarker: false` leaves that to the caller.
+    /// namespace marker, that the session is kept here (`SessionRecordStore+CopyForward.swift`). Writing one over a
+    /// record of another user (`userKey`) records the new user as the marker's user for this namespace.
+    /// `recordingMarker: false` leaves both to the caller.
     @discardableResult
     func write(
         _ record: SessionRecord,
@@ -227,12 +228,15 @@ struct SessionRecordStore: Sendable {
         let nextGeneration: UInt64
         // Whether this write starts the session's record here: over nothing, or over a signed-out row.
         var starts = true
+        // The user of the record this write replaces (`userKey`).
+        var replacedUser: String?
         if let current {
             guard case .envelope(let stored) = SessionRecordEnvelope.decode(current),
                   expected == .generation(stored.generation) else {
                 return .discarded
             }
             starts = stored.record.isSignedOut
+            replacedUser = userKey(stored.record)
             let (next, overflow) = stored.generation.addingReportingOverflow(1)
             guard !overflow else {
                 return .discarded
@@ -254,6 +258,10 @@ struct SessionRecordStore: Sendable {
             // sign-out, perhaps after a rollback): the session's marker names this namespace from now on
             // (`SessionRecordStore+CopyForward.swift`). Best effort.
             recordStartedHere(sessionId, record: record)
+        } else if committed, recordingMarker, record.credentials != nil, userKey(record) != replacedUser {
+            // Another principal over a record with credentials: a sign-in over a guest, or over another user's
+            // expired session. The marker's user is whose session a later sign-out here ends.
+            recordUserChangedHere(sessionId, record: record)
         }
         return committed ? .committed(VersionedSessionRecord(envelope)) : .discarded
     }

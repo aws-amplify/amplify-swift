@@ -762,6 +762,69 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         }
     }
 
+    /// Another user signing in over the first user's record, rather than over nothing, is the session that ends
+    /// there: a rollback never reads the first user's untouched copy as swept.
+    ///
+    /// - Given: alice at A (the user pool alone), carried to B (both pools), where her first refresh fails (another
+    ///   app client refuses her token)
+    /// - When: bob signs in over her record at B, and signs out; then the app rolls back to A
+    /// - Then:
+    ///    - bob's sign-in makes him the marker's user at B, and keeps alice's copy of A as hers
+    ///    - his sign-out leaves alice's copy at A
+    ///    - at A alice is signed in, her record untouched, and the marker names A again
+    func testAnotherUserSigningInOverARecordNeverEndsTheEarlierUsersCopy() throws {
+        let atA = try ran(.signedIn("alice", kind: .userPoolOnly), under: Self.userPoolOnly)
+        guard case .record(let carried) = try store(Self.bothPools).readCarryingForward(work) else {
+            return XCTFail("not carried")
+        }
+        XCTAssertEqual(try marker()?.copies, [copy(Self.userPoolOnly, atA)])
+
+        let bob = FakePayload.signedIn("bob", kind: .userPoolOnly).record()
+        XCTAssertTrue(try store(Self.bothPools).write(bob, for: work, expecting: carried.version).didCommit)
+        XCTAssertEqual(
+            try marker(),
+            Marker(poolNamespace: Self.bothPools.keyComponent, copies: [copy(Self.userPoolOnly, atA)], user: "user:sub-bob"),
+            "bob is the marker's user at B, and alice's copy stays hers"
+        )
+        XCTAssertEqual(try store(Self.bothPools).signOut(work), .signedOut)
+        XCTAssertEqual(keychain.value(account(Self.userPoolOnly)), atA, "bob's sign-out leaves alice's copy")
+
+        XCTAssertEqual(
+            carriedRecord(try store(Self.userPoolOnly).readCarryingForward(work))?.record.username,
+            "alice",
+            "at A, the session that ended was bob's"
+        )
+        XCTAssertEqual(keychain.value(account(Self.userPoolOnly)), atA)
+        XCTAssertEqual(try marker()?.poolNamespace, Self.userPoolOnly.keyComponent)
+    }
+
+    /// The marker's user follows the record whenever a write here changes it, and only then.
+    ///
+    /// - Given: a guest at B (both pools), the marker naming B with the guest's identity as its user
+    /// - When: bob signs in over the guest, then his tokens are refreshed
+    /// - Then:
+    ///    - after the sign-in the marker's user is bob
+    ///    - the refresh leaves the marker as it was, unwritten
+    func testASignInOverAGuestRecordsTheNewUser() throws {
+        try ran(.guest(identityId: "us-east-1:guest-at-b"), under: Self.bothPools)
+        XCTAssertEqual(try marker()?.user, "identity:us-east-1:guest-at-b")
+        guard case .record(let guest) = try store(Self.bothPools).read(work) else {
+            return XCTFail("the guest was not stored")
+        }
+
+        let signIn = try store(Self.bothPools).write(FakePayload.signedIn("bob").record(), for: work, expecting: guest.version)
+        guard case .committed(let bob) = signIn else {
+            return XCTFail("bob's sign-in was not written")
+        }
+        XCTAssertEqual(try marker()?.user, "user:sub-bob")
+
+        let before = keychain.value(markerAccount)
+        keychain.resetLogs()
+        try store(Self.bothPools).write(FakePayload.signedIn("bob", version: 2).record(), for: work, expecting: bob.version)
+        XCTAssertEqual(keychain.value(markerAccount), before)
+        XCTAssertFalse(keychain.writtenAccounts.contains(markerAccount), "a refresh does not write the marker")
+    }
+
     /// The record the marker names is remembered with its own user whoever starts a session in between, so its user's
     /// later sign-out still reaches it.
     ///
