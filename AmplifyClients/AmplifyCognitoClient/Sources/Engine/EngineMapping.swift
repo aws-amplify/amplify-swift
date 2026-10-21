@@ -477,13 +477,13 @@ extension AuthClientError {
         return description.isEmpty ? emptyServiceFailureDescription : description
     }
 
-    /// Whether `error` says the request never reached the service, or got no answer: a URL loading failure of
-    /// `networkURLErrorCodes` (offline, a failed DNS lookup, a refused, lost or timed-out connection, a failed secure
-    /// connection), in `NSURLErrorDomain` or `kCFErrorDomainCFNetwork`, a CFNetwork host-lookup failure, or a socket
-    /// error of the POSIX domain that means the network or host is unreachable, the connection was refused, reset or
-    /// not made, or it timed out. A failure about a response that did arrive (`badServerResponse`,
-    /// `cannotParseResponse`), App Transport Security, authentication, or a cancellation, is not one. The caller's
-    /// own cancellation is `CancellationError`.
+    /// Whether `error` is a network failure: the request may not have reached the service, or its answer was lost. A
+    /// URL loading failure of `networkURLErrorCodes` (offline, a failed DNS lookup, a refused, lost or timed-out
+    /// connection, a failed secure connection), in `NSURLErrorDomain` or `kCFErrorDomainCFNetwork`, a CFNetwork
+    /// host-lookup failure, or a socket error of the POSIX domain that means the network or host is unreachable, the
+    /// connection was refused, reset or not made, or it timed out. A failure about a response that did arrive
+    /// (`badServerResponse`, `cannotParseResponse`), App Transport Security, authentication, or a cancellation, is not
+    /// one. The caller's own cancellation is `CancellationError`.
     static func isNetworkFailure(_ error: Error?) -> Bool {
         guard let error, !(error is CancellationError), !(error is AuthClientError), !(error is EngineAuthError) else {
             return false
@@ -501,7 +501,8 @@ extension AuthClientError {
         }
     }
 
-    /// The URL loading errors `isNetworkFailure` counts: the request never reached the service, or got no answer.
+    /// The URL loading errors `isNetworkFailure` counts: the request may not have reached the service, or its answer
+    /// was lost.
     static let networkURLErrorCodes: Set<Int> = [
         NSURLErrorTimedOut,
         NSURLErrorCannotFindHost,

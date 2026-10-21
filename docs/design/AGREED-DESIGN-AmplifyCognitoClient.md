@@ -927,11 +927,12 @@ credentials, in this launch or after a relaunch, tries the identity step again. 
 user-pool-only tokens only when they need refreshing or a fetch forces a refresh, in the process and after a relaunch
 alike; until then it returns the tokens and fails the identity as not configured.) In the process (per record, shared by every client of it: `SessionRecordGates.memory`), a
 known refusal (`notAuthorized`, `invalidParameter`, `resourceNotFound`, `configuration`) stops the retries for the
-refused user until the app restarts or the session is signed out or purged, any other failure (a cancellation aside)
+refused user until the user pool tokens next need a refresh, a fetch forces a refresh, the app restarts, or the
+session is signed out or purged; any other failure (a cancellation aside), including a later try after a refusal,
 delays the next by 30 seconds, and until then the last failure answers for the identity fields and AWS credentials.
 The AWS credentials provider wraps a known refusal: it throws `CredentialsError.notConfigured` (`.failLoudly`), with
 the refusal's description and recovery suggestion and the refusal as the underlying error, since a consumer's retries
-would only get the same answer until the app restarts; `fetchAuthSession`'s fields and the token provider keep the
+would only get the same answer until one of those happens; `fetchAuthSession`'s fields and the token provider keep the
 refusal itself, and any other failure keeps the provider's usual mapping (`.unknown`, `.retryWithBackoff`). A
 sign-out or purge also forgets the reused refresh token the dead-token check holds.
 Only an identity-step failure keeps the tokens: a refused or expired refresh token, or tokens that still need a
@@ -1638,7 +1639,7 @@ One operation returning currently-valid credentials, refreshing on demand. Five 
 | `sessionExpired` | Recoverable by re-auth. Retain the buffer and retry the flush after sign-in. |
 | `storageUnavailable(.locked / .interrupted)` | Transient. Retry with backoff. |
 | `storageUnavailable(.denied)` | Permanent, and a misconfiguration. Fail loudly. |
-| `notConfigured` | Permanent, and a misconfiguration: the provider cannot vend this kind of credential in its configuration, for example AWS credentials from a session with no identity pool, or from a session carried to a new identity pool that refuses its user (`notAuthorized`, `resourceNotFound`, `invalidParameter` or `configuration` from the identity step, which the client never retries in that process; the refusal is the underlying error, and `fetchAuthSession` reports the refusal itself). Fail loudly (`.failLoudly`). |
+| `notConfigured` | Permanent, and a misconfiguration: the provider cannot vend this kind of credential in its configuration, for example AWS credentials from a session with no identity pool, or from a session carried to a new identity pool that refuses its user (`notAuthorized`, `resourceNotFound`, `invalidParameter` or `configuration` from the identity step, which the client doesn't retry in that process until the user pool tokens next need a refresh or a fetch forces a refresh; the refusal is the underlying error, and `fetchAuthSession` reports the refusal itself). Fail loudly (`.failLoudly`). |
 
 This lives in AmplifyFoundation rather than here, because `AWSCredentialsProvider` is shared and Kinesis, Firehose, Connect and CloudWatch all consume it. **It is built:** `CredentialsError` (`notSignedIn`, `sessionExpired`, `storageUnavailable(StorageUnavailableReason)`, `notConfigured`, `unknown`), with the table above encoded on the error itself as `disposition` - `.discard`, `.retryAfterReauthentication`, `.retryWithBackoff`, `.failLoudly` - so consumers read one property instead of each re-deriving the mapping and getting one wrong. An unrecognised failure deliberately maps to retry rather than discard, so a case nobody anticipated never costs buffered data: the only discards are the two `notSignedIn` rows above, a signed-out session and a sign-in waiting on a challenge. The same rule holds for `Disposition` itself, which may gain cases in a minor release: a consumer treats a disposition it does not recognise (its `@unknown default`) as `.retryWithBackoff`.
 

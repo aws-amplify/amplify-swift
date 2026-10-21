@@ -1648,8 +1648,9 @@ along with one of the changes below, where the plugin's rule would not carry. Th
 - A rollback carries by the same rules: back on the old configuration, the kept record is used (a guest keeps its
   identity), unless the session, if not a guest, was signed out or purged under the new one.
 - If a carried session's identity fetch fails, it keeps its user pool tokens and retries, as the plugin does. A
-  known refusal isn't retried for that user until the app restarts or the session is signed out or purged; other
-  failures not within 30 seconds. Until then the identity fields report the failure.
+  known refusal isn't retried for that user until the user pool tokens next need a refresh, a fetch forces a
+  refresh, the app restarts, or the session is signed out or purged; other failures, including a later try after a
+  refusal that fails that way, not within 30 seconds. Until then the identity fields report the failure.
 - A session saved by an older build, which recorded no configuration for it, isn't carried if the configuration
   changes before this build first restores it.
 - Remembered devices aren't carried. Remember the device again.

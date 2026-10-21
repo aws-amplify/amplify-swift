@@ -43,8 +43,9 @@ public struct CognitoCredentialsProvider: AWSCredentialsProvider, Sendable {
     /// - Throws: `CredentialsError`, whose `disposition` says what to do with buffered work:
     ///   - `.notConfigured` if the configuration has no identity pool, or the session is signed in to the
     ///     user pool only, or it was carried to a new identity pool that refuses its user (`notAuthorized`,
-    ///     `resourceNotFound`, `invalidParameter` or `configuration` from the identity step, which the client never
-    ///     retries in this process; the refusal is the underlying error);
+    ///     `resourceNotFound`, `invalidParameter` or `configuration` from the identity step, which the client doesn't
+    ///     retry in this process until the user pool tokens next need a refresh or a fetch forces a refresh; the
+    ///     refusal is the underlying error);
     ///   - `.notSignedIn` for a signed-out session, and while a sign-in on it waits on a challenge, whatever the
     ///     session held before: a guest's credentials or an expired session's tokens, which answer `.notSignedIn`
     ///     there, not `.sessionExpired`, until the challenge is answered or the sign-in ends. This `.discard` marks

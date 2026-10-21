@@ -451,7 +451,7 @@ final class EngineMappingTests: XCTestCase {
                 XCTAssertNotNil(mapped.underlyingError as? EngineAuthError, "\(engine)")
             }
         }
-        // Failures that reached the service, or never left the device for another reason, are not "could not reach":
+        // Failures that reached the service, or never left the device for another reason, are not network failures:
         // a code-less `.service` over one keeps its description.
         let notNetwork: [Error] = [
             URLError(.cancelled),

@@ -435,9 +435,10 @@ migration never discards a guest identity the app already migrated. A signed-out
 blocking, so a stale login in another process's old service cannot undo a sign-out. The access-group transition
 without migration is unchanged.
 
-**#22.** The client never retries a known refusal (`notAuthorized`, `resourceNotFound`, `invalidParameter`,
-`configuration`) in the same process, so reporting it as `.unknown` (`.retryWithBackoff`) made a consumer that
-follows the disposition buffer forever. It is a misconfiguration of the identity pool for this user, not a user
+**#22.** The client doesn't retry a known refusal (`notAuthorized`, `resourceNotFound`, `invalidParameter`,
+`configuration`) in the same process until the user pool tokens next need a refresh or a fetch forces a refresh, so
+reporting it as `.unknown` (`.retryWithBackoff`) made a consumer that follows the disposition buffer for up to an
+hour, with no retry of its own able to help. It is a misconfiguration of the identity pool for this user, not a user
 state, which is what `.failLoudly` means. A sign-in under the same configuration asks the same pool, so it is not
 `.retryAfterReauthentication` either.
 

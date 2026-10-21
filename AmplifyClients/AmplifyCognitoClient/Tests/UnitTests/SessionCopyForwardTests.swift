@@ -231,9 +231,9 @@ final class SessionCopyForwardTests: XCTestCase {
 
     // MARK: Identity-step failures
 
-    /// An identity step refused for good fails only the identity, and is not retried in this process, by this core
-    /// or a later one of the same record; the record keeps waiting, so a new process tries again, as the plugin
-    /// retries on every launch.
+    /// An identity step refused for good fails only the identity, and is not retried in this process, by this core or a
+    /// later one of the same record, while the user pool tokens need no refresh and no fetch forces one; the record
+    /// keeps waiting, so a new process tries again.
     ///
     /// - Given: alice's session carried from the user pool alone, and a refresh that stores new tokens then fails
     ///   the identity step with `.notAuthorized` (an identity pool that does not federate the user pool)
@@ -277,6 +277,42 @@ final class SessionCopyForwardTests: XCTestCase {
         XCTAssertEqual(next.refreshCalls.count, 0, "the refusal holds for the process")
         assertFails(fetched.identityIdResult, with: refusal)
         XCTAssertEqual(try fetched.userSubResult.get(), "sub-alice")
+    }
+
+    /// A known refusal holds only while nothing refreshes the user pool tokens: a forced fetch refreshes them, which
+    /// tries the identity step again, and an identity pool that now accepts the user gives the session its identity
+    /// with no restart.
+    ///
+    /// - Given: alice's session carried from the user pool alone, whose first refresh stores new tokens then fails
+    ///   the identity step with `.notAuthorized`, and whose next refresh succeeds with an identity
+    /// - When: the credentials provider resolves, then the session is fetched with `forceRefresh`, then the provider
+    ///   resolves again
+    /// - Then: the first resolve fails loudly with the refusal; the forced fetch refreshes a second time and reports the
+    ///   identity; the last resolve returns its AWS credentials
+    func testAForcedFetchRetriesARefusedIdentityStep() async throws {
+        try aliceUnderTheUserPoolOnly()
+        let refusal = AuthClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let identified = FakePayload.signedIn("alice", version: 3, identityId: "us-east-1:alice")
+        let calls = CallCounter()
+        engine.scriptRefresh { _ in
+            calls.increment()
+            if calls.count == 1 {
+                let stored = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 2)
+                throw SessionEngineError.refreshedThenFailed(payload: stored.data, error: .service(refusal))
+            }
+            return identified.data
+        }
+
+        let refused = await providerError { try await client.credentialsProvider.resolve() }
+        let forced = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+        let credentials = try await client.credentialsProvider.resolve()
+
+        XCTAssertEqual(refused?.disposition, .failLoudly)
+        XCTAssertEqual(engine.refreshCalls.count, 2)
+        XCTAssertEqual(try forced.identityIdResult.get(), "us-east-1:alice")
+        XCTAssertEqual(credentials as? CognitoAWSCredentials, identified.awsCredentials)
     }
 
     /// A transient identity failure keeps the record waiting, but the next attempt waits its interval, so a
@@ -332,8 +368,9 @@ final class SessionCopyForwardTests: XCTestCase {
         }
     }
 
-    /// A known refusal of the identity step, which this process never retries, fails the AWS credentials provider
-    /// loudly: a consumer retrying it with backoff would only get the same answer until the app restarts.
+    /// A known refusal of the identity step, which this process doesn't retry until the user pool tokens next need a
+    /// refresh or a fetch forces one, fails the AWS credentials provider loudly: a consumer retrying it with backoff
+    /// would only get the same answer until then.
     ///
     /// - Given: alice's session carried from the user pool alone, and a refresh that stores new tokens then fails the
     ///   identity step, in turn with `.notAuthorized`, `.service(.resourceNotFound)`, `.service(.invalidParameter)`

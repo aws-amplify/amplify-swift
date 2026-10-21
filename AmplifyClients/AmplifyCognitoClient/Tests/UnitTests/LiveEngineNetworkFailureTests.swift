@@ -11,9 +11,9 @@ import InternalAWSCognitoAuth
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// A request that never reaches Cognito (no network, a DNS failure, a refused connection, a timeout) is reported by
-/// every operation as `.service` with no code and the client's network texts, as a refresh reports it: never
-/// `.unknown` with an empty description and a "this is a bug" suggestion.
+/// A network failure (no network, a DNS failure, a refused connection, a timeout), whose request may or may not have
+/// reached Cognito, is reported by every operation as `.service` with no code and the client's network texts, as a
+/// refresh reports it: never `.unknown` with an empty description and a "this is a bug" suggestion.
 final class LiveEngineNetworkFailureTests: XCTestCase {
 
     private var harness: LiveEngineHarness!

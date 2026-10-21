@@ -181,7 +181,8 @@ extension SessionCore {
 
     /// Whether a waiting record may try its identity step now: not within `PendingIdentityRetry.interval` of a
     /// transient failure, so a throttled `GetId` does not spend (and, with rotation, rotate) a refresh token per
-    /// call, and not after a known refusal in this process.
+    /// call, and not after a known refusal in this process (a refresh the user pool tokens need, or a forced one,
+    /// tries the step whatever this says).
     nonisolated func mayRetryIdentity(for snapshot: SessionSnapshot) -> Bool {
         identityRetry.blockingError(at: now(), userId: snapshot.ownRecord?.userId) == nil
     }
@@ -341,10 +342,10 @@ extension SessionCore {
     /// token, then fails as the refresh did. Never a refresh-token failure underneath: the engine writes new
     /// tokens only after the user pool accepted the refresh token, so the failure is a later step's (`service`).
     ///
-    /// A carried session waiting for its identity keeps waiting, in the record, as the plugin keeps retrying
-    /// across launches; in this process a known refusal stops further attempts, and a transient failure delays
-    /// the next by `PendingIdentityRetry.interval` (a cancellation does neither). Either way no call spends a user
-    /// pool refresh on it every time. If the commit lost to another writer whose record is complete (not waiting
+    /// A carried session waiting for its identity keeps waiting, in the record, so a later launch tries again; in
+    /// this process a known refusal stops further attempts until the user pool tokens next need a refresh or a fetch
+    /// forces one, and a transient failure delays the next by `PendingIdentityRetry.interval` (a cancellation does
+    /// neither). Either way no call spends a user pool refresh on it every time. If the commit lost to another writer whose record is complete (not waiting
     /// for an identity), that record is the answer.
     private nonisolated func keepRefreshedTokens(
         _ stored: Data,
@@ -466,10 +467,11 @@ extension SessionCore {
     }
 
     /// A waiting session's identity-step failure as the AWS credentials provider reports it. A known refusal, which
-    /// this process never retries (`isTransient` is false), is `CredentialsError.notConfigured` (`.failLoudly`), with
-    /// the refusal's description and recovery suggestion, and the refusal as its underlying error: the identity pool
-    /// gives this user no identity, so a consumer's retries would only get the same answer, and a sign-in under the
-    /// same configuration asks the same pool. Anything else is returned unchanged. `fetchAuthSession`'s identity
+    /// this process doesn't retry until the user pool tokens next need a refresh or a fetch forces one (`isTransient`
+    /// is false), is `CredentialsError.notConfigured` (`.failLoudly`), with the refusal's description and recovery
+    /// suggestion, and the refusal as its underlying error: the identity pool gives this user no identity, so a
+    /// consumer's retries would only get the same answer until then, and a sign-in under the same configuration asks
+    /// the same pool. Anything else is returned unchanged. `fetchAuthSession`'s identity
     /// fields and the access-token path keep the refusal itself.
     static func providerIdentityFailure(_ error: Error) -> Error {
         guard !isTransient(error), let refusal = error as? AuthClientError else {
@@ -546,9 +548,10 @@ struct IdentityStepFailure: Error {
 }
 
 /// When a carried session waiting for its identity may try the identity step again: not within `interval` of a
-/// transient failure, and not after a known refusal. In memory, per record for the process, shared by every core of
-/// it (`SessionRecordGates.memory`): the record keeps waiting, so a new process tries at once, as the plugin retries on
-/// every launch. Until then the last failure answers for the identity.
+/// transient failure, and not after a known refusal. A refresh the user pool tokens need, or a forced one, tries the
+/// step whatever this says, and a transient failure then replaces the refusal. In memory, per record for the process,
+/// shared by every core of it (`SessionRecordGates.memory`): the record keeps waiting, so a new process tries at once.
+/// Until then the last failure answers for the identity.
 final class PendingIdentityRetry: @unchecked Sendable {
     static let interval: TimeInterval = 30
 
