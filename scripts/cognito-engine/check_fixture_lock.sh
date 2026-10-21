@@ -22,8 +22,9 @@
 #     clears nothing) and `existing-session-present` (legacy data never overwrites a newer saved session);
 #   - GoldenLogs: scenario 4's sign-out line masks the refresh token (re-pinned below);
 #   - GoldenKeychainQueries (the released plugin has no keychain seam to record): sign-out and delete user also
-#     clear the three AWSMobileClient services; the legacy migration clears the legacy services only after
-#     all its reads, where the released plugin cleared each one right after reading it; the access-group
+#     clear the three AWSMobileClient services; the legacy migration reads the saved session first, never
+#     writes over a saved login, keeps everything after a failed read, and clears the legacy services only
+#     after all its reads, where the released plugin cleared each one right after reading it; the access-group
 #     migration moves item by item; and the client default session's label item and interrupted sign-in
 #     move and are removed with the plugin's login.
 # The notes inside the fixture files ("Recorded at M2 step S0b", ...) are locked bytes too, so they keep the

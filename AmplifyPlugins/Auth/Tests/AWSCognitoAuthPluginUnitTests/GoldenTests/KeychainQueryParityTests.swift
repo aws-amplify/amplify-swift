@@ -22,8 +22,9 @@ import XCTest
 ///
 /// The baseline is the plugin as of the engine extraction, not as last released: the released plugin has no
 /// keychain seam, so it was never recorded, and this sequence holds deliberate changes from it (sign-out and
-/// delete user clear the AWSMobileClient services, the legacy migration clears after all its reads, the
-/// access-group migration moves item by item, and the client default session's items move and are removed
+/// delete user clear the AWSMobileClient services; the legacy migration reads the saved session first, never
+/// writes over a saved login, keeps everything after a failed read, and clears after all its reads; the
+/// access-group migration moves item by item; and the client default session's items move and are removed
 /// with the plugin's login). Two tests pin what the store kept from before:
 /// `AWSCognitoAuthCredentialStoreConfigurationChangeTests.testInitIssuesTheSameQueriesAsBefore` checks the
 /// configuration-change sequences against a copy of the rule before its extraction, and
