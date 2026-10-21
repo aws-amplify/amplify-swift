@@ -1,0 +1,38 @@
+# Offline self-tests of CI scripts that guard what CI keeps or accepts:
+#
+# - .github/composite_actions/remove_test_configuration: removes the integration-test configuration from a build
+#   before it is cached (test_remove_test_configuration.sh, over a fake build directory). On macOS, where the
+#   integration-test jobs run it, with BSD find.
+#
+# No AWS call is made, and the jobs need no credentials and no secrets.
+
+name: CI | Script Self-Tests
+
+on:
+  pull_request:
+    paths:
+      - '.github/composite_actions/remove_test_configuration/**'
+      - '.github/workflows/ci_script_self_tests.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/composite_actions/remove_test_configuration/**'
+      - '.github/workflows/ci_script_self_tests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  remove-test-configuration:
+    name: Remove the test configuration from a build
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Run the self-test
+        run: bash .github/composite_actions/remove_test_configuration/test_remove_test_configuration.sh
+

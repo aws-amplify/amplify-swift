@@ -1,8 +1,10 @@
 name: 'Remove the test configuration from a build'
 description: 'Deletes the integration-test configuration that the host apps copy into their test bundles, so a cache of the build holds none of it'
 
-# The host apps' copy phases put the downloaded test configuration into their bundles: the plugin's apps copy the
-# whole testconfiguration/ directory, the Cognito client's apps copy the files by name into the bundle's resources.
+# The host apps' copy phases put the downloaded test configuration into their bundles: most of the plugin's apps copy
+# the whole testconfiguration/ directory, the Cognito client's apps copy the files by name into the bundle's
+# resources, and the Predictions and Storage apps copy theirs into the source root as amplifyconfiguration.json
+# (and amplify_outputs.json), which Copy Bundle Resources puts into the bundles.
 # Those files hold CI backends' outputs, test users' credentials and API keys, and a cache entry saved from a
 # push to main can be restored by any pull request run. Run this before saving the build directory to a cache.
 # A build restored from that cache copies the files again: the copy phases run on every build.
@@ -19,18 +21,5 @@ runs:
       shell: bash
       env:
         BUILD_PATH: ${{ inputs.build_path }}
-      run: |
-        if [ ! -d "$BUILD_PATH" ]; then
-          echo "No build directory at $BUILD_PATH."
-          exit 0
-        fi
-        find "$BUILD_PATH" -type d -name testconfiguration -prune -exec rm -rf {} +
-        find "$BUILD_PATH" -type f \( -name '*-credentials.json' -o -name '*-amplify_outputs.json' \
-          -o -name '*-amplifyconfiguration.json' -o -name '*-capabilities.json' -o -name 'amplify_outputs.json' \
-          -o -name 'cognito-client-integ-*.json' \) -delete
-        left=$(find "$BUILD_PATH" \( -type d -name testconfiguration \) -o \( -type f -name '*-credentials.json' \) | head -n 1)
-        if [ -n "$left" ]; then
-          echo "::error::The test configuration is still in the build ($left); the build is not cached."
-          exit 1
-        fi
-        echo "Removed the test configuration from $BUILD_PATH."
+      # remove_test_configuration.sh has the names it deletes; test_remove_test_configuration.sh tests it.
+      run: bash "$GITHUB_ACTION_PATH/remove_test_configuration.sh" "$BUILD_PATH"
