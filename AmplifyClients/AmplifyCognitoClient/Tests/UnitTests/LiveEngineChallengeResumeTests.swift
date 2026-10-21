@@ -171,6 +171,108 @@ final class LiveEngineChallengeResumeTests: XCTestCase {
         XCTAssertNil(unconfirmedState)
     }
 
+    /// An answer Cognito refuses because the user is unconfirmed or must reset their password leaves the machine on
+    /// the challenge's error state, but the sign-in has left the challenge: there is nothing to save.
+    ///
+    /// - Given: a custom-challenge sign-in, and an SRP sign-in on `SMS_MFA`; Cognito refusing each answer with
+    ///   `UserNotConfirmedException`, then with `PasswordResetRequiredException`
+    /// - When: the answer is sent, and the saved form read
+    /// - Then:
+    ///    - the step is `.confirmSignUp(nil)` or `.resetPassword(nil)`, and there is no saved form
+    func testAnAnswerRefusedForAnUnconfirmedUserOrAPasswordResetHasNoSavedForm() async throws {
+        let refusals: [(String, @Sendable () -> Error, AuthClientSignInStep)] = [
+            ("unconfirmed", { UserNotConfirmedException(message: "User is not confirmed.") }, .confirmSignUp(nil)),
+            ("reset", { PasswordResetRequiredException(message: "Password reset required for the user") }, .resetPassword(nil))
+        ]
+        for (name, refusal, expected) in refusals {
+            for custom in [true, false] {
+                let label = "\(name), \(custom ? "custom challenge" : "SMS_MFA")"
+                harness = LiveEngineHarness()
+                let engine = try harness.engine()
+                if custom {
+                    harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in
+                        LiveEngineFixtures.initiateChallenge(.customChallenge, parameters: ["question": "colour?"])
+                    }
+                    _ = try await engine.signIn(.flow(.customWithoutSRP, password: nil), current: nil)
+                } else {
+                    harness.scriptSRP(then: LiveEngineFixtures.challenge(.smsMfa, parameters: LiveEngineFixtures.smsParameters))
+                    _ = try await engine.signIn(.srp(), current: nil)
+                }
+                let before = await engine.pendingChallengeState
+                XCTAssertNotNil(before, "\(label): the challenge has a saved form")
+                harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) -> RespondToAuthChallengeOutput in
+                    throw refusal()
+                }
+
+                let result = try await engine.confirmSignIn(.answer("123456"), current: nil)
+
+                XCTAssertEqual(result, .challenge(expected), label)
+                let after = await engine.pendingChallengeState
+                XCTAssertNil(after, "\(label): the sign-in has left the challenge")
+            }
+        }
+    }
+
+    /// The relaunch: a sign-in that left its challenge for `confirmSignUp` or `resetPassword` is not resumed.
+    ///
+    /// - Given: a client over live engines, whose sign-in on `SMS_MFA` was saved; Cognito refusing the code with
+    ///   `UserNotConfirmedException`, then (a second run) with `PasswordResetRequiredException`
+    /// - When: the code is answered; then the client is released (the app closed) and a new one over the same
+    ///   keychain reads the session's state
+    /// - Then:
+    ///    - the answer reports `.confirmSignUp(nil)` or `.resetPassword(nil)`, and the challenge record is gone
+    ///    - the new client's session is signed out, with nothing pending and nothing sent to Cognito
+    func testARelaunchAfterAnAnswerRefusedForAnUnconfirmedUserOrAPasswordResetIsSignedOut() async throws {
+        let refusals: [(String, @Sendable () -> Error, AuthClientSignInStep)] = [
+            ("unconfirmed", { UserNotConfirmedException(message: "User is not confirmed.") }, .confirmSignUp(nil)),
+            ("reset", { PasswordResetRequiredException(message: "Password reset required for the user") }, .resetPassword(nil))
+        ]
+        let work = ClientFixtures.id("work")
+        for (name, refusal, expected) in refusals {
+            harness = LiveEngineHarness()
+            let clientHarness = ClientHarness()
+            let store = clientHarness.store()
+            let base = clientHarness.dependencies
+            let dependencies = SessionCoreDependencies(
+                registry: base.registry,
+                gates: base.gates,
+                makeStore: base.makeStore,
+                makeClients: base.makeClients,
+                makeEngine: { [harness] _ in try harness!.engine() },
+                makeRevoker: base.makeRevoker,
+                scheduleRestore: base.scheduleRestore,
+                bounds: base.bounds,
+                now: { Date() }
+            )
+            func client() throws -> AmplifyCognitoClient {
+                try AmplifyCognitoClient(configuration: ClientFixtures.configuration, options: .init(sessionId: work), dependencies: dependencies)
+            }
+            var first: AmplifyCognitoClient? = try client()
+            harness.scriptSRP(then: LiveEngineFixtures.challenge(.smsMfa, parameters: LiveEngineFixtures.smsParameters))
+            let started = try await XCTUnwrap(first).signIn(username: "alice", password: password)
+            guard case .confirmSignInWithSMSMFACode = started.nextStep else {
+                return XCTFail("\(name): expected the SMS challenge, got \(started.nextStep)")
+            }
+            XCTAssertNotNil(try store.storedChallenge(work), "\(name): the challenge is saved")
+            harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) -> RespondToAuthChallengeOutput in
+                throw refusal()
+            }
+
+            let answered = try await XCTUnwrap(first).confirmSignIn(challengeResponse: "123456")
+
+            XCTAssertEqual(answered.nextStep, expected, name)
+            XCTAssertEqual(try store.readChallenge(work), .absent, "\(name): the record is gone")
+            first = nil
+            await clientHarness.waitForBaseline()
+            harness.cognito.clearCalls()
+            let next = try client()
+            let state = await next.currentSessionState()
+            XCTAssertEqual(state, .signedOut, name)
+            XCTAssertEqual(harness.cognito.operations, [], "\(name): nothing is sent")
+            XCTAssertEqual(try store.readChallenge(work), .absent, name)
+        }
+    }
+
     /// - Given: engine B already waiting on a challenge of its own, and a saved form from elsewhere
     /// - When: B is asked to resume the saved form
     /// - Then:

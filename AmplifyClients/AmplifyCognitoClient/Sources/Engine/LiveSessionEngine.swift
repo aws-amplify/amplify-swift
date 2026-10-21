@@ -174,12 +174,20 @@ actor LiveSessionEngine: SessionEngine {
 
     // MARK: The challenge record (`ChallengeRecord+Engine.swift` says which states are saved)
 
+    /// `nil` for an attempt on `confirmSignUp` or `resetPassword`, whatever its machine holds: Cognito refusing a
+    /// challenge's answer with `UserNotConfirmedException` or `PasswordResetRequiredException` leaves the machine on
+    /// that challenge's error state, which would otherwise be saved as the challenge the sign-in has left.
     var pendingChallengeState: ChallengeRecord.State? {
         get async {
             guard let attempt else {
                 return nil
             }
-            return await ChallengeRecord.State(attempt.operation.authMachine.currentState)
+            switch attempt.step {
+            case .confirmSignUp, .resetPassword:
+                return nil
+            default:
+                return await ChallengeRecord.State(attempt.operation.authMachine.currentState)
+            }
         }
     }
 

@@ -17,7 +17,9 @@ import InternalAWSCognitoAuth
 // - `SignInState.resolvingTOTPSetup(.waitingForAnswer | .error(data?, _), …)`, as `.totpSetup`.
 // Every other state is not saved: an SRP or migrate-auth error (`confirmSignUp`, `resetPassword`, which answer
 // "restart"), a step in flight, a WebAuthn ceremony, a hosted-UI sign-in. A wrong answer's `.error` sub-state is
-// saved as `.waitingForAnswer` with the same session: resumed, the user answers again.
+// saved as `.waitingForAnswer` with the same session: resumed, the user answers again. An `.error` sub-state whose
+// error made the step `confirmSignUp` or `resetPassword` (an answer refused with `UserNotConfirmedException` or
+// `PasswordResetRequiredException`) is not saved either: `LiveSessionEngine.pendingChallengeState` checks the step.
 //
 // **The password is never saved.** `resolvingTOTPSetup` carries the sign-in's whole `SignInEventData`, password
 // included, and that type's `Codable` encodes it. Nothing reads it past a challenge (only `InitiateUserAuth`, the SRP
