@@ -16,7 +16,9 @@
 # A deliberate re-lock (new snapshots and their new pins, admin-approved) fails this check by design: the base
 # script still has the old pins, and the script itself changed. An admin merges it past the failure (with a bypass,
 # once the check is required), and the push run of that merge on main, which runs the pre-merge script, fails once.
-# The next push runs the merged script and passes.
+# The next push runs the merged script and passes. Every open PR then fails until it merges main, since its head
+# still has the old snapshots. A change on main to the script or this workflow alone fails no open PR: the
+# self-file check counts only the PR's own changes, from its merge base.
 #
 # A second job checks that scripts/cognito-engine/engine_paths.txt (the files that belong to the shared Cognito module) matches
 # what scripts/cognito-engine/gen_engine_paths.py generates, so a hand edit or a move without a regeneration fails.

@@ -34,11 +34,14 @@
 # 1. Each locked directory's git tree at head-ref (default HEAD) must equal the tree hash pinned below,
 #    whatever the base. A PR based on an older branch, or a merge into another branch, cannot claim an
 #    exemption.
-# 2. When base-ref is given, this script and its workflow must be unchanged between base-ref and head-ref,
-#    so a PR that changes fixtures cannot also loosen this script. CI runs the base branch's copy of this
-#    script, but a PR's own copy of the workflow decides whether it runs at all, so a PR that edits the
-#    workflow to skip it is caught only by the admin review .github/CODEOWNERS requires for both files
-#    (see .github/workflows/auth_golden_fixture_lock.yml).
+# 2. When base-ref is given, head-ref must not change this script or its workflow since its merge base with
+#    base-ref (`git diff base-ref...head-ref`, so a change base-ref made after the branch point does not fail
+#    a PR that never touched either file), so a PR that changes fixtures cannot also loosen this script. CI
+#    runs the base branch's copy of this script, but a PR's own copy of the workflow decides whether it runs
+#    at all, so a PR that edits the workflow to skip it is caught only by the admin review .github/CODEOWNERS
+#    requires for both files (see .github/workflows/auth_golden_fixture_lock.yml).
+#
+# test_check_fixture_lock.sh runs this script in a scratch repository.
 #
 # Lifting the lock (a reviewed change that needs admin approval, see .github/CODEOWNERS) means editing a pinned hash
 # below; `StoredFormatGoldenTests.pinnedManifestSHA256`, `LegacyMigrationGoldenTests.pinnedFilesSHA256`,
@@ -89,7 +92,7 @@ done
 if [ -n "$BASE_REF" ]; then
     for file in "${SELF_FILES[@]}"; do
         if git cat-file -e "$BASE_REF:$file" 2> /dev/null \
-            && ! git diff --quiet "$BASE_REF" "$HEAD_REF" -- "$file"; then
+            && ! git diff --quiet "$BASE_REF...$HEAD_REF" -- "$file"; then
             echo "error: $file changed; the lock's own script and workflow are locked too" >&2
             status=1
         fi

@@ -3,6 +3,8 @@
 # - .github/composite_actions/remove_test_configuration: removes the integration-test configuration from a build
 #   before it is cached (test_remove_test_configuration.sh, over a fake build directory). On macOS, where the
 #   integration-test jobs run it, with BSD find.
+# - scripts/cognito-engine/check_fixture_lock.sh: the plugin behavior snapshot lock's self-file check
+#   (test_check_fixture_lock.sh, in a scratch repository built from this checkout).
 #
 # No AWS call is made, and the jobs need no credentials and no secrets.
 
@@ -12,12 +14,18 @@ on:
   pull_request:
     paths:
       - '.github/composite_actions/remove_test_configuration/**'
+      - 'scripts/cognito-engine/check_fixture_lock.sh'
+      - 'scripts/cognito-engine/test_check_fixture_lock.sh'
+      - '.github/workflows/auth_golden_fixture_lock.yml'
       - '.github/workflows/ci_script_self_tests.yml'
   push:
     branches:
       - main
     paths:
       - '.github/composite_actions/remove_test_configuration/**'
+      - 'scripts/cognito-engine/check_fixture_lock.sh'
+      - 'scripts/cognito-engine/test_check_fixture_lock.sh'
+      - '.github/workflows/auth_golden_fixture_lock.yml'
       - '.github/workflows/ci_script_self_tests.yml'
 
 permissions:
@@ -36,3 +44,14 @@ jobs:
       - name: Run the self-test
         run: bash .github/composite_actions/remove_test_configuration/test_remove_test_configuration.sh
 
+  fixture-lock:
+    name: Plugin behavior snapshot lock
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Run the self-test
+        run: bash scripts/cognito-engine/test_check_fixture_lock.sh
