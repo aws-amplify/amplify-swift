@@ -313,6 +313,10 @@ extension AuthClientError {
     /// underneath (JSON that does not match the model, more likely a client bug) keeps the engine's suggestion,
     /// "report a bug" included.
     ///
+    /// A network failure (`isNetworkFailure`) has the network error itself underneath (the `URLError`, or the
+    /// CFNetwork or POSIX error), not the engine's error over it, so an app can match it as the core's
+    /// fallbacks report it.
+    ///
     /// Engine texts that name the plugin's calls are given the client's names (`clientText(_:)`): the recovery
     /// suggestions in `clientRecoverySuggestions` ("Invoke Auth.signIn …" becomes "Call signIn …"), and
     /// `Amplify.MFAType.<type>` in a text becomes `AuthClientMFAType.<type>`. The engine's strings themselves are
@@ -345,7 +349,12 @@ extension AuthClientError {
                 // Cancellation has one shape in the client, whatever sheet the user closed.
                 self = .userCancelled(description, suggestion, error)
             } else if code == nil, let underlying, !(underlying is DecodingError), Self.isUnhelpfulServiceSuggestion(suggestion) {
-                self = .service(nil, Self.serviceDescription(description, underlying: underlying), Self.clientServiceSuggestion, error)
+                self = .service(
+                    nil,
+                    Self.serviceDescription(description, underlying: underlying),
+                    Self.clientServiceSuggestion,
+                    Self.isNetworkFailure(underlying) ? underlying : error
+                )
             } else {
                 self = .service(code, description, suggestion, error)
             }
@@ -413,8 +422,8 @@ extension AuthClientError {
     static let clientServiceSuggestion =
         "A network or service problem occurred. Check the connection and retry the operation."
 
-    /// How the client reports a transport failure `underlying`, with `wrapping` (the engine's error, or `underlying`
-    /// itself) underneath, or `nil` if it isn't one:
+    /// How the client reports a transport failure `underlying`, or `nil` if it isn't one. A network failure has
+    /// `underlying` itself underneath; the others have `wrapping` (the engine's error, or `underlying` itself):
     /// - a network failure (`isNetworkFailure`): `networkFailure`'s texts;
     /// - a response that could not be read (`isUnreadableResponse`): `.service` with no code,
     ///   `unreadableResponseDescription` and `unreadableServiceResponseSuggestion`, as the refresh path suggests;
@@ -422,7 +431,7 @@ extension AuthClientError {
     ///   `emptyServiceFailureDescription` and the client's network-or-service suggestion.
     static func transportFailure(_ underlying: Error, wrapping: Error) -> AuthClientError? {
         if isNetworkFailure(underlying) {
-            return .service(nil, networkFailureDescription, clientServiceSuggestion, wrapping)
+            return .service(nil, networkFailureDescription, clientServiceSuggestion, underlying)
         }
         if isUnreadableResponse(underlying) {
             return .service(nil, unreadableResponseDescription, unreadableServiceResponseSuggestion, wrapping)

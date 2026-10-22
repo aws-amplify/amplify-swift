@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import Foundation
 import InternalAWSCognitoAuth
@@ -37,24 +38,26 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
         super.tearDown()
     }
 
-    /// - Given: each network failure, thrown by `InitiateAuth`, `SignUp` and `ForgotPassword`
-    /// - When: a sign-in, a sign-up and a password reset run through a client over the live engine
+    /// - Given: each network failure, thrown by `InitiateAuth`, `SignUp`, `ForgotPassword` and `GetId`
+    /// - When: a sign-in, a sign-up, a password reset and a federation run through a client over the live engine
     /// - Then:
     ///    - each throws `.service` with no code, the network description and suggestion, and the network error
-    ///      underneath; none is `.unknown` or asks for a bug report
+    ///      itself underneath, never the engine's error over it; none is `.unknown` or asks for a bug report
     func testAnOperationThatCannotReachCognitoIsARetryableServiceError() async throws {
         for (name, failure) in networkErrors {
             harness = LiveEngineHarness()
             harness.cognito.always("InitiateAuth") { (_: InitiateAuthInput) -> InitiateAuthOutput in throw failure }
             harness.cognito.always("SignUp") { (_: SignUpInput) -> SignUpOutput in throw failure }
             harness.cognito.always("ForgotPassword") { (_: ForgotPasswordInput) -> ForgotPasswordOutput in throw failure }
+            harness.cognito.always("GetId") { (_: GetIdInput) -> GetIdOutput in throw failure }
             let clientHarness = ClientHarness()
             let client = try makeClient(over: clientHarness)
 
             let operations: [(String, () async throws -> Void)] = [
                 ("signIn", { _ = try await client.signIn(username: "alice", password: "password") }),
                 ("signUp", { _ = try await client.signUp(username: "carol", password: "Password1!") }),
-                ("resetPassword", { _ = try await client.resetPassword(for: "carol") })
+                ("resetPassword", { _ = try await client.resetPassword(for: "carol") }),
+                ("federateToIdentityPool", { _ = try await client.federateToIdentityPool(withProviderToken: "token", for: .facebook) })
             ]
             for (operation, body) in operations {
                 let label = "\(operation), \(name)"
@@ -62,7 +65,7 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
                     try await body()
                     XCTFail("\(label): expected an error")
                 } catch let error as AuthClientError {
-                    assertNetworkFailure(error, label)
+                    assertNetworkFailure(error, failure, label)
                 } catch {
                     XCTFail("\(label): expected an AuthClientError, got \(error)")
                 }
@@ -150,6 +153,7 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
             let outcome = try await engine.revoke(payload, global: false)
 
             let revokeError = try XCTUnwrap(outcome.revokeError, name)
+            assertIsTheNetworkError(revokeError.underlyingError, failure, name)
             guard case .service(nil, let description, let suggestion, _) = revokeError else {
                 XCTFail("\(name): expected a service error with no code, got \(revokeError)")
                 continue
@@ -175,6 +179,7 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
             let outcome = try await engine.revoke(payload, global: true)
 
             let globalError = try XCTUnwrap(outcome.globalSignOutError, name)
+            assertIsTheNetworkError(globalError.underlyingError, failure, name)
             guard case .service(nil, let description, let suggestion, _) = globalError else {
                 XCTFail("\(name): expected a service error with no code, got \(globalError)")
                 continue
@@ -186,6 +191,7 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
 
     private func assertNetworkFailure(
         _ error: AuthClientError,
+        _ failure: Error,
         _ label: String,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -196,9 +202,25 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
         XCTAssertEqual(description, "A network problem stopped the request. It may not have reached the service.", label, file: file, line: line)
         XCTAssertEqual(suggestion, AuthClientError.clientServiceSuggestion, label, file: file, line: line)
         XCTAssertFalse(suggestion.contains("bug"), label, file: file, line: line)
-        // The network error itself, or the engine's error over it.
-        let network = (underlying as? EngineAuthError)?.underlyingError ?? underlying
-        XCTAssertTrue(AuthClientError.isNetworkFailure(network), "\(label): \(String(describing: underlying))", file: file, line: line)
+        assertIsTheNetworkError(underlying, failure, label, file: file, line: line)
+    }
+
+    /// Asserts `underlying` is the network error `failure` itself, as an app matches it
+    /// (`AuthClientError.service(nil, _, _, let error as URLError)`), never the engine's error over it.
+    private func assertIsTheNetworkError(
+        _ underlying: Error?,
+        _ failure: Error,
+        _ label: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertFalse(underlying is EngineAuthError, "\(label): \(String(describing: underlying))", file: file, line: line)
+        let error = underlying as NSError?
+        XCTAssertEqual(error?.domain, (failure as NSError).domain, label, file: file, line: line)
+        XCTAssertEqual(error?.code, (failure as NSError).code, label, file: file, line: line)
+        if let expected = failure as? URLError {
+            XCTAssertEqual((underlying as? URLError)?.code, expected.code, label, file: file, line: line)
+        }
     }
 }
 

@@ -421,8 +421,8 @@ final class EngineMappingTests: XCTestCase {
     /// - When:
     ///    - each is mapped
     /// - Then:
-    ///    - every network failure is `.service` with no code, the network description and suggestion, and the engine
-    ///      error underneath
+    ///    - every network failure is `.service` with no code, the network description and suggestion, and the network
+    ///      error itself underneath
     ///    - a cancelled load, a response that arrived but was bad, an App Transport Security or authentication
     ///      failure, a bad URL and the other POSIX error don't get the network description, and a code-less
     ///      `.service` over one of them keeps its own; the coded `.unknown` stays `.unknown`
@@ -448,7 +448,10 @@ final class EngineMappingTests: XCTestCase {
                 XCTAssertEqual(mapped.kind, .service(nil), "\(engine)")
                 XCTAssertEqual(mapped.errorDescription, AuthClientError.networkFailureDescription, "\(engine)")
                 XCTAssertEqual(mapped.recoverySuggestion, AuthClientError.clientServiceSuggestion, "\(engine)")
-                XCTAssertNotNil(mapped.underlyingError as? EngineAuthError, "\(engine)")
+                // The network error itself, not the engine's error over it.
+                let underlying = mapped.underlyingError as NSError?
+                XCTAssertEqual(underlying?.domain, (failure as NSError).domain, "\(engine)")
+                XCTAssertEqual(underlying?.code, (failure as NSError).code, "\(engine)")
             }
         }
         // Failures that reached the service, or never left the device for another reason, are not network failures:

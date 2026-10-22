@@ -60,6 +60,10 @@ public enum AuthClientError {
     /// Cognito rejected the request. `code` says why, when the client recognises the service's
     /// exception (`nil` otherwise). The counterpart of Amplify core's `AuthError.service`, whose
     /// underlying error is the plugin's `AWSCognitoAuthError`: match on `code` here instead.
+    ///
+    /// Also a request that could not be completed: a network failure has no code and the network error itself
+    /// underneath (the `URLError`, or the CFNetwork or POSIX error), and a response that could not be read, or
+    /// another URL loading failure, has no code either.
     case service(AuthClientServiceErrorCode?, ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// The caller is not allowed to perform the operation: for example, a wrong password, or a

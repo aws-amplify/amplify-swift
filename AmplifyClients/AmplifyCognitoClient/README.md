@@ -1425,7 +1425,11 @@ do {
 A network failure is `.service` with no code in every call: offline, a failed DNS or host lookup, a refused or lost
 connection, a timeout, or a failed secure connection gives the description "A network problem stopped the request. It
 may not have reached the service." and the suggestion "A network or service problem occurred. Check the connection
-and retry the operation.", with the network error underneath. The description doesn't say the request never arrived:
+and retry the operation.", with the network error itself underneath (`underlyingError` is the `URLError`, or the
+CFNetwork or POSIX error), so `catch AuthClientError.service(nil, _, _, let error as URLError) where error.code ==
+.notConnectedToInternet` matches it in every call. `AuthClientServiceErrorCode.network` is only set by an HTTP client
+that reports connectivity failures in its own terms, such as a CRT engine set through `configureUserPoolClient`; with the
+default one, match the `URLError`. The description doesn't say the request never arrived:
 a timed-out or lost connection may follow a request Cognito acted on, whose answer was lost. A transport failure that
 isn't a network failure is `.service` with no code too, never `.unknown`: a response that couldn't be read (one that
 isn't JSON, such as an HTML error page, or a malformed one) is "The service returned a response that could not be

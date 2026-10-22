@@ -94,7 +94,9 @@ public enum AuthClientServiceErrorCode: CaseIterable {
     /// Requested resource is not available with the current account setup.
     case invalidAccountTypeException
 
-    /// Request was not completed because of a network related issue
+    /// Request was not completed because of a network related issue. Set only by an HTTP client that reports
+    /// connectivity failures in its own terms, such as a CRT engine set through `configureUserPoolClient`; with the
+    /// default HTTP client, a network failure is `AuthClientError.service` with no code and the `URLError` underneath.
     case network
 
     /// SMS role related issue
