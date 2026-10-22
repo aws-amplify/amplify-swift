@@ -956,6 +956,121 @@ final class SessionManagerTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(recorder.sessionIds.last, id)
     }
 
+    /// Test that a session started by a record while backgrounded starts paused
+    ///
+    /// - Given: A stopped session manager that has seen the app go to background
+    /// - When:
+    ///    - withRecordingSession runs a body
+    /// - Then:
+    ///    - The new session is paused, and resuming within the timeout keeps it
+    ///
+    func testRecordingSessionStartedInBackgroundIsPaused() async {
+        let clock = TestClock()
+        let recorder = BoundaryRecorder()
+        let manager = SessionManager(
+            appId: "test-app",
+            generateId: { UUID().uuidString },
+            now: { clock.now },
+            onBoundary: recorder.record
+        )
+
+        await manager.handleAppPaused()
+        let id = await manager.withRecordingSession { $0.id }
+        let state = await manager.state
+
+        XCTAssertEqual(state, .paused)
+        clock.advance(by: 1)
+        await manager.handleAppResumed()
+        let resumed = await manager.state
+        let session = await manager.session
+        XCTAssertEqual(resumed, .active)
+        XCTAssertEqual(session?.id, id)
+        XCTAssertEqual(recorder.boundaries, [.start])
+    }
+
+    /// Test that a session started while backgrounded times out
+    ///
+    /// - Given: A session manager with a short timeout that has seen the app go to background
+    /// - When:
+    ///    - startSession() is called and the timeout elapses
+    /// - Then:
+    ///    - The session is stopped, stamped at its start
+    ///
+    func testSessionStartedInBackgroundTimesOut() async throws {
+        let clock = TestClock()
+        let recorder = BoundaryRecorder()
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 0.05,
+            generateId: { UUID().uuidString },
+            now: { clock.now },
+            onBoundary: recorder.record
+        )
+
+        await manager.handleAppPaused()
+        await manager.startSession()
+        let state = await manager.state
+        XCTAssertEqual(state, .paused)
+
+        try await Task.sleep(nanoseconds: 300_000_000)
+
+        let stopped = await manager.state
+        XCTAssertEqual(stopped, .stopped)
+        XCTAssertEqual(recorder.boundaries, [.start, .stop])
+        XCTAssertEqual(recorder.sessions.last?.stopTimestamp, recorder.sessions.first?.startTimestamp)
+    }
+
+    /// Test that a session replacing an expired pause stays paused in the background
+    ///
+    /// - Given: A paused session whose timeout elapsed by the clock, app still backgrounded
+    /// - When:
+    ///    - withRecordingSession runs a body
+    /// - Then:
+    ///    - Stop and start are reported and the new session is paused
+    ///
+    func testRecordingSessionReplacingExpiredPauseStaysPaused() async {
+        let clock = TestClock()
+        let recorder = BoundaryRecorder()
+        let manager = SessionManager(
+            appId: "test-app",
+            generateId: { UUID().uuidString },
+            now: { clock.now },
+            onBoundary: recorder.record
+        )
+
+        await manager.startSession()
+        await manager.handleAppPaused()
+        clock.advance(by: 6)
+        _ = await manager.withRecordingSession { $0.id }
+        let state = await manager.state
+
+        XCTAssertEqual(recorder.boundaries, [.start, .stop, .start])
+        XCTAssertEqual(state, .paused)
+    }
+
+    /// Test that returning to foreground with no session clears the background state
+    ///
+    /// - Given: An explicitly stopped session manager
+    /// - When:
+    ///    - The app goes to background and returns, then startSession() is called
+    /// - Then:
+    ///    - The new session is active
+    ///
+    func testForegroundWithoutSessionClearsBackground() async {
+        let manager = SessionManager(
+            appId: "test-app",
+            generateId: { UUID().uuidString }
+        )
+
+        await manager.stopSession()
+        await manager.handleAppPaused()
+        await manager.handleAppResumed()
+        await manager.startSession()
+
+        let state = await manager.state
+        XCTAssertEqual(state, .active)
+    }
+
     /// Test that dispose() reports the final stop and nothing afterwards
     ///
     /// - Given: A session manager with an active session

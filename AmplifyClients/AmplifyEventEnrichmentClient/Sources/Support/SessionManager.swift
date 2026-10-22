@@ -53,6 +53,7 @@ actor SessionManager {
     private var pausedAt: Date?
     private var pauseTask: Task<Void, Never>?
     private var pauseGeneration = 0
+    private var backgrounded = false
     private var stoppedExplicitly = false
     private var disposed = false
 
@@ -150,19 +151,13 @@ actor SessionManager {
         disposed = true
     }
 
-    /// Called when the app moves to background.
+    /// Called when the app moves to background. Noted even with no session
+    /// running, so a session started before the next foreground starts paused.
     func handleAppPaused() {
-        guard !disposed, _state == .active else { return }
-        _state = .paused
-        pausedAt = now()
-        pauseGeneration += 1
-        let generation = pauseGeneration
-        let timeout = sessionTimeout
-        pauseTask = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
-            guard !Task.isCancelled else { return }
-            await self?.onTimeoutExpired(pauseGeneration: generation)
-        }
+        guard !disposed else { return }
+        backgrounded = true
+        guard _state == .active else { return }
+        pauseCurrent()
     }
 
     /// Called when the app returns to foreground.
@@ -171,6 +166,7 @@ actor SessionManager {
     /// system can suspend timers while the app is in the background.
     func handleAppResumed() {
         guard !disposed else { return }
+        backgrounded = false
         switch _state {
         case .paused:
             if isPauseExpired {
@@ -201,6 +197,19 @@ actor SessionManager {
         return now().timeIntervalSince(pausedAt) >= sessionTimeout
     }
 
+    private func pauseCurrent() {
+        _state = .paused
+        pausedAt = now()
+        pauseGeneration += 1
+        let generation = pauseGeneration
+        let timeout = sessionTimeout
+        pauseTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+            guard !Task.isCancelled else { return }
+            await self?.onTimeoutExpired(pauseGeneration: generation)
+        }
+    }
+
     private func startFresh() {
         stoppedExplicitly = false
         let start = now()
@@ -209,6 +218,9 @@ actor SessionManager {
         _session = session
         _state = .active
         onBoundary(.start, session)
+        // A session started while backgrounded pauses immediately so it can
+        // still time out.
+        if backgrounded { pauseCurrent() }
     }
 
     // The session became inactive when the app was backgrounded, so a session
