@@ -267,8 +267,11 @@ enum LiveSignInSteps {
             }
         case .resolvingTOTPSetup(let setupState, _):
             switch setupState {
-            case .error(_, let error):
-                return try failed(error, retryable: true, confirming: confirming, challengeRejected: challengeRejected)
+            case .error(let setup, let error):
+                // No setup means `AssociateSoftwareToken` failed, so there is no secret to verify a code
+                // against, and the engine drops a retried answer without a call or a state change. So the
+                // attempt is dropped instead of kept for an answer that would never return.
+                return try failed(error, retryable: setup != nil, confirming: confirming, challengeRejected: challengeRejected)
             case .waitingForAnswer(let setup):
                 return .continueSignInWithTOTPSetup(AuthClientTOTPSetupDetails(
                     sharedSecret: setup.secretCode,
@@ -292,8 +295,8 @@ enum LiveSignInSteps {
     }
 
     /// The plugin's `validateError`: an unconfirmed user and a required password reset are steps; anything
-    /// else is thrown. A failure inside a challenge or a TOTP setup keeps the attempt on the confirm path, so
-    /// the user can answer again, unless the challenge session itself has expired.
+    /// else is thrown. A failure inside a challenge or a TOTP setup that has its secret keeps the attempt on the
+    /// confirm path, so the user can answer again, unless the challenge session itself has expired.
     private static func failed(
         _ error: SignInError,
         retryable: Bool,

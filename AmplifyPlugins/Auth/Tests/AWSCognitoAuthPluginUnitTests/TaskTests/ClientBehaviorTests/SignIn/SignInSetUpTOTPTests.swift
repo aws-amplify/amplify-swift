@@ -579,4 +579,113 @@ class SignInSetUpTOTPTests: BasePluginTest, @unchecked Sendable {
             }
         }
     }
+
+    /// A `USER_AUTH` sign-in with the password factor that Cognito answers with `MFA_SETUP` offering TOTP but
+    /// not email OTP is the TOTP setup step.
+    ///
+    /// - Given: an auth plugin with mocked service. `InitiateAuth` answers `MFA_SETUP` with `SMS_MFA` and
+    ///   `SOFTWARE_TOKEN_MFA`, and `AssociateSoftwareToken` answers a secret
+    /// - When:
+    ///    - I invoke signIn with a password and `.userAuth(preferredFirstFactor: .password)`
+    /// - Then:
+    ///    - it returns `.continueSignInWithTOTPSetup` with the secret within the bound, instead of never
+    ///      returning
+    ///
+    func testUserAuthPasswordSignInAnsweredWithMFASetupIsTheTOTPSetup() async {
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+            XCTAssertEqual(input.authFlow, .userAuth)
+            XCTAssertEqual(input.authParameters?["PREFERRED_CHALLENGE"], "PASSWORD")
+            return InitiateAuthOutput(
+                authenticationResult: .none,
+                challengeName: .mfaSetup,
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"],
+                session: "someSession"
+            )
+        }, mockAssociateSoftwareTokenResponse: { _ in
+            return .init(secretCode: "sharedSecret", session: "newSession")
+        })
+        let pluginOptions = AWSAuthSignInOptions(authFlowType: .userAuth(preferredFirstFactor: .password))
+        let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
+        let returned = expectation(description: "signIn returns")
+
+        Task {
+            defer { returned.fulfill() }
+            do {
+                let result = try await self.plugin.signIn(username: "username", password: "password", options: options)
+                guard case .continueSignInWithTOTPSetup(let totpDetails) = result.nextStep else {
+                    XCTFail("Result should be .continueSignInWithTOTPSetup for next step, got \(result.nextStep)")
+                    return
+                }
+                XCTAssertEqual(totpDetails.sharedSecret, "sharedSecret")
+                XCTAssertEqual(totpDetails.username, "username")
+            } catch {
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+
+        await fulfillment(of: [returned], timeout: 5)
+    }
+
+    /// A TOTP setup whose `AssociateSoftwareToken` fails, after the user picked TOTP, throws, and a retried
+    /// confirmSignIn is refused instead of never returning.
+    ///
+    /// - Given: an auth plugin with mocked service. SRP is answered with `MFA_SETUP` offering TOTP and email
+    ///   OTP, and `AssociateSoftwareToken` fails with `InternalErrorException`
+    /// - When:
+    ///    - I invoke signIn, then confirmSignIn selecting TOTP, then confirmSignIn selecting TOTP again
+    /// - Then:
+    ///    - signIn returns `.continueSignInWithMFASetupSelection`
+    ///    - the first confirmSignIn throws an `.unknown` error
+    ///    - the second throws `.invalidState`
+    ///    - each within the bound
+    ///
+    func testRetryAfterAFailedTOTPAssociationIsRefused() async {
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            return InitiateAuthOutput(
+                authenticationResult: .none,
+                challengeName: .passwordVerifier,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
+                session: "someSession"
+            )
+        }, mockRespondToAuthChallengeResponse: { _ in
+            return .testData(
+                challenge: .mfaSetup,
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SOFTWARE_TOKEN_MFA\",\"EMAIL_OTP\"]"]
+            )
+        }, mockAssociateSoftwareTokenResponse: { _ in
+            throw AWSCognitoIdentityProvider.InternalErrorException(message: "Exception")
+        })
+        let selected = expectation(description: "the TOTP selection returns")
+        let retried = expectation(description: "the retried TOTP selection returns")
+
+        Task {
+            do {
+                let result = try await self.plugin.signIn(username: "username", password: "password", options: .init())
+                guard case .continueSignInWithMFASetupSelection = result.nextStep else {
+                    XCTFail("Result should be .continueSignInWithMFASetupSelection for next step, got \(result.nextStep)")
+                    return
+                }
+                _ = try await self.plugin.confirmSignIn(challengeResponse: MFAType.totp.challengeResponse)
+                XCTFail("Should not succeed")
+            } catch {
+                guard case AuthError.unknown = error else {
+                    XCTFail("Should produce an unknown error instead of \(error)")
+                    return
+                }
+            }
+            selected.fulfill()
+            do {
+                _ = try await self.plugin.confirmSignIn(challengeResponse: MFAType.totp.challengeResponse)
+                XCTFail("Should not succeed")
+            } catch {
+                guard case AuthError.invalidState = error else {
+                    XCTFail("Should produce an invalidState error instead of \(error)")
+                    return
+                }
+            }
+            retried.fulfill()
+        }
+
+        await fulfillment(of: [selected, retried], timeout: 5, enforceOrder: true)
+    }
 }
