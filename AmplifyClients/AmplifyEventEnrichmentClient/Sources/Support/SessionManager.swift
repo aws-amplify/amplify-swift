@@ -101,9 +101,9 @@ actor SessionManager {
             // An initializer cannot call isolated methods, so this repeats startFresh().
             let start = now()
             let session = Self.makeSession(appId: appId, uniqueId: generateId(), start: start)
-            sessionStart = start
-            _session = session
-            _state = .active
+            self.sessionStart = start
+            self._session = session
+            self._state = .active
             onBoundary(.start, session)
         }
     }

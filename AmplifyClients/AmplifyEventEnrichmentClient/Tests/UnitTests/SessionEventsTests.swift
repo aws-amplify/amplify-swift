@@ -393,8 +393,8 @@ final class SessionEventsTests: XCTestCase, @unchecked Sendable {
         await client.close()
 
         let events = await sink.events
-        XCTAssertEqual(events.filter { $0.eventType == "_session.start" }.count, 20)
-        XCTAssertEqual(events.filter { $0.eventType == "_session.stop" }.count, 20)
+        XCTAssertEqual(events.count(where: { $0.eventType == "_session.start" }), 20)
+        XCTAssertEqual(events.count(where: { $0.eventType == "_session.stop" }), 20)
         assertSessionOrder(events)
     }
 
