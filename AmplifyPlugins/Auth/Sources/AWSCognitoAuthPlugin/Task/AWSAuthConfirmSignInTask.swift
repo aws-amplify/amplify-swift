@@ -125,20 +125,7 @@ final class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger, @unc
                 throw invalidStateError
             }
         case .resolvingTOTPSetup(let resolvingSetupTokenState, _):
-            switch resolvingSetupTokenState {
-            case .error(.none, _):
-                // A setup that failed before its secret was issued, or at its last request, has no session to
-                // answer with: the engine would drop the answer and this call would never return.
-                throw AuthError.invalidState(
-                    "Cannot use Auth.confirmSignIn in the current state. Please use Auth.signIn to reinitiate the sign-in process.",
-                    AuthPluginErrorConstants.invalidStateError, nil
-                )
-            case .waitingForAnswer, .error:
-                log.verbose("Sending confirm signIn event: \(resolvingSetupTokenState)")
-                await sendConfirmTOTPSetupEvent()
-            default:
-                throw invalidStateError
-            }
+            try await answerTOTPSetup(resolvingSetupTokenState, invalidStateError)
         case .signingInWithWebAuthn(let webAuthnState):
             switch webAuthnState {
             case .error:
@@ -167,6 +154,23 @@ final class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger, @unc
             default:
                 throw invalidStateError
             }
+        default:
+            throw invalidStateError
+        }
+    }
+
+    private func answerTOTPSetup(_ setUpTOTPState: SignInTOTPSetupState, _ invalidStateError: AuthError) async throws {
+        switch setUpTOTPState {
+        case .error(.none, _):
+            // A setup that failed before its secret was issued, or at its last request, has no session to
+            // answer with: the engine would drop the answer and this call would never return.
+            throw AuthError.invalidState(
+                "Cannot use Auth.confirmSignIn in the current state. Please use Auth.signIn to reinitiate the sign-in process.",
+                AuthPluginErrorConstants.invalidStateError, nil
+            )
+        case .waitingForAnswer, .error:
+            log.verbose("Sending confirm signIn event: \(setUpTOTPState)")
+            await sendConfirmTOTPSetupEvent()
         default:
             throw invalidStateError
         }
