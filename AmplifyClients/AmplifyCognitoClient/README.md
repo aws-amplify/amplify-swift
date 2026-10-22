@@ -1182,8 +1182,9 @@ that doesn't track devices: no request is sent. On such a pool only the calls th
 and `forgetDevice(_:)` of another device, throw `.configuration` ("Device tracking not currently enabled for this
 pool.").
 
-`forgetDevice()` keeps this device's record, as the plugin does. The next sign-in, in any flow, sends its device key,
-finds that Cognito no longer knows it, drops the record and starts again without it.
+`forgetDevice()` keeps this device's record, as the plugin does. The next sign-in in any flow but the hosted UI, auto
+sign-in included, sends its device key, finds that Cognito no longer knows it, drops the record and starts again
+without it. A hosted-UI sign-in sends no device key, so the record stays until a later sign-in of another kind.
 
 ## MFA preferences and TOTP
 
