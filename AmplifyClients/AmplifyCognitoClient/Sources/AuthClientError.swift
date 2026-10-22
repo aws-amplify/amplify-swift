@@ -78,7 +78,8 @@ public enum AuthClientError {
     /// The user dismissed a system sheet the operation needed: the passkey sheet of a WebAuthn ceremony, or the
     /// hosted UI's sign-in browser. Also thrown when `cancelWebUISignIn()` or `resetSystemSheet()` closes the
     /// sheet. Nothing was changed; retrying is the user's choice. For the hosted UI's sign-out page it is not
-    /// thrown but returned, in `AuthClientSignOutResult.failed`, and the session stays signed in.
+    /// thrown but returned, in `AuthClientSignOutResult.failed`, and the session stays signed in; unless the session
+    /// had expired, which is signed out on this device anyway: then it is the `.partial` result's `hostedUIError`.
     case userCancelled(ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// A local WebAuthn ceremony failed before Cognito was asked anything. The underlying error is the

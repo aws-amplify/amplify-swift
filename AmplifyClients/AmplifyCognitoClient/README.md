@@ -1350,7 +1350,8 @@ func hostedUISignOut(client: AmplifyCognitoClient, window: AuthClientPresentatio
   `prefersEphemeralSession: true`.
 - If the user closes the sign-out page, the result is `.failed(.userCancelled)` and the session stays signed in,
   as with the plugin, unless the session had already expired. Then it signs out anyway and returns `.partial` with
-  `hostedUIError` `.userCancelled`. The same goes when `cancelWebUISignIn()` closes this session's sign-out page, or
+  `hostedUIError` `.userCancelled`, which says the session was signed out on this device but not from the hosted UI:
+  as without a window, signing out again won't clear the cookie. The same goes when `cancelWebUISignIn()` closes this session's sign-out page, or
   `resetSystemSheet()` closes it before it finished.
 - If the page can't be shown or completed, the result is `.failed` and the session stays signed in, with nothing
   revoked, as with the plugin: `.configuration` when the configuration has no hosted UI or no usable sign-out
