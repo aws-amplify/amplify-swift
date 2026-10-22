@@ -493,6 +493,14 @@ package extension SignInState {
                     )
                 }
 
+                // The setup's last call, `RespondToAuthChallenge`, failed (`CompleteTOTPSetup`). The TOTP
+                // resolver only takes `SetUpTOTPEvent`s, so without this arm the error would be dropped and the
+                // sign-in would never end. The error carries no setup data, as after a failed
+                // `AssociateSoftwareToken`: no session is kept to answer with again.
+                if case .throwAuthError(let error) = event.isSignInEvent {
+                    return .init(newState: .resolvingTOTPSetup(.error(nil, error), signInEventData))
+                }
+
                 let resolution = SignInTOTPSetupState.Resolver(
                     signInEventData: signInEventData).resolve(
                         oldState: setUpTOTPState,

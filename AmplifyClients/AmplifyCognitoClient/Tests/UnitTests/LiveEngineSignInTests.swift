@@ -758,6 +758,97 @@ final class LiveEngineSignInTests: XCTestCase {
         XCTAssertNil(pending)
     }
 
+    /// A TOTP setup whose last call fails ends the confirmation with that failure, and drops the attempt.
+    ///
+    /// - Given: a sign-in stopped on a TOTP setup, `VerifySoftwareToken` accepting the code, and the setup's
+    ///   `RespondToAuthChallenge` failing with `UserLambdaValidationException`
+    /// - When:
+    ///    - alice confirms the code, then signs in again
+    /// - Then:
+    ///    - it throws `.service(.lambda)` within the bound, instead of never returning
+    ///    - nothing is pending, and a new sign-in finishes `.done`
+    ///
+    func testAFailedTOTPSetupAnswerEndsTheConfirmation() async throws {
+        let engine = try harness.engine()
+        harness.scriptSRP(then: LiveEngineFixtures.challenge(.mfaSetup, parameters: ["MFAS_CAN_SETUP": #"["SOFTWARE_TOKEN_MFA"]"#]))
+        harness.cognito.once("AssociateSoftwareToken") { (_: AssociateSoftwareTokenInput) in
+            AssociateSoftwareTokenOutput(secretCode: "SHARED-SECRET", session: "setup-session")
+        }
+        harness.cognito.once("VerifySoftwareToken") { (_: VerifySoftwareTokenInput) in
+            VerifySoftwareTokenOutput(session: "verified-session", status: .success)
+        }
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) -> RespondToAuthChallengeOutput in
+            throw UserLambdaValidationException(message: "PostAuthentication failed with error unavailable.")
+        }
+        _ = try await engine.signIn(.srp(), current: nil)
+
+        let error = try await withinTime(10, "the TOTP setup's confirmation") {
+            await thrownError { try await engine.confirmSignIn(.answer("123456"), current: nil) }
+        }
+
+        guard case .service(.lambda?, _, _, _) = error.flatMap(authError) else {
+            return XCTFail("expected .service(.lambda), got \(String(describing: error))")
+        }
+        let pending = await engine.pendingChallenge
+        XCTAssertNil(pending)
+
+        harness.scriptSRP()
+        harness.scriptIdentityPool()
+        let next = try await withinTime(10, "the next sign-in") {
+            try await engine.signIn(.srp(), current: nil)
+        }
+
+        guard case .done = next else {
+            return XCTFail("expected .done, got \(next)")
+        }
+    }
+
+    /// A TOTP setup whose `AssociateSoftwareToken` fails, after the user picked TOTP, drops the attempt: a
+    /// retried answer has no secret to verify against.
+    ///
+    /// - Given: SRP answered with `MFA_SETUP` offering TOTP and email, and `AssociateSoftwareToken` failing with
+    ///   `TooManyRequestsException`
+    /// - When:
+    ///    - alice signs in, selects TOTP, then selects TOTP again
+    /// - Then:
+    ///    - the selection throws `.service(.requestLimitExceeded)` within the bound, and nothing is pending
+    ///    - the retry throws `invalidState` within the bound, instead of never returning, with no further call
+    ///
+    func testAFailedTOTPAssociationDropsTheAttempt() async throws {
+        let engine = try harness.engine()
+        harness.scriptSRP(then: LiveEngineFixtures.challenge(
+            .mfaSetup,
+            parameters: ["MFAS_CAN_SETUP": #"["SOFTWARE_TOKEN_MFA","EMAIL_OTP"]"#]
+        ))
+        harness.cognito.once("AssociateSoftwareToken") { (_: AssociateSoftwareTokenInput) -> AssociateSoftwareTokenOutput in
+            throw AWSCognitoIdentityProvider.TooManyRequestsException(message: "Rate exceeded")
+        }
+        let first = try await engine.signIn(.srp(), current: nil)
+        guard case .challenge(.continueSignInWithMFASetupSelection) = first else {
+            return XCTFail("expected an MFA setup selection, got \(first)")
+        }
+
+        let error = try await withinTime(10, "the TOTP selection") {
+            await thrownError { try await engine.confirmSignIn(.answer("SOFTWARE_TOKEN_MFA"), current: nil) }
+        }
+
+        guard case .service(.requestLimitExceeded?, _, _, _) = error.flatMap(authError) else {
+            return XCTFail("expected .service(.requestLimitExceeded), got \(String(describing: error))")
+        }
+        let pending = await engine.pendingChallenge
+        XCTAssertNil(pending)
+        let operations = harness.cognito.operations
+
+        let retryError = try await withinTime(10, "the retried TOTP selection") {
+            await thrownError { try await engine.confirmSignIn(.answer("SOFTWARE_TOKEN_MFA"), current: nil) }
+        }
+
+        guard case .invalidState = retryError.flatMap(authError) else {
+            return XCTFail("expected invalidState, got \(String(describing: retryError))")
+        }
+        XCTAssertEqual(harness.cognito.operations, operations)
+    }
+
     /// A confirmation with nothing pending is `invalidState`, and calls nothing.
     ///
     /// - Given: an engine with no sign-in
@@ -960,5 +1051,15 @@ final class LiveEngineSignInTests: XCTestCase {
             }
         }
         XCTAssertEqual(harness.cognito.operations, [])
+    }
+}
+
+/// The error `body` throws, or `nil` if it returns.
+private func thrownError(_ body: () async throws -> some Any) async -> (any Error)? {
+    do {
+        _ = try await body()
+        return nil
+    } catch {
+        return error
     }
 }
