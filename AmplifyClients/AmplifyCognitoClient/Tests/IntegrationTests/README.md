@@ -897,8 +897,12 @@ TOTP enabled; users with no MFA preference are never challenged. Every resource 
 `teardown.sh` refuses to delete anything without it. The tests call this user pool and identity pool R-UP and
 R-IP (and the identity-only pool below R-IP2).
 
-Every script that calls AWS requires `AWS_PROFILE` (`require_aws_profile` in `lib.sh` and `parity.py`) and
-exits with an error without it: none of them picks a profile, or falls back to the CLI's default one, itself.
+The scripts use whatever credentials the AWS CLI resolves, and the first `provision.sh` records that account in
+`state.json`. From then on `provision.sh`, `prepare-run.sh`, `self-sign-up.sh`, `teardown.sh` and `parity.py`
+refuse any other account (`require_recorded_account` in `lib.sh` and `parity.py`). While no account is recorded
+yet, `lib.sh`'s check exits before any AWS call unless `AWS_PROFILE` is set, so a first provision can't land in the
+CLI's default account by accident. Set `AWS_PROFILE` to the sandbox account's profile and check
+`aws sts get-caller-identity` before that first run.
 
 | User | State | Set up by |
 |---|---|---|
