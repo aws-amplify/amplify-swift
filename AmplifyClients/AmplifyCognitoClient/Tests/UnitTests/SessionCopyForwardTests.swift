@@ -427,6 +427,49 @@ final class SessionCopyForwardTests: XCTestCase {
         }
     }
 
+    /// A refresh flight that adopts another writer's record, still waiting for an identity this process may not fetch
+    /// yet, answers as credentials that need no refresh do: the credentials provider throws the identity step's
+    /// refusal as `notConfigured`, not a retryable `unknown` saying the session holds no AWS credentials.
+    ///
+    /// - Given: alice's session carried from the user pool alone; a resolve whose refresh stored new tokens that soon
+    ///   need a refresh, then had its identity step refused; another writer (an app extension) then saves fresh tokens
+    ///   for alice, still waiting for their identity
+    /// - When: the credentials provider resolves again
+    /// - Then:
+    ///    - its refresh flight adopts the other writer's tokens, with no second engine refresh
+    ///    - it throws `CredentialsError.notConfigured` (`.failLoudly`) with the refusal's description, as the first
+    ///      resolve did
+    func testAnAdoptedRecordWaitingForARefusedIdentityFailsTheProviderWithTheRefusal() async throws {
+        let refusal = AuthClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
+        try aliceUnderTheUserPoolOnly()
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        var expiring = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 2)
+        expiring.stale = true
+        let stored = expiring
+        engine.scriptRefresh { _ in
+            throw SessionEngineError.refreshedThenFailed(payload: stored.data, error: .service(refusal))
+        }
+        let first = await providerError { try await client.credentialsProvider.resolve() }
+        let store = harness.store()
+        guard case .record(let envelope) = try store.read(work) else {
+            return XCTFail("no record")
+        }
+        var otherWriters = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 3).record(label: "Work")
+        otherWriters.identityPending = true
+        _ = try store.write(otherWriters, for: work, expecting: envelope.version)
+
+        let second = await providerError { try await client.credentialsProvider.resolve() }
+
+        XCTAssertEqual(engine.refreshCalls.count, 1)
+        XCTAssertEqual(try XCTUnwrap(currentRecord()).credentials, otherWriters.credentials)
+        for error in [first, second] {
+            XCTAssertEqual(error?.isNotConfigured, true, "\(String(describing: error))")
+            XCTAssertEqual(error?.disposition, .failLoudly)
+            XCTAssertEqual(error?.errorDescription, refusal.errorDescription)
+        }
+    }
+
     /// A cancelled identity step starts no back-off: the next call tries again.
     ///
     /// - Given: alice's session carried from the user pool alone, and a refresh that stores new tokens then fails
