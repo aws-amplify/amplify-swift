@@ -62,9 +62,9 @@ import Foundation
 // untouched. Switching, or rolling, back reads the old session as it was, unless it was signed out there.
 //
 // **Copy and keep, as the plugin does.** The record is re-wrapped, never copied byte for byte: written through the
-// commit guard as a new record (generation 1) with the same label, username and user ID. The old record is **kept**:
-// a rollback reads it again, as the plugin's does. The marker names the new namespace and remembers the copy it came
-// from, with a SHA-256 of the bytes that were carried. Sign-out and purge delete a remembered copy **only while its
+// commit guard as a new record (generation 1) with the same label, username and user ID. The old record is **kept**,
+// so a rollback finds it (below). The marker names the new namespace and remembers the copy it came from, with a
+// SHA-256 of the bytes that were carried. Sign-out and purge delete a remembered copy **only while its
 // bytes still have that digest, it provably holds the same user, and it is not a guest's** (`removePreviousCopies`). The
 // digest detects a write after the carry (an app extension on the old configuration that refreshed the record, or
 // signed another user in): that record is another writer's, and is left and logged. It does not detect that the
@@ -78,8 +78,14 @@ import Foundation
 // **What a rollback reads.** Back under a namespace whose record is still the untouched copy the marker remembers,
 // with the session signed out or purged under the namespace the marker names (by another app or extension, which
 // does not know this app's copies, or by a sign-out whose sweep failed), the copy reads as swept and is deleted
-// (`readKept`); not a guest's. Otherwise the session is kept here from then on, and the record under the namespace
-// the marker named is remembered as a copy, with its own user, whoever holds the record here.
+// (`readKept`); not a guest's. With the session still live there, of the same user pool user, holding tokens issued
+// after the copy's (a refresh there, which with refresh-token rotation retired the copy's refresh token, or a sign-in
+// again), and the change back one the client carries, that newer record is carried over the untouched copy
+// (`carryNewerBack`), as the plugin's same-user-pool rule copies the newer configuration's record over the older one:
+// so two configurations sharing a user pool keep one session. A copy rewritten since (another writer's), another
+// user's, a guest's or federated identity's, or one at least as new as the record there is not overtaken. Otherwise
+// the session is kept here from then on, and the record under the namespace the marker named is remembered as a
+// copy, with its own user, whoever holds the record here.
 //
 // **Whose each copy is.** The marker records each copy's user (`userKey`: `user:<userId>`, else
 // `identity:<identityId>`) and the user of the record under the namespace it names, as additive keys (schema 1 still;
@@ -513,8 +519,9 @@ extension SessionRecordStore {
     /// - With the marker naming another namespace (this app is back here: a rollback): if the session was signed out
     ///   or purged there, and this record is still the untouched copy the marker remembers, it reads as swept and is
     ///   deleted, as that sign-out or purge would have deleted it. A guest's copy is never swept: an app extension
-    ///   still on this configuration keeps its identity. Otherwise the session is kept here from now on, and the
-    ///   record there, if not signed out, is remembered as a copy with its own user.
+    ///   still on this configuration keeps its identity. If the session is live there with the same user's newer
+    ///   tokens, that record is carried over the untouched copy (`carryNewerBack`). Otherwise the session is kept
+    ///   here from now on, and the record there, if not signed out, is remembered as a copy with its own user.
     private func readKept(
         _ stored: VersionedSessionRecord,
         of sessionId: SessionID,
@@ -568,8 +575,68 @@ extension SessionRecordStore {
         if let otherData, let other, !other.isSignedOut {
             copy = NamespaceMarker.Copy(poolNamespace: marker.poolNamespace, sha256: Self.digest(otherData), user: userKey(other))
         }
+        if let copy, let other,
+           let newer = try carryNewerBack(other, over: stored, of: sessionId, marker: marker, remembering: copy, source: otherAccount) {
+            return newer
+        }
         recordRunningHere(sessionId, record: stored.record, remembering: copy)
         return .record(stored)
+    }
+
+    /// Back under a namespace whose record is still the untouched copy the marker remembers, while the session goes
+    /// on, live, under the namespace the marker names: carries that record over the copy, as a carry from there would,
+    /// if it provably holds the same user's newer session. The plugin's same-user-pool rule copies the newer
+    /// configuration's record over the older one in the same way, so the user keeps the session the later
+    /// configuration refreshed (with refresh-token rotation, the copy's refresh token is retired by then), or signed in
+    /// again over. Carried only when all of these hold:
+    /// - the change from the marker's namespace into this one is one the client carries (`carry(from:into:)`), and the
+    ///   record there is one that carry takes (live, of a kind it accepts, readable);
+    /// - both records are of one user pool user (the same `userId`, the token's `sub`): never another user's, and
+    ///   never a guest's or a federated identity's;
+    /// - the record there holds user pool tokens issued strictly later than this one's (`tokensIssuedAtOf`), so a
+    ///   record not refreshed since the carry, or an older one, is not carried;
+    /// - this record's bytes still have the digest the marker remembers for its copy here: nothing wrote it since the
+    ///   session left here. A record another writer rewrote (an app extension on this configuration) is that writer's,
+    ///   and is kept.
+    ///
+    /// Written through the commit guard over the version read; the marker then names this namespace and remembers the
+    /// record there as a copy (`copy`), as a carry does. If that record was signed out or purged meanwhile, the carry
+    /// is undone as a carry's is (`undoIfTheSourceEnded`): the session reads as absent, which is what the untouched copy
+    /// of an ended session reads as. `nil` if not carried: the caller keeps the record here.
+    ///
+    /// - Throws: `AuthClientError.storageUnavailable` if this record could not be re-read or the carry written.
+    private func carryNewerBack(
+        _ other: SessionRecord,
+        over stored: VersionedSessionRecord,
+        of sessionId: SessionID,
+        marker: NamespaceMarker,
+        remembering copy: NamespaceMarker.Copy,
+        source: String
+    ) throws -> ReadResult? {
+        let own = namespace.pools.keyComponent
+        guard let previous = recordedPrevious(marker),
+              let userId = stored.record.userId, other.userId == userId,
+              let theirs = other.credentials.flatMap(tokensIssuedAtOf),
+              let ours = stored.record.credentials.flatMap(tokensIssuedAtOf), theirs > ours,
+              let kept = marker.copies.first(where: { $0.poolNamespace == own }),
+              let carried = carried(other, by: previous.carry) else {
+            return nil
+        }
+        // Not atomic: re-read, then the guarded write over the version read. A writer that lands before the write
+        // discards it; one that lands between the guard's re-read and the write loses its write.
+        guard let data = try fetch(sessionAccount(for: sessionId), operation: "re-read the session record kept here"),
+              Self.digest(data) == kept.sha256 else {
+            return nil
+        }
+        switch try write(carried, for: sessionId, expecting: stored.version, recordingMarker: false) {
+        case .committed(let committed):
+            let user = userKey(carried)
+            updateMarker(sessionId) { ($0 ?? marker).keptHere(own, user: user, remembering: copy) }
+            return undoIfTheSourceEnded(sessionId, source: source, committed: committed)
+        case .discarded:
+            // Another writer stored a record meanwhile: that one is the session's.
+            return try read(sessionId)
+        }
     }
 
     /// After the carried record committed: if the old record vanished, or was signed out, since it was read (a

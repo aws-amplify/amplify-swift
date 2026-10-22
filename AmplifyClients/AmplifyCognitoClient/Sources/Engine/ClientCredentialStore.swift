@@ -175,6 +175,27 @@ final class CredentialSlot: @unchecked Sendable {
         }
     }
 
+    /// When a payload's user pool tokens were issued: the access token's `iat` claim, else the ID token's; `nil` if
+    /// the payload holds no user pool tokens, neither token has one, or it is not an `AmplifyCredentials`. Cognito
+    /// issues new tokens on every sign-in and refresh, so of two records of one user, the one whose tokens were
+    /// issued later holds the newer session: what a restore back under an earlier configuration carries over the
+    /// untouched copy left there (`SessionRecordStore+CopyForward.swift`).
+    @Sendable
+    static func tokensIssuedAt(_ payload: Data) -> Date? {
+        switch try? decode(payload) {
+        case .userPoolOnly(let signedInData)?, .userPoolAndIdentityPool(let signedInData, _, _)?:
+            let tokens = signedInData.cognitoUserPoolTokens
+            for token in [tokens.accessToken, tokens.idToken] {
+                if let issuedAt = try? EngineJWT.claims(token).get()["iat"]?.doubleValue {
+                    return Date(timeIntervalSince1970: issuedAt)
+                }
+            }
+            return nil
+        case .identityPoolOnly?, .identityPoolWithFederation?, .noCredentials?, nil:
+            return nil
+        }
+    }
+
     private func withLock<Result>(_ body: () -> Result) -> Result {
         lock.lock()
         defer { lock.unlock() }

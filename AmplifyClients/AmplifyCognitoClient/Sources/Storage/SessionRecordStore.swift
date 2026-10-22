@@ -58,6 +58,11 @@ struct SessionRecordStore: Sendable {
     /// A credentials payload's user pool refresh token, or `nil`: whether a copy a sign-out sweeps holds a token the
     /// sign-out has not revoked (`copiesToRevoke`). The engine's format; injectable for tests' payloads.
     let refreshTokenOf: @Sendable (Data) -> String?
+    /// When a credentials payload's user pool tokens were issued, or `nil`: which of two records of one user is the
+    /// newer, when a restore back under an earlier configuration decides whether to carry the later configuration's
+    /// record over the untouched copy left here (`SessionRecordStore+CopyForward.swift`). The engine's format;
+    /// injectable for tests' payloads.
+    let tokensIssuedAtOf: @Sendable (Data) -> Date?
     /// Which app's namespace markers this store reads and writes (`SessionRecordStore+CopyForward.swift`): a
     /// digest of the bundle identifier, so an app and an extension sharing the access group keep their own.
     let markerScope: String
@@ -85,6 +90,7 @@ struct SessionRecordStore: Sendable {
         userPoolTokensOnly: @escaping @Sendable (Data) throws -> Data? = CredentialSlot.userPoolTokensOnly,
         identityIdOf: @escaping @Sendable (Data) -> String? = CredentialSlot.identityId,
         refreshTokenOf: @escaping @Sendable (Data) -> String? = CredentialSlot.refreshToken,
+        tokensIssuedAtOf: @escaping @Sendable (Data) -> Date? = CredentialSlot.tokensIssuedAt,
         markerScope: String = SessionRecordStore.appMarkerScope,
         summarizeSharedRecord: @escaping @Sendable (Data) -> PluginRecordSummary = PluginRecordSummary.peek,
         rereadsAbsentSharedRecord: Bool = SessionRecordStore.rereadsAbsentSharedRecordByDefault,
@@ -97,6 +103,7 @@ struct SessionRecordStore: Sendable {
         self.userPoolTokensOnly = userPoolTokensOnly
         self.identityIdOf = identityIdOf
         self.refreshTokenOf = refreshTokenOf
+        self.tokensIssuedAtOf = tokensIssuedAtOf
         self.markerScope = markerScope
         self.summarizeSharedRecord = summarizeSharedRecord
         self.rereadsAbsentSharedRecord = rereadsAbsentSharedRecord

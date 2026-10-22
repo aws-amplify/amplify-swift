@@ -1238,6 +1238,177 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         }
     }
 
+    // MARK: Rollbacks with a newer record there
+
+    /// alice signed in under `earlier`, carried into `later`, then refreshed there: one version on, with her refresh
+    /// token rotated to `refresh-alice-R2`. Returns the bytes left under `earlier` (the untouched copy) and those under
+    /// `later` after the refresh.
+    private func carriedThenRefreshed(from earlier: PoolNamespace, into later: PoolNamespace) throws -> (copy: Data, refreshed: Data) {
+        let kind: SessionKind = earlier.hasIdentityPool ? .userPoolAndIdentityPool : .userPoolOnly
+        let copyBytes = try ran(.signedIn("alice", kind: kind, identityId: kind == .userPoolOnly ? nil : "us-east-1:alice"), under: earlier)
+        let carried = try XCTUnwrap(carriedRecord(try store(later).readCarryingForward(work)))
+        var refreshed = FakePayload.signedIn(
+            "alice",
+            kind: later.hasIdentityPool ? .userPoolAndIdentityPool : .userPoolOnly,
+            version: 2,
+            identityId: later.hasIdentityPool ? "us-east-1:alice" : nil
+        )
+        refreshed.refreshToken = "refresh-alice-R2"
+        XCTAssertTrue(try store(later).write(refreshed.record(label: "Work"), for: work, expecting: carried.version).didCommit)
+        return (copyBytes, try XCTUnwrap(keychain.value(account(later))))
+    }
+
+    /// The reported sequence: a named session moved back to an earlier configuration of the same user pool resumes
+    /// the later configuration's refreshed record, not the copy whose refresh token rotation retired.
+    ///
+    /// - Given: in turn, the user pool alone then both pools, and both pools then the user pool alone:
+    ///    - release 1 runs with the earlier configuration, and alice signs in
+    ///    - release 2 runs with the later one: the session is carried, the copy kept, and alice's next refresh
+    ///      there rotates her refresh token
+    /// - When: release 3 goes back to the earlier configuration, and restores the session
+    /// - Then:
+    ///    - it reads alice's refreshed tokens (version 2, `refresh-alice-R2`), carried as a carry back takes them
+    ///      (the user pool tokens only; pending an identity when there is an identity pool), at the copy's next
+    ///      generation, with her label
+    ///    - the later configuration's record is kept, and the marker names the earlier namespace again and remembers
+    ///      it as alice's copy
+    ///    - a second restore reads the same record, and a sign-out here has no copy left to revoke apart from its
+    ///      own refresh token: one session
+    func testARollbackCarriesTheSameUsersRefreshedRecordOverTheUntouchedCopy() throws {
+        for (earlier, later) in [(Self.userPoolOnly, Self.bothPools), (Self.bothPools, Self.userPoolOnly)] {
+            keychain = TestKeychain()
+            let name = "\(earlier.keyComponent) then \(later.keyComponent)"
+            let (_, refreshedBytes) = try carriedThenRefreshed(from: earlier, into: later)
+
+            let envelope = try XCTUnwrap(carriedRecord(try store(earlier).readCarryingForward(work)), name)
+
+            let payload = try XCTUnwrap(FakePayload.decode(try XCTUnwrap(envelope.record.credentials)), name)
+            XCTAssertEqual(payload.version, 2, name)
+            XCTAssertEqual(payload.refreshToken, "refresh-alice-R2", name)
+            XCTAssertEqual(payload.kind, SessionKind.userPoolOnly.storedValue, name)
+            XCTAssertNil(payload.identityId, name)
+            XCTAssertEqual(envelope.record.identityPending, earlier.hasIdentityPool, name)
+            XCTAssertEqual(envelope.record.label, "Work", name)
+            XCTAssertEqual(envelope.record.userId, "sub-alice", name)
+            XCTAssertEqual(envelope.version, .generation(2), name)
+            XCTAssertEqual(keychain.value(account(later)), refreshedBytes, "\(name): the later record is kept")
+            XCTAssertEqual(
+                try marker(earlier),
+                Marker(poolNamespace: earlier.keyComponent, copies: [copy(later, refreshedBytes)], user: "user:sub-alice"),
+                name
+            )
+            XCTAssertEqual(try store(earlier).readCarryingForward(work), .record(envelope), "\(name): read again as it is")
+            let credentials = try XCTUnwrap(envelope.record.credentials)
+            XCTAssertEqual(try store(earlier).copiesToRevoke(of: work, revoking: credentials), [], name)
+        }
+    }
+
+    /// Only the same user's record is carried back: the same `sub`, not only the same username.
+    ///
+    /// - Given: alice carried from the user pool into both pools, then, in turn, bob, and another alice (a user
+    ///   recreated with her username, so another `sub`) signed in there over her, with newer tokens
+    /// - When: the user-pool-only store reads the session (the rollback)
+    /// - Then: alice's copy is read, and left byte for byte
+    func testARollbackNeverCarriesAnotherUsersRecordOverTheCopy() throws {
+        for other in [FakePayload.signedIn("bob", version: 2), FakePayload.signedIn("alice", userId: "sub-alice-recreated", version: 2)] {
+            keychain = TestKeychain()
+            let copyBytes = try ran(.signedIn("alice", kind: .userPoolOnly), under: Self.userPoolOnly)
+            let carried = try XCTUnwrap(carriedRecord(try store(Self.bothPools).readCarryingForward(work)))
+            XCTAssertTrue(try store(Self.bothPools).write(other.record(label: "Work"), for: work, expecting: carried.version).didCommit)
+
+            let envelope = try XCTUnwrap(carriedRecord(try store(Self.userPoolOnly).readCarryingForward(work)))
+
+            XCTAssertEqual(envelope.record.userId, "sub-alice", other.userId ?? "")
+            XCTAssertEqual(keychain.value(account(Self.userPoolOnly)), copyBytes, other.userId ?? "")
+        }
+    }
+
+    /// Only a newer record is carried back: one holding tokens issued after the copy's.
+    ///
+    /// - Given: alice's version-3 record under the user pool, carried into both pools, and there, in turn, left as
+    ///   carried (the same tokens), and rewritten with older tokens (version 2)
+    /// - When: the user-pool-only store reads the session (the rollback)
+    /// - Then: alice's copy is read, and left byte for byte
+    func testARollbackNeverCarriesARecordThatIsNotNewerOverTheCopy() throws {
+        for olderThere in [false, true] {
+            keychain = TestKeychain()
+            let copyBytes = try ran(.signedIn("alice", kind: .userPoolOnly, version: 3), under: Self.userPoolOnly)
+            let carried = try XCTUnwrap(carriedRecord(try store(Self.bothPools).readCarryingForward(work)))
+            if olderThere {
+                let older = FakePayload.signedIn("alice", version: 2).record(label: "Work")
+                XCTAssertTrue(try store(Self.bothPools).write(older, for: work, expecting: carried.version).didCommit)
+            }
+
+            let envelope = try XCTUnwrap(carriedRecord(try store(Self.userPoolOnly).readCarryingForward(work)))
+
+            XCTAssertEqual(FakePayload.decode(try XCTUnwrap(envelope.record.credentials))?.version, 3, "older: \(olderThere)")
+            XCTAssertEqual(keychain.value(account(Self.userPoolOnly)), copyBytes, "older: \(olderThere)")
+        }
+    }
+
+    /// A copy another writer rewrote since the session left it is that writer's, even if the record there is newer.
+    ///
+    /// - Given: alice carried from the user pool into both pools and refreshed there (version 2), then her copy under
+    ///   the user pool rewritten with another refresh token, by an extension still on that configuration (its tokens
+    ///   older than version 2's)
+    /// - When: the user-pool-only store reads the session (the rollback)
+    /// - Then: the rewritten record is read, and left byte for byte
+    func testARollbackNeverCarriesOverACopyRewrittenSinceTheCarry() throws {
+        _ = try carriedThenRefreshed(from: Self.userPoolOnly, into: Self.bothPools)
+        var extensionRefresh = FakePayload.signedIn("alice", kind: .userPoolOnly)
+        extensionRefresh.refreshToken = "refresh-alice-extension"
+        let rewritten = try SessionRecordEnvelope(generation: 2, lastWriteTimestamp: Date(), record: extensionRefresh.record(label: "Work")).encoded()
+        keychain.put(rewritten, account(Self.userPoolOnly))
+
+        let envelope = try XCTUnwrap(carriedRecord(try store(Self.userPoolOnly).readCarryingForward(work)))
+
+        XCTAssertEqual(FakePayload.decode(try XCTUnwrap(envelope.record.credentials))?.refreshToken, "refresh-alice-extension")
+        XCTAssertEqual(keychain.value(account(Self.userPoolOnly)), rewritten)
+    }
+
+    /// A carry back never revives a signed-out session, on either side.
+    ///
+    /// - Given: alice carried from the user pool into both pools and refreshed there, then, in turn:
+    ///    - her row under the user pool signed out, keeping her user ID (by an extension still on that configuration)
+    ///    - her session signed out under both pools by another app (which does not sweep this app's copy)
+    /// - When: the user-pool-only store reads the session (the rollback)
+    /// - Then: the first reads the signed-out row, left as it is, and the newer record is not carried; the second
+    ///   reads `.absent` (the copy reads as swept), and no tokens come back
+    func testARollbackCarryNeverRevivesASignedOutSession() throws {
+        _ = try carriedThenRefreshed(from: Self.userPoolOnly, into: Self.bothPools)
+        let signedOutRow = try SessionRecordEnvelope(
+            generation: 2,
+            lastWriteTimestamp: Date(),
+            record: .signedOut(label: "Work", username: "alice", userId: "sub-alice")
+        ).encoded()
+        keychain.put(signedOutRow, account(Self.userPoolOnly))
+
+        XCTAssertTrue(try XCTUnwrap(carriedRecord(try store(Self.userPoolOnly).readCarryingForward(work))).record.isSignedOut)
+        XCTAssertEqual(keychain.value(account(Self.userPoolOnly)), signedOutRow)
+
+        keychain = TestKeychain()
+        _ = try carriedThenRefreshed(from: Self.userPoolOnly, into: Self.bothPools)
+        XCTAssertEqual(try store(Self.bothPools, scope: "fedcba9876543210").signOut(work), .signedOut)
+
+        XCTAssertEqual(try store(Self.userPoolOnly).readCarryingForward(work), .absent)
+        XCTAssertNil(keychain.value(account(Self.userPoolOnly)))
+    }
+
+    /// - Given: alice carried from the user pool into both pools and refreshed there, and another process signing
+    ///   her out there right after the rollback's restore reads that record
+    /// - When: the user-pool-only store reads the session (the rollback)
+    /// - Then: the carry back is undone, as a carry's is: `.absent`, and no record under the user pool
+    func testASignOutRacingTheCarryBackUndoesIt() throws {
+        _ = try carriedThenRefreshed(from: Self.userPoolOnly, into: Self.bothPools)
+        let signer = store(Self.bothPools, scope: "another-process-0")
+        let work = work
+        keychain.onceAfterReading(account(Self.bothPools), occurrence: 1) { _ = try? signer.signOut(work) }
+
+        XCTAssertEqual(try store(Self.userPoolOnly).readCarryingForward(work), .absent)
+
+        XCTAssertNil(keychain.value(account(Self.userPoolOnly)))
+    }
+
     // MARK: Failures
 
     /// - Given: alice's record under the user pool with the marker, and reads of that record failing
@@ -1642,6 +1813,20 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         }
         XCTAssertNil(CredentialSlot.refreshToken(StorageFixtures.corruptRecord))
         XCTAssertNil(CredentialSlot.identityId(StorageFixtures.corruptRecord))
+    }
+
+    /// The reader a rollback compares two records of one user by (`tokensIssuedAt`), over the engine's format.
+    ///
+    /// - Given: the plugin's stored format in each shape, and bytes that are not a payload
+    /// - When: each payload's tokens' issue time is read
+    /// - Then: the fixtures' `iat` claim for the two user pool shapes, and `nil` for the rest
+    func testTheLiveReaderFindsWhenTheTokensWereIssued() throws {
+        for caseName in EnginePayloadFixtures.caseNames {
+            let payload = try EnginePayloadFixtures.data(caseName)
+            let hasUser = caseName == "userPoolOnly" || caseName == "userPoolAndIdentityPool"
+            XCTAssertEqual(CredentialSlot.tokensIssuedAt(payload), hasUser ? Date(timeIntervalSince1970: 1_700_000_000) : nil, caseName)
+        }
+        XCTAssertNil(CredentialSlot.tokensIssuedAt(StorageFixtures.corruptRecord))
     }
 
     /// The revoke end to end over the engine's format: a copy left under the previous identity pool whose refresh

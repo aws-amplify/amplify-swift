@@ -57,6 +57,7 @@ final class TestKeychain: @unchecked Sendable {
             userPoolTokensOnly: Self.userPoolTokensOnly,
             identityIdOf: Self.identityId,
             refreshTokenOf: Self.refreshToken,
+            tokensIssuedAtOf: Self.tokensIssuedAt,
             markerScope: markerScope,
             summarizeSharedRecord: Self.summarizeSharedRecord,
             rereadsAbsentSharedRecord: rereadsAbsentSharedRecord,
@@ -134,6 +135,20 @@ final class TestKeychain: @unchecked Sendable {
             return nil
         }
         return fake.refreshToken ?? "refresh-\(fake.username ?? "none")"
+    }
+
+    /// The fake engine's issue time of a payload's user pool tokens: a signed-in `FakePayload`'s `version`, in seconds
+    /// since 1970, so a refreshed payload (one version on) holds newer tokens; none for a guest or federated identity.
+    /// Else the engine's format's.
+    @Sendable
+    static func tokensIssuedAt(_ payload: Data) -> Date? {
+        guard let fake = FakePayload.decode(payload) else {
+            return CredentialSlot.tokensIssuedAt(payload)
+        }
+        guard fake.kind == SessionKind.userPoolOnly.storedValue || fake.kind == SessionKind.userPoolAndIdentityPool.storedValue else {
+            return nil
+        }
+        return Date(timeIntervalSince1970: TimeInterval(fake.version))
     }
 
     /// A device record store over this keychain, through the same spy as `recordStore(for:)`, so a test
