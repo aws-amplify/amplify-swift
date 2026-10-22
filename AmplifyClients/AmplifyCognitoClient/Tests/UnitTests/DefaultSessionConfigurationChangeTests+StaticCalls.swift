@@ -240,6 +240,32 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertEqual(rowsUnderCarrying, [])
     }
 
+    /// Under a configuration without an identity pool, a carried federated identity already reads as signed out, so
+    /// a static sign-out there has nothing to sign out, and both copies keep their bytes.
+    ///
+    /// - Given: a federated identity under X (both pools), the configuration the app last ran with
+    /// - When: `signOutStoredSession(.default)` runs under Y (X with the identity pool removed, a carrying change)
+    /// - Then:
+    ///    - the result is `.complete`; X's record and Y's record both hold the federated identity's bytes, and
+    ///      `authConfiguration` still names X
+    func testStaticSignOutWithoutAnIdentityPool_leavesACarriedFederatedIdentity() async throws {
+        let appConfiguration = ChangeConfigs.both
+        let carryingConfiguration = ChangeConfigs.userPoolOnly
+        let federated = try pluginSaves(Self.federatedPayload(), under: appConfiguration)
+
+        let result = await AmplifyCognitoClient.signOutStoredSession(
+            sessionId: .default,
+            configuration: carryingConfiguration,
+            accessGroup: nil,
+            dependencies: dependencies
+        )
+
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(harness.keychain.value(account(carryingConfiguration)), federated)
+        XCTAssertEqual(harness.keychain.value(account(appConfiguration)), federated)
+        XCTAssertEqual(harness.keychain.recordedPluginConfiguration(), AuthConfiguration(client: appConfiguration))
+    }
+
     /// A guest is left under the configuration it was carried from: it is nobody's login, and an app
     /// extension on that configuration may still use its identity, as for a named session's guest copy.
     ///

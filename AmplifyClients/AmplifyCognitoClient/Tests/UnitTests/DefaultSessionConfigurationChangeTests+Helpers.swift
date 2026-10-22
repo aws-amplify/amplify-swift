@@ -76,6 +76,43 @@ extension DefaultSessionConfigurationChangeTests {
         )
     }
 
+    /// The plugin under both pools saves `payload`, a guest or federated identity; `.default` under the same user pool
+    /// without the identity pool is then listed, restored and signed in to. See
+    /// `testIdentityPoolRemovedUnderTheSameUserPool_readsAGuestCopyAsSignedOut`.
+    func assertIdentityCopyReadsAsSignedOut(
+        _ payload: Data,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async throws {
+        let old = try pluginSaves(payload, under: ChangeConfigs.both)
+
+        let beforeRestore = try await listed(ChangeConfigs.userPoolOnly)
+        let beforeRestoreAll = try await listed(ChangeConfigs.userPoolOnly, includingSignedOut: true)
+        let client = makeClient(ChangeConfigs.userPoolOnly)
+        let restored = await client.currentSessionState()
+        let afterRestore = try await listed(ChangeConfigs.userPoolOnly)
+        let afterRestoreAll = try await listed(ChangeConfigs.userPoolOnly, includingSignedOut: true)
+        let copied = harness.keychain.value(account(ChangeConfigs.userPoolOnly))
+        scriptSRP("alice")
+        _ = try await client.signIn(username: "alice", password: "password")
+        let signedIn = await client.currentSessionState()
+
+        for (name, listing) in [("before the restore", beforeRestore), ("after the restore", afterRestore)] {
+            XCTAssertNil(listing.first { $0.sessionId == .default }, name, file: file, line: line)
+        }
+        for (name, listing) in [("before the restore", beforeRestoreAll), ("after the restore", afterRestoreAll)] {
+            XCTAssertEqual(listing.first { $0.sessionId == .default }?.kind, .signedOut, name, file: file, line: line)
+        }
+        XCTAssertEqual(restored, .signedOut, file: file, line: line)
+        XCTAssertEqual(copied, old, file: file, line: line)
+        XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.both)), old, file: file, line: line)
+        XCTAssertEqual(signedIn, .signedIn(alice), file: file, line: line)
+        let written = try XCTUnwrap(harness.keychain.value(account(ChangeConfigs.userPoolOnly)), file: file, line: line)
+        guard case .userPoolOnly = try AmplifyCredentials.decoded(written) else {
+            return XCTFail("the copy should now hold alice's user pool tokens", file: file, line: line)
+        }
+    }
+
     /// Lets any revoke a restore started run: none is awaited by the restore. Only a sample for "nothing revoked":
     /// whether a revoke starts at all is pinned directly by `testRevocablePayload_isOnlyADeletedUserLoginOfTheSameUserPool`.
     func settleRevokes() async throws {

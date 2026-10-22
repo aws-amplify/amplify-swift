@@ -325,6 +325,69 @@ final class DefaultSessionConfigurationChangeTests: XCTestCase {
         XCTAssertEqual(otherIdentityPool.first { $0.sessionId == .default }?.kind, .userPoolAndIdentityPool)
     }
 
+    /// A guest copied to a configuration without an identity pool is nobody's there: `.default` reads as signed out,
+    /// as a named session there is, while its bytes stay the old ones.
+    ///
+    /// - Given: the plugin under both pools, holding a guest
+    /// - When:
+    ///    1. the saved sessions are listed with the identity pool removed, before any restore
+    ///    2. a `.default` client restores under that configuration, and the sessions are listed again
+    ///    3. alice signs in to it
+    /// - Then:
+    ///    - both listings leave `.default` out, and list it as `.signedOut` with `includingSignedOut: true`
+    ///    - the restore is `.signedOut`, and the bytes at both accounts still equal the guest's
+    ///    - the sign-in succeeds, and replaces the copy with alice's user pool tokens
+    func testIdentityPoolRemovedUnderTheSameUserPool_readsAGuestCopyAsSignedOut() async throws {
+        try await assertIdentityCopyReadsAsSignedOut(ChangePayloads.guest())
+    }
+
+    /// The federated twin of `testIdentityPoolRemovedUnderTheSameUserPool_readsAGuestCopyAsSignedOut`: a federated
+    /// `.default` would refuse `signIn` with `invalidState`.
+    ///
+    /// - Given: the plugin under both pools, holding a federated identity
+    /// - When:
+    ///    1. the saved sessions are listed with the identity pool removed, before any restore
+    ///    2. a `.default` client restores under that configuration, and the sessions are listed again
+    ///    3. alice signs in to it
+    /// - Then:
+    ///    - both listings leave `.default` out, and list it as `.signedOut` with `includingSignedOut: true`
+    ///    - the restore is `.signedOut`, and the bytes at both accounts still equal the federated identity's
+    ///    - the sign-in succeeds, and replaces the copy with alice's user pool tokens
+    func testIdentityPoolRemovedUnderTheSameUserPool_readsAFederatedCopyAsSignedOut() async throws {
+        try await assertIdentityCopyReadsAsSignedOut(Self.federatedPayload())
+    }
+
+    /// The contrast: with an identity pool still configured, a copied guest or federated identity keeps its kind.
+    ///
+    /// - Given: the plugin under both pools, holding a guest; then, from the start, a federated identity
+    /// - When: the saved sessions are listed with the identity pool changed, before and after a `.default` client
+    ///   restores under that configuration
+    /// - Then:
+    ///    - `.default` is listed as `.guest` (or `.federated`) both times, and restores as `.guest` (or
+    ///      `.federated(identityId:)`); the copy holds the old bytes
+    func testIdentityPoolChangedUnderTheSameUserPool_keepsAGuestOrFederatedCopy() async throws {
+        let cases: [(name: String, payload: Data, kind: SessionKind, state: AuthSessionState)] = try [
+            ("guest", ChangePayloads.guest(), .guest, .guest),
+            ("federated", Self.federatedPayload(), .federated, .federated(identityId: "us-east-1:federated-identity"))
+        ]
+        for (name, payload, kind, state) in cases {
+            harness = ClientHarness()
+            let old = try pluginSaves(payload, under: ChangeConfigs.both)
+
+            let beforeRestore = try await listed(ChangeConfigs.bothOtherIdentityPool)
+            var client: AmplifyCognitoClient? = makeClient(ChangeConfigs.bothOtherIdentityPool)
+            let restored = await client?.currentSessionState()
+            let afterRestore = try await listed(ChangeConfigs.bothOtherIdentityPool)
+            client = nil
+            await harness.waitForBaseline()
+
+            XCTAssertEqual(beforeRestore.first { $0.sessionId == .default }?.kind, kind, name)
+            XCTAssertEqual(afterRestore.first { $0.sessionId == .default }?.kind, kind, name)
+            XCTAssertEqual(restored, state, name)
+            XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.bothOtherIdentityPool)), old, name)
+        }
+    }
+
     /// - Given: alice's `.default` labelled "Work" under a user-pool-only configuration
     /// - When: a `.default` client restores with an identity pool added
     /// - Then:

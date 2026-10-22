@@ -302,7 +302,8 @@ if let picked = rows.first {
   when it writes the session itself. So if the plugin signs bob in over alice's session and then signs out, without
   the client running in between, the row still names alice, with alice's label.
 - A row's kind follows the current configuration: after a change that removes the identity pool, `.default`'s copied
-  login is listed as `.userPoolOnly`, as a named session is, although its saved bytes are the plugin's as they were.
+  login is listed as `.userPoolOnly`, and a copied guest or federated identity as signed out, as a named session is,
+  although its saved bytes are the plugin's as they were.
 - Listing also deletes interrupted sign-ins saved more than 15 minutes ago.
 - A failure throws `AuthClientError.storageUnavailable`. You never get an empty list for a failure.
 
@@ -1587,7 +1588,7 @@ current one:
 | Change | `.default` after the change, as with the plugin except where a row says otherwise |
 |---|---|
 | Identity pool only, then a user pool added (same identity pool) | The guest or federated identity, copied as it was; the old record is kept |
-| An identity pool added, changed or removed, same user pool, app client and region | Signed in, copied as it was; the old record is kept. With an identity pool added, the client fetches the identity on first use, and that first fetch also refreshes the user pool tokens; the plugin instead fails its unforced fetches' AWS credentials (`invalidAccountTypeException`, "…Identity Pool is not configured") until a forced refresh. With the identity pool removed, the client's `fetchAuthSession` fails the identity ID and AWS credentials with `.configuration`, and `credentialsProvider` throws `notConfigured`, while the plugin still hands out the AWS credentials and identity copied with the login |
+| An identity pool added, changed or removed, same user pool, app client and region | Signed in, copied as it was; the old record is kept. With an identity pool added, the client fetches the identity on first use, and that first fetch also refreshes the user pool tokens; the plugin instead fails its unforced fetches' AWS credentials (`invalidAccountTypeException`, "…Identity Pool is not configured") until a forced refresh. With the identity pool removed, the client's `fetchAuthSession` fails the identity ID and AWS credentials with `.configuration`, and `credentialsProvider` throws `notConfigured`, while the plugin still hands out the AWS credentials and identity copied with the login. A guest or federated identity copied with the identity pool removed is signed out in the client, as a named session is, and its saved bytes stay as they were: `signIn` works, and `storedSessions` lists the row only with `includingSignedOut: true` |
 | Only the app client changed, same pools | Nothing is deleted or revoked: the record stays where it is. Its next refresh fails with `sessionExpired`, as the old app client's refresh token is refused, and the user signs in again |
 | Anything else that changes the pools (another user pool, say) | **The old login is deleted**, and `.default` is signed out |
 
