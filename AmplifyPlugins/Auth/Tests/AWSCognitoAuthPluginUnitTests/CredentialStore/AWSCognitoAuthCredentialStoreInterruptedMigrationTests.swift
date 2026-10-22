@@ -267,7 +267,128 @@ class AWSCognitoAuthCredentialStoreInterruptedMigrationTests: XCTestCase {
         XCTAssertNil(userDefaults.object(forKey: migrationInProgressKey))
     }
 
+    /// A migration killed before the login moved, in the same update as a configuration change, still carries the
+    /// login once an app extension with the new configuration has started in the access group.
+    ///
+    /// - Given: alice signed in on a user-pool-only configuration without an access group, over a keychain that
+    ///   lists the configuration record first (the real keychain's order is unspecified); the update adds the
+    ///   identity pool and the access group with migration, and its first launch is killed just before alice's
+    ///   session record moves; then an app extension with the new configuration starts in the access group and saves
+    ///   its configuration record and a guest's session record there
+    /// - When:
+    ///    - the app launches again with the new configuration, the access group and migration
+    /// - Then:
+    ///    - at the kill, alice's session and the configuration record are still in the unshared service
+    ///    - after the relaunch, the new store reads alice's login, carried to the new configuration's account
+    ///    - nothing of the plugin's is left in the unshared service, and the mark is gone
+    func testAMigrationKilledBeforeTheLoginMovedStillCarriesItAfterAnExtensionStarts() throws {
+        let alice = try populateUnsharedServiceOnAUserPoolOnlyConfiguration()
+
+        try killFirstMigration(atTheMoveOf: userPoolOnlySessionAccount)
+
+        XCTAssertNotNil(keychain.value(service: service, account: userPoolOnlySessionAccount))
+        XCTAssertNotNil(keychain.value(service: service, account: "authConfiguration"))
+        try startAnExtensionThatSavesAGuest()
+
+        let relaunched = makeStore(accessGroup: accessGroup, migrate: true, listingTheConfigurationRecordFirst: true)
+
+        XCTAssertEqual(try relaunched.retrieveCredential(), alice)
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), [])
+        XCTAssertNil(userDefaults.object(forKey: migrationInProgressKey))
+    }
+
+    /// A migration killed after the login moved and before the configuration record did, in the same update as a
+    /// configuration change, still carries the login once an app extension with the new configuration has started.
+    ///
+    /// - Given: alice signed in on a user-pool-only configuration without an access group, over a keychain that
+    ///   lists the configuration record first; the update adds the identity pool and the access group with
+    ///   migration, and its first launch is killed just before the configuration record moves; then an app extension
+    ///   with the new configuration starts in the access group, finds alice's moved login and skips its migration,
+    ///   and saves its configuration record and a guest's session record there
+    /// - When:
+    ///    - the app launches again with the new configuration, the access group and migration
+    /// - Then:
+    ///    - at the kill, every item but the configuration record is in the shared service
+    ///    - after the relaunch, the new store reads alice's login, carried to the new configuration's account
+    ///    - nothing of the plugin's is left in the unshared service, and the mark is gone
+    func testAMigrationKilledAfterTheLoginMovedStillCarriesItAfterAnExtensionStarts() throws {
+        let alice = try populateUnsharedServiceOnAUserPoolOnlyConfiguration()
+
+        try killFirstMigration(atTheMoveOf: "authConfiguration")
+
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), ["authConfiguration"])
+        try startAnExtensionThatSavesAGuest()
+
+        let relaunched = makeStore(accessGroup: accessGroup, migrate: true, listingTheConfigurationRecordFirst: true)
+
+        XCTAssertEqual(try relaunched.retrieveCredential(), alice)
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), [])
+        XCTAssertNil(userDefaults.object(forKey: migrationInProgressKey))
+    }
+
     // MARK: Helpers
+
+    /// The configuration before the update: `authConfiguration`'s user pool, without its identity pool. Its login
+    /// is carried to `authConfiguration`'s account.
+    private var userPoolOnlyConfiguration: AuthConfiguration {
+        .userPools(UserPoolConfigurationData(poolId: "us-east-1_Pool", clientId: "client", region: "us-east-1"))
+    }
+
+    private let userPoolOnlySessionAccount = "amplify.us-east-1_Pool.session"
+
+    /// Signs alice in on `userPoolOnlyConfiguration` without an access group, with device records. Returns her login.
+    private func populateUnsharedServiceOnAUserPoolOnlyConfiguration() throws -> AmplifyCredentials {
+        let store = makeStore(accessGroup: nil, authConfiguration: userPoolOnlyConfiguration)
+        try store.saveCredential(.testData)
+        try store.saveDevice(
+            .metadata(.init(deviceKey: "device", deviceGroupKey: "group", deviceSecret: "secret")),
+            for: username
+        )
+        try store.saveASFDevice("asf-device", for: username)
+        XCTAssertNotNil(keychain.value(service: service, account: userPoolOnlySessionAccount))
+        return try store.retrieveCredential()
+    }
+
+    /// Runs the first launch with the access group, migration and `authConfiguration`, over a keychain that lists the
+    /// configuration record first, killed just before `account` moves.
+    private func killFirstMigration(atTheMoveOf account: String) throws {
+        let killPoint = KillPoint(keychain: keychain, userDefaults: userDefaults, suite: userDefaultsSuite)
+        keychain.beforeMove { moving in
+            if moving == account {
+                killPoint.capture()
+            }
+        }
+        keychain.failing(.move, with: errSecIO, forAccount: account)
+
+        _ = makeStore(accessGroup: accessGroup, migrate: true, listingTheConfigurationRecordFirst: true)
+
+        keychain.beforeMove(nil)
+        keychain.clearFailures()
+        try killPoint.restore()
+    }
+
+    /// An app extension's plugin with `authConfiguration` and the access group, with its own empty unshared service
+    /// and `UserDefaults`, configured with migration, that then saves a guest's session record.
+    private func startAnExtensionThatSavesAGuest() throws {
+        let keychain = keychain!
+        let extensionKeychain = InMemoryKeychain()
+        let suite = "AWSCognitoAuthCredentialStoreInterruptedMigrationTests.extension.\(UUID().uuidString)"
+        let extensionDefaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { extensionDefaults.removePersistentDomain(forName: suite) }
+        let store = AWSCognitoAuthCredentialStore(
+            authConfiguration: authConfiguration,
+            accessGroup: accessGroup,
+            migrateKeychainItemsOfUserSession: true,
+            userDefaults: extensionDefaults,
+            makeKeychainStore: { service, accessGroup in
+                accessGroup == nil ? extensionKeychain.store(service: service) : keychain.store(service: service, accessGroup: accessGroup)
+            },
+            logger: AmplifyEngineLogRouter()
+        )
+        let guest = AmplifyCredentials.identityPoolOnly(identityID: "extensions-guest", credentials: LongLivedCredentials.awsCredentials())
+        try store.saveCredential(guest)
+        XCTAssertEqual(try store.retrieveCredential(), guest)
+    }
 
     /// Runs the first launch with the access group and migration, killed just before move number `move`
     /// (1-based): the keychain and `UserDefaults` are put back as they were at that moment.
@@ -285,15 +406,23 @@ class AWSCognitoAuthCredentialStoreInterruptedMigrationTests: XCTestCase {
         try killPoint.restore()
     }
 
-    private func makeStore(accessGroup: String?, migrate: Bool = false) -> AWSCognitoAuthCredentialStore {
+    /// - Parameter listingTheConfigurationRecordFirst: whether every store lists `authConfiguration` before the other
+    ///   items, as the real keychain may.
+    private func makeStore(
+        accessGroup: String?,
+        migrate: Bool = false,
+        authConfiguration: AuthConfiguration? = nil,
+        listingTheConfigurationRecordFirst: Bool = false
+    ) -> AWSCognitoAuthCredentialStore {
         let keychain = keychain!
         return AWSCognitoAuthCredentialStore(
-            authConfiguration: authConfiguration,
+            authConfiguration: authConfiguration ?? self.authConfiguration,
             accessGroup: accessGroup,
             migrateKeychainItemsOfUserSession: migrate,
             userDefaults: userDefaults,
             makeKeychainStore: { service, accessGroup in
-                keychain.store(service: service, accessGroup: accessGroup)
+                let store = keychain.store(service: service, accessGroup: accessGroup)
+                return listingTheConfigurationRecordFirst ? ConfigurationRecordFirstStore(base: store) : store
             },
             logger: AmplifyEngineLogRouter()
         )
@@ -394,4 +523,35 @@ private final class MoveRecorder: @unchecked Sendable {
         defer { lock.unlock() }
         recorded.append(userDefaults.string(forKey: key))
     }
+}
+
+/// An item store that lists `authConfiguration` before every other item, and is otherwise `base`.
+private struct ConfigurationRecordFirstStore: KeychainItemStoreBehavior {
+    let base: any KeychainItemStoreBehavior
+
+    func allEntries() throws -> [KeychainEntry] {
+        let entries = try base.allEntries()
+        return entries.filter { $0.account == "authConfiguration" } + entries.filter { $0.account != "authConfiguration" }
+    }
+
+    func allAccounts() throws -> [String] {
+        try allEntries().map(\.account)
+    }
+
+    func getData(_ key: String) throws -> Data { try base.getData(key) }
+    func set(_ value: Data, key: String) throws { try base.set(value, key: key) }
+    func addIfAbsent(_ value: Data, key: String) throws -> Bool { try base.addIfAbsent(value, key: key) }
+    func replaceIfPresent(_ value: Data, key: String) throws -> Bool { try base.replaceIfPresent(value, key: key) }
+    func move(_ key: String, to destination: KeychainItemAttributes) throws -> KeychainMoveOutcome {
+        try base.move(key, to: destination)
+    }
+
+    func move(_ entry: KeychainEntry, to destination: KeychainItemAttributes) throws -> KeychainMoveOutcome {
+        try base.move(entry, to: destination)
+    }
+
+    func remove(_ key: String) throws { try base.remove(key) }
+    func remove(_ entry: KeychainEntry) throws { try base.remove(entry) }
+    func removeAll() throws { try base.removeAll() }
+    func hasItems() throws -> Bool { try base.hasItems() }
 }

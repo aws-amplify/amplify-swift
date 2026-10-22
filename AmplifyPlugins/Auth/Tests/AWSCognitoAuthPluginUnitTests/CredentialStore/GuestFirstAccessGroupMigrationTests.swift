@@ -403,6 +403,69 @@ class GuestFirstAccessGroupMigrationTests: XCTestCase {
         XCTAssertNil(userDefaults.object(forKey: migrationInProgressKey))
     }
 
+    /// A resumed migration in the same update as a configuration change carries the app's login, although an app
+    /// extension with the new configuration saved its configuration record in the shared service since the
+    /// interruption.
+    ///
+    /// - Given: alice signed in on a user-pool-only configuration without an access group; the state a migration
+    ///   killed just before its first move leaves, in the update that adds the identity pool and the access group;
+    ///   then an app extension with the new configuration starts in the access group and saves its configuration
+    ///   record there, and in turn nothing else, or a guest's session record under the new configuration's account
+    /// - When:
+    ///    - the app launches again with the new configuration, the access group and migration
+    /// - Then:
+    ///    - alice's login is carried to the new configuration's account, where the new store reads it
+    ///    - nothing of the plugin's is left in the unshared service, and the mark is gone
+    func testAResumedMigrationCarriesTheLoginPastAConfigurationAnExtensionSavedSince() throws {
+        for savesAGuest in [false, true] {
+            keychain = InMemoryKeychain()
+            userDefaults.removePersistentDomain(forName: userDefaultsSuite)
+            let alice = LongLivedCredentials.userPoolAndIdentityPool()
+            try makeStore(accessGroup: nil, authConfiguration: userPoolOnlyConfiguration).saveCredential(alice)
+            userDefaults.set(accessGroup, forKey: migrationInProgressKey)
+            let extensionStore = makeExtensionStore(migrate: true)
+            if savesAGuest {
+                try extensionStore.saveCredential(
+                    .identityPoolOnly(identityID: "extensions-guest", credentials: LongLivedCredentials.awsCredentials())
+                )
+            }
+
+            let store = makeStore(accessGroup: accessGroup, migrate: true)
+
+            XCTAssertEqual(try store.retrieveCredential(), alice, "savesAGuest: \(savesAGuest)")
+            XCTAssertEqual(try keychain.store(service: service).allAccounts(), [], "savesAGuest: \(savesAGuest)")
+            XCTAssertNil(userDefaults.object(forKey: migrationInProgressKey))
+        }
+    }
+
+    /// A resumed migration in the same update as a configuration change does not carry the app's login over a
+    /// signed-out record saved under the new configuration's account since the interruption.
+    ///
+    /// - Given: the state a migration killed just before its first move leaves, in the update that adds the identity
+    ///   pool and the access group: alice's login on a user-pool-only configuration still in the unshared service,
+    ///   and the mark naming the access group; then alice signs in and out through an app extension's client
+    ///   `.default` with the new configuration, which saves its configuration record and the signed-out record in
+    ///   the shared service
+    /// - When:
+    ///    - the app launches again with the new configuration, the access group and migration
+    /// - Then:
+    ///    - the shared service still holds the signed-out record, and the new store reads no login
+    ///    - the app's configuration record collides with the shared one and stays in the unshared service
+    func testAResumedMigrationDoesNotCarryTheLoginOverASignedOutRecord() async throws {
+        try makeStore(accessGroup: nil, authConfiguration: userPoolOnlyConfiguration)
+            .saveCredential(LongLivedCredentials.userPoolAndIdentityPool())
+        userDefaults.set(accessGroup, forKey: migrationInProgressKey)
+        try await signOutThroughTheClientsDefaultSession()
+        let signedOut = try XCTUnwrap(keychain.value(service: sharedService, accessGroup: accessGroup, account: sessionAccount))
+        XCTAssertNotNil(keychain.value(service: sharedService, accessGroup: accessGroup, account: "authConfiguration"))
+
+        let store = makeStore(accessGroup: accessGroup, migrate: true)
+
+        XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: sessionAccount), signedOut)
+        XCTAssertEqual(try store.retrieveCredential(), .noCredentials)
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), ["authConfiguration"])
+    }
+
     // MARK: Helpers
 
     /// alice signs in through the client's `.default` in the access group, then signs out: the shared service holds

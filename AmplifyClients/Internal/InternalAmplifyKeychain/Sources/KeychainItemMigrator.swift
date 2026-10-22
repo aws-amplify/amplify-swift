@@ -68,7 +68,13 @@ package struct KeychainItemMigrator: Sendable {
     ///   order; for an account listed in two groups, the copy listed first moves (below), and the keychain
     ///   does not specify which that is.
     /// - Any other failure stops the migration and is thrown. Accounts moved before it stay moved.
-    package func migrate(clearingDestinationWith clearDestination: () -> Void, willMove: () -> Void = {}) throws {
+    /// - `lastAccount`, if given, moves after every other item, whatever the listing order, so an app
+    ///   terminated part-way always leaves it in the source.
+    package func migrate(
+        clearingDestinationWith clearDestination: () -> Void,
+        willMove: () -> Void = {},
+        movingLast lastAccount: String? = nil
+    ) throws {
         logger.verbose("[KeychainStoreMigrator] Starting to migrate items")
 
         // Check if there are any existing items under the new service and access group. A failed check
@@ -80,7 +86,8 @@ package struct KeychainItemMigrator: Sendable {
         willMove()
 
         // A failed listing or move is logged once, by the store that saw its status, and thrown here.
-        let entries = try sourceStore.allEntries()
+        let listed = try sourceStore.allEntries()
+        let entries = listed.filter { $0.account != lastAccount } + listed.filter { $0.account == lastAccount }
 
         var movedCount = 0
         var skippedCount = 0

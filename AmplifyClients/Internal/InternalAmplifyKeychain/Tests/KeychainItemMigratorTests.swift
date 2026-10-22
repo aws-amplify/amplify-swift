@@ -164,6 +164,31 @@ final class KeychainItemMigratorTests: XCTestCase {
         }
     }
 
+    /// The account given as `movingLast` moves after every other item, whatever the listing order.
+    ///
+    /// - Given: a source holding every plugin item, where `authConfiguration` lists last, and in turn
+    ///   `amplify.us-east-1_Pool.Alice.deviceASF`, which lists first
+    /// - When: the migration runs with that account as `movingLast`
+    /// - Then:
+    ///    - every other item moves first, in listing order, then that account; every item is in the destination
+    func testMovingLastMovesThatAccountAfterEveryOtherItem() throws {
+        for last in ["authConfiguration", "amplify.us-east-1_Pool.Alice.deviceASF"] {
+            let keychain = InMemoryKeychain()
+            try populate(keychain, source, with: pluginAccounts)
+            let events = EventRecorder()
+            keychain.beforeMove { account in events.append(account) }
+
+            try makeMigrator(keychain).migrate(clearingDestinationWith: {}, movingLast: last)
+
+            XCTAssertEqual(events.all, pluginAccounts.sorted().filter { $0 != last } + [last], last)
+            XCTAssertEqual(
+                try keychain.store(service: destination.service, accessGroup: destination.accessGroup).allAccounts(),
+                pluginAccounts.sorted(),
+                last
+            )
+        }
+    }
+
     /// Any other move failure part-way stops the migration and throws, leaving the earlier moves done.
     ///
     /// - Given: a source holding every plugin item, whose move of the second account in listing order

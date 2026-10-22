@@ -99,18 +99,22 @@ extension AWSCognitoAuthCredentialStore {
         let markInProgress = { [userDefaults, migrationInProgressValue, migrationInProgressKey] in
             userDefaults.set(migrationInProgressValue, forKey: migrationInProgressKey)
         }
+        // The configuration record moves last, so an interrupted migration always leaves it in the source,
+        // where a resumed one finds the configuration the moved login was saved under.
+        let configurationRecord = Self.authConfigurationAccount
         do {
             try EngineCredentialStoreError.mapping {
                 if resuming {
                     // The destination holds the items moved before the interruption: keep them. An item
                     // already there is skipped, as any collision is, except a guest's session record that
-                    // the source's login replaces: another process saved it after the interruption.
+                    // the source's login replaces, and a configuration record that would stop the source's
+                    // login from being carried: another process saved them after the interruption.
                     try migrator.migrate(clearingDestinationWith: { [self] in
-                        removeGuestSessionsReplacedByALogin(
-                            destination: quietStore(newService, newAccessGroup),
-                            source: quietStore(oldService, oldAccessGroup)
-                        )
-                    }, willMove: markInProgress)
+                        let destination = quietStore(newService, newAccessGroup)
+                        let source = quietStore(oldService, oldAccessGroup)
+                        removeGuestSessionsReplacedByALogin(destination: destination, source: source)
+                        removeConfigurationSavedSinceTheInterruption(destination: destination, source: source)
+                    }, willMove: markInProgress, movingLast: configurationRecord)
                     return
                 }
                 // Clears a non-empty destination first, sparing the standalone clients' session records but
@@ -119,7 +123,7 @@ extension AWSCognitoAuthCredentialStore {
                 try migrator.migrate(clearingDestinationWith: { [makeKeychainStore, logger] in
                     try? Self.keychainStore(newService, newAccessGroup, makeKeychainStore, logger: logger)
                         .removeAllExceptSessionRecords(sparingDefaultSessionItems: false)
-                }, willMove: markInProgress)
+                }, willMove: markInProgress, movingLast: configurationRecord)
             }
         } catch {
             log.error("[AWSCognitoAuthCredentialStore] Migration has failed")
@@ -237,6 +241,54 @@ extension AWSCognitoAuthCredentialStore {
         }
     }
 
+    /// A resumed migration's clear of a configuration record another process saved in `destination` since the
+    /// interruption: an app extension or the Cognito client's default session that started there with another
+    /// configuration (the identity pool the update adds, say). Kept, it collides with the source's record, which
+    /// then stays behind, and the configuration change after the migration runs from that process's
+    /// configuration: it finds no change and never carries the moved login to the current configuration's
+    /// account. Removed, the source's record moves, as after the fresh migration's destination clear, and the
+    /// login is carried.
+    ///
+    /// It is removed only when the source still holds its own configuration record, and it differs; a login to
+    /// move is under the current configuration's account, or under the account the configuration change carries
+    /// from, in the source or already moved (`holdsALoginToMigrate(_:)`'s rule); and the destination holds a
+    /// guest's session record, or none, under the current configuration's account, so a login or a signed-out
+    /// record saved since is never carried over. Best effort: a record that cannot be read or removed stays.
+    func removeConfigurationSavedSinceTheInterruption(
+        destination: any KeychainItemStoreBehavior,
+        source: any KeychainItemStoreBehavior
+    ) {
+        let account = Self.authConfigurationAccount
+        guard let sourceData = try? source.dataIfPresent(account),
+              let sourceConfiguration = try? Self.decodeAuthConfiguration(sourceData),
+              let destinationData = try? destination.dataIfPresent(account),
+              (try? Self.decodeAuthConfiguration(destinationData)) != sourceConfiguration else {
+            return
+        }
+        let holdsALogin = accountsOfALoginToMigrate(previous: sourceConfiguration).contains { account in
+            Self.savedSession(at: account, in: source) == .login || Self.savedSession(at: account, in: destination) == .login
+        }
+        guard holdsALogin else {
+            return
+        }
+        let current = Self.sessionAccount(for: authConfiguration)
+        guard Self.savedSession(at: current, in: destination) == .guest || Self.holdsNoItem(at: current, in: destination) else {
+            return
+        }
+        if (try? destination.remove(account)) != nil {
+            log.info("[AWSCognitoAuthCredentialStore] Replacing a configuration record in the shared keychain with the one being migrated")
+        }
+    }
+
+    /// Whether `store` holds no item at `account`: `false` when it cannot tell.
+    private static func holdsNoItem(at account: String, in store: any KeychainItemStoreBehavior) -> Bool {
+        do {
+            return try store.dataIfPresent(account) == nil
+        } catch {
+            return false
+        }
+    }
+
     /// What a saved session record holds, as the migration weighs it.
     enum SavedSession: Equatable {
         /// User pool tokens or a federated identity: a user signed in.
@@ -278,12 +330,19 @@ extension AWSCognitoAuthCredentialStore {
     /// account is a stale copy an earlier configuration change left behind (a carry keeps the old record, and a
     /// sign-out removes only the current one). The store never reads it, so it does not replace a guest.
     func holdsALoginToMigrate(_ store: any KeychainItemStoreBehavior) -> Bool {
-        var accounts = [Self.sessionAccount(for: authConfiguration)]
         let previous = (try? store.dataIfPresent(Self.authConfigurationAccount))
             .flatMap { try? Self.decodeAuthConfiguration($0) }
+        return accountsOfALoginToMigrate(previous: previous).contains { Self.savedSession(at: $0, in: store) == .login }
+    }
+
+    /// The accounts of a login the store goes on to use, by the configuration the migration's source last ran with
+    /// (`previous`): this configuration's account first, then the account the configuration change that follows
+    /// the migration carries from, if any.
+    private func accountsOfALoginToMigrate(previous: AuthConfiguration?) -> [String] {
+        var accounts = [Self.sessionAccount(for: authConfiguration)]
         if case .carry(let fromAccount, _) = Self.configurationChange(from: previous, to: authConfiguration) {
             accounts.append(fromAccount)
         }
-        return accounts.contains { Self.savedSession(at: $0, in: store) == .login }
+        return accounts
     }
 }
