@@ -229,12 +229,12 @@ extension SessionCore {
 
     /// The user closed the logout page: they stay signed in, as with the plugin. Unless the session is expired
     /// (the plugin's #3956 behaviour, keyed there on `isRefreshTokenExpired`): its tokens are dead anyway, so it
-    /// signs out without the page and reports the cookie left behind.
+    /// signs out without the page and reports the cookie left behind (`expiredLogoutClosed(_:)`).
     private nonisolated func afterClosedLogout(_ payload: Data, global: Bool, _ error: AuthClientError) async throws -> EngineSignOutOutcome {
         guard await isExpired else {
             throw error
         }
-        return try await skippingHostedUI(payload, global: global, reporting: error)
+        return try await skippingHostedUI(payload, global: global, reporting: Self.expiredLogoutClosed(error))
     }
 
     private nonisolated func skippingHostedUI(
@@ -292,12 +292,24 @@ extension SessionCore {
     static let signOutBrowserBusySuggestion =
         "Retry the sign-out when the other sheet has closed; the session is still signed in."
 
+    /// The logout page was closed, and the session is still signed in: the sign-out is `.failed` with this error.
     static func logoutClosed() -> AuthClientError {
         .userCancelled(
             "The hosted UI's sign-out page was closed before it finished.",
             "Sign out again to clear the browser's sign-in."
         )
     }
+
+    /// The logout page of an expired session was closed, `closed` the page's error: the session was signed out on
+    /// this device anyway, so signing it out again finds nothing to sign out, and shows no page. Reported in the
+    /// `.partial` result's `hostedUIError`, with `closed`'s underlying error.
+    static func expiredLogoutClosed(_ closed: AuthClientError) -> AuthClientError {
+        .userCancelled(expiredLogoutClosedDescription, noSignOutWindowSuggestion, closed.underlyingError)
+    }
+
+    static let expiredLogoutClosedDescription =
+        "The hosted UI's sign-out page was closed before it finished. The session's sign-in had expired, so it was "
+            + "signed out on this device, but not from the hosted UI."
 }
 
 #if os(iOS) || os(macOS) || os(visionOS)

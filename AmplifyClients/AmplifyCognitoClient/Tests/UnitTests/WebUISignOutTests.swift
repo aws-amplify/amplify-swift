@@ -918,8 +918,8 @@ final class WebUISignOutTests: XCTestCase {
     /// - Given: a shared-cookie session
     /// - When: the user closes the logout page
     /// - Then:
-    ///    - the sign-out is `.failed(.userCancelled)` before clearing anything: the session is still signed in,
-    ///      one revoke was attempted, and no `.signedOut` is sent
+    ///    - the sign-out is `.failed(.userCancelled)` before clearing anything, with the page's own error: the session
+    ///      is still signed in, one revoke was attempted, and no `.signedOut` is sent
     func testClosingTheLogoutPageKeepsTheSessionSignedIn() async throws {
         let payload = HostedUIFixtures.hostedUIPayload()
         try harness.signIn(work, payload)
@@ -931,6 +931,8 @@ final class WebUISignOutTests: XCTestCase {
         let error = await failedSignOutError(signOut(client))
 
         XCTAssertEqual(error?.kind, .userCancelled)
+        XCTAssertEqual(error?.errorDescription, "closed")
+        XCTAssertEqual(error?.recoverySuggestion, "retry")
         XCTAssertEqual(engine.revokeCalls.count, 1)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
         let state = await client.currentSessionState()
@@ -941,10 +943,13 @@ final class WebUISignOutTests: XCTestCase {
     /// The #3956 exception
     ///
     /// - Given: a shared-cookie session whose refresh token is known to be dead
-    /// - When: the user closes the logout page
+    /// - When: the user closes the logout page, whose error has an underlying error, then the session is signed out
+    ///   again with a window
     /// - Then:
     ///    - the sign-out reruns with the hosted UI skipped and signs out; the result is `.partial` with
-    ///      `hostedUIError` `.userCancelled`
+    ///      `hostedUIError` `.userCancelled`, with the page's underlying error and the exact texts: signed out on
+    ///      this device but not from the hosted UI, and the cookie may remain; nothing asks for another sign-out
+    ///    - the second sign-out is `.complete`, and the engine is asked for nothing more
     func testClosingTheLogoutPageOfAnExpiredSessionStillSignsOut() async throws {
         var payload = HostedUIFixtures.hostedUIPayload()
         payload.stale = true
@@ -953,18 +958,34 @@ final class WebUISignOutTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
         _ = try await client.fetchAuthSession()
+        let pageError = FixtureError(description: "the page")
         engine.scriptHostedUIRevoke { _, _, plan in
             if case .present = plan {
-                throw AuthClientError.userCancelled("closed", "retry")
+                throw AuthClientError.userCancelled("closed", "Sign out again.", pageError)
             }
             return .complete
         }
 
         let result = await signOut(client)
+        let again = await signOut(client)
 
         XCTAssertEqual(plans(engine), ["present", "skip"])
-        XCTAssertEqual(hostedUIError(result)?.kind, .userCancelled)
+        let error = try XCTUnwrap(hostedUIError(result))
+        XCTAssertEqual(error.kind, .userCancelled)
+        XCTAssertEqual(
+            error.errorDescription,
+            "The hosted UI's sign-out page was closed before it finished. The session's sign-in had expired, so it was "
+                + "signed out on this device, but not from the hosted UI."
+        )
+        XCTAssertEqual(
+            error.recoverySuggestion,
+            "The hosted UI's session cookie may remain in the browser until it expires or the user signs out in the "
+                + "browser; signing this session out again will not clear it. Until then, sign in to the hosted UI with "
+                + "prompt: [.login] or prefersEphemeralSession: true, or it may sign the same user in again."
+        )
+        XCTAssertEqual((error.underlyingError as? FixtureError)?.description, pageError.description)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
+        XCTAssertEqual(again, .complete)
     }
 
     /// Retries never present
@@ -1073,6 +1094,40 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
         let lock = harness.sheetLock
         await waitUntil("the sheet is free") { await lock.currentHolder == nil }
+    }
+
+    /// An interrupt that dismissed the logout page of an expired session
+    ///
+    /// - Given: a shared-cookie session whose refresh token is known to be dead, and whose logout page is open
+    /// - When: `cancelWebUISignIn()` interrupts the lease, and the page's call then ends cancelled
+    /// - Then:
+    ///    - the sign-out reruns with the hosted UI skipped and signs out; the result is `.partial` with
+    ///      `hostedUIError` `.userCancelled`, signed out on this device but not from the hosted UI, never the
+    ///      closed page's "Sign out again" text
+    func testAnInterruptThatClosesTheLogoutPageOfAnExpiredSessionStillSignsOut() async throws {
+        var payload = HostedUIFixtures.hostedUIPayload()
+        payload.stale = true
+        try harness.signIn(work, payload)
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
+        _ = try await client.fetchAuthSession()
+
+        let signOut = await interruptedSignOut(client, engine) { interrupted in
+            if interrupted {
+                throw CancellationError()
+            }
+            return .complete
+        }
+
+        let result = await signOut.value
+        XCTAssertEqual(plans(engine), ["present", "skip"])
+        let error = try XCTUnwrap(hostedUIError(result), "expected .partial, got \(result)")
+        XCTAssertEqual(error.kind, .userCancelled)
+        XCTAssertEqual(error.errorDescription, SessionCore.expiredLogoutClosedDescription)
+        XCTAssertEqual(error.recoverySuggestion, SessionCore.noSignOutWindowSuggestion)
+        XCTAssertNotEqual(error.recoverySuggestion, SessionCore.logoutClosed().recoverySuggestion)
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
 
     /// An interrupt after the page had done its work

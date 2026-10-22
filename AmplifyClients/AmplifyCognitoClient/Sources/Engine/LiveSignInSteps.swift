@@ -198,7 +198,7 @@ enum LiveSignInSteps {
                 // The user pool signed in, then the identity pool step failed: the plugin throws, and so do
                 // we, but the issued tokens go back for the engine to revoke.
                 throw SignInStepFailure(
-                    error: map(error.engineError, confirming: confirming, challengeRejected: false),
+                    error: map(error, confirming: confirming, challengeRejected: false),
                     keepsAttempt: false,
                     issued: try? CredentialSlot.encode(.userPoolOnly(signedInData: signedInData))
                 )
@@ -206,7 +206,7 @@ enum LiveSignInSteps {
                 return nil
             }
         case .error(let error):
-            throw dropping(map(error.engineError, confirming: confirming, challengeRejected: false))
+            throw dropping(map(error, confirming: confirming, challengeRejected: false))
         case .signingIn(let signInState):
             return try step(
                 in: signInState,
@@ -309,7 +309,7 @@ enum LiveSignInSteps {
         if error.isResetPassword {
             return .resetPassword(nil)
         }
-        let mapped = map(error.engineError, confirming: confirming, challengeRejected: challengeRejected)
+        let mapped = map(error, confirming: confirming, challengeRejected: challengeRejected)
         let expired: Bool
         if case .challengeExpired = mapped {
             expired = true
@@ -327,7 +327,7 @@ enum LiveSignInSteps {
         if case .service(_, _, let underlying) = engineError, underlying is CancellationError {
             return CancellationError()
         }
-        return map(engineError, confirming: confirming, challengeRejected: challengeRejected)
+        return map(error, confirming: confirming, challengeRejected: challengeRejected)
     }
 
     /// Whether `answer` selects WebAuthn at `step`, which needs a presentation anchor.
@@ -338,10 +338,10 @@ enum LiveSignInSteps {
         return answer == "WEB_AUTHN"
     }
 
-    private static func map(_ error: EngineAuthError, confirming: Bool, challengeRejected: Bool) -> AuthClientError {
+    private static func map(_ failure: any EngineAuthErrorConvertible, confirming: Bool, challengeRejected: Bool) -> AuthClientError {
         confirming
-            ? AuthClientError(engineConfirmingSignIn: error, rejectedByUserPool: challengeRejected)
-            : AuthClientError(engine: error)
+            ? AuthClientError(engineConfirmingSignIn: failure.engineError, rejectedByUserPool: challengeRejected, cause: failure as? Error)
+            : AuthClientError(engineFailure: failure)
     }
 
     // MARK: Cancellation

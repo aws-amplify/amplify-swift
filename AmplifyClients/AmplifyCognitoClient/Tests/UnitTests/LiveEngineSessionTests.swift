@@ -97,7 +97,8 @@ final class LiveEngineSessionTests: XCTestCase {
     ///    - it is refreshed
     /// - Then:
     ///    - `NotAuthorizedException` is `refreshTokenInvalid`; `RefreshTokenReuseException` is
-    ///      `refreshTokenReused`; `InternalErrorException` is `service` with the mapped error
+    ///      `refreshTokenReused`; `InternalErrorException` is `service` with the mapped error, `.unknown` with the
+    ///      retry suggestion
     ///
     func testRefreshFailuresAreClassified() async throws {
         let engine = try harness.engine()
@@ -113,8 +114,8 @@ final class LiveEngineSessionTests: XCTestCase {
             }),
             (AWSCognitoIdentityProvider.InternalErrorException(message: "boom"), {
                 // Mapped by the engine (to the plugin's unknown), not folded into either refresh-token case.
-                if case SessionEngineError.service(.unknown(let description, _, _)) = $0 {
-                    return description.contains("boom")
+                if case SessionEngineError.service(.unknown(let description, let suggestion, _)) = $0 {
+                    return description.contains("boom") && suggestion == AuthClientError.serviceFaultSuggestion
                 }
                 return false
             })

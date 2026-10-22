@@ -1363,7 +1363,8 @@ func hostedUISignOut(client: AmplifyCognitoClient, window: AuthClientPresentatio
   `prefersEphemeralSession: true`.
 - If the user closes the sign-out page, the result is `.failed(.userCancelled)` and the session stays signed in,
   as with the plugin, unless the session had already expired. Then it signs out anyway and returns `.partial` with
-  `hostedUIError` `.userCancelled`. The same goes when `cancelWebUISignIn()` closes this session's sign-out page, or
+  `hostedUIError` `.userCancelled`, which says the session was signed out on this device but not from the hosted UI:
+  as without a window, signing out again won't clear the cookie. The same goes when `cancelWebUISignIn()` closes this session's sign-out page, or
   `resetSystemSheet()` closes it before it finished.
 - If the page can't be shown or completed, the result is `.failed` and the session stays signed in, with nothing
   revoked, as with the plugin: `.configuration` when the configuration has no hosted UI or no usable sign-out
@@ -1407,7 +1408,7 @@ Every operation throws `AuthClientError`, which conforms to `AmplifyError`: each
 | `userCancelled` | The user closed a system sheet, or it was cancelled | Nothing changed; let the user retry |
 | `webAuthnCeremonyFailed(failure)` | The local passkey ceremony failed before Cognito was asked | `failure` is `.credentialAlreadyExists`, `.failed` or `.invalidCredential` |
 | `unexpectedIdentity(expected:returned:)` | The hosted UI returned another user than expected; nobody was signed in | Retry with `prompt: [.login]` |
-| `unknown` | Anything else, including a saved record this version can't read | Read the description |
+| `unknown` | Anything else, including a saved record this version can't read. Also, as in the plugin, an error status the SDK doesn't model, whose suggestion says to retry (a 5xx) or that the service refused the request (the description has the status and message), and a Cognito internal error (`InternalErrorException`), whose suggestion says to retry. From `deleteUser`, a sign-out's revoke or global sign-out, or a passkey credential call, an internal error keeps the engine's suggestion | Read the description; retry a 5xx or internal error later |
 
 Match cases directly. `service` carries its code in the case, so no downcast is needed:
 
@@ -1438,7 +1439,11 @@ do {
 A network failure is `.service` with no code in every call: offline, a failed DNS or host lookup, a refused or lost
 connection, a timeout, or a failed secure connection gives the description "A network problem stopped the request. It
 may not have reached the service." and the suggestion "A network or service problem occurred. Check the connection
-and retry the operation.", with the network error underneath. The description doesn't say the request never arrived:
+and retry the operation.", with the network error itself underneath (`underlyingError` is the `URLError`, or the
+CFNetwork or POSIX error), so `catch AuthClientError.service(nil, _, _, let error as URLError) where error.code ==
+.notConnectedToInternet` matches it in every call. `AuthClientServiceErrorCode.network` is only set by an HTTP client
+that reports connectivity failures in its own terms, such as a CRT engine set through `configureUserPoolClient`; with the
+default one, match the `URLError`. The description doesn't say the request never arrived:
 a timed-out or lost connection may follow a request Cognito acted on, whose answer was lost. A transport failure that
 isn't a network failure is `.service` with no code too, never `.unknown`: a response that couldn't be read (one that
 isn't JSON, such as an HTML error page, or a malformed one) is "The service returned a response that could not be

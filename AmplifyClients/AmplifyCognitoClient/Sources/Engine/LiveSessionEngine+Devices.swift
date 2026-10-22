@@ -152,7 +152,7 @@ extension LiveSessionEngine {
         do {
             return try await call()
         } catch let error as EngineAuthErrorConvertible {
-            throw AuthClientError(engine: error.engineError)
+            throw AuthClientError(engineFailure: error)
         }
     }
 }
