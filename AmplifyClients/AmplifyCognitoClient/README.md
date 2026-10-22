@@ -1671,7 +1671,13 @@ along with one of the changes below, where the plugin's rule would not carry. Th
   from the one the sign-out revoked (B's was rotated since, say), it is revoked too. If an extension still on
   configuration A had refreshed A's record meanwhile, A's record would be kept, for the extension.
 - A rollback carries by the same rules: back on the old configuration, the kept record is used (a guest keeps its
-  identity), unless the session, if not a guest, was signed out or purged under the new one.
+  identity), unless the session, if not a guest, was signed out or purged under the new one. If the same user's
+  session refreshed under the new configuration since the carry (with refresh-token rotation on, that retired the
+  kept record's refresh token), or the user signed in again there, and nothing has written the kept record since,
+  the newer login is carried back over it by the same rules, as the plugin carries the newer configuration's login
+  over the older one. So the session comes back with the newest tokens, and a sign-out in either configuration
+  still ends it in both. Another user's login, a guest's or federated identity's, a signed-out one, and a kept
+  record an extension rewrote are never carried over it.
 - If a carried session's identity fetch fails, it keeps its user pool tokens, and a later fetch of its AWS
   credentials tries the identity step again (the plugin tries it again only when its tokens need refreshing or a
   fetch forces a refresh). A known refusal isn't retried for that user until the user pool tokens next need a

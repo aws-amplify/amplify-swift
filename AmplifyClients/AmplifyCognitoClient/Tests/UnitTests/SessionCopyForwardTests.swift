@@ -949,8 +949,10 @@ final class SessionCopyForwardTests: XCTestCase {
     /// twice.
     ///
     /// - Given: alice carried from the user pool alone into both pools, then refreshed there with rotation (a new
-    ///   refresh token), then restored again under the user pool alone (a rollback), which remembers the
-    ///   both-pools record as a copy; and, in a second run, the same without the rotation
+    ///   refresh token), and her record under the user pool alone refreshed too, with its own new refresh token, by
+    ///   an extension still on that configuration (so a rollback keeps it, and does not carry the both-pools record
+    ///   back); then restored again under the user pool alone (a rollback), which remembers the both-pools record as a
+    ///   copy; and, in a second run, the same without the rotations
     /// - When: the user-pool-only client signs out
     /// - Then: with the rotation, the engine revokes her own record and the rotated copy, and the copy is deleted;
     ///   without it, only her own record is revoked, and the copy is deleted
@@ -969,6 +971,7 @@ final class SessionCopyForwardTests: XCTestCase {
             try bothStore.write(refreshed.record(label: "Work"), for: work, expecting: carried.version)
             carrying = nil
             await harness.waitForBaseline()
+            try refreshUnderTheUserPoolOnlyByAnExtension(rotated: rotated)
 
             let client = try harness.client(work, configuration: ClientFixtures.userPoolOnlyConfiguration)
             _ = await client.currentSessionState()
@@ -976,15 +979,69 @@ final class SessionCopyForwardTests: XCTestCase {
             _ = await client.signOut()
 
             let revoked = engine.revokeCalls.compactMap { FakePayload.decode($0) }
-            XCTAssertEqual(revoked.map(\.version), rotated ? [1, 2] : [1], "rotated: \(rotated)")
+            XCTAssertEqual(revoked.map(\.version), rotated ? [3, 2] : [3], "rotated: \(rotated)")
             XCTAssertEqual(try bothStore.read(work), .absent, "rotated: \(rotated): the copy is swept")
         }
     }
 
+    /// alice's record under the user pool alone rewritten at version 3 (an extension still on that configuration
+    /// refreshed it), with its own rotated refresh token when `rotated`: no longer the untouched copy.
+    private func refreshUnderTheUserPoolOnlyByAnExtension(rotated: Bool) throws {
+        guard case .record(let copy) = try userPoolOnlyStore.read(work) else {
+            return XCTFail("no copy under the user pool alone")
+        }
+        var refreshed = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 3)
+        refreshed.refreshToken = rotated ? "refresh-alice-extension" : nil
+        XCTAssertTrue(try userPoolOnlyStore.write(refreshed.record(label: "Work"), for: work, expecting: copy.version).didCommit)
+    }
+
+    /// The reported sequence, through the client: moving a named session back to an earlier configuration of the
+    /// same user pool resumes the newest tokens, after rotation retired the copy's refresh token.
+    ///
+    /// - Given:
+    ///    - release 1 configures the user pool only, and alice signs in to `work`
+    ///    - release 2 adds an identity pool: the session is carried, and alice's next refresh there (her identity's
+    ///      first fetch) rotates her refresh token to `refresh-alice-R2`
+    /// - When: release 3 drops the identity pool again, and restores the session, fetches it, then signs out
+    /// - Then:
+    ///    - it is `.signedIn(alice)`, its record holds `refresh-alice-R2`, and the fetch vends release 2's refreshed
+    ///      tokens with no refresh
+    ///    - the sign-out revokes `refresh-alice-R2` once (release 2's record holds the same token), and deletes
+    ///      release 2's record: one session
+    func testARollbackResumesTheRefreshedTokensAfterARotation() async throws {
+        try aliceUnderTheUserPoolOnly()
+        var release2: AmplifyCognitoClient? = try harness.client(work)
+        var rotated = FakePayload.signedIn("alice", version: 2, identityId: "us-east-1:alice")
+        rotated.refreshToken = "refresh-alice-R2"
+        let issued = rotated
+        try XCTUnwrap(harness.engine(for: work)).scriptRefresh { _ in issued.data }
+        _ = try await release2?.fetchAuthSession()
+        XCTAssertEqual(FakePayload.decode(try XCTUnwrap(try currentRecord()?.credentials))?.refreshToken, "refresh-alice-R2")
+        release2 = nil
+        await harness.waitForBaseline()
+
+        let release3 = try harness.client(work, configuration: ClientFixtures.userPoolOnlyConfiguration)
+        let state = await release3.currentSessionState()
+        let session = try await release3.fetchAuthSession()
+
+        XCTAssertEqual(state, .signedIn(alice))
+        guard case .record(let restored) = try userPoolOnlyStore.read(work) else {
+            return XCTFail("no record under the user pool alone")
+        }
+        XCTAssertEqual(FakePayload.decode(try XCTUnwrap(restored.record.credentials))?.refreshToken, "refresh-alice-R2")
+        XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, "access-alice-v2")
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        XCTAssertEqual(engine.refreshCalls.count, 0)
+        _ = await release3.signOut()
+        XCTAssertEqual(engine.revokeCalls.compactMap { FakePayload.decode($0)?.refreshToken }, ["refresh-alice-R2"])
+        XCTAssertEqual(try harness.store().read(work), .absent, "release 2's record is swept")
+    }
+
     /// `signOutStoredSession` revokes a swept copy with a rotated refresh token too, through the stateless revoker.
     ///
-    /// - Given: alice carried from the user pool alone into both pools, then refreshed there, with and (a second run)
-    ///   without rotation; no client held
+    /// - Given: alice carried from the user pool alone into both pools, then refreshed there, and her record under the
+    ///   user pool alone refreshed by an extension still on it (so it is not the untouched copy), with and (a second
+    ///   run) without rotation; no client held
     /// - When: `signOutStoredSession` runs with the user-pool-only configuration (a rollback)
     /// - Then: with the rotation, the revoker revokes her own record and the rotated copy; without it, only her own
     ///   record; the copy is deleted either way
@@ -1003,6 +1060,7 @@ final class SessionCopyForwardTests: XCTestCase {
             try bothStore.write(refreshed.record(label: "Work"), for: work, expecting: carried.version)
             carrying = nil
             await harness.waitForBaseline()
+            try refreshUnderTheUserPoolOnlyByAnExtension(rotated: rotated)
 
             let result = await AmplifyCognitoClient.signOutStoredSession(
                 sessionId: work,
@@ -1013,7 +1071,7 @@ final class SessionCopyForwardTests: XCTestCase {
 
             XCTAssertEqual(result, .complete, "rotated: \(rotated)")
             let revoked = harness.revoker.revokeCalls.compactMap { FakePayload.decode($0) }
-            XCTAssertEqual(revoked.map(\.version), rotated ? [1, 2] : [1], "rotated: \(rotated)")
+            XCTAssertEqual(revoked.map(\.version), rotated ? [3, 2] : [3], "rotated: \(rotated)")
             XCTAssertEqual(try bothStore.read(work), .absent, "rotated: \(rotated): the copy is swept")
         }
     }
@@ -1173,8 +1231,9 @@ final class SessionCopyForwardTests: XCTestCase {
 
     /// A copy revoke that fails is logged, with no identifiers, and the sweep goes ahead.
     ///
-    /// - Given: alice carried from the user pool alone into both pools, refreshed there with rotation, then restored
-    ///   under the user pool alone (the rotated copy remembered), and an engine whose revoke of that copy fails
+    /// - Given: alice carried from the user pool alone into both pools, refreshed there with rotation, her record under
+    ///   the user pool alone refreshed by an extension still on it, then restored under the user pool alone (the
+    ///   rotated copy remembered), and an engine whose revoke of that copy fails
     /// - When: the user-pool-only client signs out
     /// - Then: the sign-out completes; the copy-revoke warning is logged once, under
     ///   `AmplifyCognitoClient.SessionSignOut`, naming no user, session or pool; the copy is deleted
@@ -1193,6 +1252,7 @@ final class SessionCopyForwardTests: XCTestCase {
         try bothStore.write(refreshed.record(label: "Work"), for: work, expecting: carried.version)
         carrying = nil
         await harness.waitForBaseline()
+        try refreshUnderTheUserPoolOnlyByAnExtension(rotated: true)
         let client = try harness.client(work, configuration: ClientFixtures.userPoolOnlyConfiguration)
         _ = await client.currentSessionState()
         let engine = try XCTUnwrap(harness.engine(for: work))

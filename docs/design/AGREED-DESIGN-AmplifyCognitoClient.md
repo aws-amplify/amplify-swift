@@ -866,8 +866,8 @@ starts, so its user's sign-out or purge there sweeps it while it is untouched. S
 session as it was, unless it was signed out there.
 
 **Copy and keep, as the plugin does.** The record is re-wrapped, not copied byte for byte: written through the commit
-guard as a new record (generation 1, the same label, username and user ID). The old record is **kept**: a rollback
-reads it again, as the plugin's does (so rolling back an added user pool keeps a guest's identity). The marker then
+guard as a new record (generation 1, the same label, username and user ID). The old record is **kept**, so a rollback
+finds it (below; rolling back an added user pool keeps a guest's identity). The marker then
 names the new namespace and remembers the old record as a copy, with a SHA-256 of its bytes at carry time. Sign-out
 (best effort, after the signed-out row) and purge (first) delete a remembered copy **only while its bytes still have
 that digest, it provably holds the same user, and it is not a guest's**. The digest detects a write after the carry (an app
@@ -882,7 +882,15 @@ otherwise, and at purge, a deleted copy's refresh token is not revoked, and stay
 
 **A rollback.** Back under a namespace whose record is the untouched copy the marker remembers, with the session
 signed out or purged under the namespace the marker names (by another app or extension, which does not know this
-app's copies, or by a sign-out whose sweep failed), the copy reads as swept and is deleted; a guest's is not. Otherwise
+app's copies, or by a sign-out whose sweep failed), the copy reads as swept and is deleted; a guest's is not. With the
+session still live under the namespace the marker names, the record there is carried over the untouched copy when
+all of these hold, as the plugin's same-user-pool rule copies the newer configuration's record over the older one:
+the change back is one the client carries, and that record one it takes (live, of an accepted kind); both records are
+of the same user pool user (the same `userId`); the record there holds user pool tokens issued strictly later than
+the copy's (the access token's `iat`, else the ID token's: a refresh there, which with refresh-token rotation retired
+the copy's refresh token, or a sign-in again); and the copy's bytes still have the remembered digest. It is written
+through the commit guard over the copy's version, the marker names the current namespace and remembers the other
+record as a copy, and, as after a carry, it is undone if that record was signed out or purged meanwhile. Otherwise
 the session is kept there from then on, and the record under the namespace the marker named, if not signed out, is
 remembered as a copy with its own user (its `userId`, or for a guest or federated identity its identity ID), whoever
 holds the record here.
