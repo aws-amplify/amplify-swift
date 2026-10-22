@@ -575,6 +575,16 @@ package extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
+                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType {
+                    let action = InitializeTOTPSetup(
+                        authResponse: challengeResponse)
+                    return .init(
+                        newState: .resolvingTOTPSetup(.notStarted, signInEventData),
+                        actions: [action]
+                    )
+                }
+
+                if let signInEvent = event as? SignInEvent,
                    case .confirmDevice(let signedInData) = signInEvent.eventType {
                     let action = ConfirmDevice(signedInData: signedInData)
                     return .init(

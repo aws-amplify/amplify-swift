@@ -849,6 +849,53 @@ final class LiveEngineSignInTests: XCTestCase {
         XCTAssertEqual(harness.cognito.operations, operations)
     }
 
+    /// `USER_AUTH` with the password factor, answered by `MFA_SETUP` offering TOTP but not email: the TOTP setup.
+    ///
+    /// - Given: `InitiateAuth` answering `MFA_SETUP` with `SMS_MFA` and `SOFTWARE_TOKEN_MFA`, then
+    ///   `AssociateSoftwareToken`, `VerifySoftwareToken` and the setup's `RespondToAuthChallenge` succeeding
+    /// - When:
+    ///    - alice signs in with `.userAuth(preferredFirstFactor: .password)` and her password, then confirms the code
+    /// - Then:
+    ///    - the sign-in stops on `.continueSignInWithTOTPSetup` within the bound, instead of never returning
+    ///    - the confirmation answers `MFA_SETUP`, and finishes `.done`
+    ///
+    func testUserAuthWithThePasswordFactorSetsUpTOTP() async throws {
+        let engine = try harness.engine()
+        harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in
+            LiveEngineFixtures.initiateChallenge(.mfaSetup, parameters: ["MFAS_CAN_SETUP": #"["SMS_MFA","SOFTWARE_TOKEN_MFA"]"#])
+        }
+        harness.cognito.once("AssociateSoftwareToken") { (_: AssociateSoftwareTokenInput) in
+            AssociateSoftwareTokenOutput(secretCode: "SHARED-SECRET", session: "setup-session")
+        }
+        harness.cognito.once("VerifySoftwareToken") { (_: VerifySoftwareTokenInput) in
+            VerifySoftwareTokenOutput(session: "verified-session", status: .success)
+        }
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in LiveEngineFixtures.signedIn() }
+        harness.scriptIdentityPool()
+
+        let first = try await withinTime(10, "the USER_AUTH password sign-in") {
+            try await engine.signIn(.flow(.userAuth(preferredFirstFactor: .password), password: "password"), current: nil)
+        }
+
+        guard case .challenge(.continueSignInWithTOTPSetup(let details)) = first else {
+            return XCTFail("expected a TOTP setup, got \(first)")
+        }
+        XCTAssertEqual(details.sharedSecret, "SHARED-SECRET")
+        let initiate = try XCTUnwrap(harness.cognito.inputs("InitiateAuth", as: InitiateAuthInput.self).first)
+        XCTAssertEqual(initiate.authFlow, .userAuth)
+        XCTAssertEqual(initiate.authParameters?["PREFERRED_CHALLENGE"], "PASSWORD")
+
+        let last = try await withinTime(10, "the TOTP setup's confirmation") {
+            try await engine.confirmSignIn(.answer("123456"), current: nil)
+        }
+
+        guard case .done = last else {
+            return XCTFail("expected .done, got \(last)")
+        }
+        let respond = try XCTUnwrap(harness.cognito.inputs("RespondToAuthChallenge", as: RespondToAuthChallengeInput.self).first)
+        XCTAssertEqual(respond.challengeName, .mfaSetup)
+    }
+
     /// A confirmation with nothing pending is `invalidState`, and calls nothing.
     ///
     /// - Given: an engine with no sign-in
