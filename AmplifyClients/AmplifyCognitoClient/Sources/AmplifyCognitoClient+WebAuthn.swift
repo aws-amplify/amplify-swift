@@ -43,11 +43,12 @@ public extension AmplifyCognitoClient {
     ///   sheet is up; `.validation(field: "presentationAnchor")` if the window has gone when the ceremony
     ///   starts, before anything is presented; `.userCancelled` when the user closes the sheet;
     ///   `.webAuthnCeremonyFailed` when the device cannot create the passkey (`.credentialAlreadyExists` if
-    ///   it already holds one for this user); `.notAuthorized` or `.service` as Cognito answers
-    ///   (`.webAuthnNotEnabled` when the pool has no WebAuthn); `.invalidState` if a sign-out, purge or deletion of
-    ///   this session stops it (a sign-out that shows the hosted UI's logout page does so first, even if the user
-    ///   then closes the page); `.userCancelled` also when `cancelWebUISignIn()` or `resetSystemSheet()` closes its
-    ///   sheet; `CancellationError` if the calling task is cancelled.
+    ///   it already holds one for this user, on iOS 18 and macOS 15 or later; never on visionOS, which sends no
+    ///   exclusion list, so the device can register a second one there); `.notAuthorized` or `.service` as
+    ///   Cognito answers (`.webAuthnNotEnabled` when the pool has no WebAuthn); `.invalidState` if a sign-out,
+    ///   purge or deletion of this session stops it (a sign-out that shows the hosted UI's logout page does so
+    ///   first, even if the user then closes the page); `.userCancelled` also when `cancelWebUISignIn()` or
+    ///   `resetSystemSheet()` closes its sheet; `CancellationError` if the calling task is cancelled.
     @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
     @MainActor
     func associateWebAuthnCredential(presentationAnchor: AuthClientPresentationAnchor) async throws {

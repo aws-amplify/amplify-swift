@@ -376,11 +376,14 @@ extension SessionRecordStore {
     /// fails the sign-out or purge, whose record is already gone.
     ///
     /// The services are the plugin's for this store's own pools (`namespace.pools`), plus every other identity pool's
-    /// AWSMobileClient credentials service found in the app's keychain (`legacyLoginStores(for:listServices:makeStore:)`),
-    /// which the plugin doesn't clear: a login an AWSMobileClient app kept for another identity pool than the client's
+    /// credentials service found in the app's keychain (`legacyLoginStores(for:listServices:makeStore:)`), which the
+    /// plugin doesn't clear: a login an AWSMobileClient app kept for another identity pool than the client's
     /// configuration names would otherwise be migrated by a plugin build as a guest holding that user's identity and AWS
-    /// credentials. The user pool service is cleared whole, as the plugin's `ClearCredentialStore` clears it, only with a
-    /// user pool configured: `<bundle>.AWSCognitoIdentityUserPool` holds every app client's logins (`<clientId>.*`).
+    /// credentials. Those services are the AWS SDK for iOS's `AWSCognitoCredentialsProvider` caches, whatever code
+    /// wrote them, so an app still using that provider loses its cached identity ID and AWS credentials, and a guest
+    /// its identity. The user pool service is cleared whole, as the plugin's `ClearCredentialStore` clears it, only
+    /// with a user pool configured: `<bundle>.AWSCognitoIdentityUserPool` holds every app client's logins
+    /// (`<clientId>.*`).
     /// The AWSMobileClient service is cleared whole on any `.default` sign-out or purge, a static one under another
     /// configuration than the app's included.
     func clearLegacyLogins() {
@@ -427,7 +430,8 @@ extension SessionRecordStore {
         return services.map(makeStore)
     }
 
-    /// The middle part of AWSMobileClient's per-identity-pool credentials services,
+    /// The middle part of the per-identity-pool credentials services of the AWS SDK for iOS's
+    /// `AWSCognitoCredentialsProvider`, which AWSMobileClient uses:
     /// `<bundle>.AWSCognitoCredentialsProvider.<identity pool ID>`.
     static let legacyCredentialsProviderService = "AWSCognitoCredentialsProvider"
 

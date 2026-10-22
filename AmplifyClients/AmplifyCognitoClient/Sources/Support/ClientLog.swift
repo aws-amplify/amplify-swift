@@ -11,9 +11,9 @@ import AmplifyFoundation
 /// `AmplifyCognitoClient.<area>`, so an app's sink can tell the client's lines from the Auth plugin's, and
 /// from any other library's.
 ///
-/// The engine's lines use the same prefix through `ClientEngineLogger`'s scopes (for example
-/// `AmplifyCognitoClient.InitiateAuthSRP`). **No session ID** appears in a category: a session ID can be derived
-/// from a user identifier, such as a username or `sub`.
+/// The engine's lines use the same prefix: its flow lines are under `AmplifyCognitoClient` itself, and its
+/// scoped lines under `ClientEngineLogger`'s scopes (for example `AmplifyCognitoClient.MFAType`). **No session ID**
+/// appears in a category: a session ID can be derived from a user identifier, such as a username or `sub`.
 enum ClientLog {
 
     /// The session record store: listing, copy-forward and the interrupted sign-in's record.

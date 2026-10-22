@@ -417,23 +417,26 @@ access-group migration. Each is written into the design, the client's README and
 | # | Decision | Answer |
 |---|---|---|
 | 20 | A guest's session record in the shared service at the access-group migration | **It doesn't stop the migration of a login.** An app extension, or the client's `.default`, that fetched a session before the app's first launch after the update saved it; the app's login replaces it, on a fresh or a resumed migration. A login in the shared service is never replaced, and only a login replaces a guest: one under the app's current configuration, or the one the configuration change at the same launch carries to it, not a stale copy under another configuration's key. |
-| 21 | A signed-out record in the shared service at the access-group migration | **It still stops the migration**, as a login does, so a user who signed out is never signed back in by another process's old login. |
-| 22 | A known refusal of a carried session's identity step | **The AWS credentials provider fails loudly**: `CredentialsError.notConfigured` (`.failLoudly`), with the refusal underneath. `fetchAuthSession` and the token provider keep the refusal itself. |
+| 21 | A signed-out record in the shared service at the access-group migration | **It still stops the migration**, as a login does, so a user who signed out through the client's `.default` (which saves that record) is never signed back in by another process's old login. A plugin sign-out deletes the record instead: after one, only a device record stops an extension's first migration. |
+| 22 | A known refusal of a carried session's identity step | **The AWS credentials provider fails loudly**: `CredentialsError.notConfigured` (`.failLoudly`), with the refusal underneath. `fetchAuthSession`'s identity fields keep the refusal itself, and the token provider still vends the access token. |
 | 23 | Which AWSMobileClient credentials a `.default` sign-out clears | **Every identity pool's** credentials service the app's keychain holds, not only the configured one's. The plugin is unchanged. |
 | 24 | A network failure (the request may not have reached Cognito) | **A retryable `.service` with no code**, in every call, with the client's network texts. The plugin keeps its mapping. |
 | 25 | When a hosted-UI sign-in cancelled with `cancelWebUISignIn()` answers | **Once its browser has closed and the system sheet is free**, within a second. |
 | 26 | A forgotten device key on a sign-in that isn't SRP | **Dropped and retried once**, in the shared engine: the password (`USER_PASSWORD_AUTH`), `USER_AUTH` and custom flows remove the device record and resend without a device key, by SRP's rule. Plugin and client alike. |
-| 27 | The user ID of a sign-up that completes with auto sign-in | **Carried**: Cognito's sub, as `.done` and `.confirmUser` already carried it. Plugin and client alike. |
+| 27 | The user ID of a `signUp` that completes with auto sign-in | **Carried**: Cognito's sub, as `.done` and `.confirmUser` already carried it. Plugin and client alike. `confirmSignUp`'s `.completeAutoSignIn` and `.done` still carry none, since Cognito's answer there has no sub. |
 | 28 | A refresh refused as a reused refresh token | **The 30-second dead-token rule holds within one launch**, and is not persisted; a refused forced refresh fails with the retryable error instead of returning the tokens it sent. |
 
 **#20 and #21.** An extension that fetches a session first finds the shared service empty and saves a guest identity
 there. Counting that record as a migrated login aborted the app's migration and stranded its login in the old
 service, so the user started as a guest. A guest's record is an identity pool identity without user pool tokens or a
 federated identity. It is weighed against what the migration would move: with a login to move, the guest is
-replaced; with nothing but a guest or nothing to move, the shared guest is kept, as before, so an extension's first
-migration never discards a guest identity the app already migrated. A signed-out record is not a guest's: it keeps
-blocking, so a stale login in another process's old service cannot undo a sign-out. The access-group transition
-without migration is unchanged.
+replaced; with nothing but a guest or nothing to move, the shared guest is kept, as before, so a migration with
+nothing to move never discards a guest identity the app already migrated. An extension's first migration whose own
+old service holds a login does move it over that guest. A signed-out record is not a guest's: it keeps blocking, so
+a stale login in another process's old service cannot undo a sign-out through the client's `.default`, which saves
+that record. A plugin sign-out deletes the record instead, so after one only a device record (which a user-pool
+sign-in writes) stops an extension's first migration, and an extension whose old service holds a login moves it in.
+The access-group transition without migration is unchanged.
 
 **#22.** The client doesn't retry a known refusal (`notAuthorized`, `resourceNotFound`, `invalidParameter`,
 `configuration`) in the same process until the user pool tokens next need a refresh or a fetch forces a refresh, so
@@ -468,10 +471,12 @@ doesn't read the message, so a `ResourceNotFoundException` for another reason al
 second attempt reports it, as SRP has always done.
 
 **#27.** Cognito returns the sub in every `SignUp` answer, and an app keying anything on the new user needs it in the
-auto sign-in case too.
+auto sign-in case too. Its `ConfirmSignUp` answer has no sub, so an app that confirms a sign-up keeps the `userID`
+from `signUp`'s `.confirmUser`.
 
 **#28.** The rule needs two refusals in one launch, because a second writer (an app extension between Cognito's
 answer and its keychain write) may still save the refresh that used the token. Persisting the first refusal was not
-taken: it would make a launch-time race look like a dead token. Instead apps are told to offer sign-in after
-repeated refresh failures. A forced refresh asks Cognito for new tokens, so answering it with the tokens it sent hid
-the refusal; it now fails, and an unforced fetch still returns valid saved tokens.
+taken: it would make a launch-time race look like a dead token. Instead apps are told to sign the session out, then
+show sign-in, after repeated refresh failures: `signIn` refuses a session still signed in as its user. A forced
+refresh asks Cognito for new tokens, so answering it with the tokens it sent hid the refusal; it now fails, and an
+unforced fetch still returns valid saved tokens.

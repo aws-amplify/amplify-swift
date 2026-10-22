@@ -11,7 +11,8 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 import InternalAWSCognitoAuth
 
-/// The new user's sub on every sign-up result that completes, auto sign-in included.
+/// The new user's sub on every `signUp` result that completes, auto sign-in included. `confirmSignUp`'s results carry
+/// none: Cognito's `ConfirmSignUp` answer has no sub.
 class AWSAuthSignUpUserIDTests: BasePluginTest, @unchecked Sendable {
 
     let options = AuthSignUpRequest.Options(userAttributes: [

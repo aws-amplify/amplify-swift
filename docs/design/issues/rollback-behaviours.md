@@ -64,7 +64,9 @@ earlier configuration's key that still holds the user's old copy, which then res
 The client used to stay `.signedIn` on a retryable error forever. It now reports `sessionExpired` when a second
 reuse in the same launch, at least 30 seconds after the first, finds its record unchanged. The rule is kept in
 memory: after an app terminated in the middle of a rotating refresh (Cognito rotated the token, and the new one was
-never saved), the retired token gives the retryable error at its first refusal in every launch, never
-`sessionExpired`, until the user signs out or signs in again. Apps should offer sign-in after repeated refresh
-failures. A forced refresh refused as reused fails with that retryable error, and never answers with the saved
-tokens it sent (decided 2026-10-19: forced refresh only; persisting the first refusal across launches was not taken).
+never saved), the retired token gives the retryable error at the first refusal of each launch, and `sessionExpired`
+at a second one at least 30 seconds later in the same launch, until the session is signed out, or signs in again
+after a `sessionExpired`. Before that `sessionExpired` the session is signed in as its user, and `signIn` refuses
+it, so after repeated refresh failures apps should sign the session out, then show sign-in. A forced refresh refused
+as reused fails with that retryable error, and never answers with the saved tokens it sent (decided 2026-10-19:
+forced refresh only; persisting the first refusal across launches was not taken).
