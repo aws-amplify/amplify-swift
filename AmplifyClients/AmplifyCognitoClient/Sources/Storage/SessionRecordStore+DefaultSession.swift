@@ -35,7 +35,9 @@ import InternalAWSCognitoAuth
 //
 // **What a read derives.** The kind, the username and the user ID come from the record's stored format
 // (`PluginRecordSummary`). `identityPending` is a `userPoolOnly` record under a configuration with an identity
-// pool: the identity is fetched on first use, as for a named session carried without one. Bytes that are not the
+// pool: the identity is fetched on first use, as for a named session carried without one. Under a configuration
+// without an identity pool, a `userPoolAndIdentityPool` record reads as `userPoolOnly`, and a guest or federated one as
+// a signed-out row: what the plugin's rule copied as it was, read as a named session there is. Bytes that are not the
 // plugin's format read as `.corrupt`.
 //
 // **The configuration-change rule is the plugin's** (`SessionRecordStore+PluginConfiguration.swift`). `.default` keeps
@@ -147,7 +149,9 @@ extension SessionRecordStore {
     /// - No shared record and no sidecar: `.absent`.
     /// - `{"noCredentials":{}}`, or no shared record beside a sidecar: a signed-out row with the sidecar's label and
     ///   last user, versioned by the bytes read (or `nil`, none).
-    /// - A signed-in, guest or federated record: that record, versioned by its bytes.
+    /// - A signed-in, guest or federated record: that record, versioned by its bytes. A guest or federated record under
+    ///   a configuration without an identity pool, copied there by the plugin's rule: a signed-out row, versioned by
+    ///   its bytes, which stay as they are.
     /// - Bytes that are not the plugin's format: `.corrupt`.
     ///
     /// - Throws: `AuthClientError.storageUnavailable` if the record or the sidecar could not be read.
@@ -173,7 +177,11 @@ extension SessionRecordStore {
         guard summary.isRecognised else {
             return nil
         }
-        if summary.kind == .signedOut {
+        // Derived, as `identityPending` is: a guest or federated identity the plugin's rule copied as it was from a
+        // configuration with an identity pool is nobody's under one without, so it reads as a signed-out row, as a named
+        // session's is, which is not carried there. The bytes are unchanged: the row keeps them as its version.
+        let identityWithoutItsPool = (summary.kind == .guest || summary.kind == .federated) && !namespace.pools.hasIdentityPool
+        if summary.kind == .signedOut || identityWithoutItsPool {
             return sidecar.map(Self.signedOutRow) ?? .signedOut(label: nil, username: nil)
         }
         let user = Self.user(of: summary)
