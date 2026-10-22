@@ -529,6 +529,13 @@ sign-in, and in an answer to a challenge, a user who hasn't confirmed their sign
 request throws instead, as the plugin does: `.service(.userNotConfirmed?, …)` or
 `.service(.passwordResetRequired?, …)`.
 
+With an identity pool configured, the sign-in also gets the user's identity ID and AWS credentials. If that step
+fails after the user pool accepted the sign-in or a `confirmSignIn` answer, for example when `GetId` is throttled or
+the connection drops, the call throws the identity pool's error, such as `.service(.requestLimitExceeded?, …)` for
+throttling. The tokens the user pool just issued are revoked, and the session is signed out: it never keeps user pool
+tokens without AWS credentials. Once the identity pool is reachable again, call `signIn` again; a user who had a
+challenge has to answer it again.
+
 ### Password (SRP)
 
 SRP is the default for an `amplify_outputs` configuration.
@@ -1778,6 +1785,7 @@ The client keeps the plugin's semantics except where listed here.
 | Saved login | One record | `.default` uses the plugin's own record; named sessions keep their own, which the plugin never reads |
 | Session label and signed-out row | None | Kept beside the plugin's record for `.default`, bound to its user |
 | Second sign-in | Refused while signed in | Refused only on the same session, and allowed there once the session reported `sessionExpired` in this process |
+| Identity pool step fails after the user pool signed the user in | `signIn` throws and signs the user out. `confirmSignIn` doesn't return, and the Auth calls queued behind it (`fetchAuthSession` and `signOut` included) wait | `signIn` and `confirmSignIn` both throw the identity pool's error, revoke the tokens just issued and leave the session signed out |
 | Events | Hub | Per-session `AsyncStream`s |
 | Storage failure | Reported as signed out | `.unavailable(reason)` / `storageUnavailable`, never signed out |
 | Interrupted sign-in | Lost when the app closes | Saved, resumable for up to 15 minutes |

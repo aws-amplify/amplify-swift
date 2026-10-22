@@ -179,6 +179,68 @@ final class LiveEngineSignInTests: XCTestCase {
         XCTAssertEqual(harness.cognito.inputs("RevokeToken", as: RevokeTokenInput.self).map(\.token), ["refresh-alice-v1"])
     }
 
+    /// A `confirmSignIn` whose identity pool step fails ends the sign-in signed out, as a sign-in's does; it
+    /// never keeps the user pool tokens without AWS credentials (the README's differences table).
+    ///
+    /// - Given: a client over the live engine; alice's sign-in stopped on an SMS MFA challenge; the answer
+    ///   accepted, then `GetId` throttled with the identity pool's `TooManyRequestsException`
+    /// - When:
+    ///    - alice answers the code
+    /// - Then:
+    ///    - it throws `.service(.requestLimitExceeded)` with Cognito's message
+    ///    - the session is `.signedOut`, and another answer is refused with `.invalidState`: nothing is pending
+    ///    - `RevokeToken` was called with the refresh token the answer was issued, and nothing else was called
+    ///
+    func testAConfirmSignInWhoseIdentityStepFailsEndsSignedOut() async throws {
+        let base = ClientHarness().dependencies
+        let harness = harness!
+        let client = try AmplifyCognitoClient(
+            configuration: ClientFixtures.configuration,
+            options: .init(sessionId: ClientFixtures.id("work")),
+            dependencies: SessionCoreDependencies(
+                registry: base.registry,
+                gates: base.gates,
+                makeStore: base.makeStore,
+                makeClients: base.makeClients,
+                makeEngine: { _ in try harness.engine() },
+                makeRevoker: base.makeRevoker,
+                scheduleRestore: base.scheduleRestore,
+                bounds: base.bounds,
+                now: { Date() }
+            )
+        )
+        harness.scriptSRP(then: LiveEngineFixtures.challenge(.smsMfa, parameters: LiveEngineFixtures.smsParameters))
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in LiveEngineFixtures.signedIn() }
+        harness.cognito.once("GetId") { (_: GetIdInput) -> GetIdOutput in
+            throw AWSCognitoIdentity.TooManyRequestsException(message: "Rate exceeded")
+        }
+        harness.scriptSignOut()
+        let first = try await client.signIn(username: "alice", password: "password")
+        guard case .confirmSignInWithSMSMFACode = first.nextStep else {
+            return XCTFail("expected an SMS MFA challenge, got \(first.nextStep)")
+        }
+
+        await assertThrowsAsync({ try await client.confirmSignIn(challengeResponse: "123456") }) { error in
+            guard case .service(.requestLimitExceeded?, let description, _, _) = authError(error) else {
+                return XCTFail("expected .service(.requestLimitExceeded), got \(error)")
+            }
+            XCTAssertTrue(description.contains("Rate exceeded"), description)
+        }
+
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedOut)
+        await assertThrowsAsync({ try await client.confirmSignIn(challengeResponse: "123456") }) { error in
+            guard case .invalidState = authError(error) else {
+                return XCTFail("expected invalidState, got \(error)")
+            }
+        }
+        XCTAssertEqual(harness.cognito.inputs("RevokeToken", as: RevokeTokenInput.self).map(\.token), ["refresh-alice-v1"])
+        XCTAssertEqual(
+            harness.cognito.operations,
+            ["InitiateAuth", "RespondToAuthChallenge", "RespondToAuthChallenge", "GetId", "RevokeToken"]
+        )
+    }
+
     /// The user pool alone: the sign-in finishes with a user-pool-only payload and no identity pool call.
     ///
     /// - Given: a user-pool-only configuration, and SRP scripted
