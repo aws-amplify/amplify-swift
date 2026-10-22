@@ -482,3 +482,49 @@ taken: it would make a launch-time race look like a dead token. Instead apps are
 show sign-in, after repeated refresh failures: `signIn` refuses a session still signed in as its user. A forced
 refresh asks Cognito for new tokens, so answering it with the tokens it sent hid the refusal; it now fails, and an
 unforced fetch still returns valid saved tokens.
+
+## Decisions of 2026-10-22
+
+Taken on the review of the beta's last round. Each is written into the design, the client's README and the release
+notes.
+
+| # | Decision | Answer |
+|---|---|---|
+| 29 | An AWSMobileClient (Amplify v1) guest against a guest the plugin already saved | **The legacy guest replaces it**, as released plugins do; a saved login still wins, and a failed legacy read still keeps every legacy location. Reverses the earlier rule that an old guest does not replace a saved one. The plugin's migration only: the client runs none. |
+| 30 | A guest or federated `.default` copied to a configuration without an identity pool | **It reads as signed out**, as a named session there does, with its saved bytes kept, so `signIn` works and writes over them. |
+| 31 | A rollback that finds a newer login of the same user under the configuration it leaves | **The newer login is carried back over the untouched copy**, by the carry's rules, with its guards. |
+| 32 | A `signIn` or `confirmSignIn` whose identity pool step fails after the user pool signed the user in | **It ends signed out**, as documented: the call throws the identity pool's error, and the issued tokens are revoked. |
+| 33 | `fetchAuthSession` on a session that adopted another writer's login | **It answers as for a signed-in session**, refreshing what needs it, forced or not. |
+| 34 | How the plugin's public `TOTPSetupDetails` prints | **With its shared secret redacted**, as the client's details print. |
+
+**#29.** The saved guest is often seconds old: an app extension that fetched a session first, or a launch before
+first unlock that kept the legacy locations and then fetched one, saved it. Keeping it cleared the legacy locations
+and cost the user their AWSMobileClient identity, and the data keyed to it. So a saved guest now counts as no
+session, and the user keeps the old identity ID. A saved user-pool or federated login is never overwritten, and a
+legacy login still migrates over a saved guest.
+
+**#30.** After a change that removes the identity pool under the same user pool, the plugin's rule copies the record
+as it was, and a guest or federated record restored as a kind the new configuration cannot have: every field of
+`fetchAuthSession` failed, and a federated row refused `signIn`. A user's login there already reads as user pool
+only. The bytes stay as the signed-out row's version, so a sign-in writes over them through the commit guard.
+
+**#31.** With refresh-token rotation on, a refresh under the new configuration retires the kept copy's refresh
+token, so a rollback that read the copy came back with a dead session. The newer record is carried back only when
+the change back is one the client carries; both records are the same user pool user (the same `userId`); the newer
+one holds tokens issued strictly later than the copy's (a refresh there, or a sign-in again); and the copy's bytes
+are unchanged since the carry. It is written through the commit guard, and undone, as after any carry, if the newer
+record was signed out or purged meanwhile. Another user's login, a guest's or federated identity's, a signed-out
+one, and a copy an extension rewrote are never carried over it.
+
+**#32.** The user pool issued tokens, but the sign-in can't finish what its configuration asks for, so the client
+revokes them and leaves the session signed out, for `signIn` and `confirmSignIn` alike. The plugin's `confirmSignIn`
+doesn't return in that case. The README's differences table and the release notes record it.
+
+**#33.** A session signed out in this process adopts the login an app extension, the Auth plugin or another call has
+saved since. An unforced fetch handed it out as it was, so it could return tokens and AWS credentials that had
+expired since they were saved. It is now refreshed by the rule any signed-in session follows: an unforced fetch only
+if it needs it, a forced one whatever its expiry.
+
+**#34.** The plugin's tasks log their result at info, and a TOTP setup's result holds the details, which printed the
+secret in full. `description`, `debugDescription`, interpolation and `dump` now show it redacted; the `sharedSecret`
+property and the setup URI are unchanged.
