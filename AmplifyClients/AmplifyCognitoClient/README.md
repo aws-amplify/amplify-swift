@@ -1812,7 +1812,6 @@ The client keeps the plugin's semantics except where listed here.
 | Service error code | `underlyingError as? AWSCognitoAuthError` | `AuthClientError.service(code, …)` |
 | MFA type `rawValue` | The Cognito name | `"sms"`, `"totp"`, `"email"`; use `challengeResponse` |
 | Deprecated `validationData` on sign-in, `.custom` flow | Supported | Not mirrored: use `clientMetadata`, `.customWithSRP` |
-| TOTP setup details | Printed in full | Secret redacted |
 | Non-JSON service response | "Report a bug" suggestion | `.service` with no code and a retry suggestion |
 | Configuration change | Carries some changes, deletes the old record otherwise | `.default`: the same, and a deleted login of the same user pool is revoked. Named sessions carry the same changes and keep the old record; a changed identity pool keeps user pool tokens only |
 | Credential error types | Not applicable | `CredentialsError` and `StorageUnavailableReason` need `@_spi(AmplifyExperimental) import AmplifyFoundation` |
