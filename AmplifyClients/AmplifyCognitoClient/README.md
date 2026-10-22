@@ -1364,8 +1364,8 @@ func hostedUISignOut(client: AmplifyCognitoClient, window: AuthClientPresentatio
 - If the user closes the sign-out page, the result is `.failed(.userCancelled)` and the session stays signed in,
   as with the plugin, unless the session had already expired. Then it signs out anyway and returns `.partial` with
   `hostedUIError` `.userCancelled`, which says the session was signed out on this device but not from the hosted UI:
-  as without a window, signing out again won't clear the cookie. The same goes when `cancelWebUISignIn()` closes this session's sign-out page, or
-  `resetSystemSheet()` closes it before it finished.
+  as without a window, signing out again won't clear the cookie. The same goes when `cancelWebUISignIn()` closes
+  this session's sign-out page, or `resetSystemSheet()` closes it before it finished.
 - If the page can't be shown or completed, the result is `.failed` and the session stays signed in, with nothing
   revoked, as with the plugin: `.configuration` when the configuration has no hosted UI or no usable sign-out
   redirect URI, `.browserBusy` when another sheet holds the browser, `.validation` when the window has closed, or
@@ -1442,8 +1442,8 @@ may not have reached the service." and the suggestion "A network or service prob
 and retry the operation.", with the network error itself underneath (`underlyingError` is the `URLError`, or the
 CFNetwork or POSIX error), so `catch AuthClientError.service(nil, _, _, let error as URLError) where error.code ==
 .notConnectedToInternet` matches it in every call. `AuthClientServiceErrorCode.network` is only set by an HTTP client
-that reports connectivity failures in its own terms, such as a CRT engine set through `configureUserPoolClient`; with the
-default one, match the `URLError`. The description doesn't say the request never arrived:
+that reports connectivity failures in its own terms, such as a CRT engine set through `configureUserPoolClient`;
+with the default one, match the `URLError`. The description doesn't say the request never arrived:
 a timed-out or lost connection may follow a request Cognito acted on, whose answer was lost. A transport failure that
 isn't a network failure is `.service` with no code too, never `.unknown`: a response that couldn't be read (one that
 isn't JSON, such as an HTML error page, or a malformed one) is "The service returned a response that could not be

@@ -45,9 +45,9 @@ package struct InitiateMigrateAuth: Action {
             )
 
             // A device key Cognito no longer knows (the device was forgotten) is dropped, and the request sent again
-            // without it, as the SRP flow does. The record is removed under the name it was read with: for the
-            // password answer in USER_AUTH, the username the user typed, where `username` is Cognito's echo (the sub
-            // on an alias pool).
+            // without it, as the SRP flow does. The record is removed under the name `VerifySignInChallenge` read it
+            // with: the challenge's input username, the one the user typed, falling back to `username`. Every
+            // challenge the engine builds today holds the same name in both, so this guards the choice of name.
             let responseEvent: StateMachineEvent = try await DeviceMetadataHelper.retryingWithoutStaleDevice(
                 deviceMetadata,
                 for: respondToAuthChallenge?.inputUsername ?? username,
