@@ -101,12 +101,7 @@ extension SessionCore {
         // Only AWS credentials wait for a pending identity: an access token needs none.
         let identity = purpose == .awsCredentials
         guard try await needsRefresh(payload, of: identity ? restoredSnapshotIfAny : nil) else {
-            // A carried session waiting for its identity, whose identity step may not be tried again yet: its
-            // last failure answers, not "no AWS credentials".
-            if identity, let blocked = await identityBlocked(payload) {
-                throw Self.providerIdentityFailure(blocked)
-            }
-            return payload
+            return try await unlessIdentityBlocked(payload, identity: identity)
         }
         let commit: RefreshCommit
         do {
@@ -138,7 +133,19 @@ extension SessionCore {
                 "Retry the operation."
             )
         }
-        return refreshed
+        // Answered as credentials that needed no refresh are: another writer's record may be waiting for an identity
+        // this process may not fetch yet.
+        return try await unlessIdentityBlocked(refreshed, identity: identity)
+    }
+
+    /// `payload`, unless the caller wants an identity (`identity`) and `payload` is a carried session's waiting for its
+    /// identity, whose identity step may not be tried again yet: that step's last failure answers, not "no AWS
+    /// credentials" (`identityBlocked`).
+    private nonisolated func unlessIdentityBlocked(_ payload: Data, identity: Bool) async throws -> Data {
+        if identity, let blocked = await identityBlocked(payload) {
+            throw Self.providerIdentityFailure(blocked)
+        }
+        return payload
     }
 
     /// An expired session re-reads its record before failing, so a fresh sign-in stored by another
