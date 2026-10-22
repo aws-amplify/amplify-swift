@@ -28,17 +28,15 @@ class EnginePayloadLogTextTests: XCTestCase {
     /// - When:
     ///    - Each public step and its engine conversion are interpolated into a string
     /// - Then:
-    ///    - The engine text, normalised with `scripts/cognito-engine/rename_table.json`, equals the public text,
-    ///      except that the engine's TOTP setup details print the shared secret as `"<REDACTED>"`. No plugin log line
-    ///      prints that step: the engine never builds it, only the plugin's and the client's mappings do
+    ///    - The engine text, normalised with `scripts/cognito-engine/rename_table.json`, equals the public text.
+    ///      Both TOTP setup details print the shared secret as `"<REDACTED>"`
     ///
     func testPrintedSignInStepsNormaliseToThePublicText() throws {
         let normaliser = try LogTranscriptNormaliser.fromRepository()
         var compared = Set<String>()
         for step in EnginePayloadForkTests.signInSteps where !hasMultiElementSet(step) && !hasAttribute(step) {
             let engine = EngineSignInStep(step)
-            let expected = redactingTheSecret("\(step)", of: step)
-            XCTAssertEqual(normaliser.normaliseText("\(engine)"), normaliser.normaliseText(expected))
+            XCTAssertEqual(normaliser.normaliseText("\(engine)"), normaliser.normaliseText("\(step)"))
             compared.insert(String("\(step)".prefix { $0 != "(" }))
         }
         XCTAssertEqual(compared.count, 14, "every case is compared at least once")
@@ -73,17 +71,6 @@ class EnginePayloadLogTextTests: XCTestCase {
                 normaliser.normaliseText("\(details)")
             )
         }
-    }
-
-    /// The public step's text with the TOTP shared secret printed as the engine prints it.
-    private func redactingTheSecret(_ text: String, of step: AuthSignInStep) -> String {
-        guard case .continueSignInWithTOTPSetup(let details) = step else {
-            return text
-        }
-        return text.replacingOccurrences(
-            of: "sharedSecret: \(String(reflecting: details.sharedSecret))",
-            with: #"sharedSecret: "<REDACTED>""#
-        )
     }
 
     private func hasAttribute(_ step: AuthSignInStep) -> Bool {

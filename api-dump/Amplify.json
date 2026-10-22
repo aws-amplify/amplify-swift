@@ -23057,12 +23057,152 @@
             "moduleName": "Amplify",
             "throwing": true,
             "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Var",
+            "name": "description",
+            "printedName": "description",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:7Amplify16TOTPSetupDetailsV11descriptionSSvp",
+            "mangledName": "$s7Amplify16TOTPSetupDetailsV11descriptionSSvp",
+            "moduleName": "Amplify",
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:7Amplify16TOTPSetupDetailsV11descriptionSSvg",
+                "mangledName": "$s7Amplify16TOTPSetupDetailsV11descriptionSSvg",
+                "moduleName": "Amplify",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "debugDescription",
+            "printedName": "debugDescription",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:7Amplify16TOTPSetupDetailsV16debugDescriptionSSvp",
+            "mangledName": "$s7Amplify16TOTPSetupDetailsV16debugDescriptionSSvp",
+            "moduleName": "Amplify",
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:7Amplify16TOTPSetupDetailsV16debugDescriptionSSvg",
+                "mangledName": "$s7Amplify16TOTPSetupDetailsV16debugDescriptionSSvg",
+                "moduleName": "Amplify",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "customMirror",
+            "printedName": "customMirror",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Mirror",
+                "printedName": "Swift.Mirror",
+                "usr": "s:s6MirrorV"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:7Amplify16TOTPSetupDetailsV12customMirrors0E0Vvp",
+            "mangledName": "$s7Amplify16TOTPSetupDetailsV12customMirrors0E0Vvp",
+            "moduleName": "Amplify",
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Mirror",
+                    "printedName": "Swift.Mirror",
+                    "usr": "s:s6MirrorV"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:7Amplify16TOTPSetupDetailsV12customMirrors0E0Vvg",
+                "mangledName": "$s7Amplify16TOTPSetupDetailsV12customMirrors0E0Vvg",
+                "moduleName": "Amplify",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
           }
         ],
         "declKind": "Struct",
         "usr": "s:7Amplify16TOTPSetupDetailsV",
         "mangledName": "$s7Amplify16TOTPSetupDetailsV",
-        "moduleName": "Amplify"
+        "moduleName": "Amplify",
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomReflectable",
+            "printedName": "CustomReflectable",
+            "usr": "s:s17CustomReflectableP",
+            "mangledName": "$ss17CustomReflectableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          }
+        ]
       },
       {
         "kind": "TypeDecl",
