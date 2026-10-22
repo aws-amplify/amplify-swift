@@ -18,7 +18,8 @@ extension SessionCore {
     ///   credentials need it. With `forceRefresh` it is refreshed through the forced flight, which joins
     ///   only other forced refreshes: a normal refresh in flight may find nothing to do.
     /// - A signed-out session acquires guest credentials when an identity pool is configured: the only
-    ///   path from `.signedOut` to `.guest`. If the pool allows no guest access it stays signed out.
+    ///   path from `.signedOut` to `.guest`. If the pool allows no guest access it stays signed out. If another
+    ///   writer has saved credentials meanwhile, it adopts them instead, and refreshes them as above.
     /// - A refresh or guest fetch that fails is reported in the fields, as the plugin does:
     ///   `sessionExpired` for a dead refresh token, and the mapped error otherwise.
     ///
@@ -33,7 +34,8 @@ extension SessionCore {
         }
     }
 
-    /// - Parameter adopted: this call already adopted another writer's saved credentials, so it adopts no more.
+    /// - Parameter adopted: this call already took credentials as a signed-out session (`signedOutSession`), so it
+    ///   takes no more: a second pass answers from the record.
     private nonisolated func fetchSession(forceRefresh: Bool, adopted: Bool = false) async throws -> AuthClientSession {
         _ = try await restoredSnapshot()
         try await rereadIfExpired()
@@ -44,15 +46,20 @@ extension SessionCore {
         case .failed(let error):
             throw error
         case .signedOut, .awaitingChallenge:
-            // A forced refresh calls Cognito. A signed-out session adopts what another writer (an app extension, the
-            // Auth plugin, or another call of this session) has saved since (`acquireGuestOnce`), and an unforced fetch
-            // hands those credentials out as they are: so a forced one adopts them, then refreshes them as the
-            // signed-in session it now is.
-            let forced = forceRefresh && !adopted
-            guard let session = try await signedOutSession(forced: forced) else {
-                return try await fetchSession(forceRefresh: true, adopted: true)
+            // A signed-out session fetches guest credentials, or adopts what another writer (an app extension, the
+            // Auth plugin, or another call of this session) has saved since (`acquireGuestOnce`). Either way it is
+            // then answered as the session it now is, by the branch below: credentials it adopted are refreshed if
+            // they need it, as another writer's login may have expired since it was saved, and a forced fetch
+            // refreshes them whatever their expiry. A guest it fetched itself needs no refresh, forced or not.
+            switch try await signedOutSession(forced: forceRefresh && !adopted) {
+            case .answered(let session):
+                return session
+            case .acquired(let acquisition):
+                guard !adopted else {
+                    return try await acquiredSession()
+                }
+                return try await fetchSession(forceRefresh: forceRefresh && acquisition == .adopted, adopted: true)
             }
-            return session
         case .guest, .federated, .signedIn:
             if expired {
                 return Self.session(failingWith: Self.sessionExpired(sessionId))
@@ -96,28 +103,49 @@ extension SessionCore {
             // refresh's own result is reported as it is, as the plugin does: checked again by a device clock
             // running ahead of Cognito's, every refresh Cognito accepted would fail.
             if case .adopted(let adopted) = refreshed, let fresh = adopted.credentials, try needsRefresh(fresh, of: adopted) {
-                return Self.session(failingWith: .unknown(
-                    "Session \"\(sessionId)\"'s credentials could not be refreshed.",
-                    "Retry the operation."
-                ))
+                return Self.session(failingWith: Self.notRefreshed(sessionId))
             }
             return try session(of: refreshed.snapshot)
         }
+    }
+
+    /// The answer of a call that took credentials as a signed-out session a second time (another writer signed the
+    /// session out meanwhile, and saved credentials again): the record's, as they are, unless they need a refresh,
+    /// which is never reported. The call does not go round again.
+    private nonisolated func acquiredSession() async throws -> AuthClientSession {
+        let snapshot = await restoredSnapshotIfAny ?? .absent
+        if let payload = snapshot.credentials, try needsRefresh(payload, of: snapshot) {
+            return Self.session(failingWith: Self.notRefreshed(sessionId))
+        }
+        return try session(of: snapshot)
+    }
+
+    static func notRefreshed(_ sessionId: SessionID) -> AuthClientError {
+        .unknown(
+            "Session \"\(sessionId)\"'s credentials could not be refreshed.",
+            "Retry the operation."
+        )
     }
 
     static func authClientError(from error: CredentialsError) -> AuthClientError {
         .unknown(error.errorDescription, error.recoverySuggestion, error)
     }
 
-    /// A signed-out session's answer: guest credentials if the identity pool allows them, else every field
-    /// failing with `notSignedIn`.
+    /// What a signed-out session's fetch found: an answer (signed out, or the guest fetch's failure), or credentials
+    /// it fetched or adopted, which the caller answers as the session they make it.
+    private enum SignedOutFetch {
+        case answered(AuthClientSession)
+        case acquired(GuestAcquisition)
+    }
+
+    /// A signed-out session's guest credentials if the identity pool allows them, or what another writer saved, else
+    /// every field failing with `notSignedIn`.
     ///
     /// - Parameter forced: A forced fetch, which never joins an unforced one's guest flight, whose result may be
-    ///   credentials it adopted, and answers `nil` when it adopts credentials the record already holds, so the
-    ///   caller refreshes them instead of handing them out.
-    private nonisolated func signedOutSession(forced: Bool) async throws -> AuthClientSession? {
+    ///   credentials it adopted.
+    private nonisolated func signedOutSession(forced: Bool) async throws -> SignedOutFetch {
         guard configuration.identityPool != nil else {
-            return Self.signedOutSession(sessionId)
+            return .answered(Self.signedOutSession(sessionId))
         }
         let acquired: GuestAcquisition
         do {
@@ -128,21 +156,17 @@ extension SessionCore {
                 }
         } catch SessionEngineError.notSignedIn {
             // The identity pool allows no guest access. The session stays signed out.
-            return Self.signedOutSession(sessionId)
+            return .answered(Self.signedOutSession(sessionId))
         } catch let error as AuthClientError {
             if case .storageUnavailable = error {
                 throw error
             }
-            return Self.session(failingWith: error)
+            return .answered(Self.session(failingWith: error))
         }
-        let snapshot = await restoredSnapshotIfAny ?? .absent
-        if snapshot.credentials == nil {
-            return Self.signedOutSession(sessionId)
+        if await restoredSnapshotIfAny?.credentials == nil {
+            return .answered(Self.signedOutSession(sessionId))
         }
-        if forced, acquired == .adopted {
-            return nil
-        }
-        return try session(of: snapshot)
+        return .acquired(acquired)
     }
 
     /// What `acquireGuestOnce` did: fetched guest credentials and committed them, or adopted the record another

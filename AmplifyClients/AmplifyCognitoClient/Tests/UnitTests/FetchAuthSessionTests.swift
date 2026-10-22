@@ -282,7 +282,7 @@ final class FetchAuthSessionTests: XCTestCase {
     /// - When: its session is fetched with `forceRefresh`, and on a second such session, without it
     /// - Then:
     ///    - the forced fetch refreshes bob's saved login once and reports the refreshed tokens; no guest is fetched
-    ///    - the unforced fetch adopts bob's saved tokens as they are, with no refresh
+    ///    - the unforced fetch adopts bob's saved tokens, which need no refresh, and reports them with no refresh
     func testAForcedFetchOfASignedOutSessionRefreshesAnotherWritersLogin() async throws {
         let bob = FakePayload.signedIn("bob")
         let forcedClient = try harness.client(work)
@@ -406,6 +406,116 @@ final class FetchAuthSessionTests: XCTestCase {
         XCTAssertEqual(engine.refreshCalls, [bob.data])
         XCTAssertEqual(try forcedSession.userPoolTokensResult.get().accessToken, "access-bob-v2")
         XCTAssertEqual(FakePayload.decode(try XCTUnwrap(harness.storedRecord(work)?.credentials))?.username, "bob")
+    }
+
+    /// An unforced fetch of a session signed out in this process answers another writer's saved credentials as the
+    /// signed-in or guest session they make it: credentials that need a refresh are refreshed, never handed out.
+    ///
+    /// - Given: two sessions restored signed out, with an identity pool; another writer (an app extension, or the Auth
+    ///   plugin over `.default`) then saves bob's expired login in one's record, and an expired guest in the other's
+    /// - When: each is fetched without `forceRefresh`
+    /// - Then:
+    ///    - each refreshes what was saved once, and reports the refreshed tokens or AWS credentials; no guest is
+    ///      fetched, and the record holds the refreshed credentials
+    func testAnUnforcedFetchOfASignedOutSessionRefreshesAnotherWritersExpiredCredentials() async throws {
+        let bob = FakePayload.signedIn("bob", stale: true)
+        let guest = FakePayload.guest(stale: true, identityId: "us-east-1:saved-guest")
+        let loginClient = try harness.client(work)
+        let guestClient = try harness.client(home)
+        _ = await loginClient.currentSessionState()
+        _ = await guestClient.currentSessionState()
+        try harness.signIn(work, bob)
+        try harness.signIn(home, guest)
+        let loginEngine = try XCTUnwrap(harness.engine(for: work))
+        let guestEngine = try XCTUnwrap(harness.engine(for: home))
+
+        let login = try await loginClient.fetchAuthSession()
+        let guestSession = try await guestClient.fetchAuthSession()
+
+        XCTAssertEqual(loginEngine.refreshCalls, [bob.data])
+        XCTAssertEqual(try login.userPoolTokensResult.get().accessToken, "access-bob-v2")
+        XCTAssertEqual(try login.awsCredentialsResult.get(), AuthClientAWSCredentials(bob.refreshed.awsCredentials))
+        XCTAssertEqual(try harness.storedRecord(work)?.credentials, bob.refreshed.data)
+        XCTAssertEqual(loginEngine.guestFetchCount, 0)
+        XCTAssertEqual(guestEngine.refreshCalls, [guest.data])
+        XCTAssertEqual(try guestSession.awsCredentialsResult.get(), AuthClientAWSCredentials(guest.refreshed.awsCredentials))
+        XCTAssertEqual(try harness.storedRecord(home)?.credentials, guest.refreshed.data)
+        XCTAssertEqual(guestEngine.guestFetchCount, 0)
+        let state = await loginClient.currentSessionState()
+        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+    }
+
+    /// - Given: a session restored signed out, with an identity pool; another writer then saves bob's valid login in its
+    ///   record
+    /// - When: its session is fetched without `forceRefresh`
+    /// - Then:
+    ///    - it reports bob's saved tokens and AWS credentials with no refresh; no guest is fetched
+    func testAnUnforcedFetchOfASignedOutSessionReportsAnotherWritersValidLoginWithoutARefresh() async throws {
+        let bob = FakePayload.signedIn("bob")
+        let client = try harness.client(work)
+        _ = await client.currentSessionState()
+        try harness.signIn(work, bob)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+
+        let session = try await client.fetchAuthSession()
+
+        XCTAssertEqual(engine.refreshCalls, [])
+        XCTAssertEqual(engine.guestFetchCount, 0)
+        XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, bob.accessToken)
+        XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(bob.awsCredentials))
+    }
+
+    /// A guest a signed-out session fetches itself is fresh, so it is not refreshed, even by a forced fetch.
+    ///
+    /// - Given: two sessions restored signed out, with an identity pool and nothing saved
+    /// - When: one is fetched, and the other fetched with `forceRefresh`
+    /// - Then:
+    ///    - each fetches one guest and reports it, with no refresh
+    func testAGuestASignedOutSessionFetchesIsNotRefreshed() async throws {
+        let unforcedClient = try harness.client(work)
+        let forcedClient = try harness.client(home)
+        let unforcedEngine = try XCTUnwrap(harness.engine(for: work))
+        let forcedEngine = try XCTUnwrap(harness.engine(for: home))
+
+        let unforced = try await unforcedClient.fetchAuthSession()
+        let forced = try await forcedClient.fetchAuthSession(options: .init(forceRefresh: true))
+
+        for (session, engine) in [(unforced, unforcedEngine), (forced, forcedEngine)] {
+            XCTAssertEqual(engine.guestFetchCount, 1)
+            XCTAssertEqual(engine.refreshCalls, [])
+            XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:guest")
+            XCTAssertEqual(try session.awsCredentialsResult.get().accessKeyId, FakePayload.guest().awsCredentials.accessKeyId)
+        }
+    }
+
+    /// An adopted login whose refresh fails is reported in the fields after one refresh: the fetch does not go round
+    /// again.
+    ///
+    /// - Given: a session restored signed out, with an identity pool; another writer then saves bob's expired login,
+    ///   whose refresh token is dead
+    /// - When: its session is fetched without `forceRefresh`
+    /// - Then:
+    ///    - one refresh; every field is `sessionExpired`; the session is signed in as bob; no guest is fetched
+    func testAnAdoptedLoginWhoseRefreshFailsIsReportedAfterOneRefresh() async throws {
+        let bob = FakePayload.signedIn("bob", stale: true)
+        let client = try harness.client(work)
+        _ = await client.currentSessionState()
+        try harness.signIn(work, bob)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
+
+        let session = try await client.fetchAuthSession()
+
+        XCTAssertEqual(engine.refreshCalls, [bob.data])
+        XCTAssertEqual(engine.guestFetchCount, 0)
+        XCTAssertThrowsError(try session.userPoolTokensResult.get()) { error in
+            XCTAssertEqual((error as? AuthClientError)?.kind, .sessionExpired)
+        }
+        XCTAssertThrowsError(try session.awsCredentialsResult.get()) { error in
+            XCTAssertEqual((error as? AuthClientError)?.kind, .sessionExpired)
+        }
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
     }
 
     /// - Given: a signed-in session whose refresh token is dead
