@@ -89,3 +89,22 @@ package struct EngineTOTPSetupDetails {
 extension EngineTOTPSetupDetails: Equatable { }
 
 extension EngineTOTPSetupDetails: Sendable { }
+
+// Every printed form redacts the secret, as for `SignInTOTPSetupData`: a sign-in step that carries these details
+// would otherwise print it wherever the step is interpolated or dumped. The rest reads as default printing does.
+extension EngineTOTPSetupDetails: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+
+    package var description: String {
+        "\(String(reflecting: Self.self))(sharedSecret: \(String(reflecting: sharedSecret.redactedForLog())), "
+            + "username: \(String(reflecting: username)))"
+    }
+
+    package var debugDescription: String {
+        description
+    }
+
+    /// For `dump` and debuggers: the secret redacted.
+    package var customMirror: Mirror {
+        Mirror(self, children: ["sharedSecret": sharedSecret.redactedForLog(), "username": username], displayStyle: .struct)
+    }
+}
