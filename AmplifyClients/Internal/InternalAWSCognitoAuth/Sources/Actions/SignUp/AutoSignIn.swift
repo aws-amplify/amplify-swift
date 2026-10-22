@@ -45,10 +45,6 @@ package struct AutoSignIn: Action {
                 authParameters["SECRET_HASH"] = clientSecretHash
             }
 
-            if case .metadata(let data) = deviceMetadata {
-                authParameters["DEVICE_KEY"] = data.deviceKey
-            }
-
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
                 credentialStoreClient: authEnv.credentialsClient
@@ -67,22 +63,34 @@ package struct AutoSignIn: Action {
                 .cognitoUserPoolAnalyticsHandlerFactory()
                 .analyticsMetadata()
 
-            let request = InitiateAuthInput(
-                analyticsMetadata: analyticsMetadata,
-                authFlow: .userAuth,
-                authParameters: authParameters,
-                clientId: userPoolClientId,
-                clientMetadata: signInEventData.clientMetadata,
-                session: signInEventData.session,
-                userContextData: userContextData
-            )
-
-            let responseEvent = try await sendRequest(
-                request: request,
-                username: username,
-                environment: userPoolEnv,
-                logger: environment.engineLogger
-            )
+            // A device key Cognito no longer knows is dropped and the request sent again without it, as the other
+            // sign-in flows do. The record was read under `username`. The retry reuses the sign-up's session, so
+            // Cognito refusing the session there ends the auto sign-in with that error.
+            let responseEvent = try await DeviceMetadataHelper.retryingWithoutStaleDevice(
+                deviceMetadata,
+                for: username,
+                with: environment
+            ) { [authParameters] deviceMetadata in
+                var parameters = authParameters
+                if case .metadata(let data) = deviceMetadata {
+                    parameters["DEVICE_KEY"] = data.deviceKey
+                }
+                let request = InitiateAuthInput(
+                    analyticsMetadata: analyticsMetadata,
+                    authFlow: .userAuth,
+                    authParameters: parameters,
+                    clientId: userPoolClientId,
+                    clientMetadata: signInEventData.clientMetadata,
+                    session: signInEventData.session,
+                    userContextData: userContextData
+                )
+                return try await sendRequest(
+                    request: request,
+                    username: username,
+                    environment: userPoolEnv,
+                    logger: environment.engineLogger
+                )
+            }
             logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
             await dispatcher.send(responseEvent)
 

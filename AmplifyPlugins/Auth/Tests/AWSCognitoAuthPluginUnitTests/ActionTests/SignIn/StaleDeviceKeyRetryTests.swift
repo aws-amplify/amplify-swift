@@ -19,8 +19,8 @@ final class StaleDeviceKeyRetryTests: XCTestCase {
     private let staleDevice = DeviceMetadata.metadata(.init(deviceKey: "stale-key", deviceGroupKey: "group", deviceSecret: "secret"))
 
     /// - Given: Cognito refusing any request that carries a device key with `ResourceNotFoundException` ("Device does
-    ///   not exist."), and each of the password (`USER_PASSWORD_AUTH`), password-in-`USER_AUTH`, `USER_AUTH` and custom
-    ///   sign-in actions holding the stale device key
+    ///   not exist."), and each of the password (`USER_PASSWORD_AUTH`), password-in-`USER_AUTH`, `USER_AUTH`, custom
+    ///   and auto sign-in actions holding the stale device key
     /// - When: each action runs
     /// - Then:
     ///    - it sends its request twice, the first with the stale key and the second with none, and dispatches the
@@ -108,7 +108,54 @@ final class StaleDeviceKeyRetryTests: XCTestCase {
         }
     }
 
+    /// Auto sign-in's retry sends the sign-up's one-time session again. When Cognito refuses it there, the auto sign-in
+    /// ends with that error.
+    ///
+    /// - Given: an auto sign-in holding the stale device key and the sign-up's session; Cognito refusing the stale key
+    ///   with `ResourceNotFoundException`, then the session with `NotAuthorizedException` ("Invalid session for the
+    ///   user.")
+    /// - When: the auto sign-in runs
+    /// - Then:
+    ///    - it sends two requests with the sign-up's session, the first with the stale key and the second with none
+    ///    - it dispatches one event, the `NotAuthorizedException` as a service error
+    ///    - it removes alice's device record, once
+    func testAnAutoSignInWhoseRetryIsRefusedEndsWithTheError() async throws {
+        let requests = DeviceKeyRecorder()
+        let sessions = DeviceKeyRecorder()
+        let removals = DeviceRecordRemovals()
+        let environment = Self.environment(removals) {
+            MockIdentityProvider(mockInitiateAuthResponse: { input in
+                requests.record(input.authParameters?["DEVICE_KEY"])
+                sessions.record(input.session)
+                if input.authParameters?["DEVICE_KEY"] != nil {
+                    throw AWSCognitoIdentityProvider.ResourceNotFoundException(message: "Device does not exist.")
+                }
+                throw AWSCognitoIdentityProvider.NotAuthorizedException(message: "Invalid session for the user.")
+            })
+        }
+
+        let events = await run({ AutoSignIn(signInEventData: Self.autoSignInData, deviceMetadata: $0) }, environment)
+
+        XCTAssertEqual(requests.deviceKeys, ["stale-key", nil])
+        XCTAssertEqual(sessions.deviceKeys, ["sign-up-session", "sign-up-session"])
+        XCTAssertEqual(removals.usernames, ["alice"])
+        XCTAssertEqual(events.count, 1, "\(events)")
+        guard let event = events.first as? SignInEvent,
+              case .throwAuthError(.service(let error)) = event.eventType else {
+            return XCTFail("expected a service error, got \(events)")
+        }
+        XCTAssertTrue(error is AWSCognitoIdentityProvider.NotAuthorizedException, "\(error)")
+    }
+
     // MARK: Helpers
+
+    /// What a sign-up that completes with auto sign-in leaves for alice: `USER_AUTH` with the sign-up's session.
+    private static let autoSignInData = SignInEventData(
+        username: "alice",
+        password: nil,
+        signInMethod: .apiBased(.userAuth(preferredFirstFactor: nil)),
+        session: "sign-up-session"
+    )
 
     private typealias Flow = @Sendable (DeviceMetadata) -> any Action
 
@@ -140,6 +187,9 @@ final class StaleDeviceKeyRetryTests: XCTestCase {
             }),
             ("custom", { device in
                 InitiateCustomAuth(username: "alice", clientMetadata: [:], deviceMetadata: device)
+            }),
+            ("auto sign-in", { device in
+                AutoSignIn(signInEventData: Self.autoSignInData, deviceMetadata: device)
             })
         ]
     }

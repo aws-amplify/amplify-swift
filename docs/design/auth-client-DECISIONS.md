@@ -422,7 +422,7 @@ access-group migration. Each is written into the design, the client's README and
 | 23 | Which AWSMobileClient credentials a `.default` sign-out clears | **Every identity pool's** credentials service the app's keychain holds, not only the configured one's. The plugin is unchanged. |
 | 24 | A network failure (the request may not have reached Cognito) | **A retryable `.service` with no code**, in every call, with the client's network texts. The plugin keeps its mapping. |
 | 25 | When a hosted-UI sign-in cancelled with `cancelWebUISignIn()` answers | **Once its browser has closed and the system sheet is free**, within a second. |
-| 26 | A forgotten device key on a sign-in that isn't SRP | **Dropped and retried once**, in the shared engine: the password (`USER_PASSWORD_AUTH`), `USER_AUTH` and custom flows remove the device record and resend without a device key, by SRP's rule. Plugin and client alike. |
+| 26 | A forgotten device key on a sign-in that isn't SRP | **Dropped and retried once**, in the shared engine: the password (`USER_PASSWORD_AUTH`), `USER_AUTH`, custom and auto sign-in flows remove the device record and resend without a device key, by SRP's rule. Plugin and client alike. |
 | 27 | The user ID of a `signUp` that completes with auto sign-in | **Carried**: Cognito's sub, as `.done` and `.confirmUser` already carried it. Plugin and client alike. `confirmSignUp`'s `.completeAutoSignIn` and `.done` still carry none, since Cognito's answer there has no sub. |
 | 28 | A refresh refused as a reused refresh token | **The 30-second dead-token rule holds within one launch**, and is not persisted; a refused forced refresh fails with the retryable error instead of returning the tokens it sent. |
 
@@ -468,7 +468,9 @@ key. Only SRP handled Cognito's answer; a `USER_PASSWORD_AUTH` sign-in failed on
 exist." The flows that send a device key in their first request now use SRP's rule: any `ResourceNotFoundException`
 to a request that sent a device key removes the record, and the request is sent once more without one. The rule
 doesn't read the message, so a `ResourceNotFoundException` for another reason also deletes the record before the
-second attempt reports it, as SRP has always done.
+second attempt reports it, as SRP has always done. Auto sign-in, added on 2026-10-22, is one of those flows: a user
+who deleted their account and signs up again with the same username sends the deleted user's key. Its second
+attempt reuses the sign-up's session, and if Cognito refuses that, the auto sign-in ends with the error.
 
 **#27.** Cognito returns the sub in every `SignUp` answer, and an app keying anything on the new user needs it in the
 auto sign-in case too. Its `ConfirmSignUp` answer has no sub, so an app that confirms a sign-up keeps the `userID`
