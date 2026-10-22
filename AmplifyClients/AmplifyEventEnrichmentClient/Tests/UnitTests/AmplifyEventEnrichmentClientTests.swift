@@ -270,49 +270,40 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase, @unchecked Sendable {
         await client.close()
     }
 
-    /// Test that disabling autoSessionTracking does not start a session
+    /// Test that recording without autoSessionTracking starts a session
     ///
     /// - Given: A client created with autoSessionTracking = false
     /// - When:
     ///    - An event is recorded without calling startSession()
     /// - Then:
-    ///    - A noActiveSession error is thrown because no session exists
-    ///    - After calling startSession(), recording succeeds
+    ///    - The event belongs to a new active session
     ///
-    func testAutoSessionTrackingDisabledRequiresManualStart() async throws {
+    func testRecordStartsSessionWithoutAutoTracking() async throws {
         let client = AmplifyEventEnrichmentClient(
             appId: "test-app",
             sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
             options: EventEnrichmentClientOptions(autoSessionTracking: false)
         )
 
-        do {
-            _ = try await client.record("test")
-            XCTFail("Expected error when no session started")
-        } catch let error as EventEnrichmentError {
-            guard case .noActiveSession = error else {
-                XCTFail("Expected noActiveSession error for missing session, got \(error)")
-                return
-            }
-        }
-
-        await client.startSession()
         let event = try await client.record("test")
+
+        let state = await client.sessionState
         XCTAssertFalse(event.session.id.isEmpty)
+        XCTAssertNil(event.session.stopTimestamp)
+        XCTAssertEqual(state, .active)
 
         await client.close()
     }
 
-    /// Test that recording after stopSession() is rejected
+    /// Test that recording after stopSession() starts a new session without autoSessionTracking
     ///
     /// - Given: A client with autoSessionTracking disabled and a stopped session
     /// - When:
     ///    - An event is recorded
     /// - Then:
-    ///    - A noActiveSession error is thrown rather than the event being
-    ///      attributed to the session that already ended
+    ///    - The event belongs to a new active session rather than the one that ended
     ///
-    func testRecordAfterStopSessionThrows() async throws {
+    func testRecordAfterStopSessionStartsSessionWithoutAutoTracking() async throws {
         let client = AmplifyEventEnrichmentClient(
             appId: "test-app",
             sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
@@ -320,18 +311,14 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase, @unchecked Sendable {
         )
 
         await client.startSession()
-        _ = try await client.record("before_stop")
+        let before = try await client.record("before_stop")
         await client.stopSession()
+        let after = try await client.record("after_stop")
 
-        do {
-            _ = try await client.record("after_stop")
-            XCTFail("Expected error when recording against a stopped session")
-        } catch let error as EventEnrichmentError {
-            guard case .noActiveSession = error else {
-                XCTFail("Expected noActiveSession error, got \(error)")
-                return
-            }
-        }
+        let state = await client.sessionState
+        XCTAssertNotEqual(before.session.id, after.session.id)
+        XCTAssertNil(after.session.stopTimestamp)
+        XCTAssertEqual(state, .active)
 
         await client.close()
     }

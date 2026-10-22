@@ -35,7 +35,6 @@ public actor AmplifyEventEnrichmentClient {
     private let makeEvent: EventFactory
     private let sessionManager: SessionManager
     private var activityTracker: ActivityTracker?
-    private let autoSessionTracking: Bool
     private var closed = false
     private var closing: Task<Void, Never>?
 
@@ -112,7 +111,6 @@ public actor AmplifyEventEnrichmentClient {
         self.logger = logger
         self.globalFields = globalFields
         self.makeEvent = makeEvent
-        self.autoSessionTracking = options.autoSessionTracking
         self.deliveries = deliveries
         // Started here so it exists before anything can be queued. Detached, and
         // capturing no `self`, so it neither runs on the main actor nor needs a
@@ -156,8 +154,10 @@ public actor AmplifyEventEnrichmentClient {
     ///   - attributes: Per-event string attributes (merged with globals).
     ///   - metrics: Per-event numeric metrics (merged with globals).
     /// - Returns: The enriched event.
-    /// - Throws: ``EventEnrichmentError/clientClosed(_:_:_:)`` if the client has been closed,
-    ///   or ``EventEnrichmentError/noActiveSession(_:_:_:)`` if no session is active.
+    /// Starts a session first if none is running, queueing its `_session.start`
+    /// ahead of the event.
+    ///
+    /// - Throws: ``EventEnrichmentError/clientClosed(_:_:_:)`` if the client has been closed.
     @discardableResult
     public func record(
         _ eventType: String,
@@ -174,23 +174,18 @@ public actor AmplifyEventEnrichmentClient {
         let makeEvent = makeEvent
         let deliveries = deliveries
         let sent = DeliverySignal()
-        let event = await sessionManager.withRecordingSession(startingIfNeeded: autoSessionTracking) { session in
+        let event = await sessionManager.withRecordingSession { session in
             let event = makeEvent(eventType, session, attributes, metrics)
             if case .terminated = deliveries.yield(Delivery(event: event, sent: sent)) {
                 sent.signal()
             }
             return event
         }
+        // Only a disposed session manager returns nil.
         guard let event else {
-            if closed {
-                throw EventEnrichmentError.clientClosed(
-                    "Client has been closed",
-                    "Create a new AmplifyEventEnrichmentClient instance."
-                )
-            }
-            throw EventEnrichmentError.noActiveSession(
-                "No active session",
-                "Call startSession() before recording events when autoSessionTracking is disabled."
+            throw EventEnrichmentError.clientClosed(
+                "Client has been closed",
+                "Create a new AmplifyEventEnrichmentClient instance."
             )
         }
 

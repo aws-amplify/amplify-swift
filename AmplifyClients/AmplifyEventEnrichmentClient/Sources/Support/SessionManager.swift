@@ -120,18 +120,13 @@ actor SessionManager {
     /// that session's start and before its stop.
     ///
     /// A pause past the timeout ends the session first. With no running
-    /// session, starts one if `startingIfNeeded`, otherwise returns `nil`.
-    /// Returns `nil` once disposed.
-    func withRecordingSession<T: Sendable>(
-        startingIfNeeded: Bool,
-        _ body: @Sendable (Session) -> T
-    ) -> T? {
+    /// session, starts one. Returns `nil` once disposed.
+    func withRecordingSession<T: Sendable>(_ body: @Sendable (Session) -> T) -> T? {
         guard !disposed else { return nil }
         if _state == .paused, isPauseExpired {
             endCurrent()
         }
         if _state == .stopped {
-            guard startingIfNeeded else { return nil }
             startFresh()
         }
         guard let session = _session else { return nil }

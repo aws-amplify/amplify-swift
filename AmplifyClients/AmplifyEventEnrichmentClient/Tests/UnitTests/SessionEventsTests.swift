@@ -64,6 +64,27 @@ final class SessionEventsTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(events.map(\.eventType), [])
     }
 
+    /// Test that recording with no running session sends its start first
+    ///
+    /// - Given: A client with autoSessionTracking disabled and no session started
+    /// - When:
+    ///    - An event is recorded, then the client is closed
+    /// - Then:
+    ///    - The sink receives the start, the record and the stop of one session
+    ///
+    func testRecordWithoutSessionSendsStartFirst() async throws {
+        let sink = RecordingSink()
+        let client = makeClient(sink: sink, autoSessionTracking: false)
+
+        let event = try await client.record("a")
+        await client.close()
+
+        let events = await sink.events
+        XCTAssertEqual(events.map(\.eventType), ["_session.start", "a", "_session.stop"])
+        XCTAssertEqual(events.map(\.session.id), Array(repeating: event.session.id, count: 3))
+        assertSessionOrder(events)
+    }
+
     /// Test that turning off session events sends only records
     ///
     /// - Given: A client with emitSessionEvents disabled

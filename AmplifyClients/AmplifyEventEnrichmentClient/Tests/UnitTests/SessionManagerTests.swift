@@ -905,7 +905,7 @@ final class SessionManagerTests: XCTestCase, @unchecked Sendable {
     ///
     /// - Given: A stopped session manager
     /// - When:
-    ///    - withRecordingSession(startingIfNeeded: true) runs a body
+    ///    - withRecordingSession runs a body
     /// - Then:
     ///    - The start is reported before the body runs, and the body gets that session
     ///
@@ -917,38 +917,13 @@ final class SessionManagerTests: XCTestCase, @unchecked Sendable {
             onBoundary: recorder.record
         )
 
-        let id = await manager.withRecordingSession(startingIfNeeded: true) { session in
+        let id = await manager.withRecordingSession { session in
             recorder.note()
             return session.id
         }
 
         XCTAssertEqual(recorder.log, ["start", "body"])
         XCTAssertEqual(recorder.sessionIds, [id])
-    }
-
-    /// Test that the recording session does not start a session when not allowed
-    ///
-    /// - Given: A stopped session manager
-    /// - When:
-    ///    - withRecordingSession(startingIfNeeded: false) runs a body
-    /// - Then:
-    ///    - The body does not run and nothing is reported
-    ///
-    func testRecordingSessionWithoutStartReturnsNil() async {
-        let recorder = BoundaryRecorder()
-        let manager = SessionManager(
-            appId: "test-app",
-            generateId: { UUID().uuidString },
-            onBoundary: recorder.record
-        )
-
-        let id = await manager.withRecordingSession(startingIfNeeded: false) { session in
-            recorder.note()
-            return session.id
-        }
-
-        XCTAssertNil(id)
-        XCTAssertEqual(recorder.log, [])
     }
 
     /// Test that the recording session replaces a session paused past its timeout
@@ -972,7 +947,7 @@ final class SessionManagerTests: XCTestCase, @unchecked Sendable {
         await manager.startSession()
         await manager.handleAppPaused()
         clock.advance(by: 6)
-        let id = await manager.withRecordingSession(startingIfNeeded: true) { session in
+        let id = await manager.withRecordingSession { session in
             recorder.note()
             return session.id
         }
@@ -1001,7 +976,7 @@ final class SessionManagerTests: XCTestCase, @unchecked Sendable {
         await manager.dispose()
         await manager.startSession()
         await manager.handleAppResumed()
-        let id = await manager.withRecordingSession(startingIfNeeded: true) { $0.id }
+        let id = await manager.withRecordingSession { $0.id }
 
         XCTAssertNil(id)
         XCTAssertEqual(recorder.boundaries, [.start, .stop])
