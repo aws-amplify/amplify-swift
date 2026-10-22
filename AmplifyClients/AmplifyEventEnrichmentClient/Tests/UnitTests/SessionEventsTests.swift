@@ -302,6 +302,74 @@ final class SessionEventsTests: XCTestCase, @unchecked Sendable {
         assertSessionOrder(events)
     }
 
+    /// Test that back to back lifecycle changes reach the session manager in order
+    ///
+    /// - Given: A client with a zero session timeout, so every resume replaces the session
+    /// - When:
+    ///    - Background and foreground are posted back to back many times
+    /// - Then:
+    ///    - Every pair sends a stop and a start, in order, and the session ends active
+    ///
+    func testBackToBackLifecycleChangesArriveInOrder() async throws {
+        let sink = RecordingSink()
+        let client = makeClient(sink: sink, sessionTimeout: 0)
+        let pairs = 200
+
+        for _ in 0 ..< pairs {
+            postBackgroundNotification()
+            postForegroundNotification()
+        }
+        let expected = 1 + 2 * pairs
+        let deadline = Date().addingTimeInterval(2)
+        while await sink.events.count < expected, Date() < deadline {
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+
+        let state = await client.sessionState
+        XCTAssertEqual(state, .active)
+        await client.close()
+
+        let events = await sink.events
+        XCTAssertEqual(events.count, expected + 1)
+        XCTAssertEqual(
+            events.map(\.eventType),
+            ["_session.start"] + Array(repeating: ["_session.stop", "_session.start"], count: pairs).flatMap { $0 }
+                + ["_session.stop"]
+        )
+        assertSessionOrder(events)
+    }
+
+    /// Test that a record after a burst of lifecycle changes joins the latest session
+    ///
+    /// - Given: A client with a zero session timeout, so every resume replaces the session
+    /// - When:
+    ///    - Background and foreground are posted back to back many times, then an event is recorded
+    /// - Then:
+    ///    - One session starts per resume and the record belongs to the last one
+    ///
+    func testRecordAfterLifecycleBurstJoinsLatestSession() async throws {
+        let sink = RecordingSink()
+        let client = makeClient(sink: sink, sessionTimeout: 0)
+        let pairs = 100
+
+        for _ in 0 ..< pairs {
+            postBackgroundNotification()
+            postForegroundNotification()
+        }
+        let deadline = Date().addingTimeInterval(2)
+        while await sink.events.count < 1 + 2 * pairs, Date() < deadline {
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+        let event = try await client.record("a")
+        await client.close()
+
+        let events = await sink.events
+        let starts = events.filter { $0.eventType == "_session.start" }
+        XCTAssertEqual(starts.count, 1 + pairs)
+        XCTAssertEqual(starts.last?.session.id, event.session.id)
+        assertSessionOrder(events)
+    }
+
     /// Test that rapid restarts send one stop per start, in order
     ///
     /// - Given: A client with autoSessionTracking disabled

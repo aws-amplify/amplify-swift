@@ -43,6 +43,10 @@ public actor AmplifyEventEnrichmentClient {
     private let deliveries: AsyncStream<Delivery>.Continuation
     private let consumer: Task<Void, Never>
 
+    // Lifecycle changes go through one queue and one consumer too, so the
+    // session manager handles them in the order they were posted.
+    private let lifecycleChanges: AsyncStream<LifecycleChange>.Continuation?
+
     /// Initializes a new event enrichment client.
     ///
     /// The `clientId` is resolved automatically from `UserDefaults` using a
@@ -137,11 +141,24 @@ public actor AmplifyEventEnrichmentClient {
         )
         self.sessionManager = sessionManager
         if options.autoSessionTracking {
+            var lifecycleContinuation: AsyncStream<LifecycleChange>.Continuation?
+            let changes = AsyncStream<LifecycleChange> { lifecycleContinuation = $0 }
+            let lifecycleChanges = lifecycleContinuation!
+            Task.detached {
+                for await change in changes {
+                    switch change {
+                    case .paused: await sessionManager.handleAppPaused()
+                    case .resumed: await sessionManager.handleAppResumed()
+                    }
+                }
+            }
+            self.lifecycleChanges = lifecycleChanges
             self.activityTracker = ActivityTracker(
-                onPause: { Task { await sessionManager.handleAppPaused() } },
-                onResume: { Task { await sessionManager.handleAppResumed() } }
+                onPause: { lifecycleChanges.yield(.paused) },
+                onResume: { lifecycleChanges.yield(.resumed) }
             )
         } else {
+            self.lifecycleChanges = nil
             self.activityTracker = nil
         }
     }
@@ -263,6 +280,7 @@ public actor AmplifyEventEnrichmentClient {
         await sessionManager.dispose()
         await activityTracker?.stopTracking()
         activityTracker = nil
+        lifecycleChanges?.finish()
         // Nothing can queue after dispose(), so the final stop is the last delivery.
         deliveries.finish()
         await consumer.value
@@ -270,6 +288,13 @@ public actor AmplifyEventEnrichmentClient {
     }
 
     deinit {
+        lifecycleChanges?.finish()
         deliveries.finish()
     }
+}
+
+/// A lifecycle change queued for the session manager.
+private enum LifecycleChange: Sendable {
+    case paused
+    case resumed
 }
