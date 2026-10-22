@@ -311,6 +311,62 @@ final class ClientLogCategoryTests: XCTestCase {
         ])
     }
 
+    /// A TOTP setup run by the live engine, as the client's log sink receives it: the shared secret reaches no line,
+    /// including the verbose line `SetUpTOTP` logs for the event that carries it.
+    ///
+    /// - Given: the live engine over scripted Cognito: SRP answered with `MFA_SETUP` for TOTP, `AssociateSoftwareToken`
+    ///   answering a secret, `VerifySoftwareToken` refusing the first code and accepting the second
+    /// - When:
+    ///    - the user signs in, answers a wrong code, then the right one
+    /// - Then:
+    ///    - the sign-in stops on the TOTP setup with the secret, and the second code finishes it
+    ///    - the engine's line sending `waitForAnswer` reaches the sink, with the secret `<REDACTED>`
+    ///    - no line the sink receives holds the secret, or any part of it
+    func testATOTPSetupLogsNoSharedSecret() async throws {
+        let secret = "TOTPSECRETPROBE7Q2WXYZ4ABCD"
+        let harness = LiveEngineHarness()
+        defer { harness.cognito.assertConsumed() }
+        let engine = try harness.engine()
+        harness.scriptSRP(then: LiveEngineFixtures.challenge(.mfaSetup, parameters: ["MFAS_CAN_SETUP": #"["SOFTWARE_TOKEN_MFA"]"#]))
+        harness.cognito.once("AssociateSoftwareToken") { (_: AssociateSoftwareTokenInput) in
+            AssociateSoftwareTokenOutput(secretCode: secret, session: "setup-session")
+        }
+        harness.cognito.once("VerifySoftwareToken") { (_: VerifySoftwareTokenInput) -> VerifySoftwareTokenOutput in
+            throw EnableSoftwareTokenMFAException(message: "Code mismatch")
+        }
+        harness.cognito.once("VerifySoftwareToken") { (_: VerifySoftwareTokenInput) in
+            VerifySoftwareTokenOutput(session: "verified-session", status: .success)
+        }
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in LiveEngineFixtures.signedIn() }
+        harness.scriptIdentityPool()
+
+        let first = try await engine.signIn(.srp(), current: nil)
+        guard case .challenge(.continueSignInWithTOTPSetup(let details)) = first else {
+            return XCTFail("expected a TOTP setup, got \(first)")
+        }
+        XCTAssertEqual(details.sharedSecret, secret)
+        do {
+            _ = try await engine.confirmSignIn(.answer("000000"), current: nil)
+            XCTFail("the wrong code was accepted")
+        } catch {}
+        guard case .done = try await engine.confirmSignIn(.answer("123456"), current: nil) else {
+            return XCTFail("the setup did not finish")
+        }
+
+        let lines = sink.allLines()
+        let sent = lines.filter {
+            $0.hasPrefix("InternalAWSCognitoAuth/SetUpTOTP.swift Sending event ") && $0.contains(".waitForAnswer(")
+        }
+        XCTAssertEqual(sent.count, 1, "\(sent)")
+        XCTAssertTrue(sent.first?.contains(#""sharedSecret": "<REDACTED>""#) == true, "\(sent)")
+        let fragments = [secret, String(secret.prefix(10)), String(secret.suffix(10))]
+        for line in lines {
+            for fragment in fragments where line.contains(fragment) {
+                XCTFail("a line holds \(fragment): \(line)")
+            }
+        }
+    }
+
     /// The forms the first identifier and URL rules missed: a quoted key with a bare value (a property-list dump of a
     /// dictionary), a doubly optional value, and a custom-scheme redirect without `//`.
     ///

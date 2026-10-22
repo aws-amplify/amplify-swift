@@ -32,6 +32,32 @@ extension SignInTOTPSetupData: CustomDebugDictionaryConvertible {
     }
 }
 
+// Every printed form is the redacted one. The data rides in `SetUpTOTPEvent.waitForAnswer`, whose verbose line
+// prints the event by reflection, and in `SignInTOTPSetupState`, so default printing would log the shared secret.
+extension SignInTOTPSetupData: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+
+    package var description: String {
+        debugDictionary.debugDescription
+    }
+
+    package var debugDescription: String {
+        description
+    }
+
+    /// For `dump` and debuggers: the secret redacted, the session and the username masked.
+    package var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "secretCode": secretCode.redactedForLog(),
+                "session": session.maskedForLog(),
+                "username": username.maskedForLog()
+            ],
+            displayStyle: .struct
+        )
+    }
+}
+
 extension SignInTOTPSetupData: Codable { }
 
 extension SignInTOTPSetupData: Equatable { }
