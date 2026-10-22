@@ -168,7 +168,9 @@ extension AWSCognitoAuthCredentialStore {
     /// removes it, and the login moves. A guest's record is an identity pool identity without user pool tokens
     /// or a federated identity (an identity-pool-only configuration's included). A signed-out record
     /// (`{"noCredentials":{}}`, which a sign-out through the Cognito client's default session saves) is not a
-    /// guest's: it counts, as a login does, so a user who signed out is never signed back in by the migration.
+    /// guest's: it counts, as a login does, so a user who signed out that way is never signed back in by the
+    /// migration. A plugin sign-out deletes the session record instead, so after one, only a device record left by
+    /// a user-pool sign-in stops an extension's first migration from moving its login in.
     /// With no login to move, a guest's record still counts, so a launch with nothing to migrate never clears
     /// another process's guest identity. Any other item
     /// counts as before; a device record without reading it, since only a sign-in writes one. A session
