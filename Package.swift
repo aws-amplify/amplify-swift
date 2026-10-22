@@ -721,6 +721,8 @@ let cognitoClientTargets: [Target] = [
             .target(name: "InternalAWSCognitoAuth"),
             .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift"),
+            // Imported directly (`EngineMapping`: an error status the SDK does not model).
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift"),
             // Imported directly (`CognitoUnsignedOperationResolver`, `CognitoServiceClients`).
             .product(name: "Smithy", package: "smithy-swift"),
             .product(name: "SmithyIdentity", package: "smithy-swift"),

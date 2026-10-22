@@ -1584,7 +1584,7 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
 | `userCancelled` | The user closed a system sheet, or `cancelWebUISignIn()` or `resetSystemSheet()` closed it. |
 | `webAuthnCeremonyFailed(AuthClientWebAuthnCeremonyFailure)` | A local passkey ceremony failed before Cognito was asked anything. |
 | `unexpectedIdentity(expected:returned:)` | A hosted-UI sign-in returned another user than the one asked for; nobody was signed in. |
-| `unknown` | Anything else, including a saved record this version cannot read. |
+| `unknown` | Anything else, including a saved record this version cannot read. An error status the SDK does not model and a Cognito internal error (`InternalErrorException`) land here too, as in the plugin, with a recovery suggestion to retry (a 5xx, an internal error) or naming the refusal (a 4xx), in place of the engine's "report a bug" text; the engine keeps nothing under an internal error, so `deleteUser`, a sign-out's revoke or global sign-out, and the passkey credential calls, whose failure the client only sees mapped, keep that text for it. |
 
 ---
 

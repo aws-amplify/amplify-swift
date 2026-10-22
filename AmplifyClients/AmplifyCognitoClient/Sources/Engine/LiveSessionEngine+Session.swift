@@ -85,7 +85,7 @@ extension LiveSessionEngine {
             }
             return try CredentialSlot.encode(credentials)
         default:
-            failure = .service(AuthClientError(engine: error.engineError))
+            failure = .service(AuthClientError(engineFailure: error))
         }
         if case .written(let stored) = try operation.slot.outcome() {
             throw SessionEngineError.refreshedThenFailed(payload: stored, error: failure)
@@ -119,7 +119,7 @@ extension LiveSessionEngine {
             case .error(.sessionError(.notAuthorized, _)), .error(.sessionError(.noCredentialsToRefresh, _)):
                 throw SessionEngineError.notSignedIn
             case .error(let error):
-                throw SessionEngineError.service(AuthClientError(engine: error.engineError))
+                throw SessionEngineError.service(AuthClientError(engineFailure: error))
             default:
                 return nil
             }
@@ -182,7 +182,7 @@ extension LiveSessionEngine {
         case .signedOut(let signedOut):
             return outcome(of: signedOut)
         case .signingOut(.error(let error)):
-            throw AuthClientError(engine: error.engineError)
+            throw AuthClientError(engineFailure: error)
         default:
             return nil
         }

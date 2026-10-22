@@ -1394,7 +1394,7 @@ Every operation throws `AuthClientError`, which conforms to `AmplifyError`: each
 | `userCancelled` | The user closed a system sheet, or it was cancelled | Nothing changed; let the user retry |
 | `webAuthnCeremonyFailed(failure)` | The local passkey ceremony failed before Cognito was asked | `failure` is `.credentialAlreadyExists`, `.failed` or `.invalidCredential` |
 | `unexpectedIdentity(expected:returned:)` | The hosted UI returned another user than expected; nobody was signed in | Retry with `prompt: [.login]` |
-| `unknown` | Anything else, including a saved record this version can't read | Read the description |
+| `unknown` | Anything else, including a saved record this version can't read. Also, as in the plugin, an error status the SDK doesn't model, whose suggestion says to retry (a 5xx) or that the service refused the request (the description has the status and message), and a Cognito internal error (`InternalErrorException`), whose suggestion says to retry. From `deleteUser`, a sign-out's revoke or global sign-out, or a passkey credential call, an internal error keeps the engine's suggestion | Read the description; retry a 5xx or internal error later |
 
 Match cases directly. `service` carries its code in the case, so no downcast is needed:
 

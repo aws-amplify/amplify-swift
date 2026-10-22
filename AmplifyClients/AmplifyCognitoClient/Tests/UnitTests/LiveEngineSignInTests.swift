@@ -154,8 +154,8 @@ final class LiveEngineSignInTests: XCTestCase {
     /// - When:
     ///    - alice signs in
     /// - Then:
-    ///    - it throws the mapped error, nothing is pending, and `RevokeToken` was called with the issued
-    ///      refresh token
+    ///    - it throws the mapped error, `.unknown` with Cognito's message and the retry suggestion, never a bug
+    ///      report; nothing is pending, and `RevokeToken` was called with the issued refresh token
     ///
     func testAFailedIdentityStepRevokesTheIssuedTokens() async throws {
         let engine = try harness.engine()
@@ -167,10 +167,11 @@ final class LiveEngineSignInTests: XCTestCase {
 
         await assertThrowsAsync({ try await engine.signIn(.srp(), current: nil) }) { error in
             // The engine's mapping of an identity pool `InternalErrorException`, as the plugin's.
-            guard case .unknown(let description, _, _) = authError(error) else {
+            guard case .unknown(let description, let suggestion, _) = authError(error) else {
                 return XCTFail("expected the engine's unknown error, got \(error)")
             }
             XCTAssertTrue(description.contains("boom"), description)
+            XCTAssertEqual(suggestion, AuthClientError.serviceFaultSuggestion)
         }
 
         let pending = await engine.pendingChallenge

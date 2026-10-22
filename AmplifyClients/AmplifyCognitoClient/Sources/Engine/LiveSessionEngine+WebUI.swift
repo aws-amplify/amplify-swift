@@ -155,7 +155,7 @@ extension LiveSessionEngine {
             // `ShowHostedUISignOut` does; unreachable with the shipped presenter, which only throws `HostedUIError`.
             return outcome(of: signedOut)
         case .signingOut(.error(.hostedUI(let error))):
-            let mapped = AuthClientError(engine: error.engineError)
+            let mapped = AuthClientError(engineFailure: error)
             switch error {
             case .cancelled:
                 throw mapped
@@ -168,7 +168,7 @@ extension LiveSessionEngine {
                 throw SignOutRefusal(error: mapped)
             }
         case .signingOut(.error(let error)):
-            throw AuthClientError(engine: error.engineError)
+            throw AuthClientError(engineFailure: error)
         default:
             return nil
         }
@@ -260,7 +260,7 @@ extension AuthClientError {
     /// this flow. Everything else maps as any engine error does.
     init(hostedUISignIn error: SignInError) {
         guard case .hostedUI(.unexpectedIdentity(let mismatch)) = error else {
-            self.init(engine: error.engineError)
+            self.init(engineFailure: error)
             return
         }
         self.init(hostedUIMismatch: mismatch)

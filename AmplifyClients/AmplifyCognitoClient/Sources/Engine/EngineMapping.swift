@@ -8,6 +8,9 @@
 #if os(iOS) || os(macOS) || os(visionOS)
 import AuthenticationServices
 #endif
+@_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
+import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
 import Foundation
 import InternalAWSCognitoAuth
 
@@ -317,11 +320,16 @@ extension AuthClientError {
     /// CFNetwork or POSIX error), not the engine's error over it, so an app can match it as the core's
     /// fallbacks report it.
     ///
+    /// A Cognito failure the engine reports as `.unknown` keeps that case, with a recovery suggestion that fits it
+    /// in place of the engine's "report a bug" text (`serviceFailureSuggestion(underlying:cause:)`): an error
+    /// status the SDK does not model, or Cognito's `InternalErrorException`. The engine keeps nothing under the
+    /// latter, so only `cause`, the failure the engine error was made from, tells it apart.
+    ///
     /// Engine texts that name the plugin's calls are given the client's names (`clientText(_:)`): the recovery
     /// suggestions in `clientRecoverySuggestions` ("Invoke Auth.signIn …" becomes "Call signIn …"), and
     /// `Amplify.MFAType.<type>` in a text becomes `AuthClientMFAType.<type>`. The engine's strings themselves are
     /// unchanged: they are the plugin's, which its error-catalogue golden pins.
-    init(engine error: EngineAuthError) {
+    init(engine error: EngineAuthError, cause: Error? = nil) {
         let description = Self.clientText(error.errorDescription)
         let suggestion = Self.clientText(error.recoverySuggestion)
         switch error {
@@ -364,6 +372,8 @@ extension AuthClientError {
             // bug". The sign-in flows' state machines report it as `.unknown` with an empty message.
             if let underlying, let transport = Self.transportFailure(underlying, wrapping: error) {
                 self = transport
+            } else if let serviceSuggestion = Self.serviceFailureSuggestion(underlying: underlying, cause: cause) {
+                self = .unknown(description, serviceSuggestion, error)
             } else {
                 self = .unknown(description, suggestion, error)
             }
@@ -378,6 +388,11 @@ extension AuthClientError {
         case .sessionExpired:
             self = .sessionExpired(description, suggestion, error)
         }
+    }
+
+    /// `init(engine:cause:)` of `failure`'s engine error, with `failure` as the cause.
+    init(engineFailure failure: any EngineAuthErrorConvertible) {
+        self.init(engine: failure.engineError, cause: failure as? Error)
     }
 
     /// The engine's recovery suggestions that name the plugin's `Auth.*` calls, keyed by the engine's exact text,
@@ -559,6 +574,51 @@ extension AuthClientError {
         return error.domain == NSCocoaErrorDomain && error.code == NSPropertyListReadCorruptError
     }
 
+    /// The recovery suggestion of a Cognito failure the service itself reported as its own: an
+    /// `InternalErrorException`, or a 5xx status the SDK does not model.
+    static let serviceFaultSuggestion =
+        "The service could not complete the request, usually a temporary problem at the service. Retry the operation."
+
+    /// The recovery suggestion of an error status below 500 that the SDK does not model: Cognito refused the
+    /// request with an error this client does not recognise.
+    static let unrecognisedServiceErrorSuggestion =
+        "The service refused the request with an error this client does not recognise. The description has the "
+            + "service's status and message: check the request against it before retrying."
+
+    /// What an engine `.unknown` that Cognito reported suggests in place of the engine's "report a bug" text, or
+    /// `nil` if it is not one: an error status the SDK does not model (`UnknownAWSHTTPServiceError`, which the
+    /// engine keeps `underlying`) by its status, and either pool's `InternalErrorException`, found in `cause`
+    /// (`serviceException(in:)`).
+    static func serviceFailureSuggestion(underlying: Error?, cause: Error?) -> String? {
+        if let unmodelled = underlying as? UnknownAWSHTTPServiceError {
+            return unmodelled.httpResponse.statusCode.rawValue >= 500
+                ? serviceFaultSuggestion
+                : unrecognisedServiceErrorSuggestion
+        }
+        switch cause.map(serviceException(in:)) {
+        case is AWSCognitoIdentityProvider.InternalErrorException, is AWSCognitoIdentity.InternalErrorException:
+            return serviceFaultSuggestion
+        default:
+            return nil
+        }
+    }
+
+    /// The service's error at the root of an engine failure: the engine's state-machine errors carry it in their
+    /// `.service` cases. Anything else is itself.
+    static func serviceException(in failure: Error) -> Error {
+        switch failure {
+        case SignInError.service(let error), AuthorizationError.service(let error), FetchSessionError.service(let error),
+             SignUpError.service(let error):
+            return serviceException(in: error)
+        case SignInError.webAuthn(.service(let error as Error)):
+            return serviceException(in: error)
+        case AuthorizationError.sessionError(let error, _):
+            return serviceException(in: error)
+        default:
+            return failure
+        }
+    }
+
     /// A local WebAuthn ceremony's failure, from the error the engine put underneath, or `nil` if it is not
     /// one (`init(engine:)`).
     private init?(webAuthnCeremony underlying: Error?, _ description: String, _ suggestion: String) {
@@ -608,7 +668,7 @@ extension AuthClientError {
     /// `NotAuthorizedException` (the engine keeps no exception underneath, so the operation's user pool records
     /// it). An expired challenge needs both the type and the message; a `.notAuthorized` from anywhere else on
     /// the confirm path, such as the identity pool step after the challenge, is never `challengeExpired`.
-    init(engineConfirmingSignIn error: EngineAuthError, rejectedByUserPool: Bool) {
+    init(engineConfirmingSignIn error: EngineAuthError, rejectedByUserPool: Bool, cause: Error? = nil) {
         if rejectedByUserPool, case .notAuthorized(let message, _, _) = error, Self.isInvalidChallengeSession(message) {
             self = .challengeExpired(
                 error.errorDescription,
@@ -616,7 +676,7 @@ extension AuthClientError {
                 error
             )
         } else {
-            self.init(engine: error)
+            self.init(engine: error, cause: cause)
         }
     }
 

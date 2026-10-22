@@ -157,7 +157,7 @@ extension LiveSessionEngine {
             )
             output = try await userPoolService.resendConfirmationCode(input: input)
         } catch let error as EngineAuthErrorConvertible {
-            throw AuthClientError(engine: error.engineError)
+            throw AuthClientError(engineFailure: error)
         }
         guard let details = output.codeDeliveryDetails?.toEngineCodeDeliveryDetails() else {
             throw AuthClientError.unknown(
@@ -348,7 +348,7 @@ extension AuthClientError {
         case .invalidConfirmationCode(let message):
             self = .validation(field: "confirmationCode", message, "Make sure that a valid confirmationCode is passed for confirmSignUp")
         case .invalidUsername, .invalidPassword, .service:
-            self.init(engine: error.engineError)
+            self.init(engineFailure: error)
         }
     }
 }

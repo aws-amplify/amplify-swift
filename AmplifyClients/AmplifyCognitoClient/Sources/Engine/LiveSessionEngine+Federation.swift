@@ -49,7 +49,7 @@ extension LiveSessionEngine {
                 }
                 return try operation.payload(establishing: credentials)
             case (.error, .error(let error)):
-                throw SessionEngineError.service(AuthClientError(engine: error.engineError))
+                throw SessionEngineError.service(AuthClientError(engineFailure: error))
             default:
                 return nil
             }
