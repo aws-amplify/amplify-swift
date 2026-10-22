@@ -79,12 +79,20 @@ require_free_disk() {
 # Exits if $STATE_DIR/state.json records an account other than the caller's, so a profile for
 # another account can never act on this sandbox's recorded resources (or mint a second sandbox under
 # the same state directory). Sets ACCOUNT, which is never printed. Run before any mutating call.
+# With no account recorded yet (the first provision.sh), nothing else checks the account, so it also exits, before
+# any AWS call, unless AWS_PROFILE names the profile to use: the first run never falls back to the CLI's default
+# credentials.
 require_recorded_account() {
     local recorded=""
-    ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
     if [[ -f "$STATE_DIR/state.json" ]]; then
         recorded=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('account',''))" "$STATE_DIR/state.json")
     fi
+    if [[ -z "$recorded" && -z "${AWS_PROFILE:-}" ]]; then
+        echo "Refusing: no account is recorded in $STATE_DIR/state.json yet. Set AWS_PROFILE to the sandbox" \
+            "account's profile (see the integration README); a first run never uses the CLI's default credentials." >&2
+        exit 1
+    fi
+    ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
     if [[ -n "$recorded" && "$recorded" != "$ACCOUNT" ]]; then
         echo "Refusing: $STATE_DIR/state.json belongs to an account other than the caller's. Use that" \
             "account's profile, or point COGNITO_CLIENT_INTEG_DIR at another directory." >&2

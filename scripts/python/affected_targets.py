@@ -117,6 +117,11 @@ XCSCHEME_DIR = ".swiftpm/xcode/xcshareddata/xcschemes/"
 XCSCHEME_SUFFIX = ".xcscheme"
 
 
+def is_always_ignored(path):
+    """True for a file that never affects a build or test wherever it lives (ALWAYS_IGNORE_*)."""
+    return path.endswith(ALWAYS_IGNORE_SUFFIXES) or path.rsplit("/", 1)[-1] in ALWAYS_IGNORE_NAMES
+
+
 def build_graph(pkg):
     """Return (path_of, deps_of, is_test) from a `swift package dump-package` document."""
     names = {t["name"] for t in pkg["targets"]}
@@ -176,7 +181,7 @@ def main():
     # target, matching no group path, and not ignorable is unknown -> fail closed to all groups.
     changed_targets = set()
     for f in changed:
-        if f.endswith(ALWAYS_IGNORE_SUFFIXES) or f.rsplit("/", 1)[-1] in ALWAYS_IGNORE_NAMES:
+        if is_always_ignored(f):
             continue
         owner = max((n for n, p in path_of.items() if f.startswith(p)),
                     key=lambda n: len(path_of[n]), default=None)
@@ -232,9 +237,11 @@ def main():
             selected |= cands
         # else: owned by a non-group source target -> selects nothing (see comment above).
 
-    # Groups selected by a path rule (dirs that are not SwiftPM targets).
+    # Groups selected by a path rule (dirs that are not SwiftPM targets). An always-ignored file (a
+    # README under a group's path, say) selects nothing here either, as in the file loop above.
+    relevant = [f for f in changed if not is_always_ignored(f)]
     for name, group in groups.items():
-        if any(f.startswith(p) for p in group.get("paths", []) for f in changed):
+        if any(f.startswith(p) for p in group.get("paths", []) for f in relevant):
             selected.add(name)
     emit(selected)
 

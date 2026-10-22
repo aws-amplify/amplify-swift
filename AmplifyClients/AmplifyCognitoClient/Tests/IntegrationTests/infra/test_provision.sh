@@ -12,7 +12,8 @@
 #   bash infra/test_provision.sh
 #
 # It checks that a region other than the one state.json records is refused before any AWS call; that without an
-# argument the recorded region wins over AWS_REGION; that find_by_name follows NextToken to the page that has the
+# argument the recorded region wins over AWS_REGION; that with no state.json yet, a run without AWS_PROFILE is refused
+# before any AWS call and one with it goes on; that find_by_name follows NextToken to the page that has the
 # name, and stops at the last page without it; and that record_state merges into state.json (mode 600), keeping
 # what it does not set (the parity section).
 set -euo pipefail
@@ -59,6 +60,19 @@ the_recorded_region_wins_over_aws_region() {
     # The first AWS call (the caller's identity), refused by the fake, is in the recorded region.
     (( STATUS != 0 )) && grep -q -- '--region us-west-2 .*sts get-caller-identity' "$FAKE_LOG" \
         && ! grep -q -- '--region us-east-1' "$FAKE_LOG"
+}
+
+# With no state.json yet, nothing records the account, so a run without AWS_PROFILE must stop before its first AWS
+# call (the CLI's own `configure get` is local), and one with AWS_PROFILE goes on to the caller's identity.
+a_first_run_without_aws_profile_is_refused_before_any_aws_call() {
+    COGNITO_CLIENT_INTEG_DIR="$WORK/fresh" run us-west-2
+    (( STATUS == 1 )) && [[ "$OUT" == *"no account is recorded"*"Set AWS_PROFILE"* ]] \
+        && ! grep -v '^configure ' "$FAKE_LOG" | grep -q .
+}
+
+a_first_run_with_aws_profile_goes_on_to_the_callers_identity() {
+    AWS_PROFILE=sandbox COGNITO_CLIENT_INTEG_DIR="$WORK/fresh" run us-west-2
+    (( STATUS != 0 )) && [[ "$OUT" != *"no account is recorded"* ]] && grep -q -- 'sts get-caller-identity' "$FAKE_LOG"
 }
 
 # provision.sh's helpers, run over a fake `aws` function that pages its items two at a time.
@@ -110,6 +124,10 @@ assert state["region"] == "us-west-2" and state["parity"] == {"kmsKeyId": "place
 
 check "a region other than the recorded one is refused before any AWS call" another_region_is_refused_before_any_aws_call
 check "without an argument, the recorded region wins over AWS_REGION" the_recorded_region_wins_over_aws_region
+check "with no account recorded, a run without AWS_PROFILE is refused before any AWS call" \
+    a_first_run_without_aws_profile_is_refused_before_any_aws_call
+check "with no account recorded, a run with AWS_PROFILE goes on to the caller's identity" \
+    a_first_run_with_aws_profile_goes_on_to_the_callers_identity
 check "find_by_name follows NextToken to the name's page, and reads to the last page without it" \
     find_by_name_reads_every_page
 check "record_state merges into state.json (mode 600) and keeps the parity section" record_state_merges_and_keeps_the_rest
