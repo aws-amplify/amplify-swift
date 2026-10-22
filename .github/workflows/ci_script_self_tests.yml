@@ -5,6 +5,8 @@
 #   integration-test jobs run it, with BSD find.
 # - scripts/cognito-engine/check_fixture_lock.sh: the plugin behavior snapshot lock's self-file check
 #   (test_check_fixture_lock.sh, in a scratch repository built from this checkout).
+# - scripts/python/affected_targets.py: the test selector the unit and integration workflows run, over the real
+#   group files and a stub package dump (test_affected_targets.py), so it needs no Swift toolchain.
 #
 # No AWS call is made, and the jobs need no credentials and no secrets.
 
@@ -17,6 +19,7 @@ on:
       - 'scripts/cognito-engine/check_fixture_lock.sh'
       - 'scripts/cognito-engine/test_check_fixture_lock.sh'
       - '.github/workflows/auth_golden_fixture_lock.yml'
+      - 'scripts/python/**'
       - '.github/workflows/ci_script_self_tests.yml'
   push:
     branches:
@@ -26,6 +29,7 @@ on:
       - 'scripts/cognito-engine/check_fixture_lock.sh'
       - 'scripts/cognito-engine/test_check_fixture_lock.sh'
       - '.github/workflows/auth_golden_fixture_lock.yml'
+      - 'scripts/python/**'
       - '.github/workflows/ci_script_self_tests.yml'
 
 permissions:
@@ -55,3 +59,15 @@ jobs:
 
       - name: Run the self-test
         run: bash scripts/cognito-engine/test_check_fixture_lock.sh
+
+  test-selector:
+    name: Test selector
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Run the self-test
+        run: python3 -m unittest discover -s scripts/python -p 'test_*.py'
