@@ -22,44 +22,38 @@ final class GlobalFieldsManager: @unchecked Sendable {
 
     /// Current user ID.
     var userId: String? {
-        get { locked { _userId } }
-        set { locked { _userId = newValue } }
+        get { lock.withLock { _userId } }
+        set { lock.withLock { _userId = newValue } }
     }
 
     /// Current global attributes.
-    var attributes: [String: String] { locked { _attributes } }
+    var attributes: [String: String] { lock.withLock { _attributes } }
 
     /// Current global metrics.
-    var metrics: [String: Double] { locked { _metrics } }
+    var metrics: [String: Double] { lock.withLock { _metrics } }
 
     /// Adds a global attribute.
     func addAttribute(_ key: String, value: String) {
-        locked { _attributes[key] = value }
+        lock.withLock { _attributes[key] = value }
     }
 
     /// Removes a global attribute by key.
     func removeAttribute(_ key: String) {
-        locked { _ = _attributes.removeValue(forKey: key) }
+        lock.withLock { _ = _attributes.removeValue(forKey: key) }
     }
 
     /// Adds a global metric.
     func addMetric(_ key: String, value: Double) {
-        locked { _metrics[key] = value }
+        lock.withLock { _metrics[key] = value }
     }
 
     /// Removes a global metric by key.
     func removeMetric(_ key: String) {
-        locked { _ = _metrics.removeValue(forKey: key) }
+        lock.withLock { _ = _metrics.removeValue(forKey: key) }
     }
 
     /// Reads every field in one critical section.
     func snapshot() -> (userId: String?, attributes: [String: String], metrics: [String: Double]) {
-        locked { (_userId, _attributes, _metrics) }
-    }
-
-    private func locked<T>(_ body: () -> T) -> T {
-        lock.lock()
-        defer { lock.unlock() }
-        return body()
+        lock.withLock { (_userId, _attributes, _metrics) }
     }
 }

@@ -15,6 +15,13 @@ import Foundation
 /// Session boundaries are sent to the sink as `_session.start` and
 /// `_session.stop` events, in order with recorded events.
 ///
+/// A session pauses when the app goes to the background. A paused session
+/// ends when its timeout fires, or at the next foreground or ``record(_:attributes:metrics:)``
+/// if the timeout has passed by then. On iOS the app is usually suspended
+/// before a short timeout fires, so the stop often goes out at the next
+/// foreground. If the app is terminated while suspended, the stop is not
+/// sent. Call ``close()`` to send the final stop.
+///
 /// ## Usage
 ///
 /// ```swift
@@ -107,10 +114,7 @@ public actor AmplifyEventEnrichmentClient {
             )
         }
 
-        var continuation: AsyncStream<Delivery>.Continuation?
-        let stream = AsyncStream<Delivery> { continuation = $0 }
-        // The build closure runs synchronously, so the continuation is set here.
-        let deliveries = continuation!
+        let (stream, deliveries) = AsyncStream.makeStream(of: Delivery.self)
 
         self.logger = logger
         self.globalFields = globalFields
@@ -121,8 +125,10 @@ public actor AmplifyEventEnrichmentClient {
         // fully initialized actor. The stream buffers what is queued before it runs.
         self.consumer = Task.detached {
             for await delivery in stream {
-                await sink?.send(delivery.event)
-                logger.verbose("Recorded event: \(delivery.event.eventType)")
+                if let event = delivery.event {
+                    await sink?.send(event)
+                    logger.verbose("Recorded event: \(event.eventType)")
+                }
                 delivery.sent?.signal()
             }
         }
@@ -141,9 +147,7 @@ public actor AmplifyEventEnrichmentClient {
         )
         self.sessionManager = sessionManager
         if options.autoSessionTracking {
-            var lifecycleContinuation: AsyncStream<LifecycleChange>.Continuation?
-            let changes = AsyncStream<LifecycleChange> { lifecycleContinuation = $0 }
-            let lifecycleChanges = lifecycleContinuation!
+            let (changes, lifecycleChanges) = AsyncStream.makeStream(of: LifecycleChange.self)
             Task.detached {
                 for await change in changes {
                     switch change {
@@ -157,6 +161,11 @@ public actor AmplifyEventEnrichmentClient {
                 onPause: { lifecycleChanges.yield(.paused) },
                 onResume: { lifecycleChanges.yield(.resumed) }
             )
+            // A client created in the background sees no didEnterBackground, so
+            // the launch session is paused here, ahead of any later notification.
+            if ActivityTracker.isAppInBackground() {
+                lifecycleChanges.yield(.paused)
+            }
         } else {
             self.lifecycleChanges = nil
             self.activityTracker = nil
@@ -166,14 +175,18 @@ public actor AmplifyEventEnrichmentClient {
     /// Records an event and returns the enriched result once the sink has
     /// received it.
     ///
+    /// Starts a session first if none is running, queueing its `_session.start`
+    /// ahead of the event.
+    ///
+    /// Events are sent one at a time, in the order they were queued, so this
+    /// also waits for every event queued ahead of it. Cancelling the caller does
+    /// not cancel the send.
+    ///
     /// - Parameters:
     ///   - eventType: The type/name of the event.
     ///   - attributes: Per-event string attributes (merged with globals).
     ///   - metrics: Per-event numeric metrics (merged with globals).
     /// - Returns: The enriched event.
-    /// Starts a session first if none is running, queueing its `_session.start`
-    /// ahead of the event.
-    ///
     /// - Throws: ``EventEnrichmentError/clientClosed(_:_:_:)`` if the client has been closed.
     @discardableResult
     public func record(
@@ -211,19 +224,32 @@ public actor AmplifyEventEnrichmentClient {
     }
 
     /// Starts a new session manually, ending the current one first.
+    /// Returns once the sink has received the new session's start.
     /// No-op once the client is closed.
     public func startSession() async {
         guard !closed else { return }
         await sessionManager.startSession()
+        await waitForQueuedDeliveries()
     }
 
-    /// Stops the current session. No-op once the client is closed.
+    /// Stops the current session and returns once the sink has received its stop.
+    /// No-op if no session is running or once the client is closed.
     ///
     /// Returning to the foreground does not start a new session afterwards;
     /// recording an event or calling ``startSession()`` does.
     public func stopSession() async {
         guard !closed else { return }
-        await sessionManager.stopSession()
+        guard await sessionManager.stopSession() else { return }
+        await waitForQueuedDeliveries()
+    }
+
+    /// Returns once everything queued so far, boundaries included, has been sent.
+    private func waitForQueuedDeliveries() async {
+        let sent = DeliverySignal()
+        if case .terminated = deliveries.yield(Delivery(event: nil, sent: sent)) {
+            sent.signal()
+        }
+        await sent.wait()
     }
 
     /// Sets the user identifier stamped on subsequent events.
@@ -288,8 +314,13 @@ public actor AmplifyEventEnrichmentClient {
     }
 
     deinit {
-        lifecycleChanges?.finish()
-        deliveries.finish()
+        // Queues the session's stop before the streams finish. dispose() is a
+        // no-op if close() already ran, so the stop is never sent twice.
+        Task { [sessionManager, lifecycleChanges, deliveries] in
+            await sessionManager.dispose()
+            lifecycleChanges?.finish()
+            deliveries.finish()
+        }
     }
 }
 

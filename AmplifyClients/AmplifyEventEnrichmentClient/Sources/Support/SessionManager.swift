@@ -63,15 +63,15 @@ actor SessionManager {
     /// The most recent session, or `nil` if none has ever been started.
     ///
     /// This remains non-`nil` after ``stopSession()`` so callers can read the
-    /// stop timestamp and duration of the session that just ended. Use
-    /// ``activeSession`` to stamp events, which excludes stopped sessions.
+    /// stop timestamp and duration of the session that just ended. Events are
+    /// stamped through ``withRecordingSession(_:)``, not this property.
     var session: Session? { _session }
 
     /// The session events may be attributed to, or `nil` if there is none.
     ///
-    /// Unlike ``session`` this is `nil` once the session has stopped, so an
-    /// event recorded after ``stopSession()`` is rejected rather than silently
-    /// attributed to a session that has already ended.
+    /// Unlike ``session`` this is `nil` once the session has stopped. An event
+    /// recorded after ``stopSession()`` is not attributed to the stopped
+    /// session: ``withRecordingSession(_:)`` starts a new one for it.
     var activeSession: Session? {
         _state == .stopped ? nil : _session
     }
@@ -138,10 +138,14 @@ actor SessionManager {
     ///
     /// No-op if the session is already stopped. ``handleAppResumed()`` does not
     /// start a new session afterwards; ``startSession()`` does.
-    func stopSession() {
-        guard !disposed else { return }
+    /// - Returns: Whether a running or paused session was stopped.
+    @discardableResult
+    func stopSession() -> Bool {
+        guard !disposed else { return false }
         stoppedExplicitly = true
+        let wasRunning = _state != .stopped
         endCurrent()
+        return wasRunning
     }
 
     /// Stops the current session and turns every later call into a no-op.
@@ -202,9 +206,13 @@ actor SessionManager {
         pausedAt = now()
         pauseGeneration += 1
         let generation = pauseGeneration
-        let timeout = sessionTimeout
+        // A negative timeout ends the session right away. One that is not finite
+        // or too long for the timer gets none; isPauseExpired still decides on
+        // the next foreground or record().
+        let nanoseconds = max(sessionTimeout, 0) * 1_000_000_000
+        guard nanoseconds < Double(UInt64.max) else { return }
         pauseTask = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+            try? await Task.sleep(nanoseconds: UInt64(nanoseconds))
             guard !Task.isCancelled else { return }
             await self?.onTimeoutExpired(pauseGeneration: generation)
         }

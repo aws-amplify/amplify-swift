@@ -16,8 +16,9 @@ typealias EventFactory = @Sendable (
 ) -> EnrichedEvent
 
 /// An event waiting for the sink, with the signal its `record()` caller waits on.
+/// With no event, it only signals once everything queued before it has been sent.
 struct Delivery: Sendable {
-    let event: EnrichedEvent
+    let event: EnrichedEvent?
     let sent: DeliverySignal?
 }
 
@@ -28,24 +29,22 @@ final class DeliverySignal: @unchecked Sendable {
     private var waiter: CheckedContinuation<Void, Never>?
 
     func signal() {
-        lock.lock()
-        isSignaled = true
-        let waiter = waiter
-        self.waiter = nil
-        lock.unlock()
+        let waiter = lock.withLock { () -> CheckedContinuation<Void, Never>? in
+            isSignaled = true
+            let waiter = self.waiter
+            self.waiter = nil
+            return waiter
+        }
         waiter?.resume()
     }
 
     func wait() async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            lock.lock()
-            if isSignaled {
-                lock.unlock()
-                continuation.resume()
-            } else {
-                waiter = continuation
-                lock.unlock()
+            let alreadySignaled = lock.withLock {
+                if !isSignaled { waiter = continuation }
+                return isSignaled
             }
+            if alreadySignaled { continuation.resume() }
         }
     }
 }

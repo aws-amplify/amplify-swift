@@ -169,9 +169,9 @@ final class SessionManagerTests: XCTestCase, @unchecked Sendable {
     ///
     /// - Given: A session manager that was stopped and then started again
     /// - When:
-    ///    - The app pauses and resumes
+    ///    - The app pauses, the restarted session times out, and the app resumes
     /// - Then:
-    ///    - The session is active
+    ///    - A new session is active
     ///
     func testStartSessionAfterStopReenablesResume() async {
         let manager = SessionManager(
@@ -183,11 +183,15 @@ final class SessionManagerTests: XCTestCase, @unchecked Sendable {
         await manager.startSession()
         await manager.stopSession()
         await manager.startSession()
+        let restarted = await manager.session
         await manager.handleAppPaused()
+        await manager.onTimeoutExpired(pauseGeneration: 1)
         await manager.handleAppResumed()
 
         let state = await manager.state
+        let session = await manager.session
         XCTAssertEqual(state, .active)
+        XCTAssertNotEqual(session?.id, restarted?.id)
     }
 
     /// Test session timeout expires and stops session

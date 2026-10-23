@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AmplifyFoundation
 @testable import AmplifyEventEnrichmentClient
+@testable import AmplifyFoundation
 import XCTest
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
@@ -14,6 +14,19 @@ import XCTest
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 final class AmplifyEventEnrichmentClientTests: XCTestCase, @unchecked Sendable {
+    private var log: ClosedLogCounter!
+
+    override func setUp() async throws {
+        try await super.setUp()
+        log = ClosedLogCounter()
+        AmplifyLogging.addSink(log)
+    }
+
+    override func tearDown() async throws {
+        AmplifyLogging.removeSink(log)
+        log = nil
+        try await super.tearDown()
+    }
 
     /// Test that recording an event returns an enriched event with expected fields
     ///
@@ -402,7 +415,6 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase, @unchecked Sendable {
     ///    - The teardown ran once
     ///
     func testConcurrentCloseCallsShareTeardown() async throws {
-        let log = ClosedLogCounter.shared
         let client = AmplifyEventEnrichmentClient(
             appId: "test-app",
             sdkMetadata: SDKMetadata(name: "test", version: "1.0")
@@ -430,7 +442,6 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase, @unchecked Sendable {
     ///    - The teardown does not run a second time
     ///
     func testCloseTwiceTearsDownOnce() async {
-        let log = ClosedLogCounter.shared
         let client = AmplifyEventEnrichmentClient(
             appId: "test-app",
             sdkMetadata: SDKMetadata(name: "test", version: "1.0")
@@ -445,14 +456,7 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase, @unchecked Sendable {
 }
 
 /// Counts the client's "Client closed" log lines, which it writes once per teardown.
-/// Registered once because log sinks cannot be removed from outside AmplifyFoundation.
 private final class ClosedLogCounter: LogSinkBehavior, @unchecked Sendable {
-    static let shared: ClosedLogCounter = {
-        let counter = ClosedLogCounter()
-        AmplifyLogging.addSink(counter)
-        return counter
-    }()
-
     let id = "AmplifyEventEnrichmentClientTests.ClosedLogCounter"
     private let lock = NSLock()
     private var closed = 0

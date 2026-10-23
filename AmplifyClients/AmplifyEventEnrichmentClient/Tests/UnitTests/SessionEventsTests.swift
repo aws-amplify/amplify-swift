@@ -520,7 +520,341 @@ final class SessionEventsTests: XCTestCase, @unchecked Sendable {
         await client.close()
     }
 
+    /// Test that a client created while the app is in the background starts paused
+    ///
+    /// - Given: The app is in the background
+    /// - When:
+    ///    - A client with autoSessionTracking is created
+    /// - Then:
+    ///    - Its launch session is paused
+    ///
+    func testClientCreatedInBackgroundStartsPaused() async throws {
+        let original = ActivityTracker.isAppInBackground
+        ActivityTracker.isAppInBackground = { true }
+        defer { ActivityTracker.isAppInBackground = original }
+        let client = makeClient(sink: RecordingSink())
+
+        try await waitUntil { await client.sessionState == .paused }
+
+        await client.close()
+    }
+
+    /// Test that a launch session started in the background times out
+    ///
+    /// - Given: The app is in the background
+    /// - When:
+    ///    - A client with a short timeout is created, and the app comes to the foreground later
+    /// - Then:
+    ///    - The launch session stops on its own, and the foreground starts a new session
+    ///
+    func testClientCreatedInBackgroundTimesOut() async throws {
+        let original = ActivityTracker.isAppInBackground
+        ActivityTracker.isAppInBackground = { true }
+        defer { ActivityTracker.isAppInBackground = original }
+        let sink = RecordingSink()
+        let client = makeClient(sink: sink, sessionTimeout: 0.05)
+
+        try await waitUntil { await sink.events.count == 2 }
+        postForegroundNotification()
+        try await waitUntil { await sink.events.count == 3 }
+        await client.close()
+
+        let events = await sink.events
+        XCTAssertEqual(
+            events.map(\.eventType),
+            ["_session.start", "_session.stop", "_session.start", "_session.stop"]
+        )
+        XCTAssertEqual(Set(events.map(\.session.id)).count, 2)
+        assertSessionOrder(events)
+    }
+
+    /// Test that an infinite session timeout does not crash when the app backgrounds
+    ///
+    /// - Given: A client with a session timeout of infinity
+    /// - When:
+    ///    - The app goes to the background and comes back
+    /// - Then:
+    ///    - The session stays paused, then resumes
+    ///
+    func testInfiniteTimeoutInBackgroundDoesNotCrash() async throws {
+        try await assertPausedSessionNeverTimesOut(sessionTimeout: .infinity)
+    }
+
+    /// Test that a NaN session timeout does not crash when the app backgrounds
+    ///
+    /// - Given: A client with a session timeout of NaN
+    /// - When:
+    ///    - The app goes to the background and comes back
+    /// - Then:
+    ///    - The session stays paused, then resumes
+    ///
+    func testNaNTimeoutInBackgroundDoesNotCrash() async throws {
+        try await assertPausedSessionNeverTimesOut(sessionTimeout: .nan)
+    }
+
+    /// Test that a negative session timeout does not crash when the app backgrounds
+    ///
+    /// - Given: A client with a negative session timeout
+    /// - When:
+    ///    - The app goes to the background
+    /// - Then:
+    ///    - The session stops right away
+    ///
+    func testNegativeTimeoutInBackgroundDoesNotCrash() async throws {
+        let sink = RecordingSink()
+        let client = makeClient(sink: sink, sessionTimeout: -1)
+
+        postBackgroundNotification()
+        try await waitUntil { await client.sessionState == .stopped }
+        await client.close()
+
+        let events = await sink.events
+        XCTAssertEqual(events.map(\.eventType), ["_session.start", "_session.stop"])
+    }
+
+    /// Test that stopSession() returns once the sink has the stop
+    ///
+    /// - Given: A client whose sink takes a while per send
+    /// - When:
+    ///    - stopSession() is called
+    /// - Then:
+    ///    - The stop is in the sink when it returns
+    ///
+    func testStopSessionReturnsAfterStopIsSent() async {
+        let sink = SlowSink()
+        let client = makeClient(sink: sink)
+
+        await client.stopSession()
+
+        let events = await sink.events
+        XCTAssertEqual(events.map(\.eventType), ["_session.start", "_session.stop"])
+        await client.close()
+    }
+
+    /// Test that startSession() returns once the sink has the restart
+    ///
+    /// - Given: A client with a running session whose sink takes a while per send
+    /// - When:
+    ///    - startSession() is called
+    /// - Then:
+    ///    - The old session's stop and the new session's start are in the sink when it returns
+    ///
+    func testStartSessionReturnsAfterRestartIsSent() async {
+        let sink = SlowSink()
+        let client = makeClient(sink: sink)
+
+        await client.startSession()
+
+        let events = await sink.events
+        XCTAssertEqual(events.map(\.eventType), ["_session.start", "_session.stop", "_session.start"])
+        await client.close()
+    }
+
+    /// Test that stopSession() with no running session returns without waiting for the sink
+    ///
+    /// - Given: A stopped session whose start and stop are still held by the sink
+    /// - When:
+    ///    - stopSession() is called again
+    /// - Then:
+    ///    - It returns while the sends are still held
+    ///
+    func testStopSessionWithoutSessionReturnsPromptly() async throws {
+        let sink = GatedSink()
+        let client = makeClient(sink: sink)
+        await sink.waitForSends(1)
+        let stopping = Task { await client.stopSession() }
+        try await waitUntil { await client.sessionState == .stopped }
+        let returned = Flag()
+
+        let noOp = Task {
+            await client.stopSession()
+            returned.set()
+        }
+        try await waitUntil { returned.isSet }
+
+        await sink.releaseAll()
+        await stopping.value
+        await noOp.value
+        await client.close()
+    }
+
+    /// Test that stopSession() does not return while the sink holds the stop
+    ///
+    /// - Given: A client whose sink holds each send until released
+    /// - When:
+    ///    - stopSession() is called and the stop is held
+    /// - Then:
+    ///    - It returns only after the stop is released
+    ///
+    func testStopSessionWaitsWhileStopIsHeld() async throws {
+        let sink = GatedSink()
+        let client = makeClient(sink: sink)
+        await sink.release()
+        let returned = Flag()
+
+        let stopping = Task {
+            await client.stopSession()
+            returned.set()
+        }
+        await sink.waitForSends(2)
+        try await Task.sleep(nanoseconds: 50_000_000)
+        XCTAssertFalse(returned.isSet)
+        await sink.release()
+        await stopping.value
+
+        XCTAssertTrue(returned.isSet)
+        let delivered = await sink.delivered
+        XCTAssertEqual(delivered.map(\.eventType), ["_session.start", "_session.stop"])
+        await sink.releaseAll()
+        await client.close()
+    }
+
+    /// Test that startSession() does not return while the sink holds the restart
+    ///
+    /// - Given: A client with a running session whose sink holds each send until released
+    /// - When:
+    ///    - startSession() is called and the old stop, then the new start, are held
+    /// - Then:
+    ///    - It returns only after the new start is released
+    ///
+    func testStartSessionWaitsWhileRestartIsHeld() async throws {
+        let sink = GatedSink()
+        let client = makeClient(sink: sink)
+        await sink.release()
+        let returned = Flag()
+
+        let starting = Task {
+            await client.startSession()
+            returned.set()
+        }
+        await sink.waitForSends(2)
+        await sink.release()
+        await sink.waitForSends(3)
+        try await Task.sleep(nanoseconds: 50_000_000)
+        XCTAssertFalse(returned.isSet)
+        await sink.release()
+        await starting.value
+
+        XCTAssertTrue(returned.isSet)
+        let delivered = await sink.delivered
+        XCTAssertEqual(delivered.map(\.eventType), ["_session.start", "_session.stop", "_session.start"])
+        await sink.releaseAll()
+        await client.close()
+    }
+
+    /// Test that a client released without close() sends its session's stop
+    ///
+    /// - Given: A client with a running session and a recorded event
+    /// - When:
+    ///    - The client is released without close()
+    /// - Then:
+    ///    - The sink receives the session's stop
+    ///
+    func testReleasedClientSendsStop() async throws {
+        let sink = RecordingSink()
+        var client: AmplifyEventEnrichmentClient? = makeClient(sink: sink)
+        _ = try await client?.record("a")
+        weak var released: AmplifyEventEnrichmentClient?
+        released = client
+
+        client = nil
+        XCTAssertNil(released)
+        try await waitUntil { await sink.events.count == 3 }
+
+        let events = await sink.events
+        XCTAssertEqual(events.map(\.eventType), ["_session.start", "a", "_session.stop"])
+        assertSessionOrder(events)
+    }
+
+    /// Test that a client released without close() stops a manually started session
+    ///
+    /// - Given: A client without autoSessionTracking and a session started by startSession()
+    /// - When:
+    ///    - The client is released without close()
+    /// - Then:
+    ///    - The sink receives the session's stop
+    ///
+    func testReleasedClientStopsManualSession() async throws {
+        let sink = RecordingSink()
+        var client: AmplifyEventEnrichmentClient? = makeClient(sink: sink, autoSessionTracking: false)
+        await client?.startSession()
+
+        client = nil
+        try await waitUntil { await sink.events.count == 2 }
+
+        let events = await sink.events
+        XCTAssertEqual(events.map(\.eventType), ["_session.start", "_session.stop"])
+    }
+
+    /// Test that releasing a closed client does not send a second stop
+    ///
+    /// - Given: A closed client
+    /// - When:
+    ///    - The client is released
+    /// - Then:
+    ///    - The sink has only the one stop from close()
+    ///
+    func testReleasedClosedClientSendsOneStop() async throws {
+        let sink = RecordingSink()
+        var client: AmplifyEventEnrichmentClient? = makeClient(sink: sink)
+        await client?.close()
+
+        client = nil
+        try await Task.sleep(nanoseconds: 100_000_000)
+
+        let events = await sink.events
+        XCTAssertEqual(events.map(\.eventType), ["_session.start", "_session.stop"])
+    }
+
     // MARK: - Helpers
+
+    /// Backgrounds the app for longer than a short timeout would allow, then
+    /// brings it back, and checks the session never timed out.
+    private func assertPausedSessionNeverTimesOut(
+        sessionTimeout: TimeInterval,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async throws {
+        let sink = RecordingSink()
+        let client = makeClient(sink: sink, sessionTimeout: sessionTimeout)
+        let launch = try await client.record("a")
+
+        postBackgroundNotification()
+        try await waitUntil { await client.sessionState == .paused }
+        try await Task.sleep(nanoseconds: 100_000_000)
+        let pausedState = await client.sessionState
+        postForegroundNotification()
+        try await waitUntil { await client.sessionState == .active }
+        let resumed = try await client.record("b")
+        await client.close()
+
+        XCTAssertEqual(pausedState, .paused, file: file, line: line)
+        XCTAssertEqual(resumed.session.id, launch.session.id, file: file, line: line)
+        let events = await sink.events
+        XCTAssertEqual(
+            events.map(\.eventType),
+            ["_session.start", "a", "b", "_session.stop"],
+            file: file,
+            line: line
+        )
+    }
+
+    /// Polls `condition` until it holds, failing the test after `timeout` seconds.
+    private func waitUntil(
+        timeout: TimeInterval = 2,
+        file: StaticString = #filePath,
+        line: UInt = #line,
+        _ condition: () async -> Bool
+    ) async throws {
+        let deadline = Date().addingTimeInterval(timeout)
+        while await !condition() {
+            guard Date() < deadline else {
+                XCTFail("Condition not met within \(timeout) s", file: file, line: line)
+                return
+            }
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+    }
 
     private func makeClient(
         sink: any EventSink,
@@ -605,6 +939,16 @@ private actor RecordingSink: EventSink {
         }
         events.append(event)
         inFlight -= 1
+    }
+}
+
+/// Takes a fixed 20 ms per send, so a caller that does not wait for its send returns first.
+private actor SlowSink: EventSink {
+    private(set) var events: [EnrichedEvent] = []
+
+    func send(_ event: EnrichedEvent) async {
+        try? await Task.sleep(nanoseconds: 20_000_000)
+        events.append(event)
     }
 }
 
