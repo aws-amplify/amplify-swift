@@ -58,7 +58,8 @@
 #       7 days); a dry run by default
 #
 # Environment: COGNITO_CLIENT_INTEG_CI_CONFIG_URL, s3://<bucket>/<path>, the value of CI's AWS_S3_BUCKET_INTEG_V2
-# (the folder that holds auth/); CCIT_CI_REGION, default us-east-1; the AWS credentials of the CI account.
+# (the folder that holds auth/); CCIT_CI_REGION, default us-east-1; CCIT_CI_APPSYNC_API_QUOTA, the account's AppSync
+# API quota, default 25 (checked only by a run that creates the code sink's API); the AWS credentials of the CI account.
 # Nothing printed names an account, pool, client, key, bucket or secret. Needs the AWS CLI 2.26.7 or later, jq,
 # python3, and for --apply node and npm (the custom sender's `npm ci`).
 # shellcheck source-path=SCRIPTDIR
@@ -208,8 +209,14 @@ require_recorded_region() {
         || die "the ccit-ci- resources are in $regions, not CCIT_CI_REGION's $CI_REGION. Set CCIT_CI_REGION to theirs."
 }
 
+# The account's headroom, read once; each create that needs it checks it (require_headroom), so a rerun that creates
+# nothing (extending the code sink's key, say) is never refused for a quota it does not use. The AppSync quota is not
+# readable with the CI role's permissions: CCIT_CI_APPSYNC_API_QUOTA gives a raised one (default 25, AWS's default).
+HEADROOM_ROLES_LEFT=0 HEADROOM_APIS=0 HEADROOM_RULES=0
+APPSYNC_API_QUOTA="${CCIT_CI_APPSYNC_API_QUOTA:-25}"
 preflight() {
     local out roles quota apis pools identity rules sandbox
+    [[ "$APPSYNC_API_QUOTA" =~ ^[1-9][0-9]{0,4}$ ]] || die "CCIT_CI_APPSYNC_API_QUOTA must be a whole number of APIs."
     read_aws out iam get-account-summary
     roles=$(jq -r '.SummaryMap.Roles' <<<"$out")
     quota=$(jq -r '.SummaryMap.RolesQuota' <<<"$out")
@@ -223,11 +230,28 @@ preflight() {
     rules=$(jq -r '.Rules | length' <<<"$out")
     read_aws out sns get-sms-sandbox-account-status
     sandbox=$(jq -r '.IsInSandbox' <<<"$out")
-    say "Account headroom (read-only): IAM roles $roles of $quota, AppSync APIs $apis (default quota 25)," \
+    say "Account headroom (read-only): IAM roles $roles of $quota, AppSync APIs $apis of $APPSYNC_API_QUOTA," \
         "user pools $pools, identity pools $identity, EventBridge rules $rules; SNS in the SMS sandbox: $sandbox"
-    (( quota - roles >= 50 )) || die "fewer than 50 IAM roles are left under the account's quota; this adds 7."
-    (( apis <= 22 )) || die "$apis AppSync APIs exist; this adds one, and the default quota is 25. Raise it first."
-    (( rules <= 250 )) || die "$rules EventBridge rules exist on the default bus; this adds one."
+    HEADROOM_ROLES_LEFT=$((quota - roles))
+    HEADROOM_APIS=$apis
+    HEADROOM_RULES=$rules
+}
+
+# Dies unless the account has room for the $1 (role, api or rule) this run is about to create, as preflight read it.
+# Each keeps a margin: 50 roles left (the script makes 7 at most), 2 APIs left after this one, 250 rules at most.
+require_headroom() {
+    case "$1" in
+        role)
+            (( HEADROOM_ROLES_LEFT >= 50 )) \
+                || die "fewer than 50 IAM roles are left under the account's quota, and this run creates a role." ;;
+        api)
+            (( HEADROOM_APIS + 1 + 2 <= APPSYNC_API_QUOTA )) \
+                || die "$HEADROOM_APIS AppSync APIs exist, this run creates one, and the quota is $APPSYNC_API_QUOTA" \
+                    "(2 kept free). Raise it first, and set CCIT_CI_APPSYNC_API_QUOTA to the raised quota." ;;
+        rule)
+            (( HEADROOM_RULES <= 250 )) \
+                || die "$HEADROOM_RULES EventBridge rules exist on the default bus, and this run creates one." ;;
+    esac
 }
 
 # --- Policies ---------------------------------------------------------------------------------------------
@@ -491,6 +515,7 @@ ensure_api() {
     (( $(jq 'length' <<<"$api") <= 1 )) || die "more than one AppSync API is named $API_NAME."
     api=$(jq -c '.[0] // empty' <<<"$api")
     if [[ -z "$api" ]]; then
+        require_headroom api
         input=$(jq -n -c --arg n "$API_NAME" --argjson t "$(tags_json)" '{name: $n, authenticationType: "API_KEY",
             additionalAuthenticationProviders: [{authenticationType: "AWS_IAM"}], tags: $t}')
         mutate "$API_NAME" "create AppSync API $API_NAME (API key reads, IAM writes)" -- appsync create-graphql-api \
@@ -633,6 +658,7 @@ ensure_role() {
             return 0
         fi
     else
+        require_headroom role
         input=$(CCIT_SECRET_T="$trust" jq -n -c --arg n "$role" --arg k "$CI_TAG_KEY" --arg v "$CI_TAG_VALUE" \
             '{RoleName: $n, AssumeRolePolicyDocument: $ENV.CCIT_SECRET_T, Description: "ccit-ci: Cognito client CI resources",
               Tags: [{Key: $k, Value: $v}]}')
@@ -981,6 +1007,7 @@ ensure_reset_schedule() {
         require_ours rule "$RULE" "$RULE"
         say "  = schedule $RULE"
     else
+        require_headroom rule
         mutate "$RULE" "schedule $fn every 10 minutes" -- events put-rule --name "$RULE" \
             --schedule-expression "rate(10 minutes)" --state ENABLED \
             --description "ccit-ci: keeps the new-password users fresh" --tags "Key=$CI_TAG_KEY,Value=$CI_TAG_VALUE"

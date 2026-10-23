@@ -744,7 +744,11 @@ AWS-managed (AWS makes `alias/aws/ssm` the first time a SecureString uses SSM's 
 did), and fails on any other change, removal or addition.
 
 `provision-ci.sh` finds each resource by name, creates only what is missing, and refuses any resource with one of
-its names that lacks the tag. Every change it makes goes through one guard that refuses a name that is not
+its names that lacks the tag. It reads the account's headroom first, and checks it only for what the run creates: a
+new role needs 50 roles left under the quota, the code sink's API two APIs free beyond it under the AppSync quota
+(25, AWS's default, unless `CCIT_CI_APPSYNC_API_QUOTA` names a raised one), and the reset schedule at most 250
+rules on the default bus. A rerun that creates none of them (one that extends the code sink's key, say) checks
+none. Every change it makes goes through one guard that refuses a name that is not
 `ccit-ci-`, and outside `--apply` only get, list, describe and head calls can be made at all. A dry run is the default
 and prints each call, masked; `--apply` runs that dry run first and stops before its first change if it refuses.
 `--upload` puts new keys only. A key that exists is left alone when it holds the same bytes (so phase 2 leaves phase 1's

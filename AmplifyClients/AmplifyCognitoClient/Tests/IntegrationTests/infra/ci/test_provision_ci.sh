@@ -23,7 +23,8 @@
 # rerun over phase 2 as it was first applied (the script at 80712afe4 when git has it, else skipped) plans and makes
 # only the alias-codes pool and what it needs, updates only the script's own resources, and uploads only the two new
 # files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after phase 2 makes no call, and
-# a code sink key near its expiry is extended in place; that snapshot and verify-unchanged ignore a user count, and
+# a code sink key near its expiry is extended in place; that the AppSync headroom is checked only by a run that
+# creates the API, against CCIT_CI_APPSYNC_API_QUOTA; that snapshot and verify-unchanged ignore a user count, and
 # fail on a changed, removed or foreign added resource (a foreign role's inline policy, key policy, parameter or log
 # group included), but not on a ccit-ci- addition or change, nor on a Lambda's runtime version, and that the
 # snapshot's documents hold no secret; that
@@ -750,6 +751,47 @@ another_error_stops_the_apply_and_a_rerun_finishes_it() {
         && jq -e '[.pools[] | .UserPool.Name] | sort == ["amplify-plugin-default", "ccit-ci-email-alias"]' "$FAKE_STATE" >/dev/null
 }
 
+# Foreign AppSync APIs, $1 of them, as other teams' backends in the CI account.
+add_foreign_apis() {
+    jq --argjson n "$1" 'reduce range($n) as $i (.; .apis["foreignapi\($i)"] = {api: {apiId: "foreignapi\($i)",
+        name: "plugin-api-\($i)", arn: "arn:aws:appsync:us-east-1:\(.account):apis/foreignapi\($i)",
+        uris: {GRAPHQL: "https://foreignapi\($i).appsync-api.us-east-1.amazonaws.com/graphql"}}, tags: {}, keys: []})' \
+        "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+}
+
+# The AppSync headroom is checked only by a run that creates the code sink's API: with 23 APIs in the account (22
+# foreign and the sink's), a rerun that only extends the key goes on; a first phase 2 there is refused, before any
+# change, unless CCIT_CI_APPSYNC_API_QUOTA gives a raised quota; and phase 1, which creates no API, goes on whatever
+# the count.
+appsync_headroom_is_checked_only_when_the_api_is_created() {
+    fresh_state
+    run --apply --scope all
+    (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
+    add_foreign_apis 22
+    jq --argjson e "$(( $(date +%s) + 10 * 86400 ))" '(.apis[] | .keys[]).expires = $e' "$FAKE_STATE" > "$WORK/s" \
+        && mv "$WORK/s" "$FAKE_STATE"
+    run --apply --scope all
+    (( STATUS == 0 )) && [[ "$OUT" == *"AppSync APIs 23 of 25"* && "$OUT" == *"Done: 1 calls made."* ]] \
+        && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "extend the tests' read-only API key to 364 days from now (the same key)" ]] \
+        || { echo "$OUT" | tail -8; return 1; }
+    fresh_state
+    add_foreign_apis 23
+    local before
+    before=$(jq -S . "$FAKE_STATE")
+    run --apply --scope all
+    (( STATUS == 1 )) && only_reads && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] \
+        && [[ "$OUT" == *"23 AppSync APIs exist, this run creates one, and the quota is 25"*"CCIT_CI_APPSYNC_API_QUOTA"* ]] \
+        || { echo "$OUT" | tail -5; return 1; }
+    CCIT_CI_APPSYNC_API_QUOTA=30 run --scope all
+    (( STATUS == 0 )) && [[ "$OUT" == *"AppSync APIs 23 of 30"* && "$OUT" == *"+ create AppSync API ccit-ci-codes"* ]] \
+        || { echo "$OUT" | tail -5; return 1; }
+    CCIT_CI_APPSYNC_API_QUOTA=lots run --scope all
+    (( STATUS == 1 )) && [[ "$OUT" == *"CCIT_CI_APPSYNC_API_QUOTA must be a whole number"* ]] || return 1
+    add_foreign_apis 30
+    run --apply
+    (( STATUS == 0 )) && [[ "$OUT" == *"+ create user pool ccit-ci-email-alias"* ]] || { echo "$OUT" | tail -5; return 1; }
+}
+
 library_guards() {
     local out status=0
     out=$(bash -c '
@@ -816,6 +858,8 @@ check "a pool made again under a new ARN gets its Lambdas' invoke permissions re
 check "a role-propagation error is retried" a_propagation_error_is_retried
 check "any other error stops --apply, and a second --apply makes only what is missing" \
     another_error_stops_the_apply_and_a_rerun_finishes_it
+check "the AppSync headroom is checked only by a run that creates the API, against CCIT_CI_APPSYNC_API_QUOTA" \
+    appsync_headroom_is_checked_only_when_the_api_is_created
 check "the library refuses a name that is not ccit-ci-, and a mutating call in a dry run" library_guards
 
 if (( failures > 0 )); then
