@@ -2278,5 +2278,90 @@ class SandboxRecordsTests(unittest.TestCase):
         self.assertLess(operations.index("schedule-key-deletion"), operations.index("delete-alias"))
 
 
+class CustomSenderBuildCacheTests(unittest.TestCase):
+    """The custom sender's build is cached only once its `npm ci` has finished: an interrupted or failed one leaves no
+    cache, and nothing half-built, for the next provision to deploy. `npm` is a fake (subprocess.run replaced): it
+    writes node_modules, then fails, is interrupted part-way, or succeeds."""
+
+    def setUp(self):
+        self.state = tempfile.mkdtemp()
+        os.environ["COGNITO_CLIENT_INTEG_DIR"] = self.state
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        self.parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.parity)
+        self.parity.say = lambda *_: None
+        self.npm_runs = 0
+
+    def tearDown(self):
+        shutil.rmtree(self.state)
+        del os.environ["COGNITO_CLIENT_INTEG_DIR"]
+
+    def fake_npm(self, outcome):
+        def run(command, cwd, **_):
+            self.assertEqual(command[:2], ["npm", "ci"])
+            self.npm_runs += 1
+            os.makedirs(os.path.join(cwd, "node_modules", "dependency"))
+            with open(os.path.join(cwd, "node_modules", "dependency", "index.js"), "w") as f:
+                f.write("export {};\n")
+            if outcome == "interrupted":
+                raise KeyboardInterrupt
+            if outcome == "failed":
+                return subprocess.CompletedProcess(command, 1, "", "npm ERR! placeholder")
+            with open(os.path.join(cwd, "node_modules", "dependency", "package.json"), "w") as f:
+                f.write("{}\n")
+            return subprocess.CompletedProcess(command, 0, "", "")
+        return mock.patch.object(self.parity.subprocess, "run", side_effect=run)
+
+    def build_entries(self):
+        return sorted(os.listdir(self.parity.BUILD_DIR)) if os.path.isdir(self.parity.BUILD_DIR) else []
+
+    def zip_names(self, code):
+        import zipfile
+        with zipfile.ZipFile(io.BytesIO(code)) as archive:
+            return sorted(archive.namelist())
+
+    def test_an_interrupted_or_failed_npm_ci_leaves_no_cache_and_the_next_build_runs_it_again(self):
+        """Given: no cached build.
+        When: `npm ci` is interrupted part-way (after writing some of node_modules), then fails, then succeeds,
+            and the build runs once more.
+        Then: neither the interruption nor the failure leaves anything under the build directory; the success
+            caches a build whose zip has every file and no completion mark; and the last build reuses it, with no
+            `npm ci`."""
+        with self.fake_npm("interrupted"), self.assertRaises(KeyboardInterrupt):
+            self.parity.build_custom_sender()
+        self.assertEqual(self.build_entries(), [])
+        with self.fake_npm("failed"), self.assertRaises(SystemExit):
+            self.parity.build_custom_sender()
+        self.assertEqual(self.build_entries(), [])
+        with self.fake_npm("succeeded"):
+            code = self.parity.build_custom_sender()
+        self.assertEqual(self.npm_runs, 3)
+        [cached] = self.build_entries()
+        self.assertTrue(cached.startswith("custom-sender-") and ".partial." not in cached, cached)
+        self.assertEqual(self.zip_names(code), ["index.mjs", "node_modules/dependency/index.js",
+                                                "node_modules/dependency/package.json", "package-lock.json",
+                                                "package.json"])
+        with self.fake_npm("succeeded"):
+            self.assertEqual(self.parity.build_custom_sender(), code)
+        self.assertEqual(self.npm_runs, 3)
+
+    def test_a_cached_build_without_the_completion_mark_is_built_again(self):
+        """Given: a cached build directory with a node_modules but no completion mark, as an interrupted `npm ci`
+            of an older parity.py left it.
+        When: the custom sender is built.
+        Then: `npm ci` runs again, and the zip holds the finished build, not the half-built one."""
+        with self.fake_npm("succeeded"):
+            self.parity.build_custom_sender()
+        [cached] = self.build_entries()
+        root = os.path.join(self.parity.BUILD_DIR, cached)
+        os.unlink(os.path.join(root, self.parity.BUILD_COMPLETE))
+        os.unlink(os.path.join(root, "node_modules", "dependency", "package.json"))
+        with self.fake_npm("succeeded"):
+            code = self.parity.build_custom_sender()
+        self.assertEqual(self.npm_runs, 2)
+        self.assertIn("node_modules/dependency/package.json", self.zip_names(code))
+        self.assertEqual(self.build_entries(), [cached])
+
+
 if __name__ == "__main__":
     unittest.main()

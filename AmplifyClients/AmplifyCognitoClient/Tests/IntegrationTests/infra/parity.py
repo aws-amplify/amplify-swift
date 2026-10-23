@@ -898,29 +898,43 @@ def build_triggers():
     return deterministic_zip(root, ["triggers.mjs"])
 
 
+# Written into a custom sender build once its `npm ci` has finished; never part of the zip.
+BUILD_COMPLETE = ".ccit-build-complete"
+
+
 def build_custom_sender():
+    """The custom sender's zip, from a build cached under BUILD_DIR by the hash of its sources. The build runs in a
+    staging directory of its own and becomes the cache only once `npm ci` has finished (BUILD_COMPLETE, then a
+    rename), so an interrupted `npm ci` (Ctrl-C, a closed terminal, a kill) never leaves a half-built cache that a
+    later provision would deploy. A cached directory without the mark, as an older run left it, is built again."""
     source = os.path.join(INFRA, "lambda", "custom-sender")
     inputs = hashlib.sha256()
     for name in ("index.mjs", "package.json", "package-lock.json"):
         with open(os.path.join(source, name), "rb") as f:
             inputs.update(name.encode() + b"\0" + f.read())
     root = os.path.join(BUILD_DIR, "custom-sender-" + inputs.hexdigest()[:16])
-    if not os.path.isdir(os.path.join(root, "node_modules")):
-        shutil.rmtree(root, ignore_errors=True)
-        os.makedirs(root)
-        for name in ("index.mjs", "package.json", "package-lock.json"):
-            shutil.copy(os.path.join(source, name), root)
-        result = subprocess.run(["npm", "ci", "--omit=dev", "--ignore-scripts", "--no-audit", "--no-fund"],
-                                cwd=root, capture_output=True, text=True)
-        if result.returncode != 0:
+    if not os.path.isfile(os.path.join(root, BUILD_COMPLETE)):
+        os.makedirs(BUILD_DIR, exist_ok=True)
+        staging = tempfile.mkdtemp(prefix=os.path.basename(root) + ".partial.", dir=BUILD_DIR)
+        try:
+            for name in ("index.mjs", "package.json", "package-lock.json"):
+                shutil.copy(os.path.join(source, name), staging)
+            result = subprocess.run(["npm", "ci", "--omit=dev", "--ignore-scripts", "--no-audit", "--no-fund"],
+                                    cwd=staging, capture_output=True, text=True)
+            if result.returncode != 0:
+                sys.exit("npm ci for the custom sender failed: " + redact(result.stderr.strip()[-400:]))
+            with open(os.path.join(staging, BUILD_COMPLETE), "w"):
+                pass
             shutil.rmtree(root, ignore_errors=True)
-            sys.exit("npm ci for the custom sender failed: " + redact(result.stderr.strip()[-400:]))
+            os.rename(staging, root)
+        finally:
+            shutil.rmtree(staging, ignore_errors=True)
         say("Built the custom sender (npm ci)")
     files = []
     for directory, _, names in os.walk(root):
         for name in names:
             path = os.path.join(directory, name)
-            if not os.path.islink(path) and name != ".package-lock.json":
+            if not os.path.islink(path) and name not in (".package-lock.json", BUILD_COMPLETE):
                 files.append(os.path.relpath(path, root))
     return deterministic_zip(root, files)
 
