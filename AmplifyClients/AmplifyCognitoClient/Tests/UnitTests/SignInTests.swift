@@ -456,7 +456,8 @@ final class SignInTests: XCTestCase {
     /// - Given: a sign-in whose record another writer changes on every read
     /// - When: the sign-in commits
     /// - Then:
-    ///    - it gives up after three writes with `storageUnavailable(.interrupted)`
+    ///    - it gives up after three writes with `storageUnavailable(.interrupted)`, the rival having committed once
+    ///      per read of those three writes
     func testACommitThatKeepsLosingGivesUp() async throws {
         try harness.store().write(.signedOut(label: "L", username: nil), for: work, expecting: nil)
         let client = try harness.client(work)
@@ -473,8 +474,13 @@ final class SignInTests: XCTestCase {
         }
 
         let error = await authClientError { try await client.signInForTest("alice") }
+        // Cleared before the record is read below, which would move the rival once more.
+        harness.keychain.afterEveryRead(of: store.sessionAccount(for: work), nil)
 
         XCTAssertEqual(error?.kind, .storageUnavailable(.interrupted))
+        // Every read of the record moves the rival: each attempt's write and its re-read after losing, plus the first
+        // write's guarded re-read, which only it reaches, its first read still finding the generation it expects.
+        XCTAssertEqual(rival.commits, 2 * SessionCore.maximumRecordWriteAttempts + 1)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
         XCTAssertEqual(harness.engine(for: work)?.revokeCalls, [FakePayload.signedIn("alice").data])
     }
