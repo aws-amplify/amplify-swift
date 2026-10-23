@@ -10,10 +10,12 @@ import Foundation
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// Every test here asserts on who holds the lock, who was served, and what each caller received,
-/// never on how long anything took. Flows are held in flight by a `Gate` the test opens, timeouts
-/// fire when the test opens a gate standing in for the clock, and state that changes on another
-/// task is awaited with the bounded `waitUntil`. Each test builds its own lock, so none of them
+/// Every test here asserts on who holds the lock, who was served, and what each caller received.
+/// Flows are held in flight by a `Gate` the test opens, timeouts fire when the test opens a gate
+/// standing in for the clock, and state that changes on another task is awaited with the bounded
+/// `waitUntil`. Only the release-wait tests measure time: that a caller was answered well within a
+/// 30-second bound, by the release or its own cancellation, and that the default bound of one second
+/// answers a caller whose flow never releases. Each test builds its own lock, so none of them
 /// touches `SystemSheetLock.shared`.
 final class SystemSheetLockTests: XCTestCase {
 
@@ -1242,6 +1244,37 @@ final class SystemSheetLockTests: XCTestCase {
         await Self.assertCancelled(alice)
 
         XCTAssertLessThan(Date().timeIntervalSince(started), 5)
+        let holder = await lock.currentHolder
+        XCTAssertEqual(holder, Self.alice)
+        let waits = await lock.releaseWaitCount
+        XCTAssertEqual(waits, 0)
+        await gate.open()
+        await waitUntil("the lock is released once the flow finishes") { await lock.currentHolder == nil }
+    }
+
+    /// A caller interrupted by `cancel(for:)` whose flow never releases the lease is answered when the default
+    /// release wait, one second, expires.
+    ///
+    /// - Given: a lock with the default release wait, and alice holding it with a flow that ignores cancellation,
+    ///   held at a gate, under a lease that waits for its release
+    /// - When:
+    ///    - `cancel(for: alice)` is called, and the gate stays closed
+    /// - Then:
+    ///    - alice throws `CancellationError` after about a second, not before, while her flow still holds the lock;
+    ///      no wait is left; the lock is free once the gate opens
+    func testTheDefaultReleaseWaitAnswersAfterASecond() async throws {
+        let lock = SystemSheetLock()
+        let gate = Gate()
+        let alice = Self.start(lock, Self.alice, .fail, waitsForRelease: true, Self.heldBody(gate))
+        await gate.waitForArrivals(1)
+        let started = Date()
+
+        await lock.cancel(for: Self.alice)
+        await Self.assertCancelled(alice)
+
+        let elapsed = Date().timeIntervalSince(started)
+        XCTAssertGreaterThanOrEqual(elapsed, 0.9, "answered before the bound")
+        XCTAssertLessThan(elapsed, 5, "answered long after the bound")
         let holder = await lock.currentHolder
         XCTAssertEqual(holder, Self.alice)
         let waits = await lock.releaseWaitCount

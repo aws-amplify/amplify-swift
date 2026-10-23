@@ -100,7 +100,7 @@ final class LiveWebUICoreTests: XCTestCase {
         await waitUntil("the code exchange is held") { exchange.hasBeenReached }
 
         await client.cancelWebUISignIn()
-        let error = await authClientError { try await signIn.value }
+        let error = await authClientError { try await signIn.value(within: 10) }
         XCTAssertEqual(error?.kind, .userCancelled)
         exchange.release()
 
@@ -130,7 +130,7 @@ final class LiveWebUICoreTests: XCTestCase {
         await held.waitForArrivals(1)
 
         await client.cancelWebUISignIn()
-        let error = await authClientError { try await signIn.value }
+        let error = await authClientError { try await signIn.value(within: 10) }
         XCTAssertEqual(error?.kind, .userCancelled)
 
         await waitUntil("the refresh token is revoked") { self.revokedRefreshTokens() == ["refresh-alice-hosted"] }

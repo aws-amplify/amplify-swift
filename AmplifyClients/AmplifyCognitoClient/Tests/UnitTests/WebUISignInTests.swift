@@ -113,7 +113,7 @@ final class WebUISignInTests: XCTestCase {
         await browser.shown.waitForArrivals(1)
         await client.cancelWebUISignIn()
 
-        let error = await authClientError { try await signIn.value }
+        let error = await authClientError { try await signIn.value(within: 10) }
         XCTAssertEqual(error?.kind, .userCancelled)
 
         let late = try XCTUnwrap(browser.defaultAnswer)
@@ -148,7 +148,7 @@ final class WebUISignInTests: XCTestCase {
         await held.waitForArrivals(1)
         await client.cancelWebUISignIn()
 
-        let error = await authClientError { try await signIn.value }
+        let error = await authClientError { try await signIn.value(within: 10) }
         XCTAssertEqual(error?.kind, .userCancelled)
         await waitUntil("the returned tokens are revoked") { engine.revokeCalls.count == 1 }
         let revoked = try XCTUnwrap(engine.revokeCalls.first.flatMap(FakePayload.decode))
@@ -268,7 +268,7 @@ final class WebUISignInTests: XCTestCase {
         let first = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
         await client.cancelWebUISignIn()
-        _ = await authClientError { try await first.value }
+        _ = await authClientError { try await first.value(within: 10) }
 
         let error = await authClientError { try await startSignIn(client).value }
 
