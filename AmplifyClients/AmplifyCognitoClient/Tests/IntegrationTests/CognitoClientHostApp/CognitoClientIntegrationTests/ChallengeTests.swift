@@ -54,7 +54,7 @@ final class ChallengeTests: ClientIntegrationTestCase {
         let credentials = try IntegrationTestEnvironment.credentials(for: role)
         let (candidates, temporary) = try credentials.requireNewPasswordUsers()
         let raw = try SandboxPools.pool(role)
-        let sessionId = try makeSessionID("new-password")
+        let sessionId = try makeSessionID("new-password", pool: role)
         let client = try AmplifyCognitoClient(
             configuration: IntegrationTestEnvironment.configuration(role),
             options: .init(sessionId: sessionId)
