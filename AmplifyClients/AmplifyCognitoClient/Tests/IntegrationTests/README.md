@@ -1029,10 +1029,10 @@ directory, so the script itself must not see the file set's directory: write
   template's), runs the command with `COGNITO_CLIENT_INTEG_SELF_SIGN_UP=on` and
   `TEST_RUNNER_COGNITO_CLIENT_INTEG_SELF_SIGN_UP=on` (which `xcodebuild` passes to the test runner), and exits with
   the command's status, or 128 plus the signal that stopped it.
-- A `trap` on `EXIT`, `INT`, `TERM` and `HUP` releases the run's lease however the command ends: success,
-  failure, Ctrl-C, `kill`, or a closed terminal (only a `kill -9` of the script itself skips it). Self sign-up is
-  turned off when no other run's lease remains. The trap is set before self sign-up is turned on, so an `on` that
-  fails part-way (later pools are not tried) is undone too. If the release itself does not finish (its
+- A `trap` on `EXIT`, `INT`, `TERM`, `HUP` and `QUIT` releases the run's lease however the command ends: success,
+  failure, Ctrl-C, `Ctrl-\`, `kill`, or a closed terminal (only a `kill -9` of the script itself skips it). Self
+  sign-up is turned off when no other run's lease remains. The trap is set before self sign-up is turned on, so an
+  `on` that fails part-way (later pools are not tried) is undone too. If the release itself does not finish (its
   `parity.py` killed, say), the script reads the pools again (`parity.py self-sign-up status`, read-only) and says
   which are still on or have lost their MFA configuration, that self sign-up is on only for other runs that
   still hold leases (their end turns it off), or that every pool is at rest, and exits non-zero.
@@ -1040,8 +1040,8 @@ directory, so the script itself must not see the file set's directory: write
   nor stderr: it ignores `SIGPIPE`, writes nothing to stdout, and drops any write that fails, and `parity.py`
   writes to a log in `$STATE_DIR` that is copied to stderr once it has finished (and kept if the release fails).
   So a Ctrl-C that also stops the pipe's reader, or a terminal that closes, still releases.
-- The command runs in its own process group, and `INT`, `TERM` and `HUP` are forwarded to it at once. It cannot
-  read the terminal.
+- The command runs in its own process group, and `INT`, `TERM` and `HUP` are forwarded to it at once (`QUIT` as
+  `INT`; the run then exits 131). It cannot read the terminal.
 - **Overlapping runs share self sign-up.** Each run holds a lease (its PID and start time, in
   `$STATE_DIR/self-sign-up-leases.json`), and the last run to end turns it off. A lease whose process has gone,
   or whose PID now belongs to another process, is dropped. The start time is read with `LC_ALL=C TZ=UTC`, so a

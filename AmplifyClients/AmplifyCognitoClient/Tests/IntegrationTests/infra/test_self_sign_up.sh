@@ -14,10 +14,10 @@
 #   bash infra/test_self_sign_up.sh
 #
 # It checks that the script refuses an untagged pool, CI and bad usage; that its trap turns self sign-up off
-# after a passing command, a failing one, SIGINT, SIGTERM and SIGHUP, and after an `on` that fails part-way;
-# that a Ctrl-C during a toggle loses no MFA configuration; that the trap still turns it off, with every MFA
-# configuration, when stdout is a pipe whose reader has died or a terminal that has hung up; that a Ctrl-C while
-# `on` waits for the lock stops it at once, with no change and no lease; that a release cut short says whether
+# after a passing command, a failing one, SIGINT, SIGTERM, SIGHUP and SIGQUIT (Ctrl-\), and after an `on` that
+# fails part-way; that a Ctrl-C during a toggle loses no MFA configuration; that the trap still turns it off, with
+# every MFA configuration, when stdout is a pipe whose reader has died or a terminal that has hung up; that a
+# Ctrl-C while `on` waits for the lock stops it at once, with no change and no lease; that a release cut short says whether
 # self sign-up is still on, and one STS refuses says so in one line, not a traceback; that two overlapping runs
 # share self sign-up, whatever each one's locale and time zone; that `off` is idempotent, refuses while a run
 # holds a lease, and skips an untagged pool; that a signal forwarded as the command starts stops it even when the
@@ -296,7 +296,9 @@ all off || fail "failing command: left on"
 mfa_intact || fail "failing command: MFA lost"
 pass "a failing command's status is kept, and every pool is off afterwards"
 
-for case in "INT 130 group" "TERM 143 script" "HUP 129 script"; do
+# QUIT (Ctrl-\, to the whole group as the terminal sends it): bash 3.2 runs no EXIT trap for an untrapped QUIT, so the
+# script traps it, forwards INT to the command, and exits 131.
+for case in "INT 130 group" "TERM 143 script" "HUP 129 script" "QUIT 131 group"; do
     read -r signal_name expected target <<< "$case"
     reset off
     run_in_background "$WORK/out" on -- sleep 300
