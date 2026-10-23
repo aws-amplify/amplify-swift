@@ -351,7 +351,7 @@ extension SessionCore {
                 // Expired by this refusal, not by an earlier reuse: the session answers with its text from now on.
                 refreshTokenReuse.reset()
                 await markExpired()
-                throw Self.sessionExpired(sessionId)
+                throw expiredError(holding: payload)
             } catch {
                 throw Self.engineFailure(error)
             }
@@ -539,14 +539,31 @@ extension SessionCore {
         )
     }
 
-    /// What a session known to be expired (`isExpired`) answers with: the dead token after a reuse if that is what
-    /// expired it, still holding the credentials it was proved on (`RefreshTokenReuse.provedDead`), else
-    /// `sessionExpired(_:)`.
+    /// A federated session whose provider token the identity pool no longer accepts (the engine's
+    /// `refreshTokenInvalid` for a federated payload): it has no refresh token, and a sign-in is refused over it, so
+    /// it federates again.
+    static func providerTokenRefused(_ sessionId: SessionID) -> AuthClientError {
+        .sessionExpired(
+            "Session \"\(sessionId)\"'s provider token is no longer accepted by the identity pool.",
+            "Call federateToIdentityPool with a new provider token for this session. Other sessions are unaffected.",
+            SessionEngineError.refreshTokenInvalid
+        )
+    }
+
+    /// What a session known to be expired (`isExpired`) while holding `payload` answers with: the dead token after a
+    /// reuse if that is what expired it, still holding the credentials it was proved on
+    /// (`RefreshTokenReuse.provedDead`); a federated session's refused provider token; else `sessionExpired(_:)`.
     nonisolated func expiredError(holding payload: Data?) -> AuthClientError {
-        guard let payload, refreshTokenReuse.provedDead(payload, same: engine.sameCredentials) else {
+        guard let payload else {
             return Self.sessionExpired(sessionId)
         }
-        return Self.refreshTokenAlreadyUsed(sessionId)
+        if refreshTokenReuse.provedDead(payload, same: engine.sameCredentials) {
+            return Self.refreshTokenAlreadyUsed(sessionId)
+        }
+        if (try? engine.describe(payload))?.kind == .federated {
+            return Self.providerTokenRefused(sessionId)
+        }
+        return Self.sessionExpired(sessionId)
     }
 
     /// `missing` reads after "it has no", so without an article; the recovery suggestion puts `article`, if any,

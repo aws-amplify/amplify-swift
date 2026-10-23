@@ -345,8 +345,9 @@ final class LiveEngineFederationTests: XCTestCase {
     /// - Given: a client federated over the live engine, whose stored login the identity pool then refuses
     /// - When: the session is force-refreshed, fetched again, and federated again
     /// - Then:
-    ///    - the refresh reports `sessionExpired` in every field and sends `.sessionExpired` once; the state is
-    ///      still `.federated`; the second fetch makes no request
+    ///    - the refresh reports `sessionExpired` in every field, saying the provider token is no longer accepted and
+    ///      to federate again, and sends `.sessionExpired` once; the state is still `.federated`; the second fetch
+    ///      makes no request
     ///    - federating again succeeds, and the session's credentials are served again
     func testAnExpiredProviderTokenExpiresTheSessionUntilItFederatesAgain() async throws {
         let clientHarness = ClientHarness()
@@ -366,9 +367,15 @@ final class LiveEngineFederationTests: XCTestCase {
 
         for session in [expired, again] {
             XCTAssertThrowsError(try session.awsCredentialsResult.get()) { error in
-                guard case .sessionExpired = authError(error) else {
+                guard case .sessionExpired(let description, let suggestion, _) = authError(error) else {
                     return XCTFail("expected sessionExpired, got \(error)")
                 }
+                // A federated session has no refresh token, and a sign-in is refused over it: it federates again.
+                XCTAssertEqual(description, "Session \"work\"'s provider token is no longer accepted by the identity pool.")
+                XCTAssertEqual(
+                    suggestion,
+                    "Call federateToIdentityPool with a new provider token for this session. Other sessions are unaffected."
+                )
             }
         }
         XCTAssertEqual(harness.cognito.operations, [])
