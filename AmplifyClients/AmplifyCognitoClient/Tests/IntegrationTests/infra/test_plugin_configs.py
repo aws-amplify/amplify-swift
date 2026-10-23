@@ -284,17 +284,26 @@ class PluginConfigsTests(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join(self.target, OWNER_FILE)))
 
     def test_a_failed_write_leaves_no_tmp_file(self):
+        # The manifest (in the state directory) is written first and succeeds; the first write into the
+        # testconfiguration directory, the one the host apps' build phase copies whole, fails.
         original = os.replace
+        failed = []
 
         def failing_replace(src, dst):
-            raise OSError("disk full")
+            if os.path.dirname(os.path.realpath(dst)) == os.path.realpath(self.target):
+                failed.append(os.path.basename(dst))
+                self.assertTrue(os.path.exists(src), "the .tmp file exists when the write fails")
+                raise OSError("disk full")
+            return original(src, dst)
         os.replace = failing_replace
         try:
             with self.assertRaises(OSError):
                 self.quiet(self.pc.write_all)
         finally:
             os.replace = original
-        self.assertEqual([n for n in os.listdir(self.target) if n.endswith(".tmp")], [])
+        self.assertEqual(len(failed), 1, "one write into the testconfiguration directory failed")
+        self.assertEqual(os.listdir(self.target), [])
+        self.assertEqual([n for n in os.listdir(self.state) if n.endswith(".tmp")], [])
 
     def test_a_second_run_waits_for_the_lock(self):
         import fcntl
