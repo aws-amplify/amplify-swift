@@ -509,6 +509,37 @@ final class StoredSessionManagementTests: XCTestCase {
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
     }
 
+    /// After a failed global sign-out the engine sends no `RevokeToken`, and its revoke error is the plugin's empty
+    /// placeholder: the error underneath a sign-out that could not finish is the real `GlobalSignOut` failure.
+    ///
+    /// - Given: alice's live session, whose every global sign-out fails, with the placeholder revoke error, while
+    ///   another process refreshes alice's credentials
+    /// - When: it is signed out globally
+    /// - Then:
+    ///    - it gives up with `.failed(.storageUnavailable(.interrupted))`, whose underlying error is the global
+    ///      sign-out's failure, not the placeholder
+    func testAContendedGlobalSignOutCarriesTheGlobalSignOutFailure() async throws {
+        try harness.signIn(work, .signedIn("alice", version: 1))
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let store = harness.store()
+        let work = work
+        let globalFailure = AuthClientError.unknown("GlobalSignOut failed", "Retry.")
+        engine.scriptRevokeOutcome { _, _ in
+            if case .record(let envelope) = try store.read(work),
+               let current = envelope.record.credentials.flatMap(FakePayload.decode) {
+                try store.write(current.refreshed.record(), for: work, expecting: envelope.version)
+            }
+            return EngineSignOutOutcome(revokeError: .service(nil, "", ""), globalSignOutError: globalFailure)
+        }
+
+        let error = await failedSignOutError(client.signOut(options: .init(globalSignOut: true)))
+
+        XCTAssertEqual(error?.storageUnavailableReason, .interrupted, "\(String(describing: error))")
+        XCTAssertEqual((error?.underlyingError as? AuthClientError)?.errorDescription, "GlobalSignOut failed")
+        XCTAssertEqual(engine.revokeGlobalFlags, Array(repeating: true, count: SessionSignOut.maximumAttempts))
+    }
+
     // MARK: Sign-out through a live session
 
     /// - Given: a live, signed-in session with an event subscriber

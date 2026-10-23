@@ -548,9 +548,11 @@ struct EngineSignOutOutcome: Sendable, Equatable {
         )
     }
 
-    /// The first failure of any kind: what a sign-out that could not finish carries as its underlying error.
+    /// The first failure of any kind: what a sign-out that could not finish carries as its underlying error. The
+    /// global sign-out's first: it runs before the revoke, and after it fails `revokeError` is only the placeholder of
+    /// a revoke never sent.
     var firstError: AuthClientError? {
-        revokeError ?? globalSignOutError ?? hostedUIError
+        globalSignOutError ?? revokeError ?? hostedUIError
     }
 
     /// Errors compare as `AuthClientSignOutResult` compares them.
