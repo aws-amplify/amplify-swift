@@ -31,7 +31,7 @@
 #                           an MFA-required pool (TOTP and SMS) from infra/pools/mfa-req-totp-sms.json, whose `ci`
 #                           app client (SRP and choice-based sign-in, USER_AUTH) the client's CI overlay puts in
 #                           place of the plugin's MFA-required backend (ci-overlay.sh's `mfa-req-totp-sms` role):
-#                           MF-13…23 and the two USER_AUTH MFA-setup checks. Its pre-sign-up trigger is the
+#                           MF-13, MF-15…17 and the two USER_AUTH MFA-setup checks. Its pre-sign-up trigger is the
 #                           device-alias pool's, and its custom senders the discard sender, so nothing is sent
 #
 #   A rerun over resources an earlier run made adds what is missing and updates, after their tag checks, only
