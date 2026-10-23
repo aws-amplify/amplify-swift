@@ -44,8 +44,8 @@ import InternalAWSCognitoAuth
 // no namespace marker: nothing is carried forward or swept for it by the named sessions' rule.
 //
 // **Sign-out and purge clear the AWSMobileClient logins**, as the plugin's sign-out does (`clearLegacyLogins()`): the
-// plugin migrates them into this record at configure whenever it holds no session, so they must not outlive a
-// sign-out. The client never migrates them.
+// plugin migrates them into this record at configure whenever it holds no session, or only a guest, so they must not
+// outlive a sign-out. The client never migrates them.
 extension SessionRecordStore {
 
     /// Whether a store re-reads an absent shared record by default: on macOS only, where the keychain's `set`
@@ -377,11 +377,11 @@ extension SessionRecordStore {
 
     /// Clears the AWSMobileClient logins once `.default` has been signed out or purged, as the Auth plugin's own
     /// sign-out does (`ClearCredentialStore`): `.default` is the plugin's saved login, and every plugin configure first
-    /// migrates those logins into it when it holds no session, so a login kept for a later migration would otherwise
-    /// sign its user in again under the next plugin build. Like the plugin's, it runs on a sign-out that had nothing to
-    /// sign out too, or that another writer's sign-out beat: `SessionSignOut.run()` calls it when this store's own
-    /// sign-out did not run. Best effort, as the plugin's: each service that fails to clear logs one warning, and none
-    /// fails the sign-out or purge, whose record is already gone.
+    /// migrates those logins into it when it holds no session, or only a guest, so a login kept for a later migration
+    /// would otherwise sign its user in again under the next plugin build. Like the plugin's, it runs on a sign-out that
+    /// had nothing to sign out too, or that another writer's sign-out beat: `SessionSignOut.run()` calls it when this
+    /// store's own sign-out did not run. Best effort, as the plugin's: each service that fails to clear logs one
+    /// warning, and none fails the sign-out or purge, whose record is already gone.
     ///
     /// The services are the plugin's for this store's own pools (`namespace.pools`), plus every other identity pool's
     /// credentials service found in the app's keychain (`legacyLoginStores(for:listServices:makeStore:)`), which the

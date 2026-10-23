@@ -14,8 +14,8 @@ import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
 /// `.default` is the Auth plugin's saved login, and every plugin configure first migrates the AWSMobileClient logins into
-/// it when it holds no session. So `.default`'s sign-out and purge clear those logins, as the plugin's own sign-out does
-/// (`ClearCredentialStore`); named sessions never touch them.
+/// it when it holds no session, or only a guest. So `.default`'s sign-out and purge clear those logins, as the plugin's
+/// own sign-out does (`ClearCredentialStore`); named sessions never touch them.
 final class DefaultSessionLegacyLoginTests: XCTestCase {
 
     private var harness: ClientHarness!

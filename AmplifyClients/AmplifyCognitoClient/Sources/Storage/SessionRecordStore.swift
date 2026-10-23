@@ -77,10 +77,12 @@ struct SessionRecordStore: Sendable {
     /// what a sign-out compares, so the Auth plugin saving `.default`'s credentials again in other bytes is not
     /// another writer's sign-in. The engine's format; injectable for tests' payloads.
     let sameCredentials: @Sendable (Data, Data) -> Bool
-    /// The AWSMobileClient logins the Auth plugin would migrate into `.default`'s saved login, one item store per
-    /// keychain service (`legacyLoginServices(for:)`): what `.default`'s sign-out and purge clear, as the plugin's own
-    /// sign-out does (`clearLegacyLogins()`). None unless given, so a store a test builds never reaches them;
-    /// `init(namespace:)` gives the real keychain's.
+    /// The AWSMobileClient logins a plugin build could migrate into `.default`'s saved login, one item store per
+    /// keychain service: the plugin's own services for this store's pools (`legacyLoginServices(for:)`), then every
+    /// other identity pool's `AWSCognitoCredentialsProvider` service of this app the keychain lists
+    /// (`legacyLoginStores(for:bundleIdentifier:listServices:makeStore:)`). What `.default`'s sign-out and purge clear,
+    /// as the plugin's own sign-out does (`clearLegacyLogins()`). None unless given, so a store a test builds never
+    /// reaches them; `init(namespace:)` gives the real keychain's.
     let legacyLoginStores: @Sendable () -> [any KeychainItemStoreBehavior]
 
     init(
