@@ -917,7 +917,10 @@ sandbox account's profile and check `aws sts get-caller-identity` before that fi
 users, and take CH-1's user from the sandbox's new-password users (`ccit-plugin-new-password-`, on `default`). The users, R-UP and R-IP stay for the
 scripts' checks. `provision.sh` runs `prepare-run.sh` once at the end; after that, `prepare-run.sh` is optional
 before a run (it resets the new-password users and rotates the code sink's key). It never touches `alice`, `bob` or
-`carol`, and it keeps every password stable. No script prints a secret or passes one to the AWS CLI as an argument.
+`carol`, and it keeps every password stable. Two `prepare-run.sh` runs may overlap (two runners): a user the other
+run created or deleted first, or a device it forgot first, is tolerated; `erin`'s reset is tried again (up to five
+times) when the other run deletes her before her password is set; and `plugin-configs.py --refresh` waits for the
+other run's (up to two minutes). No script prints a secret or passes one to the AWS CLI as an argument.
 
 **AWS CLI history must be off.** Passwords, tokens and carol's TOTP secret reach the CLI through
 `--cli-input-json`. With `cli_history = enabled` in `~/.aws/config`, the CLI would record them in

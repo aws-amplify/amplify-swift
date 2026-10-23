@@ -6,8 +6,10 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # Self-test for prepare-run.sh's create_user_unless_created: a user created, one an overlapping run created first
-# (which must not stop the run), and any other error (which must). A fake `aws` on PATH answers; no AWS call is made
-# and prepare-run.sh itself never runs.
+# (which must not stop the run), and any other error (which must); and for erin's reset (reset_erin_until_set): a
+# password set on an erin another run has just deleted starts the reset again, up to ERIN_ATTEMPTS times, and any
+# other error stops it at once. A fake `aws` on PATH answers; no AWS call is made and prepare-run.sh itself never
+# runs.
 #
 #   bash infra/test_prepare_run.sh
 set -euo pipefail
@@ -31,8 +33,10 @@ require_user_pool_tag() { :; }
 eval "$(python3 - "$P" <<'PY'
 import sys
 s = open(sys.argv[1]).read()
-start = s.index("create_user_unless_created() {")
-print(s[start:s.index("\n}\n", start) + 3])
+for name in ("create_user_unless_created() {", "set_password_unless_gone() {", "reset_erin() {",
+             "reset_erin_until_set() {", "ERIN_ATTEMPTS="):
+    start = s.index(name)
+    print(s[start:s.index("\n", start) + 1] if name.endswith("=") else s[start:s.index("\n}\n", start) + 3])
 PY
 )"
 export FAKE=created
@@ -48,3 +52,40 @@ if out=$( (create_user_unless_created erin) 2>&1 ); then
 fi
 [[ "$out" == *AccessDeniedException* ]] || { echo "FAIL denied: '$out'"; exit 1; }
 echo "ok any other error stops"
+
+# erin's reset, over stubs: she exists, the delete and create succeed, and set_user_password answers from SET_ANSWERS,
+# one word a call (ok, gone or denied; the last word repeats).
+export FAKE=created
+user_exists() { return 0; }
+sleep() { :; }
+set_user_password() {
+    local answer
+    answer=$(head -n 1 "$SET_ANSWERS")
+    [[ $(wc -l < "$SET_ANSWERS") -le 1 ]] || sed -i '' 1d "$SET_ANSWERS" 2>/dev/null || sed -i 1d "$SET_ANSWERS"
+    echo "set" >> "$SET_CALLS"
+    case "$answer" in
+        ok) return 0 ;;
+        gone) echo "An error occurred (UserNotFoundException) when calling the AdminSetUserPassword operation: User does not exist." >&2; return 254 ;;
+        denied) echo "An error occurred (AccessDeniedException) when calling the AdminSetUserPassword operation: denied" >&2; return 254 ;;
+    esac
+}
+SET_ANSWERS="$BIN/answers" SET_CALLS="$BIN/calls"
+reset_case() { printf '%s\n' "$@" > "$SET_ANSWERS"; : > "$SET_CALLS"; }
+
+reset_case gone gone ok
+out=$(reset_erin_until_set 2>&1) || { echo "FAIL erin deleted twice: '$out'"; exit 1; }
+[[ $(grep -c . "$SET_CALLS") == 3 && $(grep -c "resetting her again" <<<"$out") == 2 ]] \
+    || { echo "FAIL erin deleted twice: $(grep -c . "$SET_CALLS") sets: '$out'"; exit 1; }
+echo "ok erin deleted by another run before her password was set is reset again, until it is set"
+
+reset_case gone
+if out=$( (reset_erin_until_set) 2>&1 ); then echo "FAIL erin always deleted: succeeded"; exit 1; fi
+[[ $(grep -c . "$SET_CALLS") == "$ERIN_ATTEMPTS" && "$out" == *"each of $ERIN_ATTEMPTS times"* ]] \
+    || { echo "FAIL erin always deleted: $(grep -c . "$SET_CALLS") sets: '$out'"; exit 1; }
+echo "ok erin deleted every time stops after ERIN_ATTEMPTS ($ERIN_ATTEMPTS) resets"
+
+reset_case denied
+if out=$( (reset_erin_until_set) 2>&1 ); then echo "FAIL erin's password denied: succeeded"; exit 1; fi
+[[ $(grep -c . "$SET_CALLS") == 1 && "$out" == *AccessDeniedException* ]] \
+    || { echo "FAIL erin's password denied: $(grep -c . "$SET_CALLS") sets: '$out'"; exit 1; }
+echo "ok any other error setting erin's password stops at once"

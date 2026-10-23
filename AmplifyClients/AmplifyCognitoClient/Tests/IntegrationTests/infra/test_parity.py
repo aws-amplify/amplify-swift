@@ -2402,5 +2402,76 @@ class CustomSenderBuildCacheTests(unittest.TestCase):
         self.assertEqual(self.build_entries(), [cached])
 
 
+class PluginDeviceAliasUserOverlapTests(unittest.TestCase):
+    """plugin_users (P-14's device-alias user) beside an overlapping prepare-run.sh: a user the other run created
+    between the lookup and the create, and a device it forgot first, are tolerated; any other error still stops it.
+    Over a scripted Cognito (placeholder ids only)."""
+
+    def setUp(self):
+        self.state = tempfile.mkdtemp()
+        os.environ["COGNITO_CLIENT_INTEG_DIR"] = self.state
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        self.parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.parity)
+        self.parity.say = lambda *_: None
+        self.parity.load_state = lambda: {}
+        self.parity.require_cli_history_off = lambda: None
+        self.parity.require_recorded_account = lambda state: None
+        self.parity.pool_ids = lambda state: {"email-alias": "placeholder-alias", "default": "placeholder-default"}
+        self.parity.users = lambda: {"pluginDeviceAliasPassword": "placeholder-password",
+                                     "pluginNewPasswordTemporary": "placeholder-temporary"}
+        self.parity.require_user_pool_tag = lambda pool_id, label: None
+        self.parity.reset_new_password_user = lambda *args: None
+        self.calls = []
+        self.errors = {}
+        self.parity.aws = self.fake_aws
+
+    def tearDown(self):
+        shutil.rmtree(self.state)
+        del os.environ["COGNITO_CLIENT_INTEG_DIR"]
+
+    def fake_aws(self, *args, stdin=None, **kwargs):
+        operation = args[1]
+        self.calls.append(args + ((stdin or {}).get("Username", ""),))
+        key = (operation, args[args.index("--device-key") + 1]) if "--device-key" in args else operation
+        if key in self.errors:
+            raise self.parity.AwsError(self.errors[key], "scripted")
+        if operation == "list-users":
+            return {"Users": []}
+        if operation == "admin-list-devices":
+            return {"Devices": [{"DeviceKey": "placeholder-device-1"}, {"DeviceKey": "placeholder-device-2"}]}
+        return {}
+
+    def operations(self):
+        return [call[1] for call in self.calls]
+
+    def test_a_user_created_and_a_device_forgotten_by_another_run_are_tolerated(self):
+        """Given: no device-alias user at the lookup, but another run creates it before this run's create; and of
+            its two devices, the other run forgets the first before this run does.
+        When: plugin_users runs.
+        Then: it sets the user's password and forgets the second device, and finishes."""
+        self.errors = {"admin-create-user": "UsernameExistsException",
+                       ("admin-forget-device", "placeholder-device-1"): "ResourceNotFoundException"}
+        self.parity.plugin_users()
+        operations = self.operations()
+        self.assertIn("admin-set-user-password", operations)
+        self.assertLess(operations.index("admin-create-user"), operations.index("admin-set-user-password"))
+        self.assertEqual(operations.count("admin-forget-device"), 2)
+
+    def test_any_other_error_still_stops_it(self):
+        """Given: a create, then (in a second run) a forget, refused for another reason than an overlapping run.
+        When: plugin_users runs.
+        Then: it stops with that error."""
+        self.errors = {"admin-create-user": "AccessDeniedException"}
+        with self.assertRaises(self.parity.AwsError):
+            self.parity.plugin_users()
+        self.assertNotIn("admin-set-user-password", self.operations())
+        self.calls = []
+        self.errors = {("admin-forget-device", "placeholder-device-1"): "TooManyRequestsException"}
+        with self.assertRaises(self.parity.AwsError):
+            self.parity.plugin_users()
+        self.assertEqual(self.operations().count("admin-forget-device"), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

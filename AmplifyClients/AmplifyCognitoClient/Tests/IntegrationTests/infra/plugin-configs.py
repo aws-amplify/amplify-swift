@@ -93,6 +93,7 @@ import os
 import shutil
 import sys
 import tempfile
+import time
 
 STATE_DIR = os.environ.get("COGNITO_CLIENT_INTEG_DIR") or os.path.expanduser("~/.amplify-cognito-client-integ")
 TARGET_DIR = (os.environ.get("AWS_AMPLIFY_TESTCONFIGURATION_DIR")
@@ -351,15 +352,26 @@ def write_private(path, data):
     os.chmod(path, 0o600)
 
 
+# How long a run waits for another plugin-configs.py to finish (two overlapping prepare-run.sh runs both --refresh).
+LOCK_WAIT_SECONDS = 120
+
+
 @contextlib.contextmanager
 def exclusive():
-    """One plugin-configs.py at a time: two runs interleaving their manifest writes could lose a backup."""
+    """One plugin-configs.py at a time: two runs interleaving their manifest writes could lose a backup. A second
+    run waits for the first, up to LOCK_WAIT_SECONDS, then stops."""
     os.makedirs(STATE_DIR, exist_ok=True)
     with os.fdopen(os.open(LOCK, os.O_WRONLY | os.O_CREAT, 0o600), "w") as f:
-        try:
-            fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            sys.exit("Another plugin-configs.py is running; wait for it to finish.")
+        deadline = time.monotonic() + LOCK_WAIT_SECONDS
+        while True:
+            try:
+                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except BlockingIOError:
+                if time.monotonic() >= deadline:
+                    sys.exit(f"Another plugin-configs.py has been running for over {LOCK_WAIT_SECONDS} s; wait for "
+                             f"it to finish, then run this again.")
+                time.sleep(0.2)
         yield
 
 

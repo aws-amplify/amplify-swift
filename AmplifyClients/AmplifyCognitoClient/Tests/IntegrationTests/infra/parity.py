@@ -2223,7 +2223,8 @@ def plugin_users():
     """P-14: the plugin's DeviceAliasTokenRefreshIntegrationTests signs in as a pre-created user on a
     pool with email as the username. Creates it on email-alias when missing (no message is sent) and
     sets its permanent password to users.json pluginDeviceAliasPassword, and forgets its devices. Runs after cleanup, which
-    deletes it once it is a day old (its email starts ccit-), so a run always finds it."""
+    deletes it once it is a day old (its email starts ccit-), so a run always finds it. An overlapping prepare-run.sh
+    that creates the user, or forgets a device, first is tolerated."""
     state = load_state()
     require_cli_history_off()
     require_recorded_account(state)
@@ -2239,11 +2240,18 @@ def plugin_users():
                 "--filter", f'email = "{PLUGIN_DEVICE_ALIAS_EMAIL}"')["Users"]
     if not found:
         require_user_pool_tag(pool_id, pool_name)
-        aws("cognito-idp", "admin-create-user", stdin={
-            "UserPoolId": pool_id, "Username": PLUGIN_DEVICE_ALIAS_EMAIL, "MessageAction": "SUPPRESS",
-            "UserAttributes": [{"Name": "email", "Value": PLUGIN_DEVICE_ALIAS_EMAIL},
-                               {"Name": "email_verified", "Value": "true"}]})
-        say("Created the plugin's device-alias user on email-alias")
+        try:
+            aws("cognito-idp", "admin-create-user", stdin={
+                "UserPoolId": pool_id, "Username": PLUGIN_DEVICE_ALIAS_EMAIL, "MessageAction": "SUPPRESS",
+                "UserAttributes": [{"Name": "email", "Value": PLUGIN_DEVICE_ALIAS_EMAIL},
+                                   {"Name": "email_verified", "Value": "true"}]})
+            say("Created the plugin's device-alias user on email-alias")
+        except AwsError as error:
+            # An overlapping prepare-run.sh created it between the lookup and this call: the password set below
+            # makes it the user this run needs either way.
+            if error.code != "UsernameExistsException":
+                raise
+            say("plugin device-alias user: already created by another run")
     require_user_pool_tag(pool_id, pool_name)
     aws("cognito-idp", "admin-set-user-password", stdin={
         "UserPoolId": pool_id, "Username": PLUGIN_DEVICE_ALIAS_EMAIL,
@@ -2261,8 +2269,13 @@ def plugin_users():
             break
     for device in devices:
         require_user_pool_tag(pool_id, pool_name)
-        aws("cognito-idp", "admin-forget-device", "--user-pool-id", pool_id, "--username", PLUGIN_DEVICE_ALIAS_EMAIL,
-            "--device-key", device["DeviceKey"])
+        try:
+            aws("cognito-idp", "admin-forget-device", "--user-pool-id", pool_id, "--username",
+                PLUGIN_DEVICE_ALIAS_EMAIL, "--device-key", device["DeviceKey"])
+        except AwsError as error:
+            # An overlapping prepare-run.sh forgot it first: already gone, which is the goal.
+            if error.code != "ResourceNotFoundException":
+                raise
     say(f"plugin device-alias user: forgot {len(devices)} devices")
 
     # testNewPasswordRequired: each run needs users still in FORCE_CHANGE_PASSWORD, with no email or phone

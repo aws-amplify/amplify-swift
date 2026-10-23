@@ -306,13 +306,31 @@ class PluginConfigsTests(unittest.TestCase):
         self.assertEqual([n for n in os.listdir(self.state) if n.endswith(".tmp")], [])
 
     def test_a_second_run_waits_for_the_lock(self):
+        # Another run holds the lock and finishes 0.5 s later: this one waits, then goes on.
         import fcntl
-        os.makedirs(self.state, exist_ok=True)
+        import threading
+        import time
+        self.pc.LOCK_WAIT_SECONDS = 30
+        holder = open(os.path.join(self.state, "plugin-configs.lock"), "w")
+        fcntl.flock(holder, fcntl.LOCK_EX)
+        threading.Timer(0.5, holder.close).start()
+        started = time.monotonic()
+        entered = False
+        with self.pc.exclusive():
+            entered = True
+        self.assertTrue(entered)
+        self.assertGreaterEqual(time.monotonic() - started, 0.4)
+
+    def test_a_second_run_stops_once_the_wait_is_over(self):
+        # Another run holds the lock for longer than the wait: this one stops, without entering.
+        import fcntl
+        self.pc.LOCK_WAIT_SECONDS = 0.5
         with open(os.path.join(self.state, "plugin-configs.lock"), "w") as f:
             fcntl.flock(f, fcntl.LOCK_EX)
-            with self.assertRaises(SystemExit):
+            with self.assertRaises(SystemExit) as stopped:
                 with self.pc.exclusive():
-                    pass
+                    self.fail("entered while another run held the lock")
+        self.assertIn("Another plugin-configs.py", str(stopped.exception))
 
     def test_dir_writes_every_file_there_and_nothing_else(self):
         other = os.path.join(self.root, "client-harness")
