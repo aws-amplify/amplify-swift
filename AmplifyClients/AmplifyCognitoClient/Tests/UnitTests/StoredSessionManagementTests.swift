@@ -114,11 +114,14 @@ final class StoredSessionManagementTests: XCTestCase {
         XCTAssertEqual(harness.engines.count, 0)
     }
 
-    /// - Given: a live, signed-in session with a pending challenge and an event subscriber
+    /// A purge over a real pending challenge is `ChallengeTests.testAPurgeDuringAConfirmationWins`: a signed-in
+    /// session has none, as `signIn` refuses one.
+    ///
+    /// - Given: a live, signed-in session with an event subscriber
     /// - When: it is purged through the static call
     /// - Then:
-    ///    - the purge goes through the live session: its record is gone, its pending sign-in is
-    ///      cancelled, it sends `.signedOut` and is now `.signedOut`, and its provider throws `notSignedIn`
+    ///    - the purge goes through the live session: its record is gone, it asks its engine to cancel any sign-in,
+    ///      it sends `.signedOut` and is now `.signedOut`, and its provider throws `notSignedIn`
     func testPurgeRoutesThroughALiveSession() async throws {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
@@ -369,7 +372,8 @@ final class StoredSessionManagementTests: XCTestCase {
         let bob = FakePayload.signedIn("bob")
         try harness.signIn(work, alice)
         let rival = ConcurrentWriter(store: harness.store(), sessionId: work) { _ in bob.record() }
-        // The fourth read of the record, the store sign-out's (see `testSupersededBySameUserRevokesTheNewCredentialsAndRetries`).
+        // The fourth read of the record, the store sign-out's (see
+        // `testSupersededBySameUserRevokesTheNewCredentialsAndRetries`).
         harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work), occurrence: 4) { rival.move() }
 
         let result = await signOut(work)
