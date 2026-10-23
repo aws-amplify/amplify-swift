@@ -302,23 +302,23 @@ extension AuthClientError {
     /// - `EngineServiceErrorCode.userCancelled` (the hosted UI's browser closed): `.userCancelled`. The client
     ///   reports a user's cancellation in one shape only.
     ///
+    /// A transport failure (`transportFailure(_:wrapping:)`: a network failure, a response that could not be read,
+    /// another URL loading failure) reads the same whichever engine case carries it, a code-less `.service` or an
+    /// `.unknown`: the client's description and suggestion, whatever the engine's were. A network failure has the
+    /// network error itself underneath (the `URLError`, or the CFNetwork or POSIX error), not the engine's error
+    /// over it, so an app can match it as the core's fallbacks report it. A response that is not JSON (such as an
+    /// HTML error page from the service's edge: Foundation's `NSCocoaErrorDomain` 3840, which the SDK surfaces
+    /// without retrying) is one that could not be read: a temporary service problem, which the app may retry. A
+    /// `DecodingError` underneath (JSON that does not match the model, more likely a client bug) is not a transport
+    /// failure, and keeps the engine's suggestion, "report a bug" included.
+    ///
     /// Two engine recovery suggestions are replaced with client text, since neither helps an app: the empty one
-    /// of a `.configuration` (`clientConfigurationSuggestion`), and, on a `.service` with no service code, an
-    /// empty one or the engine's "report a bug" text (`clientServiceSuggestion`), when it carries an underlying
-    /// error. Such a service error is usually a network failure or an answer the client does not recognise, not a
-    /// bug. One with nothing underneath is the engine's own state (`FetchSessionError.noCredentialsToRefresh`),
+    /// of a `.configuration` (`clientConfigurationSuggestion`), and, on any other `.service` with no service code,
+    /// an empty one or the engine's "report a bug" text, "This should not happen." first or not (the passkey calls'
+    /// fallback), with `clientServiceSuggestion`, when it carries an underlying error; an empty description becomes
+    /// `emptyServiceFailureDescription`. Such a service error is usually an answer the client does not recognise, not
+    /// a bug. One with nothing underneath is the engine's own state (`FetchSessionError.noCredentialsToRefresh`),
     /// which no retry fixes, and keeps its text.
-    ///
-    /// Two service failures are told apart first. A response that is not JSON (such as an HTML error page from the
-    /// service's edge: Foundation's `NSCocoaErrorDomain` 3840, which the SDK surfaces without retrying) stays
-    /// `.service` with no code, with the recovery suggestion `unreadableServiceResponseSuggestion`: it is a
-    /// temporary service problem, which the app may retry, as any temporary service failure. A `DecodingError`
-    /// underneath (JSON that does not match the model, more likely a client bug) keeps the engine's suggestion,
-    /// "report a bug" included.
-    ///
-    /// A network failure (`isNetworkFailure`) has the network error itself underneath (the `URLError`, or the
-    /// CFNetwork or POSIX error), not the engine's error over it, so an app can match it as the core's
-    /// fallbacks report it.
     ///
     /// A Cognito failure the engine reports as `.unknown` keeps that case, with a recovery suggestion that fits it
     /// in place of the engine's "report a bug" text (`serviceFailureSuggestion(underlying:cause:)`): an error
@@ -348,20 +348,18 @@ extension AuthClientError {
                 self = ceremonyFailure
                 return
             }
-            if Self.isUnreadableServiceResponse(underlying) {
-                self = .service(nil, description, Self.unreadableServiceResponseSuggestion, error)
-                return
-            }
             let code = (underlying as? EngineServiceErrorCode).map(AuthClientServiceErrorCode.init)
             if code == .userCancelled {
                 // Cancellation has one shape in the client, whatever sheet the user closed.
                 self = .userCancelled(description, suggestion, error)
+            } else if code == nil, let underlying, let transport = Self.transportFailure(underlying, wrapping: error) {
+                self = transport
             } else if code == nil, let underlying, !(underlying is DecodingError), Self.isUnhelpfulServiceSuggestion(suggestion) {
                 self = .service(
                     nil,
-                    Self.serviceDescription(description, underlying: underlying),
+                    description.isEmpty ? Self.emptyServiceFailureDescription : description,
                     Self.clientServiceSuggestion,
-                    Self.isNetworkFailure(underlying) ? underlying : error
+                    error
                 )
             } else {
                 self = .service(code, description, suggestion, error)
@@ -487,19 +485,17 @@ extension AuthClientError {
     /// acted on, whose answer was lost.
     static let networkFailureDescription = "A network problem stopped the request. It may not have reached the service."
 
-    /// The description of a code-less service failure whose engine description is empty and whose error underneath
-    /// is not a network failure.
+    /// The description of a URL loading failure that is neither a network failure nor a response that could not be
+    /// read, and of any other code-less service failure whose engine description is empty (a revoke's).
     static let emptyServiceFailureDescription = "The service request failed."
 
-    /// A code-less service failure's description: the network text when the error underneath is a network failure
-    /// (the engine's is "Service error occurred", or empty for a revoke), else the engine's, or client text when that
-    /// is empty.
-    static func serviceDescription(_ description: String, underlying: Error) -> String {
-        if isNetworkFailure(underlying) {
-            return networkFailureDescription
-        }
-        return description.isEmpty ? emptyServiceFailureDescription : description
-    }
+    /// The descriptions the client gives a code-less service failure it describes itself: `transportFailure`'s,
+    /// and the empty engine description's replacement.
+    static let clientServiceFailureDescriptions: Set<String> = [
+        networkFailureDescription,
+        unreadableResponseDescription,
+        emptyServiceFailureDescription
+    ]
 
     /// Whether `error` is a network failure: the request may not have reached the service, or its answer was lost. A
     /// URL loading failure of `networkURLErrorCodes` (offline, a failed DNS lookup, a refused, lost or timed-out
@@ -555,12 +551,18 @@ extension AuthClientError {
     /// How the engine's "report a bug" recovery text (`EngineErrorMessages.reportBugToAWS`) begins.
     static let reportBugPrefix = "There is a possibility that there is a bug"
 
-    /// Whether a service error's engine recovery suggestion says nothing an app can act on.
+    /// What the engine puts before that text when it says the failure should not happen
+    /// (`EngineErrorMessages.shouldNotHappenReportBugToAWS`, and the passkey calls' fallback, `WebAuthnError.unknown`).
+    static let shouldNotHappenPrefix = "This should not happen. "
+
+    /// Whether a service error's engine recovery suggestion says nothing an app can act on: empty, or a request for a
+    /// bug report, with or without "This should not happen." before it.
     static func isUnhelpfulServiceSuggestion(_ suggestion: String) -> Bool {
-        suggestion.isEmpty || suggestion.hasPrefix(reportBugPrefix)
+        suggestion.isEmpty || suggestion.hasPrefix(reportBugPrefix) || suggestion.hasPrefix(shouldNotHappenPrefix + reportBugPrefix)
     }
 
-    /// The recovery suggestion of a `.service` whose response body was not JSON (`isUnreadableServiceResponse`).
+    /// The recovery suggestion of a response that could not be read (`isUnreadableResponse`), such as a body that is
+    /// not JSON.
     static let unreadableServiceResponseSuggestion =
         "The service returned a response that could not be read, usually a temporary problem at the service. Retry the operation."
 
@@ -701,15 +703,20 @@ extension AuthClientError {
 
 extension AuthClientError {
 
-    /// A failed revoke under a sign-out, mapped as `init(engine:)` maps it, except a network failure, which keeps the
-    /// sign-out's context: the session is signed out on this device, and nothing retries the revoke (a second sign-out
-    /// finds nothing to sign out).
+    /// A failed revoke under a sign-out, mapped as `init(engine:)` maps it, except a failure the client describes
+    /// itself (`clientServiceFailureDescriptions`: a transport failure, or one with an empty engine description), which
+    /// keeps the sign-out's context: the session is signed out on this device, and nothing retries the revoke (a
+    /// second sign-out finds nothing to sign out). A network failure also says the token may still be valid.
     static func revokeFailure(engine error: EngineAuthError) -> AuthClientError {
         let mapped = AuthClientError(engine: error)
-        guard case .service(nil, networkFailureDescription, _, let underlying) = mapped else {
+        guard case .service(nil, let description, _, let underlying) = mapped,
+              clientServiceFailureDescriptions.contains(description) else {
             return mapped
         }
-        return revokeNetworkFailure(underlying ?? error)
+        if description == networkFailureDescription {
+            return revokeNetworkFailure(underlying ?? error)
+        }
+        return .service(nil, description, revokeNotRetriedSuggestion, underlying ?? error)
     }
 
     /// A revoke that failed on the network.
@@ -727,18 +734,19 @@ extension AuthClientError {
         "The session was signed out on this device, and the revoke will not be retried. To end the refresh token on "
             + "the server, sign in again and sign out with globalSignOut: true."
 
-    /// A failed global sign-out under a sign-out, mapped as `init(engine:)` maps it, except a network failure, which
-    /// keeps the sign-out's context, as a revoke's does (`revokeFailure(engine:)`).
+    /// A failed global sign-out under a sign-out, mapped as `init(engine:)` maps it, except a failure the client
+    /// describes itself, which keeps the sign-out's context, as a revoke's does (`revokeFailure(engine:)`).
     static func globalSignOutFailure(engine error: EngineAuthError) -> AuthClientError {
         let mapped = AuthClientError(engine: error)
-        guard case .service(nil, networkFailureDescription, _, let underlying) = mapped else {
+        guard case .service(nil, let description, _, let underlying) = mapped,
+              clientServiceFailureDescriptions.contains(description) else {
             return mapped
         }
-        return .service(nil, networkFailureDescription, globalSignOutNotRetriedSuggestion, underlying ?? error)
+        return .service(nil, description, globalSignOutNotRetriedSuggestion, underlying ?? error)
     }
 
-    /// What a global sign-out that failed on the network suggests: the session is signed out on this device, so
-    /// nothing is left to retry it with.
+    /// What a global sign-out that failed in transport suggests: the session is signed out on this device, so nothing
+    /// is left to retry it with.
     static let globalSignOutNotRetriedSuggestion =
         "The session was signed out on this device, and the global sign-out will not be retried: unless the request "
             + "reached the service, the user's other sessions stay signed in until their tokens expire. To sign them "
