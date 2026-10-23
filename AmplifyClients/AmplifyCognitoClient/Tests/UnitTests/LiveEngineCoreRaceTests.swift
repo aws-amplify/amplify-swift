@@ -69,7 +69,9 @@ final class LiveEngineCoreRaceTests: XCTestCase {
             GetCredentialsForIdentityOutput(credentials: LiveEngineFixtures.awsCredentials(), identityId: input.identityId)
         }
         let second = Task { try await client.signIn(username: "bob", password: "password") }
-        await getId.waitForArrivals(1)
+        // Bounded: were bob's sign-in to need the record's gate, which the sign-out holds, before its engine step, it
+        // would wait for a cancel opened only below.
+        try await bounded(10, "bob's sign-in reaches GetId") { await getId.waitForArrivals(1) }
         await cancelGate.open()
         _ = await signOut.value
         await getId.open()
@@ -112,7 +114,11 @@ final class LiveEngineCoreRaceTests: XCTestCase {
 
         let signOut = Task { await client.signOut() }
         await cancelGate.waitForArrivals(1)
-        let confirm = await authClientError { try await client.confirmSignIn(challengeResponse: "123456") }
+        // Bounded: were the confirmation to need the record's gate, which the sign-out holds, it would wait for a
+        // cancel opened only below.
+        let confirm = try await bounded(10, "the confirmation") {
+            await authClientError { try await client.confirmSignIn(challengeResponse: "123456") }
+        }
         await cancelGate.open()
         _ = await signOut.value
 
