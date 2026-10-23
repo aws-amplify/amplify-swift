@@ -30,8 +30,9 @@ final class SignUpValidationTests: XCTestCase {
     ///    - `signUp`, `confirmSignUp` and `resendSignUpCode` are called with an empty username, and
     ///      `confirmSignUp` with an empty code
     /// - Then:
-    ///    - each throws `validation`: `signUp` and the resend with the plugin's field, description and suggestion;
-    ///      `confirmSignUp` with texts that name it and its `confirmationCode` parameter
+    ///    - each throws `validation`: `signUp` with the plugin's field, description and suggestion;
+    ///      `confirmSignUp` with texts that name it and its `confirmationCode` parameter; the resend with texts
+    ///      that name `resendSignUpCode`, not the plugin's, which name `confirmSignUp`
     ///    - the engine receives nothing
     ///
     func testEmptyArgumentsAreRefusedBeforeTheEngine() async throws {
@@ -61,7 +62,11 @@ final class SignUpValidationTests: XCTestCase {
             ), {
                 try await client.confirmSignUp(for: "carol", confirmationCode: "")
             }),
-            ("resendSignUpCode", plugin(AuthPluginErrorConstants.resendSignUpCodeUsernameError), {
+            ("resendSignUpCode", (
+                "username",
+                "Username is required to resendSignUpCode",
+                "Make sure that a valid username is passed for resendSignUpCode"
+            ), {
                 try await client.resendSignUpCode(for: "")
             })
         ]
