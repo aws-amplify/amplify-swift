@@ -83,7 +83,12 @@ public struct AuthClientConfiguration: Sendable, Equatable {
         public let poolId: String
         /// The AWS Region the identity pool is in.
         public let region: String
-        /// Whether the identity pool allows guest (unauthenticated) identities, or `nil` if not stated.
+        /// Whether the identity pool allows guest (unauthenticated) identities, as `amplify_outputs` or the app
+        /// states it, or `nil` if not stated.
+        ///
+        /// Informational only: the client never reads it, so it changes no behaviour, and two configurations
+        /// that differ only here share a session. Whether Cognito issues guest credentials is decided by the
+        /// identity pool's own setting.
         public let unauthenticatedIdentitiesEnabled: Bool?
 
         /// Builds an identity pool from its parts, for a configuration not read from `amplify_outputs`.
