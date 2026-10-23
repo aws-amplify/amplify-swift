@@ -244,8 +244,20 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
         return amplifyCredential
     }
 
+    /// Ends the saved session. Every plugin path that ends one clears it through here: sign-out, local and global,
+    /// the local sign-out after a deleted user, and clearing the federation to the identity pool.
+    ///
+    /// Without an access group the session record is deleted. With one, it is replaced by the signed-out record,
+    /// `{"noCredentials":{}}`, the bytes the Cognito client's default session saves on sign-out, which every plugin
+    /// release reads as signed out. In the shared service a sign-out then counts as migrated: an app extension's
+    /// first access-group migration stops at the record (`sharedKeychainHasMigratedItems(accessGroup:source:)`)
+    /// and never moves its own stale login in over it. The next sign-in replaces the record.
     package func deleteCredential() throws {
-        try removeSession(for: authConfiguration)
+        guard accessGroup != nil else {
+            try removeSession(for: authConfiguration)
+            return
+        }
+        try saveCredential(.noCredentials)
     }
 
     package func saveDevice(_ deviceMetadata: DeviceMetadata, for username: String) throws {
