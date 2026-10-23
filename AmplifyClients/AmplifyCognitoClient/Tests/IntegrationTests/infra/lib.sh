@@ -80,10 +80,11 @@ require_free_disk() {
 # another account can never act on this sandbox's recorded resources (or mint a second sandbox under
 # the same state directory). Sets ACCOUNT, which is never printed. Run before any mutating call.
 # With no account recorded yet (the first provision.sh), nothing else checks the account, so it also exits, before
-# any AWS call, unless AWS_PROFILE names the profile to use: the first run never falls back to the CLI's default
-# credentials.
+# any AWS call, unless AWS_PROFILE is set and none of AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN
+# is: the CLI takes exported keys over AWS_PROFILE. That is all it checks. It does not check that the profile is the
+# sandbox account's, or which credentials the profile itself resolves to.
 require_recorded_account() {
-    local recorded=""
+    local recorded="" exported=() variable
     if [[ -f "$STATE_DIR/state.json" ]]; then
         recorded=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('account',''))" "$STATE_DIR/state.json")
     fi
@@ -91,6 +92,17 @@ require_recorded_account() {
         echo "Refusing: no account is recorded in $STATE_DIR/state.json yet. Set AWS_PROFILE to the sandbox" \
             "account's profile (see the integration README); a first run never uses the CLI's default credentials." >&2
         exit 1
+    fi
+    if [[ -z "$recorded" ]]; then
+        for variable in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN; do
+            [[ -z "${!variable:-}" ]] || exported+=("$variable")
+        done
+        if (( ${#exported[@]} > 0 )); then
+            echo "Refusing: no account is recorded in $STATE_DIR/state.json yet, and the environment exports ${exported[*]}." \
+                "The AWS CLI would use those keys instead of the profile AWS_PROFILE names. Unset them for the" \
+                "first run." >&2
+            exit 1
+        fi
     fi
     ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
     if [[ -n "$recorded" && "$recorded" != "$ACCOUNT" ]]; then

@@ -900,9 +900,10 @@ R-IP (and the identity-only pool below R-IP2).
 The scripts use whatever credentials the AWS CLI resolves, and the first `provision.sh` records that account in
 `state.json`. From then on `provision.sh`, `prepare-run.sh`, `self-sign-up.sh`, `teardown.sh` and `parity.py`
 refuse any other account (`require_recorded_account` in `lib.sh` and `parity.py`). While no account is recorded
-yet, `lib.sh`'s check exits before any AWS call unless `AWS_PROFILE` is set, so a first provision can't land in the
-CLI's default account by accident. Set `AWS_PROFILE` to the sandbox account's profile and check
-`aws sts get-caller-identity` before that first run.
+yet, `lib.sh`'s check exits before any AWS call unless `AWS_PROFILE` is set and none of `AWS_ACCESS_KEY_ID`,
+`AWS_SECRET_ACCESS_KEY` and `AWS_SESSION_TOKEN` is exported (the CLI would use exported keys instead of the
+profile). That is all it checks: it doesn't know which account the profile belongs to. Set `AWS_PROFILE` to the
+sandbox account's profile and check `aws sts get-caller-identity` before that first run.
 
 | User | State | Set up by |
 |---|---|---|

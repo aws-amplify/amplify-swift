@@ -13,7 +13,9 @@
 #
 # It checks that a region other than the one state.json records is refused before any AWS call; that without an
 # argument the recorded region wins over AWS_REGION; that with no state.json yet, a run without AWS_PROFILE is refused
-# before any AWS call and one with it goes on; that find_by_name follows NextToken to the page that has the
+# before any AWS call, and so is one with it while AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY or AWS_SESSION_TOKEN is
+# exported (the CLI would take the keys over the profile), and one with it and no keys goes on; that once state.json
+# records the account, exported keys go on to the caller's identity, which the account check compares; that find_by_name follows NextToken to the page that has the
 # name, and stops at the last page without it; and that record_state merges into state.json (mode 600), keeping
 # what it does not set (the parity section).
 set -euo pipefail
@@ -75,6 +77,28 @@ a_first_run_with_aws_profile_goes_on_to_the_callers_identity() {
     (( STATUS != 0 )) && [[ "$OUT" != *"no account is recorded"* ]] && grep -q -- 'sts get-caller-identity' "$FAKE_LOG"
 }
 
+# The AWS CLI takes exported keys over AWS_PROFILE, so with no account recorded a run with AWS_PROFILE and any one of
+# the three key variables exported must stop before its first AWS call too, and name the variable, never its value.
+a_first_run_with_exported_keys_is_refused_before_any_aws_call() {
+    local variable
+    for variable in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN; do
+        : > "$FAKE_LOG"
+        STATUS=0
+        OUT=$(env "$variable=placeholder-key-value" AWS_PROFILE=sandbox COGNITO_CLIENT_INTEG_DIR="$WORK/fresh" \
+            "$SCRIPT" us-west-2 2>&1) || STATUS=$?
+        (( STATUS == 1 )) && [[ "$OUT" == *"no account is recorded"*"exports $variable"* ]] \
+            && [[ "$OUT" == *"would use those keys instead of the profile"* ]] \
+            && [[ "$OUT" != *placeholder-key-value* ]] && ! grep -v '^configure ' "$FAKE_LOG" | grep -q . \
+            || { echo "$variable: $OUT"; return 1; }
+    done
+}
+
+# Once state.json records the account, the caller's identity is compared with it, so exported keys may be used.
+a_recorded_account_lets_exported_keys_go_on_to_the_callers_identity() {
+    AWS_ACCESS_KEY_ID=placeholder-key-value run
+    (( STATUS != 0 )) && [[ "$OUT" != *"exports AWS_ACCESS_KEY_ID"* ]] && grep -q -- 'sts get-caller-identity' "$FAKE_LOG"
+}
+
 # provision.sh's helpers, run over a fake `aws` function that pages its items two at a time.
 eval "$(python3 - "$SCRIPT" <<'PY'
 import sys
@@ -128,6 +152,10 @@ check "with no account recorded, a run without AWS_PROFILE is refused before any
     a_first_run_without_aws_profile_is_refused_before_any_aws_call
 check "with no account recorded, a run with AWS_PROFILE goes on to the caller's identity" \
     a_first_run_with_aws_profile_goes_on_to_the_callers_identity
+check "with no account recorded, a run with AWS_PROFILE and exported access keys is refused before any AWS call" \
+    a_first_run_with_exported_keys_is_refused_before_any_aws_call
+check "with an account recorded, a run with exported access keys goes on to the caller's identity" \
+    a_recorded_account_lets_exported_keys_go_on_to_the_callers_identity
 check "find_by_name follows NextToken to the name's page, and reads to the last page without it" \
     find_by_name_reads_every_page
 check "record_state merges into state.json (mode 600) and keeps the parity section" record_state_merges_and_keeps_the_rest
