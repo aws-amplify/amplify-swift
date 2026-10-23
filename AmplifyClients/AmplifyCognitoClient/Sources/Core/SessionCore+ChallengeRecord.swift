@@ -28,7 +28,8 @@ import Foundation
 /// record back. A delete checks the epoch without the gate (`deleteChallengeRecord(epoch:)` says why).
 ///
 /// **Best effort.** A failed write or delete is logged (`SessionRecordStore.ChallengeLog`) and never fails the sign-in:
-/// the challenge stays in memory, as it always did, and a record left behind is deleted by the next restore.
+/// the challenge stays in memory, as it always did. A record left behind is deleted by the next restore of a signed-in
+/// session; a signed-out or guest session's next restore may resume it until it is 15 minutes old.
 extension SessionCore {
 
     // MARK: Sign-in steps
