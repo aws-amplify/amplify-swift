@@ -231,7 +231,7 @@ extension SessionCore {
             throw Self.notSignedIn(sessionId)
         }
         if isExpired {
-            throw Self.sessionExpired(sessionId)
+            throw expiredError(holding: restoredSnapshotIfAny?.credentials)
         }
         guard let snapshot = restoredSnapshotIfAny else {
             throw Self.notSignedIn(sessionId)
@@ -283,7 +283,10 @@ extension SessionCore {
     ///    as retryable. Never signed out. A second reuse in a row, at least
     ///    `RefreshTokenReuse.minimumGap` after the first, whose re-read record's credentials are still exactly
     ///    the ones sent, means nobody else refreshed: the token is dead (a record rolled forward over a token
-    ///    the plugin rotated away), so, as for step 4, `sessionExpired`.
+    ///    the plugin rotated away), so, as for step 4, the session is marked expired, with its own `sessionExpired`
+    ///    (`refreshTokenAlreadyUsed`, `refreshTokenReused` underneath), which it answers with from then on. Forced or
+    ///    not: a forced refresh refused this way counts too, so a second one expires a session whose saved tokens are
+    ///    still valid, and an unforced call then stops handing them out.
     /// 4. `refreshTokenInvalid` means the session needs a fresh sign-in — unless another writer has
     ///    meanwhile stored different credentials (with rotation, a refresh racing another process's can be
     ///    told its token is invalid), so re-read first, as for reuse, and adopt them if so. Otherwise send
@@ -333,7 +336,7 @@ extension SessionCore {
                 if let held = reread.credentials, engine.sameCredentials(held, payload),
                    refreshTokenReuse.repeated(payload, at: now(), same: engine.sameCredentials) {
                     await markExpired()
-                    throw Self.sessionExpired(sessionId)
+                    throw Self.refreshTokenAlreadyUsed(sessionId)
                 }
                 throw AuthClientError.unknown(
                     "Session \"\(sessionId)\"'s refresh token was used by another writer, and no refreshed credentials were saved.",
@@ -345,6 +348,8 @@ extension SessionCore {
                 if !reread.holdsCredentials(payload, engine: engine) {
                     return await .adopted(apply(reread, event: nil))
                 }
+                // Expired by this refusal, not by an earlier reuse: the session answers with its text from now on.
+                refreshTokenReuse.reset()
                 await markExpired()
                 throw Self.sessionExpired(sessionId)
             } catch {
@@ -524,6 +529,26 @@ extension SessionCore {
         )
     }
 
+    /// The dead token after a reuse (`refreshOnce`, step 3): Cognito said the refresh token was used, and nobody saved
+    /// the refresh that used it, so the session cannot get new tokens with it.
+    static func refreshTokenAlreadyUsed(_ sessionId: SessionID) -> AuthClientError {
+        .sessionExpired(
+            "Session \"\(sessionId)\"'s refresh token was already used, and no refreshed tokens were saved, so the session cannot be renewed.",
+            "Sign in to this session again. Other sessions are unaffected.",
+            SessionEngineError.refreshTokenReused
+        )
+    }
+
+    /// What a session known to be expired (`isExpired`) answers with: the dead token after a reuse if that is what
+    /// expired it, still holding the credentials it was proved on (`RefreshTokenReuse.provedDead`), else
+    /// `sessionExpired(_:)`.
+    nonisolated func expiredError(holding payload: Data?) -> AuthClientError {
+        guard let payload, refreshTokenReuse.provedDead(payload, same: engine.sameCredentials) else {
+            return Self.sessionExpired(sessionId)
+        }
+        return Self.refreshTokenAlreadyUsed(sessionId)
+    }
+
     /// `missing` reads after "it has no", so without an article; the recovery suggestion puts `article`, if any,
     /// before it ("Configure an identity pool").
     static func notConfigured(_ what: String, missing: String, article: String? = nil) -> CredentialsError {
@@ -641,12 +666,15 @@ final class RefreshTokenReuse: @unchecked Sendable {
     /// dead token.
     static let minimumGap: TimeInterval = 30
 
-    // `@unchecked Sendable`: `first` is only touched while holding `lock`.
+    // `@unchecked Sendable`: `first` and `dead` are only touched while holding `lock`.
     private let lock = NSLock()
     private var first: (payload: Data, at: Date)?
+    /// The payload whose refresh token a repeat proved dead, until the next reset.
+    private var dead: Data?
 
     /// Records a reuse of `payload` with the record unchanged at `now`; `true` if an earlier one of the same payload
-    /// was at least `minimumGap` before. A repeat sooner than that is not counted, and keeps the first's time.
+    /// was at least `minimumGap` before, which proves its refresh token dead (`provedDead`). A repeat sooner than that
+    /// is not counted, and keeps the first's time.
     ///
     /// - Parameter same: Whether two payloads hold the same credentials (`SessionEngine.sameCredentials`), so a
     ///   record another writer only re-encoded in between still counts as unchanged.
@@ -660,11 +688,22 @@ final class RefreshTokenReuse: @unchecked Sendable {
                 return false
             }
             self.first = nil
+            dead = payload
             return true
         }
     }
 
+    /// Whether a repeat since the last reset proved `payload`'s refresh token dead.
+    func provedDead(_ payload: Data, same: (Data, Data) -> Bool = { $0 == $1 }) -> Bool {
+        lock.withLock {
+            dead.map { same($0, payload) } ?? false
+        }
+    }
+
     func reset() {
-        lock.withLock { first = nil }
+        lock.withLock {
+            first = nil
+            dead = nil
+        }
     }
 }

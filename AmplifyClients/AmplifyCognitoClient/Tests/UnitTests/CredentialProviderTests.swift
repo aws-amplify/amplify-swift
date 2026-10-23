@@ -570,8 +570,9 @@ final class CredentialProviderTests: XCTestCase {
     ///   passed (only 10 s after the repeat); then once more
     /// - Then:
     ///    - the first two throw `unknown` (retryable), with no event
-    ///    - the third throws `sessionExpired` and sends one `.sessionExpired` event; the fourth throws
-    ///      `sessionExpired` without another refresh
+    ///    - the third throws `sessionExpired` saying the refresh token was already used, with `refreshTokenReused`
+    ///      underneath, not the "expired or been revoked" of a refused refresh token, and sends one `.sessionExpired`
+    ///      event; the fourth, and an unforced fetch's fields, fail with the same error without another refresh
     ///    - the record is kept, and the state stays signed in as the user
     func testASecondReuseWithTheRecordUnchangedExpiresTheSession() async throws {
         let stale = FakePayload.signedIn("alice", stale: true)
@@ -588,11 +589,16 @@ final class CredentialProviderTests: XCTestCase {
         harness.advanceClock(by: 10)
         let third = await credentialsError { try await client.credentialsProvider.resolve() }
         let fourth = await credentialsError { try await client.credentialsProvider.resolve() }
+        let session = try await client.fetchAuthSession()
 
         XCTAssertEqual(first?.isUnknown, true, "\(String(describing: first))")
         XCTAssertEqual(tooSoon?.isUnknown, true, "\(String(describing: tooSoon))")
         XCTAssertEqual(third?.isSessionExpired, true, "\(String(describing: third))")
         XCTAssertEqual(fourth?.isSessionExpired, true, "\(String(describing: fourth))")
+        assertRefreshTokenAlreadyUsed(third?.underlyingError as? AuthClientError, "the third")
+        assertRefreshTokenAlreadyUsed(fourth?.underlyingError as? AuthClientError, "the fourth")
+        XCTAssertEqual(third?.errorDescription, Self.refreshTokenAlreadyUsed)
+        assertEveryField(of: session, isRefreshTokenAlreadyUsed: "the unforced fetch")
         XCTAssertEqual(engine.refreshCalls.count, 3)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, stale.data)
         let state = await client.currentSessionState()
@@ -601,6 +607,102 @@ final class CredentialProviderTests: XCTestCase {
         _ = await client.signOut()
         await events.waitFor(2)
         XCTAssertEqual(events.received, [.sessionExpired, .signedOut])
+    }
+
+    /// A forced refresh refused as reused counts toward the dead-token rule: a second one, at least
+    /// `RefreshTokenReuse.minimumGap` after the first, with the record unchanged, expires the session though its saved
+    /// tokens are still valid, and it stops handing them out.
+    ///
+    /// - Given: a signed-in session with valid tokens, whose every refresh is refused as reused, with nothing saved
+    ///   meanwhile
+    /// - When: the session is fetched with `forceRefresh`; again once the gap has passed; then without it, and both
+    ///   providers are asked
+    /// - Then:
+    ///    - the first forced fetch's fields fail with the retryable `unknown`, with no event
+    ///    - the second's fail with `sessionExpired` saying the refresh token was already used, with
+    ///      `refreshTokenReused` underneath, and one `.sessionExpired` event is sent
+    ///    - the unforced fetch's fields and both providers fail with the same error, with no other refresh
+    ///    - the record is kept, and the state stays signed in as the user
+    func testTwoForcedRefreshesRefusedAsReusedExpireTheSession() async throws {
+        let fresh = FakePayload.signedIn("alice")
+        try harness.signIn(work, fresh)
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
+        let events = StreamRecorder(client.listenToAuthEvents())
+
+        let first = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+        XCTAssertEqual(events.received, [], "no event while another writer may still be saving")
+        harness.advanceClock(by: RefreshTokenReuse.minimumGap)
+        let second = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+        let unforced = try await client.fetchAuthSession()
+        let aws = await credentialsError { try await client.credentialsProvider.resolve() }
+        let token = await credentialsError { try await client.userPoolTokenProvider.accessToken() }
+
+        guard case .failure(let firstError) = first.userPoolTokensResult else {
+            return XCTFail("the first forced refresh answered with the old tokens")
+        }
+        XCTAssertEqual(firstError.kind, .unknown, "\(firstError)")
+        assertEveryField(of: second, isRefreshTokenAlreadyUsed: "the second forced fetch")
+        assertEveryField(of: unforced, isRefreshTokenAlreadyUsed: "the unforced fetch")
+        for (name, error) in [("the AWS credentials provider", aws), ("the token provider", token)] {
+            XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
+            XCTAssertEqual(error?.disposition, .retryAfterReauthentication, name)
+            assertRefreshTokenAlreadyUsed(error?.underlyingError as? AuthClientError, name)
+        }
+        XCTAssertEqual(engine.refreshCalls, [fresh.data, fresh.data])
+        XCTAssertEqual(try harness.storedRecord(work)?.credentials, fresh.data)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        // Ends with a known event, so an extra `.sessionExpired` still in the recorder's buffer is counted too.
+        _ = await client.signOut()
+        await events.waitFor(2)
+        XCTAssertEqual(events.received, [.sessionExpired, .signedOut])
+    }
+
+    /// The description of the dead token after a reuse, for session `work`.
+    private static let refreshTokenAlreadyUsed =
+        "Session \"work\"'s refresh token was already used, and no refreshed tokens were saved, so the session cannot be renewed."
+
+    /// Asserts `error` is the dead token after a reuse: `sessionExpired` with its own texts, never a refused refresh
+    /// token's, and `refreshTokenReused` underneath.
+    private func assertRefreshTokenAlreadyUsed(
+        _ error: AuthClientError?,
+        _ name: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        guard let error else {
+            return XCTFail("\(name): no error", file: file, line: line)
+        }
+        XCTAssertEqual(error.kind, .sessionExpired, "\(name): \(error)", file: file, line: line)
+        XCTAssertEqual(error.errorDescription, Self.refreshTokenAlreadyUsed, name, file: file, line: line)
+        XCTAssertEqual(error.recoverySuggestion, "Sign in to this session again. Other sessions are unaffected.", name, file: file, line: line)
+        guard case SessionEngineError.refreshTokenReused? = error.underlyingError as? SessionEngineError else {
+            return XCTFail("\(name): expected refreshTokenReused underneath, got \(String(describing: error.underlyingError))", file: file, line: line)
+        }
+    }
+
+    /// Asserts every field of `session` fails with the dead token after a reuse.
+    private func assertEveryField(
+        of session: AuthClientSession,
+        isRefreshTokenAlreadyUsed name: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let fields: [(String, Result<Void, AuthClientError>)] = [
+            ("userPoolTokens", session.userPoolTokensResult.map { _ in () }),
+            ("userSub", session.userSubResult.map { _ in () }),
+            ("identityId", session.identityIdResult.map { _ in () }),
+            ("awsCredentials", session.awsCredentialsResult.map { _ in () })
+        ]
+        for (field, result) in fields {
+            guard case .failure(let error) = result else {
+                XCTFail("\(name): \(field) should fail", file: file, line: line)
+                continue
+            }
+            assertRefreshTokenAlreadyUsed(error, "\(name), \(field)", file: file, line: line)
+        }
     }
 
     /// The dead-token count is the record's, for the process: a new client of the same session after the first

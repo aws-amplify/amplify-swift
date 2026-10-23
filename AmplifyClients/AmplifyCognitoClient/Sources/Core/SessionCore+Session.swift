@@ -62,7 +62,7 @@ extension SessionCore {
             }
         case .guest, .federated, .signedIn:
             if expired {
-                return Self.session(failingWith: Self.sessionExpired(sessionId))
+                return Self.session(failingWith: expiredError(holding: snapshot.credentials))
             }
             guard let payload = snapshot.credentials else {
                 return Self.session(failingWith: Self.notSignedIn(sessionId))
