@@ -1,5 +1,5 @@
 {
-  "comment": "U-REQ-TS, the plugin's MFA-required backend (AWSCognitoAuthPluginMFARequiredIntegrationTests): as U-DEF, but MFA required with TOTP and SMS, and no custom auth. `ci` is `client` as the plugin's CI backend has it (plugin-configs.py --ci-shape): no USER_PASSWORD_AUTH.",
+  "comment": "U-REQ-TS, the plugin's MFA-required backend (AWSCognitoAuthPluginMFARequiredIntegrationTests): as U-DEF, but MFA required with TOTP and SMS, and no custom auth. Both app clients also allow choice-based sign-in (USER_AUTH), with the password as the only first factor, for the USER_AUTH sign-in that must set MFA up (RequiredMFATests), which skips on an app client that refuses USER_AUTH. `ci` is `client` as the plugin's CI backend has it (plugin-configs.py --ci-shape): no USER_PASSWORD_AUTH.",
   "userPool": {
     "UserPoolTier": "ESSENTIALS",
     "DeletionProtection": "INACTIVE",
@@ -11,7 +11,8 @@
         "RequireNumbers": true,
         "RequireSymbols": true,
         "TemporaryPasswordValidityDays": 20
-      }
+      },
+      "SignInPolicy": { "AllowedFirstAuthFactors": ["PASSWORD"] }
     },
     "UsernameConfiguration": { "CaseSensitive": false },
     "AutoVerifiedAttributes": ["email"],
@@ -37,12 +38,12 @@
   },
   "appClients": {
     "client": {
-      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_USER_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
       "EnableTokenRevocation": true,
       "PreventUserExistenceErrors": "ENABLED"
     },
     "ci": {
-      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_USER_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
       "EnableTokenRevocation": true,
       "PreventUserExistenceErrors": "ENABLED"
     }
