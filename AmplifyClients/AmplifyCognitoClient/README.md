@@ -443,7 +443,7 @@ Task {
 |---|---|
 | `.signedIn` | A user signed in to this session, by any means. Federation sends none |
 | `.signedOut` | The session's credentials were removed: sign-out, purge, or a cleared federation. Not sent if there were none |
-| `.sessionExpired` | The refresh token (or a federated session's provider token) was found dead. Sign in again. The state stays `.signedIn(user)` |
+| `.sessionExpired` | The refresh token was found dead: sign in again; the state stays `.signedIn(user)`. For a federated session, the identity pool no longer accepts its provider token: federate again; the state stays `.federated(identityId:)` |
 | `.userDeleted` | The user was deleted and the session signed out |
 
 Events come only from this session's own operations. A sign-in by another process (an app extension, say) sends
@@ -710,12 +710,12 @@ or `.done`.
 | `.confirmSignInWithTOTPCode` | The code from the authenticator app |
 | `.confirmSignInWithOTP(details)` | The email or SMS code |
 | `.continueSignInWithMFASelection(allowed)` | `AuthClientMFAType.<type>.challengeResponse` (`"SMS_MFA"`, `"SOFTWARE_TOKEN_MFA"`, `"EMAIL_OTP"`). Anything else is `.validation` |
-| `.continueSignInWithMFASetupSelection(allowed)` | `AuthClientMFAType.<type>.challengeResponse` for the type to set up |
+| `.continueSignInWithMFASetupSelection(allowed)` | `AuthClientMFAType.<type>.challengeResponse` for the type to set up, one of `allowed`. Anything else is `.validation` |
 | `.continueSignInWithTOTPSetup(details)` | A code from the authenticator app, after the user adds `details`. `options.friendlyDeviceName` names the device |
 | `.continueSignInWithEmailMFASetup` | The email address to use |
 | `.confirmSignInWithNewPassword(info)` | The new password. Pass required attributes in `options.userAttributes` |
 | `.confirmSignInWithPassword` | The password (after choosing `.password` or `.passwordSRP`). A wrong password ends the sign-in: call `signIn` again |
-| `.continueSignInWithFirstFactorSelection(factors)` | `AuthClientFactorType.<type>.challengeResponse`. Anything else is `.validation` |
+| `.continueSignInWithFirstFactorSelection(factors)` | `AuthClientFactorType.<type>.challengeResponse`. Anything else is `.validation`, and so is `"WEB_AUTHN"` when `factors` does not offer it |
 | `.confirmSignInWithCustomChallenge(info)` | Your custom answer |
 | `.resetPassword(info)` | Not answered here: reset the password, then sign in again |
 | `.confirmSignUp(info)` | Not answered here: confirm the sign-up, then sign in again |
@@ -987,14 +987,17 @@ let accessToken = try await client.userPoolTokenProvider.accessToken()
 - A signed-out session whose identity pool allows guests becomes `.guest` here, and only here.
 - Concurrent refreshes of the same kind share one call. A forced refresh (`forceRefresh: true`) joins only other
   forced refreshes, and runs after a normal refresh already in flight, so it always calls Cognito. With an identity
-  pool configured, that includes a session signed out in this process after an app extension or the Auth plugin
-  saved a login in its record: it adopts that login, then refreshes it. An unforced fetch adopts it too, and
-  refreshes it if needed, as for any signed-in session. A forced fetch refreshes it even when an unforced fetch
-  running alongside adopted the login first, and never joins that fetch's guest acquisition. Without an identity
-  pool, a signed-out session's fetch doesn't read the record, and stays signed out in this process. A forced refresh
-  that Cognito refuses as a reused refresh token never answers with the saved tokens it sent: its fields fail with
-  the same retryable `unknown` an unforced refresh gets there (unless another writer saved a refresh meanwhile, with
-  a new refresh token, which it adopts). An unforced fetch still returns valid saved tokens.
+  pool configured, that includes a session signed out in this process after an app extension or the Auth plugin saved
+  a login in its record: it adopts that login, then refreshes it. An unforced fetch adopts it too, and refreshes it
+  if needed, as for any signed-in session. A forced fetch refreshes it even when an unforced fetch running alongside
+  adopted the login first, and never joins that fetch's guest acquisition. Without an identity pool, a signed-out
+  session's fetch doesn't read the record, and stays signed out in this process. A forced refresh that Cognito
+  refuses as a reused refresh token never answers with the saved tokens it sent: its fields fail with the same
+  retryable `unknown` an unforced refresh gets there (unless another writer saved a refresh meanwhile, with a new
+  refresh token, which it adopts). It counts toward the dead-token rule (see
+  [Known limitations](#known-limitations)): a second refusal at least 30 seconds later, with nothing saved meanwhile,
+  reports `sessionExpired` and expires the session even though its saved tokens are still valid. From then on, an
+  unforced fetch and both providers fail with `sessionExpired` too, until the session signs in again or signs out.
 - There is no `isSignedIn` field. Use `currentSessionState()`.
 - Tokens and AWS credentials print redacted.
 
@@ -1066,7 +1069,7 @@ do {
 | `CredentialsError` | `disposition` | When |
 |---|---|---|
 | `.notSignedIn` | `.discard` | Signed out, or a sign-in on the session waiting on a challenge, whatever the session held (a guest, or an expired session, included). For the token provider also a guest |
-| `.sessionExpired` | `.retryAfterReauthentication` | The refresh token (or a federated provider token) is dead |
+| `.sessionExpired` | `.retryAfterReauthentication` | The refresh token is dead, or the identity pool no longer accepts a federated session's provider token |
 | `.storageUnavailable(reason)` | `.retryWithBackoff`, or `.failLoudly` for `.denied` | The keychain could not be read or written |
 | `.notConfigured` | `.failLoudly` | No identity pool, or a user-pool-only sign-in, or a named session carried to a new identity pool, or `.default` copied from a user-pool-only configuration, that the new identity pool refuses (`notAuthorized`, `resourceNotFound`, `invalidParameter` or `configuration`; the refusal is the underlying error) (credentials provider); no user pool, or a federated session (token provider). `.default` on a changed identity pool keeps the old identity ID, and the new identity pool's refusal is `.unknown` |
 | `.unknown` | `.retryWithBackoff` | Anything else, such as a network failure during refresh |
@@ -1106,9 +1109,11 @@ try await client.clearFederationToIdentityPool()
 ```
 
 - The session reports `.federated(identityId:)`. It has AWS credentials and no user pool user, so user operations
-  throw `.notSignedIn` and the token provider throws `notConfigured`.
+  throw `.notSignedIn` (their recovery suggestion: clear the federation or sign out, then sign in) and the token
+  provider throws `notConfigured`.
 - The credentials refresh with the saved provider token. When the identity pool stops accepting it, the session
-  sends `.sessionExpired`.
+  sends `.sessionExpired` and its fields and providers fail with `sessionExpired`, saying so. Call
+  `federateToIdentityPool` with a new provider token to recover.
 - `signIn` is refused on a federated session. Clear the federation or sign out first. Federating is refused on a
   session signed in to the user pool or waiting on a challenge.
 - Federating sends no event; watch the state stream. Clearing sends `.signedOut` and keeps the row, as sign-out
@@ -1407,8 +1412,8 @@ Every operation throws `AuthClientError`, which conforms to `AmplifyError`: each
 |---|---|---|
 | `configuration` | The configuration is missing, unreadable, incomplete or Gen1, or lacks a pool the operation needs | Fix the configuration |
 | `storageUnavailable(reason)` | The keychain could not be read or written | Don't show sign-in. Retry (`.locked`, `.interrupted`) or fix entitlements (`.denied`) |
-| `sessionExpired` | The refresh token (or federated provider token) expired or was revoked | Sign this session in again. Other sessions are unaffected |
-| `notSignedIn` | No user pool user: signed out, guest, federated, or waiting on a challenge | Sign in |
+| `sessionExpired` | The refresh token expired, was revoked, or was already used with nothing saved; or the identity pool no longer accepts a federated session's provider token | Sign this session in again, or for a federated session federate again with a new provider token. Other sessions are unaffected |
+| `notSignedIn` | No user pool user: signed out, guest, federated, or waiting on a challenge | Sign in; on a federated session, clear the federation or sign out first |
 | `invalidSessionID` | Empty, too long, or a character outside `A-Z a-z 0-9 _ -` | Use a valid ID |
 | `challengeExpired` | Cognito no longer accepts the challenge | Call `signIn` again |
 | `browserBusy(holder:)` | The one system sheet is held, or a `.wait(timeout:)` expired | Finish or cancel the holder's sheet |
@@ -1696,8 +1701,9 @@ along with one of the changes below, where the plugin's rule would not carry. Th
   credentials tries the identity step again (the plugin tries it again only when its tokens need refreshing or a
   fetch forces a refresh). A known refusal isn't retried for that user until the user pool tokens next need a
   refresh, a fetch forces a refresh, the app restarts, or the session is signed out or purged; other failures,
-  including a later try after a refusal that fails that way, not within 30 seconds. Until then the identity fields
-  report the failure.
+  including a later try after a refusal that fails that way, not within 30 seconds, except by a refresh the user pool
+  tokens need or a forced fetch, which try the identity step again at once. Until then the identity fields report the
+  failure.
 - A session saved by an older build, which recorded no configuration for it, isn't carried if the configuration
   changes before this build first restores it.
 - Device records aren't carried, as the plugin doesn't carry them. On a user pool that tracks devices, a carried
@@ -1866,13 +1872,15 @@ The client keeps the plugin's semantics except where listed here.
   in signedIn state") until the session signs out, or a refresh in that launch reports `sessionExpired`. What to do:
   on `sessionExpired`, or on that refusal, sign the session out before showing sign-in.
 - **A second refresh-token reuse counts as a dead token after 30 seconds, within one launch.** Until then the
-  failure is retryable. The rule is kept in memory: after an app terminated in the middle of a refresh with
-  refresh-token rotation on (Cognito rotated the token, and the new one was never saved), the saved, retired refresh
-  token gives the retryable `unknown` at the first refusal of each launch, and `sessionExpired` at a second one at
-  least 30 seconds later in the same launch. That repeats in every launch until the session is signed out, or signs
-  in again after a `sessionExpired`. Before that `sessionExpired`, the session is signed in as its user, so `signIn`
-  refuses it with `.invalidState`. What to do: after repeated refresh failures, sign the session out, then show
-  sign-in.
+  failure, forced or not, is retryable. The rule is kept in memory: after an app terminated in the middle of a
+  refresh with refresh-token rotation on (Cognito rotated the token, and the new one was never saved), the saved,
+  retired refresh token gives the retryable `unknown` at the first refusal of each launch, and `sessionExpired` at a
+  second one at least 30 seconds later in the same launch. Forced refreshes count too, even while the saved tokens
+  are still valid. This `sessionExpired` says the refresh token was already used and no refreshed tokens were saved,
+  with `refreshTokenReused` underneath, not the "expired or been revoked" of a refused refresh token. That repeats in
+  every launch until the session is signed out, or signs in again after a `sessionExpired`. Before that
+  `sessionExpired`, the session is signed in as its user, so `signIn` refuses it with `.invalidState`. What to do:
+  after repeated refresh failures, sign the session out, then show sign-in.
 - **A sign-in after an expired session can't be resumed after a relaunch.** This affects a session whose refresh
   token expired (it reported `sessionExpired`) when its user signs in again, that sign-in stops on a challenge
   (an MFA code, say), and the app is closed before the user answers. The saved login still holds the expired user,
