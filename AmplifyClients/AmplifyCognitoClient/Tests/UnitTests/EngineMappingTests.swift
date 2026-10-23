@@ -22,8 +22,9 @@ import XCTest
 /// the plugin's goldens, plugin <-> client by the model parity tests).
 ///
 /// Every table has one row per engine case. The `…CaseIndex` helpers are exhaustive switches with no
-/// `default:`, so a new engine case does not compile here until it has a row, and each test checks that its
-/// rows cover every index.
+/// `default:`, so a new engine case does not compile here until it has an index. Each test checks that its rows
+/// cover every index from 0 to the switch's `last…CaseIndex`, which sits beside the switches: raised with the new
+/// arm, it fails the test until the new case has its row. The switches cannot check the constant itself.
 final class EngineMappingTests: XCTestCase {
 
     private static let details = EngineCodeDeliveryDetails(destination: .sms("+1***"), attributeKey: "phone_number")
@@ -73,7 +74,7 @@ final class EngineMappingTests: XCTestCase {
             XCTAssertEqual(AuthClientSignInStep(engine), client, "\(engine)")
             XCTAssertEqual(Self.signInStepCaseIndex(engine), Self.signInStepCaseIndex(client), "\(engine)")
         }
-        XCTAssertEqual(Set(rows.map { Self.signInStepCaseIndex($0.0) }), Set(0 ..< 14))
+        XCTAssertEqual(Set(rows.map { Self.signInStepCaseIndex($0.0) }), Set(0 ... Self.lastSignInStepCaseIndex))
     }
 
     /// Test that the first-factor selection keeps WebAuthn where the platform has it
@@ -122,7 +123,7 @@ final class EngineMappingTests: XCTestCase {
             XCTAssertNotEqual(engine.rawValue, client.rawValue)
             XCTAssertEqual(client.challengeResponse, engine.challengeResponse)
         }
-        XCTAssertEqual(Set(rows.map { Self.mfaCaseIndex($0.0) }), Set(0 ..< 3))
+        XCTAssertEqual(Set(rows.map { Self.mfaCaseIndex($0.0) }), Set(0 ... Self.lastMFACaseIndex))
     }
 
     /// Test that factor types map case to case in both directions
@@ -137,13 +138,13 @@ final class EngineMappingTests: XCTestCase {
         var rows: [(EngineAuthFactorType, AuthClientFactorType)] = [
             (.password, .password), (.passwordSRP, .passwordSRP), (.smsOTP, .smsOTP), (.emailOTP, .emailOTP)
         ]
-        var expectedCases = 4
+        // WebAuthn, the last index where the platform has it, is only a value where the OS has it too.
+        var lastAvailable = Self.lastFactorCaseIndex
         #if os(iOS) || os(macOS) || os(visionOS)
-        expectedCases = 5
         if #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) {
             rows.append((.webAuthn, .webAuthn))
         } else {
-            expectedCases = 4
+            lastAvailable -= 1
         }
         #endif
         for (engine, client) in rows {
@@ -152,7 +153,7 @@ final class EngineMappingTests: XCTestCase {
             XCTAssertEqual(AuthClientFactorType(EngineAuthFactorType(client)), client)
             XCTAssertNotEqual(engine.rawValue, client.rawValue)
         }
-        XCTAssertEqual(Set(rows.map { Self.factorCaseIndex($0.0) }).count, expectedCases)
+        XCTAssertEqual(Set(rows.map { Self.factorCaseIndex($0.0) }), Set(0 ... lastAvailable))
     }
 
     /// Test that a factor's challenge response is Cognito's name for it, which a factor selection accepts
@@ -211,7 +212,7 @@ final class EngineMappingTests: XCTestCase {
             XCTAssertEqual(mapped, engine, "\(client)")
             XCTAssertNotEqual(mapped, .custom, "\(client)")
         }
-        XCTAssertEqual(Set(rows.map { Self.flowCaseIndex($0.0) }), Set(0 ..< 5))
+        XCTAssertEqual(Set(rows.map { Self.flowCaseIndex($0.0) }), Set(0 ... Self.lastFlowCaseIndex))
     }
 
     /// Test that delivery destinations map case to case, with their values
@@ -232,7 +233,7 @@ final class EngineMappingTests: XCTestCase {
         for (engine, client) in rows {
             XCTAssertEqual(AuthClientDeliveryDestination(engine), client)
         }
-        XCTAssertEqual(Set(rows.map { Self.destinationCaseIndex($0.0) }), Set(0 ..< 4))
+        XCTAssertEqual(Set(rows.map { Self.destinationCaseIndex($0.0) }), Set(0 ... Self.lastDestinationCaseIndex))
     }
 
     /// Test that the delivery details' attribute, a Cognito name in the engine, becomes the client's key
@@ -344,7 +345,7 @@ final class EngineMappingTests: XCTestCase {
             XCTAssertEqual(Self.errorCaseIndex(underlying), Self.errorCaseIndex(engine), "\(engine)")
             XCTAssertEqual(underlying.errorDescription, engine.errorDescription, "\(engine)")
         }
-        XCTAssertEqual(Set(rows.map { Self.errorCaseIndex($0.0) }), Set(0 ..< 8))
+        XCTAssertEqual(Set(rows.map { Self.errorCaseIndex($0.0) }), Set(0 ... Self.lastErrorCaseIndex))
         XCTAssertEqual(AuthClientError(engine: .unknown("boom")).errorDescription, "Unexpected error occurred with message: boom")
     }
 
@@ -1095,6 +1096,18 @@ final class EngineMappingTests: XCTestCase {
         case .custom, .unknown: return nil
         }
     }
+
+    /// The highest index each switch below gives. Raise it with the new case's arm.
+    private static let lastSignInStepCaseIndex = 13
+    private static let lastMFACaseIndex = 2
+    #if os(iOS) || os(macOS) || os(visionOS)
+    private static let lastFactorCaseIndex = 4
+    #else
+    private static let lastFactorCaseIndex = 3
+    #endif
+    private static let lastFlowCaseIndex = 4
+    private static let lastDestinationCaseIndex = 3
+    private static let lastErrorCaseIndex = 7
 
     private static func signInStepCaseIndex(_ step: EngineSignInStep) -> Int {
         switch step {
