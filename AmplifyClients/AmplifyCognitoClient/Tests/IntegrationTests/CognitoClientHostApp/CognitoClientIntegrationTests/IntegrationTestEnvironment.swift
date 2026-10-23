@@ -855,8 +855,8 @@ enum HarnessError: Error, CustomStringConvertible {
             \(name) is not in the test bundle. The build phase copies the plugin's test configuration from \
             $COGNITO_CLIENT_INTEG_DIR (default ~/.aws-amplify/amplify-ios/testconfiguration, where CI \
             downloads it). For a local run on CI's set, download it with infra/fetch-ci-config.sh <dir>, overlay \
-            the client's roles with infra/ci/ci-overlay.sh <dir> <new-dir> "email-alias extended", then rebuild \
-            with COGNITO_CLIENT_INTEG_DIR=<new-dir>.
+            the client's roles with infra/ci/ci-overlay.sh <dir> <new-dir> "email-alias extended mfa-req-totp-sms", \
+            then rebuild with COGNITO_CLIENT_INTEG_DIR=<new-dir>.
             """
         case .malformedFixture(let message):
             return message
