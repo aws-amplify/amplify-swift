@@ -58,6 +58,41 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(harness.engine(for: work)?.guestFetchCount, 0)
     }
 
+    /// Only a signed-out session's AWS credentials say they never fall back to guest credentials: a guest holds
+    /// some, and its user pool tokens and sub are what it lacks.
+    ///
+    /// - Given: a signed-out session, and a guest session
+    /// - When: each is asked for its AWS credentials and access token, and the guest is fetched
+    /// - Then:
+    ///    - the signed-out AWS credentials' `notSignedIn` says a signed-out session never falls back to guest
+    ///      credentials
+    ///    - the guest's access token, and its fetched tokens and sub, say only "Sign in to this session first."
+    func testOnlyASignedOutSessionsAWSCredentialsMentionTheGuestFallback() async throws {
+        try harness.signIn(home, FakePayload.guest())
+        let signedOut = try harness.client(work)
+        let guest = try harness.client(home)
+
+        let aws = await credentialsError { try await signedOut.credentialsProvider.resolve() }
+        let token = await credentialsError { try await guest.userPoolTokenProvider.accessToken() }
+        let session = try await guest.fetchAuthSession()
+
+        XCTAssertEqual(
+            aws?.recoverySuggestion,
+            "Sign in to this session first. A signed-out session never falls back to guest credentials."
+        )
+        XCTAssertEqual(token?.isNotSignedIn, true, "\(String(describing: token))")
+        XCTAssertEqual(token?.recoverySuggestion, "Sign in to this session first.")
+        for (field, result) in [("userPoolTokens", session.userPoolTokensResult.map { _ in () }),
+                                ("userSub", session.userSubResult.map { _ in () })] {
+            guard case .failure(let error) = result else {
+                XCTFail("\(field) should fail")
+                continue
+            }
+            XCTAssertEqual(error.kind, .notSignedIn, field)
+            XCTAssertEqual(error.recoverySuggestion, "Sign in to this session first.", field)
+        }
+    }
+
     /// - Given: a guest session
     /// - When: both providers are asked
     /// - Then:

@@ -239,7 +239,7 @@ extension SessionCore {
         }
         switch snapshot.state(engine: engine, challenge: nil) {
         case .signedOut, .awaitingChallenge:
-            throw Self.notSignedIn(sessionId)
+            throw purpose == .awsCredentials ? Self.signedOutHasNoGuestCredentials(sessionId) : Self.notSignedIn(sessionId)
         case .failed(let error):
             throw error
         case .unavailable(let reason):
@@ -517,6 +517,15 @@ extension SessionCore {
     }
 
     static func notSignedIn(_ sessionId: SessionID) -> AuthClientError {
+        .notSignedIn(
+            "Session \"\(sessionId)\" is not signed in.",
+            "Sign in to this session first."
+        )
+    }
+
+    /// `notSignedIn(_:)` for the AWS credentials of a signed-out session, which never fall back to guest credentials,
+    /// as the plugin's provider does.
+    static func signedOutHasNoGuestCredentials(_ sessionId: SessionID) -> AuthClientError {
         .notSignedIn(
             "Session \"\(sessionId)\" is not signed in.",
             "Sign in to this session first. A signed-out session never falls back to guest credentials."
