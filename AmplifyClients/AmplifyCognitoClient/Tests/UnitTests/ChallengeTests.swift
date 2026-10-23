@@ -729,6 +729,49 @@ final class ChallengeTests: XCTestCase {
         XCTAssertEqual(state, .signedOut)
     }
 
+    /// A challenge the step reaches while a sign-out holds the record's gate passes the epoch guard, which the sign-out
+    /// moves only at its end; its save then waits for the gate. Once the sign-out has ended the attempt, the sign-in
+    /// answers as cancelled, not with the challenge.
+    ///
+    /// - Given: an expired session (so a sign-in is allowed), a sign-in held in the engine, and a sign-out held in its
+    ///   revoke, holding the record's gate
+    /// - When: the sign-in is let go, so its challenge passes the guard and its save queues behind the sign-out; then
+    ///   the sign-out is let go
+    /// - Then:
+    ///    - the sign-in throws `invalidState`, not the challenge, and the sign-out completes
+    ///    - nothing is pending in the engine, no challenge record is saved, and the state is `.signedOut`
+    func testAChallengeWhoseSaveWaitsBehindASignOutIsCancelled() async throws {
+        try harness.signIn(work, .signedIn("alice", stale: true))
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
+        _ = try? await client.userPoolTokenProvider.accessToken()
+        let step = smsCode
+        engine.scriptSignIn { _, _ in .challenge(step) }
+        let latch = Gate()
+        engine.holdSignIns(on: latch)
+        let revoke = Gate()
+        engine.scriptRevoke { _ in await revoke.pass() }
+
+        let signIn = Task { try await client.signInForTest("alice") }
+        try await latch.arrivals(1)
+        let signOut = Task { await client.signOut() }
+        try await revoke.arrivals(1)
+        await latch.open()
+        await waitUntil("the challenge's save queues behind the sign-out") { await client.core.gate.waiterCount == 1 }
+        await revoke.open()
+        let error = try await withinTime(10, "the sign-in's answer") { await authClientError { try await signIn.value } }
+        let result = try await withinTime(10, "the sign-out") { await signOut.value }
+
+        XCTAssertEqual(error?.kind, .invalidState, "\(String(describing: error))")
+        XCTAssertEqual(result, .complete)
+        let pending = await engine.pendingChallenge
+        XCTAssertNil(pending, "the engine must not keep a challenge the session has signed out of")
+        XCTAssertEqual(try harness.store().readChallenge(work), .absent)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedOut)
+    }
+
     // MARK: A sign-in in flight across a sign-out, purge or deletion
 
     /// - Given: a pending challenge, and a confirmation that the engine completes only after a sign-out

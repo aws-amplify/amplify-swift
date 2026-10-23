@@ -365,6 +365,12 @@ extension SessionCore {
                 throw Self.signInCancelled()
             }
             await saveChallengeRecord(epoch: epoch)
+            guard await signInEpoch == epoch else {
+                // The ending held the record's gate across its revoke and moved the epoch only at its end, after the
+                // guard above: the save waited behind it, and wrote nothing. The challenge it ended is no answer.
+                await engine.cancelPendingSignIn(before: epoch &+ 1)
+                throw Self.signInCancelled()
+            }
             return AuthClientSignInResult(nextStep: step)
         case .done(let payload):
             do {
