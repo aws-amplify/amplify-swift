@@ -336,7 +336,8 @@ private extension AWSCognitoAuthCredentialStore {
 }
 
 package extension AWSCognitoAuthCredentialStore {
-    /// This store's lines, at their pre-M2 category, through the caller's logger.
+    /// This store's lines, at the plugin's category for them from before the engine was extracted, through the
+    /// caller's logger.
     var log: EngineLogger {
         logger.scoped(.category("AWSCognitoAuthCredentialStore"))
     }
