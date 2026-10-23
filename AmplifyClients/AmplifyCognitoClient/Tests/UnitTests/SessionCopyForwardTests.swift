@@ -937,8 +937,9 @@ final class SessionCopyForwardTests: XCTestCase {
     /// - Given: alice under the user pool alone
     /// - When: a client over both pools is built with a warm restore, while `purgeStoredSession` runs over the user
     ///   pool alone
-    /// - Then: the purge either refuses with `sessionConfigurationMismatch` (the session was live under both pools)
-    ///   or succeeds, and in both cases the session never ends signed in with a purged source it did not copy
+    /// - Then: the purge either refuses with `sessionConfigurationMismatch` (the session was live under both pools,
+    ///   and keeps both records), or succeeds, having run before the restore carried: the session is then signed out,
+    ///   with nothing carried
     func testAStoredSessionCallRacingAWarmRestore() async throws {
         for _ in 1 ... 20 {
             harness = ClientHarness(restoresOnConstruction: true)
@@ -962,9 +963,11 @@ final class SessionCopyForwardTests: XCTestCase {
 
             switch outcome {
             case .success:
-                // The purge ran before the restore carried (and the restore then found nothing), or after: then the
-                // restore's copy is its own record, and the user-pool record was the purge's to delete.
-                XCTAssertTrue(state == .signedOut || state == .signedIn(alice), "\(state)")
+                // The purge ran before the restore carried, and the restore then found nothing to carry. It cannot
+                // have run after: the client is registered before its restore, which holds the user pool's gate as
+                // well as its own, and the purge checks the registry once it holds the gates.
+                XCTAssertEqual(state, .signedOut)
+                XCTAssertEqual(try harness.store().read(work), .absent)
             case .failure(let error):
                 guard case .sessionConfigurationMismatch = error as? AuthClientError else {
                     return XCTFail("unexpected \(error)")
