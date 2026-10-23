@@ -9,6 +9,24 @@ import Foundation
 import InternalAWSCognitoAuth
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
+/// Credentials payloads in the plugin's stored format, for what reads that format (`PluginRecordSummary.peek`), as a
+/// `FakePayload` is not.
+enum PluginFormatPayload {
+
+    /// A guest's credentials: `identityPoolOnly`, naming its identity.
+    static func guest(identityId: String, accessKeyId: String) throws -> Data {
+        try JSONEncoder().encode(AmplifyCredentials.identityPoolOnly(
+            identityID: identityId,
+            credentials: EngineAWSCredentials(
+                accessKeyId: accessKeyId,
+                secretAccessKey: "secret",
+                sessionToken: "session",
+                expiration: Date(timeIntervalSince1970: 4_000_000_000)
+            )
+        ))
+    }
+}
+
 /// The credentials payload the fake engine reads and writes: readable JSON, so a test can build one,
 /// store it, and check what the core committed.
 struct FakePayload: Codable, Equatable {

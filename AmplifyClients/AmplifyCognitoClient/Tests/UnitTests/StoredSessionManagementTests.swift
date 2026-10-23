@@ -459,11 +459,12 @@ final class StoredSessionManagementTests: XCTestCase {
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
 
-    /// Two guest sessions have no user to compare, so nothing shows that new guest credentials are the
-    /// same principal's. Treating them as the same would revoke and clear a session this call never saw.
+    /// Two guest payloads with no identity ID to compare (these fakes name none, and the static call reads only the
+    /// plugin's format) have nothing that shows new guest credentials are the same principal's. Treating them as the
+    /// same would revoke and clear a session this call never saw.
     ///
-    /// - Given: a saved guest session, and another process that stores different guest credentials during
-    ///   the revoke
+    /// - Given: a saved guest session, and another process that stores different guest credentials, with no identity
+    ///   ID, during the revoke
     /// - When: it is signed out through the static call
     /// - Then:
     ///    - the result is `.failed(.invalidState)`, only the original credentials were revoked, and the new ones are
@@ -485,6 +486,54 @@ final class StoredSessionManagementTests: XCTestCase {
         XCTAssertEqual(result, .failed(SessionSignOut.supersededError()))
         XCTAssertEqual(harness.revoker.revokeCalls, [guest.data])
         XCTAssertEqual(try harness.storedRecord(work), otherGuest.record())
+    }
+
+    /// Two guests are the same principal when they have the same identity ID, which the static call reads from the
+    /// plugin's format (`PluginRecordSummary.peek`): guest credentials another process refreshed during the revoke
+    /// are revoked too, and cleared; a different identity's are left alone.
+    ///
+    /// - Given: a saved guest session in the plugin's format, and another process that stores, during the revoke,
+    ///   new guest credentials of the same identity, then (in a second run) of a different identity
+    /// - When: it is signed out through the static call
+    /// - Then:
+    ///    - same identity: both guests' credentials are revoked, in order, the row is signed out, and the result is
+    ///      `.complete`
+    ///    - different identity: the result is `.failed(.invalidState)`, only the original credentials were revoked,
+    ///      and the new ones are kept
+    func testGuestCredentialsDuringTheRevokeAreSignedOutOnlyForTheSameIdentity() async throws {
+        let guest = try PluginFormatPayload.guest(identityId: "us-east-1:guest", accessKeyId: "AKID-1")
+        for (name, identityId, sameIdentity) in [("same identity", "us-east-1:guest", true), ("another identity", "us-east-1:other", false)] {
+            harness = ClientHarness()
+            let refreshed = try PluginFormatPayload.guest(identityId: identityId, accessKeyId: "AKID-2")
+            let store = harness.store()
+            try store.write(Self.guestRecord(guest), for: work, expecting: nil)
+            let work = work
+            let wrote = Flag()
+            harness.revoker.scriptRevoke { _ in
+                guard !wrote.isRaised, case .record(let envelope) = try store.read(work) else {
+                    return
+                }
+                wrote.raise()
+                try store.write(Self.guestRecord(refreshed), for: work, expecting: envelope.version)
+            }
+
+            let result = await signOut(work)
+
+            if sameIdentity {
+                XCTAssertEqual(result, .complete, name)
+                XCTAssertEqual(harness.revoker.revokeCalls, [guest, refreshed], name)
+                XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true, name)
+            } else {
+                XCTAssertEqual(result, .failed(SessionSignOut.supersededError()), name)
+                XCTAssertEqual(harness.revoker.revokeCalls, [guest], name)
+                XCTAssertEqual(try harness.storedRecord(work), Self.guestRecord(refreshed), name)
+            }
+        }
+    }
+
+    /// The record a guest's credentials are saved in: no user, so no username or user ID.
+    private static func guestRecord(_ credentials: Data) -> SessionRecord {
+        SessionRecord(label: nil, username: nil, userId: nil, kind: .guest, credentials: credentials)
     }
 
     /// - Given: alice's saved session, and another process that refreshes alice's credentials during
