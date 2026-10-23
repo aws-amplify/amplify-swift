@@ -11,10 +11,12 @@ extension AWSCognitoAuthPlugin {
 
     func listenToStateMachineChanges() {
 
-        Task {
-            let stateSequences = await authStateMachine.listen()
+        // Neither task may hold the plugin: each runs until its state machine is released, and the
+        // plugin owns the state machines. `self.log` is `Self.log`.
+        Task { [weak self] in
+            guard let stateSequences = await self?.authStateMachine.listen() else { return }
             for await state in stateSequences {
-                self.log.verbose("""
+                Self.log.verbose("""
                 Auth state change:
 
                 \(state)
@@ -22,10 +24,10 @@ extension AWSCognitoAuthPlugin {
                 """)
             }
         }
-        Task {
-            let stateSequences = await credentialStoreStateMachine.listen()
+        Task { [weak self] in
+            guard let stateSequences = await self?.credentialStoreStateMachine.listen() else { return }
             for await state in stateSequences {
-                self.log.verbose("""
+                Self.log.verbose("""
                 Credential Store state change:
 
                 \(state)

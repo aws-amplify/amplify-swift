@@ -20,11 +20,12 @@ import XCTest
 @testable import AWSPluginsTestCommon
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 import AWSCognitoIdentityProvider
+@testable import InternalAWSCognitoAuth
 
 class AWSAuthConfirmSignUpTaskTests: BasePluginTest, @unchecked Sendable {
 
     let signUpData = SignUpEventData(username: "jeffb")
-    let signUpResult = AuthSignUpResult(.confirmUser())
+    let signUpResult = EngineSignUpResult(.confirmUser())
 
     override var initialState: AuthState {
         AuthState.configured(

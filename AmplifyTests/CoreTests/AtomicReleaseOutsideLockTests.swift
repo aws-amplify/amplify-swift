@@ -56,6 +56,45 @@ class AtomicReleaseOutsideLockTests: XCTestCase, @unchecked Sendable {
         XCTAssertNotNil(dictionary.getValue(forKey: 1))
     }
 
+    /// `removeValue(forKey:)` releases the removed value after unlocking. This is the path
+    /// `HubChannelDispatcher.removeListener(withId:)` takes.
+    ///
+    /// - Given: An `AtomicDictionary` whose only value, when released, reads the same dictionary
+    /// - When:
+    ///    - `removeValue(forKey:)` removes it
+    /// - Then:
+    ///    - It returns, and the value's `deinit` saw an empty dictionary
+    ///
+    func testDictionaryRemoveValueReleasesTheRemovedValueOutsideTheLock() {
+        let dictionary = AtomicDictionary<Int, ReentrantValue>()
+        let observedCount = AtomicValue<Int?>(initialValue: nil)
+        dictionary.set(value: ReentrantValue { observedCount.set(dictionary.count) }, forKey: 1)
+
+        guard runsToCompletion({ dictionary.removeValue(forKey: 1) }) else {
+            return XCTFail("removeValue(forKey:) deadlocked")
+        }
+        XCTAssertEqual(observedCount.get(), 0)
+    }
+
+    /// Assigning `nil` through the subscript releases the removed value after unlocking
+    ///
+    /// - Given: An `AtomicDictionary` whose only value, when released, reads the same dictionary
+    /// - When:
+    ///    - `dictionary[key] = nil` removes it
+    /// - Then:
+    ///    - It returns, and the value's `deinit` saw an empty dictionary
+    ///
+    func testDictionarySubscriptNilReleasesTheRemovedValueOutsideTheLock() {
+        let dictionary = AtomicDictionary<Int, ReentrantValue>()
+        let observedCount = AtomicValue<Int?>(initialValue: nil)
+        dictionary.set(value: ReentrantValue { observedCount.set(dictionary.count) }, forKey: 1)
+
+        guard runsToCompletion({ dictionary[1] = nil }) else {
+            return XCTFail("dictionary[key] = nil deadlocked")
+        }
+        XCTAssertEqual(observedCount.get(), 0)
+    }
+
     /// `AtomicValue.set` releases the replaced value after unlocking
     ///
     /// - Given: An `AtomicValue` whose value, when released, reads the same `AtomicValue`

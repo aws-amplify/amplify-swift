@@ -50,7 +50,9 @@ public final class AtomicValue<Value>: @unchecked Sendable {
     /// - Warning: The AtomicValue lock is not reentrant. Specifically, it is not
     /// possible to call outside the block to `get` an AtomicValue (e.g., via a
     /// convenience property) while inside the `with` block. Attempting to do so will
-    /// cause a deadlock.
+    /// cause a deadlock. Unlike `set(_:)`, a value the block overwrites or removes is
+    /// released before the lock is dropped, so the same applies to that value's `deinit`:
+    /// if it can use this `AtomicValue`, replace the value with `set(_:)` instead.
     public func with(block: (inout Value) -> Void) {
         lock.execute {
             block(&value)

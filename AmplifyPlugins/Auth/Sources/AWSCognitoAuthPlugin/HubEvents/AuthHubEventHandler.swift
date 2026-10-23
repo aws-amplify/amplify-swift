@@ -14,8 +14,26 @@ final class AuthHubEventHandler: AuthHubEventBehavior, @unchecked Sendable {
 
     var lastSendEventName: HubPayloadEventName?
 
+    /// The Hub category the listener was added to, and the listener's token. The listener is removed
+    /// when the handler is released, so that a released plugin leaves nothing behind on the Hub.
+    private let hub: HubCategory
+    private(set) var listenerToken: UnsubscribeToken?
+
     init() {
+        self.hub = Amplify.Hub
         setupHubEvents()
+    }
+
+    deinit {
+        guard let listenerToken else {
+            return
+        }
+        // Through the default Hub plugin directly: `HubCategory.removeListener` goes through
+        // `HubCategory.plugin`, which traps while the category is `.pendingConfiguration` or when it does
+        // not have exactly one plugin, and neither can be checked from here. With a custom Hub plugin,
+        // `getPlugin(for: AWSHubPlugin.key)` throws, so the listener stays registered on that plugin, but it
+        // is inert: it holds the handler weakly. `Amplify.reset()` removes every listener anyway.
+        (try? hub.getPlugin(for: AWSHubPlugin.key))?.removeListener(listenerToken)
     }
 
     func sendUserSignedInEvent() {
@@ -37,7 +55,7 @@ final class AuthHubEventHandler: AuthHubEventBehavior, @unchecked Sendable {
     // swiftlint:disable cyclomatic_complexity
     private func setupHubEvents() {
 
-        _ = Amplify.Hub.listen(to: .auth) {[weak self] payload in
+        listenerToken = hub.listen(to: .auth) {[weak self] payload in
             switch payload.eventName {
 
             case HubPayload.EventName.Auth.signInAPI:

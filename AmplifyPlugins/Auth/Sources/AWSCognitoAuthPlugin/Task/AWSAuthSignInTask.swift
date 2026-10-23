@@ -8,6 +8,7 @@
 import Amplify
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class AWSAuthSignInTask: AuthSignInTask, DefaultLogger, @unchecked Sendable {
@@ -85,11 +86,14 @@ final class AWSAuthSignInTask: AuthSignInTask, DefaultLogger, @unchecked Sendabl
     }
 
     private func doSignIn(authflowType: AuthFlowType) async throws -> AuthSignInResult {
+        // Listen before sending, so the loop sees every state the event leads to. Listening after the
+        // send started from whatever state the machine had reached by then, which depended on how fast
+        // the first sign-in action ran.
+        let stateSequences = await authStateMachine.listen()
         log.verbose("Sending signIn event")
         await sendSignInEvent(authflowType: authflowType)
 
         log.verbose("Waiting for signin to complete")
-        let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
             guard case .configured(let authNState, let authZState, _) = state else { continue }
 
@@ -146,7 +150,7 @@ final class AWSAuthSignInTask: AuthSignInTask, DefaultLogger, @unchecked Sendabl
             username: request.username,
             password: request.password,
             clientMetadata: clientMetadata(),
-            signInMethod: .apiBased(authflowType),
+            signInMethod: .apiBased(EngineAuthFlowType(authflowType)),
             presentationAnchor: presentationAnchor
         )
         let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
@@ -158,7 +162,7 @@ final class AWSAuthSignInTask: AuthSignInTask, DefaultLogger, @unchecked Sendabl
         if let flowType = (request.options.pluginOptions as? AWSAuthSignInOptions)?.authFlowType {
             return flowType
         }
-        return userPoolConfiguration.authFlowType
+        return AuthFlowType(userPoolConfiguration.authFlowType)
     }
 
     private func clientMetadata() -> [String: String] {

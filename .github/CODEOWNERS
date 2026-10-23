@@ -16,7 +16,10 @@ api-dump-test/* @aws-amplify/amplify-ios-admins
 # (GoldenFileSupport.swift, LogTranscriptNormaliser.swift, ErrorCatalogueConstants.swift, the fixture
 # paths each test reads) needs an admin, including files added there later. So does the plugin's shared
 # scheme: CI tests through it, and its launch environment can set AMPLIFY_GENERATE_GOLDEN, which makes
-# the golden tests write their files instead of comparing them.
+# the golden tests write their files instead of comparing them. GoldenGenerateModeGuardTests fails a
+# full-scheme run with that switch set however it got in (scheme, TEST_RUNNER_, shell), so the scheme
+# rule is a backstop. These close only the generate switch: skipping or deselecting the golden suites
+# through the CI workflows or scripts/python/ stays a team-reviewed change.
 /AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenStoredFormat/ @aws-amplify/amplify-ios-admins
 /AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenErrors/ @aws-amplify/amplify-ios-admins
 /AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenLogs/ @aws-amplify/amplify-ios-admins

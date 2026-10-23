@@ -1,0 +1,62 @@
+# The offline self-tests of the Cognito client's integration-test infrastructure
+# (AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/): the sandbox's scripts, the CI provisioner
+# (infra/ci/provision-ci.sh, snapshot.py), the CI overlay, the config fetch, and the Lambdas. Each test runs over
+# fakes (a fake `aws` first on PATH, or the scripts' AWS calls replaced): no AWS call is made, and the job needs no
+# credentials and no secrets.
+#
+# - every infra/test_*.py, with unittest;
+# - every infra/test_*.sh and infra/ci/test_*.sh;
+# - node --test on infra/ci/lambda/test_pre_sign_up_refusal.mjs and each infra/ci/lambda/*/test_*.mjs.
+#
+# On macOS: the tests read file modes with BSD stat, and the scripts are written for macOS's bash 3.2 and jq, as the
+# maintainers run them. The rerun check over the CI resources as first applied needs a commit only the authors'
+# history has; a clone without it reports that check as skipped.
+
+name: Auth | Cognito Client Integration Infra
+
+on:
+  pull_request:
+    paths:
+      - 'AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/**'
+      - '.github/workflows/auth_client_infra_self_tests.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/**'
+      - '.github/workflows/auth_client_infra_self_tests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  infra-self-tests:
+    name: Cognito client integration infra self-tests
+    runs-on: macos-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        with:
+          node-version: 22
+
+      - name: Python tests
+        run: python3 -m unittest discover -s . -p 'test_*.py'
+
+      - name: Shell tests
+        run: |
+          for test in test_*.sh ci/test_*.sh; do
+            echo "::group::$test"
+            bash "$test"
+            echo "::endgroup::"
+          done
+
+      - name: Node tests
+        run: node --test ci/lambda/test_pre_sign_up_refusal.mjs ci/lambda/*/test_*.mjs

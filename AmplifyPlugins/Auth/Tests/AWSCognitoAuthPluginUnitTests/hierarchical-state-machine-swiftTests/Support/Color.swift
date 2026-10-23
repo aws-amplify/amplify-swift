@@ -7,6 +7,7 @@
 
 import Foundation
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 enum Color: State, CaseIterable {
     case red

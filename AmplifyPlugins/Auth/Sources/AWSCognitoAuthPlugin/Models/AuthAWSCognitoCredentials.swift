@@ -7,6 +7,7 @@
 
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 public struct AuthAWSCognitoCredentials: AWSTemporaryCredentials {
 
@@ -24,7 +25,7 @@ extension AuthAWSCognitoCredentials: Codable { }
 extension AuthAWSCognitoCredentials: Equatable { }
 
 extension AuthAWSCognitoCredentials: CustomDebugDictionaryConvertible {
-    var debugDictionary: [String: Any] {
+    package var debugDictionary: [String: Any] {
         [
             "accessKey": accessKeyId.masked(interiorCount: 5),
             "secretAccessKey": secretAccessKey.masked(interiorCount: 5),

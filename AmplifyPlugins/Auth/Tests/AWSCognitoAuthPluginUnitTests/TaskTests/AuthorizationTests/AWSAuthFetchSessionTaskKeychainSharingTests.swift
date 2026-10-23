@@ -5,9 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+@testable import InternalAWSCognitoAuth
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 @_spi(KeychainStore) import AWSPluginsCore
 
 /// Verifies that when a shared keychain access group is enabled, the
@@ -36,7 +38,7 @@ class AWSAuthFetchSessionTaskKeychainSharingTests: XCTestCase, @unchecked Sendab
         func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData {
             switch type {
             case .amplifyCredentials:
-                guard let remote else { throw KeychainStoreError.itemNotFound }
+                guard let remote else { throw EngineCredentialStoreError.itemNotFound }
                 return .amplifyCredentials(remote)
             case .deviceMetadata(let username):
                 return .deviceMetadata(.noData, username)
@@ -65,7 +67,7 @@ class AWSAuthFetchSessionTaskKeychainSharingTests: XCTestCase, @unchecked Sendab
     private func runReconcile(initial: AuthState, remote: AmplifyCredentials?) async -> StateRecorder {
         let environment = makeEnvironment(remote: remote)
         let stateMachine = AuthStateMachine(
-            resolver: AuthState.Resolver(),
+            resolver: AuthState.Resolver(logger: AmplifyEngineLogRouter()),
             environment: environment,
             initialState: initial
         )

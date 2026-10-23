@@ -7,6 +7,7 @@
 
 import Foundation
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 typealias CounterStateMachine = StateMachine<
     Counter.Resolver.StateType,

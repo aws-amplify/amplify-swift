@@ -1,0 +1,1 @@
+{"hostedUI":{"_0":{"scopes":["openid","email","aws.cognito.signin.user.admin"],"resource":"myapp://resource","providerInfo":{"idpIdentifier":"fixture-idp"},"prompt":"login consent","preferPrivateSession":true,"nonce":"fixture-nonce","login_hint":"fixture-user@example.com","lang":"en"}}}

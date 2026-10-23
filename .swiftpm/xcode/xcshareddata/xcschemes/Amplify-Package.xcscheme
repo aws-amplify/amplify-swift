@@ -580,6 +580,118 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyAvailability"
+               BuildableName = "AmplifyAvailability"
+               BlueprintName = "AmplifyAvailability"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "InternalAWSCognitoAuth"
+               BuildableName = "InternalAWSCognitoAuth"
+               BlueprintName = "InternalAWSCognitoAuth"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "InternalAmplifyKeychain"
+               BuildableName = "InternalAmplifyKeychain"
+               BlueprintName = "InternalAmplifyKeychain"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyRecordCache"
+               BuildableName = "AmplifyRecordCache"
+               BlueprintName = "AmplifyRecordCache"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyEventEnrichmentClient"
+               BuildableName = "AmplifyEventEnrichmentClient"
+               BlueprintName = "AmplifyEventEnrichmentClient"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "InternalCloudWatchLogging"
+               BuildableName = "InternalCloudWatchLogging"
+               BlueprintName = "InternalCloudWatchLogging"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyCognitoClient"
+               BuildableName = "AmplifyCognitoClient"
+               BlueprintName = "AmplifyCognitoClient"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyKeychainTestCommon"
+               BuildableName = "AmplifyKeychainTestCommon"
+               BlueprintName = "AmplifyKeychainTestCommon"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -916,6 +1028,36 @@
                BlueprintIdentifier = "AmplifyCloudWatchClientTests"
                BuildableName = "AmplifyCloudWatchClientTests"
                BlueprintName = "AmplifyCloudWatchClientTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "InternalAmplifyKeychainTests"
+               BuildableName = "InternalAmplifyKeychainTests"
+               BlueprintName = "InternalAmplifyKeychainTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyEventEnrichmentClientTests"
+               BuildableName = "AmplifyEventEnrichmentClientTests"
+               BlueprintName = "AmplifyEventEnrichmentClientTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyCognitoClientTests"
+               BuildableName = "AmplifyCognitoClientTests"
+               BlueprintName = "AmplifyCognitoClientTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

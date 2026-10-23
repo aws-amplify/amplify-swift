@@ -1,0 +1,99 @@
+{
+  "comment": "U-WA, the plugin's WebAuthn backend (AuthWebAuthnAppUITests/README.md, P-10): as U-PL (passwordless.json), with WEB_AUTHN added to the first factors (PASSWORD, WEB_AUTHN, EMAIL_OTP, SMS_OTP) and a WebAuthnConfiguration whose relying party is the plugin's: the domain in CognitoClientWebAuthnApp.entitlements (committed, as in the plugin's AuthWebAuthnApp.entitlements), used read-only; user verification preferred, as the plugin's backend sets it. A pool of its own, as the plugin has, so a branch that provisions U-PL without WebAuthn cannot switch it off. Custom senders capture every code; the pre-sign-up trigger auto-confirms ccit- users. EMAIL_OTP needs the verified SES identity (P-8).",
+  "userPool": {
+    "UserPoolTier": "ESSENTIALS",
+    "DeletionProtection": "INACTIVE",
+    "Policies": {
+      "PasswordPolicy": {
+        "MinimumLength": 10,
+        "RequireUppercase": true,
+        "RequireLowercase": false,
+        "RequireNumbers": true,
+        "RequireSymbols": true,
+        "TemporaryPasswordValidityDays": 20
+      },
+      "SignInPolicy": {
+        "AllowedFirstAuthFactors": [
+          "PASSWORD",
+          "WEB_AUTHN",
+          "EMAIL_OTP",
+          "SMS_OTP"
+        ]
+      }
+    },
+    "UsernameConfiguration": {
+      "CaseSensitive": false
+    },
+    "AutoVerifiedAttributes": [
+      "email"
+    ],
+    "AccountRecoverySetting": {
+      "RecoveryMechanisms": [
+        {
+          "Name": "admin_only",
+          "Priority": 1
+        }
+      ]
+    },
+    "AdminCreateUserConfig": {
+      "AllowAdminCreateUserOnly": false
+    },
+    "EmailConfiguration": {
+      "EmailSendingAccount": "DEVELOPER",
+      "SourceArn": "${SES_IDENTITY_ARN}",
+      "From": "${SES_FROM_EMAIL}"
+    },
+    "SmsConfiguration": {
+      "SnsCallerArn": "${SMS_ROLE_ARN}",
+      "ExternalId": "${SMS_EXTERNAL_ID}",
+      "SnsRegion": "${SMS_REGION}"
+    },
+    "LambdaConfig": {
+      "PreSignUp": "${PRE_SIGN_UP_ARN}",
+      "CustomEmailSender": {
+        "LambdaVersion": "V1_0",
+        "LambdaArn": "${CUSTOM_SENDER_ARN}"
+      },
+      "CustomSMSSender": {
+        "LambdaVersion": "V1_0",
+        "LambdaArn": "${CUSTOM_SENDER_ARN}"
+      },
+      "KMSKeyID": "${KMS_KEY_ARN}"
+    }
+  },
+  "mfa": {
+    "MfaConfiguration": "OPTIONAL",
+    "SoftwareTokenMfaConfiguration": {
+      "Enabled": true
+    },
+    "WebAuthnConfiguration": {
+      "RelyingPartyId": "${WEBAUTHN_RP_ID}",
+      "UserVerification": "preferred"
+    },
+    "SmsMfaConfiguration": {
+      "SmsAuthenticationMessage": "Your code is {####}",
+      "SmsConfiguration": {
+        "SnsCallerArn": "${SMS_ROLE_ARN}",
+        "ExternalId": "${SMS_EXTERNAL_ID}",
+        "SnsRegion": "${SMS_REGION}"
+      }
+    }
+  },
+  "appClients": {
+    "client": {
+      "ExplicitAuthFlows": [
+        "ALLOW_USER_AUTH",
+        "ALLOW_USER_SRP_AUTH",
+        "ALLOW_USER_PASSWORD_AUTH",
+        "ALLOW_REFRESH_TOKEN_AUTH"
+      ],
+      "EnableTokenRevocation": true,
+      "PreventUserExistenceErrors": "ENABLED"
+    }
+  },
+  "outputs": {
+    "webauthn": {
+      "client": "client"
+    }
+  }
+}

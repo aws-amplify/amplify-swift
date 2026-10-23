@@ -1,0 +1,24 @@
+{
+  "authConfiguration": "userPools-minimal",
+  "existingSession": "absent",
+  "services": {
+    "<bundle>.AWSCognitoIdentityUserPool": {
+      "fixture-client-id.currentUser": {
+        "string": "fixture-user"
+      },
+      "fixture-client-id.fixture-user.accessToken": {
+        "string": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature"
+      },
+      "fixture-client-id.fixture-user.idToken": {
+        "string": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature"
+      },
+      "fixture-client-id.fixture-user.refreshToken": {
+        "string": "fixture-legacy-refresh-token"
+      },
+      "fixture-client-id.fixture-user.tokenExpiration": {
+        "string": "2023-11-14T23:13:20Z"
+      }
+    }
+  },
+  "summary": "User pool records only, user-pool-only configuration"
+}

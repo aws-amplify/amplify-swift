@@ -37,8 +37,9 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase, @unchecked S
         if let token = unsubscribeToken {
             Amplify.Hub.removeListener(token)
         }
-        // Leave Amplify as a fresh process has it, so tests that run next, in other modules, can add
-        // plugins.
+        // Defensive cleanup: leave Amplify as a fresh process has it. Nothing here configures Amplify, but
+        // the Hub listeners above live on Amplify's shared state, and a class that runs next in the same
+        // process (the Auth plugin's configuration tests, under some filters) adds plugins.
         await Amplify.reset()
         // Remove the whole logging directory, not just `amplify.0.log`; the session under test
         // rotates to additional files (e.g. `amplify.1.log`) that would otherwise leak between tests.

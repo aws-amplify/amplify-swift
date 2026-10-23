@@ -11,6 +11,7 @@ import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 class AWSAuthSignInPluginTests: BasePluginTest, @unchecked Sendable {
 
@@ -196,6 +197,42 @@ class AWSAuthSignInPluginTests: BasePluginTest, @unchecked Sendable {
             XCTAssertTrue(result.isSignedIn, "Signin result should be complete")
         } catch {
             XCTFail("Received failure with error \(error)")
+        }
+    }
+
+    /// Test a user-auth signIn with a password first factor and no password
+    ///
+    /// - Given: Given an auth plugin with mocked service that fails any call to it
+    ///
+    /// - When:
+    ///    - I invoke signIn with a nil password and `.userAuth(preferredFirstFactor:)`, for `.password` and for
+    ///      `.passwordSRP`
+    /// - Then:
+    ///    - I should get the `.validation` error for the password field, with its description, its recovery
+    ///      suggestion and no underlying error, and the service is never called
+    ///
+    func testUserAuthSignInWithPasswordFactorAndNilPassword() async {
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            XCTFail("The service must not be called without a password")
+            throw AuthError.unknown("unexpected call")
+        })
+
+        for factor in [AuthFactorType.password, .passwordSRP] {
+            let pluginOptions = AWSAuthSignInOptions(authFlowType: .userAuth(preferredFirstFactor: factor))
+            let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
+            do {
+                let result = try await plugin.signIn(username: "username", password: nil, options: options)
+                XCTFail("\(factor): should not receive a success response \(result)")
+            } catch {
+                guard case AuthError.validation(let field, let description, let recovery, let underlying) = error else {
+                    XCTFail("\(factor): should receive a validation error instead got \(error)")
+                    continue
+                }
+                XCTAssertEqual(field, "password", "\(factor)")
+                XCTAssertEqual(description, "Password is required to signIn", "\(factor)")
+                XCTAssertEqual(recovery, "Make sure that a valid password is passed during signIn", "\(factor)")
+                XCTAssertNil(underlying, "\(factor)")
+            }
         }
     }
 

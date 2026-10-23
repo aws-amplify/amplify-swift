@@ -7,6 +7,7 @@
 
 import Foundation
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 
 extension SignInState: Codable {

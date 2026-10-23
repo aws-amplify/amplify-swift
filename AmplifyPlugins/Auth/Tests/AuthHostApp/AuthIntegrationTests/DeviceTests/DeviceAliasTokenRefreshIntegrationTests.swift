@@ -6,6 +6,7 @@
 //
 
 import AWSCognitoAuthPlugin
+import AWSPluginsCore
 import XCTest
 @testable import Amplify
 
@@ -40,11 +41,45 @@ class DeviceAliasTokenRefreshIntegrationTests: AWSAuthBaseTest, @unchecked Senda
     }
 
     override func tearDown() async throws {
+        // Every test signs the same pre-created user in from a fresh keychain, so each one adds a device,
+        // and the pool remembers them all. Forget this test's device, so the forget tests' "no devices
+        // left" holds whatever ran before them.
+        _ = try? await Amplify.Auth.forgetDevice()
         try await super.tearDown()
         AuthSessionHelper.clearSession()
     }
 
     // MARK: - Helpers
+
+    /// Calls `forgetDevice()` and checks that this session's device, identified by the `device_key` claim
+    /// of the current access token, was listed before and is not listed after. The user is shared by
+    /// every test (and by any overlapping run), so other devices may be listed too.
+    private func assertForgetsThisDevice(
+        _ description: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async throws {
+        let deviceKey = try await currentDeviceKey()
+        let before = try await Amplify.Auth.fetchDevices().map(\.id)
+        XCTAssertTrue(before.contains(deviceKey), "\(description): this device was not listed", file: file, line: line)
+        _ = try await Amplify.Auth.forgetDevice()
+        let after = try await Amplify.Auth.fetchDevices().map(\.id)
+        XCTAssertFalse(after.contains(deviceKey), "\(description): this device is still listed", file: file, line: line)
+    }
+
+    /// The device key Cognito put in the signed-in session's access token (`device_key`), which is the id
+    /// `fetchDevices()` lists the device under.
+    private func currentDeviceKey() async throws -> String {
+        let session = try await Amplify.Auth.fetchAuthSession()
+        let tokens = try XCTUnwrap(session as? AuthCognitoTokensProvider).getCognitoTokens().get()
+        let segments = tokens.accessToken.split(separator: ".")
+        var payload = try XCTUnwrap(segments.count == 3 ? segments[1] : nil, "The access token is not a JWT")
+            .replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
+        payload += String(repeating: "=", count: (4 - payload.count % 4) % 4)
+        let data = try XCTUnwrap(Data(base64Encoded: payload))
+        let claims = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        return try XCTUnwrap(claims["device_key"] as? String, "The access token has no device_key claim")
+    }
 
     private func signInAndWait(
         username: String,
@@ -210,12 +245,7 @@ class DeviceAliasTokenRefreshIntegrationTests: AWSAuthBaseTest, @unchecked Senda
         _ = try await Amplify.Auth.rememberDevice()
 
         // This should not throw — device metadata lookup uses inputUsername
-        _ = try await Amplify.Auth.forgetDevice()
-
-        // Verify device is no longer listed
-        let devices = try await Amplify.Auth.fetchDevices()
-        XCTAssertEqual(devices.count, 0,
-            "Device list should be empty after forgetDevice()")
+        try await assertForgetsThisDevice("forgetDevice()")
     }
 
     /// Test that forgetDevice works after a token refresh with email alias
@@ -237,11 +267,7 @@ class DeviceAliasTokenRefreshIntegrationTests: AWSAuthBaseTest, @unchecked Senda
         XCTAssertTrue(session.isSignedIn)
 
         // Now forget — inputUsername must still be available after refresh
-        _ = try await Amplify.Auth.forgetDevice()
-
-        let devices = try await Amplify.Auth.fetchDevices()
-        XCTAssertEqual(devices.count, 0,
-            "forgetDevice should work after token refresh with email alias")
+        try await assertForgetsThisDevice("forgetDevice after token refresh with email alias")
     }
 
     // MARK: - fetchDevices with Email Alias Tests
@@ -377,11 +403,6 @@ class DeviceAliasTokenRefreshIntegrationTests: AWSAuthBaseTest, @unchecked Senda
         XCTAssertTrue(session.isSignedIn)
 
         // Forget — should succeed using inputUsername for metadata lookup
-        _ = try await Amplify.Auth.forgetDevice()
-
-        // Fetch — should be empty now
-        let devicesAfterForget = try await Amplify.Auth.fetchDevices()
-        XCTAssertEqual(devicesAfterForget.count, 0,
-            "Device list should be empty after forgetDevice with email alias")
+        try await assertForgetsThisDevice("forgetDevice with email alias")
     }
 }

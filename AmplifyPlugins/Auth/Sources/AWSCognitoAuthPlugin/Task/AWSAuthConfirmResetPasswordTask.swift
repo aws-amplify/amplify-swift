@@ -10,6 +10,7 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask, DefaultLogger, @unchecked Sendable {
@@ -34,9 +35,10 @@ final class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask, Defau
         do {
 
             try await confirmResetPassword()
-        } catch let error as AuthErrorConvertible {
-            throw error.authError
         } catch {
+            if let authError = AuthError(converting: error) {
+                throw authError
+            }
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }
@@ -71,7 +73,7 @@ final class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask, Defau
         )
         let userContextData = CognitoIdentityProviderClientTypes.UserContextDataType(
             encodedData: encodedData)
-        let analyticsMetadata = userPoolEnvironment
+        let analyticsMetadata = await userPoolEnvironment
             .cognitoUserPoolAnalyticsHandlerFactory()
             .analyticsMetadata()
         let secretHash = ClientSecretHelper.calculateSecretHash(

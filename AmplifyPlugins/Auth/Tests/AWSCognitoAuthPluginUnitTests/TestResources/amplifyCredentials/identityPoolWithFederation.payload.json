@@ -1,0 +1,1 @@
+{"identityPoolWithFederation":{"federatedToken":{"token":"fixture-federated-token","provider":{"facebook":{}}},"credentials":{"secretAccessKey":"fixture-secret-access-key","sessionToken":"fixture-session-token","expiration":1021692800,"accessKeyId":"fixture-access-key-id"},"identityID":"us-east-1:fixture-federated-identity-id"}}
