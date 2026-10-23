@@ -41,7 +41,8 @@
 #   with the key), and an SSM parameter stored under another key than the script's own, which it stores again, with
 #   the same value, under that key. It never updates a pool or a Lambda's code: after a change to a pool template, or
 #   to lambda/triggers/triggers.mjs, lambda/custom-sender or ci/lambda/*, delete that pool or function by hand and
-#   rerun, which makes it again (with its invoke permissions).
+#   rerun, which makes it again (with its invoke permissions). lambda-drift tells a function whose deployed code is
+#   not this checkout's.
 #
 # Every resource is named ccit-ci-… (identity pool ccit_ci_default, parameters /ccit-ci/…) and tagged
 # purpose=amplify-cognito-client-integ. The script finds them by name, creates only what is missing, refuses any
@@ -68,6 +69,11 @@
 #       read-only: prints the code sink's API key's expiry and what the reminder (code_sink_key.py check) says of
 #       it; --record writes the date to code-sink-key-expiry.json beside this script, to commit. --apply --scope all
 #       records it too, whenever it reads, creates or extends the key
+#   infra/ci/provision-ci.sh lambda-drift [--record]
+#       read-only: whether each ccit-ci- Lambda's deployed code is this checkout's (its zip, built deterministically,
+#       or the deployment lambda-baseline.json records for the same sources); exit 1 on any DRIFT. --record writes
+#       that baseline from what is deployed, to commit, once it is known to be this checkout's code. A Lambda's
+#       RuntimeVersionConfig, which Lambda moves by itself, is not compared
 #
 # Environment: COGNITO_CLIENT_INTEG_CI_CONFIG_URL, s3://<bucket>/<path>, the value of CI's AWS_S3_BUCKET_INTEG_V2
 # (the folder that holds auth/); CCIT_CI_REGION, default us-east-1; CCIT_CI_APPSYNC_API_QUOTA, the account's AppSync
@@ -105,7 +111,7 @@ while (( $# > 0 )); do
         --scope) [[ $# -ge 2 ]] || usage; SCOPE="$2"; shift ;;
         --allow-foreign-additions) ALLOW_FOREIGN=1 ;;
         --record) RECORD=1 ;;
-        snapshot|verify-unchanged|teardown|key-expiry) COMMAND="$1" ;;
+        snapshot|verify-unchanged|teardown|key-expiry|lambda-drift) COMMAND="$1" ;;
         -h|--help) usage ;;
         -*) usage ;;
         *) POSITIONAL+=("$1") ;;
@@ -125,11 +131,11 @@ fi
 if [[ "$COMMAND" != "provision" && "$UPLOAD" == 1 ]]; then
     usage
 fi
-if [[ "$RECORD" == 1 && "$COMMAND" != "key-expiry" ]]; then
+if [[ "$RECORD" == 1 && "$COMMAND" != "key-expiry" && "$COMMAND" != "lambda-drift" ]]; then
     usage
 fi
 
-for tool in jq python3 shasum zip; do
+for tool in jq python3 shasum; do
     command -v "$tool" >/dev/null || die "$tool is not on PATH."
 done
 command -v aws >/dev/null || die "the AWS CLI is not on PATH."
@@ -763,10 +769,12 @@ generate_temporary() {
 # --- Lambdas ----------------------------------------------------------------------------------------------
 
 # Sets ZIP to the zip for function $1 in $CI_WORK, built once per code: the sandbox's triggers.mjs, the sandbox's
-# custom sender (npm ci), or this directory's new-password reset. It sets a variable rather than printing the path, so
+# custom sender (npm ci), or this directory's discard sender or new-password reset. The zip is deterministic
+# (lambda_code.py), so the CodeSha256 Lambda reports is the one lambda-drift builds from the same checkout. Built in
+# --apply, and for lambda-drift (BUILD_ZIPS=1). It sets a variable rather than printing the path, so
 # that it runs in this shell, never in a $(…), where a refusal would end only the subshell and the run would go on.
 # The custom sender needs npm, which a dry run checks too, so --apply's dry run refuses before any change without it.
-ZIP=""
+ZIP="" BUILD_ZIPS=0
 zip_for() {
     local suffix="$1" zip build
     case "$suffix" in
@@ -778,21 +786,17 @@ zip_for() {
     if [[ "$suffix" == custom-sender ]]; then
         command -v npm >/dev/null || die "npm is not on PATH; the custom sender needs npm ci."
     fi
-    if [[ ! -f "$zip" && "$CI_MODE" == "apply" ]]; then
-        case "$suffix" in
-            custom-sender)
-                build="$CI_WORK/custom-sender"
-                mkdir -p "$build"
-                cp "$INFRA"/lambda/custom-sender/{index.mjs,package.json,package-lock.json} "$build/"
-                (cd "$build" && npm ci --omit=dev --ignore-scripts --no-audit --no-fund >/dev/null 2>&1) \
-                    || die "npm ci for the custom sender failed."
-                (cd "$build" && rm -f node_modules/.package-lock.json && zip -q -X -r "$zip" index.mjs package.json node_modules)
-                ;;
-            new-password-reset|discard-sender)
-                (cd "$CI_DIR/lambda/$suffix" && zip -q -X "$zip" index.mjs) ;;
-            *)
-                (cd "$INFRA/lambda/triggers" && zip -q -X "$zip" triggers.mjs) ;;
-        esac
+    if [[ ! -f "$zip" && ( "$CI_MODE" == "apply" || "$BUILD_ZIPS" == 1 ) ]]; then
+        if [[ "$suffix" == custom-sender ]]; then
+            build="$CI_WORK/custom-sender"
+            mkdir -p "$build"
+            cp "$INFRA"/lambda/custom-sender/{index.mjs,package.json,package-lock.json} "$build/"
+            (cd "$build" && npm ci --omit=dev --ignore-scripts --no-audit --no-fund >/dev/null 2>&1) \
+                || die "npm ci for the custom sender failed."
+            python3 "$CI_DIR/lambda_code.py" zip custom-sender "$zip" "$build" || die "the custom sender's zip failed."
+        else
+            python3 "$CI_DIR/lambda_code.py" zip "$suffix" "$zip" || die "the zip of $suffix failed."
+        fi
     fi
     ZIP="$zip"
 }
@@ -1333,6 +1337,40 @@ key_expiry() {
     fi
 }
 
+# --- Lambda drift (lambda_code.py) ------------------------------------------------------------------------
+
+# lambda-drift [--record]: read-only. Compares each ccit-ci- Lambda's deployed CodeSha256 with the zip built from
+# this checkout (the custom sender's only with npm on PATH), and, for one deployed before the zips were
+# deterministic, with the baseline lambda-baseline.json records (CCIT_CI_LAMBDA_BASELINE names another). --record
+# writes the baseline from what is deployed: only once the deployed code is known to be this checkout's.
+lambda_drift() {
+    local suffix out deployed zips sha
+    zips="$CI_WORK/zips"
+    mkdir -p "$zips"
+    deployed="{}"
+    BUILD_ZIPS=1
+    for suffix in "${TRIGGERS_ALL[@]}" discard-sender custom-sender new-password-reset; do
+        sha="null"
+        if read_aws_or_missing out ResourceNotFoundException lambda get-function-configuration \
+            --function-name "$(fn_name "$suffix")"; then
+            sha=$(jq -c '.CodeSha256' <<<"$out")
+        fi
+        deployed=$(jq -c --arg k "$suffix" --argjson v "$sha" '.[$k] = $v' <<<"$deployed")
+        if [[ "$suffix" == custom-sender ]] && ! command -v npm >/dev/null; then
+            continue
+        fi
+        zip_for "$suffix"
+        cp "$ZIP" "$zips/$suffix.zip"
+    done
+    printf '%s\n' "$deployed" > "$CI_WORK/deployed.json"
+    say "The ccit-ci- Lambdas' code (read-only), against this checkout:"
+    if (( RECORD )); then
+        python3 "$CI_DIR/lambda_code.py" record "$CI_WORK/deployed.json"
+    else
+        python3 "$CI_DIR/lambda_code.py" compare "$CI_WORK/deployed.json" "$zips" ${GITHUB_ACTIONS:+--github}
+    fi
+}
+
 # --- snapshot ---------------------------------------------------------------------------------------------
 
 # Appends one resource to the snapshot's raw list: kind, id, name (both masked before anything prints them) and
@@ -1592,4 +1630,5 @@ case "$COMMAND" in
         ;;
     snapshot) snapshot ;;
     key-expiry) key_expiry ;;
+    lambda-drift) lambda_drift ;;
 esac

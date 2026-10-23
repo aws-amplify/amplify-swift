@@ -10,6 +10,7 @@
 prints them (`An error occurred (<Code>) when calling the <Op> operation: …`) with its exit status 254. Every
 identifier is a placeholder. Installed by the test as `aws`, first on PATH; it never calls AWS."""
 
+import base64
 import fcntl
 import hashlib
 import json
@@ -342,8 +343,11 @@ def handle(state, service, verb, o, data):
             if not data["Role"].split("/")[-1] in s.get("roles", {}):
                 raise Fail("InvalidParameterValueException", "The role defined for the function cannot be assumed by Lambda.")
             config = {k: v for k, v in data.items() if k != "Tags"}
+            # As Lambda reports it: the base64 SHA-256 of the zip.
+            with open(one(o, "zip-file")[len("fileb://"):], "rb") as f:
+                code_sha = base64.b64encode(hashlib.sha256(f.read()).digest()).decode()
             config.update({"FunctionArn": f"arn:aws:lambda:{region}:{acct}:function:{name}", "State": "Active",
-                           "CodeSha256": "fake", "RevisionId": new_id(s, "rev", 8)})
+                           "CodeSha256": code_sha, "RevisionId": new_id(s, "rev", 8)})
             functions[name] = {"config": config, "tags": data.get("Tags", {}), "policy": [], "zip": one(o, "zip-file")}
             return config
         name = one(o, "function-name") or (one(o, "resource") or "").rsplit(":", 1)[-1]

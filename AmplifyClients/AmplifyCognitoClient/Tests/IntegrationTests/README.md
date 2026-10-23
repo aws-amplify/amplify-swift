@@ -832,6 +832,18 @@ A rerun never updates a user pool or a Lambda's code. After a change to a pool t
 `infra/lambda/triggers/triggers.mjs`, `infra/lambda/custom-sender` or `infra/ci/lambda/*`, delete that pool or function
 by hand and rerun: the rerun makes it again, and replaces the invoke permissions that name a pool's old ARN.
 
+**Lambda drift.** `infra/ci/provision-ci.sh lambda-drift` (read-only: one `GetFunctionConfiguration` a function)
+compares each `ccit-ci-` Lambda's deployed `CodeSha256` with the zip built from the checkout, and exits 1 on a DRIFT,
+naming the function. The zips are deterministic (`infra/ci/lambda_code.py`: files sorted, dated 1980-01-01, mode
+644, as `parity.py` builds the sandbox's), so a function made from this checkout matches. Functions made before that,
+from `zip -X` zips, never match their sources' zip: after confirming they are this checkout's code, `lambda-drift
+--record` writes their deployed `CodeSha256`s, with a digest of their sources, to `infra/ci/lambda-baseline.json`,
+to commit, and they then count as the recorded deployment until their sources change (or redeploy them: delete and
+rerun). `lambda_code.py check-baseline` is the offline half: it reads only the committed baseline and the
+checkout, and fails (exit 1) when a recorded function's sources changed since its deployment, or exits 3 with no
+baseline. Only the code is compared: `RuntimeVersionConfig`, which Lambda moves by itself, is not.
+`bash infra/ci/test_lambda_code.sh` tests it offline, and `test_provision_ci.sh` runs `lambda-drift` over the fake.
+
 ## Optional: the sandbox
 
 This directory's own Cognito sandbox (`infra/`) is no longer the default for local runs: run on the plugin's CI

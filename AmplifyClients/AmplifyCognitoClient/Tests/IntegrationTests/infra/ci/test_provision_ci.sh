@@ -26,7 +26,8 @@
 # a code sink key near its expiry is extended in place, its expiry recorded for the reminder (and by key-expiry
 # --record, read-only); that the AppSync headroom is checked only by a run that
 # creates the API, against CCIT_CI_APPSYNC_API_QUOTA; that a dry run refuses a custom sender to build without npm,
-# and a failed npm ci stops --apply before the sender; that snapshot and verify-unchanged ignore a user count, and
+# and a failed npm ci stops --apply before the sender; that lambda-drift tells a Lambda whose deployed code is not
+# this checkout's, until a baseline records it; that snapshot and verify-unchanged ignore a user count, and
 # fail on a changed, removed or foreign added resource (a foreign role's inline policy, key policy, parameter or log
 # group included), but not on a ccit-ci- addition or change, nor on a Lambda's runtime version, and that the
 # snapshot's documents hold no secret; that
@@ -56,6 +57,8 @@ export AWS_CONFIG_FILE=/dev/null AWS_SHARED_CREDENTIALS_FILE=/dev/null CCIT_CI_D
 export COGNITO_CLIENT_INTEG_CI_CONFIG_URL="s3://fake-ci-bucket.example/v2/testconfiguration"
 # The code sink key's expiry record, never the committed one.
 export CCIT_CI_KEY_RECORD="$WORK/code-sink-key-expiry.json"
+# The Lambdas' deployment baseline, never the committed one.
+export CCIT_CI_LAMBDA_BASELINE="$WORK/lambda-baseline.json"
 unset AWS_PROFILE AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN CCIT_CI_REGION
 [[ "$(command -v aws)" == "$BIN/aws" ]] || { echo "FAIL: the fake aws is not first on PATH"; exit 1; }
 ACCOUNT=123456789012
@@ -868,6 +871,34 @@ npm_is_checked_by_the_dry_run_and_a_failed_build_stops_the_apply() {
         || { echo "$OUT" | tail -5; return 1; }
 }
 
+# lambda-drift, with read calls only: every Lambda --apply made (deterministic zips, whose SHA-256 the fake reports as
+# CodeSha256, as Lambda does) is this checkout's code; one whose code is something else (changed by hand, or built
+# before the zips were deterministic) is DRIFT, by name, and exit 1, until --record writes the baseline, after which
+# it is the recorded deployment; a changed runtime version is not compared.
+lambda_drift_finds_code_that_is_not_this_checkouts() {
+    fresh_state
+    rm -f "$CCIT_CI_LAMBDA_BASELINE"
+    run --apply --scope all
+    (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
+    jq '.lambdas["ccit-ci-pre-sign-up"].config.RuntimeVersionConfig = {RuntimeVersionArn: "arn:placeholder:runtime:v2"}' \
+        "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    run lambda-drift
+    (( STATUS == 0 )) && only_reads && no_identifiers \
+        && [[ "$(grep -c "the deployed code is this checkout's" <<<"$OUT")" == 8 ]] || { echo "$OUT"; return 1; }
+    jq '.lambdas["ccit-ci-pre-sign-up"].config.CodeSha256 = "b3RoZXIgY29kZQ=="' "$FAKE_STATE" > "$WORK/s" \
+        && mv "$WORK/s" "$FAKE_STATE"
+    run lambda-drift
+    (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"DRIFT ccit-ci-pre-sign-up: the deployed code is neither"* ]] \
+        && [[ "$(grep -c DRIFT <<<"$OUT")" == 1 && "$OUT" != *b3RoZXIgY29kZQ* ]] || { echo "$OUT"; return 1; }
+    run lambda-drift --record
+    (( STATUS == 0 )) && only_reads && jq -e '.functions | length == 8' "$CCIT_CI_LAMBDA_BASELINE" >/dev/null \
+        || { echo "$OUT"; return 1; }
+    run lambda-drift
+    (( STATUS == 0 )) && [[ "$OUT" == *"= ccit-ci-pre-sign-up: the deployed code is the recorded deployment"* ]] \
+        || { echo "$OUT"; return 1; }
+    rm -f "$CCIT_CI_LAMBDA_BASELINE"
+}
+
 # Foreign AppSync APIs, $1 of them, as other teams' backends in the CI account.
 add_foreign_apis() {
     jq --argjson n "$1" 'reduce range($n) as $i (.; .apis["foreignapi\($i)"] = {api: {apiId: "foreignapi\($i)",
@@ -979,6 +1010,8 @@ check "any other error stops --apply, and a second --apply makes only what is mi
     another_error_stops_the_apply_and_a_rerun_finishes_it
 check "a dry run refuses a custom sender without npm, and a failed npm ci stops --apply before the sender" \
     npm_is_checked_by_the_dry_run_and_a_failed_build_stops_the_apply
+check "lambda-drift tells a Lambda whose deployed code is not this checkout's, until a baseline records it" \
+    lambda_drift_finds_code_that_is_not_this_checkouts
 check "the AppSync headroom is checked only by a run that creates the API, against CCIT_CI_APPSYNC_API_QUOTA" \
     appsync_headroom_is_checked_only_when_the_api_is_created
 check "the library refuses a name that is not ccit-ci-, and a mutating call in a dry run" library_guards
