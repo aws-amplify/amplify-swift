@@ -65,7 +65,7 @@ jobs:
           fi
           base="$BASE_REF"
           git fetch --no-tags origin "$base" || true
-          git diff --name-only "$(git merge-base HEAD "origin/$base")" HEAD > /tmp/changed.txt
+          git diff --name-only --no-renames "$(git merge-base HEAD "origin/$base")" HEAD > /tmp/changed.txt
           swift package dump-package > /tmp/package.json
           python3 scripts/python/affected_targets.py \
             --package /tmp/package.json --changed /tmp/changed.txt \
