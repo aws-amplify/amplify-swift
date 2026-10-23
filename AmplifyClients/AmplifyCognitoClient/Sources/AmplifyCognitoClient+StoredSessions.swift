@@ -16,7 +16,8 @@ public extension AmplifyCognitoClient {
 
     /// Sets the display text a picker shows for this session, or clears it with `nil`. The library cannot
     /// invent this. The label survives sign-out, and is cleared when a different user signs in to the
-    /// session.
+    /// session through a client; for `.default`, a different user's sign-in through the Auth plugin only
+    /// hides it (see `StoredSession.label`).
     ///
     /// - Throws: `AuthClientError.storageUnavailable` if storage could not be written;
     ///   `AuthClientError.unknown` if the saved record is one this version cannot read; `CancellationError` if
