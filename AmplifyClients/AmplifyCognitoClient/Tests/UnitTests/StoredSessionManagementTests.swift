@@ -343,8 +343,10 @@ final class StoredSessionManagementTests: XCTestCase {
             record.credentials = refreshed.data
             return record
         }
-        // Reads of the record: 1 the initial read, 2 the check after the revoke, 3 the store sign-out's.
-        harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work), occurrence: 3) { rival.move() }
+        // Reads of the record on the static path: 1 the carry-forward read (`readCarryingForward`), 2 the sign-out's
+        // first read, 3 the check after the revoke, 4 the store sign-out's. A live session's sign-out makes no
+        // carry-forward read, so it reads the record once less.
+        harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work), occurrence: 4) { rival.move() }
 
         let result = await signOut(work)
 
@@ -367,10 +369,12 @@ final class StoredSessionManagementTests: XCTestCase {
         let bob = FakePayload.signedIn("bob")
         try harness.signIn(work, alice)
         let rival = ConcurrentWriter(store: harness.store(), sessionId: work) { _ in bob.record() }
-        harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work), occurrence: 3) { rival.move() }
+        // The fourth read of the record, the store sign-out's (see `testSupersededBySameUserRevokesTheNewCredentialsAndRetries`).
+        harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work), occurrence: 4) { rival.move() }
 
         let result = await signOut(work)
 
+        XCTAssertEqual(rival.commits, 1)
         XCTAssertEqual(result, .failed(SessionSignOut.supersededError()))
         XCTAssertEqual(harness.revoker.revokeCalls, [alice.data])
         XCTAssertEqual(try harness.storedRecord(work), bob.record())
@@ -381,7 +385,7 @@ final class StoredSessionManagementTests: XCTestCase {
     /// bob is signed out with his tokens never revoked.
     ///
     /// - Given: alice's saved session, and another process that signs bob in right after the check that
-    ///   follows the revoke (the second read of the record)
+    ///   follows the revoke (the third read of the record, after the carry-forward read and the sign-out's first)
     /// - When: it is signed out through the static call
     /// - Then:
     ///    - the result is `.failed(.invalidState)`, only alice was revoked, and bob's record is untouched
@@ -390,7 +394,7 @@ final class StoredSessionManagementTests: XCTestCase {
         let bob = FakePayload.signedIn("bob")
         try harness.signIn(work, alice)
         let rival = ConcurrentWriter(store: harness.store(), sessionId: work) { _ in bob.record() }
-        harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work), occurrence: 2) { rival.move() }
+        harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work), occurrence: 3) { rival.move() }
 
         let result = await signOut(work)
 
