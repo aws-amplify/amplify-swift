@@ -13,12 +13,12 @@ import XCTest
 /// the plugin's `PasswordlessTests/PasswordlessSignInTests`, one test per plugin method, with the
 /// plugin's method names.
 ///
-/// U-PL (`SandboxPool.passwordless`) allows the first factors `PASSWORD`, `EMAIL_OTP` and `SMS_OTP`
-/// (with `PASSWORD_SRP`, which Cognito offers alongside `PASSWORD`), and hands every code to the code
-/// sink (P-5c) through its custom senders, so nothing is delivered. Each test signs up its own user with a
-/// password, an `@example.com` email and a fictional `+1 555` number, all verified by the pre-sign-up
-/// trigger; the plugin confirms its sign-up with a code instead, which this pool's trigger makes
-/// unnecessary.
+/// U-PL (`SandboxPool.passwordless`, the plugin's passwordless backend, or the sandbox's copy of it) allows the
+/// first factors `PASSWORD`, `EMAIL_OTP` and `SMS_OTP` (with `PASSWORD_SRP`, which Cognito offers alongside
+/// `PASSWORD`), and hands every code to the code sink through its custom senders, so nothing is delivered. Each
+/// test signs up its own user with a password, an `@example.com` email and a fictional `+1 555` number. The plugin's
+/// backend has no pre-sign-up trigger, so each user is confirmed with its sign-up code from the sink, as the plugin
+/// confirms its own; on the sandbox's file set, the sandbox's pre-sign-up trigger confirms and verifies it instead.
 ///
 /// PL-11 (`testSignInWithUnsupportedPreference_givenValidUser_expectSelectChallenge`, a WebAuthn
 /// preference) goes through the anchored `signIn` overload: the

@@ -325,22 +325,23 @@ extension HarnessHelperTests {
         XCTAssertFalse(accounts.contains { $0.contains(".\(ordinary.stringValue).") }, RealKeychain.redact("\(accounts)"))
     }
 
-    /// The CI-only skip (`IntegrationTestEnvironment.skipOnCIIfMissing`) happens only on CI, off the sandbox's
-    /// file set, with the resource missing, for every reason (offline).
+    /// The CI-only skip (`IntegrationTestEnvironment.skipOnCIIfMissing`) happens only in a run that asks for it
+    /// (`COGNITO_CLIENT_INTEG_CI_SKIPS=1`, which CI itself does not set: it is for a run on the plugin's own files),
+    /// off the sandbox's file set, with the resource missing, for every reason (offline).
     ///
-    /// - Given: Every `CISkipReason`, and each of the 8 combinations of the three conditions: the run is CI's
-    ///   (`COGNITO_CLIENT_INTEG_CI_SKIPS=1`), the file set is the sandbox's, the resource is present
+    /// - Given: Every `CISkipReason`, and each of the 8 combinations of the three conditions: the run asks for the
+    ///   CI-only skips (`COGNITO_CLIENT_INTEG_CI_SKIPS=1`), the file set is the sandbox's, the resource is present
     /// - When:
     ///    - The helper is called over each combination
     /// - Then:
-    ///    - It throws `XCTSkip`, with the reason's message, for exactly one combination: on CI, off the sandbox's
-    ///      set, the resource missing; for the other seven it returns, and the decision without throwing
-    ///      (`skipsOnCI`) agrees
-    ///    - The file set is not read unless the run is CI's and the resource is missing
+    ///    - It throws `XCTSkip`, with the reason's message, for exactly one combination: the skips asked for, off
+    ///      the sandbox's set, the resource missing; for the other seven it returns, and the decision without
+    ///      throwing (`skipsOnCI`) agrees
+    ///    - The file set is not read unless the skips are asked for and the resource is missing
     ///    - Each message says it is a CI-only skip, and no two reasons share one
-    ///    - With the conditions read from this process, a present resource never skips, and, off CI (no
-    ///      variable, as in every local run), neither does a missing one
-    ///    - Of the sign-up roles, only the device-alias one has a CI skip (`SandboxSignUp.ciSkip(for:)`), with
+    ///    - With the conditions read from this process, a present resource never skips, and, without the variable
+    ///      (as in CI's own jobs, which set none, and every local run that does not set it), neither does a missing one
+    ///    - Of the sign-up roles, only the device-alias one has a CI-only skip (`SandboxSignUp.ciSkip(for:)`), with
     ///      `deviceAliasConfirmation`
     ///
     func testCISkipHappensOnlyOnCIOffTheSandboxWithTheResourceMissing() throws {
@@ -397,7 +398,7 @@ extension HarnessHelperTests {
             if pool == .emailAlias {
                 XCTAssertEqual(skip?.reason, .deviceAliasConfirmation, "\(pool)")
             } else {
-                XCTAssertNil(skip, "\(pool): only the device-alias role's sign-ups skip on CI")
+                XCTAssertNil(skip, "\(pool): only the device-alias role's sign-ups have a CI-only skip")
             }
         }
     }
