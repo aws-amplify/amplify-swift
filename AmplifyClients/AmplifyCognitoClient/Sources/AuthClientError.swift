@@ -64,6 +64,13 @@ public enum AuthClientError {
     /// Also a request that could not be completed: a network failure has no code and the network error itself
     /// underneath (the `URLError`, or the CFNetwork or POSIX error), and a response that could not be read, or
     /// another URL loading failure, has no code either.
+    ///
+    /// And, with no code, a failure Cognito reported as its own, which the plugin reports as `AuthError.unknown`: its
+    /// internal error (`InternalErrorException`, from either pool), whose suggestion says to retry, and an error
+    /// status the SDK does not model, whose suggestion says to retry (a 5xx) or that Cognito refused the request with
+    /// an error this client does not recognise. The description has Cognito's message, and the status when there is
+    /// one. An internal error from `deleteUser`, a sign-out's revoke or global sign-out, or a passkey credential call
+    /// is still `unknown`.
     case service(AuthClientServiceErrorCode?, ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// The caller is not allowed to perform the operation: for example, a wrong password, or a

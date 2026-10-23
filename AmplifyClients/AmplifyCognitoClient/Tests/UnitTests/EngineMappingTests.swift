@@ -490,8 +490,8 @@ final class EngineMappingTests: XCTestCase {
         XCTAssertEqual(emptyOther.recoverySuggestion, AuthClientError.clientServiceSuggestion)
     }
 
-    /// A Cognito failure the engine reports as `.unknown` keeps that case, with a recovery suggestion that fits it,
-    /// never the engine's "report a bug" text.
+    /// A Cognito failure the engine reports as `.unknown` is `.service` with no code, with a recovery suggestion that
+    /// fits it, never the engine's "report a bug" text.
     ///
     /// - Given: engine `.unknown` errors over an error status the SDK does not model (`UnknownAWSHTTPServiceError`)
     ///   of 500, 503, 400 and 404; engine failures made from either pool's `InternalErrorException`, on its own and
@@ -502,11 +502,11 @@ final class EngineMappingTests: XCTestCase {
     /// - When:
     ///    - each is mapped
     /// - Then:
-    ///    - each Cognito failure stays `.unknown`, with the engine's description and the engine error underneath; the
-    ///      5xx statuses and the internal errors suggest a retry, the 4xx statuses say the service refused the request
-    ///      with an error the client does not recognise, and none asks for a bug report
-    ///    - the others keep the engine's suggestion
-    func testACognitoFailureReportedAsUnknownSuggestsARetryOrNamesTheRefusal() throws {
+    ///    - each Cognito failure is `.service` with no code, with the engine's description and the engine error
+    ///      underneath; the 5xx statuses and the internal errors suggest a retry, the 4xx statuses say the service
+    ///      refused the request with an error the client does not recognise, and none asks for a bug report
+    ///    - the others stay `.unknown`, with the engine's suggestion
+    func testACognitoFailureReportedAsUnknownIsACodelessServiceError() throws {
         let fault = "The service could not complete the request, usually a temporary problem at the service. Retry the operation."
         let refusal = "The service refused the request with an error this client does not recognise. The description has the "
             + "service's status and message: check the request against it before retrying."
@@ -526,7 +526,7 @@ final class EngineMappingTests: XCTestCase {
             )
             let engine = unmodelled.engineError
             let mapped = AuthClientError(engine: engine)
-            XCTAssertEqual(mapped.kind, .unknown, "\(status)")
+            XCTAssertEqual(mapped.kind, .service(nil), "\(status)")
             XCTAssertEqual(mapped.errorDescription, engine.errorDescription, "\(status)")
             XCTAssertTrue(mapped.errorDescription.contains("\(status.rawValue)"), mapped.errorDescription)
             XCTAssertEqual(mapped.recoverySuggestion, expected, "\(status)")
@@ -553,12 +553,13 @@ final class EngineMappingTests: XCTestCase {
                 return XCTFail("\(name): the engine's mapping changed: \(engine)")
             }
             let mapped = AuthClientError(engineFailure: failure)
-            XCTAssertEqual(mapped.kind, .unknown, name)
+            XCTAssertEqual(mapped.kind, .service(nil), name)
             XCTAssertEqual(mapped.errorDescription, "Unexpected error occurred with message: boom", name)
             XCTAssertEqual(mapped.recoverySuggestion, fault, name)
             XCTAssertNotNil(mapped.underlyingError as? EngineAuthError, name)
             // The confirm path's mapping keeps the cause too.
             let confirming = AuthClientError(engineConfirmingSignIn: engine, rejectedByUserPool: false, cause: failure as? Error)
+            XCTAssertEqual(confirming.kind, .service(nil), name)
             XCTAssertEqual(confirming.recoverySuggestion, fault, name)
         }
 

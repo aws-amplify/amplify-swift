@@ -16,8 +16,9 @@ import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
 /// A failure Cognito reports as its own (either pool's `InternalErrorException`, or an error status the SDK does not
-/// model) stays `.unknown`, as the plugin reports it, with a recovery suggestion that fits it: never the engine's
-/// "This should not happen … file an issue" text.
+/// model), which the plugin reports as `AuthError.unknown`, is `.service` with no code in every call that hands the
+/// mapping its cause, with a recovery suggestion that fits it: never the engine's "This should not happen … file an
+/// issue" text.
 final class LiveEngineServiceFailureTests: XCTestCase {
 
     private var harness: LiveEngineHarness!
@@ -32,20 +33,29 @@ final class LiveEngineServiceFailureTests: XCTestCase {
         super.tearDown()
     }
 
-    /// - Given: `InitiateAuth`, `ForgotPassword` and `GetTokensFromRefreshToken` failing with the user pool's
-    ///   `InternalErrorException`, and `GetId` with the identity pool's
-    /// - When: the live engine signs in, resets a password, refreshes a session, fetches guest credentials and
-    ///   federates
+    /// - Given: `InitiateAuth`, `SignUp`, `ForgotPassword`, `GetTokensFromRefreshToken`, `GetUser` and
+    ///   `ListDevices` failing with the user pool's `InternalErrorException`, and `GetId` with the identity pool's
+    /// - When: the live engine signs in, signs up, resets a password, refreshes a session, reads the user's
+    ///   attributes, MFA preference and devices, fetches guest credentials and federates
     /// - Then:
-    ///    - each throws `.unknown` with Cognito's message in the description and the retry suggestion; none asks for
-    ///      a bug report
+    ///    - each throws `.service` with no code, Cognito's message in the description and the retry suggestion; none
+    ///      asks for a bug report
     func testACognitoInternalErrorSuggestsARetry() async throws {
         let engine = try harness.engine()
         let payload = try await harness.signedInPayload(on: engine)
         harness.cognito.always("InitiateAuth") { (_: InitiateAuthInput) -> InitiateAuthOutput in
             throw AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
         }
+        harness.cognito.always("SignUp") { (_: SignUpInput) -> SignUpOutput in
+            throw AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+        }
         harness.cognito.always("ForgotPassword") { (_: ForgotPasswordInput) -> ForgotPasswordOutput in
+            throw AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+        }
+        harness.cognito.always("GetUser") { (_: GetUserInput) -> GetUserOutput in
+            throw AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+        }
+        harness.cognito.always("ListDevices") { (_: ListDevicesInput) -> ListDevicesOutput in
             throw AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
         }
         harness.cognito.always("GetTokensFromRefreshToken") { (_: GetTokensFromRefreshTokenInput) -> GetTokensFromRefreshTokenOutput in
@@ -55,10 +65,21 @@ final class LiveEngineServiceFailureTests: XCTestCase {
             throw AWSCognitoIdentity.InternalErrorException(message: "boom")
         }
 
+        let signUp = EngineSignUpRequest(
+            username: "carol",
+            password: "Password1!",
+            userAttributes: [:],
+            validationData: [:],
+            clientMetadata: [:]
+        )
         let operations: [(String, () async throws -> Void)] = [
             ("signIn", { _ = try await engine.signIn(.srp(), current: nil) }),
+            ("signUp", { _ = try await engine.signUp(signUp) }),
             ("resetPassword", { _ = try await engine.resetPassword(username: "carol", clientMetadata: [:]) }),
             ("refresh", { _ = try await engine.refresh(payload, force: true) }),
+            ("fetchUserAttributes", { _ = try await engine.fetchUserAttributes(payload) }),
+            ("fetchMFAPreference", { _ = try await engine.fetchMFAPreference(payload) }),
+            ("fetchDevices", { _ = try await engine.fetchDevices(payload) }),
             ("fetchGuestCredentials", { _ = try await engine.fetchGuestCredentials(current: nil) }),
             ("federateToIdentityPool", {
                 _ = try await engine.federateToIdentityPool(
@@ -69,7 +90,7 @@ final class LiveEngineServiceFailureTests: XCTestCase {
         ]
         for (name, body) in operations {
             await assertThrowsAsync(body) { error in
-                Self.assertUnknown(error, suggesting: AuthClientError.serviceFaultSuggestion, name)
+                Self.assertCodelessService(error, suggesting: AuthClientError.serviceFaultSuggestion, name)
                 XCTAssertTrue(Self.mapped(error)?.errorDescription.contains("boom") == true, "\(name): \(error)")
             }
         }
@@ -79,7 +100,7 @@ final class LiveEngineServiceFailureTests: XCTestCase {
     ///   with the user pool's `InternalErrorException`
     /// - When: the code is answered
     /// - Then:
-    ///    - it throws `.unknown` with the retry suggestion, never a bug report, as the confirm path maps it
+    ///    - it throws `.service` with no code and the retry suggestion, never a bug report, as the confirm path maps it
     func testACognitoInternalErrorAnsweringAChallengeSuggestsARetry() async throws {
         let engine = try harness.engine()
         harness.scriptSRP(then: LiveEngineFixtures.challenge(.smsMfa, parameters: LiveEngineFixtures.smsParameters))
@@ -92,14 +113,14 @@ final class LiveEngineServiceFailureTests: XCTestCase {
         }
 
         await assertThrowsAsync({ try await engine.confirmSignIn(.answer("123456"), current: nil) }) { error in
-            Self.assertUnknown(error, suggesting: AuthClientError.serviceFaultSuggestion, "confirmSignIn")
+            Self.assertCodelessService(error, suggesting: AuthClientError.serviceFaultSuggestion, "confirmSignIn")
         }
     }
 
     /// - Given: `InitiateAuth` and `GetId` failing with an error status the SDK does not model, of 500, 503 and 400
     /// - When: the live engine signs in, and federates
     /// - Then:
-    ///    - each throws `.unknown` with the status in the description; the 5xx statuses suggest a retry, the 400
+    ///    - each throws `.service` with no code and the status in the description; the 5xx statuses suggest a retry, the 400
     ///      says the service refused the request with an error the client does not recognise; none asks for a bug
     ///      report
     func testAnErrorStatusTheSDKDoesNotModelSuggestsARetryOrNamesTheRefusal() async throws {
@@ -133,7 +154,7 @@ final class LiveEngineServiceFailureTests: XCTestCase {
             for (operation, body) in operations {
                 let label = "\(operation), \(status.rawValue)"
                 await assertThrowsAsync(body) { error in
-                    Self.assertUnknown(error, suggesting: expected, label)
+                    Self.assertCodelessService(error, suggesting: expected, label)
                     XCTAssertTrue(Self.mapped(error)?.errorDescription.contains("\(status.rawValue)") == true, "\(label): \(error)")
                 }
             }
@@ -148,8 +169,8 @@ final class LiveEngineServiceFailureTests: XCTestCase {
     /// - When:
     ///    - alice signs in with `USER_PASSWORD_AUTH`
     /// - Then:
-    ///    - the 500 is `.unknown` with the retry suggestion, the 400 `.unknown` with the unrecognised-refusal
-    ///      suggestion and the service's message; neither asks for a bug report
+    ///    - the 500 is `.service` with no code and the retry suggestion, the 400 `.service` with no code, the
+    ///      unrecognised-refusal suggestion and the service's message; neither asks for a bug report
     func testCognitosUnmodelledAnswersThroughTheSDKAreMapped() async throws {
         let cases: [(StatusAnswerHTTPClient, String)] = [
             (StatusAnswerHTTPClient(statusCode: 500, body: Data()), AuthClientError.serviceFaultSuggestion),
@@ -186,7 +207,7 @@ final class LiveEngineServiceFailureTests: XCTestCase {
             ))
 
             await assertThrowsAsync({ try await engine.signIn(.flow(.userPassword), current: nil) }) { error in
-                Self.assertUnknown(error, suggesting: expected, "\(http.statusCode)")
+                Self.assertCodelessService(error, suggesting: expected, "\(http.statusCode)")
                 if http.statusCode == 400 {
                     XCTAssertTrue(Self.mapped(error)?.errorDescription.contains("fixture refusal") == true, "\(error)")
                 }
@@ -204,16 +225,17 @@ final class LiveEngineServiceFailureTests: XCTestCase {
         return error as? AuthClientError
     }
 
-    private static func assertUnknown(
+    private static func assertCodelessService(
         _ error: Error,
         suggesting expected: String,
         _ label: String,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
-        guard let mapped = mapped(error), case .unknown(_, let suggestion, _) = mapped else {
-            return XCTFail("\(label): expected .unknown, got \(error)", file: file, line: line)
+        guard let mapped = mapped(error), case .service(nil, _, let suggestion, let underlying) = mapped else {
+            return XCTFail("\(label): expected .service with no code, got \(error)", file: file, line: line)
         }
+        XCTAssertTrue(underlying is EngineAuthError, "\(label): \(String(describing: underlying))", file: file, line: line)
         XCTAssertEqual(suggestion, expected, label, file: file, line: line)
         XCTAssertFalse(suggestion.contains("bug"), label, file: file, line: line)
         XCTAssertFalse(suggestion.contains("file an issue"), label, file: file, line: line)

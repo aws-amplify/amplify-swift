@@ -282,7 +282,8 @@ extension AuthClientError {
 
     /// One exhaustive switch. The description and recovery suggestion are the engine's,
     /// which are the plugin's strings verbatim (pinned by its error-catalogue golden), read through the same accessors `AuthError` has, so
-    /// `.unknown` keeps the plugin's "Unexpected error occurred with message: …" prefix. The engine error is
+    /// an engine `.unknown`'s description keeps the plugin's "Unexpected error occurred with message: …" prefix, unless
+    /// it is replaced below. The engine error is
     /// the underlying error, so diagnostics lose nothing; its type is `package`, so it is never exposed by
     /// name.
     ///
@@ -320,10 +321,13 @@ extension AuthClientError {
     /// a bug. One with nothing underneath is the engine's own state (`FetchSessionError.noCredentialsToRefresh`),
     /// which no retry fixes, and keeps its text.
     ///
-    /// A Cognito failure the engine reports as `.unknown` keeps that case, with a recovery suggestion that fits it
-    /// in place of the engine's "report a bug" text (`serviceFailureSuggestion(underlying:cause:)`): an error
+    /// A Cognito failure the engine reports as `.unknown` (where the plugin keeps `AuthError.unknown`) is `.service`
+    /// with no code, as that case's documentation says, with the engine's description and a recovery suggestion that
+    /// fits it in place of the engine's "report a bug" text (`serviceFailureSuggestion(underlying:cause:)`): an error
     /// status the SDK does not model, or Cognito's `InternalErrorException`. The engine keeps nothing under the
-    /// latter, so only `cause`, the failure the engine error was made from, tells it apart.
+    /// latter, so only `cause`, the failure the engine error was made from, tells it apart. Where only the engine
+    /// error reaches the client (`deleteUser`, a sign-out's revoke or global sign-out, the passkey credential calls),
+    /// an internal error has no cause, and stays `.unknown` with the engine's suggestion.
     ///
     /// Engine texts that name the plugin's calls are given the client's names (`clientText(_:)`): the recovery
     /// suggestions in `clientRecoverySuggestions` ("Invoke Auth.signIn …" becomes "Call signIn …"), and
@@ -371,7 +375,7 @@ extension AuthClientError {
             if let underlying, let transport = Self.transportFailure(underlying, wrapping: error) {
                 self = transport
             } else if let serviceSuggestion = Self.serviceFailureSuggestion(underlying: underlying, cause: cause) {
-                self = .unknown(description, serviceSuggestion, error)
+                self = .service(nil, description, serviceSuggestion, error)
             } else {
                 self = .unknown(description, suggestion, error)
             }

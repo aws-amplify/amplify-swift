@@ -20,8 +20,9 @@ import InternalAWSCognitoAuth
 /// - any other failure while the calling task is cancelled, whatever the SDK threw for it (for example
 ///   `URLError.cancelled` from a cancelled load).
 ///
-/// Everything else the engine throws is an `EngineAuthError`, mapped by `AuthClientError(engine:)`; an error
-/// of any other type passes through, for the core's `operationFailure`.
+/// Everything else the engine throws is an `EngineAuthError`, mapped by `AuthClientError(engine:)` with no cause:
+/// the engine converts the service's exception before it gets here, so a Cognito internal error stays `.unknown`.
+/// An error of any other type passes through, for the core's `operationFailure`.
 extension LiveSessionEngine {
 
     /// Runs `body` and throws what `signedInFailure(_:cancelled:)` makes of its error.
