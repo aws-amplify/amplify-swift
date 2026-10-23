@@ -53,7 +53,8 @@ enum IntegrationTestEnvironment {
 
     /// The role the tests that need the default backend's extras run on: custom auth and its answer, the
     /// new-password users, a code API and a verified email at sign-up (CA-1…3 and the stored-answer check, CH-1,
-    /// P-3, the fixture check, AT-2's second half, RP-3). That is the extended role when its outputs file is in the
+    /// P-3, the fixture check, AT-2's second half, RP-3), and custom senders that capture the code an email update
+    /// sends, instead of a real email (AT-2, AT-4). That is the extended role when its outputs file is in the
     /// bundle (on CI, `infra/ci`'s `ccit-ci-default`, mapped in by `infra/ci/ci-overlay.sh`), and otherwise the
     /// default role itself: the sandbox's, which has them all, or the plugin's own, which has none, so on the
     /// plugin's files alone the tests fail naming the resource, or skip with their reasons when the run asks for

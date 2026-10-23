@@ -28,9 +28,13 @@ import Foundation
 /// a user the test wants confirmed is then confirmed with its sign-up code, so the rest of the test sees
 /// the same user either way.
 ///
-/// No message is ever delivered: the pools' custom senders hand every code to the code API. Delete each
-/// user when the test ends (`XCTestCase.deleteAtTeardown(_:)`, or `ClientIntegrationTestCase.makeFreshUser`,
-/// which does it for you); the sandbox's `prepare-run.sh` removes any left over after 24 hours (P-12).
+/// On the sandbox's pools and the client's own CI pools, no message is ever delivered: their custom senders hand every
+/// code to the code API. The plugin's CI backends that name no code API (all but its passwordless and two email-MFA
+/// backends) capture no code: there a code Cognito sends is a real email or text, which counts against the account's
+/// daily limit that CI shares with the plugin's suites, so a test that makes Cognito send one runs on a role that
+/// captures it. Delete each user when the test ends (`XCTestCase.deleteAtTeardown(_:)`, or
+/// `ClientIntegrationTestCase.makeFreshUser`, which does it for you); the sandbox's `prepare-run.sh` removes any left
+/// over after 24 hours (P-12).
 enum SandboxSignUp {
 
     /// What a fresh user signs up with.

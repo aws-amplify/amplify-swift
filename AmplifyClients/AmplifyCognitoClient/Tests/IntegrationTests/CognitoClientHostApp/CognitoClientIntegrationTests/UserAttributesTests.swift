@@ -8,16 +8,22 @@
 @_spi(AmplifyExperimental) import AmplifyCognitoClient
 import XCTest
 
-/// The plugin's `AuthUserAttributesTests`, through the client (AT-1 … AT-7), on
-/// `default`: attribute updates need no verification first (`AttributesRequireVerificationBeforeUpdate`
-/// is empty), and the custom senders put every code in the sink. The plugin's test names are kept.
+/// The plugin's `AuthUserAttributesTests`, through the client (AT-1 … AT-7), on the default backend's settings:
+/// attribute updates need no verification first (`AttributesRequireVerificationBeforeUpdate` is empty). The
+/// plugin's test names are kept.
 ///
-/// AT-5 and AT-6 read a code and hold under either update setting, so they run on U-PL (`passwordless`),
-/// whose outputs name a code API. AT-2 checks the email is updated before it is verified, which only a
-/// backend with empty `AttributesRequireVerificationBeforeUpdate` shows: that is the default backend, as the
-/// plugin's README sets it, so AT-2 stays there. As the plugin's test, it reads no code; its second half,
-/// the code verifying the updated email (`testUpdatedEmailIsVerifiedWithTheCodeSentToIt`, not counted),
-/// needs a code API on the default backend.
+/// The tests that update the email (AT-2, its second half, and AT-4) make Cognito send a verification code to the
+/// new address, so they run on the role with the default backend's extras (`IntegrationTestEnvironment.extrasRole`:
+/// on CI the client's own `extended` role, on the sandbox `default`), whose custom senders put every code in the sink
+/// and deliver nothing. The plugin's own default backend has no custom senders: there each would send a real email,
+/// counted against the account's daily email limit, which CI shares with the plugin's suites. AT-2 checks the email
+/// is updated before it is verified, which only a backend with empty `AttributesRequireVerificationBeforeUpdate`
+/// shows: the extras role is a copy of the sandbox's default pool, which leaves it empty, as the plugin's README sets
+/// the default backend. As the plugin's test, AT-2 reads no code; its second half, the code verifying the updated
+/// email (`testUpdatedEmailIsVerifiedWithTheCodeSentToIt`, not counted), needs the extras role's code API.
+///
+/// AT-5 and AT-6 read a code and hold under either update setting, so they run on U-PL (`passwordless`), whose
+/// outputs name a code API. AT-1, AT-3 and AT-7 send no code, and run on `default`.
 ///
 /// Every user is a fresh `ccit-` user signed in through the client, and deleted at teardown. No test prints
 /// a username, email, password or code: the checks on them are boolean.
@@ -46,7 +52,10 @@ final class UserAttributesTests: ClientIntegrationTestCase {
     /// Updating the email sends a code to the new address, and the update is applied at once (AT-2), as
     /// far as the plugin's test goes: it stops at the update, and reads no code.
     ///
-    /// - Given: a fresh user with an email, signed in
+    /// It runs on the role with the default backend's extras (`IntegrationTestEnvironment.extrasRole`), whose custom
+    /// senders deliver no email.
+    ///
+    /// - Given: a fresh user with an email, signed in, on the extras role
     /// - When:
     ///    - the client updates `email` to a new address, with client metadata
     /// - Then:
@@ -54,7 +63,7 @@ final class UserAttributesTests: ClientIntegrationTestCase {
     ///    - fetching returns the new email, before it is verified
     ///
     func testSuccessfulUpdateEmailAttribute() async throws {
-        let (client, _) = try await makeSignedInFreshUser("at-2")
+        let (client, _) = try await makeSignedInFreshUser("at-2", on: IntegrationTestEnvironment.extrasRole)
         let updatedEmail = SandboxSignUp.identity().email
 
         let result = try await client.update(
@@ -73,10 +82,10 @@ final class UserAttributesTests: ClientIntegrationTestCase {
     ///
     /// It reads the code Cognito sends to the new address, so it needs a code API on the default backend: it runs
     /// on the role with the default backend's extras (`IntegrationTestEnvironment.extrasRole`).
-    /// The plugin's CI file for it names none (its README deploys no custom senders): on CI it skips
-    /// (`CISkipReason.defaultCodeAPI`), and elsewhere without one it fails naming the file.
+    /// The plugin's own default file names none (its README deploys no custom senders): on the plugin's files alone it
+    /// fails naming the file, or skips with `COGNITO_CLIENT_INTEG_CI_SKIPS=1` (`CISkipReason.defaultCodeAPI`).
     ///
-    /// - Given: a fresh user with an email, signed in, on the default backend
+    /// - Given: a fresh user with an email, signed in, on the extras role
     /// - When:
     ///    - the client updates `email` to a new address, with client metadata
     ///    - then confirms it with the first code the sink received after the update
@@ -135,14 +144,17 @@ final class UserAttributesTests: ClientIntegrationTestCase {
 
     /// Confirming an updated email with a wrong code is `codeMismatch` (AT-4).
     ///
-    /// - Given: a fresh user, signed in, whose email was just updated
+    /// It runs on the role with the default backend's extras (`IntegrationTestEnvironment.extrasRole`), whose custom
+    /// senders deliver no email: the update sends a code to the new address.
+    ///
+    /// - Given: a fresh user, signed in, on the extras role, whose email was just updated
     /// - When:
     ///    - the client confirms `email` with a code that was not sent
     /// - Then:
     ///    - it throws `.service(.codeMismatch)` (the plugin accepts any service error)
     ///
     func testSuccessfulUserAttributesConfirmation() async throws {
-        let (client, _) = try await makeSignedInFreshUser("at-4")
+        let (client, _) = try await makeSignedInFreshUser("at-4", on: IntegrationTestEnvironment.extrasRole)
         let result = try await client.update(
             userAttribute: .init(.email, value: SandboxSignUp.identity().email),
             options: .init(clientMetadata: metadata)
