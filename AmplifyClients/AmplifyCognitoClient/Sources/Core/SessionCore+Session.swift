@@ -349,10 +349,16 @@ extension SessionCore {
                 "Auth State not in a valid state",
                 "Operation performed is not a valid operation for the current auth state"
             )
-        case .signedOut, .guest, .federated:
+        case .signedOut, .guest:
             throw AuthClientError.notSignedIn(
                 "There is no user signed in to retrieve current user",
                 "Call signIn to sign a user in to this session, then call getCurrentUser."
+            )
+        case .federated:
+            // A sign-in is refused over a federated session (`signInSeed`): say what lets one in.
+            throw AuthClientError.notSignedIn(
+                "There is no user signed in to retrieve current user",
+                "Call clearFederationToIdentityPool() or sign the session out, then sign a user in to this session and call getCurrentUser."
             )
         case .unavailable(let reason):
             throw AuthClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later. Do not treat this as signed out.")

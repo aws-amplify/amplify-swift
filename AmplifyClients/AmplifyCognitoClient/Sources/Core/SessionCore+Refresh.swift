@@ -88,9 +88,10 @@ extension SessionCore {
     static func federatedHasNoAccessToken() -> CredentialsError {
         .notConfigured(
             "This session cannot provide an access token: it is federated to the identity pool, with no user pool sign-in.",
-            "Sign the session in through the user pool to get an access token, or ask a different provider."
+            "Call clearFederationToIdentityPool() or sign the session out, then sign in through the user pool to get an access token; or ask a different provider."
         )
     }
+
 
     /// The payload to read credentials from: restored, checked usable for `purpose`, and refreshed
     /// through the session's single refresh flight if it needs it.

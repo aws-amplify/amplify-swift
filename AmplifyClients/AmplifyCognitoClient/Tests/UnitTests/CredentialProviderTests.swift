@@ -244,7 +244,7 @@ final class CredentialProviderTests: XCTestCase {
         )
         XCTAssertEqual(
             token?.recoverySuggestion,
-            "Sign the session in through the user pool to get an access token, or ask a different provider."
+            "Call clearFederationToIdentityPool() or sign the session out, then sign in through the user pool to get an access token; or ask a different provider."
         )
     }
 

@@ -739,6 +739,37 @@ final class FederationTests: XCTestCase {
         XCTAssertEqual(state, .signedOut)
     }
 
+    // MARK: What a federated session refuses
+
+    /// A sign-in is refused over a federated session until the federation is cleared or the session signed out, so the
+    /// refusals of what needs a user pool user say so, rather than to sign in.
+    ///
+    /// - Given: a federated session
+    /// - When: a signed-in operation and `getCurrentUser` are called (the access token's refusal is in
+    ///   `CredentialProviderTests`)
+    /// - Then:
+    ///    - the operation throws `notSignedIn` saying the session is federated, with no user pool user
+    ///    - each recovery suggestion names `clearFederationToIdentityPool()` or a sign-out before a sign-in
+    func testAFederatedSessionsRefusalsSayToClearTheFederationFirst() async throws {
+        try harness.signIn(work, .federated())
+        let client = try harness.client(work)
+
+        let operation = await authClientError { try await client.fetchMFAPreference() }
+        let user = await authClientError { try await client.getCurrentUser() }
+
+        XCTAssertEqual(operation?.kind, .notSignedIn)
+        XCTAssertEqual(operation?.errorDescription, "Session \"work\" has no user pool user: it is federated to the identity pool.")
+        XCTAssertEqual(
+            operation?.recoverySuggestion,
+            "Call clearFederationToIdentityPool() or sign the session out, then sign in through the user pool."
+        )
+        XCTAssertEqual(user?.kind, .notSignedIn)
+        XCTAssertEqual(
+            user?.recoverySuggestion,
+            "Call clearFederationToIdentityPool() or sign the session out, then sign a user in to this session and call getCurrentUser."
+        )
+    }
+
     // MARK: Sign-out
 
     /// Signing a federated session out works as for a guest: nothing to revoke server-side (the live engine
