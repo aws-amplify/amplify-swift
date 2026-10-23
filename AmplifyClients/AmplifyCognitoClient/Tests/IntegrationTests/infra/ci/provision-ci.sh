@@ -64,6 +64,10 @@
 #   infra/ci/provision-ci.sh teardown [--dry-run | --apply]
 #       deletes only the resources above, each after its tag check (the KMS key is scheduled for deletion in
 #       7 days); a dry run by default
+#   infra/ci/provision-ci.sh key-expiry [--record]
+#       read-only: prints the code sink's API key's expiry and what the reminder (code_sink_key.py check) says of
+#       it; --record writes the date to code-sink-key-expiry.json beside this script, to commit. --apply --scope all
+#       records it too, whenever it reads, creates or extends the key
 #
 # Environment: COGNITO_CLIENT_INTEG_CI_CONFIG_URL, s3://<bucket>/<path>, the value of CI's AWS_S3_BUCKET_INTEG_V2
 # (the folder that holds auth/); CCIT_CI_REGION, default us-east-1; CCIT_CI_APPSYNC_API_QUOTA, the account's AppSync
@@ -86,6 +90,7 @@ SCOPE="email-alias"
 COMMAND="provision"
 ALLOW_FOREIGN=0
 POSITIONAL=()
+RECORD=0
 
 usage() {
     sed -n '/^#   infra\/ci\/provision-ci.sh/,/^# Environment/p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//' >&2
@@ -99,7 +104,8 @@ while (( $# > 0 )); do
         --upload) UPLOAD=1 ;;
         --scope) [[ $# -ge 2 ]] || usage; SCOPE="$2"; shift ;;
         --allow-foreign-additions) ALLOW_FOREIGN=1 ;;
-        snapshot|verify-unchanged|teardown) COMMAND="$1" ;;
+        --record) RECORD=1 ;;
+        snapshot|verify-unchanged|teardown|key-expiry) COMMAND="$1" ;;
         -h|--help) usage ;;
         -*) usage ;;
         *) POSITIONAL+=("$1") ;;
@@ -117,6 +123,9 @@ if [[ "$COMMAND" == "verify-unchanged" ]]; then
 fi
 (( ${#POSITIONAL[@]} == 0 )) || usage
 if [[ "$COMMAND" != "provision" && "$UPLOAD" == 1 ]]; then
+    usage
+fi
+if [[ "$RECORD" == 1 && "$COMMAND" != "key-expiry" ]]; then
     usage
 fi
 
@@ -200,7 +209,7 @@ new_password_users() {
 # (PLANNED_TRUST, PLANNED_POLICY <role>) are kept with kv_set and kv_get: bash 3.2, macOS's, has no associative
 # arrays.
 KMS_PLANNED_POLICY="" RESET_CREATED=0
-KMS_KEY_ID="" KMS_KEY_ARN="" API_ID="" API_ARN="" API_URL="" API_KEY="" IDENTITY_POOL_ID=""
+KMS_KEY_ID="" KMS_KEY_ARN="" API_ID="" API_ARN="" API_URL="" API_KEY="" API_KEY_EXPIRES="" IDENTITY_POOL_ID=""
 ANSWER="" TEMPORARY="" SMS_EXTERNAL_ID=""
 
 # --- Read-only checks first -------------------------------------------------------------------------------
@@ -604,11 +613,13 @@ ensure_api_key() {
     local out now expires input
     now=$(date +%s)
     expires=$((now + 364 * 86400))
+    API_KEY_EXPIRES="$expires"
     if ! is_new "$API_ID"; then
         read_aws out appsync list-api-keys --api-id "$API_ID"
         API_KEY=$(jq -r --argjson soon "$((now + 30 * 86400))" \
             '[.apiKeys[] | select(.description == "ccit-ci tests" and .expires > $soon)] | sort_by(.expires) | last | .id // empty' <<<"$out")
         if [[ -n "$API_KEY" ]]; then
+            API_KEY_EXPIRES=$(CCIT_SECRET_K="$API_KEY" jq -r '[.apiKeys[] | select(.id == $ENV.CCIT_SECRET_K)][0].expires' <<<"$out")
             say "  = the code sink API key (lives at least 30 more days)"
             return
         fi
@@ -1266,6 +1277,7 @@ provision() {
     else
         say "Would write into a new private directory (mode 600): $(config_files | paste -sd' ' -)"
     fi
+    [[ -z "$API_KEY_EXPIRES" ]] || note_key_expiry
     if (( UPLOAD )); then
         say "Upload:"
         upload_config
@@ -1275,6 +1287,49 @@ provision() {
         (( UPLOAD )) || say "Not uploaded. Check the files, then run again with --apply --upload."
     else
         say "Planned: $CI_MUTATIONS calls. Nothing was changed."
+    fi
+}
+
+# --- The code sink key's expiry (the reminder: code_sink_key.py) --------------------------------------------
+
+# The record is a date only (no identifier, no secret), committed beside this script, so a scheduled job, or any
+# CI run, can tell the key's last 30 days without AWS credentials. CCIT_CI_KEY_RECORD names another file.
+KEY_RECORD="${CCIT_CI_KEY_RECORD:-$CI_DIR/code-sink-key-expiry.json}"
+
+# After a run that reads, creates or extends the key: --apply records its expiry (and says to commit the record when
+# it changed); a dry run says what it would record.
+note_key_expiry() {
+    local date before
+    date=$(date -u -r "$API_KEY_EXPIRES" +%Y-%m-%d 2>/dev/null || date -u -d "@$API_KEY_EXPIRES" +%Y-%m-%d)
+    if [[ "$CI_MODE" != "apply" ]]; then
+        say "The code sink's API key expires on $date after this run; --apply records it in $(basename "$KEY_RECORD")."
+        return
+    fi
+    before=$(jq -r '.expires // ""' "$KEY_RECORD" 2>/dev/null || true)
+    python3 "$CI_DIR/code_sink_key.py" record "$API_KEY_EXPIRES" --record "$KEY_RECORD" >/dev/null
+    if [[ "$before" == "$date" ]]; then
+        say "The code sink's API key expires on $date, as $(basename "$KEY_RECORD") records."
+    else
+        say "Recorded the code sink's API key's expiry, $date, in $KEY_RECORD: commit it, so the reminder" \
+            "(code_sink_key.py check) sees it."
+    fi
+}
+
+# key-expiry [--record]: read-only. Prints the code sink key's expiry, and with --record writes it to the record.
+key_expiry() {
+    local out api
+    read_aws out appsync list-graphql-apis
+    api=$(jq -r --arg n "$API_NAME" '[.graphqlApis[] | select(.name == $n) | .apiId][0] // empty' <<<"$out")
+    [[ -n "$api" ]] || die "there is no AppSync API $API_NAME, so no code sink key."
+    read_aws out appsync list-api-keys --api-id "$api"
+    API_KEY_EXPIRES=$(jq -r '[.apiKeys[] | select(.description == "ccit-ci tests") | .expires] | max // empty' <<<"$out")
+    [[ -n "$API_KEY_EXPIRES" ]] || die "the code sink API has no \"ccit-ci tests\" key."
+    if (( RECORD )); then
+        CI_MODE=apply note_key_expiry
+    else
+        say "The code sink's API key expires on $(date -u -r "$API_KEY_EXPIRES" +%Y-%m-%d 2>/dev/null \
+            || date -u -d "@$API_KEY_EXPIRES" +%Y-%m-%d)."
+        python3 "$CI_DIR/code_sink_key.py" check --record "$KEY_RECORD" || true
     fi
 }
 
@@ -1536,4 +1591,5 @@ case "$COMMAND" in
         "$COMMAND"
         ;;
     snapshot) snapshot ;;
+    key-expiry) key_expiry ;;
 esac

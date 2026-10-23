@@ -820,6 +820,14 @@ The code sink's API key (phase 2) lives 364 days. A rerun of `--apply --scope al
 new key, and both files must be replaced, which `--upload` never does (it never overwrites), so replacing this
 script's own objects is then a separate step.
 
+**The reminder.** The key's expiry is recorded, as a date only, in `infra/ci/code-sink-key-expiry.json`, committed:
+`--apply --scope all` writes it whenever it reads, creates or extends the key, and `infra/ci/provision-ci.sh key-expiry
+--record` (read-only) writes it for the key as it is. Commit the file after either. `infra/ci/code_sink_key.py check`
+reads only that file, so it needs no AWS credentials: it passes while the key has more than 30 days left, and fails
+(exit 1) within them or once it has expired, saying what to run; exit 3 means no expiry is recorded. With the
+`extended` role, `ci-overlay.sh` prints its warning or error as an annotation on every client CI run in those last
+30 days or after the expiry. `bash infra/ci/test_code_sink_key.sh` tests it offline.
+
 A rerun never updates a user pool or a Lambda's code. After a change to a pool template, to
 `infra/lambda/triggers/triggers.mjs`, `infra/lambda/custom-sender` or `infra/ci/lambda/*`, delete that pool or function
 by hand and rerun: the rerun makes it again, and replaces the invoke permissions that name a pool's old ARN.

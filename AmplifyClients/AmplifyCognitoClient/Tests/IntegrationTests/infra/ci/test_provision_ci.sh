@@ -23,7 +23,8 @@
 # rerun over phase 2 as it was first applied (the script at 80712afe4 when git has it, else skipped) plans and makes
 # only the alias-codes and MFA-required pools and what they need, updates only the script's own resources, and
 # uploads only the three new files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after phase 2 makes no call, and
-# a code sink key near its expiry is extended in place; that the AppSync headroom is checked only by a run that
+# a code sink key near its expiry is extended in place, its expiry recorded for the reminder (and by key-expiry
+# --record, read-only); that the AppSync headroom is checked only by a run that
 # creates the API, against CCIT_CI_APPSYNC_API_QUOTA; that a dry run refuses a custom sender to build without npm,
 # and a failed npm ci stops --apply before the sender; that snapshot and verify-unchanged ignore a user count, and
 # fail on a changed, removed or foreign added resource (a foreign role's inline policy, key policy, parameter or log
@@ -53,6 +54,8 @@ chmod +x "$BIN/npm"
 export PATH="$BIN:$PATH" FAKE_STATE="$WORK/state.json" FAKE_LOG="$WORK/calls.log" TMPDIR="$WORK/tmp"
 export AWS_CONFIG_FILE=/dev/null AWS_SHARED_CREDENTIALS_FILE=/dev/null CCIT_CI_DISCOVERY_DIR="$WORK/disc"
 export COGNITO_CLIENT_INTEG_CI_CONFIG_URL="s3://fake-ci-bucket.example/v2/testconfiguration"
+# The code sink key's expiry record, never the committed one.
+export CCIT_CI_KEY_RECORD="$WORK/code-sink-key-expiry.json"
 unset AWS_PROFILE AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN CCIT_CI_REGION
 [[ "$(command -v aws)" == "$BIN/aws" ]] || { echo "FAIL: the fake aws is not first on PATH"; exit 1; }
 ACCOUNT=123456789012
@@ -381,16 +384,45 @@ an_api_key_near_its_expiry_is_extended_in_place() {
     key=$(jq -r '[.apis[] | .keys[]] | .[0].id' "$FAKE_STATE")
     soon=$(( $(date +%s) + 10 * 86400 ))
     jq --argjson e "$soon" '(.apis[] | .keys[]).expires = $e' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    # As the record would have it then.
+    printf '{"expires": "%s"}\n' "$(days_from_now 10)" > "$CCIT_CI_KEY_RECORD"
     run --scope all --upload
     (( STATUS == 0 )) && only_reads && no_identifiers \
         && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "extend the tests' read-only API key to 364 days from now (the same key)" ]] \
+        && [[ "$OUT" == *"The code sink's API key expires on "*" after this run; --apply records it"* ]] \
         || { echo "$OUT" | sed -nE 's/^  \+ //p'; return 1; }
     run --apply --scope all --upload
     (( STATUS == 0 )) && [[ "$OUT" == *"Done: 1 calls made."* ]] && ! calls | grep -qE 'put-object|create-api-key' \
         && no_identifiers && [[ "$(grep -c 'uploaded already, the same bytes' <<<"$OUT")" == 7 ]] \
         || { echo "$OUT" | tail -8; return 1; }
     jq -e --arg k "$key" --argjson e "$(( $(date +%s) + 300 * 86400 ))" \
-        '[.apis[] | .keys[]] | length == 1 and .[0].id == $k and .[0].expires > $e' "$FAKE_STATE" >/dev/null
+        '[.apis[] | .keys[]] | length == 1 and .[0].id == $k and .[0].expires > $e' "$FAKE_STATE" >/dev/null || return 1
+    [[ "$OUT" == *"Recorded the code sink's API key's expiry, $(jq -r .expires "$CCIT_CI_KEY_RECORD")"* ]] \
+        && [[ "$(jq -r .expires "$CCIT_CI_KEY_RECORD")" > "$(days_from_now 300)" ]]
+}
+
+days_from_now() { python3 -c 'import datetime,sys;print(datetime.datetime.now(datetime.timezone.utc).date() + datetime.timedelta(days=int(sys.argv[1])))' "$1"; }
+
+# The code sink key's expiry, recorded for the reminder (code_sink_key.py): --apply --scope all records it, and says
+# so when it changed; key-expiry reads it with read calls only, and --record writes it; and the record holds the date
+# alone.
+the_key_expiry_is_recorded() {
+    local recorded
+    recorded=$(jq -r .expires "$CCIT_CI_KEY_RECORD") || return 1
+    [[ "$recorded" == "$(days_from_now 364)" || "$recorded" == "$(days_from_now 363)" ]] \
+        && jq -e 'keys == ["expires"]' "$CCIT_CI_KEY_RECORD" >/dev/null || { cat "$CCIT_CI_KEY_RECORD"; return 1; }
+    run --apply --scope all
+    (( STATUS == 0 )) && [[ "$OUT" == *"The code sink's API key expires on $recorded, as code-sink-key-expiry.json records."* ]] \
+        || { echo "$OUT" | tail -3; return 1; }
+    rm -f "$CCIT_CI_KEY_RECORD"
+    run key-expiry
+    (( STATUS == 0 )) && only_reads && no_identifiers && [[ "$OUT" == *"expires on $recorded."* ]] \
+        && [[ "$OUT" == *"has no recorded expiry"* && ! -e "$CCIT_CI_KEY_RECORD" ]] || { echo "$OUT"; return 1; }
+    run key-expiry --record
+    (( STATUS == 0 )) && only_reads && [[ "$(jq -r .expires "$CCIT_CI_KEY_RECORD")" == "$recorded" ]] \
+        && [[ "$OUT" == *"Recorded the code sink's API key's expiry, $recorded"* ]] || { echo "$OUT"; return 1; }
+    run --record
+    (( STATUS == 2 ))
 }
 
 a_key_with_other_contents_refuses_the_upload() {
@@ -912,6 +944,8 @@ check "a phase-1 --apply --upload after phase 2 makes no call: the triggers' rol
     a_phase_1_rerun_after_phase_2_makes_no_call
 check "the code sink's API key near its expiry is extended in place, and the uploaded files stay valid" \
     an_api_key_near_its_expiry_is_extended_in_place
+check "the code sink key's expiry is recorded by --apply and by key-expiry --record, with read calls only" \
+    the_key_expiry_is_recorded
 check "a key with other contents refuses the whole upload" a_key_with_other_contents_refuses_the_upload
 check "snapshot and verify-unchanged: a user count is no change; a change, a removal, a foreign addition fail" \
     snapshot_and_verify

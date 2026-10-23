@@ -17,7 +17,8 @@
 # capabilities, kept only for the roles it gives; and that a file with the sandbox's mark, without a user pool, a
 # credentials file with a non-string, a rotation client on another pool, an alias-codes file without a code API, or
 # an unknown capability refuses the whole overlay, leaving no directory; and that the mfa-req-totp-sms role replaces
-# only the plugin's Gen2 MFA-required file, with a file whose MFA is required with TOTP and SMS.
+# only the plugin's Gen2 MFA-required file, with a file whose MFA is required with TOTP and SMS; and that the extended
+# role annotates the code sink key's last 30 days and its expiry (code_sink_key.py).
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT="$CI_DIR/ci-overlay.sh"
@@ -202,6 +203,27 @@ mfa_required_role() {
     (( STATUS == 1 )) && [[ ! -e "$WORK/m-out5" ]]
 }
 
+# With the extended role, the code sink key's reminder: an annotation within the key's last 30 days or once it has
+# expired, nothing while it has longer or no expiry is recorded, and nothing without the extended role.
+the_code_sink_key_reminder() {
+    download "$WORK/k" full
+    printf '{"expires": "2000-01-01"}\n' > "$WORK/expired.json"
+    STATUS=0
+    OUT=$(CCIT_CI_KEY_RECORD="$WORK/expired.json" "$SCRIPT" "$WORK/k" "$WORK/k-out" "email-alias extended" 2>&1) || STATUS=$?
+    (( STATUS == 0 )) && [[ "$OUT" == *"::error::The CI code sink's API key expired on 2000-01-01"* ]] || { echo "$OUT"; return 1; }
+    printf '{"expires": "%s"}\n' "$(python3 -c 'import datetime;print(datetime.date.today() + datetime.timedelta(days=10))')" \
+        > "$WORK/soon.json"
+    OUT=$(CCIT_CI_KEY_RECORD="$WORK/soon.json" "$SCRIPT" "$WORK/k" "$WORK/k-out2" "extended" 2>&1) || return 1
+    [[ "$OUT" == *"::warning::The CI code sink's API key expires on"* ]] || { echo "$OUT"; return 1; }
+    OUT=$(CCIT_CI_KEY_RECORD="$WORK/expired.json" "$SCRIPT" "$WORK/k" "$WORK/k-out3" "email-alias" 2>&1) || return 1
+    [[ "$OUT" != *"code sink"* ]] || return 1
+    printf '{"expires": "2999-01-01"}\n' > "$WORK/later.json"
+    OUT=$(CCIT_CI_KEY_RECORD="$WORK/later.json" "$SCRIPT" "$WORK/k" "$WORK/k-out4" "extended" 2>&1) || return 1
+    [[ "$OUT" != *"::"* ]] || return 1
+    OUT=$(CCIT_CI_KEY_RECORD="$WORK/none.json" "$SCRIPT" "$WORK/k" "$WORK/k-out5" "extended" 2>&1) || return 1
+    [[ "$OUT" != *"::"* ]]
+}
+
 refuses_an_existing_destination() {
     download "$WORK/e" full
     mkdir -p "$WORK/e-out"
@@ -231,6 +253,7 @@ check "the capabilities are kept only for the roles the overlay gives" capabilit
 check "extended alone leaves the device-alias file the plugin's" extended_alone_leaves_the_alias
 check "the MFA-required role replaces the plugin's Gen2 file only, and needs MFA required with TOTP and SMS" \
     mfa_required_role
+check "with the extended role, the code sink key's last 30 days or its expiry are annotated" the_code_sink_key_reminder
 check "a file with the sandbox's mark refuses the overlay" refuses marked "sandbox's mark"
 check "a file without a user pool refuses the overlay" refuses no-pool "with a user pool"
 check "a credentials file with a non-string refuses the overlay" refuses not-strings "object of strings"
