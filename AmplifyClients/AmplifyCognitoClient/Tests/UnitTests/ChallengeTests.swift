@@ -370,20 +370,16 @@ final class ChallengeTests: XCTestCase {
 
     /// An MFA setup selection is checked against the step's choices before it is sent, and the attempt survives.
     ///
-    /// - Given: a sign-in waiting on an MFA setup selection of email or TOTP, and a log sink
+    /// - Given: a sign-in waiting on an MFA setup selection of email or TOTP
     /// - When: it is answered with a code typed into the wrong prompt, with `SMS_MFA` (not one of the step's choices),
     ///   then with `email_otp`
     /// - Then:
     ///    - the first two throw `validation(field: "challengeResponse")` naming the step's two types, without
     ///      reaching the engine, and the challenge is still pending
-    ///    - no log line holds the answer
     ///    - the third (case-insensitive) is sent
     func testABadMFASetupSelectionIsRefusedBeforeItIsSent() async throws {
         let step = AuthClientSignInStep.continueSignInWithMFASetupSelection([.email, .totp])
         let (client, engine) = try await challengedClient(work, step: step)
-        let sink = CategoryCapture()
-        AmplifyLogging.addSink(sink)
-        defer { AmplifyLogging.removeSink(sink) }
 
         let code = await authClientError { try await client.confirmSignIn(challengeResponse: "000000") }
         let sms = await authClientError { try await client.confirmSignIn(challengeResponse: "SMS_MFA") }
@@ -401,6 +397,41 @@ final class ChallengeTests: XCTestCase {
         }
         XCTAssertEqual(state, .awaitingChallenge(step))
         XCTAssertEqual(engine.confirmSignInCalls.map(\.challengeResponse), ["email_otp"])
+    }
+
+    /// The live engine's MFA-type parser logs an answer it cannot parse, at error level ("Tried to initialize an
+    /// unsupported MFA type with value: …"). The check keeps a wrong setup selection from reaching it, so a code typed
+    /// into the wrong prompt is never logged.
+    ///
+    /// - Given: a client over the live engine, whose SRP sign-in stops on an MFA setup selection of TOTP or email, and
+    ///   a log sink
+    /// - When: the selection is answered with a code
+    /// - Then:
+    ///    - it throws `validation(field: "challengeResponse")`, nothing is sent to Cognito, and the selection is still
+    ///      pending
+    ///    - no log line holds the answer
+    func testABadMFASetupSelectionOverTheLiveEngineIsNeverLogged() async throws {
+        let live = LiveEngineHarness()
+        let client = try LiveEngineCoreRaceTests.client(over: live.engine(), harness: harness)
+        live.scriptSRP(then: LiveEngineFixtures.challenge(
+            .mfaSetup,
+            parameters: ["MFAS_CAN_SETUP": #"["SOFTWARE_TOKEN_MFA","EMAIL_OTP"]"#]
+        ))
+        let first = try await client.signIn(username: "alice", password: "password")
+        guard case .continueSignInWithMFASetupSelection = first.nextStep else {
+            return XCTFail("expected an MFA setup selection, got \(first.nextStep)")
+        }
+        live.cognito.clearCalls()
+        let sink = CategoryCapture()
+        AmplifyLogging.addSink(sink)
+        defer { AmplifyLogging.removeSink(sink) }
+
+        let bad = await authClientError { try await client.confirmSignIn(challengeResponse: "000000") }
+        let state = await client.currentSessionState()
+
+        XCTAssertEqual(bad?.kind, .validation(field: "challengeResponse"))
+        XCTAssertEqual(live.cognito.operations, [])
+        XCTAssertEqual(state, .awaitingChallenge(first.nextStep))
         XCTAssertEqual(sink.categories(containing: "000000"), [], "the answer was logged")
     }
 
