@@ -11,9 +11,11 @@ import Foundation
 ///
 /// A session refresh uses it when the user-pool tokens were refreshed but the identity-pool step after
 /// them failed. With refresh-token rotation, the refresh invalidated the old refresh token, so the new
-/// tokens must be stored as they are when the refresh succeeds (`PersistCredentials`). `followUp` is the
-/// failed step's own `InformSessionError`, so the error is reported unchanged, and only once the tokens are
-/// stored. A storage failure is logged and does not replace that error.
+/// tokens must be stored as they are when the refresh succeeds (`PersistCredentials`). `followUp` is
+/// usually the failed step's own `InformSessionError`. When the identity-pool step reported its failure as an
+/// authorization error directly (`AuthorizationEvent.throwError`, as `FetchAuthIdentityId` does without an
+/// identity client), `followUp` sends that same event again instead. Either way the error is reported
+/// unchanged, and only once the tokens are stored. A storage failure is logged and does not replace that error.
 package struct PersistRefreshedUserPoolTokens: Action {
 
     package let identifier = "PersistRefreshedUserPoolTokens"

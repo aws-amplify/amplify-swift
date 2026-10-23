@@ -43,7 +43,8 @@ final class StaleDeviceKeyRetryTests: XCTestCase {
     }
 
     /// On an alias pool, the password answer in `USER_AUTH` removes the device record under the name the user typed,
-    /// the one it was read with, not Cognito's echoed username.
+    /// the one it was read with, not Cognito's echoed username. The challenge here holds two different names to guard
+    /// that choice; no engine path builds such a challenge for this action today.
     ///
     /// - Given: a `USER_AUTH` password challenge whose username is Cognito's echo, a sub-like ID, and whose input
     ///   username is the email the user typed; Cognito refusing the stale device key
