@@ -21,7 +21,9 @@ public enum AuthClientError {
     /// show a sign-in screen in response to it.
     case storageUnavailable(StorageUnavailableReason, ErrorDescription, RecoverySuggestion, Error? = nil)
 
-    /// The refresh token expired or was revoked, so this session needs a fresh sign-in. Other
+    /// The session can no longer renew its credentials: its refresh token expired, was revoked, or was already used
+    /// with no refreshed tokens saved (`refreshTokenReused` underneath), so it needs a fresh sign-in; or, for a
+    /// federated session, the identity pool no longer accepts its provider token, so it federates again. Other
     /// sessions are unaffected.
     case sessionExpired(ErrorDescription, RecoverySuggestion, Error? = nil)
 
