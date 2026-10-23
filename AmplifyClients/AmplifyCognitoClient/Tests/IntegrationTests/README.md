@@ -62,8 +62,10 @@ cd CognitoClientHostApp
 DD=/tmp/ccit-ci-dd
 UDID=<simulator-udid>    # an iOS 26 simulator, e.g. from `xcrun simctl create`
 build() {                # the scheme
+  # -skipPackagePluginValidation, as CI passes it: on a fresh DerivedData the build otherwise stops at validating
+  # smithy-swift's SmithyCodeGeneratorPlugin.
   env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild build-for-testing -project CognitoClientHostApp.xcodeproj \
-    -scheme "$1" -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD"
+    -scheme "$1" -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD" -skipPackagePluginValidation
 }
 run() {                  # the scheme, then any further xcodebuild arguments
   local scheme="$1"; shift
@@ -346,7 +348,8 @@ cd AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/CognitoClientHostA
 # $DIR: CI's file set, overlaid ("Run as CI does (recommended)"). The copy happens at build time.
 DD=/tmp/ccit-webauthn-dd
 env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild build-for-testing -project CognitoClientHostApp.xcodeproj \
-  -scheme CognitoClientWebAuthnUITests -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD"
+  -scheme CognitoClientWebAuthnUITests -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD" \
+  -skipPackagePluginValidation
 xcodebuild test-without-building -project CognitoClientHostApp.xcodeproj \
   -scheme CognitoClientWebAuthnUITests -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
   -derivedDataPath "$DD" -collect-test-diagnostics never \
@@ -417,7 +420,7 @@ cd AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests
 cd CognitoClientHostApp
 DD=/tmp/cognito-client-ui-dd
 COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild build-for-testing -project CognitoClientHostApp.xcodeproj -scheme CognitoClientUITests \
-  -destination 'generic/platform=iOS Simulator' -derivedDataPath $DD > /tmp/hu-build.log 2>&1
+  -destination 'generic/platform=iOS Simulator' -derivedDataPath $DD -skipPackagePluginValidation > /tmp/hu-build.log 2>&1
 # As CI: no hardware keyboard. No pasteboard sync with the Mac while the tests paste. Saved, restored below
 # (`defaults read` prints a boolean as 1 or 0, which `defaults write -bool` refuses, hence the mapping).
 KB=$(defaults read com.apple.iphonesimulator ConnectHardwareKeyboard 2>/dev/null)
@@ -466,14 +469,14 @@ env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
   -project CognitoClientHostApp.xcodeproj \
   -scheme CognitoClientIntegrationTests \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5' \
-  -parallel-testing-enabled NO
+  -parallel-testing-enabled NO -skipPackagePluginValidation
 
 # The plugin-interop suite, in its own process: it links Amplify and AWSCognitoAuthPlugin as well.
 env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
   -project CognitoClientHostApp.xcodeproj \
   -scheme CognitoClientPluginInteropTests \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5' \
-  -parallel-testing-enabled NO
+  -parallel-testing-enabled NO -skipPackagePluginValidation
 ```
 
 `xcodebuild test` builds and tests in one step, so the variable goes on it.
@@ -873,7 +876,8 @@ infra/plugin-configs.py --dir "$DIR"                  # reads the sandbox's stat
 AWS_PROFILE=<sandbox-profile> infra/prepare-run.sh    # optional: resets the new-password users, as a fresh CI backend
 cd CognitoClientHostApp
 COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild build-for-testing -project CognitoClientHostApp.xcodeproj \
-  -scheme CognitoClientIntegrationTests -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD"
+  -scheme CognitoClientIntegrationTests -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD" \
+  -skipPackagePluginValidation
 # Self sign-up on for the run, off again after ("Self sign-up is off at rest"); it reads no COGNITO_CLIENT_INTEG_DIR.
 AWS_PROFILE=<sandbox-profile> ../infra/self-sign-up.sh on -- \
   xcodebuild test-without-building -project CognitoClientHostApp.xcodeproj -scheme CognitoClientIntegrationTests \
