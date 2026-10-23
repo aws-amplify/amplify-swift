@@ -551,6 +551,38 @@ final class WebUISignInTests: XCTestCase {
         XCTAssertEqual(engine.webUISignInCalls.count, 0)
     }
 
+    /// An ending that lands as the attempt begins, under the lease
+    ///
+    /// - Given: a hosted-UI sign-in holding the sheet, held in its lease body once it has checked that the session
+    ///   has not ended, before its attempt begins
+    /// - When: the session is signed out there, then the body goes on
+    /// - Then:
+    ///    - the sign-in throws the sign-in-cancelled `invalidState`, not `.userCancelled`; the engine's hosted UI is
+    ///      never called, and the session is signed out
+    func testASignOutAsTheAttemptBeginsIsTheSignInCancelledError() async throws {
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let held = Gate()
+        let window = await window
+        let signIn = Task {
+            try await SessionCore.$webUIAttemptSeam.withValue({ _ in await held.pass() }) {
+                try await client.signInWithWebUI(presentationAnchor: window)
+            }
+        }
+        try await held.arrivals(1)
+
+        _ = try await Task { await client.signOut() }.value(within: 10)
+        await held.open()
+
+        let error = await authClientError { try await signIn.value(within: 10) }
+        XCTAssertEqual(error?.kind, .invalidState)
+        XCTAssertEqual(error?.errorDescription, SessionCore.signInCancelled().errorDescription)
+        XCTAssertEqual(engine.webUISignInCalls.count, 0)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedOut)
+        await waitForFreeSheet()
+    }
+
     /// An ending while the sign-in waits for the sheet stops it there
     ///
     /// - Given: "home" showing its hosted-UI sign-in; "work" queued behind it with `.wait(timeout:)`

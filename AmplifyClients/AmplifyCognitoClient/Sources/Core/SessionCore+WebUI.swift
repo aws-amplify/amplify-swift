@@ -389,6 +389,11 @@ extension SessionCore {
             if Task.isCancelled {
                 throw CancellationError()
             }
+            if caller.stoppedBy == .sessionEnded {
+                // A sign-out, purge or deletion stopped the flow, including one that landed as its attempt began,
+                // after the ending check and before the epoch moved, which no epoch check can see.
+                throw Self.signInCancelled()
+            }
             throw Self.webUISignInCancelled()
         case .failure(let error as AuthClientError):
             if Task.isCancelled, error.isBrowserBusy {
@@ -529,6 +534,11 @@ extension SessionCore {
         }
     }
 
+    /// A test seam in a hosted-UI sign-in's lease body, given the session: runs once the attempt has checked that the
+    /// session has not ended, before it begins. `nil` in the app; a test sets it for its own call with `withValue`, and
+    /// holds the body there to end the session at that moment.
+    @TaskLocal static var webUIAttemptSeam: (@Sendable (SessionID) async -> Void)?
+
     /// A hosted-UI attempt begun under the lease: what its commit expects, its seed, and its epoch.
     private struct WebUIAttempt: Sendable {
         let base: SessionSnapshot
@@ -543,6 +553,7 @@ extension SessionCore {
         guard await sessionEndings == endings else {
             throw CancellationError()
         }
+        await Self.webUIAttemptSeam?(sessionId)
         let (base, guestPayload, epoch) = try await signInBase()
         try await cancelPendingChallenge(before: epoch)
         await deleteChallengeRecord(epoch: epoch)
