@@ -482,14 +482,15 @@ extension MigrateLegacyCredentialStoreTests {
     /// - When:
     ///    - The migration legacy store action is executed
     /// - Then:
-    ///    - The legacy login is saved over the guest, and the legacy stores are each removed once
+    ///    - The legacy login (user pool and identity pool) is saved over the guest, and the legacy stores are each
+    ///      removed once
     ///
     func testExecute_whenNewStoreHasOnlyAGuest_shouldMigrateTheLegacyLogin() async {
         let result = await runMigration(
             legacyKeychainStore: MockKeychainStoreBehavior(data: "mock"),
             existingCredentials: { AmplifyCredentials.testDataIdentityPool }
         )
-        XCTAssertEqual(result.savedCredentialCount, 1)
+        XCTAssertEqual(result.savedCredentials, [legacyLogin])
         XCTAssertEqual(result.removeAllCount, 3)
         XCTAssertEqual(result.loadEventCount, 1)
     }
@@ -503,7 +504,8 @@ extension MigrateLegacyCredentialStoreTests {
     ///      is readable
     /// - Then:
     ///    - The first launch keeps the legacy stores and saves nothing
-    ///    - The next launch migrates the legacy login over the guest and removes the legacy stores
+    ///    - The next launch migrates the legacy login (user pool and identity pool) over the guest and removes the
+    ///      legacy stores
     ///
     func testExecute_whenAGuestIsSavedAfterALockedLaunch_shouldMigrateTheLegacyLoginOnTheNextLaunch() async {
         let lockedLaunch = await runMigration(
@@ -530,7 +532,7 @@ extension MigrateLegacyCredentialStoreTests {
             legacyKeychainStore: MockKeychainStoreBehavior(data: "mock"),
             existingCredentials: { AmplifyCredentials.testDataIdentityPool }
         )
-        XCTAssertEqual(unlockedLaunch.savedCredentialCount, 1)
+        XCTAssertEqual(unlockedLaunch.savedCredentials, [legacyLogin])
         XCTAssertEqual(unlockedLaunch.removeAllCount, 3)
         XCTAssertEqual(unlockedLaunch.loadEventCount, 1)
     }
@@ -681,14 +683,35 @@ extension MigrateLegacyCredentialStoreTests {
 
     /// The guest `legacyGuestStore()` holds, as the migration saves it.
     private var legacyGuest: AmplifyCredentials {
-        .identityPoolOnly(
+        .identityPoolOnly(identityID: "mock", credentials: legacyAWSCredentials)
+    }
+
+    /// The login a legacy store in which every value reads as `mock` holds, as the migration saves it: user pool
+    /// tokens (with an expiration that cannot be parsed, so the epoch), identity `mock` and its AWS credentials.
+    private var legacyLogin: AmplifyCredentials {
+        .userPoolAndIdentityPool(
+            signedInData: SignedInData(
+                signedInDate: Date.distantPast,
+                signInMethod: .apiBased(.userSRP),
+                cognitoUserPoolTokens: EngineUserPoolTokens(
+                    idToken: "mock",
+                    accessToken: "mock",
+                    refreshToken: "mock",
+                    expiration: Date(timeIntervalSince1970: 0)
+                )
+            ),
             identityID: "mock",
-            credentials: EngineAWSCredentials(
-                accessKeyId: "mock",
-                secretAccessKey: "mock",
-                sessionToken: "mock",
-                expiration: Date(timeIntervalSince1970: 0)
-            )
+            credentials: legacyAWSCredentials
+        )
+    }
+
+    /// The AWS credentials a legacy store in which every value reads as `mock` holds, as the migration saves them.
+    private var legacyAWSCredentials: EngineAWSCredentials {
+        EngineAWSCredentials(
+            accessKeyId: "mock",
+            secretAccessKey: "mock",
+            sessionToken: "mock",
+            expiration: Date(timeIntervalSince1970: 0)
         )
     }
 
