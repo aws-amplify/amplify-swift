@@ -1424,7 +1424,7 @@ optional `underlyingError`.
 | `browserBusy(holder:)` | The one system sheet is held, or a `.wait(timeout:)` expired | Finish or cancel the holder's sheet |
 | `sessionConfigurationMismatch(SessionID)` | The session is live under a different configuration | Release its handles and providers, or use the same configuration |
 | `validation(field:)` | An argument was invalid; `field` names it | Fix the argument |
-| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request, with the code if the client recognises it; with no code, a Cognito internal error (`InternalErrorException`) or an error status the SDK doesn't model (the description has the status and message), or a network problem stopped the request, which may or may not have reached Cognito (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), or its answer couldn't be read | Depends on the code; with no code, read the suggestion: retry later, or check the request against the service's message (a 4xx status) |
+| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request, with the code if the client recognises it; with no code, a Cognito internal error (`InternalErrorException`) or an error status the SDK doesn't model (the description has the status and message), in every call, or a network problem stopped the request, which may or may not have reached Cognito (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), or its answer couldn't be read | Depends on the code; with no code, read the suggestion: retry later, or check the request against the service's message (a 4xx status). A sign-out's revoke or global sign-out is not retried |
 | `notAuthorized` | Wrong password, disabled user, revoked token | Ask the user again, or sign in |
 | `invalidState` | Not valid in this state: already signed in, federated, no sign-in in progress, or cancelled by a sign-out | Check `currentSessionState()` |
 | `userCancelled` | The user closed a system sheet, or it was cancelled | Nothing changed; let the user retry |
@@ -1482,8 +1482,10 @@ the network description, with the suggestion "The session was signed out on this
 not be retried: unless the request reached the service, the user's other sessions stay signed in until their tokens
 expire. To sign them out, sign in again and sign out with globalSignOut: true." A revoke or global sign-out whose
 answer couldn't be read, or that failed otherwise in transport, has the description given above for that failure,
-with the same not-retried suggestion. Signing out again doesn't retry either: the session is already signed out on
-this device, so the second sign-out is `.complete` and sends nothing.
+with the same not-retried suggestion. A revoke or global sign-out that Cognito failed itself (an internal error, or
+an error status the SDK doesn't model) is `.service` with no code and Cognito's message, or the status and message,
+as its description, and the same not-retried suggestion. Signing out again doesn't retry either: the session is
+already signed out on this device, so the second sign-out is `.complete` and sends nothing.
 
 Recovery suggestions name the client's calls (for example "Call signIn …"), not the plugin's. So do the sign-up
 checks: `confirmSignUp` without a code throws `.validation(field: "confirmationCode")`, where the plugin's `field` is
@@ -1846,7 +1848,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | MFA type `rawValue` | The Cognito name | `"sms"`, `"totp"`, `"email"`; use `challengeResponse` |
 | Deprecated `validationData` on sign-in, `.custom` flow | Supported | Not mirrored: use `clientMetadata`, `.customWithSRP` |
 | Non-JSON service response | "Report a bug" suggestion | `.service` with no code and a retry suggestion |
-| Cognito internal error (`InternalErrorException`), or an error status the SDK doesn't model | `AuthError.unknown` | `.service` with no code, suggesting a retry (a 5xx, an internal error) or naming the refusal (a 4xx) |
+| Cognito internal error (`InternalErrorException`), or an error status the SDK doesn't model | `AuthError.unknown` | `.service` with no code in every call, suggesting a retry (a 5xx, an internal error) or naming the refusal (a 4xx); under a sign-out, the revoke's or global sign-out's suggestion says it is not retried |
 | Network failure (offline, a failed lookup or connection, a timeout) | Varies by call: a sign-in's is `.unknown` with an empty description | `.service` with no code in every call, with the network error underneath |
 | Refresh refused as a reused refresh token | `AuthError.service` at every refresh; the session never expires on it | The retryable `.unknown` at first; a second refusal at least 30 seconds later in the same launch, forced or not, with nothing saved meanwhile, is `sessionExpired` |
 | Configuration change | Carries some changes, deletes the old record otherwise | `.default`: the same, and a deleted login of the same user pool is revoked. Named sessions carry the same changes and keep the old record; a changed identity pool keeps user pool tokens only |
