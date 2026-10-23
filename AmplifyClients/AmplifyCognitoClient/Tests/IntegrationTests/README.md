@@ -273,7 +273,7 @@ code-capturing backend has the setting it asserts on; those are listed below as 
 | PL-6…23, SU-8…15, AS-1…3 | OTP and sign-up codes | passwordless | passwordless | unchanged |
 | sandbox checks: sign-up and resent codes, attribute codes, the confirm-then-delete cleanup, the sign-up code check | sign-up and attribute codes | passwordless | (none) | leaves sign-ups to confirm (no pre-sign-up trigger in the plugin's; the sandbox's leaves `ccit-confirm-` users) |
 | sandbox checks: SMS MFA code, the raw sign-in's SMS answer | an SMS MFA code | all-MFA-required | (none) | as MF-14 |
-| AT-2's second half, `testUpdatedEmailIsVerifiedWithTheCodeSentToIt` (not counted; AT-2 itself, as the plugin's test, reads no code) | an attribute verification code | default | (none: the plugin's test stops at the update) | asserts the email is updated before it is verified: only the default backend's README empties `AttributesRequireVerificationBeforeUpdate` |
+| AT-2's second half, `testUpdatedEmailIsVerifiedWithTheCodeSentToIt` (not counted; AT-2 itself, as the plugin's test, reads no code) | an attribute verification code | default (on CI the client's own `extended`) | (none: the plugin's test stops at the update) | asserts the email is updated before it is verified: only the default backend's README empties `AttributesRequireVerificationBeforeUpdate` |
 | RP-3 `testSuccessfulResetPasswordEndToEnd`, the reset-code check (a sandbox check) | a password-reset code | default (on CI the client's own `extended`) | (none; not counted) | needs account recovery by verified email; the code-capturing backends' READMEs set account recovery to `NONE` |
 | the `email-alias` code check (a sandbox check) | a sign-up code, by the generated username | device alias (on CI the client's own `email-alias-codes`) | (none) | only that backend signs in by email |
 
@@ -667,8 +667,8 @@ Each reason is a case of `CISkipReason`, whose message is the skip's and names t
 | `customAuthAnswer` | `PluginCredentials.requireCustomChallengeAnswer()` | CA-1…3 (`CustomAuthTests`, in its `setUp`), `SandboxParityProvisioningTests.testCustomAuthCompletesWithTheStoredAnswer` |
 | `newPasswordUsers` | `PluginCredentials.requireNewPasswordUsers()` | CH-1 `ChallengeTests.testNewPasswordRequiredChallenge`, P-3 `SandboxProvisioningTests.testForceChangePasswordUserIsAskedForANewPassword` |
 | `credentialsFile` | `CognitoBackendSmokeTests.testProvisionedUsersAreAvailable`, after its outputs checks | that test |
-| `defaultCodeAPI` | `IntegrationTestEnvironment.codeSinkAPI(.standard, ciSkip:)` | AT-2's second half `UserAttributesTests.testUpdatedEmailIsVerifiedWithTheCodeSentToIt` |
-| `defaultCodeAPIAndVerifiedEmail` | `IntegrationTestEnvironment.codeSinkAPI(.standard, ciSkip:)` | RP-3 `PasswordResetTests.testSuccessfulResetPasswordEndToEnd` |
+| `defaultCodeAPI` | `IntegrationTestEnvironment.codeSinkAPI(extrasRole, ciSkip:)` | AT-2's second half `UserAttributesTests.testUpdatedEmailIsVerifiedWithTheCodeSentToIt` |
+| `defaultCodeAPIAndVerifiedEmail` | `IntegrationTestEnvironment.codeSinkAPI(extrasRole, ciSkip:)` | RP-3 `PasswordResetTests.testSuccessfulResetPasswordEndToEnd` |
 | `deviceAliasConfirmation` | `SandboxSignUp.requireNotKnownUnconfirmable(_:)` (`SandboxSignUp.ciSkip(for:)`), before any sign-up | DV-10…19 (`DeviceAliasTests`), `SandboxParityProvisioningTests.testEmailAliasPoolSignsInByEmailWithShortTokens`; and in `SandboxHelperTests.testEveryPoolAutoConfirmsAFreshUserAndCleanupDeletesIt` the device-alias pool is left out of the loop, the reason recorded as an `XCTContext` activity, so the test still checks every other pool and passes |
 
 On the plugin's own files, `PluginRotationTests` (RT-1, RT-2) skip without the rotation client's outputs, which the
