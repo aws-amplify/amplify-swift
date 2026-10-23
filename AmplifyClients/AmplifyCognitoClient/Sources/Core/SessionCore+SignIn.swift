@@ -211,7 +211,7 @@ extension SessionCore {
             }
         case .continueSignInWithMFASetupSelection(let allowed):
             // Checked here, so a wrong answer is refused with the step's choices, and never reaches the engine, whose
-            // MFA-type parser logs what it was given at error level.
+            // MFA-type parser would refuse it without naming the choices.
             let names = allowed.map(\.challengeResponse).sorted()
             guard names.contains(where: { response.caseInsensitiveCompare($0) == .orderedSame }) else {
                 throw AuthClientError.validation(

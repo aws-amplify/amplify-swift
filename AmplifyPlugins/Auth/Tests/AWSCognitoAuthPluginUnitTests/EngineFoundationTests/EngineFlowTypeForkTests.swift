@@ -329,7 +329,7 @@ class EngineFlowTypeForkTests: XCTestCase {
             CapturingRouter.Entry(
                 scope: .category("AuthFactorType"),
                 level: .error,
-                message: "Tried to initialize an unsupported MFA type with value: X",
+                message: "Tried to initialize an unsupported MFA type",
                 hasError: false
             )
         ]

@@ -399,9 +399,9 @@ final class ChallengeTests: XCTestCase {
         XCTAssertEqual(engine.confirmSignInCalls.map(\.challengeResponse), ["email_otp"])
     }
 
-    /// The live engine's MFA-type parser logs an answer it cannot parse, at error level ("Tried to initialize an
-    /// unsupported MFA type with value: …"). The check keeps a wrong setup selection from reaching it, so a code typed
-    /// into the wrong prompt is never logged.
+    /// A wrong MFA setup selection never reaches the live engine: the check refuses it before anything is sent, so a
+    /// code typed into the wrong prompt is never logged. (The engine's MFA-type parser logs a fixed text for a value it
+    /// cannot parse; 2.63.0's logged the value.)
     ///
     /// - Given: a client over the live engine, whose SRP sign-in stops on an MFA setup selection of TOTP or email, and
     ///   a log sink
