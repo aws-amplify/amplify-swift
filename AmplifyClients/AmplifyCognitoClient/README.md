@@ -880,7 +880,7 @@ and `oauth` sends the secret with the hosted UI's token exchange (`Authorization
 | `nonce` | `nil` (the client mints one) | `nonce` |
 | `language` | `nil` | `language` |
 | `loginHint` | `nil` | `loginHint` |
-| `prompt` | `nil` | `prompt` |
+| `prompt` | `nil` | `prompt` (an empty list sends no `prompt` item; the plugin sends an empty one) |
 | `resource` | `nil` | `resource` |
 | `identityExpectation` | `.none` | None: the plugin checks nothing |
 
@@ -948,10 +948,10 @@ let holder = await AmplifyCognitoClient.systemSheetHolder // who holds the sheet
 let freed = await AmplifyCognitoClient.resetSystemSheet() // free the sheet, whoever holds it
 ```
 
-A hosted-UI sign-in cancelled with `cancelWebUISignIn()` throws `.userCancelled` once its browser has closed, so
-`systemSheetHolder` is `nil` by then and another sign-in can start at once. If the browser hasn't closed within a
-second (its code exchange was already in flight, say), the call throws anyway, and the sheet stays held until it
-closes.
+A hosted-UI sign-in or passkey call cancelled with `cancelWebUISignIn()` throws `.userCancelled` once it has released
+the system sheet, so `systemSheetHolder` no longer names its session by then (a session queued behind it may hold
+it). If the sheet isn't released within a second (the browser is slow to close, or the code exchange was already
+running), the call throws anyway, and the sheet stays held until the sign-in's remaining calls finish.
 
 `resetSystemSheet()` is a recovery tool for a sheet that stopped responding. A sign-in or passkey call holding it
 throws `.userCancelled`; a sign-out page is closed, and its sign-out reports what it did (`.failed(.userCancelled)`
@@ -1306,7 +1306,7 @@ await client.signOut(options: .init(purgeStoredSession: true))
 | Result | Meaning |
 |---|---|
 | `.complete` | Tokens revoked and cleared from this device, or there were none |
-| `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` | Signed out on this device, but part of the work failed. `revokeTokenError`: the refresh token stays valid until it expires, unless a global sign-out succeeded (`globalSignOutError` is `nil`), which already invalidated it. After a failed global sign-out the token isn't revoked and this holds a placeholder `.service` error with empty texts, as in the plugin. `globalSignOutError`: other devices stay signed in. Neither is retried, and signing out again doesn't retry it: the session is signed out on this device, so a second sign-out is `.complete` and sends nothing. `hostedUIError`: the browser keeps its hosted-UI cookie; only for a sign-out without a window (`signOut(options:)` or `signOutStoredSession`, as `.validation`), or a closed page on an already expired session. `storageError`: with `purgeStoredSession`, the row couldn't be removed; purge it again |
+| `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` | Signed out on this device, but part of the work failed. `revokeTokenError`: the refresh token stays valid until it expires, unless a global sign-out succeeded (`globalSignOutError` is `nil`), which already invalidated it. After a failed global sign-out the token isn't revoked and this holds a placeholder `.service` error with empty texts, as in the plugin. `globalSignOutError`: other devices stay signed in. Neither is retried, and signing out again doesn't retry it: the session is signed out on this device, so a second sign-out is `.complete` and sends nothing. `hostedUIError`: the browser keeps its hosted-UI cookie; only for a sign-out without a window (`signOut(options:)` or `signOutStoredSession`, as `.validation`), or a closed page on a session a refresh in this launch found expired. `storageError`: with `purgeStoredSession`, the row couldn't be removed; purge it again |
 | `.failed(AuthClientError)` | Not signed out: the session is still signed in on this device. See below |
 
 `.failed` carries:
@@ -1378,11 +1378,12 @@ func hostedUISignOut(client: AmplifyCognitoClient, window: AuthClientPresentatio
   again, even with a window, is `.complete` and shows no page: the cookie may remain until it expires or the user
   signs out in the browser. Until then, sign in to the hosted UI with `prompt: [.login]` or
   `prefersEphemeralSession: true`.
-- If the user closes the sign-out page, the result is `.failed(.userCancelled)` and the session stays signed in,
-  as with the plugin, unless the session had already expired. Then it signs out anyway and returns `.partial` with
-  `hostedUIError` `.userCancelled`, which says the session was signed out on this device but not from the hosted UI:
-  as without a window, signing out again won't clear the cookie. The same goes when `cancelWebUISignIn()` closes
-  this session's sign-out page, or `resetSystemSheet()` closes it before it finished.
+- If the user closes the sign-out page, the result is `.failed(.userCancelled)` and the session stays signed in, as
+  with the plugin, unless a refresh in this launch has already found the session expired (the client keeps that in
+  memory; the plugin saves it with the session). Then it signs out anyway and returns `.partial` with `hostedUIError`
+  `.userCancelled`, which says the session was signed out on this device but not from the hosted UI: as without a
+  window, signing out again won't clear the cookie. The same goes when `cancelWebUISignIn()` closes this session's
+  sign-out page, or `resetSystemSheet()` closes it before it finished.
 - If the page can't be shown or completed, the result is `.failed` and the session stays signed in, with nothing
   revoked, as with the plugin: `.configuration` when the configuration has no hosted UI or no usable sign-out
   redirect URI, `.browserBusy` when another sheet holds the browser, `.validation` when the window has closed, or
@@ -1410,7 +1411,7 @@ Every operation throws `AuthClientError`, which conforms to `AmplifyError`: each
 
 | Case | Meaning | What to do |
 |---|---|---|
-| `configuration` | The configuration is missing, unreadable, incomplete or Gen1, or lacks a pool the operation needs | Fix the configuration |
+| `configuration` | The configuration is missing, unreadable, incomplete or Gen1, or lacks a pool the operation needs; also either pool's invalid-configuration answer from Cognito (a user pool without device tracking for the device calls, an identity pool's roles) | Fix the configuration, or the pool's settings |
 | `storageUnavailable(reason)` | The keychain could not be read or written | Don't show sign-in. Retry (`.locked`, `.interrupted`) or fix entitlements (`.denied`) |
 | `sessionExpired` | The refresh token expired, was revoked, or was already used with nothing saved; or the identity pool no longer accepts a federated session's provider token | Sign this session in again, or for a federated session federate again with a new provider token. Other sessions are unaffected |
 | `notSignedIn` | No user pool user: signed out, guest, federated, or waiting on a challenge | Sign in; on a federated session, clear the federation or sign out first |
@@ -1419,13 +1420,13 @@ Every operation throws `AuthClientError`, which conforms to `AmplifyError`: each
 | `browserBusy(holder:)` | The one system sheet is held, or a `.wait(timeout:)` expired | Finish or cancel the holder's sheet |
 | `sessionConfigurationMismatch(SessionID)` | The session is live under a different configuration | Release its handles and providers, or use the same configuration |
 | `validation(field:)` | An argument was invalid; `field` names it | Fix the argument |
-| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request, with the code if the client recognises it; or a network problem stopped the request, which may or may not have reached Cognito (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), or its answer couldn't be read, with no code | Depends on the code; with no code, retry later |
+| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request, with the code if the client recognises it; with no code, a Cognito internal error (`InternalErrorException`) or an error status the SDK doesn't model (the description has the status and message), or a network problem stopped the request, which may or may not have reached Cognito (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), or its answer couldn't be read | Depends on the code; with no code, read the suggestion: retry later, or check the request against the service's message (a 4xx status) |
 | `notAuthorized` | Wrong password, disabled user, revoked token | Ask the user again, or sign in |
 | `invalidState` | Not valid in this state: already signed in, federated, no sign-in in progress, or cancelled by a sign-out | Check `currentSessionState()` |
 | `userCancelled` | The user closed a system sheet, or it was cancelled | Nothing changed; let the user retry |
-| `webAuthnCeremonyFailed(failure)` | The local passkey ceremony failed before Cognito was asked | `failure` is `.credentialAlreadyExists`, `.failed` or `.invalidCredential` |
+| `webAuthnCeremonyFailed(failure)` | The local passkey ceremony failed before its result was sent to Cognito | `failure` is `.credentialAlreadyExists`, `.failed` or `.invalidCredential` |
 | `unexpectedIdentity(expected:returned:)` | The hosted UI returned another user than expected; nobody was signed in | Retry with `prompt: [.login]` |
-| `unknown` | Anything else, including a saved record this version can't read. Also, as in the plugin, an error status the SDK doesn't model, whose suggestion says to retry (a 5xx) or that the service refused the request (the description has the status and message), and a Cognito internal error (`InternalErrorException`), whose suggestion says to retry. From `deleteUser`, a sign-out's revoke or global sign-out, or a passkey credential call, an internal error keeps the engine's suggestion | Read the description; retry a 5xx or internal error later |
+| `unknown` | Anything else, including a saved record this version can't read | Read the description |
 
 Match cases directly. `service` carries its code in the case, so no downcast is needed:
 
@@ -1459,13 +1460,14 @@ may not have reached the service." and the suggestion "A network or service prob
 and retry the operation.", with the network error itself underneath (`underlyingError` is the `URLError`, or the
 CFNetwork or POSIX error), so `catch AuthClientError.service(nil, _, _, let error as URLError) where error.code ==
 .notConnectedToInternet` matches it in every call. `AuthClientServiceErrorCode.network` is only set by an HTTP client
-that reports connectivity failures in its own terms, such as a CRT engine set through `configureUserPoolClient`;
-with the default one, match the `URLError`. The description doesn't say the request never arrived:
-a timed-out or lost connection may follow a request Cognito acted on, whose answer was lost. A transport failure that
-isn't a network failure is `.service` with no code too, never `.unknown`: a response that couldn't be read (one that
-isn't JSON, such as an HTML error page, or a malformed one) is "The service returned a response that could not be
-read." with a suggestion to retry, and any other URL loading failure (an App Transport Security refusal, say) is "The
-service request failed." with the network-or-service suggestion. The client doesn't retry any of them itself.
+that reports connectivity failures in its own terms, such as a CRT engine set through `configureUserPoolClient`; with
+the default one, match the `URLError`. The description doesn't say the request never arrived: a timed-out or lost
+connection may follow a request Cognito acted on, whose answer was lost. A transport failure that isn't a network
+failure is `.service` with no code too, never `.unknown`: a response that couldn't be read (one that isn't JSON, such
+as an HTML error page, or a malformed one) is "The service returned a response that could not be read." with a
+suggestion to retry, and any other URL loading failure (an App Transport Security refusal, say) is "The service
+request failed." with the network-or-service suggestion. That holds in every call, a refresh, a sign-out's revoke and
+the passkey credential calls included. The client doesn't retry any of them itself.
 
 A sign-out's `revokeTokenError` that failed on the network is `.service` with no code too, described as "The refresh
 token may not have been revoked: a network problem stopped the request, which may not have reached the service.
@@ -1474,8 +1476,10 @@ Unless it did, or a global sign-out succeeded, the refresh token stays valid unt
 server, sign in again and sign out with globalSignOut: true." A `globalSignOutError` that failed on the network has
 the network description, with the suggestion "The session was signed out on this device, and the global sign-out will
 not be retried: unless the request reached the service, the user's other sessions stay signed in until their tokens
-expire. To sign them out, sign in again and sign out with globalSignOut: true." Signing out again doesn't retry
-either: the session is already signed out on this device, so the second sign-out is `.complete` and sends nothing.
+expire. To sign them out, sign in again and sign out with globalSignOut: true." A revoke or global sign-out whose
+answer couldn't be read, or that failed otherwise in transport, has the description given above for that failure,
+with the same not-retried suggestion. Signing out again doesn't retry either: the session is already signed out on
+this device, so the second sign-out is `.complete` and sends nothing.
 
 Recovery suggestions name the client's calls (for example "Call signIn …"), not the plugin's.
 
@@ -1753,6 +1757,10 @@ HTTP client from the configuration, so some settings have no effect there:
 - To change retries, set `retryStrategyOptions`, as the plugin does: setting `maxAttempts` or `awsRetryMode` has no
   effect.
 - To change timeouts, replace `httpClientEngine`: setting only `httpClientConfiguration` has no effect.
+
+The closure runs synchronously while the process-wide table of live sessions is locked, so no other client in the
+process can be built until it returns. Only set configuration values in it: don't build an `AmplifyCognitoClient`
+in it, which deadlocks, and don't block waiting on work on another thread.
 
 The client logs through AmplifyFoundation's logging. Every line's category starts with `AmplifyCognitoClient`, so
 a sink can tell the client's lines from the Auth plugin's:

@@ -1105,7 +1105,8 @@ public func signInWithWebUI(presentationAnchor: AuthClientPresentationAnchor,
 // The public cancel and reset. cancelWebUISignIn closes this session's sheet (its
 // sign-in, sign-out page or passkey sheet): a sign-in or passkey call throws
 // `userCancelled`, and a closed sign-out page is `.failed(.userCancelled)`. A hosted-UI
-// sign-in throws once its browser has closed (at most a second), so the sheet is free by then.
+// sign-in or passkey call throws once it has released the sheet (at most a second), so
+// systemSheetHolder no longer names its session by then.
 // resetSystemSheet frees the client's sheet, whichever session holds it, and returns
 // the session that held it.
 public func cancelWebUISignIn() async
@@ -1546,11 +1547,11 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
     `==` compares errors as `AuthSessionState.failed` does (`isEquivalent(to:)`).
   - **`.failed`, with the session still signed in:** another sign-in replaced the session during the sign-out
     (`.invalidState`); a storage failure before the local sign-out; `sessionConfigurationMismatch` and any other
-    error before anything was revoked; a closed hosted-UI sign-out page (`.userCancelled`), unless the session
-    was already expired; any hosted-UI sign-out page that could not be shown or completed, including no hosted-UI
-    configuration or sign-out redirect URI; task cancellation before anything was revoked, as
-    `.failed(.unknown("The sign-out was cancelled before anything was revoked; the session is still signed in.",
-    "Retry the sign-out.", CancellationError()))`.
+    error before anything was revoked; a closed hosted-UI sign-out page (`.userCancelled`), unless a refresh in
+    this launch had found the session expired; any hosted-UI sign-out page that could not be shown or completed,
+    including no hosted-UI configuration or sign-out redirect URI; task cancellation before anything was revoked,
+    as `.failed(.unknown("The sign-out was cancelled before anything was revoked; the session is still signed
+    in.", "Retry the sign-out.", CancellationError()))`.
   - **A purge that fails after the local sign-out succeeded** returns `.partial` with `storageError` set, and
     `signedOutLocally == true`.
   - **As the plugin does:** a failed global sign-out adds the plugin's placeholder `revokeTokenError`.
@@ -1591,13 +1592,13 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
 | `browserBusy(holder:)` | The one system sheet across the client's sessions (hosted-UI sign-in or sign-out page, or passkey sheet) is held, or a `.wait(timeout:)` expired first. The Auth plugin's sheets don't take part. |
 | `sessionConfigurationMismatch(SessionID)` | A session ID already live under a different user pool, identity pool, keychain access group or settings. Thrown instead of silently attaching - see D.1. |
 | `validation(field:)` | An argument the caller passed is invalid. Names the offending field. |
-| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request; the code when the client recognises the exception. `AuthClientServiceErrorCode` is a plain value this error carries: it is not an `Error`, so it is never thrown or caught on its own, and its `errorDescription` is an ordinary property. Match it inside the case: `catch AuthClientError.service(.userNotConfirmed?, _, _, _)`. A network failure (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), whose request may or may not have reached Cognito, is `service` with no code in every call, with the client's network description and suggestion and the network error itself underneath (the `URLError`, or the CFNetwork or POSIX error); any other transport failure is `service` with no code too, never an empty `unknown` (an unreadable response, or another URL loading failure such as an App Transport Security refusal); a sign-out's revoke or global sign-out that failed that way keeps the sign-out's context in its suggestion: it is not retried. |
+| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request; the code when the client recognises the exception. `AuthClientServiceErrorCode` is a plain value this error carries: it is not an `Error`, so it is never thrown or caught on its own, and its `errorDescription` is an ordinary property. Match it inside the case: `catch AuthClientError.service(.userNotConfirmed?, _, _, _)`. A Cognito internal error (`InternalErrorException`) and an error status the SDK does not model are `service` with no code too (the plugin's `unknown`), with a recovery suggestion to retry (a 5xx, an internal error) or naming the refusal (a 4xx). A network failure (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), whose request may or may not have reached Cognito, is `service` with no code in every call, with the client's network description and suggestion and the network error itself underneath (the `URLError`, or the CFNetwork or POSIX error); any other transport failure is `service` with no code too, never an empty `unknown` (an unreadable response, or another URL loading failure such as an App Transport Security refusal); a sign-out's revoke or global sign-out that failed that way keeps the sign-out's context in its suggestion: it is not retried. |
 | `notAuthorized` | The caller is not allowed to perform the operation: a wrong password, a disabled user, a revoked token. |
 | `invalidState` | The operation is not valid in the session's state: signed in already, federated, no sign-in in progress, or cancelled by a sign-out. |
 | `userCancelled` | The user closed a system sheet, or `cancelWebUISignIn()` or `resetSystemSheet()` closed it. |
-| `webAuthnCeremonyFailed(AuthClientWebAuthnCeremonyFailure)` | A local passkey ceremony failed before Cognito was asked anything. |
+| `webAuthnCeremonyFailed(AuthClientWebAuthnCeremonyFailure)` | A local passkey ceremony failed before its result was sent to Cognito. |
 | `unexpectedIdentity(expected:returned:)` | A hosted-UI sign-in returned another user than the one asked for; nobody was signed in. |
-| `unknown` | Anything else, including a saved record this version cannot read. An error status the SDK does not model and a Cognito internal error (`InternalErrorException`) land here too, as in the plugin, with a recovery suggestion to retry (a 5xx, an internal error) or naming the refusal (a 4xx), in place of the engine's "report a bug" text; the engine keeps nothing under an internal error, so `deleteUser`, a sign-out's revoke or global sign-out, and the passkey credential calls, whose failure the client only sees mapped, keep that text for it. |
+| `unknown` | Anything else, including a saved record this version cannot read. |
 
 ---
 
