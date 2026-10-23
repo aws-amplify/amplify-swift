@@ -14,14 +14,22 @@ struct AuthenticatedScreen: Screen {
     private enum Identifiers {
         static let signOutButton = "hostedUI_signOut_button"
         static let signInButton = "hostedUI_signIn_button"
+        static let signUpNav = "hostedUI_signUp_view_nav"
     }
 
     static func signOutIfAuthenticated(app: XCUIApplication) {
-        let screen = AuthenticatedScreen(app: app)
-        let button = app.buttons[Identifiers.signOutButton]
-        let present = button.waitForExistence(timeout: 30)
-        if present {
-            _ = screen.tapSignOut().dismissSignOutAlert().testSignOutSucceeded()
+        // The app shows nothing until it knows whether a user is signed in, then the signed-in or
+        // the signed-out screen. Wait for whichever comes first rather than for the sign-out button
+        // alone, which spent a fixed 30 s on every signed-out launch and left a slow first load to
+        // the next step's shorter wait.
+        let signOutButton = app.buttons[Identifiers.signOutButton]
+        let shown = app.waitForFirst(
+            of: [signOutButton, app.buttons[Identifiers.signUpNav]],
+            timeout: UITestTimeout.firstLoad
+        )
+        XCTAssertNotNil(shown, "The app showed neither the signed-in nor the signed-out screen")
+        if shown === signOutButton {
+            _ = AuthenticatedScreen(app: app).tapSignOut().dismissSignOutAlert().testSignOutSucceeded()
         }
     }
 

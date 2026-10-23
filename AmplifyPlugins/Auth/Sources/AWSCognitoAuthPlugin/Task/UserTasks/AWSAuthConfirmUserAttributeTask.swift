@@ -10,6 +10,7 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class AWSAuthConfirmUserAttributeTask: AuthConfirmUserAttributeTask, DefaultLogger, @unchecked Sendable {
@@ -36,9 +37,10 @@ final class AWSAuthConfirmUserAttributeTask: AuthConfirmUserAttributeTask, Defau
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
             try await confirmUserAttribute(with: accessToken)
-        } catch let error as AuthErrorConvertible {
-            throw error.authError
         } catch {
+            if let authError = AuthError(converting: error) {
+                throw authError
+            }
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }

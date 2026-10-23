@@ -47,3 +47,25 @@ public struct TOTPSetupDetails {
 extension TOTPSetupDetails: Equatable { }
 
 extension TOTPSetupDetails: Sendable { }
+
+extension TOTPSetupDetails: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+
+    /// The default struct printing, with the shared secret redacted: the details are logged as part of a sign-in or
+    /// TOTP setup result, and the secret lets anyone generate the user's TOTP codes. Use `sharedSecret` or
+    /// `getSetupURI(appName:accountName:)` for the value.
+    public var description: String {
+        "\(String(reflecting: Self.self))(sharedSecret: \(String(reflecting: Self.redactedSecret)), "
+            + "username: \(String(reflecting: username)))"
+    }
+
+    public var debugDescription: String {
+        description
+    }
+
+    /// For `dump` and debuggers: the shared secret redacted.
+    public var customMirror: Mirror {
+        Mirror(self, children: ["sharedSecret": Self.redactedSecret, "username": username], displayStyle: .struct)
+    }
+
+    private static let redactedSecret = "<REDACTED>"
+}

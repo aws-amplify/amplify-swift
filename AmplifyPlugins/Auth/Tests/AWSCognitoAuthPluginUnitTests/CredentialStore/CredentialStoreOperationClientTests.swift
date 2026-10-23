@@ -9,6 +9,7 @@ import Amplify
 import Foundation
 import XCTest
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
@@ -23,7 +24,7 @@ class CredentialStoreOperationClientTests: XCTestCase, @unchecked Sendable {
                 amplifyCredentialStoreFactory: Defaults.makeAmplifyStore,
                 legacyKeychainStoreFactory: Defaults.makeLegacyStore(service:)
             ),
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+            logger: AmplifyEngineLogRouter(scope: .category("awsCognitoAuthPluginTest"))
         )
 
         let credentialStateMachine = CredentialStoreStateMachine(

@@ -1,0 +1,156 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import AWSCognitoIdentityProvider
+import Foundation
+
+package struct InitiateMigrateAuth: Action {
+    package let identifier = "InitiateMigrateAuth"
+
+    package let username: String
+    package let password: String
+    package let clientMetadata: [String: String]
+    package let deviceMetadata: DeviceMetadata
+    package let respondToAuthChallenge: RespondToAuthChallenge?
+
+    package init(
+        username: String,
+        password: String,
+        clientMetadata: [String: String],
+        deviceMetadata: DeviceMetadata,
+        respondToAuthChallenge: RespondToAuthChallenge?
+    ) {
+        self.username = username
+        self.password = password
+        self.clientMetadata = clientMetadata
+        self.deviceMetadata = deviceMetadata
+        self.respondToAuthChallenge = respondToAuthChallenge
+    }
+
+    package func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
+        logVerbose("\(#fileID) Starting execution", environment: environment)
+        do {
+            let userPoolEnv = try environment.userPoolEnvironment()
+            let authEnv = try environment.authEnvironment()
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: username,
+                credentialStoreClient: authEnv.credentialsClient
+            )
+
+            // A device key Cognito no longer knows (the device was forgotten) is dropped, and the request sent again
+            // without it, as the SRP flow does. The record is removed under the name `VerifySignInChallenge` read it
+            // with: the challenge's input username, the one the user typed, falling back to `username`. Every
+            // challenge the engine builds today holds the same name in both, so this guards the choice of name.
+            let responseEvent: StateMachineEvent = try await DeviceMetadataHelper.retryingWithoutStaleDevice(
+                deviceMetadata,
+                for: respondToAuthChallenge?.inputUsername ?? username,
+                with: environment
+            ) { deviceMetadata in
+                if let session = respondToAuthChallenge?.session {
+                    let request = await RespondToAuthChallengeInput.userPasswordInputForUserAuth(
+                        username: username,
+                        password: password,
+                        session: session,
+                        clientMetadata: clientMetadata,
+                        asfDeviceId: asfDeviceId,
+                        deviceMetadata: deviceMetadata,
+                        environment: userPoolEnv
+                    )
+                    return try await sendRequest(
+                        request: request,
+                        environment: userPoolEnv,
+                        logger: environment.engineLogger
+                    )
+                }
+                let request = await InitiateAuthInput.migrateAuth(
+                    username: username,
+                    password: password,
+                    clientMetadata: clientMetadata,
+                    asfDeviceId: asfDeviceId,
+                    deviceMetadata: deviceMetadata,
+                    environment: userPoolEnv
+                )
+                return try await sendRequest(
+                    request: request,
+                    environment: userPoolEnv,
+                    logger: environment.engineLogger
+                )
+            }
+
+            logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
+            await dispatcher.send(responseEvent)
+
+        } catch let error as SignInError {
+            logVerbose("\(#fileID) Raised error \(error)", environment: environment)
+            let event = SignInEvent(eventType: .throwAuthError(error))
+            await dispatcher.send(event)
+        } catch {
+            logVerbose("\(#fileID) Caught error \(error)", environment: environment)
+            let authError = SignInError.service(error: error)
+            let event = SignInEvent(
+                eventType: .throwAuthError(authError)
+            )
+            await dispatcher.send(event)
+        }
+
+    }
+
+    private func sendRequest(
+        request: RespondToAuthChallengeInput,
+        environment: UserPoolEnvironment,
+        logger: any EngineScopedLogger
+    ) async throws -> StateMachineEvent {
+
+        let cognitoClient = try environment.cognitoUserPoolFactory()
+        logVerbose("\(#fileID) Starting execution", environment: environment)
+
+        let response = try await cognitoClient.respondToAuthChallenge(input: request)
+        return UserPoolSignInHelper.parseResponse(
+            response,
+            for: username,
+            signInMethod: .apiBased(.userPassword),
+            logger: logger
+        )
+    }
+
+    private func sendRequest(
+        request: InitiateAuthInput,
+        environment: UserPoolEnvironment,
+        logger: any EngineScopedLogger
+    ) async throws -> StateMachineEvent {
+
+        let cognitoClient = try environment.cognitoUserPoolFactory()
+        logVerbose("\(#fileID) Starting execution", environment: environment)
+
+        let response = try await cognitoClient.initiateAuth(input: request)
+        return UserPoolSignInHelper.parseResponse(
+            response,
+            for: username,
+            signInMethod: .apiBased(.userPassword),
+            logger: logger
+        )
+    }
+
+}
+
+extension InitiateMigrateAuth: CustomDebugDictionaryConvertible {
+    package var debugDictionary: [String: Any] {
+        [
+            "identifier": identifier,
+            "username": username.maskedForLog()
+        ]
+    }
+}
+
+extension InitiateMigrateAuth: CustomDebugStringConvertible {
+    package var debugDescription: String {
+        debugDictionary.debugDescription
+    }
+}

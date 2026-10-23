@@ -63,12 +63,3 @@ final class CloudWatchLoggingFilter: CloudWatchLoggingFilterBehavior, @unchecked
         return constraints.defaultLogLevel
     }
 }
-
-private extension NSLock {
-    @discardableResult
-    func execute<T>(_ block: () -> T) -> T {
-        lock()
-        defer { unlock() }
-        return block()
-    }
-}

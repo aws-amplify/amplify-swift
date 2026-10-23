@@ -20,11 +20,15 @@ import SmithyIdentity
 /// user authentication sessions.
 ///
 /// - Tag: CloudWatchLogSessionController
-/// - Note: `@unchecked Sendable`: mutable state is established during setup and not written
-///   concurrently with reads.
+/// - Note: `@unchecked Sendable`: log calls read the session from arbitrary threads while user changes
+///   replace it, so every access to the mutable state goes through `lock`. Members that already hold the
+///   lock read the underscored storage directly, because `NSLock` is not recursive.
 final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
 
-    var client: CloudWatchLogsClientProtocol?
+    var client: CloudWatchLogsClientProtocol? {
+        get { lock.execute { _client } }
+        set { lock.execute { _client = newValue } }
+    }
     let namespace: String?
     private let logGroupName: String
     private let region: String
@@ -32,6 +36,10 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
     private let credentialIdentityResolver: any AWSCredentialIdentityResolver
     private let authentication: AuthCategoryUserBehavior
     private let category: String
+    /// Taken while the category client holds its own lock, so never call `Amplify.Logging` under it.
+    private let lock = NSLock()
+    /// Guarded by `lock`. Read through `client` from unlocked contexts.
+    private var _client: CloudWatchLogsClientProtocol?
     private var session: AWSCloudWatchLoggingSession?
     private var consumer: LogBatchConsumer?
     private let logFilter: AWSCloudWatchLoggingFilterBehavior
@@ -48,17 +56,19 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
             authSubscription?.cancel()
         }
     }
-    private var userIdentifier: String? {
-        didSet {
-            if oldValue != userIdentifier {
-                userIdentifierDidChange()
-            }
-        }
-    }
+    private var userIdentifier: String?
+    private var isEnabled = false
+
+    /// Guarded by `lock`. Read through `logLevel` from unlocked contexts.
+    private var _logLevel: LogLevel
 
     var logLevel: LogLevel {
-        didSet {
-            session?.logger.logLevel = logLevel
+        get { lock.execute { _logLevel } }
+        set {
+            lock.execute {
+                _logLevel = newValue
+                session?.logger.logLevel = newValue
+            }
         }
     }
 
@@ -81,7 +91,7 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
         self.logFilter = logFilter
         self.category = category
         self.namespace = namespace
-        self.logLevel = logLevel
+        self._logLevel = logLevel
         self.logGroupName = logGroupName
         self.region = region
         self.localStoreMaxSizeInMB = localStoreMaxSizeInMB
@@ -90,16 +100,26 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
     }
 
     func enable() {
-        updateSession()
-        updateConsumer()
-        connectProducerAndConsumer()
+        lock.execute {
+            // A second session would write the same directory as the first.
+            guard !isEnabled else { return }
+            isEnabled = true
+            updateSession()
+            updateConsumer()
+            connectProducerAndConsumer()
+        }
     }
 
     func disable() {
-        batchSubscription = nil
-        authSubscription = nil
-        session = nil
-        consumer = nil
+        lock.execute {
+            isEnabled = false
+            // Drop records still queued, so they can't land beside the session `enable()` builds next.
+            session?.logger.close()
+            batchSubscription = nil
+            authSubscription = nil
+            session = nil
+            consumer = nil
+        }
     }
 
     private func updateConsumer() {
@@ -107,7 +127,7 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
     }
 
     private func createConsumer() throws -> LogBatchConsumer? {
-        if client == nil {
+        if _client == nil {
             var configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfig(
                 awsCredentialIdentityResolver: credentialIdentityResolver,
                 region: region,
@@ -116,10 +136,10 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
 
             configuration.httpClientEngine = .userAgentEngine(for: configuration)
 
-            client = CloudWatchLogsClient(config: configuration)
+            _client = CloudWatchLogsClient(config: configuration)
         }
 
-        guard let cloudWatchClient = client else { return nil }
+        guard let cloudWatchClient = _client else { return nil }
         return CloudWatchLoggingConsumer(
             client: cloudWatchClient,
             logGroupName: logGroupName,
@@ -157,7 +177,7 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
     }
 
     private func userIdentifierDidChange() {
-        resetCurrentLogs()
+        discardLogs(of: session)
         updateSession()
         updateConsumer()
         connectProducerAndConsumer()
@@ -168,7 +188,7 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
             session = try AWSCloudWatchLoggingSession(
                 category: category,
                 namespace: namespace,
-                logLevel: logLevel,
+                logLevel: _logLevel,
                 userIdentifier: userIdentifier,
                 localStoreMaxSizeInMB: localStoreMaxSizeInMB
             )
@@ -179,18 +199,27 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
     }
 
     func setCurrentUser(identifier: String?) {
-        userIdentifier = identifier
-    }
-
-    func flushLogs() async throws {
-        guard let logBatches = try await session?.logger.getLogBatches() else { return }
-
-        for batch in logBatches {
-            try await consumeLogBatch(batch)
+        lock.execute {
+            guard userIdentifier != identifier else { return }
+            userIdentifier = identifier
+            // A disabled controller only records the user; `enable()` builds its session.
+            guard isEnabled else { return }
+            userIdentifierDidChange()
         }
     }
 
-    private func consumeLogBatch(_ batch: LogBatch) async throws {
+    func flushLogs() async throws {
+        let (logger, consumer) = lock.execute { (session?.logger, self.consumer) }
+        guard let logBatches = try await logger?.getLogBatches() else { return }
+
+        for batch in logBatches {
+            // Stop once the session is disabled, leaving its logs for a later flush, or replaced, which discards them.
+            guard lock.execute({ session?.logger === logger }) else { return }
+            try await consumeLogBatch(batch, with: consumer)
+        }
+    }
+
+    private func consumeLogBatch(_ batch: LogBatch, with consumer: LogBatchConsumer?) async throws {
         // Check if consumer exists before trying to use it
         guard let consumer else {
             // If consumer is nil, still mark the batch as completed to prevent memory leaks
@@ -208,45 +237,47 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
         }
     }
 
-    private func resetCurrentLogs() {
-        Task {
-            do {
-                try await session?.logger.resetLogs()
-            } catch {
-                Amplify.Logging.error("Error resetting logs with \(error)")
-            }
+    /// Discards the outgoing session's logs before a later session can start in its directory.
+    private func discardLogs(of session: AWSCloudWatchLoggingSession?) {
+        do {
+            try session?.logger.discardLogs()
+        } catch {
+            // Logged from a task: the category client holds its lock while it calls in.
+            let description = "\(error)"
+            Task { Amplify.Logging.error("Error resetting logs with \(description)") }
         }
     }
 }
 
 extension AWSCloudWatchLoggingSessionController: Logger {
     func error(_ message: @autoclosure () -> String) {
-        guard logFilter.canLog(withCategory: category, logLevel: .error, userIdentifier: userIdentifier) else { return }
-        session?.logger.error(message())
+        sessionLogger(for: .error)?.error(message())
     }
 
     func error(error: Error) {
-        guard logFilter.canLog(withCategory: category, logLevel: .error, userIdentifier: userIdentifier) else { return }
-        session?.logger.error(error: error)
+        sessionLogger(for: .error)?.error(error: error)
     }
 
     func warn(_ message: @autoclosure () -> String) {
-        guard logFilter.canLog(withCategory: category, logLevel: .warn, userIdentifier: userIdentifier) else { return }
-        session?.logger.warn(message())
+        sessionLogger(for: .warn)?.warn(message())
     }
 
     func info(_ message: @autoclosure () -> String) {
-        guard logFilter.canLog(withCategory: category, logLevel: .info, userIdentifier: userIdentifier) else { return }
-        session?.logger.info(message())
+        sessionLogger(for: .info)?.info(message())
     }
 
     func debug(_ message: @autoclosure () -> String) {
-        guard logFilter.canLog(withCategory: category, logLevel: .debug, userIdentifier: userIdentifier) else { return }
-        session?.logger.debug(message())
+        sessionLogger(for: .debug)?.debug(message())
     }
 
     func verbose(_ message: @autoclosure () -> String) {
-        guard logFilter.canLog(withCategory: category, logLevel: .verbose, userIdentifier: userIdentifier) else { return }
-        session?.logger.verbose(message())
+        sessionLogger(for: .verbose)?.verbose(message())
+    }
+
+    /// The current session's logger, or `nil` when `logFilter` rejects `level` for the current user.
+    private func sessionLogger(for level: LogLevel) -> RotatingLogger? {
+        let (logger, userIdentifier) = lock.execute { (session?.logger, self.userIdentifier) }
+        guard logFilter.canLog(withCategory: category, logLevel: level, userIdentifier: userIdentifier) else { return nil }
+        return logger
     }
 }

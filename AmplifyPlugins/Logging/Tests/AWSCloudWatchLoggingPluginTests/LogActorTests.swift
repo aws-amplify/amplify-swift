@@ -46,6 +46,51 @@ final class LogActorTests: XCTestCase, @unchecked Sendable {
         directory = nil
     }
 
+    /// Given: a closed LogActor
+    /// When: an entry is recorded and the logs are listed
+    /// Then: nothing is written, and both listings are empty
+    func testClosedLogActorDropsRecordsAndListsNoLogs() async throws {
+        systemUnderTest.close()
+        let entry = LogEntry(category: "LogActorTests", namespace: nil, level: .error, message: UUID().uuidString)
+        try await systemUnderTest.record(LogEntryCodec().encode(entry: entry))
+
+        let files = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        let written = try files.reduce(0) { total, file in
+            try total + (FileManager.default.attributesOfItem(atPath: file.path)[.size] as? Int ?? 0)
+        }
+        XCTAssertEqual(written, 0)
+        let logs = try await systemUnderTest.getLogs()
+        XCTAssertEqual(logs, [])
+        let sealed = try await systemUnderTest.sealLogsForFlush()
+        XCTAssertEqual(sealed, [])
+    }
+
+    /// Given: a LogActor with an entry on disk
+    /// When: its logs are discarded
+    /// Then: its directory is gone at once, a LogActor created there next starts empty, and the old logs
+    ///   are deleted in the background
+    func testDiscardLogsMovesDirectoryAsideBeforeDeletingIt() async throws {
+        let logDirectory = directory.appendingPathComponent("category")
+        try FileManager.default.createDirectory(at: logDirectory, withIntermediateDirectories: true)
+        let actor = try LogActor(directory: logDirectory, fileSizeLimitInBytes: fileSizeLimitInBytes)
+        let entry = LogEntry(category: "LogActorTests", namespace: nil, level: .error, message: UUID().uuidString)
+        try await actor.record(LogEntryCodec().encode(entry: entry))
+
+        try actor.discardLogs()
+
+        XCTAssertFalse(FileManager.default.fileExists(atPath: logDirectory.path))
+        try FileManager.default.createDirectory(at: logDirectory, withIntermediateDirectories: true)
+        let next = try LogActor(directory: logDirectory, fileSizeLimitInBytes: fileSizeLimitInBytes)
+        let logs = try await next.getLogs()
+        XCTAssertEqual(logs.count, 1)
+        XCTAssertEqual(try Data(contentsOf: XCTUnwrap(logs.first)), Data())
+        let deleted = await waitUntil {
+            let names = (try? FileManager.default.contentsOfDirectory(atPath: self.directory.path)) ?? []
+            return !names.contains { $0.hasPrefix(".discarded-") }
+        }
+        XCTAssertTrue(deleted, "The discarded logs should be deleted in the background")
+    }
+
     /// Given: a Log Entry
     /// When: LogActor records the entry
     /// Then: the log entry is written to file

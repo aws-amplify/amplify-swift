@@ -14,6 +14,7 @@ import ClientRuntime
 
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 struct FeatureSpecification: Codable {
 

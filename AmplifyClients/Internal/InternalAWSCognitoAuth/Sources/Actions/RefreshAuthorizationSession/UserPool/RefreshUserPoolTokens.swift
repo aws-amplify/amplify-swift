@@ -1,0 +1,124 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import AWSCognitoIdentityProvider
+import ClientRuntime
+import Foundation
+
+package struct RefreshUserPoolTokens: Action {
+
+    package let identifier = "RefreshUserPoolTokens"
+
+    package let existingSignedIndata: SignedInData
+
+    package func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
+
+        do {
+
+            logVerbose("\(#fileID) Starting execution", environment: environment)
+            guard let environment = environment as? UserPoolEnvironment else {
+                let event = RefreshSessionEvent.init(eventType: .throwError(.noUserPool))
+                await dispatcher.send(event)
+                return
+            }
+
+            let config = environment.userPoolConfiguration
+            let client = try? environment.cognitoUserPoolFactory()
+            let existingTokens = existingSignedIndata.cognitoUserPoolTokens
+
+            let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
+                for: existingSignedIndata.inputUsername ?? existingSignedIndata.username,
+                with: environment
+            )
+
+            let deviceKey: String? = {
+                if case .metadata(let data) = deviceMetadata {
+                    return data.deviceKey
+                }
+                return nil
+            }()
+
+            let input = GetTokensFromRefreshTokenInput(
+                clientId: config.clientId,
+                clientMetadata: [:],
+                clientSecret: config.clientSecret,
+                deviceKey: deviceKey,
+                refreshToken: existingTokens.refreshToken
+            )
+
+            logVerbose(
+                "\(#fileID) Starting get tokens from refresh token", environment: environment
+            )
+
+            let response = try await client?.getTokensFromRefreshToken(input: input)
+
+            logVerbose(
+                "\(#fileID) Get tokens from refresh token response received",
+                environment: environment
+            )
+
+            guard let authenticationResult = response?.authenticationResult,
+                let idToken = authenticationResult.idToken,
+                let accessToken = authenticationResult.accessToken
+            else {
+                let event = RefreshSessionEvent(eventType: .throwError(.invalidTokens))
+                await dispatcher.send(event)
+                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+                return
+            }
+
+            let userPoolTokens = EngineUserPoolTokens(
+                idToken: idToken,
+                accessToken: accessToken,
+                refreshToken: authenticationResult.refreshToken ?? existingTokens.refreshToken
+            )
+
+            let signedInData = SignedInData(
+                signedInDate: existingSignedIndata.signedInDate,
+                signInMethod: existingSignedIndata.signInMethod,
+                cognitoUserPoolTokens: userPoolTokens,
+                inputUsername: existingSignedIndata.inputUsername
+            )
+            let event: RefreshSessionEvent
+
+            if ((environment as? AuthEnvironment)?.identityPoolConfigData) != nil {
+                let provider = CognitoUserPoolLoginsMap(
+                    idToken: idToken,
+                    region: config.region,
+                    poolId: config.poolId
+                )
+                event = .init(eventType: .refreshIdentityInfo(signedInData, provider))
+            } else {
+                event = .init(eventType: .refreshedCognitoUserPool(signedInData))
+            }
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            await dispatcher.send(event)
+
+        } catch {
+            let event = RefreshSessionEvent(eventType: .throwError(.service(error)))
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            await dispatcher.send(event)
+        }
+
+        logVerbose("\(#fileID) Get tokens from refresh token complete", environment: environment)
+    }
+}
+
+extension RefreshUserPoolTokens: CustomDebugDictionaryConvertible {
+    package var debugDictionary: [String: Any] {
+        [
+            "identifier": identifier,
+            "existingSignedInData": existingSignedIndata,
+        ]
+    }
+}
+
+extension RefreshUserPoolTokens: CustomDebugStringConvertible {
+    package var debugDescription: String {
+        debugDictionary.debugDescription
+    }
+}

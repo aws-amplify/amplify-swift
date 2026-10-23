@@ -27,6 +27,8 @@ struct RotatingLogBatch: LogBatch {
     func complete() throws {
         do {
             try FileManager.default.removeItem(at: url)
+        } catch CocoaError.fileNoSuchFile {
+            // Already gone, e.g. discarded along with its session.
         } catch {
             throw CloudWatchError.storage(
                 "Failed to remove log file at \(url)",

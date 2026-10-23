@@ -32,9 +32,9 @@ final class LogRotationTests: XCTestCase {
         directory = nil
     }
 
-    /// Given: a log rotation
-    /// When: the current log file is accessed
-    /// Then: the log file defaults to amplify.0.log
+    /// - Given: a log rotation
+    /// - When: the current log file is accessed
+    /// - Then: the log file defaults to amplify.0.log
     func testLogRotationDefaultState() throws {
         XCTAssertEqual(systemUnderTest.currentLogFile.available, systemUnderTest.currentLogFile.sizeLimitInBytes)
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.0.log")
@@ -44,9 +44,9 @@ final class LogRotationTests: XCTestCase {
         ])
     }
 
-    /// Given: a log rotation
-    /// When: a rotation occurs
-    /// Then: a new rotated log file is created
+    /// - Given: a log rotation
+    /// - When: a rotation occurs
+    /// - Then: a new rotated log file is created
     func testLogRotationCreatesNewFiles() throws {
         let originalContents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
         XCTAssertEqual(originalContents.map(\.lastPathComponent), [
@@ -93,9 +93,9 @@ final class LogRotationTests: XCTestCase {
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.0.log")
     }
 
-    /// Given: a log rotation
-    /// When: rotation occurs to the max limit
-    /// Then: the log rotation circles back to 0
+    /// - Given: a log rotation
+    /// - When: rotation occurs to the max limit
+    /// - Then: the log rotation circles back to 0
     func testLogRotationToMaxLimit() async throws {
         for _ in 0 ..< fileCountLimit {
             XCTAssertEqual(systemUnderTest.currentLogFile.available, systemUnderTest.currentLogFile.sizeLimitInBytes)
@@ -112,9 +112,9 @@ final class LogRotationTests: XCTestCase {
         ]))
     }
 
-    /// Given: a log rotation with existing under-utilized file
-    /// When: rotation occurs
-    /// Then: the log rotation rotates to the under-utilized log file
+    /// - Given: a log rotation with existing under-utilized file
+    /// - When: rotation occurs
+    /// - Then: the log rotation rotates to the under-utilized log file
     func testLogRotationUseUnderutilizedLogFile() async throws {
         let bytes = (0 ..< systemUnderTest.currentLogFile.sizeLimitInBytes).map { _ in UInt8.random(in: 0 ..< 255) }
         let largeData = Data(bytes)
@@ -136,9 +136,9 @@ final class LogRotationTests: XCTestCase {
         XCTAssertEqual(contents, tinyData)
     }
 
-    /// Given: a log rotation
-    /// When: rotation occurs to the max limit with all files full
-    /// Then: the log rotation circles back to oldest last modified log file
+    /// - Given: a log rotation
+    /// - When: rotation occurs to the max limit with all files full
+    /// - Then: the log rotation circles back to oldest last modified log file
     func testLogRotationUsesOldestLastModifiedLogFile() async throws {
         let bytes = (0 ..< systemUnderTest.currentLogFile.sizeLimitInBytes).map { _ in UInt8.random(in: 0 ..< 255) }
         let data = Data(bytes)
@@ -152,9 +152,9 @@ final class LogRotationTests: XCTestCase {
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.0.log")
     }
 
-    /// Given: the minimum allowed file size
-    /// When: a log rotation is constructed below the minimum file size limit
-    /// Then: the construction fails with an invalid size limit error
+    /// - Given: the minimum allowed file size
+    /// - When: a log rotation is constructed below the minimum file size limit
+    /// - Then: the construction fails with an invalid size limit error
     func testLogRotationThrowsErrorWithInvalidFileSizeLimitInBytes() throws {
         for fileSizeLimitInBytes in 0 ..< LogRotation.minimumFileSizeLimitInBytes {
             do {
@@ -170,9 +170,9 @@ final class LogRotationTests: XCTestCase {
         }
     }
 
-    /// Given: a log rotation
-    /// When: reset is executed
-    /// Then: log rotation is reset to 0
+    /// - Given: a log rotation
+    /// - When: reset is executed
+    /// - Then: log rotation is reset to 0
     func testLogRotationResets() throws {
         let originalContents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
         XCTAssertEqual(originalContents.map(\.lastPathComponent), [

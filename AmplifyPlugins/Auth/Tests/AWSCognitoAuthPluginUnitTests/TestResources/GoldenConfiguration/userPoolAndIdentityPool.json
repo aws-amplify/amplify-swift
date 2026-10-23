@@ -1,0 +1,1 @@
+{"identityPools":{"poolId":"eu-west-2:11111111-2222-3333-4444-555555555555","region":"eu-west-2"},"userPools":{"authFlowType":{"type":"USER_SRP_AUTH"},"clientId":"pooledclientid0123456789","poolId":"eu-west-2_pooled0001","region":"eu-west-2","signUpAttributes":[],"usernameAttributes":[],"verificationMechanisms":[]}}

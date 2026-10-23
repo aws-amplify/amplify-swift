@@ -10,3 +10,37 @@
 # Changes to files in the api-dump or api-dump-test folder require admin approval.
 api-dump/* @aws-amplify/amplify-ios-admins
 api-dump-test/* @aws-amplify/amplify-ios-admins
+
+# The golden baselines of AWSCognitoAuthPlugin, the tests that pin them and the lock that guards them
+# require admin approval. GoldenTests/ is owned whole, so every golden test and what decides its verdict
+# (GoldenFileSupport.swift, LogTranscriptNormaliser.swift, ErrorCatalogueConstants.swift, the fixture
+# paths each test reads) needs an admin, including files added there later. So does the plugin's shared
+# scheme: CI tests through it, and its launch environment can set AMPLIFY_GENERATE_GOLDEN, which makes
+# the golden tests write their files instead of comparing them. GoldenGenerateModeGuardTests fails a
+# full-scheme run with that switch set however it got in (scheme, TEST_RUNNER_, shell), so the scheme
+# rule is a backstop. These close only the generate switch: skipping or deselecting the golden suites
+# through the CI workflows or scripts/python/ stays a team-reviewed change.
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenStoredFormat/ @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenErrors/ @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenLogs/ @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenKeychainQueries/ @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenConfiguration/ @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/GoldenTests/ @aws-amplify/amplify-ios-admins
+/.swiftpm/xcode/xcshareddata/xcschemes/AWSCognitoAuthPlugin.xcscheme @aws-amplify/amplify-ios-admins
+/.github/workflows/auth_golden_fixture_lock.yml @aws-amplify/amplify-ios-admins
+
+# The shared Cognito module's gates and their inputs require admin approval, so a team-approved change
+# cannot weaken a check and pass it together. scripts/cognito-engine/ is owned whole:
+# - check_fixture_lock.sh: the golden-fixture lock above.
+# - check_engine_deps.py: no Amplify dependency or import reaches the module that AmplifyCognitoClient uses.
+# - check_engine_privacy_manifest.py: no product that links the module misses a required-reason declaration.
+# - error_match_gate.sh: no `catch`, cast or type test against an error type the module no longer throws,
+#   which would compile and silently never match.
+# - gen_engine_paths.py, gen_error_constants_list.py, rename_table.json: inputs of those gates and of the
+#   error and log golden tests (the log normaliser reads rename_table.json).
+/scripts/cognito-engine/ @aws-amplify/amplify-ios-admins
+/.github/workflows/auth_engine_gates.yml @aws-amplify/amplify-ios-admins
+# engine_paths.txt is the exception (the last matching rule wins). It changes whenever a file of the module
+# is added, removed or renamed, CI checks it against gen_engine_paths.py (admin-owned above), and
+# error_match_gate.sh treats every file under the module's Sources/ as module code whether listed or not.
+/scripts/cognito-engine/engine_paths.txt @aws-amplify/amplify-ios

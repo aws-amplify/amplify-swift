@@ -8,6 +8,7 @@
 import AWSCognitoIdentityProvider
 import XCTest
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
@@ -21,7 +22,7 @@ class InputUsernameDeviceKeyTests: XCTestCase, @unchecked Sendable {
     /// - When: Decoding into SignedInData
     /// - Then: inputUsername should be nil and all other fields decode correctly
     func testSignedInDataDecodesWithoutInputUsername() throws {
-        let tokens = AWSCognitoUserPoolTokens.testData
+        let tokens = EngineUserPoolTokens.testData
         let original = SignedInData(
             signedInDate: Date(),
             signInMethod: .apiBased(.userSRP),
@@ -45,7 +46,7 @@ class InputUsernameDeviceKeyTests: XCTestCase, @unchecked Sendable {
     /// - When: Encoding then decoding
     /// - Then: inputUsername should survive the round trip
     func testSignedInDataRoundTripsWithInputUsername() throws {
-        let tokens = AWSCognitoUserPoolTokens.testData
+        let tokens = EngineUserPoolTokens.testData
         let original = SignedInData(
             signedInDate: Date(),
             signInMethod: .apiBased(.userSRP),
@@ -65,7 +66,7 @@ class InputUsernameDeviceKeyTests: XCTestCase, @unchecked Sendable {
     /// - When: Encoding then decoding
     /// - Then: inputUsername should be preserved through the AmplifyCredentials wrapper
     func testAmplifyCredentialsRoundTripsWithInputUsername() throws {
-        let tokens = AWSCognitoUserPoolTokens.testData
+        let tokens = EngineUserPoolTokens.testData
         let signedInData = SignedInData(
             signedInDate: Date(),
             signInMethod: .apiBased(.userSRP),
@@ -90,7 +91,7 @@ class InputUsernameDeviceKeyTests: XCTestCase, @unchecked Sendable {
     /// - When: Decoding
     /// - Then: Should decode successfully with inputUsername as nil
     func testAmplifyCredentialsBackwardsCompatibility() throws {
-        let tokens = AWSCognitoUserPoolTokens.testData
+        let tokens = EngineUserPoolTokens.testData
         let signedInData = SignedInData(
             signedInDate: Date(),
             signInMethod: .apiBased(.userSRP),
@@ -202,7 +203,8 @@ class InputUsernameDeviceKeyTests: XCTestCase, @unchecked Sendable {
             response,
             for: "cognito-canonical-id",
             signInMethod: .apiBased(.userSRP),
-            inputUsername: "user@example.com"
+            inputUsername: "user@example.com",
+            logger: AmplifyEngineLogRouter()
         )
 
         guard let signInEvent = event as? SignInEvent,
@@ -239,7 +241,8 @@ class InputUsernameDeviceKeyTests: XCTestCase, @unchecked Sendable {
         let event = UserPoolSignInHelper.parseResponse(
             response,
             for: "user@example.com",
-            signInMethod: .apiBased(.userPassword)
+            signInMethod: .apiBased(.userPassword),
+            logger: AmplifyEngineLogRouter()
         )
 
         guard let signInEvent = event as? SignInEvent,
@@ -268,7 +271,8 @@ class InputUsernameDeviceKeyTests: XCTestCase, @unchecked Sendable {
             response,
             for: "cognito-canonical-id",
             signInMethod: .apiBased(.userSRP),
-            inputUsername: "user@example.com"
+            inputUsername: "user@example.com",
+            logger: AmplifyEngineLogRouter()
         )
 
         guard let signInEvent = event as? SignInEvent,
@@ -307,7 +311,8 @@ class InputUsernameDeviceKeyTests: XCTestCase, @unchecked Sendable {
             response,
             for: "cognito-id",
             signInMethod: .apiBased(.userSRP),
-            inputUsername: "user@example.com"
+            inputUsername: "user@example.com",
+            logger: AmplifyEngineLogRouter()
         )
 
         guard let signInEvent = event as? SignInEvent,

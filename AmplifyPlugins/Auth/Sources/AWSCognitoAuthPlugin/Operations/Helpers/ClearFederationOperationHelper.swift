@@ -7,6 +7,7 @@
 
 import Amplify
 import Foundation
+import InternalAWSCognitoAuth
 
 struct ClearFederationOperationHelper {
 

@@ -10,6 +10,7 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask, DefaultLogger, @unchecked Sendable {
@@ -36,9 +37,10 @@ final class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask, DefaultLogger
             let details = try await resendSignUpCode()
             log.verbose("Received result")
             return details
-        } catch let error as AuthErrorConvertible {
-            throw error.authError
         } catch {
+            if let authError = AuthError(converting: error) {
+                throw authError
+            }
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }
@@ -71,7 +73,7 @@ final class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask, DefaultLogger
         )
         let userContextData = CognitoIdentityProviderClientTypes.UserContextDataType(
             encodedData: encodedData)
-        let analyticsMetadata = userPoolEnvironment
+        let analyticsMetadata = await userPoolEnvironment
             .cognitoUserPoolAnalyticsHandlerFactory()
             .analyticsMetadata()
         let secretHash = ClientSecretHelper.calculateSecretHash(

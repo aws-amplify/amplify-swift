@@ -95,36 +95,36 @@ class AuthEventIntegrationTests: AWSAuthBaseTest, @unchecked Sendable {
     ///    - I should get a session expired flow event.
     ///
     func testSessionExpiredEvent() async throws {
-        try XCTSkipIf(true, "TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
         let signInExpectation = expectation(description: "SignIn event should be fired")
-        let sessionExpiredExpectation = expectation(description: "Session expired event should be fired")
-
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
-            switch payload.eventName {
-            case HubPayload.EventName.Auth.signedIn:
+            if payload.eventName == HubPayload.EventName.Auth.signedIn {
                 signInExpectation.fulfill()
-            case HubPayload.EventName.Auth.sessionExpired:
-                sessionExpiredExpectation.fulfill()
-            default:
-                break
             }
         }
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
+        await fulfillment(of: [signInExpectation], timeout: networkTimeout)
+        _ = try await Amplify.Auth.fetchAuthSession()
 
-        do {
-            _ = try await AuthSignInHelper.registerAndSignInUser(
-                username: username,
-                password: password,
-                email: defaultTestEmail
-            )
-        } catch {
-            _ = try await Amplify.Auth.fetchAuthSession()
-            AuthSessionHelper.invalidateSession(with: amplifyConfiguration)
-            _ = try await Amplify.Auth.fetchAuthSession()
+        // Expire the stored session (past expiry, a refresh token Cognito rejects) and have the plugin load
+        // it from the keychain. The reset removes Hub listeners, so listen again afterwards.
+        try invalidateStoredSession()
+        await reconfigureFromKeychain()
+        let sessionExpiredExpectation = expectation(description: "Session expired event should be fired")
+        unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
+            if payload.eventName == HubPayload.EventName.Auth.sessionExpired {
+                sessionExpiredExpectation.fulfill()
+            }
         }
-        await fulfillment(of: [signInExpectation, sessionExpiredExpectation], timeout: networkTimeout)
+        _ = try await Amplify.Auth.fetchAuthSession()
+        await fulfillment(of: [sessionExpiredExpectation], timeout: networkTimeout)
     }
 
     /// Test hub event for successful deletion of a valid user

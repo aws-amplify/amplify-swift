@@ -33,9 +33,29 @@ struct AuthSessionHelper {
     }
 
     static func invalidateSession(with amplifyConfiguration: AmplifyConfiguration) {
-        let configuration = getAuthConfiguration(configuration: amplifyConfiguration)
-        let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: configuration, accessGroup: nil)
-        guard let credentials = try? credentialStore.retrieveCredential() else {
+        invalidateSession(authConfiguration: getAuthConfiguration(configuration: amplifyConfiguration))
+    }
+
+    /// As `invalidateSession(with:)`, for a Gen2 `amplify_outputs` file.
+    static func invalidateSession(withOutputs data: Data) throws {
+        let outputs = try JSONDecoder().decode(JSONValue.self, from: data)
+        guard case .string(let region) = outputs.value(at: "auth.aws_region"),
+              case .string(let poolId) = outputs.value(at: "auth.user_pool_id"),
+              case .string(let clientId) = outputs.value(at: "auth.user_pool_client_id")
+        else {
+            throw AuthError.configuration("The amplify_outputs file has no user pool", "", nil)
+        }
+        let userPool = HostAppConfiguration.userPool(poolId: poolId, clientId: clientId, region: region, clientSecret: nil)
+        var identityPool: HostAppConfiguration.IdentityPool?
+        if case .string(let identityPoolId) = outputs.value(at: "auth.identity_pool_id") {
+            identityPool = HostAppConfiguration.identityPool(poolId: identityPoolId, region: region)
+        }
+        try invalidateSession(authConfiguration: authConfiguration(userPoolConfig: userPool, identityPoolConfig: identityPool))
+    }
+
+    private static func invalidateSession(authConfiguration configuration: HostAppConfiguration.Auth) {
+        let credentialStore = HostAppCredentialStore(authConfiguration: configuration, accessGroup: nil)
+        guard let credentials = try? HostAppCredentials(credentialStore.retrieveCredential()) else {
             return
         }
         switch credentials {
@@ -44,27 +64,27 @@ struct AuthSessionHelper {
             identityID: let identityID,
             credentials: let awsCredentials
         ):
-            let updatedToken = updateTokenWithPastExpiry(signedInData.cognitoUserPoolTokens)
-            let signedInData = SignedInData(
+            let updatedToken = updateTokenWithPastExpiry(.init(signedInData.cognitoUserPoolTokens))
+            let signedInData = HostAppSignedInData(
                 signedInDate: signedInData.signedInDate,
                 signInMethod: signedInData.signInMethod,
-                cognitoUserPoolTokens: updatedToken
+                cognitoUserPoolTokens: .init(updatedToken)
             )
-            let updatedCredentials = AmplifyCredentials.userPoolAndIdentityPool(
+            let updatedCredentials = HostAppCredentials.userPoolAndIdentityPool(
                 signedInData: signedInData,
                 identityID: identityID,
                 credentials: awsCredentials
             )
-            try! credentialStore.saveCredential(updatedCredentials)
+            try! credentialStore.saveCredential(.init(updatedCredentials))
         case  .userPoolOnly(signedInData: let signedInData):
-            let updatedToken = updateTokenWithPastExpiry(signedInData.cognitoUserPoolTokens)
-            let signedInData = SignedInData(
+            let updatedToken = updateTokenWithPastExpiry(.init(signedInData.cognitoUserPoolTokens))
+            let signedInData = HostAppSignedInData(
                 signedInDate: signedInData.signedInDate,
                 signInMethod: signedInData.signInMethod,
-                cognitoUserPoolTokens: updatedToken
+                cognitoUserPoolTokens: .init(updatedToken)
             )
-            let updatedCredentials = AmplifyCredentials.userPoolOnly(signedInData: signedInData)
-            try! credentialStore.saveCredential(updatedCredentials)
+            let updatedCredentials = HostAppCredentials.userPoolOnly(signedInData: signedInData)
+            try! credentialStore.saveCredential(.init(updatedCredentials))
         default: break
         }
 
@@ -90,7 +110,7 @@ struct AuthSessionHelper {
         )
     }
 
-    private static func getAuthConfiguration(configuration: AmplifyConfiguration) -> AuthConfiguration {
+    private static func getAuthConfiguration(configuration: AmplifyConfiguration) -> HostAppConfiguration.Auth {
         let jsonValueConfiguration = configuration.auth!.plugins["awsCognitoAuthPlugin"]!
         let userPoolConfigData = parseUserPoolConfigData(jsonValueConfiguration)
         let identityPoolConfigData = parseIdentityPoolConfigData(jsonValueConfiguration)
@@ -100,7 +120,7 @@ struct AuthSessionHelper {
         )
     }
 
-    private static func parseUserPoolConfigData(_ config: JSONValue) -> UserPoolConfigurationData? {
+    private static func parseUserPoolConfigData(_ config: JSONValue) -> HostAppConfiguration.UserPool? {
         // TODO: Use JSON serialization here to convert.
         guard let cognitoUserPoolJSON = config.value(at: "CognitoUserPool.Default") else {
             Amplify.Logging.info("Could not find Cognito User Pool configuration")
@@ -117,7 +137,7 @@ struct AuthSessionHelper {
         if case .string(let clientSecretFromConfig) = cognitoUserPoolJSON.value(at: "AppClientSecret") {
             clientSecret = clientSecretFromConfig
         }
-        return UserPoolConfigurationData(
+        return HostAppConfiguration.userPool(
             poolId: poolId,
             clientId: appClientId,
             region: region,
@@ -125,7 +145,7 @@ struct AuthSessionHelper {
         )
     }
 
-    private static func parseIdentityPoolConfigData(_ config: JSONValue) -> IdentityPoolConfigurationData? {
+    private static func parseIdentityPoolConfigData(_ config: JSONValue) -> HostAppConfiguration.IdentityPool? {
 
         guard let cognitoIdentityPoolJSON = config.value(at: "CredentialsProvider.CognitoIdentity.Default") else {
             Amplify.Logging.info("Could not find Cognito Identity Pool configuration")
@@ -136,28 +156,30 @@ struct AuthSessionHelper {
         else {
             return nil
         }
-        return IdentityPoolConfigurationData(poolId: poolId, region: region)
+        return HostAppConfiguration.identityPool(poolId: poolId, region: region)
     }
 
     private static func authConfiguration(
-        userPoolConfig: UserPoolConfigurationData?,
-        identityPoolConfig: IdentityPoolConfigurationData?
-    ) throws -> AuthConfiguration {
+        userPoolConfig: HostAppConfiguration.UserPool?,
+        identityPoolConfig: HostAppConfiguration.IdentityPool?
+    ) throws -> HostAppConfiguration.Auth {
 
         if let userPoolConfigNonNil = userPoolConfig, let identityPoolConfigNonNil = identityPoolConfig {
-            return .userPoolsAndIdentityPools(userPoolConfigNonNil, identityPoolConfigNonNil)
+            return HostAppConfiguration.userPoolsAndIdentityPools(userPoolConfigNonNil, identityPoolConfigNonNil)
         }
         if  let userPoolConfigNonNil = userPoolConfig {
-            return .userPools(userPoolConfigNonNil)
+            return HostAppConfiguration.userPools(userPoolConfigNonNil)
         }
         if  let identityPoolConfigNonNil = identityPoolConfig {
-            return .identityPools(identityPoolConfigNonNil)
+            return HostAppConfiguration.identityPools(identityPoolConfigNonNil)
         }
         // Could not get either Userpool or Identitypool configuration
         // Throw an error to stop the configure flow.
         throw AuthError.configuration(
             "Error configuring \(String(describing: self))",
-            AuthPluginErrorConstants.configurationMissingError
+            // `AuthPluginErrorConstants` is a package type of the engine, which this Xcode target
+            // (outside the SwiftPM package) cannot see.
+            "Could not read Cognito Service configuration from the auth configuration."
         )
     }
 }

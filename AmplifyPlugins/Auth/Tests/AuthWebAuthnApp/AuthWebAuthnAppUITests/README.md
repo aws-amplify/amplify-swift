@@ -123,3 +123,5 @@ npx ampx sandbox --identifier webauthn-tests  --outputs-out-dir amplify_outputs/
 ```
 cp amplify_outputs.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json
 ```
+
+To use another directory holding the same file names, set `COGNITO_CLIENT_INTEG_DIR` on the `xcodebuild` command, for example `COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild build-for-testing …`. The `AuthWebAuthnApp` target's "Copy Test Config" build phase then copies that directory instead of `~/.aws-amplify/amplify-ios/testconfiguration/`, which it does not read. Unset, as on CI, it copies `~/.aws-amplify/amplify-ios/testconfiguration/`.

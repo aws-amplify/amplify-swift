@@ -1,0 +1,1 @@
+{"identityPoolWithFederation":{"credentials":{"accessKeyId":"FIXTUREACCESSKEYID","expiration":721700000,"secretAccessKey":"fixture/secret+access=key","sessionToken":"fixture-session-token"},"federatedToken":{"provider":{"google":{}},"token":"fixture-federated-token"},"identityID":"us-east-1:00000000-0000-4000-8000-000000000001"}}

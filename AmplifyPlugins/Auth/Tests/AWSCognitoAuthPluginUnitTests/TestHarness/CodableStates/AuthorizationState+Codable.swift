@@ -7,6 +7,7 @@
 
 import Foundation
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 extension AuthorizationState: Codable {
 
@@ -52,7 +53,7 @@ extension AuthorizationState: Codable {
             let refreshToken = try cognitoUserPoolTokens.decode(String.self, forKey: .refreshToken)
             let userPoolExpiration = try cognitoUserPoolTokens.decode(Date.self, forKey: .expiration)
 
-            let userPoolTokens = AWSCognitoUserPoolTokens(
+            let userPoolTokens = EngineUserPoolTokens(
                 idToken: accessToken,
                 accessToken: idToken,
                 refreshToken: refreshToken,
@@ -64,7 +65,7 @@ extension AuthorizationState: Codable {
             let sessionToken = try awsCredentialChildren.decode(String.self, forKey: .sessionToken)
             let expiration = try awsCredentialChildren.decode(Date.self, forKey: .expiration)
 
-            let awsCredentials = AuthAWSCognitoCredentials(
+            let awsCredentials = EngineAWSCredentials(
                 accessKeyId: accessKeyId,
                 secretAccessKey: secretAccessKey,
                 sessionToken: sessionToken,

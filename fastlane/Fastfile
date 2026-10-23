@@ -23,6 +23,8 @@ platform :ios do
 
   end
 
+  # The generated changelog keeps only feat and fix commits and breaking changes. Before publishing the
+  # release, fold docs/design/RELEASE-NOTES-PENDING.md into its notes (CONTRIBUTING.md, "Releasing").
   desc "Create a release version by building and committing a changelog, pushing a tag to GitHub"
   lane :release do
     next_version, commits = calculate_next_release_version

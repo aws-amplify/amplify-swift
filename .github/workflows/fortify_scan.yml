@@ -34,6 +34,17 @@ jobs:
           mkdir source
           cp -r Amplify source
           cp -r AmplifyPlugins source
+          # The internal modules moved out of AmplifyPlugins/ (the keychain, the Cognito engine, SRP,
+          # big integer, libtommath and availability), the Cognito client, and the Foundation and
+          # Foundation bridge modules it builds on. Sources only: the scan excludes only
+          # AmplifyPlugins/*/Tests, so copying their tests would scan test code.
+          for d in AmplifyClients/Internal/*/Sources \
+                   AmplifyClients/AmplifyCognitoClient/Sources \
+                   AmplifyFoundation/Sources \
+                   AmplifyFoundationBridge/Sources; do
+            mkdir -p "source/$d"
+            cp -r "$d/." "source/$d/"
+          done
       - name: Configure AWS credentials for fetching fortify resources
         uses: aws-actions/configure-aws-credentials@v4
         with:

@@ -11,6 +11,7 @@ import Amplify
 import AWSCognitoIdentityProvider
 import XCTest
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -317,7 +318,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest, @unchecked Sendable {
             authenticationEnvironment: nil,
             authorizationEnvironment: authorizationEnvironment,
             credentialsClient: Defaults.makeCredentialStoreOperationBehavior(),
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+            logger: AmplifyEngineLogRouter(scope: .category("awsCognitoAuthPluginTest"))
         )
         let stateMachine = Defaults.authStateMachineWith(
             environment: environment,
@@ -332,6 +333,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest, @unchecked Sendable {
             hubEventHandler: MockAuthHubEventBehavior(),
             analyticsHandler: MockAnalyticsHandler()
         )
+        settleConfigureOperationOnTeardown(of: plugin)
 
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "")
@@ -536,5 +538,84 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest, @unchecked Sendable {
                 return
             }
         }
+    }
+
+    /// A confirmSignIn whose TOTP setup's last call fails throws, instead of never returning. A retried
+    /// confirmSignIn is refused, and a new signIn works.
+    ///
+    /// - Given: an auth plugin with mocked service. `VerifySoftwareToken` accepts the code, the setup's
+    ///   `RespondToAuthChallenge` fails with `UserLambdaValidationException`, and `InitiateAuth` answers tokens
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code, then again, then signIn with `.userPassword`
+    /// - Then:
+    ///    - the first confirmSignIn throws a `.service` error with `.lambda` as underlyingError
+    ///    - the second throws `.invalidState`
+    ///    - signIn finishes `.done`
+    ///    - each within the bound
+    ///
+    func testConfirmSignInWithAFailedSetupAnswerThrows() async {
+        mockIdentityProvider = MockIdentityProvider(
+            mockInitiateAuthResponse: { _ in
+                return .init(authenticationResult: .init(
+                    accessToken: Defaults.validAccessToken,
+                    expiresIn: 300,
+                    idToken: "idToken",
+                    refreshToken: "refreshToken"
+                ))
+            },
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.UserLambdaValidationException(
+                    message: "PostAuthentication failed with error unavailable."
+                )
+            },
+            mockVerifySoftwareTokenResponse: { _ in
+                return .init(session: "verifiedSession", status: .success)
+            }
+        )
+        let confirmed = expectation(description: "confirmSignIn returns")
+        let retried = expectation(description: "the retried confirmSignIn returns")
+        let signedIn = expectation(description: "signIn returns")
+
+        Task {
+            do {
+                let result = try await self.plugin.confirmSignIn(challengeResponse: "123456")
+                XCTFail("Should not succeed, got \(result)")
+            } catch {
+                guard case AuthError.service(_, _, let underlyingError) = error,
+                      case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Should produce a .service error with .lambda instead of \(error)")
+                    return
+                }
+            }
+            confirmed.fulfill()
+            do {
+                let result = try await self.plugin.confirmSignIn(challengeResponse: "123456")
+                XCTFail("Should not succeed, got \(result)")
+            } catch {
+                guard case AuthError.invalidState = error else {
+                    XCTFail("Should produce an invalidState error instead of \(error)")
+                    return
+                }
+            }
+            retried.fulfill()
+            do {
+                let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
+                let result = try await self.plugin.signIn(
+                    username: "username",
+                    password: "password",
+                    options: AuthSignInRequest.Options(pluginOptions: pluginOptions)
+                )
+                guard case .done = result.nextStep else {
+                    XCTFail("Result should be .done for next step, got \(result.nextStep)")
+                    return
+                }
+            } catch {
+                XCTFail("Received failure with error \(error)")
+                return
+            }
+            signedIn.fulfill()
+        }
+
+        await fulfillment(of: [confirmed, retried, signedIn], timeout: 5, enforceOrder: true)
     }
 }

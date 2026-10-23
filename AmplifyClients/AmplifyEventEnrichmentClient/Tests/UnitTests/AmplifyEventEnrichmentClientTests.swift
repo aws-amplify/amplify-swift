@@ -6,6 +6,7 @@
 //
 
 @testable import AmplifyEventEnrichmentClient
+@testable import AmplifyFoundation
 import XCTest
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
@@ -13,6 +14,19 @@ import XCTest
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 final class AmplifyEventEnrichmentClientTests: XCTestCase, @unchecked Sendable {
+    private var log: ClosedLogCounter!
+
+    override func setUp() async throws {
+        try await super.setUp()
+        log = ClosedLogCounter()
+        AmplifyLogging.addSink(log)
+    }
+
+    override func tearDown() async throws {
+        AmplifyLogging.removeSink(log)
+        log = nil
+        try await super.tearDown()
+    }
 
     /// Test that recording an event returns an enriched event with expected fields
     ///
@@ -269,49 +283,40 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase, @unchecked Sendable {
         await client.close()
     }
 
-    /// Test that disabling autoSessionTracking does not start a session
+    /// Test that recording without autoSessionTracking starts a session
     ///
     /// - Given: A client created with autoSessionTracking = false
     /// - When:
     ///    - An event is recorded without calling startSession()
     /// - Then:
-    ///    - A noActiveSession error is thrown because no session exists
-    ///    - After calling startSession(), recording succeeds
+    ///    - The event belongs to a new active session
     ///
-    func testAutoSessionTrackingDisabledRequiresManualStart() async throws {
+    func testRecordStartsSessionWithoutAutoTracking() async throws {
         let client = AmplifyEventEnrichmentClient(
             appId: "test-app",
             sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
             options: EventEnrichmentClientOptions(autoSessionTracking: false)
         )
 
-        do {
-            _ = try await client.record("test")
-            XCTFail("Expected error when no session started")
-        } catch let error as EventEnrichmentError {
-            guard case .noActiveSession = error else {
-                XCTFail("Expected noActiveSession error for missing session, got \(error)")
-                return
-            }
-        }
-
-        await client.startSession()
         let event = try await client.record("test")
+
+        let state = await client.sessionState
         XCTAssertFalse(event.session.id.isEmpty)
+        XCTAssertNil(event.session.stopTimestamp)
+        XCTAssertEqual(state, .active)
 
         await client.close()
     }
 
-    /// Test that recording after stopSession() is rejected
+    /// Test that recording after stopSession() starts a new session without autoSessionTracking
     ///
     /// - Given: A client with autoSessionTracking disabled and a stopped session
     /// - When:
     ///    - An event is recorded
     /// - Then:
-    ///    - A noActiveSession error is thrown rather than the event being
-    ///      attributed to the session that already ended
+    ///    - The event belongs to a new active session rather than the one that ended
     ///
-    func testRecordAfterStopSessionThrows() async throws {
+    func testRecordAfterStopSessionStartsSessionWithoutAutoTracking() async throws {
         let client = AmplifyEventEnrichmentClient(
             appId: "test-app",
             sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
@@ -319,18 +324,14 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase, @unchecked Sendable {
         )
 
         await client.startSession()
-        _ = try await client.record("before_stop")
+        let before = try await client.record("before_stop")
         await client.stopSession()
+        let after = try await client.record("after_stop")
 
-        do {
-            _ = try await client.record("after_stop")
-            XCTFail("Expected error when recording against a stopped session")
-        } catch let error as EventEnrichmentError {
-            guard case .noActiveSession = error else {
-                XCTFail("Expected noActiveSession error, got \(error)")
-                return
-            }
-        }
+        let state = await client.sessionState
+        XCTAssertNotEqual(before.session.id, after.session.id)
+        XCTAssertNil(after.session.stopTimestamp)
+        XCTAssertEqual(state, .active)
 
         await client.close()
     }
@@ -356,5 +357,122 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase, @unchecked Sendable {
 
         await client.close()
     }
+
+    /// Test that recording after stopSession() starts tracking again
+    ///
+    /// - Given: A client with autoSessionTracking enabled whose session was stopped
+    /// - When:
+    ///    - An event is recorded
+    /// - Then:
+    ///    - The event belongs to a new active session
+    ///
+    func testRecordAfterStopSessionStartsNewSession() async throws {
+        let client = AmplifyEventEnrichmentClient(
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
+        )
+
+        let before = try await client.record("before_stop")
+        await client.stopSession()
+        let after = try await client.record("after_stop")
+
+        let state = await client.sessionState
+        XCTAssertNotEqual(before.session.id, after.session.id)
+        XCTAssertEqual(state, .active)
+
+        await client.close()
+    }
+
+    /// Test that startSession() after close() does nothing
+    ///
+    /// - Given: A closed client with autoSessionTracking disabled
+    /// - When:
+    ///    - startSession() is called
+    /// - Then:
+    ///    - No session is started
+    ///
+    func testStartSessionAfterCloseDoesNothing() async {
+        let client = AmplifyEventEnrichmentClient(
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
+            options: EventEnrichmentClientOptions(autoSessionTracking: false)
+        )
+
+        await client.close()
+        await client.startSession()
+
+        let state = await client.sessionState
+        XCTAssertEqual(state, .stopped)
+    }
+
+    /// Test that concurrent close() calls all return after teardown
+    ///
+    /// - Given: A client with autoSessionTracking enabled and an active session
+    /// - When:
+    ///    - close() is called twice concurrently
+    /// - Then:
+    ///    - Both return with the session stopped and lifecycle tracking removed
+    ///    - The teardown ran once
+    ///
+    func testConcurrentCloseCallsShareTeardown() async throws {
+        let client = AmplifyEventEnrichmentClient(
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
+        )
+        _ = try await client.record("warmup")
+        let closedBefore = log.count
+
+        async let first: Void = client.close()
+        async let second: Void = client.close()
+        _ = await (first, second)
+
+        let state = await client.sessionState
+        let isTracking = await client.isTrackingLifecycle
+        XCTAssertEqual(state, .stopped)
+        XCTAssertFalse(isTracking)
+        XCTAssertEqual(log.count - closedBefore, 1)
+    }
+
+    /// Test that closing an already closed client does not tear down again
+    ///
+    /// - Given: A closed client
+    /// - When:
+    ///    - close() is called again
+    /// - Then:
+    ///    - The teardown does not run a second time
+    ///
+    func testCloseTwiceTearsDownOnce() async {
+        let client = AmplifyEventEnrichmentClient(
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
+        )
+        let closedBefore = log.count
+
+        await client.close()
+        await client.close()
+
+        XCTAssertEqual(log.count - closedBefore, 1)
+    }
 }
 
+/// Counts the client's "Client closed" log lines, which it writes once per teardown.
+private final class ClosedLogCounter: LogSinkBehavior, @unchecked Sendable {
+    let id = "AmplifyEventEnrichmentClientTests.ClosedLogCounter"
+    private let lock = NSLock()
+    private var closed = 0
+
+    var count: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return closed
+    }
+
+    func isEnabled(for logLevel: LogLevel) -> Bool { true }
+
+    func emit(message: LogMessage) {
+        guard message.name == "AmplifyEventEnrichmentClient", message.content == "Client closed" else { return }
+        lock.lock()
+        closed += 1
+        lock.unlock()
+    }
+}

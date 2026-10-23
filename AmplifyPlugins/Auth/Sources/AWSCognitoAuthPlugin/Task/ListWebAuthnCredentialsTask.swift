@@ -9,6 +9,7 @@ import Amplify
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class ListWebAuthnCredentialsTask: AuthListWebAuthnCredentialsTask, DefaultLogger, @unchecked Sendable {
@@ -30,66 +31,44 @@ final class ListWebAuthnCredentialsTask: AuthListWebAuthnCredentialsTask, Defaul
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
     }
 
+    /// The engine's `WebAuthnCredentialOperations.list` does the work. It rethrows the token lookup's
+    /// `AuthError` unchanged and re-expresses every other error as an `EngineAuthError`, which
+    /// `AuthError(converting:)` bridges back to the `AuthError` this task has always thrown.
     func execute() async throws -> AuthListWebAuthnCredentialsResult {
         do {
             await taskHelper.didStateMachineConfigured()
-            return try await listWebAuthnCredentials(
-                accessToken: taskHelper.getAccessToken(),
-                userPoolService: userPoolFactory()
+            let page = try await WebAuthnCredentialOperations.list(
+                accessToken: { try await self.taskHelper.getAccessToken() },
+                pageSize: request.options.pageSize,
+                nextToken: request.options.nextToken,
+                userPool: userPoolFactory
             )
-        } catch let error as AuthErrorConvertible {
-            throw error.authError
+            return result(from: page)
         } catch {
+            if let authError = AuthError(converting: error) {
+                throw authError
+            }
             let webAuthnError = WebAuthnError.unknown(
-                message: "Unable to list WebAuthn credentials",
+                message: WebAuthnCredentialOperations.listFailureMessage,
                 error: error
             )
             throw webAuthnError.authError
         }
     }
 
-    private func listWebAuthnCredentials(
-        accessToken: String,
-        userPoolService: CognitoUserPoolBehavior
-    ) async throws -> AuthListWebAuthnCredentialsResult {
-        let result = try await userPoolService.listWebAuthnCredentials(
-            input: .init(
-                accessToken: accessToken,
-                maxResults: Int(request.options.pageSize),
-                nextToken: request.options.nextToken
-            )
-        )
-
-        let credentialDescriptions = result.credentials ?? []
-        let webAuthnCredentials: [AuthWebAuthnCredential] = credentialDescriptions.compactMap { credential in
-            // All of these are marked as required but the Swift SDK doesn't respect that and maps them to Optionals
-            guard let createdAt = credential.createdAt,
-                  let credentialId = credential.credentialId,
-                  let relyingPartyId = credential.relyingPartyId else {
-                return nil
-            }
-
-            return AWSCognitoWebAuthnCredential(
-                credentialId: credentialId,
-                createdAt: createdAt,
-                relyingPartyId: relyingPartyId,
-                friendlyName: friendlyName(from: credential)
+    private func result(from page: EngineWebAuthnCredentialPage) -> AuthListWebAuthnCredentialsResult {
+        let webAuthnCredentials: [AuthWebAuthnCredential] = page.credentials.map { credential in
+            AWSCognitoWebAuthnCredential(
+                credentialId: credential.credentialId,
+                createdAt: credential.createdAt,
+                relyingPartyId: credential.relyingPartyId,
+                friendlyName: credential.friendlyName
             )
         }
 
         return .init(
             credentials: webAuthnCredentials,
-            nextToken: result.nextToken
+            nextToken: page.nextToken
         )
-    }
-
-    private func friendlyName(
-        from credential: CognitoIdentityProviderClientTypes.WebAuthnCredentialDescription
-    ) -> String? {
-        guard let friendlyName = credential.friendlyCredentialName, !friendlyName.isEmpty else {
-            return nil
-        }
-
-        return friendlyName
     }
 }

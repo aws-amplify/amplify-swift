@@ -9,6 +9,7 @@ import Amplify
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `Sendable`: the helper only holds a state machine reference.
 final class AWSAuthTaskHelper: DefaultLogger, Sendable {
@@ -47,9 +48,9 @@ final class AWSAuthTaskHelper: DefaultLogger, Sendable {
                     data.globalSignOutError != nil ||
                     data.hostedUIError != nil {
                     return AWSCognitoSignOutResult.partial(
-                        revokeTokenError: data.revokeTokenError,
-                        globalSignOutError: data.globalSignOutError,
-                        hostedUIError: data.hostedUIError
+                        revokeTokenError: data.revokeTokenError.map { AWSCognitoRevokeTokenError($0) },
+                        globalSignOutError: data.globalSignOutError.map { AWSCognitoGlobalSignOutError($0) },
+                        hostedUIError: data.hostedUIError.map { AWSCognitoHostedUIError($0) }
                     )
                 }
                 return AWSCognitoSignOutResult.complete
@@ -67,14 +68,12 @@ final class AWSAuthTaskHelper: DefaultLogger, Sendable {
         fatalError()
     }
 
+    /// The signed-in user's access token, or the session's own `AuthError` for why there is none.
+    ///
+    /// The helper returns the concrete `AWSAuthCognitoSession`, so there is no downcast to fail.
     func getAccessToken() async throws -> String {
-
         let session = try await fetchAuthSessionHelper.fetch(authStateMachine)
-        guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider else {
-            throw AuthError.unknown("Unable to fetch auth session", nil)
-        }
-
-        let tokens = try cognitoTokenProvider.getCognitoTokens().get()
+        let tokens = try session.getCognitoTokens().get()
         return tokens.accessToken
     }
 

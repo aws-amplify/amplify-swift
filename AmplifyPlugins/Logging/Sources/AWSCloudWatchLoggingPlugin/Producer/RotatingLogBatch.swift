@@ -32,6 +32,10 @@ extension RotatingLogBatch: LogBatch {
     }
 
     func complete() throws {
-        try FileManager.default.removeItem(at: url)
+        do {
+            try FileManager.default.removeItem(at: url)
+        } catch CocoaError.fileNoSuchFile {
+            // Already gone, e.g. discarded along with its session.
+        }
     }
 }

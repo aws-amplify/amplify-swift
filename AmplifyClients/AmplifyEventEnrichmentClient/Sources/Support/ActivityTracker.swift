@@ -45,6 +45,18 @@ final class ActivityTracker {
         #endif
     }()
 
+    /// Whether the app is in the background right now. A variable so tests can replace it.
+    static var isAppInBackground: @MainActor () -> Bool = {
+        #if canImport(WatchKit)
+        return WKExtension.shared().applicationState == .background
+        #elseif canImport(UIKit)
+        return UIApplication.shared.applicationState == .background
+        #elseif canImport(AppKit)
+        // NSApp, not NSApplication.shared, so a process without an app object does not create one.
+        return NSApp?.isHidden == true
+        #endif
+    }
+
     init(
         onPause: @escaping @Sendable () -> Void,
         onResume: @escaping @Sendable () -> Void
