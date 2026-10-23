@@ -1,0 +1,78 @@
+# Weekly reminders for the Cognito client's CI resources (AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/
+# infra/ci), from files committed beside provision-ci.sh only: no AWS call, no credentials, no secrets.
+# - code_sink_key.py check: the code sink's API key's recorded expiry (code-sink-key-expiry.json). Fails in the key's
+#   last 30 days and once it has expired, and opens one reminder issue to renew it. While no expiry is recorded (the
+#   committed {"expires": null}), the run passes with a warning and opens one issue to record it.
+# - lambda_code.py check-baseline: whether the sources of the recorded Lambda deployment (lambda-baseline.json) are
+#   still the repository's. Fails when one changed; a missing baseline is only a warning.
+# Runs only in the upstream repository, so a fork's schedule opens no issues.
+name: Auth | Cognito Client CI reminders
+
+on:
+  schedule:
+    - cron: '0 14 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reminders:
+    name: Cognito client CI reminders
+    if: github.repository == 'aws-amplify/amplify-swift'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    defaults:
+      run:
+        working-directory: AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/ci
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      # Exit 0: more than 30 days left. 1: within them, or expired (the step fails). 3: no expiry recorded (a
+      # warning; the step passes). Anything else is a usage error and fails the step.
+      - name: Code sink API key expiry
+        id: key
+        run: |
+          status=0
+          python3 code_sink_key.py check --github || status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          [ "$status" -eq 0 ] || [ "$status" -eq 3 ]
+
+      - name: Open a reminder issue
+        if: always() && (steps.key.outputs.status == '1' || steps.key.outputs.status == '3')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STATUS: ${{ steps.key.outputs.status }}
+        run: |
+          if [ "$STATUS" = "3" ]; then
+            title="Cognito client CI: record the code sink API key's expiry"
+            todo="Run it with the CI account's read-only credentials. Until the expiry is recorded, nothing warns before
+          the key lapses (364 days after it was made), and the client's code-reading tests on CI then fail."
+          else
+            title="Cognito client CI: renew the code sink API key"
+            todo="Run \`infra/ci/provision-ci.sh --apply --scope all\` with the CI account's credentials (before the
+          expiry it extends the key in place; it records the new expiry either way), then commit
+          \`infra/ci/code-sink-key-expiry.json\`."
+          fi
+          open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq length)
+          if [ "$open" = "0" ]; then
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$(python3 code_sink_key.py check || true)
+
+          $todo"
+          else
+            echo "An open issue already says so: $title"
+          fi
+
+      # Exit 0: in sync. 1: a recorded function's sources changed (the step fails). 3: no baseline recorded (a
+      # warning; the step passes).
+      - name: Recorded Lambda deployment
+        if: always()
+        run: |
+          status=0
+          python3 lambda_code.py check-baseline --github || status=$?
+          [ "$status" -eq 0 ] || [ "$status" -eq 3 ]

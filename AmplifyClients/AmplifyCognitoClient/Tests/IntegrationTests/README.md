@@ -826,7 +826,10 @@ script's own objects is then a separate step.
 reads only that file, so it needs no AWS credentials: it passes while the key has more than 30 days left, and fails
 (exit 1) within them or once it has expired, saying what to run; exit 3 means no expiry is recorded. With the
 `extended` role, `ci-overlay.sh` prints its warning or error as an annotation on every client CI run in those last
-30 days or after the expiry. `bash infra/ci/test_code_sink_key.sh` tests it offline.
+30 days or after the expiry. `bash infra/ci/test_code_sink_key.sh` tests it offline. The scheduled workflow
+`.github/workflows/auth_client_ci_reminders.yml` (Mondays, upstream repository only, no AWS credentials) runs the
+check and opens one issue: "renew the code sink API key" when it fails, or "record the code sink API key's expiry"
+while none is recorded, which passes with a warning. It also runs `lambda_code.py check-baseline` (below).
 
 A rerun never updates a user pool or a Lambda's code. After a change to a pool template, to
 `infra/lambda/triggers/triggers.mjs`, `infra/lambda/custom-sender` or `infra/ci/lambda/*`, delete that pool or function
