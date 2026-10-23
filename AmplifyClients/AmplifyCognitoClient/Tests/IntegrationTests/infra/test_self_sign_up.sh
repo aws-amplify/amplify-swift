@@ -323,35 +323,51 @@ done
 # (on_signal forwards it itself): each reaches the command, which ends at once, well before its 30 s. The script
 # signals itself there through its test-only hook. A forward that reaches the command's process between its fork and
 # its exec is lost, so the script sends one made then once more, half a second later: the script's `kill` is replaced
-# by an exported function that logs each forward (one or two), then forwards it.
+# by an exported function that logs each forward (one or two), then forwards it. In the `lost` runs it drops the first
+# forward, as a process between its fork and its exec would: only the second one can stop the command, so a script
+# that never sends it again lets the command run to its end.
 for point in before after; do
-    reset off
-    : >"$WORK/forwards"
-    rm -f "$WORK/finished"
-    set +e
-    (
-        # shellcheck disable=SC2329,SC2317 # invoked by the script, as its `kill`
-        kill() {
-            [[ "$1 ${2:-}" != "-TERM --" ]] || echo "${3:-}" >>"$WORK/forwards"
-            builtin kill "$@"
-        }
-        export -f kill
-        export WORK
-        # shellcheck disable=SC2016 # expanded by sh, not here
-        COGNITO_CLIENT_INTEG_SELF_SIGN_UP_TEST_SIGNAL=$point bash "$SCRIPT" on -- \
-            sh -c 'sleep 30 && touch "$0"' "$WORK/finished" >"$WORK/out" 2>&1
-    )
-    status=$?
-    set -e
-    [[ $status == 143 ]] || fail "signal $point child=\$!: exit $status, not 143 ($(tail -3 "$WORK/out"))"
-    # The command must have been stopped, not left to end by itself: it never finished. (Not timed: on a loaded
-    # machine the toggles alone can take longer than the command's 30 s.)
-    [[ ! -e "$WORK/finished" ]] || fail "signal $point child=\$!: the command ran to its end"
-    forwards=$(grep -c . "$WORK/forwards" || true)
-    (( forwards >= 1 && forwards <= 2 )) || fail "signal $point child=\$!: forwarded $forwards time(s)"
-    all off || fail "signal $point child=\$!: left on"
+    for loss in delivered lost; do
+        reset off
+        : >"$WORK/forwards"
+        rm -f "$WORK/finished" "$WORK/dropped"
+        set +e
+        (
+            # shellcheck disable=SC2329,SC2317 # invoked by the script, as its `kill`
+            kill() {
+                if [[ "$1 ${2:-}" == "-TERM --" ]]; then
+                    echo "${3:-}" >>"$WORK/forwards"
+                    if [[ "$LOSS" == lost && ! -e "$WORK/dropped" ]]; then
+                        : >"$WORK/dropped"
+                        return 0
+                    fi
+                fi
+                builtin kill "$@"
+            }
+            export -f kill
+            export WORK LOSS="$loss"
+            # shellcheck disable=SC2016 # expanded by sh, not here
+            COGNITO_CLIENT_INTEG_SELF_SIGN_UP_TEST_SIGNAL=$point bash "$SCRIPT" on -- \
+                sh -c 'sleep 30 && touch "$0"' "$WORK/finished" >"$WORK/out" 2>&1
+        )
+        status=$?
+        set -e
+        label="signal $point child=\$!, first forward $loss"
+        [[ $status == 143 ]] || fail "$label: exit $status, not 143 ($(tail -3 "$WORK/out"))"
+        # The command must have been stopped, not left to end by itself: it never finished. (Not timed: on a loaded
+        # machine the toggles alone can take longer than the command's 30 s.)
+        [[ ! -e "$WORK/finished" ]] || fail "$label: the command ran to its end"
+        forwards=$(grep -c . "$WORK/forwards" || true)
+        if [[ $loss == lost ]]; then
+            [[ -e "$WORK/dropped" && $forwards == 2 ]] || fail "$label: forwarded $forwards time(s), not 2"
+        else
+            (( forwards >= 1 && forwards <= 2 )) || fail "$label: forwarded $forwards time(s)"
+        fi
+        all off || fail "$label: left on"
+    done
 done
 pass "a signal just before or just after the command's PID is known stops the command at once"
+pass "a signal forwarded as the command starts stops it even when that first forward is lost: it is sent once more"
 
 # A command that handles SIGINT and takes time to stop, as xcodebuild does (its second SIGINT aborts it hard): a
 # Ctrl-C after the command has started reaches it exactly once, however long it takes to stop.
