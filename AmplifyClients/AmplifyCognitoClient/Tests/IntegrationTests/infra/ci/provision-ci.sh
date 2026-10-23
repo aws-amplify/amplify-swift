@@ -18,7 +18,9 @@
 #     ccit-ci-default       a default pool as the sandbox's (infra/pools/default.json): custom-auth triggers,
 #                           new-password users kept fresh by a scheduled Lambda, the code sink, a rotation client,
 #                           and an identity pool with guest access, read by the client's own `extended` role only:
-#                           CA-1…3, CH-1, P-3, the fixture check, AT-2's second half, RP-3, RT-1 and RT-2
+#                           CA-1…3, CH-1, P-3, the fixture check, AT-2's second half, RP-3, RT-1 and RT-2. Its
+#                           pre-sign-up trigger is the device-alias pool's, so it refuses ccit-confirm- sign-ups too,
+#                           although its codes reach the code sink
 #     ccit-ci-email-alias-codes
 #                           a second device-alias pool on Lite, read by the client's own `email-alias-codes` role
 #                           only: its pre-sign-up trigger (ccit-ci-pre-sign-up-confirmable) leaves ccit-confirm-
@@ -773,7 +775,9 @@ zip_for() {
 
 fn_environment() {
     case "$1" in
-        # No code API can confirm a ccit-confirm- user on these pools, so the trigger refuses them (triggers.mjs).
+        # The trigger of the device-alias and default pools refuses ccit-confirm- users (triggers.mjs): no code API
+        # could confirm one on the device-alias pool, and the default pool, which has the code sink, shares the
+        # trigger. Only the alias-codes pool's own trigger (pre-sign-up-confirmable) leaves them to confirm.
         pre-sign-up) printf '{"REFUSE_CONFIRMATION_USERS":"1"}' ;;
         create-auth-challenge)
             jq -n -c --arg s "$(printf '%s' "$ANSWER" | shasum -a 256 | cut -d' ' -f1)" \
@@ -854,9 +858,10 @@ pool_definition() {
     # The device-alias pool discards its messages (no test there reads a code), and is on the Lite plan: DV-10…19
     # and the short-token parity check use device tracking, custom token lifetimes and a pre-sign-up trigger, all
     # of which Lite has. The default pool keeps its template's Essentials, the plan its rotation client was proven
-    # on in the sandbox. The alias-codes pool is the device-alias template on Lite too, but its trigger leaves
-    # ccit-confirm- users to confirm, and its codes go to the code sink: the email-alias code check reads one by the
-    # username Cognito generated.
+    # on in the sandbox, and the device-alias pool's trigger, which refuses ccit-confirm- users (fn_environment). The
+    # alias-codes pool is the device-alias template on Lite too, but its trigger leaves ccit-confirm- users to
+    # confirm, and its codes go to the code sink: the email-alias code check reads one by the username Cognito
+    # generated.
     case "$key" in
         email-alias)
             sender=discard-sender

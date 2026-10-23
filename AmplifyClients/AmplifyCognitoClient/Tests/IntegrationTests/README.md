@@ -700,7 +700,7 @@ in the client's CI job only.
 | New resource | Why |
 |---|---|
 | Pool `ccit-ci-email-alias` (`pools/email-alias.json`) and its `client` app client, on the **Lite** plan | DV-10…19 and the short-token parity check need email as the username, devices always remembered, 5-minute tokens and a confirming pre-sign-up trigger, all of which Lite has |
-| Lambda `ccit-ci-pre-sign-up` (`lambda/triggers/triggers.mjs` with `REFUSE_CONFIRMATION_USERS=1`) | Confirms and verifies every `ccit-` sign-up; refuses others, and refuses `ccit-confirm-` users, which no code API could confirm, so no sign-up code is ever sent |
+| Lambda `ccit-ci-pre-sign-up` (`lambda/triggers/triggers.mjs` with `REFUSE_CONFIRMATION_USERS=1`) | Confirms and verifies every `ccit-` sign-up; refuses others, and refuses `ccit-confirm-` users, which no code API on this pool could confirm, so no sign-up code is ever sent. Phase 2's `ccit-ci-default` uses the same trigger, so it refuses them too |
 | Lambda `ccit-ci-discard-sender` (`infra/ci/lambda/discard-sender`), the pool's custom email and SMS sender, and the KMS key `alias/ccit-ci-senders` that Cognito encrypts codes with | Cognito sends nothing for the pool, so its runs can never reach the account's daily email limit. No test there reads a code, so there is no code sink |
 | Role `ccit-ci-trigger-exec` (its own log streams only) and the two log groups (7 days) | |
 
@@ -721,7 +721,7 @@ but in `SandboxPool.optionalRoles`, and the build phases copy its files as optio
 
 | New resource | Gives |
 |---|---|
-| Pool `ccit-ci-default`, its `plugin` and `rotation` app clients, and identity pool `ccit_ci_default` with two permissionless roles | The extended role, and the rotation client (RT-1, RT-2) |
+| Pool `ccit-ci-default`, its `plugin` and `rotation` app clients, and identity pool `ccit_ci_default` with two permissionless roles. Its pre-sign-up trigger is `ccit-ci-pre-sign-up`, so it refuses `ccit-confirm-` sign-ups, although its codes reach the code sink | The extended role, and the rotation client (RT-1, RT-2) |
 | The define, create and verify custom-auth triggers, and the answer in SSM `/ccit-ci/custom-challenge-answer` (a SecureString under the key `alias/ccit-ci-senders`, as the temporary password is; the Lambda holds only its SHA-256) | CA-1…3 and the stored-answer check |
 | `ccit-ci-new-password-1` … `-12`, kept in `FORCE_CHANGE_PASSWORD` every 10 minutes by `ccit-ci-new-password-reset` (`infra/ci/lambda/new-password-reset`) and an EventBridge rule; the temporary password in SSM | CH-1, P-3, and the fixture check with the credentials file |
 | The custom sender (`lambda/custom-sender`), the code sink (AppSync API and table `ccit-ci-codes`, `codesink/`), their roles, and the SNS caller role for SMS MFA | AT-2's second half, RP-3; Cognito sends nothing |
