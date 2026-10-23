@@ -327,13 +327,16 @@ see the change at once. `signOutStoredSession` returns the same result as `signO
 never throws. It never signs out a user who signs in while the call runs: if someone else signs in to that session
 meanwhile, it returns `.failed(.invalidState)` and they stay signed in. A client for that session live with other
 pools in the same access group makes it `.failed(.sessionConfigurationMismatch)` (a purge throws it); a client live
-in another access group holds a different saved session, and is left alone. A purge leaves the refresh token valid
-on the server until it expires, so prefer `signOutStoredSession`. A named session's purge deletes the session's
-small configuration marker last, or rewrites it so it carries nothing when it still lists other users' copies. An
-app terminated just before that step leaves the marker as it was. A leftover marker that names the purge's own
-configuration holds no credentials and carries nothing. One that names an earlier configuration (a purge under a new
-configuration, before the session's first restore there) makes the next restore under this configuration carry the
-session from the earlier one again: purge the session again before building a client for it.
+in another access group holds a different saved session, and is left alone. With no client for the session live in
+the process, `signOutStoredSession` revokes through SDK clients built from `configuration` alone, so a
+`configureUserPoolClient` your clients pass (a custom endpoint, a proxy, certificate pinning) isn't applied: hold a
+client for the session to sign out through it. A purge leaves the refresh token valid on the server until it expires,
+so prefer `signOutStoredSession`. A named session's purge deletes the session's small configuration marker last, or
+rewrites it so it carries nothing when it still lists other users' copies. An app terminated just before that step
+leaves the marker as it was. A leftover marker that names the purge's own configuration holds no credentials and
+carries nothing. One that names an earlier configuration (a purge under a new configuration, before the session's
+first restore there) makes the next restore under this configuration carry the session from the earlier one again:
+purge the session again before building a client for it.
 
 There is no "sign out of every session" call. Loop over the listing, once per configuration and access group the
 app has used:

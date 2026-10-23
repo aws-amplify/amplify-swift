@@ -2,12 +2,14 @@
 
 The decisions taken in review of the Auth Client design
 ([AGREED-DESIGN-AmplifyCognitoClient.md](AGREED-DESIGN-AmplifyCognitoClient.md)), with the options that were
-weighed and the evidence behind each choice. All of them are written into the design.
+weighed and the evidence behind each choice. Decisions 1–19 are written into the design; each dated section below
+says where its decisions are written.
 
 Decisions 1–8 were taken in review on 2026-09-22. Decisions 9–19 were taken while the client was built, up to
 the beta (2026-09-23 to 2026-10-05); they are summarised [below](#later-decisions-2026-09-23-to-2026-10-05).
-Decisions 20–28 were taken on 2026-10-19, after end-to-end testing of the beta; they are summarised
-[below](#decisions-of-2026-10-19). Where
+Decisions 20–28 were taken on 2026-10-19, after end-to-end testing of the beta, decisions 29–34 on 2026-10-22, on
+the review of its last round, and decisions 35–39 on 2026-10-23, on the review that followed; they are summarised
+[below](#decisions-of-2026-10-19), [below](#decisions-of-2026-10-22) and [below](#decisions-of-2026-10-23). Where
 a later decision changes an earlier one, the earlier entry says so and is kept as the record.
 
 ## Summary (decided 2026-09-22)
@@ -398,7 +400,8 @@ refresh-token rotation on.
 - **The dead-token rule keeps 30 seconds** (2026-10-02). A refresh refused as a reused refresh token is retryable
   the first time; a second, at least 30 seconds later, with nothing saved meanwhile, reports `sessionExpired`.
   *Refined 2026-10-19 (#28):* the rule holds within one launch, and a refused forced refresh fails rather than
-  returning the tokens it sent.
+  returning the tokens it sent. *Refined 2026-10-23 (#35):* a refused forced refresh counts toward the rule, and the
+  expiry has its own `sessionExpired` text.
 - **`AuthClientServiceErrorCode` is not an `Error`** (2026-10-02). It is a plain value carried by
   `AuthClientError.service`, never thrown on its own; `errorDescription` stays as a property.
 - **Logging** (2026-10-02). Every client log line is under an `AmplifyCognitoClient.<area>` category, and the
@@ -412,7 +415,9 @@ refresh-token rotation on.
 ## Decisions of 2026-10-19
 
 Taken after end-to-end testing of the beta on devices and simulators, each a change to the client or to the plugin's
-access-group migration. Each is written into the design, the client's README and the release notes.
+access-group migration. Each is written into the release notes, and into the design and the client's README where
+they describe what it changes: #26 and #27, fixes in the Cognito code the plugin and the client share, are not in the
+design.
 
 | # | Decision | Answer |
 |---|---|---|
@@ -421,10 +426,10 @@ access-group migration. Each is written into the design, the client's README and
 | 22 | A known refusal of a carried session's identity step | **The AWS credentials provider fails loudly**: `CredentialsError.notConfigured` (`.failLoudly`), with the refusal underneath. `fetchAuthSession`'s identity fields keep the refusal itself, and the token provider still vends the access token. |
 | 23 | Which AWSMobileClient credentials a `.default` sign-out clears | **Every identity pool's** credentials service the app's keychain holds, not only the configured one's. The plugin is unchanged. |
 | 24 | A network failure (the request may not have reached Cognito) | **A retryable `.service` with no code**, in every call, with the client's network texts. The plugin keeps its mapping. |
-| 25 | When a hosted-UI sign-in cancelled with `cancelWebUISignIn()` answers | **Once its browser has closed and the system sheet is free**, within a second. |
-| 26 | A forgotten device key on a sign-in that isn't SRP | **Dropped and retried once**, in the shared engine: the password (`USER_PASSWORD_AUTH`), `USER_AUTH`, custom and auto sign-in flows remove the device record and resend without a device key, by SRP's rule. Plugin and client alike. |
+| 25 | When a hosted-UI sign-in cancelled with `cancelWebUISignIn()` answers | **Once it has released the system sheet**, within a second: `systemSheetHolder` no longer names the session. A passkey call too. |
+| 26 | A forgotten device key on a sign-in that isn't SRP | **Dropped and retried once**, in the shared engine: the password (`USER_PASSWORD_AUTH`), `USER_AUTH`, custom and auto sign-in flows remove the device record and resend without a device key. Plugin and client alike. |
 | 27 | The user ID of a `signUp` that completes with auto sign-in | **Carried**: Cognito's sub, as `.done` and `.confirmUser` already carried it. Plugin and client alike. `confirmSignUp`'s `.completeAutoSignIn` and `.done` still carry none, since Cognito's answer there has no sub. |
-| 28 | A refresh refused as a reused refresh token | **The 30-second dead-token rule holds within one launch**, and is not persisted; a refused forced refresh fails with the retryable error instead of returning the tokens it sent. |
+| 28 | A refresh refused as a reused refresh token | **The 30-second dead-token rule holds within one launch**, and is not persisted; a refused forced refresh fails with the retryable error instead of returning the tokens it sent, and counts toward the rule: a second one at least 30 seconds later expires the session, with its own `sessionExpired` text (`refreshTokenReused` underneath; #35). |
 
 **#20 and #21.** An extension that fetches a session first finds the shared service empty and saves a guest identity
 there. Counting that record as a migrated login aborted the app's migration and stranded its login in the old
@@ -460,17 +465,19 @@ not retried.
 
 **#25.** The caller was answered at once while the browser was still closing, so `systemSheetHolder` still named the
 session and an immediate retry got `browserBusy`. The caller's own task cancellation and `resetSystemSheet()` still
-answer at once; a browser that hasn't closed within a second (its code exchange already in flight) doesn't hold the
-caller longer.
+answer at once; a sheet not released within a second (the browser slow to close, or the code exchange already
+running) doesn't hold the caller longer, and stays held until the sign-in's remaining calls finish.
 
-**#26.** `forgetDevice` keeps this device's record, as the plugin does, so the next sign-in sends the forgotten
-key. Only SRP handled Cognito's answer; a `USER_PASSWORD_AUTH` sign-in failed on every attempt with "Device does not
-exist." The flows that send a device key in their first request now use SRP's rule: any `ResourceNotFoundException`
-to a request that sent a device key removes the record, and the request is sent once more without one. The rule
-doesn't read the message, so a `ResourceNotFoundException` for another reason also deletes the record before the
-second attempt reports it, as SRP has always done. Auto sign-in, added on 2026-10-22, is one of those flows: a user
-who deleted their account and signs up again with the same username sends the deleted user's key. Its second
-attempt reuses the sign-up's session, and if Cognito refuses that, the auto sign-in ends with the error.
+**#26.** `forgetDevice` keeps this device's record, as the plugin does, so the next sign-in sends the forgotten key.
+Only an SRP sign-in's password verifier and the answers to a sign-in's challenges handled Cognito's answer; a
+`USER_PASSWORD_AUTH` sign-in failed on every attempt with "Device does not exist." The flows that send a device key
+in their first request now do the same: any `ResourceNotFoundException` to a request that sent a device key removes
+the record, and the request is sent once more without one. The rule doesn't read the message, so a
+`ResourceNotFoundException` for another reason also deletes the record before the second attempt reports it. The key
+can be one Cognito no longer knows for other reasons too (the device forgotten elsewhere, or the user deleted and
+created again), and the rule covers them alike. Auto sign-in, added on 2026-10-22, is one of those flows: a user who
+deleted their account and signs up again with the same username sends the deleted user's key. Its second attempt
+reuses the sign-up's session, and if Cognito refuses that, the auto sign-in ends with the error.
 
 **#27.** Cognito returns the sub in every `SignUp` answer, and an app keying anything on the new user needs it in the
 auto sign-in case too. Its `ConfirmSignUp` answer has no sub, so an app that confirms a sign-up keeps the `userID`
@@ -480,13 +487,16 @@ from `signUp`'s `.confirmUser`.
 answer and its keychain write) may still save the refresh that used the token. Persisting the first refusal was not
 taken: it would make a launch-time race look like a dead token. Instead apps are told to sign the session out, then
 show sign-in, after repeated refresh failures: `signIn` refuses a session still signed in as its user. A forced
-refresh asks Cognito for new tokens, so answering it with the tokens it sent hid the refusal; it now fails, and an
-unforced fetch still returns valid saved tokens.
+refresh asks Cognito for new tokens, so answering it with the tokens it sent hid the refusal; it now fails, and
+counts toward the rule like any refusal: a second forced refusal at least 30 seconds later expires the session though
+its saved tokens are valid, since the token is just as dead. That expiry no longer reuses the "expired or been
+revoked" text: it says the refresh token was already used and no refreshed tokens were saved, so the session cannot
+be renewed (sign in again), with `refreshTokenReused` underneath (#35).
 
 ## Decisions of 2026-10-22
 
-Taken on the review of the beta's last round. Each is written into the design, the client's README and the release
-notes.
+Taken on the review of the beta's last round. Each is written into the release notes or the client's README, and into
+the design where it describes what the decision changes: #32, #33 and #34 are not in the design.
 
 | # | Decision | Answer |
 |---|---|---|
@@ -528,3 +538,41 @@ if it needs it, a forced one whatever its expiry.
 **#34.** The plugin's tasks log their result at info, and a TOTP setup's result holds the details, which printed the
 secret in full. `description`, `debugDescription`, interpolation and `dump` now show it redacted; the `sharedSecret`
 property and the setup URI are unchanged.
+
+## Decisions of 2026-10-23
+
+Taken on the review that followed the beta's last round. #35, #36 and #37 are written into the design, the client's
+README and the release notes. #38 and #39 keep limitations that the client's README documents; #39's is also in
+`signOutStoredSession`'s API documentation and the release notes.
+
+| # | Decision | Answer |
+|---|---|---|
+| 35 | A second refusal of a reused refresh token, at least 30 seconds after the first, with nothing saved meanwhile | **The session still expires, forced or not**, even while its saved tokens are valid, and from then on its fields and providers answer `sessionExpired` until its credentials change. Its text says the refresh token was already used and no refreshed tokens were saved, so the session cannot be renewed, and to sign in again, with `refreshTokenReused` underneath, not the "expired or been revoked" text of a refused refresh token. Refines #28. |
+| 36 | AWSMobileClient (Amplify v1) logins against a signed-out `.default` | **The signed-out record stops the plugin's migration**, as a login does: nothing migrates over it, and the old logins are cleared. A `.default` sign-out or purge through the client clears those logins before it writes the signed-out record or deletes the record. |
+| 37 | A Cognito internal error (`InternalErrorException`, from either pool) and an error status the SDK does not model, in the client | **`.service` with no code**, in every call, `deleteUser`, a sign-out's revoke or global sign-out, and the passkey credential calls included, with a recovery suggestion to retry (a 5xx, an internal error) or naming the refusal (a 4xx). The plugin keeps `AuthError.unknown`. |
+| 38 | A named session's configuration marker left naming an earlier configuration, by a purge stopped before its last step | **Not changed.** The next restore under the purge's configuration carries the session from the earlier one again, and the README says to purge the session again before building a client for it. |
+| 39 | `signOutStoredSession` with no client for the session live in the process, and `configureUserPoolClient` | **Not given one.** Its revoke uses SDK clients built from the configuration alone, so an app's `configureUserPoolClient` (a custom endpoint, a proxy, certificate pinning) is not applied; hold a client for the session to sign out through it. A purge revokes nothing. |
+
+**#35.** The rule exists because a second writer may still save the refresh that used the token, and a forced
+refresh refused this way is evidence of the same dead token as an unforced one, so it counts too. Keeping the
+session retryable while its saved tokens last would only postpone the expiry, and hand out tokens whose refresh token
+is known to be dead. The text had said the refresh token expired or was revoked, which is not what happened: the
+token was used, and no one saved the refresh that used it.
+
+**#36.** Only a sign-out through the client's `.default` saves that record; the plugin's own sign-out deletes the
+record, so an app that uses only the plugin is not affected. Before, the plugin read the record as no session, so an
+AWSMobileClient login that the client's sign-out failed to clear, or that an app stopped part-way kept, was migrated
+over it and signed the user back in. The clear comes first so that a failed write or delete, or a process stopped
+after it, leaves no login behind. A purge leaves no record, so after one only the clear protects the user.
+
+**#37.** These are failures Cognito reports as its own, which the `.service` case's documentation already described.
+Where the client sees the failure's cause, the description and recovery suggestion are the ones it gave before, and
+only the case changes; `deleteUser`, a sign-out's revoke or global sign-out, and the passkey credential calls also
+lose the engine's "report a bug" suggestion. The plugin's errors are unchanged.
+
+**#38.** Rewriting the marker to the purge's own configuration before deleting it would close the window, but
+changes a tested ordering for a case that needs the app terminated just before the purge's last step. The limitation
+stays documented instead.
+
+**#39.** The stored-session calls take a configuration, not a client's options. With a client for the session live
+in the process, the sign-out goes through it, and so through its SDK clients.
