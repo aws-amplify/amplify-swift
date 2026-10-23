@@ -145,6 +145,10 @@ final class SystemSheetFlow: @unchecked Sendable {
     /// ceremony under `sheetLock`'s lease for `session`, with the `.fail` policy, in this flow; and the stop the
     /// engine's `cancelPendingSignIn` calls, which is a session ending.
     ///
+    /// A ceremony `cancelWebUISignIn()` interrupts answers once its sheet has closed and the lease is released
+    /// (bounded), as a hosted-UI sign-in does, so the caller told `.userCancelled` finds that `systemSheetHolder` no
+    /// longer names its session.
+    ///
     /// The lock's refusal reaches the app with a passkey suggestion (`passkeyBrowserBusy(_:)`): the lock's own
     /// suggestions name `whenBrowserBusy`, which no passkey call has.
     func ceremonyContext(anchor: EnginePresentationAnchorBox?, sheetLock: SystemSheetLock, session: SessionID) -> EngineCeremonyContext {
@@ -153,7 +157,7 @@ final class SystemSheetFlow: @unchecked Sendable {
             ceremony: { [self] body in
                 try await run {
                     do {
-                        return try await sheetLock.withLease(for: session, policy: .fail) { _ in
+                        return try await sheetLock.withLease(for: session, policy: .fail, waitsForReleaseWhenInterrupted: true) { _ in
                             try await body()
                         }
                     } catch let busy as AuthClientError where busy.isBrowserBusy {

@@ -121,8 +121,8 @@ public extension AmplifyCognitoClient {
     ///
     /// It also closes this session's passkey sheet, but only **while the sheet is up**: the ceremony holds
     /// the system sheet from just before the sheet is presented until it answers. The passkey call then throws
-    /// `userCancelled`. Before or after that window (the Cognito calls around the ceremony) there is nothing
-    /// to cancel; cancel the call's task instead.
+    /// `userCancelled`, once the sheet has closed, within the same second. Before or after that window (the Cognito
+    /// calls around the ceremony) there is nothing to cancel; cancel the call's task instead.
     func cancelWebUISignIn() async {
         let core = core
         await core.cancelWebUISignIn()

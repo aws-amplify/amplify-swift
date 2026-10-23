@@ -723,7 +723,9 @@ final class WebAuthnCeremonyTests: XCTestCase {
         try await held.up()
         await client.cancelWebUISignIn()
         let associateError = await authClientError { try await associate.value(within: 10) }
-        await waitUntil("the sheet is free after cancelWebUISignIn") { await self.harness.sheetLock.currentHolder == nil }
+        // Answered once the sheet is free, so no wait is needed.
+        let freeAfterCancel = await harness.sheetLock.currentHolder
+        XCTAssertNil(freeAfterCancel, "the sheet is free when the associate answers")
 
         let signIn = Task {
             try await homeClient.signIn(
@@ -745,6 +747,49 @@ final class WebAuthnCeremonyTests: XCTestCase {
         XCTAssertNil(free)
         let state = await homeClient.currentSessionState()
         XCTAssertEqual(state, .signedOut)
+    }
+
+    /// `cancelWebUISignIn()` answers a passkey call once its sheet is free, as it answers a hosted-UI sign-in.
+    ///
+    /// - Given: a lock whose release wait lasts 30 seconds, and `work`'s associate sheet up, whose ceremony keeps
+    ///   running after it is cancelled, until the test lets it end
+    /// - When:
+    ///    - `work` calls `cancelWebUISignIn()`, and the ceremony ends a moment later
+    /// - Then:
+    ///    - the associate throws `passkeySheetClosed()` only then: the sheet is free when it answers, well within the
+    ///      bound
+    func testACancelledPasskeyCallIsAnsweredOnceTheSheetIsFree() async throws {
+        harness.sheetLock = SystemSheetLock(releaseWaitNanoseconds: 30_000_000_000)
+        try harness.signIn(work, .signedIn("alice"))
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let window = await WebAuthnFixtures.window()
+        let up = Gate(isOpen: true)
+        let ends = Gate()
+        engine.scriptCeremonyBody { _ in
+            await up.pass()
+            // Ignores the cancellation, as a sheet still closing does.
+            await ends.pass()
+            throw CancellationError()
+        }
+        let started = Date()
+        let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
+        try await up.arrivals(1)
+        let lock = harness.sheetLock
+        let answered = Task { () -> (AuthClientError?, SessionID?) in
+            let error = await authClientError { try await associate.value(within: 10) }
+            return (error, await lock.currentHolder)
+        }
+
+        await client.cancelWebUISignIn()
+        try await Task.sleep(nanoseconds: 200_000_000)
+        await ends.open()
+        let (error, holderWhenAnswered) = try await answered.value(within: 10)
+
+        XCTAssertEqual(error?.kind, .userCancelled)
+        XCTAssertEqual(error?.errorDescription, SessionCore.passkeySheetClosed().errorDescription)
+        XCTAssertNil(holderWhenAnswered)
+        XCTAssertLessThan(Date().timeIntervalSince(started), 5, "answered by the release, not the bound")
     }
 }
 #endif
