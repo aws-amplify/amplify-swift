@@ -291,18 +291,20 @@ extension AuthClientError {
     }
 
     /// The mismatch is the underlying error, so a caller can still read its reason. No string holds the
-    /// returned identity: that is in `returned`.
+    /// returned identity: that is in `returned`. A user who is not the one asked for suggests signing in with
+    /// `prompt: [.login]`; a response that could not be verified suggests `unverifiedHostedUIResponseSuggestion`, since
+    /// asking for credentials again would not change what the tokens say.
     init(hostedUIMismatch mismatch: HostedUIIdentityMismatch) {
-        let suggestion = HostedUIIdentityMismatch.recoverySuggestion
         guard mismatch.isIdentityMismatch else {
             self = .service(
                 nil,
                 "The hosted UI sign-in response could not be verified (\(Self.failedCheck(mismatch.reason))), so nobody was signed in.",
-                suggestion,
+                Self.unverifiedHostedUIResponseSuggestion,
                 mismatch
             )
             return
         }
+        let suggestion = HostedUIIdentityMismatch.recoverySuggestion
         // An identity reason always has the `sub`; the username falls back to it.
         let userId = mismatch.returnedUserId ?? ""
         self = .unexpectedIdentity(
@@ -313,6 +315,12 @@ extension AuthClientError {
             mismatch
         )
     }
+
+    /// The recovery suggestion of a hosted-UI response that could not be verified: its tokens were issued to another
+    /// app client or user pool, or for another sign-in, or do not name one user.
+    static let unverifiedHostedUIResponseSuggestion =
+        "Sign in again. If it keeps failing, check that the configuration's user pool, app client and hosted UI domain "
+            + "belong together."
 
     private static func failedCheck(_ reason: HostedUIIdentityMismatch.Reason) -> String {
         switch reason {

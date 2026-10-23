@@ -226,6 +226,7 @@ final class LiveWebUICoreTests: XCTestCase {
         _ sessionId: SessionID,
         options: WebUIOptions = WebUIOptions(),
         expecting kind: AuthClientError.Kind,
+        suggesting suggestion: String? = nil,
         _ context: String,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -237,6 +238,9 @@ final class LiveWebUICoreTests: XCTestCase {
         let error = await authClientError({ try await client.signInWithWebUI(presentationAnchor: window, options: options) }, file: file, line: line)
 
         XCTAssertEqual(error?.kind, kind, context, file: file, line: line)
+        if let suggestion {
+            XCTAssertEqual(error?.recoverySuggestion, suggestion, context, file: file, line: line)
+        }
         await waitUntil("the refused refresh token is revoked (\(context))") { self.revokedRefreshTokens() == ["refresh-alice-hosted"] }
         try await Task.sleep(nanoseconds: 200_000_000)
         XCTAssertEqual(revokedRefreshTokens(), ["refresh-alice-hosted"], "revoked exactly once (\(context))", file: file, line: line)
@@ -249,14 +253,15 @@ final class LiveWebUICoreTests: XCTestCase {
     /// - When: a sign-in expects bob (`.matches`), and another, with alice signed in to session "home", asks for
     ///   a user `.distinctFromOtherSessions`
     /// - Then:
-    ///    - each throws `.unexpectedIdentity`; the refresh token the refused response was issued is revoked at
-    ///      Cognito exactly once; nothing is committed
+    ///    - each throws `.unexpectedIdentity`, suggesting a sign-in with `prompt: [.login]`; the refresh token the
+    ///      refused response was issued is revoked at Cognito exactly once; nothing is committed
     func testAnIdentityTheExpectationRefusesIsRevokedOnce() async throws {
         let alice = AuthClientUser(username: "alice", userId: "sub-alice")
         try await assertRefusalRevokesTheIssuedTokenOnce(
             ClientFixtures.id("expects-bob"),
             options: WebUIOptions(identityExpectation: .matches("bob")),
             expecting: .unexpectedIdentity(expected: "bob", returned: alice),
+            suggesting: HostedUIIdentityMismatch.recoverySuggestion,
             ".matches(\"bob\")"
         )
 
@@ -265,6 +270,7 @@ final class LiveWebUICoreTests: XCTestCase {
             ClientFixtures.id("distinct"),
             options: WebUIOptions(identityExpectation: .distinctFromOtherSessions),
             expecting: .unexpectedIdentity(expected: nil, returned: alice),
+            suggesting: HostedUIIdentityMismatch.recoverySuggestion,
             ".distinctFromOtherSessions"
         )
     }
@@ -273,8 +279,9 @@ final class LiveWebUICoreTests: XCTestCase {
     ///   another app client, another issuer, no subject, or another subject than the access token's
     /// - When: a hosted-UI sign-in runs for each
     /// - Then:
-    ///    - each throws `.service` naming the failed check; the refresh token the refused response was issued
-    ///      is revoked at Cognito exactly once; nothing is committed
+    ///    - each throws `.service` naming the failed check, with a suggestion to check the configuration rather than
+    ///      `prompt: [.login]`, which cannot change the tokens; the refresh token the refused response was issued is
+    ///      revoked at Cognito exactly once; nothing is committed
     func testAResponseTheClaimChecksRefuseIsRevokedOnce() async throws {
         let presenter = presenter!
         for (check, claims) in [
@@ -292,7 +299,12 @@ final class LiveWebUICoreTests: XCTestCase {
                 }
                 return TokenEndpointStub.tokens("alice", nonce: nil, idTokenClaims: claims)
             }
-            try await assertRefusalRevokesTheIssuedTokenOnce(ClientFixtures.id("refused-\(check)"), expecting: .service(nil), check)
+            try await assertRefusalRevokesTheIssuedTokenOnce(
+                ClientFixtures.id("refused-\(check)"),
+                expecting: .service(nil),
+                suggesting: AuthClientError.unverifiedHostedUIResponseSuggestion,
+                check
+            )
         }
     }
 
