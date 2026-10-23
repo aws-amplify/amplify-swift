@@ -18,15 +18,21 @@
 #     ccit-ci-default       a default pool as the sandbox's (infra/pools/default.json): custom-auth triggers,
 #                           new-password users kept fresh by a scheduled Lambda, the code sink, a rotation client,
 #                           and an identity pool with guest access, read by the client's own `extended` role only:
-#                           CA-1…3, CH-1, P-3, the fixture check, AT-2's second half, RP-3, RT-1 and RT-2. Its
-#                           pre-sign-up trigger is the device-alias pool's, so it refuses ccit-confirm- sign-ups too,
-#                           although its codes reach the code sink
+#                           CA-1…3, CH-1, P-3, the fixture check, AT-2 and its second half, AT-4, RP-3, RT-1 and
+#                           RT-2. Its pre-sign-up trigger is the device-alias pool's, so it refuses ccit-confirm-
+#                           sign-ups too, although its codes reach the code sink
 #     ccit-ci-email-alias-codes
 #                           a second device-alias pool on Lite, read by the client's own `email-alias-codes` role
 #                           only: its pre-sign-up trigger (ccit-ci-pre-sign-up-confirmable) leaves ccit-confirm-
 #                           users to confirm, and the custom sender publishes their codes to the code sink, so no
 #                           email is sent: the email-alias code check. With it, ccit-ci-capabilities.json names
 #                           the sandbox checks the client's own roles can run (README, "Sandbox checks")
+#     ccit-ci-mfa-req-totp-sms
+#                           an MFA-required pool (TOTP and SMS) from infra/pools/mfa-req-totp-sms.json, whose `ci`
+#                           app client (SRP and choice-based sign-in, USER_AUTH) the client's CI overlay puts in
+#                           place of the plugin's MFA-required backend (ci-overlay.sh's `mfa-req-totp-sms` role):
+#                           MF-13…23 and the two USER_AUTH MFA-setup checks. Its pre-sign-up trigger is the
+#                           device-alias pool's, and its custom senders the discard sender, so nothing is sent
 #
 #   A rerun over resources an earlier run made adds what is missing and updates, after their tag checks, only
 #   these of its own: the KMS key's policy and the sender's and triggers' role policies (each to name the new pool
@@ -131,8 +137,10 @@ require_caller
 # --- Names ------------------------------------------------------------------------------------------------
 
 POOL_KEYS=(email-alias)
-[[ "$SCOPE" == "all" ]] && POOL_KEYS=(email-alias default email-alias-codes)
-ALL_POOL_KEYS=(email-alias default email-alias-codes)
+[[ "$SCOPE" == "all" ]] && POOL_KEYS=(email-alias default email-alias-codes mfa-req-totp-sms)
+ALL_POOL_KEYS=(email-alias default email-alias-codes mfa-req-totp-sms)
+# The pools whose SmsConfiguration names the SNS caller role (the templates with SMS MFA), which its trust names.
+SMS_POOL_KEYS=(default mfa-req-totp-sms)
 TRIGGERS_ALL=(pre-sign-up pre-sign-up-confirmable define-auth-challenge create-auth-challenge verify-auth-challenge)
 # The pools whose codes the custom sender decrypts: the ones it is the sender of.
 SENDER_POOL_KEYS=(default email-alias-codes)
@@ -295,16 +303,21 @@ scoped_pool_arns() {
     printf '%s\n' "${arns[@]}" | jq -R . | jq -s -c 'sort'
 }
 
-# The default pool's ARN, the only pool that names the SMS role, as `scoped_pool_arns` reads it: [] early while it
-# is about to be created.
-default_pool_arns() {
-    local id
-    id=$(kv_get POOL_ID default)
-    if [[ -z "$id" ]] || { [[ "$1" == "early" ]] && is_new "$id"; }; then
-        printf '[]'
-        return
-    fi
-    jq -n -c --arg a "$(pool_arn "$id")" '[$a]'
+# The ARNs of the pools that name the SMS role (SMS_POOL_KEYS), as `scoped_pool_arns` reads them: [] early while
+# one of them is about to be created (the trust must let Cognito assume the role for it), and `final`, every one,
+# a planned one included.
+sms_pool_arns() {
+    local when="$1" key id arns=()
+    for key in "${SMS_POOL_KEYS[@]}"; do
+        id=$(kv_get POOL_ID "$key")
+        if [[ "$when" == "early" ]] && { [[ -z "$id" ]] || is_new "$id"; }; then
+            printf '[]'
+            return
+        fi
+        [[ -n "$id" ]] && arns+=("$(pool_arn "$id")")
+    done
+    (( ${#arns[@]} > 0 )) || { printf '[]'; return; }
+    printf '%s\n' "${arns[@]}" | jq -R . | jq -s -c 'sort'
 }
 
 # The ARNs of the pools the custom sender is the sender of (SENDER_POOL_KEYS), for its decrypt: `early`, those that
@@ -861,7 +874,9 @@ pool_definition() {
     # on in the sandbox, and the device-alias pool's trigger, which refuses ccit-confirm- users (fn_environment). The
     # alias-codes pool is the device-alias template on Lite too, but its trigger leaves ccit-confirm- users to
     # confirm, and its codes go to the code sink: the email-alias code check reads one by the username Cognito
-    # generated.
+    # generated. The MFA-required pool keeps its template's Essentials (choice-based sign-in needs it) and the
+    # device-alias pool's trigger, and discards its messages: the plugin's MFA-required backend, which it stands in
+    # for, captures no code either, so no test there reads one.
     case "$key" in
         email-alias)
             sender=discard-sender
@@ -870,6 +885,9 @@ pool_definition() {
         email-alias-codes)
             pre="pre-sign-up-confirmable"
             tier=LITE
+            ;;
+        mfa-req-totp-sms)
+            sender=discard-sender
             ;;
     esac
     variables=$(CCIT_SECRET_EXT="$SMS_EXTERNAL_ID" jq -n -c --arg pre "$(fn_arn "$pre")" --arg def "$(fn_arn define-auth-challenge)" \
@@ -954,11 +972,13 @@ ensure_pool() {
     done
 }
 
-# The app clients each pool gets: the one its outputs name, and on default the rotation client.
+# The app clients each pool gets: the one its outputs name, and on default the rotation client. The MFA-required
+# pool's is its `ci` client, shaped as the plugin's CI backend's (no USER_PASSWORD_AUTH).
 pool_clients() {
     case "$1" in
         default) echo plugin rotation ;;
         email-alias|email-alias-codes) echo client ;;
+        mfa-req-totp-sms) echo ci ;;
     esac
 }
 
@@ -1104,6 +1124,10 @@ write_config() {
         outputs_document email-alias-codes client | with_code_sink \
             | write_private_json "$CONFIG_DIR/ccit-ci-email-alias-codes-amplify_outputs.json"
         capabilities_document | write_private_json "$CONFIG_DIR/ccit-ci-capabilities.json"
+        # Added later still, a new key too: the MFA-required pool's `ci` client, for the overlay's
+        # mfa-req-totp-sms role. No code API (as the plugin's backend it stands in for) and no mark: the plugin's
+        # setup for that backend promises a confirming trigger, which the pool has.
+        outputs_document mfa-req-totp-sms ci | write_private_json "$CONFIG_DIR/ccit-ci-mfa-req-totp-sms-amplify_outputs.json"
     fi
     say "Wrote the client's CI configuration (mode 600) into $CONFIG_DIR:"
     find "$CONFIG_DIR" -type f -exec basename {} \; | sort | sed 's/^/  /'
@@ -1124,7 +1148,8 @@ config_files() {
     printf '%s\n' ccit-ci-email-alias-amplify_outputs.json
     if [[ "$SCOPE" == "all" ]]; then
         printf '%s\n' ccit-ci-default-amplify_outputs.json ccit-ci-rotation-amplify_outputs.json ccit-ci-default-credentials.json \
-            ccit-ci-email-alias-codes-amplify_outputs.json ccit-ci-capabilities.json
+            ccit-ci-email-alias-codes-amplify_outputs.json ccit-ci-capabilities.json \
+            ccit-ci-mfa-req-totp-sms-amplify_outputs.json
     fi
 }
 
@@ -1197,7 +1222,7 @@ provision() {
         ensure_role sender-exec "$(lambda_trust)" "$(sender_policy "$(sender_pool_arns early)")"
         ensure_role appsync-codes "$(appsync_trust)" "$(appsync_policy)"
         ensure_sms_external_id
-        ensure_role cognito-sms "$(sms_trust "$(default_pool_arns early)")" "$(sms_policy)"
+        ensure_role cognito-sms "$(sms_trust "$(sms_pool_arns early)")" "$(sms_policy)"
         ensure_api_resolvers
         ensure_api_key
     fi
@@ -1223,7 +1248,7 @@ provision() {
     ensure_kms_policy "$(kms_policy "$policy")"
     if [[ "$SCOPE" == "all" ]]; then
         ensure_role sender-exec "$(lambda_trust)" "$(sender_policy "$(sender_pool_arns final)")"
-        ensure_role cognito-sms "$(sms_trust "$(default_pool_arns final)")" "$(sms_policy)"
+        ensure_role cognito-sms "$(sms_trust "$(sms_pool_arns final)")" "$(sms_policy)"
     fi
 
     if [[ "$SCOPE" == "all" ]]; then

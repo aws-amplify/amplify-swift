@@ -17,12 +17,12 @@
 # ccit-ci- resources and prints no identifier; that --scope email-alias plans only the device-alias pool and what it
 # needs; that a ccit-ci- name without the purpose tag is refused before any change, by a dry run and by --apply;
 # that --apply creates everything, tagged, leaves the plugin's resources exactly as they were, narrows the key to the
-# three pools, the sender's decrypt to the two it sends for and the SMS role to the default pool, and writes the six
-# files (mode 600, in a mode-700 directory) with what the client reads; that a second --apply makes no call; that
+# four pools, the sender's decrypt to the two it sends for and the SMS role to the default and MFA-required pools,
+# and writes the seven files (mode 600, in a mode-700 directory) with what the client reads; that a second --apply makes no call; that
 # --upload puts only new keys under auth/cognito-client-ci/ and refuses, with no upload, once one exists; that a
 # rerun over phase 2 as it was first applied (the script at 80712afe4 when git has it, else skipped) plans and makes
-# only the alias-codes pool and what it needs, updates only the script's own resources, and uploads only the two new
-# files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after phase 2 makes no call, and
+# only the alias-codes and MFA-required pools and what they need, updates only the script's own resources, and
+# uploads only the three new files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after phase 2 makes no call, and
 # a code sink key near its expiry is extended in place; that the AppSync headroom is checked only by a run that
 # creates the API, against CCIT_CI_APPSYNC_API_QUOTA; that a dry run refuses a custom sender to build without npm,
 # and a failed npm ci stops --apply before the sender; that snapshot and verify-unchanged ignore a user count, and
@@ -257,6 +257,29 @@ alias_codes_files_are_right() {
         "email-alias-codes": ["email_alias_codes"]}}' "$CONFIG/ccit-ci-capabilities.json" >/dev/null
 }
 
+# The MFA-required pool as made: its template's Essentials and MFA (required, TOTP and SMS), the device-alias pool's
+# trigger and the discard sender, the template's `ci` app client only, and the SMS role named; its outputs file names
+# that client, MFA required with SMS and TOTP, and no code API or mark.
+mfa_required_pool_is_right() {
+    local template="$CI_DIR/../pools/mfa-req-totp-sms.json" file="$CONFIG/ccit-ci-mfa-req-totp-sms-amplify_outputs.json"
+    jq -e --slurpfile t "$template" '[.pools[] | select(.UserPool.Name == "ccit-ci-mfa-req-totp-sms")] as $p
+        | ($p | length == 1) and ($p[0].UserPool | .UserPoolTier == "ESSENTIALS"
+            and (.LambdaConfig.PreSignUp | endswith(":function:ccit-ci-pre-sign-up"))
+            and (.LambdaConfig.CustomEmailSender.LambdaArn | endswith(":function:ccit-ci-discard-sender"))
+            and (.LambdaConfig.CustomSMSSender.LambdaArn | endswith(":function:ccit-ci-discard-sender"))
+            and (.SmsConfiguration.SnsCallerArn | endswith(":role/ccit-ci-cognito-sms"))
+            and (.UserPoolTags.purpose == "amplify-cognito-client-integ"))
+        and ($p[0].mfa.MfaConfiguration == "ON") and ($p[0].mfa.SoftwareTokenMfaConfiguration.Enabled == true)
+        and ([$p[0].clients[] | .ClientName] == ["ccit-ci-mfa-req-totp-sms-ci"])
+        and ([$p[0].clients[] | .ExplicitAuthFlows] == [$t[0].appClients.ci.ExplicitAuthFlows])
+        and ([.lambdas["ccit-ci-discard-sender", "ccit-ci-pre-sign-up"].policy[].Sid] | index("cognito-mfa-req-totp-sms") != null)' \
+        "$FAKE_STATE" >/dev/null || return 1
+    jq -e '(.auth.mfa_configuration == "REQUIRED") and (.auth.mfa_methods == ["SMS", "TOTP"]) and (.data == null)
+        and (.custom == null) and (.auth.identity_pool_id == null)' "$file" >/dev/null || return 1
+    [[ "$(jq -r .auth.user_pool_client_id "$file")" == "$(jq -r '.pools[] | select(.UserPool.Name == "ccit-ci-mfa-req-totp-sms")
+        | .clients | keys[0]' "$FAKE_STATE")" ]]
+}
+
 # The alias-codes pool as made: Lite, the confirmable trigger (no refusal of ccit-confirm- users), the custom
 # sender; the key narrowed to the three pools, the sender's decrypt to the two it sends for, the triggers' role
 # writing the new trigger's logs.
@@ -273,7 +296,7 @@ alias_codes_pool_is_right() {
         and (.lambdas["ccit-ci-pre-sign-up-confirmable"].config.Environment.Variables == {})
         and (.lambdas["ccit-ci-pre-sign-up-confirmable"].config.Handler == "triggers.preSignUp")
         and ([.lambdas["ccit-ci-custom-sender"].policy[].Sid] | sort == ["cognito-default", "cognito-email-alias-codes"])
-        and ($arns | length == 3)
+        and ($arns | length == 4)
         and ([.kms.keys[] | .policy.Statement[1].Condition.ArnEquals["aws:SourceArn"]] == [$arns])
         and (.roles["ccit-ci-sender-exec"].inline["ccit-ci-sender-exec-policy"].Statement[1].Condition.StringEquals["kms:EncryptionContext:userpool-id"] == $senders)
         and (.roles["ccit-ci-trigger-exec"].inline["ccit-ci-trigger-exec-policy"].Statement[0].Resource
@@ -300,12 +323,12 @@ phase_2_adds_the_default_pool_and_keeps_phase_1() {
     (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
     no_identifiers && plus_lines_are_ours && [[ "$(plugin_part)" == "$before" ]] || return 1
     [[ "$OUT" == *"= user pool ccit-ci-email-alias"* && "$OUT" == *"= auth/cognito-client-ci/ccit-ci-email-alias-amplify_outputs.json (uploaded already, the same bytes)"* ]] || return 1
-    [[ "$(calls | grep -c 's3api put-object')" == 5 ]] || return 1
+    [[ "$(calls | grep -c 's3api put-object')" == 6 ]] || return 1
     CONFIG=$(config_dir_of "$OUT")
     [[ -d "$CONFIG" && "$(stat -f '%Lp' "$CONFIG")" == 700 ]] || return 1
     modes=$(find "$CONFIG" -type f -exec stat -f '%Lp' {} + | sort -u)
-    [[ "$modes" == 600 && "$(find "$CONFIG" -type f | wc -l | tr -d ' ')" == 6 ]] || return 1
-    alias_codes_files_are_right && alias_codes_pool_is_right || return 1
+    [[ "$modes" == 600 && "$(find "$CONFIG" -type f | wc -l | tr -d ' ')" == 7 ]] || return 1
+    alias_codes_files_are_right && alias_codes_pool_is_right && mfa_required_pool_is_right || return 1
     default="$CONFIG/ccit-ci-default-amplify_outputs.json"
     rotation="$CONFIG/ccit-ci-rotation-amplify_outputs.json"
     jq -e '.auth.identity_pool_id and .auth.unauthenticated_identities_enabled and .data.url and .data.api_key
@@ -316,8 +339,8 @@ phase_2_adds_the_default_pool_and_keeps_phase_1() {
         and all(.[]; type == "string" and length > 0)
         and (.new_password_required_usernames | split(",") | length == 12)' "$CONFIG/ccit-ci-default-credentials.json" >/dev/null || return 1
     # Everything created is ccit-ci- and tagged.
-    jq -e '([.pools[] | select(.UserPool.Name | startswith("ccit-ci-")) | .UserPool.UserPoolTags.purpose] | length == 3 and (unique == ["amplify-cognito-client-integ"]))
-        and ([.pools[] | .UserPool.Name] | sort == ["amplify-plugin-default", "ccit-ci-default", "ccit-ci-email-alias", "ccit-ci-email-alias-codes"])
+    jq -e '([.pools[] | select(.UserPool.Name | startswith("ccit-ci-")) | .UserPool.UserPoolTags.purpose] | length == 4 and (unique == ["amplify-cognito-client-integ"]))
+        and ([.pools[] | .UserPool.Name] | sort == ["amplify-plugin-default", "ccit-ci-default", "ccit-ci-email-alias", "ccit-ci-email-alias-codes", "ccit-ci-mfa-req-totp-sms"])
         and ([.pools[] | select(.UserPool.Name == "ccit-ci-default") | .UserPool.UserPoolTier] == ["ESSENTIALS"])
         and ([.roles | keys[] | select(startswith("ccit-ci-"))] | length == 7)
         and ([.roles[] | select(.Role.RoleName | startswith("ccit-ci-")) | .tags[0].Value] | unique == ["amplify-cognito-client-integ"])
@@ -325,8 +348,11 @@ phase_2_adds_the_default_pool_and_keeps_phase_1() {
         and ([.lambdas[] | .config.FunctionName] | all(startswith("ccit-ci-") or . == "plugin-pre-sign-up"))
         and ([.ssm | keys[]] == ["/ccit-ci/custom-challenge-answer", "/ccit-ci/new-password-temporary"])
         and ([.identity_pools[] | .IdentityPoolName] | sort == ["ccit_ci_default", "plugin_identity"])' "$FAKE_STATE" >/dev/null || return 1
-    # The SMS role is narrowed to the default pool, the only one that names it (the key and the decrypt: above).
-    jq -e '.roles["ccit-ci-cognito-sms"].Role.AssumeRolePolicyDocument.Statement[0].Condition.ArnEquals["aws:SourceArn"] | length == 1' \
+    # The SMS role is narrowed to the default and MFA-required pools, the two that name it (the key and the decrypt:
+    # above).
+    jq -e '([.pools[] | select(.UserPool.Name == "ccit-ci-default" or .UserPool.Name == "ccit-ci-mfa-req-totp-sms")
+            | .UserPool.Arn] | sort) as $sms
+        | .roles["ccit-ci-cognito-sms"].Role.AssumeRolePolicyDocument.Statement[0].Condition.ArnEquals["aws:SourceArn"] == $sms' \
         "$FAKE_STATE" >/dev/null || return 1
     secrets_use_the_ccit_ci_key || return 1
     [[ "$OUT" == *"new-password users: created 12"* ]]
@@ -361,7 +387,7 @@ an_api_key_near_its_expiry_is_extended_in_place() {
         || { echo "$OUT" | sed -nE 's/^  \+ //p'; return 1; }
     run --apply --scope all --upload
     (( STATUS == 0 )) && [[ "$OUT" == *"Done: 1 calls made."* ]] && ! calls | grep -qE 'put-object|create-api-key' \
-        && no_identifiers && [[ "$(grep -c 'uploaded already, the same bytes' <<<"$OUT")" == 6 ]] \
+        && no_identifiers && [[ "$(grep -c 'uploaded already, the same bytes' <<<"$OUT")" == 7 ]] \
         || { echo "$OUT" | tail -8; return 1; }
     jq -e --arg k "$key" --argjson e "$(( $(date +%s) + 300 * 86400 ))" \
         '[.apis[] | .keys[]] | length == 1 and .[0].id == $k and .[0].expires > $e' "$FAKE_STATE" >/dev/null
@@ -375,12 +401,14 @@ a_key_with_other_contents_refuses_the_upload() {
         && only_reads && no_identifiers
 }
 
-# What a rerun over phase 2 as first applied (80712afe4) plans: the alias-codes pool and what it needs, the updates
-# to the script's own resources that name it, and the two new files.
+# What a rerun over phase 2 as first applied (80712afe4) plans: the alias-codes and MFA-required pools and what they
+# need, the updates to the script's own resources that name them (the SMS role's trust opened while the MFA-required
+# pool is made, then narrowed), and the three new files.
 RERUN_PLAN="create log group /aws/lambda/ccit-ci-pre-sign-up-confirmable
 keep /aws/lambda/ccit-ci-pre-sign-up-confirmable for 7 days
 open the key policy of alias/ccit-ci-senders to the account's pools while a ccit-ci- pool is made
 set the one inline policy of ccit-ci-trigger-exec
+set the trust of ccit-ci-cognito-sms
 store /ccit-ci/custom-challenge-answer again, the same value, encrypted with alias/ccit-ci-senders
 store /ccit-ci/new-password-temporary again, the same value, encrypted with alias/ccit-ci-senders
 create Lambda ccit-ci-pre-sign-up-confirmable (Node.js 22, no reserved concurrency)
@@ -388,11 +416,18 @@ create user pool ccit-ci-email-alias-codes (pools/email-alias.json, self sign-up
 let cognito-idp.amazonaws.com invoke ccit-ci-custom-sender (cognito-email-alias-codes)
 let cognito-idp.amazonaws.com invoke ccit-ci-pre-sign-up-confirmable (cognito-email-alias-codes)
 create app client ccit-ci-email-alias-codes-client (public, pools/email-alias.json \`client\`)
+create user pool ccit-ci-mfa-req-totp-sms (pools/mfa-req-totp-sms.json, self sign-up on, custom senders)
+let cognito-idp.amazonaws.com invoke ccit-ci-discard-sender (cognito-mfa-req-totp-sms)
+let cognito-idp.amazonaws.com invoke ccit-ci-pre-sign-up (cognito-mfa-req-totp-sms)
+set the MFA configuration of ccit-ci-mfa-req-totp-sms
+create app client ccit-ci-mfa-req-totp-sms-ci (public, pools/mfa-req-totp-sms.json \`ci\`)
 set the key policy of alias/ccit-ci-senders to the ccit-ci- pools
 set the one inline policy of ccit-ci-sender-exec
+set the trust of ccit-ci-cognito-sms
 set the one inline policy of ccit-ci-reset-exec
 upload auth/cognito-client-ci/ccit-ci-email-alias-codes-amplify_outputs.json (new key only)
-upload auth/cognito-client-ci/ccit-ci-capabilities.json (new key only)"
+upload auth/cognito-client-ci/ccit-ci-capabilities.json (new key only)
+upload auth/cognito-client-ci/ccit-ci-mfa-req-totp-sms-amplify_outputs.json (new key only)"
 
 # The script as phase 1 and phase 2 were applied with, from git; the whole infra/ directory it reads.
 FROZEN_COMMIT=80712afe4
@@ -428,19 +463,21 @@ a_rerun_over_phase_2_as_applied_adds_only_the_alias_codes_pool() {
     (( STATUS == 0 )) && only_reads && no_identifiers && plus_lines_are_ours \
         && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] \
         && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "$RERUN_PLAN" ]] \
-        && [[ "$OUT" == *"Planned: 16 calls. Nothing was changed."* ]] \
+        && [[ "$OUT" == *"Planned: 24 calls. Nothing was changed."* ]] \
         || { echo "$OUT" | sed -nE 's/^  \+ //p'; return 1; }
     before=$(plugin_part)
     run --apply --scope all --upload
     (( STATUS == 0 )) && no_identifiers && [[ "$(plugin_part)" == "$before" ]] \
         && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "$RERUN_PLAN" ]] \
         && [[ "$(grep -c 'uploaded already, the same bytes' <<<"$OUT")" == 4 ]] \
-        && [[ "$(calls | grep -c 's3api put-object')" == 2 ]] || { echo "$OUT" | tail -8; return 1; }
+        && [[ "$(calls | grep -c 's3api put-object')" == 3 ]] || { echo "$OUT" | tail -8; return 1; }
     CONFIG=$(config_dir_of "$OUT")
-    alias_codes_files_are_right && alias_codes_pool_is_right && secrets_use_the_ccit_ci_key || return 1
+    alias_codes_files_are_right && alias_codes_pool_is_right && mfa_required_pool_is_right && secrets_use_the_ccit_ci_key \
+        || return 1
     # Only the script's own resources changed, every update the plan shows: the custom sender, given the new pool's
-    # invoke permission (its revision, and its policy, as a function and as a trigger), the three role policies, the
-    # key policy and the two parameters' key.
+    # invoke permission (its revision, and its policy, as a function and as a trigger), the trigger and discard
+    # sender likewise for the MFA-required pool, the three role policies, the SMS role's trust, the key policy and the
+    # two parameters' key.
     run snapshot
     second=$(find "$WORK/disc" -name 'snapshot-*.json' ! -name '*.docs.json' | sort | tail -1)
     status=0
@@ -451,7 +488,10 @@ a_rerun_over_phase_2_as_applied_adds_only_the_alias_codes_pool() {
         && [[ "$out" == *"changed  kms-key-policy alias/ccit-ci-senders: Statement (ccit-ci-, this script's own)"* ]] \
         && [[ "$out" == *"changed  ssm-parameter /ccit-ci/new-password-temporary: KeyId (ccit-ci-, this script's own)"* ]] \
         && [[ "$out" == *"added    user-pool ccit-ci-email-alias-codes (ccit-ci-, expected)"* ]] \
-        && [[ "$out" == *" 0 changed, 10 ccit-ci- changed, 0 removed"* ]] || { echo "$out"; return 1; }
+        && [[ "$out" == *"added    user-pool ccit-ci-mfa-req-totp-sms (ccit-ci-, expected)"* ]] \
+        && [[ "$out" == *"changed  iam-role ccit-ci-cognito-sms: AssumeRolePolicyDocument.Statement (ccit-ci-, this script's own)"* ]] \
+        && [[ "$out" == *"changed  lambda ccit-ci-discard-sender: RevisionId (ccit-ci-, this script's own)"* ]] \
+        && [[ "$out" == *" 0 changed, 19 ccit-ci- changed, 0 removed"* ]] || { echo "$out"; return 1; }
     run --apply --scope all --upload
     (( STATUS == 0 )) && [[ "$OUT" == *"Done: 0 calls made."* ]]
 }
@@ -558,7 +598,7 @@ lists_are_read_to_their_last_page() {
         || return 1
     rm -rf "$WORK/disc"
     OUT=$(FAKE_PAGE_SIZE=1 "$SCRIPT" teardown 2>&1) || return 1
-    [[ "$(grep -c '+ delete user pool ccit-ci-' <<<"$OUT")" == 3 && "$OUT" == *"+ delete identity pool ccit_ci_default"* ]]
+    [[ "$(grep -c '+ delete user pool ccit-ci-' <<<"$OUT")" == 4 && "$OUT" == *"+ delete identity pool ccit_ci_default"* ]]
 }
 
 # snapshot.py's normalization: the same documents with their unordered lists in another order (trust principals,
@@ -865,7 +905,7 @@ check "a dry run refuses a ccit-ci- name without the tag" untagged_name_is_refus
 check "--apply refuses a ccit-ci- name without the tag before any change" untagged_name_is_refused --apply
 check "phase 1 --apply --upload makes only the Lite device-alias pool, its trigger and discard sender, and one file" \
     phase_1_creates_only_the_device_alias_pool
-check "phase 2 adds the default and alias-codes pools, narrowed, keeps phase 1, and uploads only the five new files" \
+check "phase 2 adds the default, alias-codes and MFA-required pools, narrowed, keeps phase 1, and uploads only the six new files" \
     phase_2_adds_the_default_pool_and_keeps_phase_1
 check "a second --apply --upload makes no call and uploads nothing" a_second_apply_makes_no_call_and_uploads_nothing
 check "a phase-1 --apply --upload after phase 2 makes no call: the triggers' role keeps every trigger's logs" \
@@ -884,7 +924,7 @@ check "the Cognito lists are read to their last page: a ccit-ci- pool on page 2 
 check "teardown is a dry run by default and names only ccit-ci- resources" teardown_is_a_dry_run_by_default
 check "teardown --apply deletes only the ccit-ci- resources it made" teardown_deletes_only_ours
 if frozen_script; then
-    check "a rerun over phase 2 as applied ($FROZEN_COMMIT) adds only the alias-codes pool and two new files" \
+    check "a rerun over phase 2 as applied ($FROZEN_COMMIT) adds only the alias-codes and MFA-required pools and three new files" \
         a_rerun_over_phase_2_as_applied_adds_only_the_alias_codes_pool
     check "teardown --apply then deletes every ccit-ci- resource, the alias-codes pool's too" \
         teardown_deletes_only_ours '["plugin-role"]'
