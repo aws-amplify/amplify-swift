@@ -387,18 +387,28 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
     /// Sessions on several pools are cleaned up, each with its own pool's configuration
     /// (`makeClient(_:pool:)`, `SessionCleanup.cleanUp(_:)`, which tearDown runs).
     ///
-    /// - Given: A client over a session on the main configuration and one over a session on the passwordless pool, each
-    ///   read once and dropped
+    /// Each session holds a signed-in row before the cleanup, so the cleanup has something to revoke and purge on
+    /// each pool: a cleanup over the wrong pool's configuration leaves that session's row (its namespace is the other
+    /// pool's) and its refresh token (revoked against the other pool's app client, or not at all), and fails here.
+    ///
+    /// - Given: A fresh user on the main configuration's pool and one on the passwordless pool, each signed in through
+    ///   a client over a session on its own pool, its refresh token (and device key, where the pool tracks devices)
+    ///   noted, then dropped
     /// - When:
     ///    - `SessionCleanup.cleanUp` runs for both sessions
     /// - Then:
     ///    - The parity client was built from the passwordless pool's configuration, not the main one
-    ///    - Neither session is live, and neither has a row
+    ///    - Before the cleanup, each session has a row
+    ///    - After it, neither session is live, and neither has a row
+    ///    - Each refresh token is refused by its own pool's app client (`GetTokensFromRefreshToken`,
+    ///      `NotAuthorizedException`): the cleanup revoked it there
     ///
     func testSessionsOnSeveralPoolsAreCleanedUpWithTheirOwnPool() async throws {
         let parityConfiguration = try IntegrationTestEnvironment.configuration(.passwordless)
         var sessions: [CreatedSession] = []
+        var refreshTokens: [(token: String, deviceKey: String?, configuration: AuthClientConfiguration)] = []
         for pool in [nil, SandboxPool.passwordless] {
+            let user = try await makeFreshUser(on: pool ?? .standard)
             let client = try makeClient("h2-\(pool?.rawValue ?? "rup")", pool: pool)
             sessions.append(CreatedSession(sessionId: client.sessionId, accessGroup: nil, pool: pool))
             if pool != nil {
@@ -408,8 +418,19 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
                     "The parity client is not on the passwordless pool's app client"
                 )
             }
-            let state = await client.currentSessionState()
-            XCTAssertEqual(state, .signedOut)
+            let signIn = try await client.signIn(username: user.username, password: XCTUnwrap(user.password))
+            guard case .done = signIn.nextStep else {
+                return XCTFail("The \(pool?.rawValue ?? "main") user's sign-in did not complete")
+            }
+            let tokens = try await client.fetchAuthSession().userPoolTokensResult.get()
+            refreshTokens.append((tokens.refreshToken, RawUserPool.deviceKey(of: tokens.accessToken), client.core.configuration))
+        }
+        let before = try IntegrationTestEnvironment.rawKeychainAccounts()
+        for session in sessions {
+            XCTAssertTrue(
+                before.contains { $0.contains(".\(session.sessionId.stringValue).") },
+                "The \(session.pool?.rawValue ?? "main") session has no row to clean up: \(RealKeychain.redact("\(before)"))"
+            )
         }
 
         try await SessionCleanup.cleanUp(sessions)
@@ -419,9 +440,36 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
             XCTAssertNil(SessionCoreRegistry.shared.liveSession(for: session.sessionId))
             XCTAssertFalse(accounts.contains { $0.contains(".\(session.sessionId.stringValue).") }, RealKeychain.redact("\(accounts)"))
         }
+        for (index, refresh) in refreshTokens.enumerated() {
+            let pool = sessions[index].pool?.rawValue ?? "main"
+            do {
+                try await Self.refresh(refresh.token, deviceKey: refresh.deviceKey, on: refresh.configuration)
+                XCTFail("The \(pool) session's refresh token still refreshes after the cleanup")
+            } catch {
+                XCTAssertTrue(error is NotAuthorizedException, "The \(pool) refresh: expected NotAuthorizedException, got \(type(of: error))")
+            }
+        }
     }
 
     // MARK: - Private
+
+    /// Sends `GetTokensFromRefreshToken` for `refreshToken` to `configuration`'s user pool and app client, through
+    /// a plain SDK client, and throws Cognito's error.
+    private static func refresh(
+        _ refreshToken: String,
+        deviceKey: String?,
+        on configuration: AuthClientConfiguration
+    ) async throws {
+        let userPool = try XCTUnwrap(configuration.userPool)
+        let client = try await CognitoIdentityProviderClient(
+            config: CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig(region: userPool.region)
+        )
+        _ = try await client.getTokensFromRefreshToken(input: GetTokensFromRefreshTokenInput(
+            clientId: userPool.appClientId,
+            deviceKey: deviceKey,
+            refreshToken: refreshToken
+        ))
+    }
 
     /// Fails unless Cognito refuses the user's password sign-in as for a user that does not exist.
     private func assertCannotSignIn(_ user: FreshUser, on pool: SandboxPoolClient, line: UInt = #line) async throws {
