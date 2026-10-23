@@ -240,12 +240,8 @@ class MigrateLegacyCredentialStoreTests: XCTestCase, @unchecked Sendable {
                         )
                     },
                     legacyKeychainStoreFactory: { _ in
-                        let data = try! JSONEncoder().encode([
-                            "provider": "token"
-                        ])
-                        return MockKeychainStoreBehavior(
-                            data: String(decoding: data, as: UTF8.self)
-                        )
+                        // The logins map `["provider": "token"]`, as JSON.
+                        MockKeychainStoreBehavior(data: #"{"provider":"token"}"#)
                     }
                 ),
                 logger: AmplifyEngineLogRouter(scope: .categoryNamespace("Authentication", "MigrateLegacyCredentialStore"))
