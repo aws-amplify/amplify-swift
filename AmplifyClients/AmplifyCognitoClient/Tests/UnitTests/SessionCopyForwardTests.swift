@@ -548,6 +548,50 @@ final class SessionCopyForwardTests: XCTestCase {
         XCTAssertFalse(try XCTUnwrap(currentRecord()).identityPending)
     }
 
+    /// A refresh whose identity step failed, but whose commit lost to another process's sign-out, answers as the
+    /// signed-out session it now is: `notSignedIn`, never `sessionExpired` or the identity step's failure.
+    ///
+    /// - Given: alice's session carried from the user pool alone, and a refresh during which another process signs
+    ///   the session out, then which stores new tokens and fails the identity step with a refusal
+    /// - When: the session is fetched; then, the same again, its AWS credentials are asked for
+    /// - Then:
+    ///    - every field of the fetch fails with `notSignedIn`, and the state is `.signedOut`
+    ///    - the provider throws `notSignedIn`
+    func testAnIdentityFailureWhoseCommitLostToASignOutIsNotSignedIn() async throws {
+        let refusal = AuthClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
+        for call in ["fetchAuthSession", "credentialsProvider"] {
+            harness = ClientHarness()
+            try aliceUnderTheUserPoolOnly()
+            let client = try harness.client(work)
+            _ = await client.currentSessionState()
+            let engine = try XCTUnwrap(harness.engine(for: work))
+            let store = harness.store()
+            let work = work
+            let stored = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 2)
+            engine.scriptRefresh { _ in
+                _ = try store.signOut(work)
+                throw SessionEngineError.refreshedThenFailed(payload: stored.data, error: .service(refusal))
+            }
+
+            if call == "fetchAuthSession" {
+                let session = try await client.fetchAuthSession()
+                for result in [session.userPoolTokensResult.map { _ in () }, session.userSubResult.map { _ in () },
+                               session.identityIdResult.map { _ in () }, session.awsCredentialsResult.map { _ in () }] {
+                    guard case .failure(let error) = result else {
+                        XCTFail("\(call): every field should fail")
+                        continue
+                    }
+                    XCTAssertEqual(error.kind, .notSignedIn, "\(call): \(error)")
+                }
+            } else {
+                let error = await providerError { try await client.credentialsProvider.resolve() }
+                XCTAssertEqual(error?.isNotSignedIn, true, "\(call): \(String(describing: error))")
+            }
+            let state = await client.currentSessionState()
+            XCTAssertEqual(state, .signedOut, call)
+        }
+    }
+
     /// A refresh whose refresh token is refused reports the session expired in every field, as the plugin does;
     /// only an identity-step failure keeps the tokens.
     ///

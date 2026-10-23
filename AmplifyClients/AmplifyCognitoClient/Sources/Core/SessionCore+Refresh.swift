@@ -364,8 +364,8 @@ extension SessionCore {
     /// A carried session waiting for its identity keeps waiting, in the record, so a later launch tries again; in
     /// this process a known refusal stops further attempts until the user pool tokens next need a refresh or a fetch
     /// forces one, and a transient failure delays the next by `PendingIdentityRetry.interval` (a cancellation does
-    /// neither). Either way no call spends a user pool refresh on it every time. If the commit lost to another writer whose record is complete (not waiting
-    /// for an identity), that record is the answer.
+    /// neither). Either way no call spends a user pool refresh on it every time. If the commit lost to another writer
+    /// whose record does not wait for an identity (complete, or signed out), that record is the answer.
     private nonisolated func keepRefreshedTokens(
         _ stored: Data,
         failure: Error,
@@ -383,7 +383,10 @@ extension SessionCore {
         let pending = current.ownRecord?.identityPending == true
         refreshTokenReuse.reset()
         let result = try await commitRefresh(stored, over: current, replacing: payload, store: store, keepingIdentityPending: pending)
-        if case .adopted(let adopted) = result, adopted.credentials != nil, adopted.ownRecord?.identityPending != true {
+        // Another writer's record that waits for no identity is the answer, a signed-out one included (another
+        // process signed the session out meanwhile): the session is then signed out, and no identity step failed
+        // for a user it still holds.
+        if case .adopted(let adopted) = result, adopted.credentials == nil || adopted.ownRecord?.identityPending != true {
             return adopted
         }
         guard pending else {
