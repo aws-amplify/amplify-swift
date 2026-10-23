@@ -24,7 +24,8 @@
 # only the alias-codes pool and what it needs, updates only the script's own resources, and uploads only the two new
 # files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after phase 2 makes no call, and
 # a code sink key near its expiry is extended in place; that the AppSync headroom is checked only by a run that
-# creates the API, against CCIT_CI_APPSYNC_API_QUOTA; that snapshot and verify-unchanged ignore a user count, and
+# creates the API, against CCIT_CI_APPSYNC_API_QUOTA; that a dry run refuses a custom sender to build without npm,
+# and a failed npm ci stops --apply before the sender; that snapshot and verify-unchanged ignore a user count, and
 # fail on a changed, removed or foreign added resource (a foreign role's inline policy, key policy, parameter or log
 # group included), but not on a ccit-ci- addition or change, nor on a Lambda's runtime version, and that the
 # snapshot's documents hold no secret; that
@@ -751,6 +752,50 @@ another_error_stops_the_apply_and_a_rerun_finishes_it() {
         && jq -e '[.pools[] | .UserPool.Name] | sort == ["amplify-plugin-default", "ccit-ci-email-alias"]' "$FAKE_STATE" >/dev/null
 }
 
+# The custom sender needs npm. With no npm on PATH, a dry run that would create it refuses, and so does --apply,
+# before any change; a phase-1 run, which builds no custom sender, does not need it. An `npm ci` that fails stops
+# --apply there: the custom sender is never created, and the run does not go on to the pools.
+npm_is_checked_by_the_dry_run_and_a_failed_build_stops_the_apply() {
+    local nonpm="$WORK/bin-nonpm" path="" dir tool before
+    rm -rf "$nonpm"
+    mkdir -p "$nonpm"
+    ln -s "$BIN/aws" "$nonpm/aws"
+    for tool in jq python3 shasum zip openssl git; do
+        ln -s "$(command -v "$tool")" "$nonpm/$tool"
+    done
+    # Every PATH directory without an npm, after the fakes' own.
+    local IFS=:
+    for dir in $PATH; do
+        [[ "$dir" == "$BIN" || -x "$dir/npm" ]] || path+=":$dir"
+    done
+    unset IFS
+    fresh_state
+    before=$(jq -S . "$FAKE_STATE")
+    : > "$FAKE_LOG"
+    STATUS=0
+    OUT=$(PATH="$nonpm$path" "$SCRIPT" --scope all 2>&1) || STATUS=$?
+    (( STATUS == 1 )) && [[ "$OUT" == *"npm is not on PATH"* ]] && only_reads \
+        && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] || { echo "$OUT" | tail -5; return 1; }
+    STATUS=0
+    OUT=$(PATH="$nonpm$path" "$SCRIPT" --apply --scope all 2>&1) || STATUS=$?
+    (( STATUS == 1 )) && [[ "$OUT" == *"npm is not on PATH"* && "$OUT" == *"the dry run refused"* ]] && only_reads \
+        && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] || { echo "$OUT" | tail -5; return 1; }
+    STATUS=0
+    OUT=$(PATH="$nonpm$path" "$SCRIPT" --scope email-alias 2>&1) || STATUS=$?
+    (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
+    # npm is there, but its `npm ci` fails.
+    mkdir -p "$WORK/bin-failing-npm"
+    printf '#!/usr/bin/env bash\nexit 1\n' > "$WORK/bin-failing-npm/npm"
+    chmod +x "$WORK/bin-failing-npm/npm"
+    STATUS=0
+    OUT=$(PATH="$WORK/bin-failing-npm:$PATH" "$SCRIPT" --apply --scope all 2>&1) || STATUS=$?
+    (( STATUS == 1 )) && [[ "$OUT" == *"npm ci for the custom sender failed"* && "$OUT" != *"Done:"* ]] \
+        && [[ "$OUT" != *"create Lambda ccit-ci-custom-sender"* && "$OUT" != *"User pools:"* ]] \
+        && jq -e '(.lambdas | has("ccit-ci-custom-sender") | not)
+            and ([.pools[] | .UserPool.Name] == ["amplify-plugin-default"])' "$FAKE_STATE" >/dev/null \
+        || { echo "$OUT" | tail -5; return 1; }
+}
+
 # Foreign AppSync APIs, $1 of them, as other teams' backends in the CI account.
 add_foreign_apis() {
     jq --argjson n "$1" 'reduce range($n) as $i (.; .apis["foreignapi\($i)"] = {api: {apiId: "foreignapi\($i)",
@@ -858,6 +903,8 @@ check "a pool made again under a new ARN gets its Lambdas' invoke permissions re
 check "a role-propagation error is retried" a_propagation_error_is_retried
 check "any other error stops --apply, and a second --apply makes only what is missing" \
     another_error_stops_the_apply_and_a_rerun_finishes_it
+check "a dry run refuses a custom sender without npm, and a failed npm ci stops --apply before the sender" \
+    npm_is_checked_by_the_dry_run_and_a_failed_build_stops_the_apply
 check "the AppSync headroom is checked only by a run that creates the API, against CCIT_CI_APPSYNC_API_QUOTA" \
     appsync_headroom_is_checked_only_when_the_api_is_created
 check "the library refuses a name that is not ccit-ci-, and a mutating call in a dry run" library_guards

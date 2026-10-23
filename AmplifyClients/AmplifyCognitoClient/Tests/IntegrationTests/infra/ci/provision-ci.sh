@@ -736,8 +736,11 @@ generate_temporary() {
 
 # --- Lambdas ----------------------------------------------------------------------------------------------
 
-# The zip for function $1 into $CI_WORK, built once per code: the sandbox's triggers.mjs, the sandbox's custom
-# sender (npm ci), or this directory's new-password reset.
+# Sets ZIP to the zip for function $1 in $CI_WORK, built once per code: the sandbox's triggers.mjs, the sandbox's
+# custom sender (npm ci), or this directory's new-password reset. It sets a variable rather than printing the path, so
+# that it runs in this shell, never in a $(…), where a refusal would end only the subshell and the run would go on.
+# The custom sender needs npm, which a dry run checks too, so --apply's dry run refuses before any change without it.
+ZIP=""
 zip_for() {
     local suffix="$1" zip build
     case "$suffix" in
@@ -746,10 +749,12 @@ zip_for() {
         new-password-reset) zip="$CI_WORK/new-password-reset.zip" ;;
         *) zip="$CI_WORK/triggers.zip" ;;
     esac
+    if [[ "$suffix" == custom-sender ]]; then
+        command -v npm >/dev/null || die "npm is not on PATH; the custom sender needs npm ci."
+    fi
     if [[ ! -f "$zip" && "$CI_MODE" == "apply" ]]; then
         case "$suffix" in
             custom-sender)
-                command -v npm >/dev/null || die "npm is not on PATH; the custom sender needs npm ci."
                 build="$CI_WORK/custom-sender"
                 mkdir -p "$build"
                 cp "$INFRA"/lambda/custom-sender/{index.mjs,package.json,package-lock.json} "$build/"
@@ -763,7 +768,7 @@ zip_for() {
                 (cd "$INFRA/lambda/triggers" && zip -q -X "$zip" triggers.mjs) ;;
         esac
     fi
-    printf '%s' "$zip"
+    ZIP="$zip"
 }
 
 fn_environment() {
@@ -803,8 +808,9 @@ ensure_function() {
         '{FunctionName: $n, Role: $role, Handler: $h, Runtime: "nodejs22.x", Timeout: $t, MemorySize: $m,
           Architectures: ["arm64"], Environment: {Variables: $e}, Tags: $tags,
           Description: "ccit-ci: Cognito client CI resources"}')
+    zip_for "$suffix"
     mutate_with_retry 15 4 "InvalidParameterValueException" "$name" "create Lambda $name (Node.js 22, no reserved concurrency)" -- lambda create-function \
-        --zip-file "fileb://$(zip_for "$suffix")" --cli-input-json "file://$(input_file "$input")"
+        --zip-file "fileb://$ZIP" --cli-input-json "file://$(input_file "$input")"
     [[ "$CI_MODE" == "apply" ]] && read_aws out lambda wait function-active-v2 --function-name "$name"
     [[ "$suffix" == "new-password-reset" ]] && RESET_CREATED=1
     return 0
