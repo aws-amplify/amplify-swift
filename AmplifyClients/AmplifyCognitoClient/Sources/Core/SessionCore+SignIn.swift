@@ -221,7 +221,7 @@ extension SessionCore {
                     """
                 )
             }
-        case .continueSignInWithFirstFactorSelection:
+        case .continueSignInWithFirstFactorSelection(let offered):
             guard ["PASSWORD", "PASSWORD_SRP", "SMS_OTP", "EMAIL_OTP", "WEB_AUTHN"].contains(response) else {
                 throw AuthClientError.validation(
                     field: "challengeResponse",
@@ -229,6 +229,20 @@ extension SessionCore {
                     """
                     Make sure that a valid challenge response is passed for confirmSignIn.
                     Try using `AuthClientFactorType.<type>.challengeResponse` as the challenge response.
+                    """
+                )
+            }
+            // Only where the step offers it, which it never does where WebAuthn is not available (before iOS 17.4
+            // or macOS 13.5, and on tvOS and watchOS), as the plugin's factor parser refuses it there. Sent anyway,
+            // Cognito's WebAuthn challenge would end the sign-in, and the selection with it.
+            let names = offered.map(\.challengeResponse).sorted()
+            guard response != "WEB_AUTHN" || names.contains(response) else {
+                throw AuthClientError.validation(
+                    field: "challengeResponse",
+                    "challengeResponse WEB_AUTHN is not one of the factors this step offers: \(Self.choices(names)).",
+                    """
+                    Make sure that a valid challenge response is passed for confirmSignIn.
+                    Try using `AuthClientFactorType.<type>.challengeResponse` of a factor the step offers as the challenge response.
                     """
                 )
             }

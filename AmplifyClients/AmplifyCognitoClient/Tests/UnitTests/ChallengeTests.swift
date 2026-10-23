@@ -444,27 +444,56 @@ final class ChallengeTests: XCTestCase {
         XCTAssertEqual(engine.confirmSignInCalls.map(\.challengeResponse), ["EMAIL_OTP"])
     }
 
+    /// A `WEB_AUTHN` answer is checked against the factors the step offers. Where WebAuthn is not available (before
+    /// iOS 17.4 or macOS 13.5, and on tvOS and watchOS) the step never offers it, as the plugin's factor parser
+    /// refuses `WEB_AUTHN` there; sent anyway, Cognito's WebAuthn challenge would end the sign-in.
+    ///
+    /// - Given: a sign-in waiting on a first-factor selection of password or email OTP, without WebAuthn
+    /// - When: it is answered with `WEB_AUTHN`, then with `EMAIL_OTP`
+    /// - Then:
+    ///    - the first throws `validation(field: "challengeResponse")` naming the step's factors, without reaching the
+    ///      engine, and the selection is still pending; the second is sent
+    func testAWebAuthnAnswerTheStepDoesNotOfferIsRefusedBeforeItIsSent() async throws {
+        let step = AuthClientSignInStep.continueSignInWithFirstFactorSelection([.password, .emailOTP])
+        let (client, engine) = try await challengedClient(work, step: step)
+
+        let bad = await authClientError { try await client.confirmSignIn(challengeResponse: "WEB_AUTHN") }
+        let state = await client.currentSessionState()
+        _ = try await client.confirmSignIn(challengeResponse: "EMAIL_OTP")
+
+        XCTAssertEqual(bad?.kind, .validation(field: "challengeResponse"))
+        XCTAssertEqual(
+            bad?.errorDescription,
+            "challengeResponse WEB_AUTHN is not one of the factors this step offers: EMAIL_OTP or PASSWORD."
+        )
+        XCTAssertTrue(bad?.recoverySuggestion.contains("`AuthClientFactorType.<type>.challengeResponse`") == true)
+        XCTAssertEqual(state, .awaitingChallenge(step))
+        XCTAssertEqual(engine.ceremonyAnchorCalls.count, 0)
+        XCTAssertEqual(engine.confirmSignInCalls.map(\.challengeResponse), ["EMAIL_OTP"])
+    }
+
     /// WebAuthn needs a presentation anchor.
     ///
-    /// - Given: a sign-in, made without a window, waiting on a first-factor selection; and a signed-out session
+    /// - Given: a sign-in, made without a window, waiting on a first-factor selection that offers WebAuthn; and a
+    ///   signed-out session
     /// - When: the selection is answered with `WEB_AUTHN` without a window, and a sign-in asks for a WebAuthn
     ///   first factor through the overload without one
     /// - Then:
     ///    - both throw `.validation(field: "presentationAnchor")`; the selection is refused by the engine
     ///      before any ceremony, and stays pending; the sign-in never reaches the engine
     func testWebAuthnWithoutAPresentationAnchorIsRefused() async throws {
-        let step = AuthClientSignInStep.continueSignInWithFirstFactorSelection([.password, .emailOTP])
-        let (client, engine) = try await challengedClient(work, step: step)
-        let other = try harness.client(home)
-
-        let selection = await authClientError { try await client.confirmSignIn(challengeResponse: "WEB_AUTHN") }
-        let state = await client.currentSessionState()
-        XCTAssertEqual(selection?.kind, .validation(field: "presentationAnchor"))
-        XCTAssertEqual(state, .awaitingChallenge(step))
-        XCTAssertEqual(engine.ceremonyAnchorCalls.count, 0)
-
         #if os(iOS) || os(macOS) || os(visionOS)
         if #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) {
+            let step = AuthClientSignInStep.continueSignInWithFirstFactorSelection([.password, .emailOTP, .webAuthn])
+            let (client, engine) = try await challengedClient(work, step: step)
+            let other = try harness.client(home)
+
+            let selection = await authClientError { try await client.confirmSignIn(challengeResponse: "WEB_AUTHN") }
+            let state = await client.currentSessionState()
+            XCTAssertEqual(selection?.kind, .validation(field: "presentationAnchor"))
+            XCTAssertEqual(state, .awaitingChallenge(step))
+            XCTAssertEqual(engine.ceremonyAnchorCalls.count, 0)
+
             let firstFactor = await authClientError {
                 try await other.signIn(
                     username: "bob",
