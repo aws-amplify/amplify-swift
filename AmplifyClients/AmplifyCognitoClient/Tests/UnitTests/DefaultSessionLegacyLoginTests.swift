@@ -60,16 +60,26 @@ final class DefaultSessionLegacyLoginTests: XCTestCase {
     /// - Given: a store over the real keychain, and one a test builds
     /// - When: their AWSMobileClient stores are built
     /// - Then:
-    ///    - the real one has one item store per service, with no access group, even when the namespace has one; a
-    ///      test's has none, so it never reaches them
-    func testOnlyTheRealKeychainsStoreReachesTheServices() {
+    ///    - the real one has one item store per service: first the plugin's services for the pools
+    ///      (`legacyLoginServices(for:)`), then only other identity pools' `<bundle>.AWSCognitoCredentialsProvider.*`
+    ///      services, whichever the real keychain lists; each with no access group, even when the namespace has one
+    ///    - a test's has none, so it never reaches them
+    func testOnlyTheRealKeychainsStoreReachesTheServices() throws {
+        let bundle = try XCTUnwrap(Bundle.main.bundleIdentifier, "the test host has a bundle identifier")
         let namespace = SessionStorageNamespace(pools: pools, accessGroup: "group.example")
         let stores = SessionRecordStore(namespace: namespace).legacyLoginStores()
+        let own = SessionRecordStore.legacyLoginServices(for: pools)
 
-        XCTAssertEqual(
-            stores.compactMap { ($0 as? KeychainItemStore)?.attributes.service },
-            SessionRecordStore.legacyLoginServices(for: pools)
+        let services = stores.compactMap { ($0 as? KeychainItemStore)?.attributes.service }
+        XCTAssertEqual(services.count, stores.count, "every store is a keychain item store")
+        XCTAssertEqual(Array(services.prefix(own.count)), own)
+        let others = services.dropFirst(own.count)
+        XCTAssertTrue(
+            others.allSatisfy { $0.hasPrefix("\(bundle).\(SessionRecordStore.legacyCredentialsProviderService).") },
+            "only other identity pools' credentials services follow the plugin's"
         )
+        XCTAssertEqual(Set(others).count, others.count, "no service is listed twice")
+        XCTAssertTrue(Set(others).isDisjoint(with: own), "no service of the plugin's is listed twice")
         XCTAssertEqual(stores.compactMap { ($0 as? KeychainItemStore)?.attributes.accessGroup }, [])
         XCTAssertTrue(harness.keychain.recordStore(for: namespace).legacyLoginStores().isEmpty)
     }
