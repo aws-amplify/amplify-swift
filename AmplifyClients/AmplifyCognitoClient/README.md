@@ -1026,8 +1026,8 @@ one nonisolated function.
 The provider:
 
 - is bound to its session for life, and keeps the session alive;
-- never falls back: a signed-out session throws `notSignedIn` and never quietly returns guest credentials. Call
-  `fetchAuthSession()` first if you want a signed-out session to become a guest;
+- never falls back: a signed-out session throws `notSignedIn` and never quietly returns guest credentials, unlike the
+  plugin's provider. Call `fetchAuthSession()` first if you want a signed-out session to become a guest;
 - vends nothing while a sign-in on the session waits on a challenge, whatever the session held, a guest's
   credentials included: it throws `notSignedIn` (`.discard`), so a consumer that follows it drops what it has
   buffered so far; with no identity pool it throws `notConfigured` (`.failLoudly`) instead. `.discard` marks the
@@ -1406,8 +1406,9 @@ is dropped and the sign-in starts again without it.
 
 ## Errors
 
-Every operation throws `AuthClientError`, which conforms to `AmplifyError`: each case carries an
-`errorDescription`, a `recoverySuggestion` and an optional `underlyingError`.
+Every operation throws `AuthClientError`, which conforms to AmplifyFoundation's `AmplifyError` (not Amplify core's,
+which the plugin's `AuthError` conforms to): each case carries an `errorDescription`, a `recoverySuggestion` and an
+optional `underlyingError`.
 
 | Case | Meaning | What to do |
 |---|---|---|
@@ -1481,7 +1482,10 @@ answer couldn't be read, or that failed otherwise in transport, has the descript
 with the same not-retried suggestion. Signing out again doesn't retry either: the session is already signed out on
 this device, so the second sign-out is `.complete` and sends nothing.
 
-Recovery suggestions name the client's calls (for example "Call signIn …"), not the plugin's.
+Recovery suggestions name the client's calls (for example "Call signIn …"), not the plugin's. So do the sign-up
+checks: `confirmSignUp` without a code throws `.validation(field: "confirmationCode")`, where the plugin's `field` is
+`"code"`, and `resendSignUpCode` without a username names `resendSignUpCode`, where the plugin's names
+`confirmSignUp`.
 
 ## Moving from the Auth plugin
 
@@ -1803,7 +1807,7 @@ parameters and responses, a challenge's `session` string among them, so keep a r
 
 ## Differences from the Auth plugin
 
-The client keeps the plugin's semantics except where listed here.
+The client keeps the plugin's semantics except where listed here and in the sections above.
 
 | Area | Auth plugin | AmplifyCognitoClient |
 |---|---|---|
@@ -1814,27 +1818,38 @@ The client keeps the plugin's semantics except where listed here.
 | Second sign-in | Refused while signed in | Refused only on the same session, and allowed there once the session reported `sessionExpired` in this process |
 | Identity pool step fails after the user pool signed the user in | `signIn` throws and signs the user out. `confirmSignIn` doesn't return, and the Auth calls queued behind it (`fetchAuthSession` and `signOut` included) wait | `signIn` and `confirmSignIn` both throw the identity pool's error, revoke the tokens just issued and leave the session signed out |
 | Events | Hub | Per-session `AsyncStream`s |
+| Events for `autoSignIn()` and `clearFederationToIdentityPool()` | No Hub event | `.signedIn` and `.signedOut` |
 | Storage failure | Reported as signed out | `.unavailable(reason)` / `storageUnavailable`, never signed out |
+| Another process's sign-in or sign-out in a shared access group | Seen at the next `fetchAuthSession` | Seen at the session's next refresh (`forceRefresh: true` forces one), or, by a signed-out session with an identity pool configured, at its next `fetchAuthSession` |
+| AWSMobileClient (Amplify v1) and access-group keychain migrations | Run when the plugin configures | Not run: ship a plugin release that migrates first. `.default`'s sign-out and purge clear the AWSMobileClient logins |
 | Interrupted sign-in | Lost when the app closes | Saved, resumable for up to 15 minutes |
 | Hosted UI private session | `preferPrivateSession` defaults to `false` | `prefersEphemeralSession` defaults to `true` |
 | Hosted UI while another is up | Queues silently | `.browserBusy` by default; `.wait(timeout:)` to queue |
 | Hosted UI returned user | No expectation | Optional `identityExpectation`; the returned ID token is always checked |
+| Hosted-UI sign-in window | Optional; falls back to a window of its own | Required: `signInWithWebUI(presentationAnchor:)` |
 | Passkey registration window | Optional; falls back to a window of its own | Required |
 | Passkey sign-in without a window | Window optional | The overloads without a window refuse a passkey with `.validation(field: "presentationAnchor")` |
 | Passkey registration token | Fetched again after the sheet | One token for the whole registration |
 | `listWebAuthnCredentials` page size | Sent as is; Cognito rejects bad values | Checked locally, 1 to 20 |
+| MFA setup selection answer | Sent to the engine as is; an unknown type is `.validation` (field "Unknown MFA type", the sign-in username texts; `.unknown` for `SMS_MFA`) | Checked before anything is sent: one of the step's types, else `.validation(field: "challengeResponse")`; the selection stays pending and the answer is not logged |
+| `WEB_AUTHN` first-factor answer the step does not offer | Refused with `.validation` below iOS 17.4 and macOS 13.5 and on tvOS and watchOS; elsewhere sent whether or not the step offers it | Refused before anything is sent with `.validation(field: "challengeResponse")` naming the offered factors, on every platform; the selection stays pending |
 | Sign-out result | `AWSCognitoSignOutResult`; `.partial` carries the tokens | The same shape, never thrown; `.partial` carries errors only, never tokens |
 | Sign-out of a federated session | `.failed`: call `clearFederationToIdentityPool` | Signed out, `.complete` |
+| `deleteUser` after a hosted-UI sign-in that shared the browser's cookies | Shows the hosted-UI sign-out page | Shows nothing: the browser keeps its cookie, and no later sign-out clears it |
 | Sign-out that removes the saved row | Not available | `purgeStoredSession`; a removal that fails after the sign-out is `.partial` with `storageError` |
 | Hosted-UI sign-out window | Optional; falls back to a window of its own | Required: `signOut(presentationAnchor:options:)`. Without one, the browser keeps its cookie and `.partial` reports `hostedUIError` |
 | `isSignedIn` | On the session and results | Not provided; use `currentSessionState()` |
-| Service error code | `underlyingError as? AWSCognitoAuthError` | `AuthClientError.service(code, …)` |
+| Service error code | `underlyingError as? AWSCognitoAuthError`; a closed sheet is `.service` with `.userCancelled` underneath, and a failed passkey ceremony `.service` with the `ASAuthorizationError` underneath | `AuthClientError.service(code, …)`; a closed sheet is `.userCancelled`, and a failed passkey ceremony `.webAuthnCeremonyFailed` |
 | MFA type `rawValue` | The Cognito name | `"sms"`, `"totp"`, `"email"`; use `challengeResponse` |
 | Deprecated `validationData` on sign-in, `.custom` flow | Supported | Not mirrored: use `clientMetadata`, `.customWithSRP` |
 | Non-JSON service response | "Report a bug" suggestion | `.service` with no code and a retry suggestion |
+| Network failure (offline, a failed lookup or connection, a timeout) | Varies by call: a sign-in's is `.unknown` with an empty description | `.service` with no code in every call, with the network error underneath |
+| Refresh refused as a reused refresh token | `AuthError.service` at every refresh; the session never expires on it | The retryable `.unknown` at first; a second refusal at least 30 seconds later in the same launch, forced or not, with nothing saved meanwhile, is `sessionExpired` |
 | Configuration change | Carries some changes, deletes the old record otherwise | `.default`: the same, and a deleted login of the same user pool is revoked. Named sessions carry the same changes and keep the old record; a changed identity pool keeps user pool tokens only |
 | Credential error types | Not applicable | `CredentialsError` and `StorageUnavailableReason` need `@_spi(AmplifyExperimental) import AmplifyFoundation` |
 | Category plugins | Use its session | Don't see client sessions |
+| Federation with an empty token or provider name | Sent; the identity pool's answer is the error | `.validation` before any request |
+| Credentials provider on a signed-out session | Fetches guest credentials | Throws `notSignedIn` (`.discard`); call `fetchAuthSession()` at launch and after each sign-out to become a guest |
 | Credentials during a pending sign-in challenge | Keeps vending a guest's credentials | `credentialsProvider` and `userPoolTokenProvider` throw `notSignedIn` (`.discard`), whatever the session held |
 
 ## Known limitations
