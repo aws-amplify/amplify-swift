@@ -36,6 +36,13 @@ contents — see IGNORE_PATH_SUBSTRINGS) are likewise not fail-closed: they are 
 they are attributed to their integ group by its path rule when covered and otherwise ignored, never
 SwiftPM/unit inputs.
 
+Documentation (`.md`) is ignored everywhere, except a file an Xcode project in the checkout copies into
+a bundle (a host app's README in a test target's Copy Bundle Resources): deleting or renaming that one
+breaks the host app's build, so it is attributed like any other host-app file. The projects are read
+from `--repo-root` (default: the current directory, which is the checkout in CI). A rename is seen
+only if the changed list names the old path too (`git diff --name-only --no-renames`); with rename
+detection on, git lists only the new path, which no project bundles yet.
+
 It also validates the group config: if any group references a target that is absent from the
 SwiftPM graph (a rename, a typo, or a not-yet-wired target), it exits non-zero rather than
 silently never selecting that group.
@@ -50,15 +57,19 @@ Writes to stdout (append to "$GITHUB_OUTPUT"):
 """
 import argparse
 import json
+import os
+import re
 import sys
 
 # Paths that can never affect tests. Kept deliberately small — anything not listed here and not
 # owned by a target falls through to the fail-closed "run everything" branch.
-# Repo/editor metadata and documentation that is inert wherever it lives — never affects a build or
-# test, so it is ignored even inside a target directory (checked before target ownership). `.md` is
-# here rather than in the unowned-only list below because a README/AGENTS doc inside a target dir is
-# still just prose: it is never compiled and never consumed as a test resource, so editing it should
-# not trigger that target's 5-platform matrix. (`.yml`/`.yaml` are deliberately NOT promoted — an
+# Repo/editor metadata and documentation, ignored even inside a target directory (checked before
+# target ownership). `.md` is here rather than in the unowned-only list below because a README/AGENTS
+# doc inside a target dir is usually just prose: it is never compiled, so editing it should not
+# trigger that target's 5-platform matrix. The exception is a file an Xcode project lists in a
+# target's Copy Bundle Resources phase (several integration host apps bundle their READMEs): deleting
+# or renaming it breaks that host app's build, so such a file is NOT ignored and is attributed like
+# any other host-app file (see bundled_files). (`.yml`/`.yaml` are deliberately NOT promoted — an
 # in-target YAML fixture is real test input and must stay owned; see the unowned-only list.)
 ALWAYS_IGNORE_SUFFIXES = (".gitignore", ".gitattributes", ".swiftformat", ".editorconfig", ".md")
 ALWAYS_IGNORE_NAMES = ("LICENSE", "NOTICE", ".git-blame-ignore-revs", ".gitallowed",
@@ -122,6 +133,154 @@ def is_always_ignored(path):
     return path.endswith(ALWAYS_IGNORE_SUFFIXES) or path.rsplit("/", 1)[-1] in ALWAYS_IGNORE_NAMES
 
 
+# Directories bundled_files never descends into: VCS metadata and local build output.
+SCAN_SKIP_DIRS = {".git", ".build", "DerivedData", "node_modules"}
+
+# One token of an Xcode project file (an old-style ASCII property list): whitespace or a comment
+# (skipped), a quoted string (group 1), punctuation (group 2), or an unquoted string (group 3).
+_PLIST_TOKEN = re.compile(r'\s+|/\*.*?\*/|//[^\n]*|"((?:[^"\\]|\\.)*)"|([{}()=;,])|([^\s{}()=;,"]+)',
+                          re.S)
+
+
+def _unescape(match):
+    """The character a quoted-string escape (`\\n`, `\\t`, `\\"`, `\\\\`) stands for."""
+    return {"n": "\n", "t": "\t"}.get(match.group(1), match.group(1))
+
+
+def parse_pbxproj(text):
+    """Parse an Xcode `project.pbxproj` into dicts, lists and strings. Raises ValueError if malformed."""
+    tokens, pos = [], 0
+    while pos < len(text):
+        m = _PLIST_TOKEN.match(text, pos)
+        if not m:
+            raise ValueError("unexpected character at offset %d" % pos)
+        pos = m.end()
+        if m.group(1) is not None:
+            tokens.append(("str", re.sub(r"\\(.)", _unescape, m.group(1))))
+        elif m.group(2):
+            tokens.append(("punct", m.group(2)))
+        elif m.group(3):
+            tokens.append(("str", m.group(3)))
+
+    def token(i):
+        if i >= len(tokens):
+            raise ValueError("unexpected end of file")
+        return tokens[i]
+
+    def expect(i, punct):
+        if token(i) != ("punct", punct):
+            raise ValueError("expected %r, found %r" % (punct, token(i)[1]))
+        return i + 1
+
+    def value(i):
+        kind, tok = token(i)
+        if kind == "str":
+            return tok, i + 1
+        if tok == "{":
+            obj, i = {}, i + 1
+            while token(i) != ("punct", "}"):
+                if token(i)[0] != "str":
+                    raise ValueError("expected a key, found %r" % token(i)[1])
+                key = token(i)[1]
+                i = expect(i + 1, "=")
+                obj[key], i = value(i)
+                i = expect(i, ";")
+            return obj, i + 1
+        if tok == "(":
+            items, i = [], i + 1
+            while token(i) != ("punct", ")"):
+                item, i = value(i)
+                items.append(item)
+                if token(i) == ("punct", ","):
+                    i += 1
+                elif token(i) != ("punct", ")"):
+                    raise ValueError("expected ',' or ')', found %r" % token(i)[1])
+            return items, i + 1
+        raise ValueError("unexpected %r" % tok)
+
+    root, end = value(0)
+    if end != len(tokens) or not isinstance(root, dict):
+        raise ValueError("trailing content after the top-level dictionary")
+    return root
+
+
+def bundle_resources(project_dir, text):
+    """Paths (joined onto `project_dir`) of the files an Xcode project's Copy Bundle Resources phases copy.
+
+    A `<group>`-relative reference resolves through its parent groups' `path`s (a group with only a
+    `name` adds nothing); a `SOURCE_ROOT` reference resolves from the project directory. References
+    outside the checkout (absolute, SDK, built products) are left out. A folder synchronized with the
+    file system has no per-file reference, so a deleted file there simply drops out of the build.
+    """
+    objects = parse_pbxproj(text)["objects"]
+    parent = {child: oid for oid, obj in objects.items() for child in obj.get("children", [])}
+    project = next(obj for obj in objects.values() if obj.get("isa") == "PBXProject")
+    main_group = project["mainGroup"]
+    base = os.path.join(project_dir, project.get("projectDirPath", ""))
+
+    def location(oid):
+        obj = objects.get(oid)
+        if obj is None:
+            return None
+        path = obj.get("path", "")
+        if oid == main_group:
+            return os.path.join(base, path)
+        tree = obj.get("sourceTree", "<group>")
+        if tree == "SOURCE_ROOT":
+            return os.path.join(base, path)
+        if tree != "<group>" or oid not in parent:
+            return None
+        directory = location(parent[oid])
+        return None if directory is None else os.path.join(directory, path)
+
+    def files(oid):
+        obj = objects.get(oid, {})
+        if "children" in obj:  # a variant (localized) group: every variant is copied
+            return [p for child in obj["children"] for p in files(child)]
+        loc = location(oid)
+        return [] if loc is None else [loc]
+
+    copied = set()
+    for obj in objects.values():
+        if obj.get("isa") == "PBXResourcesBuildPhase":
+            for build_file in obj.get("files", []):
+                ref = objects.get(build_file, {}).get("fileRef")
+                if ref:
+                    copied.update(files(ref))
+    return copied
+
+
+def bundled_files(root):
+    """Return (bundled, unread) for the Xcode projects under the checkout at `root`.
+
+    `bundled` holds the repo-relative paths of every file a project copies into a bundle. `unread`
+    holds the repo-relative directories (with a trailing `/`) of projects that could not be parsed;
+    every ignorable file under one of them is treated as bundled, so a project this parser cannot read
+    makes its docs run their group rather than silently skipping a possible build break.
+    """
+    def rel(path):
+        return os.path.relpath(os.path.normpath(path), root).replace(os.sep, "/")
+
+    bundled, unread = set(), []
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = sorted(d for d in dirnames if d not in SCAN_SKIP_DIRS)
+        if not dirpath.endswith(".xcodeproj"):
+            continue
+        dirnames[:] = []
+        if "project.pbxproj" not in filenames:
+            continue
+        project_dir = os.path.dirname(dirpath)
+        try:
+            with open(os.path.join(dirpath, "project.pbxproj"), encoding="utf-8") as f:
+                bundled.update(rel(p) for p in bundle_resources(project_dir, f.read()))
+        except Exception as error:  # noqa: BLE001 -- any unreadable project fails safe, see above
+            sys.stderr.write("could not read the bundle resources of %s (%s); treating the files under "
+                             "its directory as bundled\n" % (rel(dirpath), error))
+            directory = rel(project_dir)
+            unread.append("" if directory == "." else directory + "/")
+    return bundled, unread
+
+
 def build_graph(pkg):
     """Return (path_of, deps_of, is_test) from a `swift package dump-package` document."""
     names = {t["name"] for t in pkg["targets"]}
@@ -148,6 +307,8 @@ def main():
     ap.add_argument("--package", required=True, help="swift package dump-package JSON")
     ap.add_argument("--changed", required=True, help="file with one changed path per line")
     ap.add_argument("--groups", required=True, help="group definition JSON")
+    ap.add_argument("--repo-root", default=".",
+                    help="checkout whose Xcode projects are read for bundled docs (default: current directory)")
     args = ap.parse_args()
 
     pkg = json.load(open(args.package))
@@ -155,6 +316,14 @@ def main():
     changed = [line.strip() for line in open(args.changed) if line.strip()]
 
     path_of, deps_of, is_test = build_graph(pkg)
+
+    # An always-ignored file is ignored unless an Xcode project copies it into a bundle (see
+    # ALWAYS_IGNORE_SUFFIXES). The projects are read only when some changed file needs the answer.
+    bundled, unread = (bundled_files(args.repo_root) if any(is_always_ignored(f) for f in changed)
+                       else (set(), []))
+
+    def ignored(f):
+        return is_always_ignored(f) and f not in bundled and not f.startswith(tuple(unread))
 
     # Guard: every target a group references must exist in the SwiftPM graph. Otherwise a group
     # naming a renamed, mistyped, or not-yet-wired target would silently never be selected and its
@@ -181,7 +350,7 @@ def main():
     # target, matching no group path, and not ignorable is unknown -> fail closed to all groups.
     changed_targets = set()
     for f in changed:
-        if is_always_ignored(f):
+        if ignored(f):
             continue
         owner = max((n for n, p in path_of.items() if f.startswith(p)),
                     key=lambda n: len(path_of[n]), default=None)
@@ -237,9 +406,10 @@ def main():
             selected |= cands
         # else: owned by a non-group source target -> selects nothing (see comment above).
 
-    # Groups selected by a path rule (dirs that are not SwiftPM targets). An always-ignored file (a
-    # README under a group's path, say) selects nothing here either, as in the file loop above.
-    relevant = [f for f in changed if not is_always_ignored(f)]
+    # Groups selected by a path rule (dirs that are not SwiftPM targets). An ignored file (a README
+    # under a group's path that no Xcode project bundles, say) selects nothing here either, as in the
+    # file loop above; a README a host app bundles selects the group whose path covers it.
+    relevant = [f for f in changed if not ignored(f)]
     for name, group in groups.items():
         if any(f.startswith(p) for p in group.get("paths", []) for f in relevant):
             selected.add(name)
