@@ -1237,11 +1237,11 @@ def wildcard_gaps():
 # shape the templates keep. The account's security tooling flags a pool that allows it, and an automated
 # mitigation may then turn it off with its own UpdateUserPool call. So it is OFF at rest: provision always
 # creates and updates the pools with it off, and only `self-sign-up on` turns it on, for the length of one local
-# run wrapped by infra/self-sign-up.sh, whose trap turns it off again however the run ends. The wrapper exports
-# SELF_SIGN_UP_RUN=on to the run (and TEST_RUNNER_<it> to xcodebuild's test runner), so preflight inside the run
-# accepts it on, and the tests that sign a user up fail fast while it is unset. Never on CI: the plugin's CI
+# run wrapped by infra/self-sign-up.sh, whose trap turns it off again however the run ends. Preflight accepts it on
+# only while a live self-sign-up.sh lease holds it (SELF_SIGN_UP_LEASES), whatever the environment says. The wrapper
+# also exports COGNITO_CLIENT_INTEG_SELF_SIGN_UP=on to the run (and TEST_RUNNER_<it> to xcodebuild's test runner),
+# which only the tests read: those that sign a user up fail fast while it is unset. Never on CI: the plugin's CI
 # backends are not this sandbox, and CI never changes it.
-SELF_SIGN_UP_RUN = "COGNITO_CLIENT_INTEG_SELF_SIGN_UP"
 CI_VARIABLES = ("CI", "GITHUB_ACTIONS")
 SELF_SIGN_UP_LEFT_ON = "self sign-up was left on; run infra/self-sign-up.sh off"
 # The token infra/self-sign-up.sh hands `self-sign-up on|release`: its own PID, which must be this process's
