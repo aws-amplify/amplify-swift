@@ -42,8 +42,8 @@ package struct EngineWebAuthnCredentialPage: Sendable, Equatable {
 }
 
 /// The signed-in user's WebAuthn credential operations: associate, list and delete.
-/// `AWSCognitoAuthPlugin`'s three WebAuthn tasks are thin callers of
-/// these, and `AmplifyCognitoClient` will be too, so both share one implementation.
+/// `AWSCognitoAuthPlugin`'s three WebAuthn tasks and `AmplifyCognitoClient` are thin callers of
+/// these, so both share one implementation.
 ///
 /// Each operation gets its access token and its user-pool client from the caller, through
 /// `accessToken` and `userPool`, and calls them at the points the plugin's tasks did: associate asks for
