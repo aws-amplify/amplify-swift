@@ -1332,22 +1332,25 @@ any other, with `.complete`.
 
 Signing `.default` out or purging it (so also `deleteUser` and `clearFederationToIdentityPool` on `.default`) also
 clears the AWSMobileClient (Amplify v1) logins, as the Auth plugin's sign-out does, so a plugin build's migration
-can't bring an old login back over the signed-out one. Like the plugin's, it runs even when there was nothing to
-sign out. It is best effort: each service that fails to clear logs one warning under
-`AmplifyCognitoClient.SessionRecordStore`, and it never fails the sign-out. The services cleared follow the client's
-pools: the user pool's with a user pool, every identity pool's, and AWSMobileClient's own. The identity pools'
-services (`<bundle>.AWSCognitoCredentialsProvider.<identity pool ID>`) are the AWS SDK for iOS's
+can't bring an old login back over the signed-out one. Like the plugin's, it runs even when there was nothing to sign
+out. It runs before the signed-out login is written, or before a purge deletes it, so a write or delete that fails
+leaves no login behind. It is best effort: each service that fails to clear logs one warning under
+`AmplifyCognitoClient.SessionRecordStore`, and it never fails the sign-out or the purge. The services cleared follow
+the client's pools: the user pool's with a user pool, every identity pool's, and AWSMobileClient's own. The identity
+pools' services (`<bundle>.AWSCognitoCredentialsProvider.<identity pool ID>`) are the AWS SDK for iOS's
 `AWSCognitoCredentialsProvider` caches, which AWSMobileClient uses, whatever code wrote them. They are cleared for
 every identity pool the app's keychain holds one for, whatever the client is configured with: the client lists the
-app's keychain services to find them, and the plugin's sign-out clears only the configured one's. Left behind, such
-a login would come back under a plugin build as a guest holding the old user's identity and AWS credentials. If the
+app's keychain services to find them, and the plugin's sign-out clears only the configured one's. Left behind, such a
+login would come back under a plugin build as a guest holding the old user's identity and AWS credentials. If the
 listing fails, a warning says so and only the configured identity pool's is cleared. An app that still uses the AWS
 SDK for iOS's `AWSCognitoCredentialsProvider` loses its cached identity ID and AWS credentials for every identity
 pool on any `.default` sign-out or purge, and a guest there gets a new identity ID. The other two are cleared whole,
 as the plugin's sign-out clears them: the user pool service (`<bundle>.AWSCognitoIdentityUserPool`) holds the logins
 of every app client, and the AWSMobileClient service everything AWSMobileClient saved. The user pool service is
 cleared only when the client's configuration has a user pool: an identity-pool-only configuration leaves it, and any
-user pool login in it, which a plugin build then migrates without AWS credentials (see
+user pool login in it, which a plugin build with a user pool then migrates without AWS credentials, unless it is a
+plugin release that ships with this client and finds the signed-out login under its own configuration, as when its
+rule copies the login on adding that user pool (see
 [The default session uses the plugin's saved login](#the-default-session-uses-the-plugins-saved-login)). The
 AWSMobileClient service is cleared on every `.default` sign-out or purge, a static one under another configuration
 than the app's included. Named sessions never touch those logins.
@@ -1516,12 +1519,14 @@ let rows = try await AmplifyCognitoClient.storedSessions(
 ```
 
 One rollback caveat: a purge, or the plugin's own sign-out, after a configuration change that copied the login, then
-a rollback to the build with the earlier configuration: that build finds the earlier copy and signs the user back
-in. A sign-out through the client doesn't do this: it keeps the user signed out under the same configuration, and
-across rollbacks, and clears the AWSMobileClient logins any plugin release would migrate over it (best effort; see
+a rollback to the build with the earlier configuration: that build finds the earlier copy and signs the user back in.
+A sign-out through the client doesn't do this: it keeps the user signed out under the same configuration, and across
+rollbacks, and clears the AWSMobileClient logins any plugin release would migrate over it (best effort; see
 [Sign-out](#sign-out)). The exception, as with the plugin, is a later configuration change onto an earlier
-configuration's copy. An AWSMobileClient login that failed to clear (a warning says so) can still undo it: any
-plugin release migrates it over the signed-out login. See [Rolling back and forward](#rolling-back-and-forward).
+configuration's copy. An AWSMobileClient login that failed to clear (a warning says so) can still undo it on a
+released plugin, which migrates it over the signed-out login. A plugin release that ships with this client does not:
+the signed-out login stops its migration, which then clears the old logins. See
+[Rolling back and forward](#rolling-back-and-forward).
 
 ### Labels and the signed-out row after a plugin action
 
@@ -1569,8 +1574,8 @@ never log it. The warning is temporary: it goes when the plugin uses the client 
 | A sign-out through the client, then a later configuration change that the rule doesn't copy across, onto a configuration whose key still holds an earlier copy of the user | **That copy is restored signed in**, as with the plugin: the change deletes the signed-out login and lands on the old copy. For example: alice signs in under A; B adds an identity pool and copies her, keeping A's copy; she signs out under B; D (the same user pool with a new app client, and A's identity pool) deletes B's signed-out login, and its key is A's, which still holds her |
 | Back to a plugin release before 2.51.0, with refresh-token rotation on | That plugin can't refresh on the app client at all, whatever the client did |
 | Forward from the plugin to the client, with refresh-token rotation on, after the plugin rotated the token | **The user stays signed in**: `.default` reads the plugin's record in place, so the client refreshes with the newest token the plugin saved |
-| Back to a released plugin while AWSMobileClient (Amplify v1) logins are still on the device | **The plugin migrates the old login over whatever `.default` holds**: released plugins write it with no check, so a user signed in through the client is replaced by the old AWSMobileClient user. A sign-out or purge of `.default` through the client clears those logins, so after one there is nothing to migrate. Ship a plugin release that has migrated them before you move to the client. A migrated login with no AWS credentials saved fails the plugin's unforced AWS credentials until a forced refresh |
-| To a plugin release that ships with this client, while AWSMobileClient (Amplify v1) logins are still on the device | **A user signed in through the client is kept**: the plugin clears the old logins without migrating them. **A guest the client saved is replaced**: an old user-pool or federated login, or an old guest, migrates over it, as over a guest the plugin saved, and the guest identity is lost. After a sign-out or purge of `.default` through the client there is nothing to migrate. A migrated login with no AWS credentials saved fails the plugin's unforced AWS credentials until a forced refresh (`fetchAuthSession` with `forceRefresh: true`) |
+| Back to a released plugin while AWSMobileClient (Amplify v1) logins are still on the device | **The plugin migrates the old login over whatever `.default` holds**: released plugins write it with no check, so a user signed in through the client is replaced by the old AWSMobileClient user. A sign-out or purge of `.default` through the client clears those logins, so after one there is nothing to migrate. They are cleared before the signed-out login is written or the purge deletes it, so a failed write or delete leaves none. Ship a plugin release that has migrated them before you move to the client. A migrated login with no AWS credentials saved fails the plugin's unforced AWS credentials until a forced refresh |
+| To a plugin release that ships with this client, while AWSMobileClient (Amplify v1) logins are still on the device | **A user signed in through the client is kept**: the plugin clears the old logins without migrating them. **A guest the client saved is replaced**: an old user-pool or federated login, or an old guest, migrates over it, as over a guest the plugin saved, and the guest identity is lost. After a sign-out or purge of `.default` through the client there is nothing to migrate. A sign-out through the client also leaves a signed-out login, which stops the migration as a signed-in user does: the plugin clears the old logins without migrating them, so the user stays signed out even if clearing them at sign-out failed. A purge, `deleteUser` included, leaves no login, so after one only the clear protects the user. A migrated login with no AWS credentials saved fails the plugin's unforced AWS credentials until a forced refresh (`fetchAuthSession` with `forceRefresh: true`) |
 
 ## Changing the configuration
 
