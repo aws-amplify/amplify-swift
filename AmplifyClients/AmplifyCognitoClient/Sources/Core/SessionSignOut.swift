@@ -137,7 +137,9 @@ struct SessionSignOut: Sendable {
     /// it writes the signed-out row, and this deletes it, once, when the session ended without one (nothing to sign out,
     /// or another writer signed it out first). Best effort, with one warning on failure. For `.default`, the same goes for
     /// the AWSMobileClient logins (`SessionRecordStore.clearLegacyLogins()`): cleared on every sign-out that ends the
-    /// session, nothing to sign out included, as the plugin's sign-out from `.signedOut` clears them.
+    /// session, nothing to sign out included, as the plugin's sign-out from `.signedOut` clears them. The store's
+    /// sign-out clears them before it writes the signed-out row, so a write that fails leaves none; this clears them
+    /// after, when no write was needed.
     func run() async throws -> Outcome {
         var challengeDeleted = false
         let outcome = try await signOut(challengeDeleted: &challengeDeleted)

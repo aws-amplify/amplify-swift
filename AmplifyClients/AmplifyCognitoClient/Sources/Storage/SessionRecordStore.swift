@@ -306,7 +306,8 @@ struct SessionRecordStore: Sendable {
     ///
     /// Unless superseded, it also deletes the session's interrupted-sign-in record, best effort (a failure is logged:
     /// the session is signed out by then); a superseded sign-out leaves it, since it may belong to the newer sign-in.
-    /// For `.default`, it then clears the AWSMobileClient logins too, best effort (`clearLegacyLogins()`).
+    /// For `.default`, it also clears the AWSMobileClient logins, best effort (`clearLegacyLogins()`): before it writes
+    /// the signed-out record, so a failed write leaves none behind, or after, when there was nothing to write.
     ///
     /// A record this build cannot read is replaced by a signed-out row, since its credentials cannot be
     /// kept past sign-out; its generation cannot be read, so the row starts again at generation 1.
@@ -348,7 +349,13 @@ struct SessionRecordStore: Sendable {
 
     private func signOut(_ sessionId: SessionID, expecting removing: Removing) throws -> SignOutOutcome {
         var removed: SessionRecord?
-        let outcome = try signOutRecord(sessionId, removing: removing, removed: &removed)
+        var legacyLoginsCleared = false
+        let outcome = try signOutRecord(
+            sessionId,
+            removing: removing,
+            removed: &removed,
+            legacyLoginsCleared: &legacyLoginsCleared
+        )
         // A superseded sign-out left the session signed in, so nothing else of it is deleted: not the
         // interrupted sign-in record, which may belong to the newer sign-in.
         guard outcome != .superseded else {
@@ -359,8 +366,11 @@ struct SessionRecordStore: Sendable {
         deleteChallengeAfterSignOut(sessionId)
         guard sessionId != .default else {
             // `.default` keeps no namespace marker, so it has no remembered copies or challenges to sweep. It shares the
-            // Auth plugin's saved login, so it clears the AWSMobileClient logins as the plugin's sign-out does.
-            clearLegacyLogins()
+            // Auth plugin's saved login, so it clears the AWSMobileClient logins as the plugin's sign-out does: before
+            // the signed-out write (`clearLegacyLoginsBeforeSigningOut`), or here when nothing was written.
+            if !legacyLoginsCleared {
+                clearLegacyLogins()
+            }
             return outcome
         }
         // Its interrupted sign-ins under the namespaces its marker remembers, which no restore resumes: before the
@@ -375,7 +385,12 @@ struct SessionRecordStore: Sendable {
         return outcome
     }
 
-    private func signOutRecord(_ sessionId: SessionID, removing expected: Removing, removed: inout SessionRecord?) throws -> SignOutOutcome {
+    private func signOutRecord(
+        _ sessionId: SessionID,
+        removing expected: Removing,
+        removed: inout SessionRecord?,
+        legacyLoginsCleared: inout Bool
+    ) throws -> SignOutOutcome {
         var removing: Data?
         if case .credentials(let credentials) = expected {
             removing = credentials
@@ -408,6 +423,7 @@ struct SessionRecordStore: Sendable {
                 guard attempt == 1, case .firstRead = expected else {
                     return .superseded
                 }
+                clearLegacyLoginsBeforeSigningOut(sessionId, cleared: &legacyLoginsCleared)
                 return try replaceUnreadable(sessionId)
             }
 
@@ -417,6 +433,7 @@ struct SessionRecordStore: Sendable {
                 return .superseded
             }
 
+            clearLegacyLoginsBeforeSigningOut(sessionId, cleared: &legacyLoginsCleared)
             if try write(record, for: sessionId, expecting: version).didCommit {
                 return .signedOut
             }
@@ -426,9 +443,22 @@ struct SessionRecordStore: Sendable {
         }
     }
 
-    /// For `.default`: deletes the Auth plugin's record (the shared saved login), then the sidecar, then the
-    /// interrupted-sign-in record (`purgeDefault`), and last, best effort, the AWSMobileClient logins the plugin would
-    /// migrate back into it (`clearLegacyLogins()`). It keeps no namespace marker, so nothing else is deleted.
+    /// For `.default`, clears the AWSMobileClient logins (`clearLegacyLogins()`) once per sign-out, before its first
+    /// write of the signed-out record, so that a write that fails, or an app stopped right after it, leaves no login a
+    /// plugin build would migrate back. A sign-out that another writer then supersedes has cleared them too: the user
+    /// asked to sign out, so no login that should be kept is lost.
+    private func clearLegacyLoginsBeforeSigningOut(_ sessionId: SessionID, cleared: inout Bool) {
+        guard sessionId == .default, !cleared else {
+            return
+        }
+        clearLegacyLogins()
+        cleared = true
+    }
+
+    /// For `.default`: first, best effort, clears the AWSMobileClient logins the plugin would migrate back into it
+    /// (`clearLegacyLogins()`), so a failed delete leaves none behind; then deletes the Auth plugin's record (the shared
+    /// saved login), the sidecar and the interrupted-sign-in record (`purgeDefault`). It keeps no namespace marker, so
+    /// nothing else is deleted.
     ///
     /// For a named session, deletes, in this order: the copies this app left under
     /// earlier namespaces of the purged record's user, each only while untouched since it was carried

@@ -459,20 +459,56 @@ extension MigrateLegacyCredentialStoreTests {
     /// Test that an empty new credential store is migrated into as before
     ///
     /// - Given: A legacy store in which every value can be read, and a new credential store that holds
-    ///   no session (`.noCredentials`)
+    ///   nothing (its read is `itemNotFound`, as the plugin's store answers when no session is saved)
     /// - When:
     ///    - The migration legacy store action is executed
     /// - Then:
-    ///    - The legacy credentials are saved and the legacy stores are each removed once
+    ///    - The legacy login is saved and the legacy stores are each removed once
     ///
-    func testExecute_whenNewStoreHasNoCredentials_shouldMigrate() async {
+    func testExecute_whenNewStoreIsEmpty_shouldMigrate() async {
         let result = await runMigration(
             legacyKeychainStore: MockKeychainStoreBehavior(data: "mock"),
-            existingCredentials: { AmplifyCredentials.noCredentials }
+            existingCredentials: Self.stored(nil)
         )
-        XCTAssertEqual(result.savedCredentialCount, 1)
+        XCTAssertEqual(result.savedCredentials, [legacyLogin])
         XCTAssertEqual(result.removeAllCount, 3)
         XCTAssertEqual(result.loadEventCount, 1)
+    }
+
+    /// Test that a signed-out record stops the migration, so a user who signed out is not signed back in
+    ///
+    /// - Given: A new credential store holding the signed-out record (`.noCredentials`, which a sign-out through
+    ///   the Cognito client's default session saves; the plugin's own sign-out deletes the record), and in turn
+    ///   a readable legacy login, a readable legacy guest, and a legacy login whose refresh token read fails
+    ///   with `errSecInteractionNotAllowed`
+    /// - When:
+    ///    - The migration legacy store action is executed
+    /// - Then:
+    ///    - Nothing is saved, credentials or device details, so the store stays signed out
+    ///    - The legacy stores are each removed once, as when the store holds a session
+    ///    - A .loadCredentialStore event with type .amplifyCredentials is dispatched
+    ///
+    func testExecute_whenNewStoreHoldsASignedOutRecord_shouldNotMigrateAndShouldClearLegacyStores() async {
+        let legacyStores: [(String, MockKeychainStoreBehavior)] = [
+            ("login", MockKeychainStoreBehavior(data: "mock")),
+            ("guest", legacyGuestStore()),
+            ("unreadable login", MockKeychainStoreBehavior(
+                data: "mock",
+                readErrorForKey: { key in
+                    key.hasSuffix(".refreshToken") ? EngineCredentialStoreError.securityError(errSecInteractionNotAllowed) : nil
+                }
+            ))
+        ]
+        for (name, legacyStore) in legacyStores {
+            let result = await runMigration(
+                legacyKeychainStore: legacyStore,
+                existingCredentials: Self.stored(.noCredentials)
+            )
+            XCTAssertEqual(result.savedCredentials, [], name)
+            XCTAssertEqual(result.savedDeviceCount, 0, name)
+            XCTAssertEqual(result.removeAllCount, 3, name)
+            XCTAssertEqual(result.loadEventCount, 1, name)
+        }
     }
 
     /// Test that a guest in the new store does not stop a legacy login from migrating
@@ -513,7 +549,7 @@ extension MigrateLegacyCredentialStoreTests {
                 data: "mock",
                 readErrorForKey: { _ in EngineCredentialStoreError.securityError(errSecInteractionNotAllowed) }
             ),
-            existingCredentials: { AmplifyCredentials.noCredentials }
+            existingCredentials: Self.stored(nil)
         )
         XCTAssertEqual(lockedLaunch.savedCredentialCount, 0)
         XCTAssertEqual(lockedLaunch.removeAllCount, 0)
@@ -603,11 +639,11 @@ extension MigrateLegacyCredentialStoreTests {
     ///
     func testExecute_whenAGuestIsSavedAfterALockedLaunch_shouldMigrateTheLegacyGuestOnTheNextLaunch() async {
         let locked: (String) -> Error? = { _ in EngineCredentialStoreError.securityError(errSecInteractionNotAllowed) }
-        var saved = AmplifyCredentials.noCredentials
+        var saved: AmplifyCredentials?
 
         let lockedLaunch = await runMigration(
             legacyKeychainStore: legacyGuestStore(readError: locked),
-            existingCredentials: { [saved] in saved }
+            existingCredentials: Self.stored(saved)
         )
         XCTAssertEqual(lockedLaunch.savedCredentials, [])
         XCTAssertEqual(lockedLaunch.removeAllCount, 0)
@@ -617,14 +653,14 @@ extension MigrateLegacyCredentialStoreTests {
 
         let lockedLaunchWithGuest = await runMigration(
             legacyKeychainStore: legacyGuestStore(readError: locked),
-            existingCredentials: { [saved] in saved }
+            existingCredentials: Self.stored(saved)
         )
         XCTAssertEqual(lockedLaunchWithGuest.savedCredentials, [], "A still-locked launch must not migrate")
         XCTAssertEqual(lockedLaunchWithGuest.removeAllCount, 0, "A still-locked launch must keep the legacy stores")
 
         let unlockedLaunch = await runMigration(
             legacyKeychainStore: legacyGuestStore(),
-            existingCredentials: { [saved] in saved }
+            existingCredentials: Self.stored(saved)
         )
         XCTAssertEqual(unlockedLaunch.savedCredentials, [legacyGuest], "The legacy guest must replace the new guest")
         XCTAssertEqual(unlockedLaunch.removeAllCount, 3)
@@ -633,7 +669,7 @@ extension MigrateLegacyCredentialStoreTests {
 
         let nextLaunch = await runMigration(
             legacyKeychainStore: emptyLegacyStore(),
-            existingCredentials: { [saved] in saved }
+            existingCredentials: Self.stored(saved)
         )
         XCTAssertEqual(nextLaunch.savedCredentials, [])
         XCTAssertEqual(saved, legacyGuest)
@@ -654,11 +690,11 @@ extension MigrateLegacyCredentialStoreTests {
     ///    - The extension's next migration keeps identity `mock`
     ///
     func testExecute_whenAnExtensionSavedAGuestFirst_shouldMigrateTheAppsLegacyGuest() async {
-        var shared = AmplifyCredentials.noCredentials
+        var shared: AmplifyCredentials?
 
         let extensionLaunch = await runMigration(
             legacyKeychainStore: emptyLegacyStore(),
-            existingCredentials: { [shared] in shared }
+            existingCredentials: Self.stored(shared)
         )
         XCTAssertEqual(extensionLaunch.savedCredentials, [])
 
@@ -667,7 +703,7 @@ extension MigrateLegacyCredentialStoreTests {
 
         let appLaunch = await runMigration(
             legacyKeychainStore: legacyGuestStore(),
-            existingCredentials: { [shared] in shared }
+            existingCredentials: Self.stored(shared)
         )
         XCTAssertEqual(appLaunch.savedCredentials, [legacyGuest], "The app's legacy guest must replace the extension's")
         XCTAssertEqual(appLaunch.removeAllCount, 3)
@@ -675,7 +711,7 @@ extension MigrateLegacyCredentialStoreTests {
 
         let nextExtensionLaunch = await runMigration(
             legacyKeychainStore: emptyLegacyStore(),
-            existingCredentials: { [shared] in shared }
+            existingCredentials: Self.stored(shared)
         )
         XCTAssertEqual(nextExtensionLaunch.savedCredentials, [])
         XCTAssertEqual(shared, legacyGuest)
@@ -713,6 +749,17 @@ extension MigrateLegacyCredentialStoreTests {
             sessionToken: "mock",
             expiration: Date(timeIntervalSince1970: 0)
         )
+    }
+
+    /// What the new credential store's read returns: `credentials`, or, for `nil`, `itemNotFound`, as the plugin's
+    /// store answers when no session is saved.
+    private static func stored(_ credentials: AmplifyCredentials?) -> MockAmplifyCredentialStoreBehavior.GetCredentialHandler {
+        {
+            guard let credentials else {
+                throw EngineCredentialStoreError.itemNotFound
+            }
+            return credentials
+        }
     }
 
     /// A legacy store that holds nothing: every read is `itemNotFound`, and it reports no items.
