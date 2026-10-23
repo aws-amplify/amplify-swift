@@ -954,7 +954,8 @@ let freed = await AmplifyCognitoClient.resetSystemSheet() // free the sheet, who
 A hosted-UI sign-in or passkey call cancelled with `cancelWebUISignIn()` throws `.userCancelled` once it has released
 the system sheet, so `systemSheetHolder` no longer names its session by then (a session queued behind it may hold
 it). If the sheet isn't released within a second (the browser is slow to close, or the code exchange was already
-running), the call throws anyway, and the sheet stays held until the sign-in's remaining calls finish.
+running), the call throws anyway, and the sheet stays held until the sign-in's remaining calls, or the passkey
+ceremony, finish.
 
 `resetSystemSheet()` is a recovery tool for a sheet that stopped responding. A sign-in or passkey call holding it
 throws `.userCancelled`; a sign-out page is closed, and its sign-out reports what it did (`.failed(.userCancelled)`
@@ -1483,8 +1484,8 @@ not be retried: unless the request reached the service, the user's other session
 expire. To sign them out, sign in again and sign out with globalSignOut: true." A revoke or global sign-out whose
 answer couldn't be read, or that failed otherwise in transport, has the description given above for that failure,
 with the same not-retried suggestion. A revoke or global sign-out that Cognito failed itself (an internal error, or
-an error status the SDK doesn't model) is `.service` with no code and Cognito's message, or the status and message,
-as its description, and the same not-retried suggestion. Signing out again doesn't retry either: the session is
+an error status the SDK doesn't model) is `.service` with no code, a description that has Cognito's message (or the
+status and message), and the same not-retried suggestion. Signing out again doesn't retry either: the session is
 already signed out on this device, so the second sign-out is `.complete` and sends nothing.
 
 Recovery suggestions name the client's calls (for example "Call signIn …"), not the plugin's. So do the sign-up
@@ -1849,7 +1850,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | Deprecated `validationData` on sign-in, `.custom` flow | Supported | Not mirrored: use `clientMetadata`, `.customWithSRP` |
 | Non-JSON service response | "Report a bug" suggestion | `.service` with no code and a retry suggestion |
 | Cognito internal error (`InternalErrorException`), or an error status the SDK doesn't model | `AuthError.unknown` | `.service` with no code in every call, suggesting a retry (a 5xx, an internal error) or naming the refusal (a 4xx); under a sign-out, the revoke's or global sign-out's suggestion says it is not retried |
-| Network failure (offline, a failed lookup or connection, a timeout) | Varies by call: a sign-in's is `.unknown` with an empty description | `.service` with no code in every call, with the network error underneath |
+| Network failure (offline, a failed lookup or connection, a timeout) | Varies by call: a sign-in's is `.unknown` with an empty message | `.service` with no code in every call, with the network error underneath |
 | Refresh refused as a reused refresh token | `AuthError.service` at every refresh; the session never expires on it | The retryable `.unknown` at first; a second refusal at least 30 seconds later in the same launch, forced or not, with nothing saved meanwhile, is `sessionExpired` |
 | Configuration change | Carries some changes, deletes the old record otherwise | `.default`: the same, and a deleted login of the same user pool is revoked. Named sessions carry the same changes and keep the old record; a changed identity pool keeps user pool tokens only |
 | Credential error types | Not applicable | `CredentialsError` and `StorageUnavailableReason` need `@_spi(AmplifyExperimental) import AmplifyFoundation` |
