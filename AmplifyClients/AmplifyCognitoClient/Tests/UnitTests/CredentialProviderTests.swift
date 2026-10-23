@@ -66,13 +66,15 @@ final class CredentialProviderTests: XCTestCase {
     /// - Then:
     ///    - the signed-out AWS credentials' `notSignedIn` says a signed-out session never falls back to guest
     ///      credentials
-    ///    - the guest's access token, and its fetched tokens and sub, say only "Sign in to this session first."
+    ///    - the signed-out access token, the guest's access token, and the guest's fetched tokens and sub, say only
+    ///      "Sign in to this session first."
     func testOnlyASignedOutSessionsAWSCredentialsMentionTheGuestFallback() async throws {
         try harness.signIn(home, FakePayload.guest())
         let signedOut = try harness.client(work)
         let guest = try harness.client(home)
 
         let aws = await credentialsError { try await signedOut.credentialsProvider.resolve() }
+        let signedOutToken = await credentialsError { try await signedOut.userPoolTokenProvider.accessToken() }
         let token = await credentialsError { try await guest.userPoolTokenProvider.accessToken() }
         let session = try await guest.fetchAuthSession()
 
@@ -80,6 +82,8 @@ final class CredentialProviderTests: XCTestCase {
             aws?.recoverySuggestion,
             "Sign in to this session first. A signed-out session never falls back to guest credentials."
         )
+        XCTAssertEqual(signedOutToken?.isNotSignedIn, true, "\(String(describing: signedOutToken))")
+        XCTAssertEqual(signedOutToken?.recoverySuggestion, "Sign in to this session first.")
         XCTAssertEqual(token?.isNotSignedIn, true, "\(String(describing: token))")
         XCTAssertEqual(token?.recoverySuggestion, "Sign in to this session first.")
         for (field, result) in [("userPoolTokens", session.userPoolTokensResult.map { _ in () }),
