@@ -92,7 +92,6 @@ extension SessionCore {
         )
     }
 
-
     /// The payload to read credentials from: restored, checked usable for `purpose`, and refreshed
     /// through the session's single refresh flight if it needs it.
     nonisolated func freshPayload(for purpose: CredentialPurpose) async throws -> Data {
