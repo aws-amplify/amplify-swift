@@ -2208,6 +2208,45 @@ class SandboxRecordsTests(unittest.TestCase):
     def operations(self):
         return [args[1] for args in self.calls]
 
+    def test_a_pool_adopted_with_a_lost_state_directory_keeps_its_own_domain(self):
+        """Given: no recorded domain prefix (the state directory was lost), and the default pool, adopted by name,
+            with the hosted-UI domain an earlier run made.
+        When: ensure_domain runs.
+        Then: it reuses that domain, records its prefix, and creates none."""
+        pool = "us-west-2_Placeholder01"
+        self.answers.update({
+            "describe-user-pool": {"UserPool": {"Id": pool, "Domain": "amplify-client-integ-placeholder",
+                                                "UserPoolTags": {self.parity.TAG_KEY: self.parity.TAG_VALUE}}},
+            "describe-user-pool-domain": lambda args: {"DomainDescription": {"UserPoolId": pool}}
+            if "amplify-client-integ-placeholder" in args else {"DomainDescription": {}}})
+        parity = {}
+        domain = self.parity.ensure_domain(pool, "default", parity, 1)
+        self.assertEqual(domain, "amplify-client-integ-placeholder.auth.us-west-2.amazoncognito.com")
+        self.assertEqual(parity["domainPrefix"], "amplify-client-integ-placeholder")
+        self.assertNotIn("create-user-pool-domain", self.operations())
+        # A prefix recorded for another domain (a second state directory's) gives way to the pool's own.
+        parity = {"domainPrefix": "amplify-client-integ-otherrun"}
+        self.assertEqual(self.parity.ensure_domain(pool, "default", parity, 1), domain)
+        self.assertEqual(parity["domainPrefix"], "amplify-client-integ-placeholder")
+        self.assertNotIn("create-user-pool-domain", self.operations())
+
+    def test_a_pool_without_a_domain_gets_one_new_prefix_recorded(self):
+        """Given: a tagged pool with no domain, and no recorded prefix.
+        When: ensure_domain runs.
+        Then: it creates a domain under a new random prefix, and records that prefix."""
+        pool = "us-west-2_Placeholder01"
+        self.answers.update({
+            "describe-user-pool": {"UserPool": {"Id": pool,
+                                                "UserPoolTags": {self.parity.TAG_KEY: self.parity.TAG_VALUE}}},
+            "describe-user-pool-domain": {"DomainDescription": {}}})
+        parity = {}
+        domain = self.parity.ensure_domain(pool, "default", parity, 1)
+        prefix = parity["domainPrefix"]
+        self.assertRegex(prefix, r"^amplify-client-integ-[0-9a-f]{8}$")
+        self.assertEqual(domain, f"{prefix}.auth.us-west-2.amazoncognito.com")
+        [create] = [c for c in self.calls if c[1] == "create-user-pool-domain"]
+        self.assertIn(prefix, create)
+
     def test_a_user_pool_past_the_first_page_is_found(self):
         """Given: 150 user pools, the sandbox's on the third page of 60.
         When: find_user_pool looks it up by name, with no id recorded.

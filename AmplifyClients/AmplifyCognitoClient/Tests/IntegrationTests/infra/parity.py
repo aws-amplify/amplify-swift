@@ -1839,8 +1839,13 @@ def ensure_client(pool_id, pool_name, client_key, desired):
 
 def ensure_domain(pool_id, pool_name, parity, managed_login_version):
     # Domain prefixes are global and may not contain "aws", "amazon" or "cognito": a random suffix,
-    # generated once and recorded, instead of anything account-derived.
-    prefix = parity.get("domainPrefix") or f"amplify-client-integ-{secrets.token_hex(4)}"
+    # generated once and recorded, instead of anything account-derived. A pool has one prefix domain, so the one the
+    # pool already has wins over the recorded one and over a new one: a pool adopted by name, after the state
+    # directory was lost, keeps its domain (a new prefix could not be created on it).
+    current = aws("cognito-idp", "describe-user-pool", "--user-pool-id", pool_id)["UserPool"].get("Domain")
+    prefix = current or parity.get("domainPrefix") or f"amplify-client-integ-{secrets.token_hex(4)}"
+    if current and parity.get("domainPrefix") not in (None, current):
+        say(f"  The recorded hosted-UI domain is not {pool_name}'s; recording the pool's own")
     parity["domainPrefix"] = prefix
     domain = aws("cognito-idp", "describe-user-pool-domain", "--domain", prefix)["DomainDescription"]
     if not domain.get("UserPoolId"):
