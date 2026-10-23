@@ -411,8 +411,10 @@ final class WebAuthnCeremonyTests: XCTestCase {
             return .done(payload: FakePayload.signedIn("alice").data)
         }
 
+        let signInReturned = TestBox(false)
         let signIn = Task { @MainActor in
-            try await client.signIn(
+            defer { signInReturned.with { $0 = true } }
+            return try await client.signIn(
                 username: "alice",
                 presentationAnchor: window,
                 options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn))
@@ -422,7 +424,8 @@ final class WebAuthnCeremonyTests: XCTestCase {
         _ = try await withinTime(10, "the sign-out") { await client.signOut() }
         try await unwound.arrivals(1)
 
-        XCTAssertFalse(signIn.isCancelled)
+        // The sign-in is still held at `returnGate`, inside `signInLock`: the sign-out did not wait for it.
+        XCTAssertFalse(signInReturned.value, "the sign-in returned before the sign-out")
         await waitUntil("the cancelled ceremony has unwound and freed the sheet") {
             await self.harness.sheetLock.currentHolder == nil
         }
