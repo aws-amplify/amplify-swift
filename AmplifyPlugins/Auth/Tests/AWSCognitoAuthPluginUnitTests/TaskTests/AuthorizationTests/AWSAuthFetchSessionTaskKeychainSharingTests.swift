@@ -190,6 +190,56 @@ class AWSAuthFetchSessionTaskKeychainSharingTests: XCTestCase, @unchecked Sendab
         )
     }
 
+    /// A shared keychain with no session record at all reads as signed out, so a quiescent signed-in state
+    /// picks up the sibling's sign-out.
+    ///
+    /// - Given: the state machine is quiescent in `.signedIn`, and the shared keychain holds no session record
+    ///   (the read throws `itemNotFound`)
+    /// - When:
+    ///    - the fetch task reconciles with the shared keychain
+    /// - Then:
+    ///    - the state machine goes through `.configuringAuth`
+    ///
+    func testQuiescentSignedInWithNoRemoteRecord_reconfigures() async {
+        let initial = AuthState.configured(
+            .signedIn(.testData),
+            .sessionEstablished(.testData),
+            .notStarted
+        )
+
+        let recorder = await runReconcile(initial: initial, remote: nil)
+        let observed = await recorder.observed("AuthState.configuringAuth")
+        XCTAssertTrue(
+            observed,
+            "Reconfigure must run when the shared keychain has no record and the local state is signed in"
+        )
+    }
+
+    /// A shared keychain with no session record at all reads as signed out, which holds no user-pool tokens, so an
+    /// in-flight sign-in is left to finish.
+    ///
+    /// - Given: the state machine is `.signingIn(.resolvingChallenge(.waitingForAnswer))`, and the shared keychain
+    ///   holds no session record (the read throws `itemNotFound`)
+    /// - When:
+    ///    - the fetch task reconciles with the shared keychain
+    /// - Then:
+    ///    - the reconcile defers: the state machine never goes through `.configuringAuth`
+    ///
+    func testInflightSigningInWithNoRemoteRecord_doesNotReconfigure() async {
+        let initial = AuthState.configured(
+            .signingIn(makeWaitingForCustomChallengeState()),
+            .configured,
+            .notStarted
+        )
+
+        let recorder = await runReconcile(initial: initial, remote: nil)
+        let observed = await recorder.observed("AuthState.configuringAuth")
+        XCTAssertFalse(
+            observed,
+            "Reconfigure must not run while sign-in is in flight and the shared keychain has no record"
+        )
+    }
+
     /// Given: state machine is `.signingOut`, remote keychain mismatches.
     /// Then:  reconcile defers — sign-out side effects must run to completion.
     func testInflightSigningOut_doesNotReconfigure() async {
