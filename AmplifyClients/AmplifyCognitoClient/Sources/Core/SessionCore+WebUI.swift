@@ -366,7 +366,7 @@ extension SessionCore {
         }
         _ = try await restoredSnapshot()
         guard await beginWebUISignIn() else {
-            throw AuthClientError.browserBusy(heldBy: sessionId, requestedBy: sessionId, reason: .alreadyInFlight)
+            throw await webUISignInInProgress()
         }
         let caller = SystemSheetFlow()
         let outcome: Result<AuthClientSignInResult, Error>
@@ -694,6 +694,16 @@ extension SessionCore {
             .replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "=", with: "")
+    }
+
+    /// The refusal of a hosted-UI sign-in while this session's previous call is still in progress, naming the session
+    /// that holds the sheet: another session, when the previous call is queued behind it (`.alreadyQueued`), else this
+    /// one (`.alreadyInFlight`: its call holds the sheet, or has not asked for it yet).
+    private nonisolated func webUISignInInProgress() async -> AuthClientError {
+        if let holder = await sheetLock.currentHolder, holder != sessionId {
+            return .browserBusy(heldBy: holder, requestedBy: sessionId, reason: .alreadyQueued)
+        }
+        return .browserBusy(heldBy: sessionId, requestedBy: sessionId, reason: .alreadyInFlight)
     }
 
     static func webUISignInCancelled() -> AuthClientError {

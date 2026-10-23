@@ -305,6 +305,44 @@ final class WebUISignInTests: XCTestCase {
         await waitForFreeSheet()
     }
 
+    /// A double tap while the first call is queued names the session holding the sheet
+    ///
+    /// - Given: "home" showing its hosted-UI sign-in, and "work"'s hosted-UI sign-in queued behind it with
+    ///   `.wait(timeout:)`
+    /// - When: "work" asks again, with `.fail` and with `.wait(timeout:)`
+    /// - Then:
+    ///    - each second call is refused at once with `browserBusy` naming "home", the holder, and says "work" is
+    ///      already waiting for the sheet; no second browser is shown
+    func testADoubleTapWhileQueuedNamesTheHolder() async throws {
+        let homeClient = try client(home)
+        let homeBrowser = FakeBrowser()
+        try XCTUnwrap(harness.engine(for: home)).showWebUISignIns(in: homeBrowser)
+        let homeSignIn = await startSignIn(homeClient)
+        await homeBrowser.shown.waitForArrivals(1)
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let queued = await startSignIn(client, options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let lock = harness.sheetLock
+        await waitUntil("work is queued for the sheet") { await lock.waiterCount == 1 }
+
+        for policy in [WebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
+            let error = await authClientError { try await startSignIn(client, options: WebUIOptions(whenBrowserBusy: policy)).value(within: 10) }
+            XCTAssertEqual(error?.kind, .browserBusy(holder: home), "\(policy)")
+            XCTAssertEqual(
+                error?.errorDescription,
+                "Session \"work\" is already waiting for the system sheet, which session \"home\" holds.",
+                "\(policy)"
+            )
+        }
+
+        await client.cancelWebUISignIn()
+        _ = await authClientError { try await queued.value(within: 10) }
+        homeBrowser.finishWithDefault()
+        _ = try await homeSignIn.value(within: 10)
+        XCTAssertEqual(engine.webUISignInCalls.count, 0)
+        await waitForFreeSheet()
+    }
+
     // MARK: Refusals
 
     /// - Given: a session signed in with a password
