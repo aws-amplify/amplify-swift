@@ -163,7 +163,7 @@ extension SessionCore {
         }
     }
 
-    /// Whether `payload` must be refreshed before it is used: its credentials need it (the engine's test),
+    /// Whether `payload` must be refreshed before it is used: its credentials need it (`credentialsNeedRefresh`),
     /// or it is `snapshot`'s credentials and the record was carried forward from a previous configuration
     /// without an identity (`SessionRecord.identityPending`, `SessionRecordStore+CopyForward.swift`), and its
     /// identity step may be tried now (`PendingIdentityRetry`). The engine's refresh of user-pool-only
@@ -171,13 +171,25 @@ extension SessionCore {
     /// identity is obtained on first use, never at restore. Pass `nil` for `snapshot` when the caller wants no
     /// identity (an access token).
     nonisolated func needsRefresh(_ payload: Data, of snapshot: SessionSnapshot?) throws -> Bool {
-        if try engine.checkedNeedsRefresh(payload, at: now()) {
+        if try credentialsNeedRefresh(payload) {
             return true
         }
         guard let snapshot, snapshot.credentials == payload else {
             return false
         }
         return isIdentityPending(snapshot) && mayRetryIdentity(for: snapshot)
+    }
+
+    /// The engine's test, except that without an identity pool only a user's user pool tokens count. A login saved
+    /// under a configuration that had one may still hold its AWS credentials (`.default`'s, which the plugin's rule
+    /// copies as it is when the identity pool is removed), and nothing hands those out here: the AWS credentials
+    /// provider refuses, and `fetchAuthSession` reports them as not configured. Counted, once they expired every call
+    /// would refresh, and rewrite the record, until the tokens next need a refresh.
+    private nonisolated func credentialsNeedRefresh(_ payload: Data) throws -> Bool {
+        if configuration.identityPool == nil, try engine.checkedDescribe(payload).kind == .userPoolAndIdentityPool {
+            return try engine.checkedUserPoolTokensNeedRefresh(payload, at: now())
+        }
+        return try engine.checkedNeedsRefresh(payload, at: now())
     }
 
     /// Whether `snapshot` is a record carried forward without an identity, in a configuration that has an

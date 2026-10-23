@@ -382,6 +382,46 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(engine.refreshCalls.count, 1)
     }
 
+    /// Without an identity pool only the user pool tokens decide whether a refresh is needed. A record that still
+    /// holds AWS credentials from a configuration that had one (`.default`'s login, which the plugin's rule copies as
+    /// it is when the identity pool is removed) is not refreshed, and rewritten, on every call once they expire.
+    ///
+    /// - Given: a configuration without an identity pool; a session whose record holds valid user pool tokens and
+    ///   expired AWS credentials, and another whose user pool tokens need a refresh too
+    /// - When: each is asked for its access token three times, and fetched
+    /// - Then:
+    ///    - the first answers every call with its saved tokens, with no refresh and no keychain write
+    ///    - the second refreshes once
+    func testWithoutAnIdentityPoolOnlyTheUserPoolTokensNeedARefresh() async throws {
+        let configuration = ClientFixtures.userPoolOnlyConfiguration
+        let copied = FakePayload.signedIn("alice", stale: true)
+        var expiring = FakePayload.signedIn("bob", stale: true)
+        expiring.tokensStale = true
+        let store = harness.store(configuration: configuration)
+        try store.write(copied.record(), for: work, expecting: nil)
+        try store.write(expiring.record(), for: home, expecting: nil)
+        let client = try harness.client(work, configuration: configuration)
+        let other = try harness.client(home, configuration: configuration)
+        harness.engine(for: home)?.scriptRefresh { _ in FakePayload.signedIn("bob", kind: .userPoolOnly, version: 2).data }
+        _ = await client.currentSessionState()
+        harness.keychain.resetLogs()
+
+        for _ in 1 ... 3 {
+            let token = try await client.userPoolTokenProvider.accessToken()
+            XCTAssertEqual(token, copied.accessToken)
+        }
+        let session = try await client.fetchAuthSession()
+        XCTAssertEqual(harness.keychain.writtenAccounts, [])
+        for _ in 1 ... 3 {
+            _ = try await other.userPoolTokenProvider.accessToken()
+        }
+        _ = try await other.fetchAuthSession()
+
+        XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, copied.accessToken)
+        XCTAssertEqual(harness.engine(for: work)?.refreshCalls.count, 0)
+        XCTAssertEqual(harness.engine(for: home)?.refreshCalls, [expiring.data])
+    }
+
     /// `RefreshTokenReuseException` means another writer already used the token. The session re-reads
     /// and adopts what that writer stored — never signed out.
     ///
