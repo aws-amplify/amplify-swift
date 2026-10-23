@@ -153,15 +153,20 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
         XCTAssertEqual(try store.readChallenge(work), .absent)
     }
 
-    /// - Given: a sign-in that stops on a step with no saved form (`confirmSignUp`), over an older record
-    /// - When: the step returns
+    /// Through a confirmation, which, unlike a new sign-in, deletes no record before its step: only the save of a
+    /// step with no saved form can delete the previous step's record.
+    ///
+    /// - Given: a sign-in waiting on a saved challenge (a TOTP code)
+    /// - When: the answer leads to a step with no saved form (`confirmSignUp`)
     /// - Then:
-    ///    - the state is `.awaitingChallenge(.confirmSignUp)` in memory, and no record is stored
+    ///    - the state is `.awaitingChallenge(.confirmSignUp)` in memory, and the previous step's record is deleted, so
+    ///      a relaunch cannot resume it
     func testAStepWithNoSavedFormLeavesNoRecord() async throws {
-        try store.putChallenge(ChallengeRecord(createdAt: TestClock.start, state: .fake(.confirmSignInWithTOTPCode)!), for: work)
-        let (client, engine) = try await challenged(.confirmSignUp(nil))
+        let (client, engine) = try await challenged()
+        XCTAssertNotNil(try store.storedChallenge(work), "the first step is saved")
+        engine.scriptConfirmSignIn { _ in .challenge(.confirmSignUp(nil)) }
 
-        XCTAssertEqual(engine.resumeCalls.count, 1, "the restore before the sign-in resumed the older record")
+        _ = try await client.confirmSignIn(challengeResponse: "123456")
 
         XCTAssertEqual(try store.readChallenge(work), .absent)
         let state = await client.currentSessionState()
