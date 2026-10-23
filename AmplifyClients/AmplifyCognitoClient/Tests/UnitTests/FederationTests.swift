@@ -17,6 +17,7 @@ final class FederationTests: XCTestCase {
     private var harness: ClientHarness!
     private let work = ClientFixtures.id("work")
     private let home = ClientFixtures.id("home")
+    private static let alice = AuthClientUser(username: "alice", userId: "sub-alice")
 
     override func setUp() {
         harness = ClientHarness()
@@ -610,21 +611,21 @@ final class FederationTests: XCTestCase {
         XCTAssertEqual(otherState, .federated(identityId: "us-east-1:home"))
         XCTAssertEqual(try harness.storedRecord(home)?.kind, .federated)
 
-        // Settle: a federation (no event) and a sign-out (one `.signedOut`) after both clears. The stream is in
-        // order, so two events in all means the clears sent exactly one between them.
-        _ = try await client.federateToIdentityPool(withProviderToken: "token", for: .google)
-        _ = await client.signOut()
-        await events.waitFor(2)
-        XCTAssertEqual(events.received, [.signedOut, .signedOut])
+        // Ends on an event no clear sends: the stream is in order, so once `.signedIn` has arrived every event the
+        // clears sent has too, a late duplicate included.
+        _ = try await client.signInForTest()
+        await waitUntil("the sign-in's event arrives") { events.received.last == .signedIn }
+        XCTAssertEqual(events.received, [.signedOut, .signedIn])
     }
 
     /// Federating sends no event (no user signed in); the state stream reports it. Clearing then sends
     /// `.signedOut`, and the session can federate again.
     ///
     /// - Given: a signed-out session with its event and state streams open
-    /// - When: it federates, clears, and federates again
+    /// - When: it federates, clears, and federates again; then, to end on known events, clears and signs in
     /// - Then:
-    ///    - the only event is `.signedOut`; the states are `.federated`, `.signedOut`, `.federated`
+    ///    - the only event of the first three is `.signedOut`, and their states are `.federated`, `.signedOut`,
+    ///      `.federated`; the closing clear and sign-in add `.signedOut` and `.signedIn`, as event and as state
     func testTheEventsAndStatesOfAFederationAndItsClearing() async throws {
         let client = try harness.client(work)
         _ = await client.currentSessionState()
@@ -634,14 +635,20 @@ final class FederationTests: XCTestCase {
         _ = try await client.federateToIdentityPool(withProviderToken: "token", for: .google)
         try await client.clearFederationToIdentityPool()
         _ = try await client.federateToIdentityPool(withProviderToken: "token", for: .google)
+        // Ends on what no federation or clear sends: a clear, then a sign-in. Each stream is in order, so once
+        // `.signedIn` has arrived on both, everything before it has too, a late duplicate included.
+        try await client.clearFederationToIdentityPool()
+        _ = try await client.signInForTest()
 
-        await states.waitFor(3)
-        await events.waitFor(1)
-        XCTAssertEqual(events.received, [.signedOut])
+        await waitUntil("the sign-in's event arrives") { events.received.last == .signedIn }
+        await waitUntil("the sign-in's state arrives") { states.received.last == .signedIn(Self.alice) }
+        XCTAssertEqual(events.received, [.signedOut, .signedOut, .signedIn])
         XCTAssertEqual(states.received, [
             .federated(identityId: "us-east-1:federated"),
             .signedOut,
-            .federated(identityId: "us-east-1:federated")
+            .federated(identityId: "us-east-1:federated"),
+            .signedOut,
+            .signedIn(Self.alice)
         ])
     }
 
@@ -755,7 +762,9 @@ final class FederationTests: XCTestCase {
         XCTAssertNil(try harness.storedRecord(work)?.credentials)
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedOut)
-        await events.waitFor(1)
-        XCTAssertEqual(events.received, [.signedOut])
+        // Ends on an event no sign-out sends: once `.signedIn` has arrived, a late duplicate `.signedOut` has too.
+        _ = try await client.signInForTest()
+        await waitUntil("the sign-in's event arrives") { events.received.last == .signedIn }
+        XCTAssertEqual(events.received, [.signedOut, .signedIn])
     }
 }

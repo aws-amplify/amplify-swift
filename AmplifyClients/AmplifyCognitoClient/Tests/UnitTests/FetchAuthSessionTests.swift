@@ -540,10 +540,12 @@ final class FetchAuthSessionTests: XCTestCase {
             XCTAssertThrowsError(try session.awsCredentialsResult.get())
         }
         XCTAssertEqual(engine.refreshCalls.count, 1)
-        await events.waitFor(1)
-        XCTAssertEqual(events.received, [.sessionExpired])
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedIn(alice))
+        // Ends on an event no fetch sends: once `.signedIn` has arrived, a second `.sessionExpired` has too.
+        _ = try await client.signInForTest()
+        await waitUntil("the sign-in's event arrives") { events.received.last == .signedIn }
+        XCTAssertEqual(events.received, [.sessionExpired, .signedIn])
     }
 
     /// - Given: a signed-in session whose refresh fails at the network

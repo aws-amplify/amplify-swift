@@ -373,12 +373,15 @@ final class LiveEngineFederationTests: XCTestCase {
         }
         XCTAssertEqual(harness.cognito.operations, [])
         XCTAssertEqual(state, .federated(identityId: "us-east-1:federated-id"))
-        await events.waitFor(1)
-        XCTAssertEqual(events.received, [.sessionExpired])
 
         _ = try await client.federateToIdentityPool(withProviderToken: "fresh-token", for: .google)
         let recovered = try await client.fetchAuthSession()
         XCTAssertEqual(try recovered.awsCredentialsResult.get().accessKeyId, "AKID-v1")
+        // Ends on an event no fetch or federation sends: once `.signedOut` has arrived, a second `.sessionExpired`
+        // has too.
+        _ = await client.signOut()
+        await waitUntil("the sign-out's event arrives") { events.received.last == .signedOut }
+        XCTAssertEqual(events.received, [.sessionExpired, .signedOut])
     }
 
 
