@@ -29,7 +29,7 @@ import Foundation
 ///
 /// **Best effort.** A failed write or delete is logged (`SessionRecordStore.ChallengeLog`) and never fails the sign-in:
 /// the challenge stays in memory, as it always did. A record left behind is deleted by the next restore of a signed-in
-/// session; a signed-out or guest session's next restore may resume it until it is 15 minutes old.
+/// or federated session; a signed-out or guest session's next restore may resume it until it is 15 minutes old.
 extension SessionCore {
 
     // MARK: Sign-in steps
@@ -111,7 +111,8 @@ extension SessionCore {
         case .signedOut, .guest:
             break
         case .signedIn, .federated:
-            // Best effort, and only if one is there: a restore of a signed-in session writes nothing otherwise.
+            // Best effort, and only if one is there: a restore of a signed-in or federated session writes nothing
+            // otherwise.
             if let leftover = try? await store.readChallenge(sessionId), leftover != .absent {
                 await discardChallengeRecord(in: store)
             }

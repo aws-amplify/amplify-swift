@@ -506,6 +506,28 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
         XCTAssertEqual(try store.readChallenge(work), .absent)
     }
 
+    /// The delete-failure warning says which restores delete the leftover and which may offer it again.
+    ///
+    /// - Given: a pending, saved challenge, and the keychain failing its delete
+    /// - When: the answer completes the sign-in
+    /// - Then:
+    ///    - the logged warning has this exact text, naming signed-in and federated sessions as the ones whose
+    ///      next restore deletes the leftover, and signed-out and guest sessions as the ones that may offer it again
+    func testTheFailedDeleteWarningNamesTheRestoresThatDeleteTheLeftover() async throws {
+        let (client, engine) = try await challenged()
+        harness.keychain.failingRemovals(of: challengeAccount, with: errSecInteractionNotAllowed)
+        engine.scriptConfirmSignIn { _ in .done(payload: FakePayload.signedIn().data) }
+
+        _ = try await client.confirmSignIn(challengeResponse: "123456")
+
+        let expected = "The interrupted sign-in's saved record could not be deleted after the sign-in ended. "
+            + "A signed-in or federated session's next restore deletes it; a signed-out or guest session's next "
+            + "restore, such as after a relaunch, may offer the challenge again until it is 15 minutes old."
+        XCTAssertEqual(sink.lines(in: SessionRecordStore.ChallengeLog.category), [
+            .init(level: .warn, content: expected)
+        ])
+    }
+
     /// - Given: an expired record whose delete fails at restore
     /// - When: a client restores
     /// - Then:
