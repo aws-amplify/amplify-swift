@@ -325,9 +325,9 @@ extension AuthClientError {
     /// with no code, as that case's documentation says, with the engine's description and a recovery suggestion that
     /// fits it in place of the engine's "report a bug" text (`serviceFailureSuggestion(underlying:cause:)`): an error
     /// status the SDK does not model, or Cognito's `InternalErrorException`. The engine keeps nothing under the
-    /// latter, so only `cause`, the failure the engine error was made from, tells it apart. Where only the engine
-    /// error reaches the client (`deleteUser`, a sign-out's revoke or global sign-out, the passkey credential calls),
-    /// an internal error has no cause, and stays `.unknown` with the engine's suggestion.
+    /// latter, so only `cause`, the failure the engine error was made from, tells it apart. Every call that reaches
+    /// Cognito passes it: for `deleteUser`, a sign-out's revoke and global sign-out, and the passkey credential calls,
+    /// the engine carries it beside the engine error.
     ///
     /// Engine texts that name the plugin's calls are given the client's names (`clientText(_:)`): the recovery
     /// suggestions in `clientRecoverySuggestions` ("Invoke Auth.signIn …" becomes "Call signIn …"), and
@@ -710,20 +710,31 @@ extension AuthClientError {
 
 extension AuthClientError {
 
-    /// A failed revoke under a sign-out, mapped as `init(engine:)` maps it, except a failure the client describes
-    /// itself (`clientServiceFailureDescriptions`: a transport failure, or one with an empty engine description), which
-    /// keeps the sign-out's context: the session is signed out on this device, and nothing retries the revoke (a
-    /// second sign-out finds nothing to sign out). A network failure also says the token may still be valid.
-    static func revokeFailure(engine error: EngineAuthError) -> AuthClientError {
-        let mapped = AuthClientError(engine: error)
-        guard case .service(nil, let description, _, let underlying) = mapped,
-              clientServiceFailureDescriptions.contains(description) else {
+    /// A failed revoke under a sign-out, mapped as `init(engine:cause:)` maps it, except a code-less service failure
+    /// whose texts are the client's (`isSignOutContextFailure`), which keeps the sign-out's context: the session is
+    /// signed out on this device, and nothing retries the revoke (a second sign-out finds nothing to sign out). A
+    /// network failure also says the token may still be valid. `cause` is the failure the engine error was made from
+    /// (`EngineRevokeTokenFailure.cause`).
+    static func revokeFailure(engine error: EngineAuthError, cause: Error? = nil) -> AuthClientError {
+        let mapped = AuthClientError(engine: error, cause: cause)
+        guard case .service(nil, let description, let suggestion, let underlying) = mapped,
+              isSignOutContextFailure(description: description, suggestion: suggestion) else {
             return mapped
         }
         if description == networkFailureDescription {
             return revokeNetworkFailure(underlying ?? error)
         }
         return .service(nil, description, revokeNotRetriedSuggestion, underlying ?? error)
+    }
+
+    /// Whether a code-less service failure under a sign-out takes the sign-out's recovery suggestion: one the client
+    /// describes itself (`clientServiceFailureDescriptions`: a transport failure, or one with an empty engine
+    /// description), or a failure Cognito reported as its own, whose suggestion is the client's
+    /// (`serviceFailureSuggestion(underlying:cause:)`: an internal error, an error status the SDK does not model). Its
+    /// "retry the operation" does not fit a sign-out, which already finished on this device.
+    static func isSignOutContextFailure(description: String, suggestion: String) -> Bool {
+        clientServiceFailureDescriptions.contains(description)
+            || [serviceFaultSuggestion, unrecognisedServiceErrorSuggestion].contains(suggestion)
     }
 
     /// A revoke that failed on the network.
@@ -741,19 +752,19 @@ extension AuthClientError {
         "The session was signed out on this device, and the revoke will not be retried. To end the refresh token on "
             + "the server, sign in again and sign out with globalSignOut: true."
 
-    /// A failed global sign-out under a sign-out, mapped as `init(engine:)` maps it, except a failure the client
-    /// describes itself, which keeps the sign-out's context, as a revoke's does (`revokeFailure(engine:)`).
-    static func globalSignOutFailure(engine error: EngineAuthError) -> AuthClientError {
-        let mapped = AuthClientError(engine: error)
-        guard case .service(nil, let description, _, let underlying) = mapped,
-              clientServiceFailureDescriptions.contains(description) else {
+    /// A failed global sign-out under a sign-out, mapped as `init(engine:cause:)` maps it, except a failure that keeps
+    /// the sign-out's context, as a revoke's does (`revokeFailure(engine:cause:)`).
+    static func globalSignOutFailure(engine error: EngineAuthError, cause: Error? = nil) -> AuthClientError {
+        let mapped = AuthClientError(engine: error, cause: cause)
+        guard case .service(nil, let description, let suggestion, let underlying) = mapped,
+              isSignOutContextFailure(description: description, suggestion: suggestion) else {
             return mapped
         }
         return .service(nil, description, globalSignOutNotRetriedSuggestion, underlying ?? error)
     }
 
-    /// What a global sign-out that failed in transport suggests: the session is signed out on this device, so nothing
-    /// is left to retry it with.
+    /// What a global sign-out that failed in transport, or that Cognito failed itself, suggests: the session is signed
+    /// out on this device, so nothing is left to retry it with.
     static let globalSignOutNotRetriedSuggestion =
         "The session was signed out on this device, and the global sign-out will not be retried: unless the request "
             + "reached the service, the user's other sessions stay signed in until their tokens expire. To sign them "
@@ -762,16 +773,18 @@ extension AuthClientError {
 
 extension EngineSignOutOutcome {
 
-    /// The sign-out failures, mapped. The refresh and access tokens they carry are dropped (not
-    /// exposed).
+    /// The sign-out failures, mapped with the errors they were made from. The refresh and access tokens they carry
+    /// are dropped (not exposed).
     init(
         revokeFailure: EngineRevokeTokenFailure?,
         globalSignOutFailure: EngineGlobalSignOutFailure?,
         hostedUIFailure: EngineHostedUISignOutFailure? = nil
     ) {
         self.init(
-            revokeError: revokeFailure.map { AuthClientError.revokeFailure(engine: $0.error) },
-            globalSignOutError: globalSignOutFailure.map { AuthClientError.globalSignOutFailure(engine: $0.error) },
+            revokeError: revokeFailure.map { AuthClientError.revokeFailure(engine: $0.error, cause: $0.cause) },
+            globalSignOutError: globalSignOutFailure.map {
+                AuthClientError.globalSignOutFailure(engine: $0.error, cause: $0.cause)
+            },
             hostedUIError: hostedUIFailure.map { AuthClientError(engine: $0.error) }
         )
     }

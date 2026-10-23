@@ -16,9 +16,8 @@ import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
 /// A failure Cognito reports as its own (either pool's `InternalErrorException`, or an error status the SDK does not
-/// model), which the plugin reports as `AuthError.unknown`, is `.service` with no code in every call that hands the
-/// mapping its cause, with a recovery suggestion that fits it: never the engine's "This should not happen … file an
-/// issue" text.
+/// model), which the plugin reports as `AuthError.unknown`, is `.service` with no code in every call, with a recovery
+/// suggestion that fits it: never the engine's "This should not happen … file an issue" text.
 final class LiveEngineServiceFailureTests: XCTestCase {
 
     private var harness: LiveEngineHarness!
@@ -158,6 +157,74 @@ final class LiveEngineServiceFailureTests: XCTestCase {
                     XCTAssertTrue(Self.mapped(error)?.errorDescription.contains("\(status.rawValue)") == true, "\(label): \(error)")
                 }
             }
+        }
+    }
+
+    /// The calls whose engine error the client gets from the engine's state or a passkey operation, with the
+    /// exception beside it: `deleteUser`, a sign-out's revoke and global sign-out, and the passkey credential calls.
+    ///
+    /// - Given: `DeleteUser`, `ListWebAuthnCredentials`, `DeleteWebAuthnCredential`, `RevokeToken` and
+    ///   `GlobalSignOut` failing with the user pool's `InternalErrorException`, then with an error status the SDK
+    ///   does not model (500)
+    /// - When: the live engine deletes the user, lists and deletes a passkey, and signs out, locally and globally
+    /// - Then:
+    ///    - the deletion and the passkey calls throw `.service` with no code, the retry suggestion and Cognito's
+    ///      message or the status in the description, never a bug report
+    ///    - the sign-out's revoke error and global sign-out error are `.service` with no code and the same
+    ///      description, with the sign-out's not-retried suggestion
+    func testACognitoFailureInTheCallsTheEngineCarriesTheCauseForIsAServiceError() async throws {
+        let unmodelled = UnknownAWSHTTPServiceError(
+            httpResponse: HTTPResponse(body: .empty, statusCode: .internalServerError),
+            message: "fixture message",
+            requestID: nil,
+            requestID2: nil,
+            typeName: nil
+        )
+        let failures: [(String, Error, String)] = [
+            ("internal error", AWSCognitoIdentityProvider.InternalErrorException(message: "boom"), "boom"),
+            ("unmodelled 500", unmodelled, "500")
+        ]
+        for (label, failure, shown) in failures {
+            harness = LiveEngineHarness()
+            let engine = try harness.engine()
+            let payload = try await harness.signedInPayload(on: engine)
+            harness.cognito.always("DeleteUser") { (_: DeleteUserInput) -> DeleteUserOutput in throw failure }
+            harness.cognito.always("ListWebAuthnCredentials") { (_: ListWebAuthnCredentialsInput) -> ListWebAuthnCredentialsOutput in
+                throw failure
+            }
+            harness.cognito.always("DeleteWebAuthnCredential") { (_: DeleteWebAuthnCredentialInput) -> DeleteWebAuthnCredentialOutput in
+                throw failure
+            }
+            harness.cognito.always("RevokeToken") { (_: RevokeTokenInput) -> RevokeTokenOutput in throw failure }
+            harness.cognito.always("GlobalSignOut") { (_: GlobalSignOutInput) -> GlobalSignOutOutput in throw failure }
+
+            let operations: [(String, () async throws -> Void)] = [
+                ("deleteUser", { try await engine.deleteUser(payload) }),
+                ("listWebAuthnCredentials", {
+                    _ = try await engine.listWebAuthnCredentials(payload, pageSize: 20, nextToken: nil)
+                }),
+                ("deleteWebAuthnCredential", { try await engine.deleteWebAuthnCredential(payload, credentialId: "credential") })
+            ]
+            for (name, body) in operations {
+                await assertThrowsAsync(body) { error in
+                    Self.assertCodelessService(error, suggesting: AuthClientError.serviceFaultSuggestion, "\(name), \(label)")
+                    XCTAssertTrue(Self.mapped(error)?.errorDescription.contains(shown) == true, "\(name), \(label): \(error)")
+                }
+            }
+
+            let local = try await engine.revoke(payload, global: false)
+            let revokeError = try XCTUnwrap(local.revokeError, label)
+            Self.assertCodelessService(revokeError, suggesting: AuthClientError.revokeNotRetriedSuggestion, "revoke, \(label)")
+            XCTAssertTrue(revokeError.errorDescription.contains(shown), "revoke, \(label): \(revokeError)")
+
+            let global = try await engine.revoke(payload, global: true)
+            let globalSignOutError = try XCTUnwrap(global.globalSignOutError, label)
+            Self.assertCodelessService(
+                globalSignOutError,
+                suggesting: AuthClientError.globalSignOutNotRetriedSuggestion,
+                "globalSignOut, \(label)"
+            )
+            XCTAssertTrue(globalSignOutError.errorDescription.contains(shown), "globalSignOut, \(label): \(globalSignOutError)")
         }
     }
 

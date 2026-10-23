@@ -66,7 +66,7 @@ final class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger, @unchecked
             switch deleteUserState {
             case .userDeleted:
                 return
-            case .error(let error):
+            case .error(let error, _):
                 throw AuthError(error)
             default:
                 continue

@@ -23,7 +23,8 @@ package struct DeleteUserEvent: StateMachineEvent {
 
         case userSignedOutAndDeleted(SignedOutData)
 
-        case throwError(EngineAuthError)
+        /// `cause` is carried to `DeleteUserState.error`.
+        case throwError(EngineAuthError, cause: Error? = nil)
 
     }
 

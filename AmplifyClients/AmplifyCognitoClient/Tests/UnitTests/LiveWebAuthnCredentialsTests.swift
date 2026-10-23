@@ -295,18 +295,28 @@ final class LiveWebAuthnCredentialsTests: XCTestCase {
     /// - Given: the errors list and delete can see
     /// - When: each is mapped, with the calling task cancelled or not
     /// - Then:
-    ///    - a cancelled task, a `CancellationError`, and a `.service` with one underneath are
-    ///      `CancellationError`; any other engine error is `AuthClientError(engine:)`; anything else is
-    ///      unchanged
+    ///    - a cancelled task, a `CancellationError`, and a `.service` with one underneath, bare or in an operation's
+    ///      `Failure`, are `CancellationError`; any other engine error is `AuthClientError(engine:)`, and an
+    ///      operation's `Failure` `AuthClientError(engine:cause:)` with its cause, so a Cognito internal error is
+    ///      `.service` with no code and the retry suggestion; anything else is unchanged
     func testTheFailureRule() {
         let cancelledService = WebAuthnError.unknown(message: "m", error: CancellationError()).engineError
         let notEnabled = WebAuthnNotEnabledException(message: "m").engineError
         let other = FixtureError(description: "other")
+        let internalError = AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+        let internalFailure = WebAuthnCredentialOperations.Failure(engineError: internalError.engineError, cause: internalError)
+        let cancelledFailure = WebAuthnCredentialOperations.Failure(engineError: cancelledService, cause: CancellationError())
 
         XCTAssertTrue(LiveSessionEngine.signedInFailure(cancelledService, cancelled: false) is CancellationError)
+        XCTAssertTrue(LiveSessionEngine.signedInFailure(cancelledFailure, cancelled: false) is CancellationError)
         XCTAssertTrue(LiveSessionEngine.signedInFailure(CancellationError(), cancelled: false) is CancellationError)
         XCTAssertTrue(LiveSessionEngine.signedInFailure(notEnabled, cancelled: true) is CancellationError)
+        XCTAssertTrue(LiveSessionEngine.signedInFailure(internalFailure, cancelled: true) is CancellationError)
         XCTAssertEqual(authError(LiveSessionEngine.signedInFailure(notEnabled, cancelled: false))?.kind, .service(.webAuthnNotEnabled))
+        let mappedInternal = authError(LiveSessionEngine.signedInFailure(internalFailure, cancelled: false))
+        XCTAssertEqual(mappedInternal?.kind, .service(nil))
+        XCTAssertEqual(mappedInternal?.recoverySuggestion, AuthClientError.serviceFaultSuggestion)
+        XCTAssertEqual(authError(LiveSessionEngine.signedInFailure(internalError.engineError, cancelled: false))?.kind, .unknown)
         XCTAssertTrue(LiveSessionEngine.signedInFailure(other, cancelled: false) is FixtureError)
     }
 

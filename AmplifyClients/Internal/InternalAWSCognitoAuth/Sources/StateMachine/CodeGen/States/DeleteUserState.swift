@@ -19,8 +19,10 @@ package enum DeleteUserState: State {
     /// User successfully deleted
     case userDeleted(SignedOutData)
 
-    /// Error occurred while deleting the user
-    case error(EngineAuthError)
+    /// Error occurred while deleting the user. `cause` is the error the engine error was made from (the SDK's
+    /// exception), when there was one: the engine error keeps nothing under some exceptions (Cognito's
+    /// `InternalErrorException`), so a caller that maps the failure itself reads it. The plugin reads only the error.
+    case error(EngineAuthError, cause: Error? = nil)
 }
 
 package extension DeleteUserState {

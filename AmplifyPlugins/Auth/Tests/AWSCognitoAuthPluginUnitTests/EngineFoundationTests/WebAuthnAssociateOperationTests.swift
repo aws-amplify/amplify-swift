@@ -7,6 +7,7 @@
 
 #if os(iOS) || os(macOS) || os(visionOS)
 import AuthenticationServices
+import struct AWSCognitoIdentityProvider.InternalErrorException
 import struct AWSCognitoIdentityProvider.StartWebAuthnRegistrationOutput
 import struct AWSCognitoIdentityProvider.WebAuthnNotEnabledException
 import XCTest
@@ -121,7 +122,8 @@ final class WebAuthnAssociateOperationTests: XCTestCase, @unchecked Sendable {
     /// - When:
     ///    - `associate` runs
     /// - Then:
-    ///    - it throws the associate unknown-service error, whose underlying error is the `WebAuthnCredentialError`
+    ///    - it throws the associate unknown-service error, whose underlying error, and cause, is the
+    ///      `WebAuthnCredentialError`
     ///    - the ceremony and complete are not run
     ///
     func testAssociate_withUndecodableOptions_throwsTheUnknownServiceError() async {
@@ -132,7 +134,9 @@ final class WebAuthnAssociateOperationTests: XCTestCase, @unchecked Sendable {
         do {
             try await associate()
             XCTFail("Should have failed")
-        } catch let error as EngineAuthError {
+        } catch let failure as WebAuthnCredentialOperations.Failure {
+            XCTAssertTrue(failure.cause is AnyWebAuthnCredentialError, "\(failure.cause)")
+            let error = failure.engineError
             guard case .service(let description, _, let underlyingError) = error else {
                 return XCTFail("Expected EngineAuthError.service, got \(error)")
             }
@@ -149,7 +153,7 @@ final class WebAuthnAssociateOperationTests: XCTestCase, @unchecked Sendable {
                 "\(String(describing: underlyingError))"
             )
         } catch {
-            XCTFail("Expected EngineAuthError, got \(error)")
+            XCTFail("Expected WebAuthnCredentialOperations.Failure, got \(error)")
         }
         XCTAssertEqual(registrant.createCallCount.get(), 0)
         XCTAssertEqual(completeInputs.get().count, 0)
@@ -161,7 +165,7 @@ final class WebAuthnAssociateOperationTests: XCTestCase, @unchecked Sendable {
     /// - When:
     ///    - `associate` runs
     /// - Then:
-    ///    - it throws `EngineAuthError.service` with the engine service code `webAuthnNotEnabled`
+    ///    - it throws a `Failure` of `EngineAuthError.service` with the engine service code `webAuthnNotEnabled`
     ///    - the ceremony and complete are not run
     ///
     func testAssociate_withServiceErrorOnStart_throwsTheEngineServiceError() async {
@@ -180,7 +184,7 @@ final class WebAuthnAssociateOperationTests: XCTestCase, @unchecked Sendable {
     /// - When:
     ///    - `associate` runs
     /// - Then:
-    ///    - it throws `WebAuthnError.unknown`'s `EngineAuthError.service`, with the associate message
+    ///    - it throws a `Failure` of `WebAuthnError.unknown`'s `EngineAuthError.service`, with the associate message
     ///    - the ceremony is not run
     ///
     func testAssociate_withOtherErrorOnStart_throwsTheUnknownServiceError() async {
@@ -198,7 +202,8 @@ final class WebAuthnAssociateOperationTests: XCTestCase, @unchecked Sendable {
     /// - When:
     ///    - `associate` runs
     /// - Then:
-    ///    - it throws `EngineAuthError.service` with the engine service code `webAuthnNotEnabled`, after the ceremony
+    ///    - it throws a `Failure` of `EngineAuthError.service` with the engine service code `webAuthnNotEnabled`,
+    ///      after the ceremony
     ///
     func testAssociate_withServiceErrorOnComplete_throwsTheEngineServiceError() async {
         identityProvider.mockCompleteWebAuthnRegistrationResponse = { _ in
@@ -216,7 +221,7 @@ final class WebAuthnAssociateOperationTests: XCTestCase, @unchecked Sendable {
     /// - When:
     ///    - `associate` runs
     /// - Then:
-    ///    - it throws `WebAuthnError.unknown`'s `EngineAuthError.service`, with the associate message
+    ///    - it throws a `Failure` of `WebAuthnError.unknown`'s `EngineAuthError.service`, with the associate message
     ///
     func testAssociate_withOtherErrorOnComplete_throwsTheUnknownServiceError() async {
         identityProvider.mockCompleteWebAuthnRegistrationResponse = { _ in throw CancellationError() }
@@ -224,6 +229,23 @@ final class WebAuthnAssociateOperationTests: XCTestCase, @unchecked Sendable {
         await assertUnknownServiceError(
             "An unknown error type was thrown by the service. Unable to associate WebAuthn credential."
         ) { try await self.associate() }
+        XCTAssertEqual(registrant.createCallCount.get(), 1)
+    }
+
+    /// Associate, a Cognito internal error on complete
+    ///
+    /// - Given: `CompleteWebAuthnRegistration` throws the user pool's `InternalErrorException`
+    /// - When:
+    ///    - `associate` runs
+    /// - Then:
+    ///    - after the ceremony, it throws a `Failure` whose engine error is the exception's own `.unknown`, and whose
+    ///      cause is the exception
+    ///
+    func testAssociate_withInternalErrorOnComplete_keepsTheExceptionAsTheCause() async {
+        let exception = InternalErrorException(message: "boom")
+        identityProvider.mockCompleteWebAuthnRegistrationResponse = { _ in throw exception }
+
+        await assertInternalErrorFailure(exception) { try await self.associate() }
         XCTAssertEqual(registrant.createCallCount.get(), 1)
     }
 

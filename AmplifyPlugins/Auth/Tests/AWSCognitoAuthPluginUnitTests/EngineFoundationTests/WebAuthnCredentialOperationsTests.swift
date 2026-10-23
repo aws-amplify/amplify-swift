@@ -9,6 +9,7 @@
 import AuthenticationServices
 #endif
 import enum Amplify.AuthError
+import struct AWSCognitoIdentityProvider.InternalErrorException
 import struct AWSCognitoIdentityProvider.WebAuthnNotEnabledException
 import struct AWSCognitoIdentityProvider.WebAuthnRelyingPartyMismatchException
 import XCTest
@@ -17,7 +18,8 @@ import InternalAWSCognitoAuth
 
 /// The engine's WebAuthn credential operations, in engine terms: the cases the
 /// plugin's `*WebAuthnCredential*TaskTests` cover through the tasks, plus the error contract the tasks rely
-/// on (the caller's closures' errors pass through unchanged, every other error is an `EngineAuthError`).
+/// on (the caller's closures' errors pass through unchanged, every other error is a `Failure`: the engine error,
+/// and the error it was made from).
 ///
 /// - Note: `@unchecked Sendable` so the test body can be captured by the mocks' `@Sendable` closures.
 ///   `XCTestCase` is not `Sendable`, and each test runs alone.
@@ -115,7 +117,8 @@ final class WebAuthnCredentialOperationsTests: XCTestCase, @unchecked Sendable {
     /// - When:
     ///    - `list` runs
     /// - Then:
-    ///    - it throws `EngineAuthError.service` with the engine service code `webAuthnRelyingPartyMismatch`
+    ///    - it throws a `Failure` of `EngineAuthError.service` with the engine service code
+    ///      `webAuthnRelyingPartyMismatch`
     ///
     func testList_withServiceError_throwsTheEngineServiceError() async {
         identityProvider.mockListWebAuthnCredentialsResponse = { _ in
@@ -138,7 +141,7 @@ final class WebAuthnCredentialOperationsTests: XCTestCase, @unchecked Sendable {
     /// - When:
     ///    - `list` runs
     /// - Then:
-    ///    - it throws `WebAuthnError.unknown`'s `EngineAuthError.service`, with the list message
+    ///    - it throws a `Failure` of `WebAuthnError.unknown`'s `EngineAuthError.service`, with the list message
     ///
     func testList_withOtherError_throwsTheUnknownServiceError() async {
         identityProvider.mockListWebAuthnCredentialsResponse = { _ in throw CancellationError() }
@@ -220,7 +223,7 @@ final class WebAuthnCredentialOperationsTests: XCTestCase, @unchecked Sendable {
     /// - When:
     ///    - `delete` runs
     /// - Then:
-    ///    - it throws `EngineAuthError.service` with the engine service code `webAuthnNotEnabled`
+    ///    - it throws a `Failure` of `EngineAuthError.service` with the engine service code `webAuthnNotEnabled`
     ///
     func testDelete_withServiceError_throwsTheEngineServiceError() async {
         identityProvider.mockDeleteWebAuthnCredentialResponse = { _ in
@@ -242,7 +245,7 @@ final class WebAuthnCredentialOperationsTests: XCTestCase, @unchecked Sendable {
     /// - When:
     ///    - `delete` runs
     /// - Then:
-    ///    - it throws `WebAuthnError.unknown`'s `EngineAuthError.service`, with the delete message
+    ///    - it throws a `Failure` of `WebAuthnError.unknown`'s `EngineAuthError.service`, with the delete message
     ///
     func testDelete_withOtherError_throwsTheUnknownServiceError() async {
         identityProvider.mockDeleteWebAuthnCredentialResponse = { _ in throw CancellationError() }
@@ -324,6 +327,41 @@ final class WebAuthnCredentialOperationsTests: XCTestCase, @unchecked Sendable {
             let bridged = try XCTUnwrap(AuthError(converting: engineError))
 
             XCTAssertEqual(authErrorFingerprint(bridged), authErrorFingerprint(former), "\(error)")
+        }
+    }
+
+    // MARK: - The cause
+
+    /// A Cognito internal error keeps its exception as the cause
+    ///
+    /// - Given: `ListWebAuthnCredentials`, then `DeleteWebAuthnCredential`, failing with the user pool's
+    ///   `InternalErrorException`
+    /// - When:
+    ///    - `list`, then `delete`, runs
+    /// - Then:
+    ///    - each throws a `Failure` whose engine error is the exception's own `.unknown`, with nothing underneath,
+    ///      and whose cause is the exception
+    ///    - the plugin bridges it to the `AuthError` it bridged the exception to before
+    ///
+    func testACognitoInternalErrorKeepsTheExceptionAsTheCause() async {
+        let exception = InternalErrorException(message: "boom")
+        identityProvider.mockListWebAuthnCredentialsResponse = { _ in throw exception }
+        identityProvider.mockDeleteWebAuthnCredentialResponse = { _ in throw exception }
+
+        await assertInternalErrorFailure(exception) {
+            _ = try await WebAuthnCredentialOperations.list(
+                accessToken: self.accessToken(),
+                pageSize: 20,
+                nextToken: nil,
+                userPool: self.userPool()
+            )
+        }
+        await assertInternalErrorFailure(exception) {
+            try await WebAuthnCredentialOperations.delete(
+                accessToken: self.accessToken(),
+                credentialId: "credentialId",
+                userPool: self.userPool()
+            )
         }
     }
 }

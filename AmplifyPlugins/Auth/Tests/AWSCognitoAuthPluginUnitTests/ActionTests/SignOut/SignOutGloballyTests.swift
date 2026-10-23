@@ -128,4 +128,48 @@ class SignOutGloballyTests: XCTestCase, @unchecked Sendable {
             timeout: 0.1
         )
     }
+
+    /// A failed global sign-out keeps the exception it was made from
+    ///
+    /// - Given: `GlobalSignOut` failing with the user pool's `InternalErrorException`
+    /// - When:
+    ///    - the action runs
+    /// - Then:
+    ///    - the global sign-out failure's engine error is the exception's own `.unknown`, with nothing underneath, as
+    ///      before
+    ///    - its `cause` is the exception
+    ///
+    func testFailedGlobalSignOutKeepsTheExceptionAsTheCause() async throws {
+        let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
+            MockIdentityProvider(
+                mockGlobalSignOutResponse: { _ in
+                    throw AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+                }
+            )
+        }
+        let environment = BasicUserPoolEnvironment(
+            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
+            cognitoUserPoolFactory: identityProviderFactory,
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
+        )
+        let action = SignOutGlobally(signedInData: .testData, hostedUIError: nil)
+        let failures = TestBox<[EngineGlobalSignOutFailure]>([])
+        let dispatcher = MockDispatcher { event in
+            if case .globalSignOutError(_, let globalSignOutError, _) = (event as? SignOutEvent)?.eventType {
+                failures.with { $0.append(globalSignOutError) }
+            }
+        }
+
+        await action.execute(withDispatcher: dispatcher, environment: environment)
+
+        let failure = try XCTUnwrap(failures.get().first)
+        guard case .unknown(let message, let underlying) = failure.error else {
+            return XCTFail("expected .unknown, got \(failure.error)")
+        }
+        XCTAssertEqual(message, "boom")
+        XCTAssertNil(underlying)
+        XCTAssertTrue(failure.cause is AWSCognitoIdentityProvider.InternalErrorException, "\(String(describing: failure.cause))")
+    }
+
 }

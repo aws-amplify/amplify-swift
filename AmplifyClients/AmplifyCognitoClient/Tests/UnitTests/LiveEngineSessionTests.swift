@@ -349,11 +349,12 @@ final class LiveEngineSessionTests: XCTestCase {
 
     /// A failed revoke is reported in the outcome, not thrown: sign-out continues locally.
     ///
-    /// - Given: `RevokeToken` failing
+    /// - Given: `RevokeToken` failing with the user pool's `InternalErrorException`
     /// - When:
     ///    - alice's payload is revoked
     /// - Then:
-    ///    - the outcome carries the mapped revoke error, and no global error
+    ///    - the outcome carries the mapped revoke error, `.service` with no code, Cognito's message and the
+    ///      not-retried suggestion, and no global error
     ///
     func testAFailedRevokeIsReportedInTheOutcome() async throws {
         let engine = try harness.engine()
@@ -364,10 +365,11 @@ final class LiveEngineSessionTests: XCTestCase {
 
         let outcome = try await engine.revoke(payload, global: false)
 
-        guard case .unknown(let description, _, _) = outcome.revokeError else {
+        guard case .service(nil, let description, let suggestion, _) = outcome.revokeError else {
             return XCTFail("expected the mapped revoke failure, got \(String(describing: outcome.revokeError))")
         }
         XCTAssertTrue(description.contains("boom"), description)
+        XCTAssertEqual(suggestion, AuthClientError.revokeNotRetriedSuggestion)
         XCTAssertNil(outcome.globalSignOutError)
     }
 

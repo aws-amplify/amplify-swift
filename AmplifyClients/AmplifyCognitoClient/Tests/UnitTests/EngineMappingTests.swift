@@ -1064,6 +1064,54 @@ final class EngineMappingTests: XCTestCase {
         XCTAssertEqual(placeholder.recoverySuggestion, "")
     }
 
+    /// A sign-out's revoke or global sign-out that Cognito failed itself is a service error that keeps the sign-out's
+    /// context, once the failure carries the exception it was made from.
+    ///
+    /// - Given: revoke and global sign-out failures from the user pool's `InternalErrorException` (its engine error,
+    ///   with the exception as the cause), and from an error status the SDK does not model (500, then 400)
+    /// - When:
+    ///    - the outcome is built from them, and the internal error is also mapped without its cause
+    /// - Then:
+    ///    - each is `.service` with no code, the engine's description, and the suggestion that the revoke, or the
+    ///      global sign-out, will not be retried
+    ///    - without its cause, the internal error stays `.unknown` with the engine's text
+    func testASignOutsServiceFaultSaysItIsNotRetried() {
+        let internalError = AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+        func unmodelled(_ status: HTTPStatusCode) -> UnknownAWSHTTPServiceError {
+            UnknownAWSHTTPServiceError(
+                httpResponse: HTTPResponse(body: .empty, statusCode: status),
+                message: "fixture message",
+                requestID: nil,
+                requestID2: nil,
+                typeName: nil
+            )
+        }
+        let rows: [(String, EngineAuthError, Error)] = [
+            ("internal error", internalError.engineError, internalError),
+            ("500", unmodelled(.internalServerError).engineError, unmodelled(.internalServerError)),
+            ("400", unmodelled(.badRequest).engineError, unmodelled(.badRequest))
+        ]
+        for (label, engine, cause) in rows {
+            let outcome = EngineSignOutOutcome(
+                revokeFailure: EngineRevokeTokenFailure(refreshToken: "refresh-token", error: engine, cause: cause),
+                globalSignOutFailure: EngineGlobalSignOutFailure(accessToken: "access-token", error: engine, cause: cause)
+            )
+            guard case .service(nil, let revokeDescription, let revokeSuggestion, _) = outcome.revokeError,
+                  case .service(nil, let globalDescription, let globalSuggestion, _) = outcome.globalSignOutError else {
+                XCTFail("\(label): expected .service with no code, got \(outcome)")
+                continue
+            }
+            XCTAssertEqual(revokeDescription, engine.errorDescription, label)
+            XCTAssertEqual(revokeSuggestion, SignOutTexts.revokeNotRetried, label)
+            XCTAssertEqual(globalDescription, engine.errorDescription, label)
+            XCTAssertEqual(globalSuggestion, SignOutTexts.globalSignOutNotRetried, label)
+        }
+
+        let causeless = AuthClientError.revokeFailure(engine: internalError.engineError)
+        XCTAssertEqual(causeless.kind, .unknown)
+        XCTAssertEqual(causeless.recoverySuggestion, internalError.engineError.recoverySuggestion)
+    }
+
     // MARK: Exhaustive case indexes
 
     /// The highest index `standardKeyCaseIndex` gives. Raise it with the new case's arm.
