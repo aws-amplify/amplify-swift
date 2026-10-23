@@ -190,9 +190,11 @@ extension SessionCore {
         }
     }
 
-    /// The plugin's two checks before an answer is sent (`AWSAuthConfirmSignInTask.swift:167-190`). The
-    /// strings name the client's types, and the MFA selection's names all three values it accepts (the
-    /// plugin's leaves out `EMAIL_OTP`). A failure keeps the attempt: nothing reached the engine.
+    /// The checks before an answer is sent. Two are the plugin's (`AWSAuthConfirmSignInTask`'s
+    /// `validateRequestForMFASelection` and `validateRequestForFactorSelection`), with strings that name the client's
+    /// types; the MFA selection's names all three values it accepts (the plugin's leaves out `EMAIL_OTP`). The client
+    /// adds two: an MFA setup selection must be one of the step's choices, and a `WEB_AUTHN` first factor one the step
+    /// offers. A failure keeps the attempt: nothing reached the engine.
     static func validate(_ response: String, for step: AuthClientSignInStep?) throws {
         switch step {
         case .continueSignInWithMFASelection:

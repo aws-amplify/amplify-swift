@@ -104,13 +104,15 @@ protocol SessionEngine: Sendable {
 
     /// Answers the pending sign-in's challenge.
     ///
-    /// **Which failures keep the attempt** (ported from the plugin's
-    /// `AWSAuthConfirmSignInTask.swift:95-190`). The attempt is kept, and `pendingChallenge` still reports its step, so the user can retry:
+    /// **Which failures keep the attempt** (ported from the plugin's `AWSAuthConfirmSignInTask`:
+    /// `analyzeCurrentStateAndCreateEvent`, `answerTOTPSetup` and its selection checks). The attempt is kept, and
+    /// `pendingChallenge` still reports its step, so the user can retry:
     /// - an answer the retained machine records as an error **inside** the challenge or the TOTP setup
     ///   (`resolvingChallenge(.error)`, `resolvingTOTPSetup(.error)`): a wrong code, an invalid new
     ///   password, a failed TOTP verification, whatever the mapped error;
-    /// - an answer rejected before it is sent: `validation` (the core already checks an empty answer, and
-    ///   an MFA or first-factor selection that names no type, with the plugin's strings).
+    /// - an answer rejected before it is sent: `validation` (the core already checks an empty answer, an MFA or
+    ///   first-factor selection that names no type, an MFA setup selection outside the step's choices, and a
+    ///   `WEB_AUTHN` first factor the step does not offer, with the client's own strings, `SessionCore.validate`).
     ///
     /// The plugin also retries a failed WebAuthn step (`signingInWithWebAuthn(.error)`). The client does not:
     /// a failed WebAuthn step drops the attempt, and the user signs in again.

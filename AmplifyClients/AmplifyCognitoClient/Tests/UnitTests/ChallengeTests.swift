@@ -337,8 +337,8 @@ final class ChallengeTests: XCTestCase {
 
     // MARK: Which confirmation failures keep the attempt
 
-    /// The plugin validates an MFA selection before sending it (`AWSAuthConfirmSignInTask.swift:167-177`),
-    /// and the attempt survives.
+    /// The plugin validates an MFA selection before sending it
+    /// (`AWSAuthConfirmSignInTask.validateRequestForMFASelection`), and the attempt survives.
     ///
     /// - Given: a sign-in waiting on an MFA selection
     /// - When: it is answered with something that is not an MFA type, then with `sms_mfa`
@@ -449,7 +449,7 @@ final class ChallengeTests: XCTestCase {
     }
 
     /// The plugin validates a first-factor selection before sending it
-    /// (`AWSAuthConfirmSignInTask.swift:179-190`), and the attempt survives.
+    /// (`AWSAuthConfirmSignInTask.validateRequestForFactorSelection`), and the attempt survives.
     ///
     /// - Given: a sign-in waiting on a first-factor selection
     /// - When: it is answered with something that is not a factor, then with `EMAIL_OTP`

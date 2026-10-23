@@ -90,9 +90,9 @@ enum LiveSignInSteps {
         case send(StateMachineEvent)
     }
 
-    /// The plugin's `analyzeCurrentStateAndCreateEvent` (`AWSAuthConfirmSignInTask.swift:95-165`). The two
-    /// selection validations it runs first are the core's (`SessionCore.validate`), before the engine is
-    /// called. The plugin's WebAuthn retry (`signingInWithWebAuthn(.error)`) has no arm, deliberately: a
+    /// The plugin's `AWSAuthConfirmSignInTask.analyzeCurrentStateAndCreateEvent`, with its TOTP-setup arm
+    /// (`answerTOTPSetup`). The selection validations it runs first are the core's (`SessionCore.validate`), before
+    /// the engine is called. The plugin's WebAuthn retry (`signingInWithWebAuthn(.error)`) has no arm, deliberately: a
     /// failed WebAuthn step drops the attempt, so no attempt is ever
     /// retained in that state, and a new sign-in starts over.
     static func confirmation(for state: AuthState, answering data: ConfirmSignInEventData) throws -> Confirmation {
