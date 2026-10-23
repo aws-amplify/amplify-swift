@@ -6,9 +6,10 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # Gate G8: silent error matches. A `catch` pattern, cast or type test
-# against a type the engine no longer throws still compiles and never matches, so every such site is
-# listed and counted at every step. The steps (S0 to S9) are the stages in which the Cognito engine was
-# moved out of the plugin, in order; S9 and later changes enforce every rule.
+# against a type the engine no longer throws still compiles and never matches. `report` lists and
+# counts every site that matches one of the four types below; `check` enforces only the two rules
+# further down. The steps (S0 to S9) are the stages in which the Cognito engine was moved out of the
+# plugin, in order; S9 and later changes enforce both rules.
 #
 #   scripts/cognito-engine/error_match_gate.sh report                 # every site, classified engine-destined / split / glue
 #   scripts/cognito-engine/error_match_gate.sh diff <baseline.txt>    # compared with a committed report; exit 1 if sites were added
@@ -17,12 +18,14 @@
 #
 # The engine-destined set is scripts/cognito-engine/engine_paths.txt (scripts/cognito-engine/gen_engine_paths.py).
 #
-# Matched forms, for each of KeychainStoreError, AWSCognitoAuthError, AuthErrorConvertible and AuthError:
+# Matched forms (listed by `report`, compared by `diff`), for each of KeychainStoreError,
+# AWSCognitoAuthError, AuthErrorConvertible and AuthError:
 # `catch T.case`, `catch let x as T`, `catch is T`, `as? T`, `as! T`, `is T` (each also with `any T`),
 # and `case T.x` patterns (`if case`, `guard case`, `switch`). `extension X: …, AuthErrorConvertible`
 # conformances (single or multi-protocol) are listed too.
 #
-# Rules:
+# Rules (`check`), on AuthErrorConvertible and KeychainStoreError only; the AWSCognitoAuthError and
+# AuthError sites are listed but not checked:
 #   from S3: no `AuthErrorConvertible` token at all in engine-destined files or Engine/; no glue match on
 #            AuthErrorConvertible (cast, catch, type test) outside Plugin/Support/EngineBridge/.
 #   from S4: no `KeychainStoreError` token in Plugin/ (except EngineBridge/ and

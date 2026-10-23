@@ -7,9 +7,13 @@
 # - Privacy manifests: the engine is not a product and has no manifest, so every library product that links
 #   it must declare, with an accepted reason, each required-reason API category the engine uses, in the
 #   manifest of a target on its path to the engine (scripts/cognito-engine/check_engine_privacy_manifest.py).
-# - Error matches: no `catch`, cast or type test in the plugin or the engine matches an error type the engine no
-#   longer throws, which would compile and never match (scripts/cognito-engine/error_match_gate.sh check S9,
-#   over the file list in scripts/cognito-engine/engine_paths.txt).
+# - Error matches: the engine no longer throws AuthErrorConvertible or KeychainStoreError errors, so a `catch`, cast
+#   or type test on one would compile and never match. No engine or engine-destined source names
+#   AuthErrorConvertible, no other plugin code outside Support/EngineBridge/ casts, catches or type-tests it, and
+#   KeychainStoreError appears nowhere in the engine and nowhere in the plugin outside EngineBridge/ and
+#   KeychainStoreError+AuthConvertible.swift (scripts/cognito-engine/error_match_gate.sh check S9, over the file
+#   list in scripts/cognito-engine/engine_paths.txt). Matches on AWSCognitoAuthError and AuthError are listed by
+#   the script's report but not checked here.
 #
 # Runs on every pull request and on every push to main (no paths filter), so it can be made a required check; until
 # it is one, a failing run does not block a merge. The first two jobs run on ubuntu in the official swift image, as
