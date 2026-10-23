@@ -913,6 +913,12 @@ yet, `lib.sh`'s check exits before any AWS call unless `AWS_PROFILE` is set and 
 profile). That is all it checks: it doesn't know which account the profile belongs to. Set `AWS_PROFILE` to the
 sandbox account's profile and check `aws sts get-caller-identity` before that first run.
 
+The sandbox lives in one region, because its IAM roles are global. `provision.sh` refuses a region other than the one
+`state.json` records, and, with none recorded (a first run, a lost or another state directory), one other than the
+region of the identity pool that `amplify-cognito-client-integ-authenticated` already trusts. Another
+`COGNITO_CLIENT_INTEG_DIR` is no way round it: it would build a second sandbox and re-point the roles at it. To move
+the sandbox, run `teardown.sh` first.
+
 | User | State | Set up by |
 |---|---|---|
 | `alice`, `bob` | Confirmed, permanent passwords, no MFA | `provision.sh` |

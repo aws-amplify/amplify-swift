@@ -38,14 +38,16 @@ INFRA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$INFRA_DIR/lib.sh"
 # The region state.json records wins over AWS_REGION, and any other is refused: every other script uses the
 # recorded one, and a run in another region would build a second sandbox there, re-pointing the global roles at it.
+# Another state directory would do the same, so the way to another region is a teardown first.
 RECORDED_REGION=""
 if [[ -f "$STATE_DIR/state.json" ]]; then
     RECORDED_REGION=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('region',''))" "$STATE_DIR/state.json")
 fi
 REGION="${1:-${RECORDED_REGION:-${AWS_REGION:-us-west-2}}}"
 if [[ -n "$RECORDED_REGION" && "$REGION" != "$RECORDED_REGION" ]]; then
-    echo "Refusing: $STATE_DIR/state.json records region $RECORDED_REGION. Pass it, or point" \
-        "COGNITO_CLIENT_INTEG_DIR at another directory." >&2
+    echo "Refusing: $STATE_DIR/state.json records region $RECORDED_REGION. Pass it, or no region. The sandbox's" \
+        "IAM roles are global, so a sandbox in a second region (another COGNITO_CLIENT_INTEG_DIR included) would" \
+        "re-point them at it; to move the sandbox, run infra/teardown.sh first." >&2
     exit 1
 fi
 mkdir -p "$STATE_DIR"
@@ -55,8 +57,26 @@ require_free_disk
 # stderr passes through redact (lib.sh), so an error cannot print an account, pool or client id.
 aws() { command aws --region "$REGION" --output json "$@" 2> >(redact >&2); }
 
+# With no region recorded (a first run, or a lost or another state directory): exits if the sandbox's global
+# authenticated role already trusts an identity pool in another region, since this run would re-point it here.
+# Read-only; a role that cannot be read counts as none.
+require_roles_region() {
+    local audience
+    [[ -z "$RECORDED_REGION" ]] || return 0
+    audience=$(aws iam get-role --role-name "$NAME-authenticated" \
+        --query 'Role.AssumeRolePolicyDocument.Statement[0].Condition.StringEquals."cognito-identity.amazonaws.com:aud"' \
+        --output text 2>/dev/null || true)
+    if [[ "$audience" =~ ^([a-z]{2}-[a-z]+-[0-9]): && "${BASH_REMATCH[1]}" != "$REGION" ]]; then
+        echo "Refusing: the sandbox's role $NAME-authenticated trusts an identity pool in ${BASH_REMATCH[1]}, not" \
+            "$REGION: a sandbox is already there, and this run would re-point the role here. Use that sandbox's" \
+            "state directory and region, or run infra/teardown.sh with it first." >&2
+        exit 1
+    fi
+}
+
 require_cli_history_off
 require_recorded_account
+require_roles_region
 # Never while an infra/self-sign-up.sh run holds self sign-up on: provisioning turns it off (parity.py provision
 # checks again, under the toggle lock).
 python3 "$INFRA_DIR/parity.py" self-sign-up require-idle
