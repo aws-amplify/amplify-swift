@@ -121,6 +121,11 @@ public final class AmplifyCognitoClient: Sendable {
         /// session's existing SDK client, so its closure is not applied. One handle passing a closure and
         /// another passing none throws `sessionConfigurationMismatch`; two different closures cannot be
         /// compared, so the first handle's wins.
+        ///
+        /// Runs synchronously inside `init`, while the process-wide table of live sessions is locked, so no
+        /// other client in the process can be built until it returns. Only set configuration values in it:
+        /// don't build an `AmplifyCognitoClient` in it, which deadlocks, and don't block waiting on work on
+        /// another thread, which can deadlock the same way.
         public var configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider?
 
         /// - Parameters:

@@ -36,7 +36,9 @@ struct CognitoServiceClients: Sendable {
     /// custom engine is wrapped too.
     ///
     /// Synchronous and cheap: it builds SDK configurations and clients, which make no network call.
-    /// The escape-hatch closure is invoked here, synchronously, and never stored.
+    /// The escape-hatch closure is invoked here, synchronously, and never stored. The client builds these
+    /// clients under the session registry's process-wide lock, so the closure runs under that lock too:
+    /// `Options.configureUserPoolClient` tells the app to set values only.
     ///
     /// - Parameter baseHTTPClientEngine: The engine both clients send through, inside the user-agent
     ///   wrapper. `nil` (the SDK default) everywhere but tests. The escape hatch can still replace it for
