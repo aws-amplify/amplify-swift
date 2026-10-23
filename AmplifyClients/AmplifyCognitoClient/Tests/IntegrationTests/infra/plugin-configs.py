@@ -15,7 +15,8 @@ this sandbox's parity backends, from the state provision.sh leaves in ~/.amplify
                                  ~/.aws-amplify/amplify-ios/testconfiguration and every directory inside it,
                                  whatever AWS_AMPLIFY_TESTCONFIGURATION_DIR says, and every directory inside
                                  the configured one; the configured directory itself, when it is another,
-                                 behaves as without --dir
+                                 behaves as without --dir. Each is recognized however it is spelt (another
+                                 case on a case-insensitive volume, a symlink)
     plugin-configs.py --dir DIR --ci-shape
                                  the file set the plugin's CI downloads (CI_FILES below), from the same
                                  backends: its nine names, Gen1 where CI has Gen1 files, a `data` block only on
@@ -406,19 +407,43 @@ def serialized(name, document):
     return (json.dumps(document, indent=2, sort_keys=True) + "\n").encode()
 
 
+def relation(path, directory):
+    """"same" when `path` is `directory`, "inside" when it is inside it, else None, as the file system sees them:
+    each of `path` and its ancestors that exists is compared with `directory` by os.path.samefile, so another case
+    of the same name on a case-insensitive volume (macOS's default) is the same directory. While `directory` does
+    not exist, the paths are compared as text, case-folded (refusing a case-sensitive volume's other directory is
+    harmless; writing into the owner's under another spelling is not)."""
+    path, directory = os.path.realpath(path), os.path.realpath(directory)
+    if os.path.isdir(directory):
+        current = path
+        while True:
+            if os.path.exists(current) and os.path.samefile(current, directory):
+                return "same" if current == path else "inside"
+            parent = os.path.dirname(current)
+            if parent == current:
+                return None
+            current = parent
+    folded, folded_directory = path.casefold(), directory.casefold()
+    if folded == folded_directory:
+        return "same"
+    if folded.startswith(folded_directory.rstrip(os.sep) + os.sep):
+        return "inside"
+    return None
+
+
 def write_into(directory, ci=False):
     """Writes every file into `directory`, a directory of the caller's own: no manifest and no backups, since
     nothing there is anyone else's. Only the file names this script writes are touched. With `ci`, in the
-    shape the plugin's CI files have (`ci_shape`)."""
+    shape the plugin's CI files have (`ci_shape`). The owner's and the configured directory are recognized
+    however they are spelled (`relation`)."""
     target = os.path.realpath(directory)
-    default = os.path.realpath(TARGET_DIR)
-    owner = os.path.realpath(OWNER_TESTCONFIGURATION_DIR)
-    if target == owner or target.startswith(owner + os.sep):
+    if relation(target, OWNER_TESTCONFIGURATION_DIR):
         sys.exit("--dir must not be ~/.aws-amplify/amplify-ios/testconfiguration or inside it; run without "
                  "--dir to write there, with its manifest and backups.")
-    if target.startswith(default + os.sep):
+    to_default = relation(target, TARGET_DIR)
+    if to_default == "inside":
         sys.exit("--dir must not be inside the plugin's testconfiguration directory.")
-    if target == default:
+    if to_default == "same":
         if ci:
             sys.exit("--ci-shape writes only into a directory of its own.")
         write_all()

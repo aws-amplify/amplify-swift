@@ -378,6 +378,54 @@ class PluginConfigsTests(unittest.TestCase):
         self.assertFalse(os.path.exists(nested))
         self.assertEqual(os.listdir(self.target), [])
 
+    def other_case(self, path):
+        """`path` with its last name in another case, when the volume ignores case (macOS's default); else skips."""
+        variant = os.path.join(os.path.dirname(path), os.path.basename(path).swapcase())
+        if not (os.path.exists(variant) and os.path.samefile(variant, path)):
+            self.skipTest("the temporary directory's volume is case-sensitive")
+        return variant
+
+    def test_dir_refuses_the_owner_directory_in_another_case(self):
+        # The owner's directory, here a temporary one, spelt in another case: on a case-insensitive volume it is the
+        # same directory, and must be refused as the owner's, with and without --ci-shape, nested or not, and before
+        # it exists.
+        owner = os.path.join(self.root, "owner", "testconfiguration")
+        os.makedirs(owner)
+        with open(os.path.join(owner, OWNER_FILE), "w") as f:
+            f.write("the developer's own file")
+        self.pc.OWNER_TESTCONFIGURATION_DIR = owner
+        variant = self.other_case(owner)
+        for directory in (variant, os.path.join(variant, "nested"), os.path.join(self.other_case(
+                os.path.dirname(owner)), "testconfiguration")):
+            for ci in (False, True):
+                with self.assertRaises(SystemExit):
+                    self.quiet(lambda: self.pc.write_into(directory, ci=ci))
+        self.assertEqual(os.listdir(owner), [OWNER_FILE])
+        with open(os.path.join(owner, OWNER_FILE)) as f:
+            self.assertEqual(f.read(), "the developer's own file")
+        self.pc.OWNER_TESTCONFIGURATION_DIR = os.path.join(self.root, "missing", "testconfiguration")
+        with self.assertRaises(SystemExit):
+            self.quiet(lambda: self.pc.write_into(os.path.join(self.root, "MISSING", "TestConfiguration")))
+        self.assertFalse(os.path.exists(os.path.join(self.root, "missing")))
+        self.assertFalse(os.path.exists(os.path.join(self.root, "MISSING")))
+
+    def test_dir_naming_the_configured_directory_in_another_case_keeps_the_manifest_and_backups(self):
+        # The configured directory in another case is that directory: --dir there writes as without --dir (with the
+        # manifest and backups), and --ci-shape, or a directory inside it, is refused, so the developer's file is
+        # never overwritten unbacked or deleted.
+        self.put(OWNER_FILE, "owner April file")
+        variant = self.other_case(self.target)
+        for directory, ci in ((variant, True), (os.path.join(variant, "nested"), False),
+                              (os.path.join(variant, "nested"), True)):
+            with self.assertRaises(SystemExit):
+                self.quiet(lambda: self.pc.write_into(directory, ci=ci))
+        self.assertEqual(os.listdir(self.target), [OWNER_FILE])
+        self.quiet(lambda: self.pc.write_into(variant))
+        self.assertIn(OWNER_FILE, self.manifest()["backups"])
+        self.quiet(self.pc.remove_all)
+        self.assertEqual(self.read(OWNER_FILE), "owner April file")
+        self.assertEqual(os.listdir(self.target), [OWNER_FILE])
+
     def test_ci_shape_is_refused_for_the_configured_directory(self):
         with self.assertRaises(SystemExit):
             self.quiet(lambda: self.pc.write_into(self.target, ci=True))

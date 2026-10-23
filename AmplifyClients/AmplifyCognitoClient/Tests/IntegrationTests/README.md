@@ -832,8 +832,9 @@ account can raise a security finding, which is why it isn't the default.
 
 Write the plugin file set from the sandbox into a directory of its own, and point the build at it. Never at
 `~/.aws-amplify/amplify-ios/testconfiguration`, which holds your own plugin configuration: `--dir` writes only
-the directory it is given (mode 600 files in a 700 directory, no manifest, no backups), and refuses one inside
-that directory.
+the directory it is given (mode 600 files in a 700 directory, no manifest, no backups), and refuses that
+directory and one inside it, however the path is spelt (another case of a name on a case-insensitive volume, a
+symlink).
 
 ```bash
 cd AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests
