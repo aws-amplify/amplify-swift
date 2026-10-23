@@ -397,12 +397,14 @@ extension AuthClientError {
         self.init(engine: failure.engineError, cause: failure as? Error)
     }
 
-    /// The engine's recovery suggestions that name the plugin's `Auth.*` calls, keyed by the engine's exact text,
-    /// with the client's text for each. The first is `AuthorizationError.sessionExpired`'s, which reaches this
-    /// initializer wherever an authorization error is mapped as it is (the guest and federation paths; the refresh
-    /// path reads `.sessionExpired` itself and uses the core's text). The others are `AuthPluginErrorConstants` that
-    /// the engine does not use today; they are mapped so that an engine path that starts using one
-    /// still names the client's calls.
+    /// The engine's recovery suggestions that name the plugin's `Auth.*` calls or the plugin itself, keyed by the
+    /// engine's exact text, with the client's text for each. The first is `AuthorizationError.sessionExpired`'s, which
+    /// reaches this initializer wherever an authorization error is mapped as it is (the guest and federation paths;
+    /// the refresh path reads `.sessionExpired` itself and uses the core's text). The last is
+    /// `AuthPluginErrorConstants.configurationError`, the suggestion of either pool's invalid-configuration exception
+    /// (`InvalidUserPoolConfigurationException`, `InvalidIdentityPoolConfigurationException`) and of the engine's own
+    /// configuration errors. The others are `AuthPluginErrorConstants` that the engine does not use today; they are
+    /// mapped so that an engine path that starts using one still names the client's calls.
     static let clientRecoverySuggestions: [String: String] = [
         "Invoke Auth.signIn to re-authenticate the user":
             "Call signIn to sign the user in again.",
@@ -413,7 +415,8 @@ extension AuthClientError {
         "Get the current user Auth.getCurrentUser() and make the request":
             "Call getCurrentUser to get the signed-in user, then make the request again.",
         "Make sure that the amplify configuration passed to Auth plugin is valid":
-            "Check the user pool's settings (device tracking, for the device calls) and the client's configuration."
+            "Check the user pool's settings (device tracking, for the device calls), the identity pool's settings, and "
+                + "the client's configuration."
     ]
 
     /// How the engine names an MFA type in a text (`EngineMFAType.legacyDescription(of:)`, in the MFA setup
