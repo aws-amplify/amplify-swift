@@ -365,14 +365,15 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
         try await assertCannotSignIn(user, on: pool)
     }
 
-    /// Cleanup confirms an unconfirmed user with a resent code, then deletes it (U-PL).
+    /// Cleanup confirms an unconfirmed user with its sign-up code, then deletes it (U-PL).
     ///
     /// - Given: A fresh `ccit-confirm-` user on the passwordless pool (whose outputs name a code API),
     ///   never confirmed
     /// - When:
     ///    - `SandboxUserCleanup.delete` runs
     /// - Then:
-    ///    - It deletes the user, which can then not sign in (rather than being unconfirmed)
+    ///    - It confirms the user with the code its sign-up sent, before any sign-in (no code is resent), and deletes
+    ///      it; the user can then not sign in (rather than being unconfirmed)
     ///
     func testCleanupConfirmsAndDeletesAnUnconfirmedUser() async throws {
         let pool = try SandboxPools.pool(.passwordless)
@@ -381,6 +382,35 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
         let outcome = try await SandboxUserCleanup.delete(user)
         XCTAssertEqual(outcome, .deleted)
         XCTAssertTrue(user.isConfirmed)
+        try await assertCannotSignIn(user, on: pool)
+    }
+
+    /// Cleanup confirms an unconfirmed user with a resent code when its sign-in is refused as unconfirmed, then
+    /// deletes it (U-PL): the fallback for a user whose sign-up code could not be used.
+    ///
+    /// - Given: A fresh `ccit-confirm-` user on the passwordless pool, never confirmed, whose sign-up code has
+    ///   reached the sink (so the resent code is told from it)
+    /// - When:
+    ///    - `SandboxUserCleanup.delete` runs without confirming with the sign-up code first (`confirmingFirst: false`)
+    /// - Then:
+    ///    - Its raw sign-in is refused as unconfirmed, a new code is sent (`ResendConfirmationCode`) and confirms the
+    ///      user, and the user deletes itself; it can then not sign in
+    ///    - The code that confirmed it is not the sign-up code
+    ///
+    func testCleanupConfirmsAnUnconfirmedUserWithAResentCode() async throws {
+        let pool = try SandboxPools.pool(.passwordless)
+        let user = try await makeFreshUser(on: .passwordless, .init(needsConfirmation: true))
+        let sink = try CodeSink()
+        _ = try await sink.code(for: user, .signUp, since: user.signedUpAt)
+        let beforeTheResend = try await sink.snapshot(for: user)
+        XCTAssertFalse(user.isConfirmed, "the user was confirmed before the cleanup")
+
+        let outcome = try await SandboxUserCleanup.delete(user, sink: sink, confirmingFirst: false)
+
+        XCTAssertEqual(outcome, .deleted)
+        XCTAssertTrue(user.isConfirmed, "the cleanup did not confirm the user")
+        // The resent code is the one sent after the snapshot: the fallback asked for it.
+        _ = try await sink.code(for: user, .signUp, after: beforeTheResend, timeout: 5)
         try await assertCannotSignIn(user, on: pool)
     }
 
