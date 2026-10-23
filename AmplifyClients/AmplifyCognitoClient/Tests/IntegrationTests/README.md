@@ -756,7 +756,10 @@ policy; every AppSync API as listed; every table, with its key schema, billing m
 targets; every SSM parameter's metadata (never its value); every log group, with its retention; and the `auth/`
 objects with their ETags. Not read: AppSync schemas, resolvers, data sources and keys, and S3 objects' contents. The
 Cognito lists are read page by page to the last (`read_all_pages`: `--max-results` turns the CLI's own pagination
-off), and every other list is one the CLI pages itself. A snapshot (version 3) hashes each document normalized: lists
+off), and every other list is one the CLI pages itself. The documents leave out what AWS changes by itself: a user
+pool's user count, a Lambda's state and its runtime version (`RuntimeVersionConfig`, which the runtime's automatic
+updates move), and a role's last use; `verify-unchanged` leaves them out of an older snapshot's documents too. A
+snapshot (version 3) hashes each document normalized: lists
 AWS keeps in no order (a policy's principals, actions, resources and condition values, `"x"` read as `["x"]`, its
 statements; tags; Cognito's auth flows, attributes, URLs, OAuth settings, schema and identity providers) are sorted
 first, and a Lambda's `Layers` keep their order. Its `.docs.json` beside it keeps the documents, so a diff can name

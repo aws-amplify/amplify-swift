@@ -31,6 +31,8 @@ The documents leave out only what AWS changes by itself, with no change to the r
     - a user pool's EstimatedNumberOfUsers, which every sign-up and deletion of a CI run moves;
     - a Lambda's State, StateReason(Code) and LastUpdateStatus(Reason)(Code): Lambda makes a function idle for
       weeks Inactive, and Active again at its next invoke;
+    - a Lambda's RuntimeVersionConfig: with the runtime's automatic updates (the default), Lambda moves a function
+      to a new runtime version by itself;
     - an IAM role's RoleLastUsed (when ListRoles returns it), which every use of the role moves.
 LastModifiedDate stays in: Cognito moves it only when a pool or app client is updated, not on sign-ups, so it is
 the plainest sign of a change.
@@ -50,9 +52,9 @@ OURS = re.compile(r"(^|/)(ccit-ci-|ccit_ci_|alias/ccit-ci-|/aws/lambda/ccit-ci-|
 VOLATILE = {
     "user-pool": ("EstimatedNumberOfUsers",),
     "trigger-lambda": ("State", "StateReason", "StateReasonCode", "LastUpdateStatus", "LastUpdateStatusReason",
-                       "LastUpdateStatusReasonCode"),
+                       "LastUpdateStatusReasonCode", "RuntimeVersionConfig"),
     "lambda": ("State", "StateReason", "StateReasonCode", "LastUpdateStatus", "LastUpdateStatusReason",
-               "LastUpdateStatusReasonCode"),
+               "LastUpdateStatusReasonCode", "RuntimeVersionConfig"),
     "iam-role": ("RoleLastUsed",),
 }
 MASKS = [
@@ -64,6 +66,13 @@ MASKS = [
 ]
 # Any run of 10 or more letters and digits that has a digit (app ids, client ids, hashes in generated names).
 TOKEN = re.compile(r"[A-Za-z0-9]{10,}")
+
+
+def without_volatile(kind, doc):
+    """The document without the fields AWS changes by itself (VOLATILE, the module's doc)."""
+    if isinstance(doc, dict):
+        return {k: v for k, v in doc.items() if k not in VOLATILE.get(kind, ())}
+    return doc
 
 
 def label(name):
@@ -195,10 +204,7 @@ def build(raw_path, out_path, tag_value):
             if not line.strip():
                 continue
             row = json.loads(line)
-            doc = row["doc"]
-            if isinstance(doc, dict):
-                doc = {k: v for k, v in doc.items() if k not in VOLATILE.get(row["kind"], ())}
-            doc = redact_secrets(doc)
+            doc = redact_secrets(without_volatile(row["kind"], row["doc"]))
             key = key_of(row["kind"], row["id"])
             entries[key] = {"kind": row["kind"], "label": label(row["name"]),
                             "ours": bool(OURS.search(row["name"])),
@@ -249,9 +255,13 @@ def verify(before_path, after_path, allow_foreign):
     before, after = load(before_path), load(after_path)
     before_docs = load(docs_path(before_path)) if os.path.exists(docs_path(before_path)) else {}
     after_docs = load(docs_path(after_path)) if os.path.exists(docs_path(after_path)) else {}
-    # Secrets hashed on both sides, whichever version wrote the documents (version 2 kept them as they were).
-    before_docs = {k: redact_secrets(v) for k, v in before_docs.items()}
-    after_docs = {k: redact_secrets(v) for k, v in after_docs.items()}
+    # Secrets hashed on both sides, whichever version wrote the documents (version 2 kept them as they were), and the
+    # volatile fields left out of both, as today's VOLATILE lists them: a snapshot taken before a field was added to
+    # it still has the field.
+    before_docs = {k: redact_secrets(without_volatile(before["entries"].get(k, {}).get("kind"), v))
+                   for k, v in before_docs.items()}
+    after_docs = {k: redact_secrets(without_volatile(after["entries"].get(k, {}).get("kind"), v))
+                  for k, v in after_docs.items()}
     # Only what both snapshots read: a kind one of them does not read would show as all added, or all removed.
     compared = read_kinds(before) & read_kinds(after)
     for kind in sorted((read_kinds(before) | read_kinds(after)) - compared):

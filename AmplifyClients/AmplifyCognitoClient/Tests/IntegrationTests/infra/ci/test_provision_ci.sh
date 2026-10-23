@@ -25,7 +25,8 @@
 # files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after phase 2 makes no call, and
 # a code sink key near its expiry is extended in place; that snapshot and verify-unchanged ignore a user count, and
 # fail on a changed, removed or foreign added resource (a foreign role's inline policy, key policy, parameter or log
-# group included), but not on a ccit-ci- addition or change, and that the snapshot's documents hold no secret; that
+# group included), but not on a ccit-ci- addition or change, nor on a Lambda's runtime version, and that the
+# snapshot's documents hold no secret; that
 # teardown is a dry run by default, deletes only the ccit-ci- resources with --apply, refuses an untagged one, and
 # schedules the key's deletion before removing its alias; that a run in another region is refused; that a pool made
 # again gets its Lambdas' invoke permissions replaced; and that the library's guards refuse a name that is not
@@ -604,6 +605,35 @@ snapshot_normalizes_unordered_lists() {
     python3 "$CI_DIR/snapshot.py" verify "$dir/a.json" "$dir/e.json" >/dev/null
 }
 
+# A Lambda's RuntimeVersionConfig, which Lambda moves by itself with the runtime's automatic updates, is no change,
+# as a function and as a trigger, and in a "before" snapshot taken while the documents still kept it; a real change
+# beside it still is.
+snapshot_ignores_the_runtime_version() {
+    local dir="$WORK/runtime" out status
+    mkdir -p "$dir"
+    printf '%s\n' \
+        '{"kind": "lambda", "id": "arn:fn", "name": "plugin-fn", "doc": {"Timeout": 3, "RuntimeVersionConfig": {"RuntimeVersionArn": "arn:runtime:v1"}}}' \
+        '{"kind": "trigger-lambda", "id": "arn:fn", "name": "plugin-fn", "doc": {"Timeout": 3, "RuntimeVersionConfig": {"RuntimeVersionArn": "arn:runtime:v1"}}}' \
+        > "$dir/a.ndjson"
+    sed 's/arn:runtime:v1/arn:runtime:v2/' "$dir/a.ndjson" > "$dir/b.ndjson"
+    python3 "$CI_DIR/snapshot.py" build "$dir/a.ndjson" "$dir/a.json" t >/dev/null \
+        && python3 "$CI_DIR/snapshot.py" build "$dir/b.ndjson" "$dir/b.json" t >/dev/null || return 1
+    ! grep -q RuntimeVersionConfig "$dir/a.docs.json" || return 1
+    out=$(python3 "$CI_DIR/snapshot.py" verify "$dir/a.json" "$dir/b.json") || { echo "$out"; return 1; }
+    [[ "$out" == *" 0 changed, 0 ccit-ci- changed"* ]] || { echo "$out"; return 1; }
+    # A "before" whose documents kept the field (as snapshots did): still no change.
+    jq 'map_values(. + {RuntimeVersionConfig: {RuntimeVersionArn: "arn:runtime:v0"}})' "$dir/a.docs.json" > "$dir/old.docs.json"
+    jq '.entries |= map_values(.sha256 = "old")' "$dir/a.json" > "$dir/old.json"
+    out=$(python3 "$CI_DIR/snapshot.py" verify "$dir/old.json" "$dir/b.json") || { echo "$out"; return 1; }
+    [[ "$out" == *" 0 changed, 0 ccit-ci- changed"* ]] || { echo "$out"; return 1; }
+    sed 's/"Timeout": 3/"Timeout": 30/' "$dir/b.ndjson" > "$dir/c.ndjson"
+    python3 "$CI_DIR/snapshot.py" build "$dir/c.ndjson" "$dir/c.json" t >/dev/null || return 1
+    status=0
+    out=$(python3 "$CI_DIR/snapshot.py" verify "$dir/old.json" "$dir/c.json") || status=$?
+    (( status == 1 )) && [[ "$out" == *"CHANGED  lambda plugin-fn: Timeout"* && "$out" == *"CHANGED  trigger-lambda plugin-fn: Timeout"* ]] \
+        && [[ "$out" != *RuntimeVersionConfig* ]] || { echo "$out"; return 1; }
+}
+
 teardown_is_a_dry_run_by_default() {
     local before
     before=$(jq -S . "$FAKE_STATE")
@@ -760,6 +790,8 @@ check "snapshot and verify-unchanged: a user count is no change; a change, a rem
     snapshot_and_verify
 check "snapshot: unordered lists in another order are no change; Layers reordered or a real change are" \
     snapshot_normalizes_unordered_lists
+check "snapshot: a Lambda's RuntimeVersionConfig, which Lambda moves by itself, is no change" \
+    snapshot_ignores_the_runtime_version
 check "the Cognito lists are read to their last page: a ccit-ci- pool on page 2 is found, snapshotted, torn down" \
     lists_are_read_to_their_last_page
 check "teardown is a dry run by default and names only ccit-ci- resources" teardown_is_a_dry_run_by_default

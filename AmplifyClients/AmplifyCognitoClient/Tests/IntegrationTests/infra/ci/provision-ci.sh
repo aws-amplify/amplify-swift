@@ -1259,7 +1259,7 @@ snapshot() {
     for arn in $(printf '%s' "$lambdas" | sort -u); do
         if aws_into doc lambda get-function-configuration --function-name "$arn"; then
             doc=$(jq -c 'del(.State, .StateReason, .StateReasonCode, .LastUpdateStatus, .LastUpdateStatusReason,
-                .LastUpdateStatusReasonCode)' <<<"$doc")
+                .LastUpdateStatusReasonCode, .RuntimeVersionConfig)' <<<"$doc")
         else
             doc=$(jq -n -c --arg e "${AWS_ERR_CODE:-unknown}" '{error: $e}')
         fi
@@ -1299,7 +1299,8 @@ snapshot() {
               attached: ([.AttachedManagedPolicies[]?.PolicyArn] | sort)}}' <<<"$out" >> "$RAW"
     read_aws out lambda list-functions
     jq -c '.Functions[] | {kind: "lambda", id: .FunctionArn, name: .FunctionName, doc: (. | del(.State, .StateReason,
-        .StateReasonCode, .LastUpdateStatus, .LastUpdateStatusReason, .LastUpdateStatusReasonCode))}' <<<"$out" >> "$RAW"
+        .StateReasonCode, .LastUpdateStatus, .LastUpdateStatusReason, .LastUpdateStatusReasonCode,
+        .RuntimeVersionConfig))}' <<<"$out" >> "$RAW"
     for arn in $(jq -r '.Functions[].FunctionArn' <<<"$out"); do
         if aws_into doc lambda get-policy --function-name "$arn"; then
             doc=$(jq -c '.Policy | fromjson' <<<"$doc")
