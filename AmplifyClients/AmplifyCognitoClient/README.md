@@ -1846,6 +1846,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | MFA type `rawValue` | The Cognito name | `"sms"`, `"totp"`, `"email"`; use `challengeResponse` |
 | Deprecated `validationData` on sign-in, `.custom` flow | Supported | Not mirrored: use `clientMetadata`, `.customWithSRP` |
 | Non-JSON service response | "Report a bug" suggestion | `.service` with no code and a retry suggestion |
+| Cognito internal error (`InternalErrorException`), or an error status the SDK doesn't model | `AuthError.unknown` | `.service` with no code, suggesting a retry (a 5xx, an internal error) or naming the refusal (a 4xx) |
 | Network failure (offline, a failed lookup or connection, a timeout) | Varies by call: a sign-in's is `.unknown` with an empty description | `.service` with no code in every call, with the network error underneath |
 | Refresh refused as a reused refresh token | `AuthError.service` at every refresh; the session never expires on it | The retryable `.unknown` at first; a second refusal at least 30 seconds later in the same launch, forced or not, with nothing saved meanwhile, is `sessionExpired` |
 | Configuration change | Carries some changes, deletes the old record otherwise | `.default`: the same, and a deleted login of the same user pool is revoked. Named sessions carry the same changes and keep the old record; a changed identity pool keeps user pool tokens only |
