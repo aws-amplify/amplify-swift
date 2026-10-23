@@ -57,7 +57,7 @@ configuration's copy, which a rollback to the build with that configuration read
 (`testMatrix_purgeAfterACarry_leavesTheEarlierConfigurationsCopy_caveat`). A second caveat, also the plugin's own
 rule: a later configuration change that the rule does not carry deletes the signed-out record, and can land on an
 earlier configuration's key that still holds the user's old copy, which then restores the user signed in (design
-§4.8). Both caveats are accepted for the beta (2026-10-05).
+§4.8). Both caveats are accepted for the beta.
 
 ## 3. Rolling forward to the client after 1 — resolved within one launch
 

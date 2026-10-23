@@ -1028,15 +1028,15 @@ The provider:
 - is bound to its session for life, and keeps the session alive;
 - never falls back: a signed-out session throws `notSignedIn` and never quietly returns guest credentials, unlike the
   plugin's provider. Call `fetchAuthSession()` first if you want a signed-out session to become a guest;
-- vends nothing while a sign-in on the session waits on a challenge, whatever the session held, a guest's
-  credentials included: it throws `notSignedIn` (`.discard`), so a consumer that follows it drops what it has
-  buffered so far; with no identity pool it throws `notConfigured` (`.failLoudly`) instead. `.discard` marks the
-  change of principal only when the sign-in stops on a challenge. A sign-in
-  that completes at once (one that needs no challenge, or a hosted-UI sign-in) moves the session to the new login
-  with no `notSignedIn` in between, and so hands the user's credentials to a consumer still holding a guest's buffer,
-  which is then sent as the user. Flush a guest's buffered work before any sign-in: without a challenge it is sent as
-  the user, and with one the provider answers `.discard`. `fetchAuthSession()` still reports what the session holds.
-  The Auth plugin keeps vending a guest's credentials here;
+- vends nothing while a sign-in on the session waits on a challenge, whatever the session held, a guest's credentials
+  included: it throws `notSignedIn` (`.discard`), so a consumer that follows it drops what it has buffered so far;
+  with no identity pool it throws `notConfigured` (`.failLoudly`) instead. `.discard` marks the change of principal
+  only when the sign-in stops on a challenge. A sign-in that completes at once (one that needs no challenge, or a
+  hosted-UI sign-in) moves the session to the new login with no `notSignedIn` in between, and so hands the user's
+  credentials to a consumer still holding a guest's buffer, which is then sent as the user. Flush a guest's buffered
+  work before any sign-in: without a challenge it is sent as the user, and with one the provider answers `.discard`.
+  `fetchAuthSession()` still reports what the session holds. The Auth plugin keeps vending a guest's credentials
+  here;
 - holds no credentials of its own: each call resolves through the live session, refreshing if needed.
 
 `userPoolTokenProvider` does the same for the user pool access token.
@@ -1587,8 +1587,8 @@ never log it. The warning is temporary: it goes when the plugin uses the client 
 | A sign-out through the client, then a later configuration change that the rule doesn't copy across, onto a configuration whose key still holds an earlier copy of the user | **That copy is restored signed in**, as with the plugin: the change deletes the signed-out login and lands on the old copy. For example: alice signs in under A; B adds an identity pool and copies her, keeping A's copy; she signs out under B; D (the same user pool with a new app client, and A's identity pool) deletes B's signed-out login, and its key is A's, which still holds her |
 | Back to a plugin release before 2.51.0, with refresh-token rotation on | That plugin can't refresh on the app client at all, whatever the client did |
 | Forward from the plugin to the client, with refresh-token rotation on, after the plugin rotated the token | **The user stays signed in**: `.default` reads the plugin's record in place, so the client refreshes with the newest token the plugin saved |
-| Back to a released plugin while AWSMobileClient (Amplify v1) logins are still on the device | **The plugin migrates the old login over whatever `.default` holds**: released plugins write it with no check, so a user signed in through the client is replaced by the old AWSMobileClient user. A sign-out or purge of `.default` through the client clears those logins, so after one there is nothing to migrate. They are cleared before the signed-out login is written or the purge deletes it, so a failed write or delete leaves none. Ship a plugin release that has migrated them before you move to the client. A migrated login with no AWS credentials saved fails the plugin's unforced AWS credentials until a forced refresh |
-| To a plugin release that ships with this client, while AWSMobileClient (Amplify v1) logins are still on the device | **A user signed in through the client is kept**: the plugin clears the old logins without migrating them. **A guest the client saved is replaced**: an old user-pool or federated login, or an old guest, migrates over it, as over a guest the plugin saved, and the guest identity is lost. After a sign-out or purge of `.default` through the client there is nothing to migrate. A sign-out through the client also leaves a signed-out login, which stops the migration as a signed-in user does: the plugin clears the old logins without migrating them, so the user stays signed out even if clearing them at sign-out failed. A purge, `deleteUser` included, leaves no login, so after one only the clear protects the user. A migrated login with no AWS credentials saved fails the plugin's unforced AWS credentials until a forced refresh (`fetchAuthSession` with `forceRefresh: true`) |
+| Back to a released plugin while AWSMobileClient (Amplify v1) logins are still on the device | **The plugin migrates the old login over whatever `.default` holds**: released plugins write it with no check, so a user signed in through the client is replaced by the old AWSMobileClient user. A sign-out or purge of `.default` through the client clears those logins, so after one there is nothing to migrate, except a user pool login after one under an identity-pool-only configuration, which leaves the user pool's service (see [Sign-out](#sign-out)). They are cleared before the signed-out login is written or the purge deletes it, so a failed write or delete leaves none. Ship a plugin release that has migrated them before you move to the client. A migrated login with no AWS credentials saved fails the plugin's unforced AWS credentials until a forced refresh, or until its tokens next need refreshing |
+| To a plugin release that ships with this client, while AWSMobileClient (Amplify v1) logins are still on the device | **A user signed in through the client is kept**: the plugin clears the old logins without migrating them. **A guest the client saved is replaced**: an old user-pool or federated login, or an old guest, migrates over it, as over a guest the plugin saved, and the guest identity is lost. After a sign-out or purge of `.default` through the client there is nothing to migrate, except a user pool login left after one under an identity-pool-only configuration, which a plugin build with a user pool migrates unless it finds the signed-out login under its own configuration (see [Sign-out](#sign-out)). A sign-out through the client also leaves a signed-out login, which stops the migration as a signed-in user does: the plugin clears the old logins without migrating them, so the user stays signed out even if clearing them at sign-out failed. A purge, `deleteUser` included, leaves no login, so after one only the clear protects the user. A migrated login with no AWS credentials saved fails the plugin's unforced AWS credentials until a forced refresh (`fetchAuthSession` with `forceRefresh: true`), or until its tokens next need refreshing |
 
 ## Changing the configuration
 
@@ -1607,7 +1607,7 @@ current one:
 | Change | `.default` after the change, as with the plugin except where a row says otherwise |
 |---|---|
 | Identity pool only, then a user pool added (same identity pool) | The guest or federated identity, copied as it was; the old record is kept |
-| An identity pool added, changed or removed, same user pool, app client and region | Signed in, copied as it was; the old record is kept. With an identity pool added, the client fetches the identity on first use, and that first fetch also refreshes the user pool tokens; the plugin instead fails its unforced fetches' AWS credentials (`invalidAccountTypeException`, "…Identity Pool is not configured") until a forced refresh. With the identity pool removed, the client's `fetchAuthSession` fails the identity ID and AWS credentials with `.configuration`, and `credentialsProvider` throws `notConfigured`, while the plugin still hands out the AWS credentials and identity copied with the login. A guest or federated identity copied with the identity pool removed is signed out in the client, as a named session is, and its saved bytes stay as they were: `signIn` works, and `storedSessions` lists the row only with `includingSignedOut: true` |
+| An identity pool added, changed or removed, same user pool, app client and region | Signed in, copied as it was; the old record is kept. With an identity pool added, the client fetches the identity on first use, and that first fetch also refreshes the user pool tokens; the plugin instead fails its unforced fetches' AWS credentials (`invalidAccountTypeException`, "…Identity Pool is not configured") until a forced refresh, or until its tokens next need refreshing. With the identity pool removed, the client's `fetchAuthSession` fails the identity ID and AWS credentials with `.configuration`, and `credentialsProvider` throws `notConfigured`, while the plugin still hands out the AWS credentials and identity copied with the login. A guest or federated identity copied with the identity pool removed is signed out in the client, as a named session is, and its saved bytes stay as they were: `signIn` works, and `storedSessions` lists the row only with `includingSignedOut: true` |
 | Only the app client changed, same pools | Nothing is deleted or revoked: the record stays where it is. Its next refresh fails with `sessionExpired`, as the old app client's refresh token is refused, and the user signs in again |
 | Anything else that changes the pools (another user pool, say) | **The old login is deleted**, and `.default` is signed out |
 
@@ -1624,12 +1624,12 @@ current one:
 - **A deleted login is revoked** when its user pool is the current one, once, in the background, with the previous
   configuration's app client ID, which the recorded configuration holds. This works when that app client has token
   revocation enabled. If the revoke fails, the warning "A login deleted by a configuration change could not be
-  revoked; its refresh token stays valid until it expires." is logged under `AmplifyCognitoClient.DefaultSession`.
-  A revoke that succeeds logs nothing, at any level, and nor do the rule's copy and delete, which log only on
-  failure. A login of another user pool isn't revoked, and stays valid until it expires.
+  revoked; its refresh token stays valid until it expires." is logged under `AmplifyCognitoClient.DefaultSession`. A
+  revoke that succeeds logs nothing above verbose, and nor do the rule's copy and delete, which log above verbose
+  only on failure. A login of another user pool isn't revoked, and stays valid until it expires.
 - **The client records the configuration for the plugin** when it restores `.default`, in the plugin's own
-  `authConfiguration` item, so a plugin build started next compares with the client's configuration. A rollback to a plugin build after a
-  configuration change never copies an older login over a newer one.
+  `authConfiguration` item, so a plugin build started next compares with the client's configuration. A rollback to a
+  plugin build after a configuration change never copies an older login over a newer one.
 - A label goes with a copied login, and is deleted with a deleted one: no signed-out row is left under the old
   configuration for a login the user never signed out of. Two exceptions. When a plugin build applies a copying
   change first (a rollback to a plugin build that also changes the configuration), the plugin copies only the
@@ -1785,10 +1785,10 @@ a sink can tell the client's lines from the Auth plugin's:
 - `AmplifyCognitoClient.KeychainItemStore` and `AmplifyCognitoClient.KeychainStore`: keychain access.
 - `AmplifyCognitoClient.PlatformWebAuthnCredentials`: the passkey sheet.
 
-No category includes a session ID: a session ID can be derived from a user identifier, such as a username or
-`sub`. Most of the client's own lines are warnings and errors, and a step that succeeds usually logs nothing. The
-Cognito flows' step-by-step lines are `verbose`, not `debug`, so a sink at `.debug` sees what one at `.info` sees.
-Add a sink to see the lines:
+No category includes a session ID: a session ID can be derived from a user identifier, such as a username or `sub`.
+Most of the client's own lines are warnings and errors, and a step that succeeds usually logs nothing above verbose.
+The Cognito flows' step-by-step lines are `verbose`, not `debug`, so a sink at `.debug` sees what one at `.info`
+sees. Add a sink to see the lines:
 
 ```swift
 import AmplifyFoundation
@@ -1870,16 +1870,16 @@ The client keeps the plugin's semantics except where listed here and in the sect
   sheets are not counted.
 - **No "sign out of every session".** Loop over `storedSessions`.
 - **How many sessions an app can hold** at once has no stated limit yet. Each costs memory and SDK clients.
-- **An app and its extension sharing a session** (same access group and session ID) have no concurrency guard
-  between them. With refresh-token rotation, this can leave a record that can't refresh, so expect to handle
-  sign-in again. Nor does a running app see the extension's sign-in or sign-out at once: its session keeps what it
-  holds in memory until it reads the saved login again. A signed-in or guest session reads it at its next refresh
+- **An app and its extension sharing a session** (same access group and session ID) have no concurrency guard between
+  them. With refresh-token rotation, this can leave a record that can't refresh, so expect to handle sign-in again.
+  Nor does a running app see the extension's sign-in or sign-out at once: its session keeps what it holds in memory
+  until it reads the saved login again. A signed-in or guest session reads it at its next refresh
   (`fetchAuthSession(options: .init(forceRefresh: true))` forces one; a sign-out elsewhere is then reported as signed
   out), and, with an identity pool configured, a signed-out session at its next `fetchAuthSession` (without one, a
   signed-out session doesn't pick up another writer's login in that process). The Auth plugin with an access group
-  reads it at every `fetchAuthSession`. An extension on the Auth plugin that keeps running across the app's first
-  launch after an update, holding a guest in memory, can write that guest back over the login the app's
-  access-group migration just moved when it next refreshes: relaunch the extension after an update.
+  reads it at every `fetchAuthSession`. An extension on the Auth plugin that holds a guest in memory while the app's
+  access-group migration moves its login can write that guest back over it only from a guest refresh already running
+  at that moment.
 - **The plugin and the client side by side over `.default`** in one app are not supported: they share one saved
   login, but each keeps its tokens in memory. See [Side by side is not supported](#side-by-side-is-not-supported).
 - **`.default`'s signed-out row names the last user the client wrote**, not the plugin's: after the plugin deletes
