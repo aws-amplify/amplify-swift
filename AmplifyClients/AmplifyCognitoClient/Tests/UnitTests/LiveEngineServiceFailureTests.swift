@@ -228,6 +228,57 @@ final class LiveEngineServiceFailureTests: XCTestCase {
         }
     }
 
+    #if os(iOS) || os(macOS) || os(visionOS)
+    /// The passkey associate call, whose `CompleteWebAuthnRegistration` is sent after the ceremony.
+    ///
+    /// - Given: alice signed in over the live engine with a passkey sheet that presents nothing, Cognito answering
+    ///   `StartWebAuthnRegistration`, and `CompleteWebAuthnRegistration` failing with the user pool's
+    ///   `InternalErrorException`, then with an error status the SDK does not model (500)
+    /// - When: the live engine associates a passkey
+    /// - Then:
+    ///    - the ceremony ran once, and associate throws `.service` with no code, the retry suggestion and Cognito's
+    ///      message or the status in the description, never a bug report
+    func testACognitoFailureCompletingAPasskeyAssociationIsAServiceError() async throws {
+        guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
+            throw XCTSkip("Passkeys need iOS 17.4, macOS 13.5 or visionOS 1.0")
+        }
+        let unmodelled = UnknownAWSHTTPServiceError(
+            httpResponse: HTTPResponse(body: .empty, statusCode: .internalServerError),
+            message: "fixture message",
+            requestID: nil,
+            requestID2: nil,
+            typeName: nil
+        )
+        let failures: [(String, Error, String)] = [
+            ("internal error", AWSCognitoIdentityProvider.InternalErrorException(message: "boom"), "boom"),
+            ("unmodelled 500", unmodelled, "500")
+        ]
+        for (label, failure, shown) in failures {
+            harness = LiveEngineHarness()
+            let sheet = FakePasskeySheet()
+            let engine = try harness.engine(sheet: sheet)
+            let payload = try await harness.signedInPayload(on: engine)
+            harness.cognito.once("StartWebAuthnRegistration") { (_: StartWebAuthnRegistrationInput) in
+                WebAuthnFixtures.startRegistration()
+            }
+            harness.cognito.always("CompleteWebAuthnRegistration") {
+                (_: CompleteWebAuthnRegistrationInput) -> CompleteWebAuthnRegistrationOutput in
+                throw failure
+            }
+            let window = await WebAuthnFixtures.window()
+            let anchor = await MainActor.run { EnginePresentationAnchorBox(window) }
+            let context = EngineCeremonyContext(anchor: anchor, ceremony: WebAuthnCredentialOperations.runCeremonyDirectly)
+
+            await assertThrowsAsync({ try await engine.associateWebAuthnCredential(payload, context: context) }) { error in
+                Self.assertCodelessService(error, suggesting: AuthClientError.serviceFaultSuggestion, "associate, \(label)")
+                XCTAssertTrue(Self.mapped(error)?.errorDescription.contains(shown) == true, "associate, \(label): \(error)")
+            }
+            XCTAssertEqual(sheet.started, 1, label)
+            XCTAssertTrue(harness.cognito.operations.contains("CompleteWebAuthnRegistration"), label)
+        }
+    }
+    #endif
+
     /// Through the real SDK client: Cognito's answers with a 5xx status and an empty body, or with an error type the
     /// SDK does not model, are the unmodelled-status error the mapping keys on.
     ///
