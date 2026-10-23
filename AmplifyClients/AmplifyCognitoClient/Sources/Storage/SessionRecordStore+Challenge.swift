@@ -36,7 +36,7 @@ extension SessionRecordStore {
         static let writeFailed =
             "The interrupted sign-in could not be saved, so it does not survive the app being closed. The sign-in itself is unaffected."
         static let deleteFailed =
-            "The interrupted sign-in's saved record could not be deleted after the sign-in ended. The session's next restore deletes it."
+            "The interrupted sign-in's saved record could not be deleted after the sign-in ended. A signed-in session's next restore deletes it; a signed-out or guest session's next restore, such as after a relaunch, may offer the challenge again until it is 15 minutes old."
         static let discardFailed =
             "An interrupted sign-in's saved record that cannot be resumed could not be deleted. It is ignored."
         static let sweepFailed =
