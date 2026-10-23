@@ -70,6 +70,11 @@ final class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger, @unc
                case .signedIn:
                    if case .sessionEstablished = authZState {
                        return AuthSignInResult(nextStep: .done)
+                   } else if case .error(let error) = authZState {
+                       // The user pool accepted the answer but the identity pool step failed. The machine stays
+                       // here, so without this arm the call would never return.
+                       log.verbose("Authorization reached an error state \(error)")
+                       throw error.authError
                    } else {
                        log.verbose("Signed In, waiting for authorization to complete")
                    }

@@ -8,6 +8,7 @@
 import Foundation
 
 import Amplify
+import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import XCTest
 @testable import AWSCognitoAuthPlugin
@@ -861,5 +862,50 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest, @unchecked Senda
         } catch {
             XCTFail("Should not throw when state is already .signedIn; got \(error)")
         }
+    }
+
+    /// Test that confirmSignIn throws the identity pool's error when the user pool accepted the answer
+    ///
+    /// - Given: an auth plugin with mocked service. `RespondToAuthChallenge` accepts the code and answers tokens,
+    ///   and the identity pool's `GetId` fails with `InvalidParameterException`
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code, then getCurrentUser
+    /// - Then:
+    ///    - confirmSignIn throws a `.service` error with `AWSCognitoAuthError.invalidParameter` as underlying error,
+    ///      instead of never returning
+    ///    - the Auth call queued behind it returns too, each within the bound
+    ///
+    func testConfirmSignInThrowsTheIdentityPoolsError() async {
+        mockIdentity = MockIdentity(
+            mockGetIdResponse: { _ in
+                throw AWSCognitoIdentity.InvalidParameterException(message: "Invalid parameter passed")
+            },
+            mockGetCredentialsResponse: getCredentials
+        )
+        mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                return .testData()
+            })
+        let confirmed = expectation(description: "confirmSignIn returns")
+        let queued = expectation(description: "the queued call returns")
+
+        Task {
+            do {
+                let result = try await self.plugin.confirmSignIn(challengeResponse: "code")
+                XCTFail("Should not succeed, got \(result)")
+            } catch AuthError.service(_, _, let underlyingError) {
+                guard case .invalidParameter = underlyingError as? AWSCognitoAuthError else {
+                    XCTFail("Underlying error should be AWSCognitoAuthError.invalidParameter, got \(String(describing: underlyingError))")
+                    return
+                }
+            } catch {
+                XCTFail("Should produce a service error instead of \(error)")
+            }
+            confirmed.fulfill()
+            _ = try? await self.plugin.getCurrentUser()
+            queued.fulfill()
+        }
+
+        await fulfillment(of: [confirmed, queued], timeout: 5, enforceOrder: true)
     }
 }
