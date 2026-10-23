@@ -20,7 +20,7 @@ final class EventSinkTests: XCTestCase, @unchecked Sendable {
     /// - When:
     ///    - An event is recorded
     /// - Then:
-    ///    - The sink receives the enriched event
+    ///    - The sink receives the launch session start, then the enriched event
     ///
     func testSinkReceivesEvents() async throws {
         let mockSink = MockEventSink()
@@ -31,11 +31,11 @@ final class EventSinkTests: XCTestCase, @unchecked Sendable {
             sink: mockSink
         )
 
-        _ = try await client.record("test_event")
+        let event = try await client.record("test_event")
 
         let events = await mockSink.sentEvents
-        XCTAssertEqual(events.count, 1)
-        XCTAssertEqual(events.first?.eventType, "test_event")
+        XCTAssertEqual(events.map(\.eventType), ["_session.start", "test_event"])
+        XCTAssertEqual(events.first?.session.id, event.session.id)
 
         await client.close()
     }

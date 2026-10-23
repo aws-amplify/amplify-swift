@@ -11,7 +11,7 @@ import AmplifyFoundation
 public enum EventEnrichmentError {
     /// An operation was attempted on a closed client.
     case clientClosed(ErrorDescription, RecoverySuggestion, Error? = nil)
-    /// An event was recorded while no session was active.
+    /// No longer thrown. Kept for source compatibility.
     case noActiveSession(ErrorDescription, RecoverySuggestion, Error? = nil)
     /// Event serialization failed.
     case serialization(ErrorDescription, RecoverySuggestion, Error? = nil)
