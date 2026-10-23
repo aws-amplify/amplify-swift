@@ -6,11 +6,11 @@
 #   alice, bob  confirmed, permanent passwords
 #   carol       confirmed, TOTP enrolled and preferred (her secret is carolTotpSecret)
 #   dave, erin  reset by prepare-run.sh before every run; this script runs it once at the end
-# Then parity.py adds the plugin-parity resources: the trigger and custom-sender
-# Lambdas, the KMS key and the code sink (AppSync + DynamoDB), six more user pools from pools/*.json,
-# the hosted-UI domain, an identity-only identity pool, the SNS caller role for SMS (only while the
-# account's SNS is in the SMS sandbox), and DEVELOPER email from a verified SES domain the account already
-# owns (used read-only; never tagged, changed or deleted).
+# Then parity.py adds the plugin-parity resources: the trigger and custom-sender Lambdas, the KMS key and the code
+# sink (AppSync + DynamoDB), seven more user pools from pools/*.json, the hosted-UI domain, an identity-only
+# identity pool, the plugin suites' identity pool (P-13) with its two permissionless roles, the SNS caller role
+# for SMS (only while the account's SNS is in the SMS sandbox), and DEVELOPER email from a verified SES domain the
+# account already owns (used read-only; never tagged, changed or deleted).
 #
 # Every resource is tagged purpose=amplify-cognito-client-integ and recorded in $STATE_DIR, so
 # teardown.sh can remove exactly these and nothing else. Safe to re-run: it reuses what exists.
@@ -291,7 +291,7 @@ cat > "$STATE_DIR/amplify_outputs.json" <<JSON
 "unauthenticated_identities_enabled":true}}
 JSON
 
-# --- Plugin-parity resources (P-5 … P-8, P-6'): Lambdas, code sink, six pools ----------------------
+# --- Plugin-parity resources (P-5 … P-10, P-6', P-13, P-15): Lambdas, code sink, seven pools ---------
 # Needs node/npm (the custom sender vendors the AWS Encryption SDK). Email (P-8) uses a verified SES domain
 # the account already owns (COGNITO_CLIENT_INTEG_SES_DOMAIN picks one); COGNITO_CLIENT_INTEG_SES_EMAIL
 # creates a tagged address identity instead, whose verification is manual. SMS (P-9) needs the account's
