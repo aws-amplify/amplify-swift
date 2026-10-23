@@ -11,8 +11,10 @@ import Foundation
 /// Options for a hosted-UI (browser) sign-in.
 ///
 /// Three things are new with this client: `whenBrowserBusy`, `identityExpectation`, and the ephemeral
-/// default of `prefersEphemeralSession`. The rest carry every option the plugin's hosted-UI sign-in accepts, so
-/// the client is at parity with it:
+/// default of `prefersEphemeralSession`. The rest carry every option the plugin's hosted-UI sign-in accepts, and
+/// two of them send something other than the plugin does: an empty `prompt` list sends no `prompt` item, where
+/// the plugin sends an empty one, and a `nil` `nonce` sends one the client mints, for the token checks
+/// `identityExpectation` describes:
 ///
 /// | Here | Plugin | Authorize query item |
 /// |---|---|---|
@@ -82,7 +84,8 @@ public struct WebUIOptions {
     /// OIDC `prompt` values, controlling what happens to an existing browser session. `[.login]`
     /// forces re-authentication even if a Cognito cookie survived.
     ///
-    /// Sent space-separated, in the order given.
+    /// Sent space-separated, in the order given. An empty list sends no `prompt` item, as `nil` does; the plugin
+    /// sends an empty one.
     public var prompt: [Prompt]?
 
     /// A resource to bind to the access token's `aud` claim. Must begin with `https://`,

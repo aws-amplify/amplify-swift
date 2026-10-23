@@ -32,7 +32,7 @@ extension SessionCore {
     /// | this session's passkey registration holds the sheet (or its lease is granted, not yet attached) | refused; the registration is stopped, then the page waits up to `passkeySheetClosingTimeout` for its sheet to close | as below | as below; with no registration to stop, asked for once more with `.fail`, else the busy row |
     /// | the sheet stays busy (this session's passkey sheet did not close in time, or passed to another session as it closed) | none | — | throws `SignOutRefusal(.browserBusy(holder:))`: nothing cleared |
     /// | lease taken | around this attempt | `.present` | first stops this session's passkey registrations still before their sheet, then the engine's outcome; a page that could not be shown or completed (the window gone, the browser failed) is the engine's `SignOutRefusal`: nothing cleared |
-    /// | the user closed the page | released | — | rethrows `.userCancelled`: nothing cleared, unless the session is expired, which reruns `.skip` and reports it |
+    /// | the user closed the page | released | — | rethrows `.userCancelled`: nothing cleared, unless the session is known to be expired in this launch, which reruns `.skip` and reports it |
     /// | `cancelWebUISignIn()` or `resetSystemSheet()` interrupted the lease | released | — | waits for the sign-out's own result: the row above if that closed the page, else what it did (signed out, or its failure reported as the revoke's) |
     /// | the interrupt came before the body began (between the grant and the start; the body is abandoned, never runs) | released | — | the closed-page row, at once: nothing ran |
     /// | the caller's task was cancelled | released | — | the same decision: `CancellationError` if the body never began or closed the page (nothing cleared), else what it did, and the session is cleared |
@@ -227,9 +227,12 @@ extension SessionCore {
     }
     #endif
 
-    /// The user closed the logout page: they stay signed in, as with the plugin. Unless the session is expired
-    /// (the plugin's #3956 behaviour, keyed there on `isRefreshTokenExpired`): its tokens are dead anyway, so it
-    /// signs out without the page and reports the cookie left behind (`expiredLogoutClosed(_:)`).
+    /// The user closed the logout page: they stay signed in, as with the plugin. Unless the session is known to be
+    /// expired in this launch (the plugin's #3956 behaviour): its tokens are dead anyway, so it signs out without the
+    /// page and reports the cookie left behind (`expiredLogoutClosed(_:)`). The plugin keys that on
+    /// `isRefreshTokenExpired`, which it saves with the session, so it holds across launches; here it is `isExpired`,
+    /// in memory, set when a refresh in this launch found the refresh token dead. After a relaunch, until a refresh
+    /// finds it again, a closed page keeps the session signed in.
     private nonisolated func afterClosedLogout(_ payload: Data, global: Bool, _ error: AuthClientError) async throws -> EngineSignOutOutcome {
         guard await isExpired else {
             throw error
@@ -474,8 +477,9 @@ extension SessionCore {
         let step: Result<EngineStepResult, Error>
         do {
             step = try await .success(caller.run {
-                // A `cancelWebUISignIn()` answers once the browser has closed (bounded), so the caller told
-                // `.userCancelled` finds the sheet free (`systemSheetHolder` is `nil`).
+                // A `cancelWebUISignIn()` answers once the lease is released (bounded), so the caller told
+                // `.userCancelled` finds that `systemSheetHolder` no longer names this session: it is `nil`, or a
+                // session that was queued behind this one.
                 try await lock.withLease(for: sessionId, policy: options.whenBrowserBusy, waitsForReleaseWhenInterrupted: true) { _ in
                     // An interrupt that landed while this waited for the sheet: begin nothing.
                     guard !Task.isCancelled, !caller.isCancelled, begun.begin() else {

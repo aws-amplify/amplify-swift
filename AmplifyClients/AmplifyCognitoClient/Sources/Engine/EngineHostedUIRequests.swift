@@ -34,7 +34,7 @@ struct EngineWebUIOptions: Sendable, Equatable {
     let language: String?
     let loginHint: String?
     /// Space-separated, in the caller's order; `nil` for none, and for an empty list, which sends no `prompt`
-    /// item (the one documented divergence from the plugin, which sends an empty one).
+    /// item, where the plugin sends an empty one (documented on `WebUIOptions.prompt`).
     let prompt: String?
     let resource: String?
 }

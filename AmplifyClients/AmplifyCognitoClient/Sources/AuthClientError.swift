@@ -48,8 +48,8 @@ public enum AuthClientError {
     /// configuration: a different user pool, identity pool or keychain access group, or different settings
     /// (such as one handle passing `Options.configureUserPoolClient` and another none). Two handles on one
     /// session must agree, so the second construction throws rather than silently attaching. Also thrown by
-    /// `signOutStoredSession` and `purgeStoredSession` when a client for the session is live in this process
-    /// with a different user pool or identity pool: its records are that client's to change.
+    /// `purgeStoredSession`, and returned in `.failed` by `signOutStoredSession`, when a client for the session is
+    /// live in this process with a different user pool or identity pool: its records are that client's to change.
     case sessionConfigurationMismatch(SessionID, ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// A value supplied by the caller was invalid. `field` names it. The counterpart of Amplify
@@ -85,11 +85,12 @@ public enum AuthClientError {
     /// The user dismissed a system sheet the operation needed: the passkey sheet of a WebAuthn ceremony, or the
     /// hosted UI's sign-in browser. Also thrown when `cancelWebUISignIn()` or `resetSystemSheet()` closes the
     /// sheet. Nothing was changed; retrying is the user's choice. For the hosted UI's sign-out page it is not
-    /// thrown but returned, in `AuthClientSignOutResult.failed`, and the session stays signed in; unless the session
-    /// had expired, which is signed out on this device anyway: then it is the `.partial` result's `hostedUIError`.
+    /// thrown but returned, in `AuthClientSignOutResult.failed`, and the session stays signed in; unless a refresh in
+    /// this launch had found the session expired, which is signed out on this device anyway: then it is the `.partial`
+    /// result's `hostedUIError`.
     case userCancelled(ErrorDescription, RecoverySuggestion, Error? = nil)
 
-    /// A local WebAuthn ceremony failed before Cognito was asked anything. The underlying error is the
+    /// A local WebAuthn ceremony failed before its result was sent to Cognito. The underlying error is the
     /// platform's `ASAuthorizationError` for `.credentialAlreadyExists` and `.failed`, and an internal encoding
     /// or decoding error for `.invalidCredential`. Cognito's own WebAuthn rejections are `.service` instead.
     case webAuthnCeremonyFailed(AuthClientWebAuthnCeremonyFailure, ErrorDescription, RecoverySuggestion, Error? = nil)
