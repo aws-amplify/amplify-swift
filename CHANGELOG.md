@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.63.0 (2026-10-24)
+
+### Features
+
+- **enrichment**: send session start and stop events (#4396)
+- **auth**: AmplifyCognitoClient beta, a standalone multi-session Cognito client (#4349)
+
+### Bug Fixes
+
+- **enrichment**: declare privacy manifest entries (#4397)
+- **core**: say why a session has no credentials at the credential resolution sites
+- **core**: release a replaced value after the Atomic lock is dropped
+- **logging**: synchronize CloudWatch logging session swaps and log stream setup (#4395)
+
 ## 2.62.1 (2026-10-08)
 
 ### Bug Fixes
