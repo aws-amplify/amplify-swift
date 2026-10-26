@@ -18,4 +18,16 @@ extension ModelField {
         }
         return name
     }
+
+    /// Foreign-key field name(s) backing a `belongsTo`/`hasOne` association; empty otherwise.
+    var _associationTargetNames: [String] { // swiftlint:disable:this identifier_name
+        switch association {
+        case let .belongsTo(_, targetNames):
+            return targetNames
+        case let .hasOne(_, _, targetNames):
+            return targetNames
+        default:
+            return []
+        }
+    }
 }
