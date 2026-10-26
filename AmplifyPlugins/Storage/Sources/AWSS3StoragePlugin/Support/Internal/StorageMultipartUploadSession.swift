@@ -266,6 +266,16 @@ class StorageMultipartUploadSession: @unchecked Sendable {
         stallTimerQueue.async { [weak self] in
             self?.stallTimerWorkItem = nil
         }
+        // Only a part transfer can stall; ignore a timer that outlived one. Without this the timer
+        // can still abort an upload that is not transferring: after `pause()`/`resume()` re-arms it
+        // while CompleteMultipartUpload is in flight, after `validateForCompletion()` has failed,
+        // or in `.creating` while CreateMultipartUpload is slow -- the last of which reports
+        // `.failed` to the caller and then still lands the object in S3.
+        let isUploadingParts = serialQueue.sync {
+            guard case .parts = multipartUpload else { return false }
+            return !multipartUpload.partsCompleted
+        }
+        guard isUploadingParts else { return }
         handle(multipartUploadEvent: .aborting(error: StorageError.unknown("Upload cancelled due to progress stall timeout.", nil)))
         logger.debug("Multipart upload cancelled due to progress stall timeout")
     }
@@ -392,12 +402,7 @@ class StorageMultipartUploadSession: @unchecked Sendable {
                 }
 
                 if let uploadId = snapshot.uploadId {
-                    // Every part has been uploaded and only CompleteMultipartUpload remains. That
-                    // request is issued by the S3 client, not by this session's URLSession, so no
-                    // further progress events can arrive to re-arm the timer. The timer was just
-                    // reset by the final part's `.completed` event above; leaving it armed lets it
-                    // expire while completion is in flight and abort an upload whose bytes have
-                    // already been delivered in full.
+                    // Every part is done, so nothing can reset the timer while CompleteMultipartUpload runs.
                     cancelProgressStallTimer()
                     try client.completeMultipartUpload(uploadId: uploadId)
                 } else {

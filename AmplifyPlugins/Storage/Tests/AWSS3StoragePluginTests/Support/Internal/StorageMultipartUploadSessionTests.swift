@@ -94,7 +94,49 @@ class StorageMultipartUploadSessionTests: XCTestCase, @unchecked Sendable {
         session.startUpload()
 
         wait(for: [completedExp], timeout: client.completeMultipartUploadDelay + 1.0)
-        XCTAssertFalse(session.isAborted)
+        XCTAssertTrue(session.isCompleted)
+        XCTAssertEqual(client.abortMultipartUploadCount, 0)
+        XCTAssertEqual(client.completeMultipartUploadCount, 1)
+    }
+
+    /// `pause()` while CompleteMultipartUpload is in flight re-arms the timer through the `.parts`
+    /// case, and `uploadParts` then finds nothing pending, so nothing cancels it again before
+    /// completion returns. Cancelling at the completion call site is not enough on its own --
+    /// `fireProgressStallTimeout`'s state guard is what closes this one.
+    func testProgressStallTimeoutDoesNotAbortAfterPauseResumeDuringCompletion() throws {
+        let stallInterval: TimeInterval = 0.1
+        let completedExp = expectation(description: "Completed")
+
+        let client = MockMultipartUploadClient()
+        client.completeMultipartUploadDelay = stallInterval * 3
+        client.didCompletePartUpload = { session, _, _, _ in
+            guard session.partsCompleted else { return }
+            session.pause()
+            session.resume()
+        }
+
+        let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { event in
+            switch event {
+            case .initiated, .inProcess:
+                break
+            case .failed(let error):
+                XCTFail("Must not fail after pause/resume while completion is in flight: \(error)")
+            case .completed:
+                completedExp.fulfill()
+            }
+        }
+
+        let session = StorageMultipartUploadSession(
+            client: client,
+            bucket: "bucket",
+            key: "key",
+            onEvent: onEvent,
+            progressStallTimeoutSeconds: stallInterval
+        )
+        session.startUpload()
+
+        wait(for: [completedExp], timeout: client.completeMultipartUploadDelay + 1.0)
+        XCTAssertTrue(session.isCompleted)
         XCTAssertEqual(client.abortMultipartUploadCount, 0)
         XCTAssertEqual(client.completeMultipartUploadCount, 1)
     }

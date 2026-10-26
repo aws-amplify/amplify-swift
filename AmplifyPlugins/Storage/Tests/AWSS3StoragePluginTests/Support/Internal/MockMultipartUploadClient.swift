@@ -10,7 +10,8 @@ import XCTest
 @testable import Amplify
 @testable import AWSS3StoragePlugin
 
-class MockMultipartUploadClient: StorageMultipartUploadClient {
+// `@unchecked Sendable`: `completeMultipartUploadDelay` reports completion from a global queue; the counters are lock-guarded.
+class MockMultipartUploadClient: StorageMultipartUploadClient, @unchecked Sendable {
 
     enum Failure: Error {
         case sessionNotIntegrated
@@ -39,9 +40,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
     var shouldFailPartUpload: ((StorageMultipartUploadSession, PartNumber) -> Bool)?
     /// When true, uploadPart only reports started but never progress/completed (for stall timeout testing)
     var shouldStallPartUpload = false
-    /// Delays the `.completed` event that `completeMultipartUpload` reports back, simulating a slow
-    /// CompleteMultipartUpload request. No progress events can arrive during this window, so it is
-    /// the gap in which an armed progress-stall timer would expire.
+    /// Delays the `.completed` event from `completeMultipartUpload`, simulating a slow request.
     var completeMultipartUploadDelay: TimeInterval = 0
     var didCompletePartUpload: ((StorageMultipartUploadSession, PartNumber, String, TaskIdentifier) -> Void)?
     var didFailPartUpload: ((StorageMultipartUploadSession, PartNumber, Error) -> Void)?
@@ -115,9 +114,9 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
             return
         }
 
-        DispatchQueue.global().asyncAfter(deadline: .now() + completeMultipartUploadDelay) { [weak self] in
+        DispatchQueue.global().asyncAfter(deadline: .now() + completeMultipartUploadDelay) {
             session.handle(multipartUploadEvent: .completed(uploadId: uploadId))
-            self?.didCompleteMultipartUpload?(session, uploadId)
+            self.didCompleteMultipartUpload?(session, uploadId)
         }
     }
 
