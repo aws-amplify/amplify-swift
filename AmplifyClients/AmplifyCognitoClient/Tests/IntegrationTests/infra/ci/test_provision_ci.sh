@@ -24,7 +24,8 @@
 # only the alias-codes and MFA-required pools and what they need, updates only the script's own resources, and
 # uploads only the three new files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after phase 2 makes no call, and
 # a code sink key near its expiry is extended in place, its expiry recorded for the reminder (and by key-expiry
-# --record, read-only); that the AppSync headroom is checked only by a run that
+# --record, read-only), and that an expired one's replacement is recorded only once the uploaded files that name the
+# old key are replaced; that the AppSync headroom is checked only by a run that
 # creates the API, against CCIT_CI_APPSYNC_API_QUOTA; that a dry run refuses a custom sender to build without npm,
 # and a failed npm ci stops --apply before the sender; that lambda-drift downloads each deployed zip and tells a
 # Lambda whose files are not this checkout's, which --record --accept-deployed alone accepts; that snapshot and verify-unchanged ignore a user count, and
@@ -406,6 +407,26 @@ an_api_key_near_its_expiry_is_extended_in_place() {
         && [[ "$(jq -r .expires "$CCIT_CI_KEY_RECORD")" > "$(days_from_now 300)" ]]
 }
 
+# The expiry is recorded as soon as the key is extended, not at the end of the run: a later step that stops it (here
+# the reset Lambda's create, which fails) leaves the new date recorded, so the reminder does not ask to renew a key
+# that already was. A rerun then finishes.
+the_expiry_is_recorded_when_the_key_is_extended() {
+    jq --argjson e "$(( $(date +%s) + 10 * 86400 ))" '(.apis[] | .keys[]).expires = $e
+        | del(.lambdas["ccit-ci-new-password-reset"])' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    printf '{"expires": "%s"}\n' "$(days_from_now 10)" > "$CCIT_CI_KEY_RECORD"
+    : > "$FAKE_LOG"
+    STATUS=0
+    OUT=$(FAKE_FAIL_ONCE="lambda create-function ServiceUnavailableException" "$SCRIPT" --apply --scope all 2>&1) \
+        || STATUS=$?
+    (( STATUS == 1 )) && [[ "$OUT" == *"+ extend the tests' read-only API key"*"Recorded the code sink's API key's expiry"* ]] \
+        && [[ "$OUT" == *"Recorded the code sink's API key's expiry"*"New-password users:"*"failed (ServiceUnavailableException)"* ]] \
+        && [[ "$(jq -r .expires "$CCIT_CI_KEY_RECORD")" > "$(days_from_now 300)" ]] && no_identifiers \
+        || { echo "$OUT" | tail -8; return 1; }
+    run --apply --scope all
+    (( STATUS == 0 )) && [[ "$OUT" == *"+ create Lambda ccit-ci-new-password-reset"* ]] \
+        && jq -e '.lambdas | has("ccit-ci-new-password-reset")' "$FAKE_STATE" >/dev/null || { echo "$OUT" | tail -5; return 1; }
+}
+
 days_from_now() { python3 -c 'import datetime,sys;print(datetime.datetime.now(datetime.timezone.utc).date() + datetime.timedelta(days=int(sys.argv[1])))' "$1"; }
 
 # The code sink key's expiry, recorded for the reminder (code_sink_key.py): --apply --scope all records it, and says
@@ -428,6 +449,56 @@ the_key_expiry_is_recorded() {
         && [[ "$OUT" == *"Recorded the code sink's API key's expiry, $recorded"* ]] || { echo "$OUT"; return 1; }
     run --record
     (( STATUS == 2 ))
+}
+
+# An expired key cannot be extended: --apply makes a new one, but the two uploaded files that name the old key are never
+# overwritten, so the new expiry is not recorded (the record keeps the old date, and the reminder keeps failing): the
+# dry run says so, --apply says how to replace them and refuses at the end, its upload refused, and key-expiry
+# --record refuses too, all with read calls only to tell. Once both are deleted (by hand, after their tag check), a
+# rerun with --upload uploads them with the new key and records its expiry, and key-expiry --record then records it.
+an_expired_key_is_recorded_only_once_the_uploads_name_the_new_one() {
+    local old_record prefix="v2/testconfiguration/auth/cognito-client-ci" file newest
+    local stale="ccit-ci-default-amplify_outputs.json ccit-ci-email-alias-codes-amplify_outputs.json name another code sink key"
+    jq --argjson e "$(( $(date +%s) - 86400 ))" '(.apis[] | .keys[]).expires = $e' "$FAKE_STATE" > "$WORK/s" \
+        && mv "$WORK/s" "$FAKE_STATE"
+    printf '{"expires": "%s"}\n' "$(days_from_now -1)" > "$CCIT_CI_KEY_RECORD"
+    old_record=$(cat "$CCIT_CI_KEY_RECORD")
+    run --scope all
+    (( STATUS == 0 )) && only_reads && no_identifiers \
+        && [[ "$OUT" == *"--apply would not record the code sink's API key's expiry"*"$stale"* ]] \
+        || { echo "$OUT" | tail -8; return 1; }
+    run --apply --scope all --upload
+    (( STATUS == 1 )) && [[ "$OUT" == *"+ create the tests' read-only API key, for 364 days"* ]] \
+        && [[ "$OUT" == *"Not recorded: the uploaded auth/cognito-client-ci/ files $stale"* ]] \
+        && [[ "$OUT" == *"purpose=amplify-cognito-client-integ"*"--apply --scope all --upload"* ]] \
+        && [[ "$OUT" == *"nothing is ever overwritten"* ]] && ! calls | grep -q 'put-object' \
+        && [[ "$(cat "$CCIT_CI_KEY_RECORD")" == "$old_record" ]] && no_identifiers || { echo "$OUT" | tail -8; return 1; }
+    run key-expiry --record
+    (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"Not recorded: the uploaded auth/cognito-client-ci/ files $stale"* ]] \
+        && [[ "$(cat "$CCIT_CI_KEY_RECORD")" == "$old_record" ]] && no_identifiers || { echo "$OUT"; return 1; }
+    run key-expiry
+    (( STATUS == 0 )) && only_reads && [[ "$OUT" == *"But the uploaded auth/cognito-client-ci/ files $stale"* ]] \
+        || { echo "$OUT"; return 1; }
+    # Without --upload, the run finishes, then refuses with the steps.
+    run --apply --scope all
+    (( STATUS == 1 )) && [[ "$OUT" == *"Done: 0 calls made."*"Refusing: the uploaded auth/cognito-client-ci/ files $stale"* ]] \
+        && [[ "$(cat "$CCIT_CI_KEY_RECORD")" == "$old_record" ]] || { echo "$OUT" | tail -5; return 1; }
+    # Both deleted by hand: the rerun uploads them with the new key and records its expiry.
+    jq --arg a "$prefix/ccit-ci-default-amplify_outputs.json" --arg b "$prefix/ccit-ci-email-alias-codes-amplify_outputs.json" \
+        'del(.s3[$a], .s3[$b])' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    run --apply --scope all --upload
+    (( STATUS == 0 )) && [[ "$(calls | grep -c 's3api put-object')" == 2 ]] && no_identifiers \
+        && [[ "$OUT" == *"Recorded the code sink's API key's expiry, $(jq -r .expires "$CCIT_CI_KEY_RECORD")"* ]] \
+        && [[ "$(jq -r .expires "$CCIT_CI_KEY_RECORD")" > "$(days_from_now 300)" ]] || { echo "$OUT" | tail -8; return 1; }
+    newest=$(jq -r '[.apis[] | .keys[]] | sort_by(.expires) | last | .id' "$FAKE_STATE")
+    for file in ccit-ci-default-amplify_outputs.json ccit-ci-email-alias-codes-amplify_outputs.json; do
+        [[ "$(jq -r --arg k "$prefix/$file" '.s3[$k].body | fromjson | .data.api_key' "$FAKE_STATE")" == "$newest" ]] \
+            || { echo "$file does not name the new key"; return 1; }
+    done
+    rm -f "$CCIT_CI_KEY_RECORD"
+    run key-expiry --record
+    (( STATUS == 0 )) && only_reads && [[ "$(jq -r .expires "$CCIT_CI_KEY_RECORD")" > "$(days_from_now 300)" ]] \
+        || { echo "$OUT"; return 1; }
 }
 
 a_key_with_other_contents_refuses_the_upload() {
@@ -1031,8 +1102,12 @@ check "a phase-1 --apply --upload after phase 2 makes no call: the triggers' rol
     a_phase_1_rerun_after_phase_2_makes_no_call
 check "the code sink's API key near its expiry is extended in place, and the uploaded files stay valid" \
     an_api_key_near_its_expiry_is_extended_in_place
+check "the code sink key's expiry is recorded as soon as the key is extended, though a later step stops the run" \
+    the_expiry_is_recorded_when_the_key_is_extended
 check "the code sink key's expiry is recorded by --apply and by key-expiry --record, with read calls only" \
     the_key_expiry_is_recorded
+check "an expired key's replacement is recorded only once the uploaded files that name the old key are replaced" \
+    an_expired_key_is_recorded_only_once_the_uploads_name_the_new_one
 check "a key with other contents refuses the whole upload" a_key_with_other_contents_refuses_the_upload
 check "snapshot and verify-unchanged: a user count is no change; a change, a removal, a foreign addition fail" \
     snapshot_and_verify

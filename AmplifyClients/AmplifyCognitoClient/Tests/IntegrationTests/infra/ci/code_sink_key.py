@@ -10,16 +10,19 @@ recorded, as a date only (no identifier, no secret), in code-sink-key-expiry.jso
 the reminder needs no AWS call and no credentials: a scheduled job, or any CI run, can read it.
 
     code_sink_key.py check [--today YYYY-MM-DD] [--github] [--record FILE]
-        Exit 0 while the key has more than WARN_DAYS (30) days left; 1 within them, or once it has expired; 3 when no
-        expiry is recorded (or the record does not read). Prints one line; with --github, as a GitHub Actions
-        annotation (::warning:: within the 30 days or unrecorded, ::error:: once expired).
+        Exit 0 while the key has more than WARN_DAYS (30) days left; 1 within them, or once it has expired (renew
+        it); 3 when no expiry is recorded (or the record does not read). Prints one line; with --github, as a GitHub
+        Actions annotation (::warning:: within the 30 days or unrecorded, ::error:: once expired).
     code_sink_key.py record <expires-epoch-seconds> [--record FILE]
-        Writes the record (provision-ci.sh, after it reads, creates or extends the key). Prints the date.
+        Writes the record (provision-ci.sh, once it has read, created or extended the key, and the uploaded files
+        that name a key name that one). Prints the date.
 
 --record (or CCIT_CI_KEY_RECORD) names another record file than the committed one, as the self-tests do. Within the
 30 days, `infra/ci/provision-ci.sh --apply --scope all` extends the key in place (the same id, so the uploaded files
-stay valid) and records the new date; once it has expired, that rerun makes a new key, and the two uploaded files
-that name the old one must be replaced by hand (--upload never overwrites).
+stay valid) and records the new date. An expired key cannot be extended: that rerun makes a new key, but the two
+uploaded files that name the old one (UPLOADED_FILES) are never rewritten (--upload never overwrites), so it records
+the new expiry only once they no longer name the old key: delete both by hand, after checking their tag, and rerun
+with --upload, which uploads them again with the new key.
 """
 
 import datetime
@@ -29,8 +32,16 @@ import sys
 
 WARN_DAYS = 30
 DEFAULT_RECORD = os.path.join(os.path.dirname(os.path.abspath(__file__)), "code-sink-key-expiry.json")
-RENEW = ("rerun infra/ci/provision-ci.sh --apply --scope all, which extends it to 364 days from then, and commit "
-         "the expiry it records")
+UPLOADED_FILES = ("ccit-ci-default-amplify_outputs.json", "ccit-ci-email-alias-codes-amplify_outputs.json")
+EXTEND = ("rerun infra/ci/provision-ci.sh --apply --scope all, which extends it in place to 364 days from then (the "
+          "same key, so the uploaded files that name it stay valid), and commit the expiry it records")
+REPLACE = ("An expired key cannot be extended. infra/ci/provision-ci.sh --apply --scope all makes a new one, but the "
+           "two uploaded files that name the key (auth/cognito-client-ci/" + " and ".join(UPLOADED_FILES) + ") are "
+           "never overwritten, so it records the new key's expiry only while no uploaded file names the old key: check "
+           "that each carries "
+           "purpose=amplify-cognito-client-integ, delete both by hand, rerun infra/ci/provision-ci.sh --apply "
+           "--scope all --upload, which uploads them again with the new key and records its expiry, and commit "
+           "the record.")
 
 
 def record_path(argv):
@@ -63,12 +74,11 @@ def check(argv):
         if left < 0:
             level, status = "error", 1
             message = (f"The CI code sink's API key expired on {expires.isoformat()}: the client's code-reading tests "
-                       f"on CI fail until it is replaced. {RENEW[0].upper() + RENEW[1:]}; it makes a new key, and "
-                       f"the two uploaded files that name the old one must then be replaced by hand.")
+                       f"on CI fail until it is replaced. {REPLACE}")
         elif left <= WARN_DAYS:
             level, status = "warning", 1
             message = (f"The CI code sink's API key expires on {expires.isoformat()}, in {left} days. Before then, "
-                       f"{RENEW}.")
+                       f"{EXTEND}.")
         else:
             level, status = None, 0
             message = f"The CI code sink's API key expires on {expires.isoformat()}, in {left} days."

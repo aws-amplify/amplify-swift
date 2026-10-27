@@ -827,13 +827,18 @@ one) with `xcrun xcresulttool get test-results summary`, lists the skipped tests
 
 The code sink's API key (phase 2) lives 364 days. A rerun of `--apply --scope all` in its last 30 days extends it to
 364 days from then, keeping its id, so the two uploaded files that name it (`ccit-ci-default-amplify_outputs.json` and
-`ccit-ci-email-alias-codes-amplify_outputs.json`) stay valid. Rerun before it expires: once it has, the rerun makes a
-new key, and both files must be replaced, which `--upload` never does (it never overwrites), so replacing this
-script's own objects is then a separate step.
+`ccit-ci-email-alias-codes-amplify_outputs.json`) stay valid. Rerun before it expires: an expired key cannot be
+extended, so the rerun makes a new key, and both files must be replaced, which `--upload` never does (it never
+overwrites). The rerun then records nothing, says so, and refuses at the end: check that each of the two files carries
+`purpose=amplify-cognito-client-integ` (`aws s3api get-object-tagging`), delete them by hand, and run `--apply --scope
+all --upload` again, which uploads them with the new key and records its expiry.
 
 **The reminder.** The key's expiry is recorded, as a date only, in `infra/ci/code-sink-key-expiry.json`, committed:
-`--apply --scope all` writes it whenever it reads, creates or extends the key, and `infra/ci/provision-ci.sh key-expiry
---record` (read-only) writes it for the key as it is. Commit the file after either. `infra/ci/code_sink_key.py check`
+`--apply --scope all` writes it as soon as it has read, created or extended the key (so a later step that stops the
+run leaves it recorded), and `infra/ci/provision-ci.sh key-expiry --record` (read-only) writes it for the newest key
+as it is. Both record it only while no uploaded file names another key than that one (they read the two files to
+tell): a key made after the last one expired is not what CI reads until both files are replaced, so the record keeps
+the expired date, and the reminder keeps failing, until then. Commit the file after either. `infra/ci/code_sink_key.py check`
 reads only that file, so it needs no AWS credentials: it passes while the key has more than 30 days left, and fails
 (exit 1) within them or once it has expired, saying what to run; exit 3 means no expiry is recorded. With the
 `extended` role, `ci-overlay.sh` prints its warning or error as an annotation on every client CI run in those last

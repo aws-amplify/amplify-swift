@@ -68,7 +68,8 @@
 #   infra/ci/provision-ci.sh key-expiry [--record]
 #       read-only: prints the code sink's API key's expiry and what the reminder (code_sink_key.py check) says of
 #       it; --record writes the date to code-sink-key-expiry.json beside this script, to commit. --apply --scope all
-#       records it too, whenever it reads, creates or extends the key
+#       records it too, as soon as it has read, created or extended the key. Neither records it while an uploaded
+#       file names another key (a key made after the last one expired: those files must be replaced first)
 #   infra/ci/provision-ci.sh lambda-drift [--record [--accept-deployed]]
 #       read-only: downloads each ccit-ci- Lambda's deployed zip (GetFunction's presigned URL) and compares its
 #       files, by path and content hash, with the zip built from this checkout, or with the files
@@ -620,7 +621,8 @@ ensure_api_resolvers() {
 
 # The tests' read-only API key: one that lives at least 30 more days is reused; one that lives fewer but has not
 # expired is extended to 364 days from now, keeping its id, so the two uploaded files that name it (the default and
-# alias-codes pools' outputs, which --upload never rewrites) stay valid; else a new one, for 364 days.
+# alias-codes pools' outputs, which --upload never rewrites) stay valid; else a new one, for 364 days. Its expiry is
+# noted (recorded, with --apply) right there, before any later step can stop the run (note_key_expiry).
 ensure_api_key() {
     local out now expires input
     now=$(date +%s)
@@ -633,6 +635,7 @@ ensure_api_key() {
         if [[ -n "$API_KEY" ]]; then
             API_KEY_EXPIRES=$(CCIT_SECRET_K="$API_KEY" jq -r '[.apiKeys[] | select(.id == $ENV.CCIT_SECRET_K)][0].expires' <<<"$out")
             say "  = the code sink API key (lives at least 30 more days)"
+            note_key_expiry "$CI_MODE" || true
             return
         fi
         API_KEY=$(jq -r --argjson now "$now" \
@@ -644,6 +647,7 @@ ensure_api_key() {
                 '{apiId: $id, id: $ENV.CCIT_SECRET_K, expires: $e}')
             mutate "$API_NAME" "extend the tests' read-only API key to 364 days from now (the same key)" -- \
                 appsync update-api-key --cli-input-json "file://$(input_file "$input")"
+            note_key_expiry "$CI_MODE" || true
             return
         fi
     fi
@@ -654,6 +658,7 @@ ensure_api_key() {
     else
         API_KEY=$(new_id "api key")
     fi
+    note_key_expiry "$CI_MODE" || true
 }
 
 # --- IAM roles --------------------------------------------------------------------------------------------
@@ -1287,7 +1292,6 @@ provision() {
     else
         say "Would write into a new private directory (mode 600): $(config_files | paste -sd' ' -)"
     fi
-    [[ -z "$API_KEY_EXPIRES" ]] || note_key_expiry
     if (( UPLOAD )); then
         say "Upload:"
         upload_config
@@ -1298,6 +1302,8 @@ provision() {
     else
         say "Planned: $CI_MUTATIONS calls. Nothing was changed."
     fi
+    # Said where the key was made, and again here, where it is not lost in the run's output.
+    [[ -z "$STALE_UPLOADS" || "$CI_MODE" != "apply" ]] || die "$(stale_uploads_message)"
 }
 
 # --- The code sink key's expiry (the reminder: code_sink_key.py) --------------------------------------------
@@ -1306,14 +1312,59 @@ provision() {
 # CI run, can tell the key's last 30 days without AWS credentials. CCIT_CI_KEY_RECORD names another file.
 KEY_RECORD="${CCIT_CI_KEY_RECORD:-$CI_DIR/code-sink-key-expiry.json}"
 
-# After a run that reads, creates or extends the key: --apply records its expiry (and says to commit the record when
-# it changed); a dry run says what it would record.
+# The uploaded files that name the code sink's key (with_code_sink): --upload never rewrites them.
+KEY_FILES=(ccit-ci-default-amplify_outputs.json ccit-ci-email-alias-codes-amplify_outputs.json)
+
+# Sets STALE_UPLOADS to those of KEY_FILES that are uploaded already and name another key than API_KEY (each one's
+# name, space-separated; "" when none). Read-only: head-object and get-object, into $CI_WORK (mode 700), the key
+# compared through jq's environment, never printed.
+STALE_UPLOADS=""
+find_stale_uploads() {
+    local file key out copy
+    STALE_UPLOADS=""
+    for file in "${KEY_FILES[@]}"; do
+        key="$S3_FOLDER_KEY/$file"
+        read_aws_or_missing out "404 NoSuchKey NotFound" s3api head-object --bucket "$CI_BUCKET" --key "$key" || continue
+        copy="$CI_WORK/.key-check.$file"
+        read_aws out s3api get-object --bucket "$CI_BUCKET" --key "$key" "$copy"
+        if ! CCIT_SECRET_K="$API_KEY" jq -e '.data.api_key == $ENV.CCIT_SECRET_K' "$copy" >/dev/null 2>&1; then
+            STALE_UPLOADS+="${STALE_UPLOADS:+ }$file"
+        fi
+        rm -f "$copy"
+    done
+}
+
+stale_uploads_message() {
+    printf '%s' "the uploaded auth/$CI_S3_FOLDER/ files $STALE_UPLOADS name another code sink key than the one" \
+        "that expires on $(expiry_date), and --upload never overwrites them, so the expiry is not recorded and the" \
+        "reminder keeps failing. Check that each carries $CI_TAG_KEY=$CI_TAG_VALUE (aws s3api get-object-tagging)," \
+        "delete them by hand, then run infra/ci/provision-ci.sh --apply --scope all --upload: it uploads them again" \
+        "with the current key and records its expiry. Commit $(basename "$KEY_RECORD") after it."
+}
+
+expiry_date() {
+    date -u -r "$API_KEY_EXPIRES" +%Y-%m-%d 2>/dev/null || date -u -d "@$API_KEY_EXPIRES" +%Y-%m-%d
+}
+
+# Once the key is read, created or extended: $1 "apply" records its expiry (and says to commit the record when it
+# changed), anything else says what --apply would record. Either way only while no uploaded file names another key
+# (find_stale_uploads): a key made after the last one expired is not what CI reads until those files are replaced,
+# so its expiry is not recorded, and the reminder goes on failing, until then. Returns 1 when it does not record.
 note_key_expiry() {
-    local date before
-    date=$(date -u -r "$API_KEY_EXPIRES" +%Y-%m-%d 2>/dev/null || date -u -d "@$API_KEY_EXPIRES" +%Y-%m-%d)
-    if [[ "$CI_MODE" != "apply" ]]; then
+    local mode="$1" date before
+    date=$(expiry_date)
+    find_stale_uploads
+    if [[ -n "$STALE_UPLOADS" ]]; then
+        if [[ "$mode" == "apply" ]]; then
+            say "Not recorded: $(stale_uploads_message)"
+        else
+            say "--apply would not record the code sink's API key's expiry, $date: $(stale_uploads_message)"
+        fi
+        return 1
+    fi
+    if [[ "$mode" != "apply" ]]; then
         say "The code sink's API key expires on $date after this run; --apply records it in $(basename "$KEY_RECORD")."
-        return
+        return 0
     fi
     before=$(jq -r '.expires // ""' "$KEY_RECORD" 2>/dev/null || true)
     python3 "$CI_DIR/code_sink_key.py" record "$API_KEY_EXPIRES" --record "$KEY_RECORD" >/dev/null
@@ -1325,20 +1376,24 @@ note_key_expiry() {
     fi
 }
 
-# key-expiry [--record]: read-only. Prints the code sink key's expiry, and with --record writes it to the record.
+# key-expiry [--record]: read-only (the key's API, and the uploaded files that name the key). Prints the expiry of the
+# newest "ccit-ci tests" key, and with --record writes it to the record, or refuses while an uploaded file names
+# another key.
 key_expiry() {
     local out api
     read_aws out appsync list-graphql-apis
     api=$(jq -r --arg n "$API_NAME" '[.graphqlApis[] | select(.name == $n) | .apiId][0] // empty' <<<"$out")
     [[ -n "$api" ]] || die "there is no AppSync API $API_NAME, so no code sink key."
     read_aws out appsync list-api-keys --api-id "$api"
-    API_KEY_EXPIRES=$(jq -r '[.apiKeys[] | select(.description == "ccit-ci tests") | .expires] | max // empty' <<<"$out")
-    [[ -n "$API_KEY_EXPIRES" ]] || die "the code sink API has no \"ccit-ci tests\" key."
+    API_KEY=$(jq -r '[.apiKeys[] | select(.description == "ccit-ci tests")] | sort_by(.expires) | last | .id // empty' <<<"$out")
+    [[ -n "$API_KEY" ]] || die "the code sink API has no \"ccit-ci tests\" key."
+    API_KEY_EXPIRES=$(CCIT_SECRET_K="$API_KEY" jq -r '[.apiKeys[] | select(.id == $ENV.CCIT_SECRET_K)][0].expires' <<<"$out")
     if (( RECORD )); then
-        CI_MODE=apply note_key_expiry
+        note_key_expiry apply || exit 1
     else
-        say "The code sink's API key expires on $(date -u -r "$API_KEY_EXPIRES" +%Y-%m-%d 2>/dev/null \
-            || date -u -d "@$API_KEY_EXPIRES" +%Y-%m-%d)."
+        say "The code sink's API key expires on $(expiry_date)."
+        find_stale_uploads
+        [[ -z "$STALE_UPLOADS" ]] || say "But $(stale_uploads_message)"
         python3 "$CI_DIR/code_sink_key.py" check --record "$KEY_RECORD" || true
     fi
 }

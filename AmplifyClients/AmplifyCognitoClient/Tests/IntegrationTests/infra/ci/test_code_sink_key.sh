@@ -11,9 +11,10 @@
 #   bash infra/ci/test_code_sink_key.sh
 #
 # It checks that a key with more than 30 days left passes; that one within 30 days, on its last day, or expired
-# fails, with a GitHub warning or error that says how to renew it; that no record, or one that does not read, is its
-# own status (3) with a warning; that `record` writes the date of an expiry in epoch seconds; and that the committed
-# record reads (a date, or null until the owner records it).
+# fails, with a GitHub warning or error that says how to renew it (extended in place before the expiry; after it, a
+# new key, recorded only once the uploaded files that name the old one are replaced); that no record, or one that does
+# not read, is its own status (3) with a warning; that `record` writes the date of an expiry in epoch seconds; and
+# that the committed record reads (a date, or null until the owner records it).
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT="$CI_DIR/code_sink_key.py"
@@ -55,12 +56,26 @@ within_30_days_fails_with_a_warning() {
     (( STATUS == 1 )) && [[ "$OUT" == "The CI code sink's API key expires on 2027-10-22, in 30 days."* ]]
 }
 
+# The expired message is self-consistent: no extending (an expired key cannot be), a new key, and the uploaded files
+# that name the old one deleted, after their tag check, and uploaded again before the new expiry is recorded.
 an_expired_key_fails_with_an_error() {
     recorded 2027-10-22
     run check --today 2027-10-23 --record "$RECORD" --github
     (( STATUS == 1 )) && [[ "$OUT" == "::error::The CI code sink's API key expired on 2027-10-22"* ]] \
-        && [[ "$OUT" == *"replaced by hand"* ]]
+        && [[ "$OUT" == *"An expired key cannot be extended."*"makes a new one"* ]] \
+        && [[ "$OUT" == *"ccit-ci-default-amplify_outputs.json and ccit-ci-email-alias-codes-amplify_outputs.json"* ]] \
+        && [[ "$OUT" == *"carries purpose=amplify-cognito-client-integ, delete both by hand"*"--upload"* ]] \
+        && [[ "$OUT" != *"extends it"* && "$OUT" != *"in place"* ]]
 }
+
+# Within the 30 days, the message says the rerun extends the same key, and never that the files need replacing.
+a_key_within_its_last_days_is_extended_in_place() {
+    recorded 2027-10-22
+    run check --today 2027-10-01 --record "$RECORD"
+    (( STATUS == 1 )) && [[ "$OUT" == *"extends it in place to 364 days from then (the same key"* ]] \
+        && [[ "$OUT" != *"delete"* && "$OUT" != *"cannot be extended"* ]]
+}
+
 
 no_record_is_its_own_status() {
     local content
@@ -94,6 +109,7 @@ the_committed_record_reads() {
 check "a key with more than 30 days left passes" more_than_30_days_left_passes
 check "a key within its last 30 days fails, with a warning that says how to extend it" within_30_days_fails_with_a_warning
 check "an expired key fails, with an error that says what to replace" an_expired_key_fails_with_an_error
+check "a key within its last 30 days is to be extended in place, the same key" a_key_within_its_last_days_is_extended_in_place
 check "no record, or one that does not read, is status 3 with a warning" no_record_is_its_own_status
 check "record writes the expiry's date" record_writes_the_date
 check "the committed record is a date, or null" the_committed_record_reads
