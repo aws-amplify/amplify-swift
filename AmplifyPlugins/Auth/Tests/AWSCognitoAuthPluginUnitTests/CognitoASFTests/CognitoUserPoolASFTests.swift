@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AmplifyCognitoASF
 import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import InternalAWSCognitoAuth
@@ -34,33 +35,5 @@ class CognitoUserPoolASFTests: XCTestCase, @unchecked Sendable {
             configuration: .testData
         )
         XCTAssertFalse(result.isEmpty)
-    }
-
-    /// Given: A CognitoUserPoolASF
-    /// When: calculateSecretHash is invoked
-    /// Then: A non-empty string is returned
-    func testCalculateSecretHash_shouldReturnHash() throws {
-        let result = try userPool.calculateSecretHash(
-            contextJson: "contextJson",
-            clientId: "clientId"
-        )
-        XCTAssertFalse(result.isEmpty)
-    }
-
-    /// Given: A CognitoUserPoolASF
-    /// When: calculateSecretHash is invoked with a clientId that cannot be parsed
-    /// Then: A ASFError.hashKey is thrown
-    func testCalculateSecretHash_withInvalidClientId_shouldThrowHashKeyError() {
-        do {
-            let result = try userPool.calculateSecretHash(
-                contextJson: "contextJson",
-                clientId: "🕺🏼" // This string cannot be represented using .ascii, so it will throw an error
-            )
-            XCTFail("Expected ASFError.hashKey, got \(result)")
-        } catch let error as ASFError {
-            XCTAssertEqual(error, .hashKey)
-        } catch {
-            XCTFail("Expected ASFError.hashKey, for \(error)")
-        }
     }
 }

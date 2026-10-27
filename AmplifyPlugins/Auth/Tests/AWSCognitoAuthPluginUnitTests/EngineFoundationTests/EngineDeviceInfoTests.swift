@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AmplifyCognitoASF
 @testable import AWSCognitoAuthPlugin
 import Foundation
 @testable import InternalAWSCognitoAuth
@@ -70,7 +71,8 @@ final class EngineDeviceInfoTests: XCTestCase {
     /// - When:
     ///    - Each fingerprint field is read
     /// - Then:
-    ///    - Each equals the value built from `Amplify.DeviceInfo`, as `ASFDeviceInfo` built it before the fork
+    ///    - Each equals the value built from `Amplify.DeviceInfo`, as `ASFDeviceInfo` built it before the fork, and
+    ///      the language and the fingerprint are formatted as they were
     ///
     func testASFDeviceInfoReadsTheSameValues() async {
         let asf = ASFDeviceInfo(id: "device-id")
@@ -84,6 +86,8 @@ final class EngineDeviceInfoTests: XCTestCase {
         let height = await asf.height
         let width = await asf.width
         let type = await asf.type
+        let locale = await asf.locale
+        let fingerprint = await asf.deviceInfo()
 
         XCTAssertEqual(model, amplify.model)
         XCTAssertEqual(name, amplify.name)
@@ -93,6 +97,18 @@ final class EngineDeviceInfoTests: XCTestCase {
         XCTAssertEqual(height, String(format: "%.0f", amplify.screenBounds.height))
         XCTAssertEqual(width, String(format: "%.0f", amplify.screenBounds.width))
         XCTAssertEqual(type, Self.machineType(fallback: amplify.hostName))
+        XCTAssertEqual(locale, Locale.preferredLanguages[0])
+        let expectedFingerprint = "Apple/\(amplify.model)/\(Self.machineType(fallback: amplify.hostName))"
+            + "/-:\(amplify.operatingSystem.version)/-/-:-/\(Self.buildType)"
+        XCTAssertEqual(fingerprint, expectedFingerprint)
+    }
+
+    private static var buildType: String {
+        #if DEBUG
+        "debug"
+        #else
+        "release"
+        #endif
     }
 
     /// The `utsname` machine string, falling back to Amplify's host name, as `ASFDeviceInfo.type` built it
