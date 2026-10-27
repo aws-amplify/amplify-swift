@@ -138,6 +138,25 @@ class AffectedTargetsTests(unittest.TestCase):
             with self.subTest(readme=readme):
                 self.assertEqual(self.selected(INTEG_GROUPS, readme), [group])
 
+    def test_a_readme_a_host_app_bundles_selects_the_plugins_core_unit_group(self):
+        """With the unit groups, a README a host app bundles selects AWSPluginsCore, as any host-app file does.
+
+        - Given: this checkout's Xcode projects, where the Auth, Storage and Push host apps list these READMEs in a
+          test target's Copy Bundle Resources phase, and the real unit group file, whose AWSPluginsCore group's
+          `paths` hold `AmplifyPlugins/`
+        - When:
+           - the only changed file is one of those READMEs
+        - Then:
+           - AWSPluginsCore alone is selected, which the unit and build workflows then run (accepted: it is what
+             any other file under a plugin's host app selects there)
+        """
+        for readme in ("AmplifyPlugins/Auth/Tests/AuthHostApp/AuthIntegrationTests/README.md",
+                       "AmplifyPlugins/Storage/Tests/StorageHostApp/StorageStressTests/README.md",
+                       "AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp/"
+                       "PushNotificationHostAppUITests/README.md"):
+            with self.subTest(readme=readme):
+                self.assertEqual(self.selected(UNIT_GROUPS, readme), ["AWSPluginsCore"])
+
     def test_a_host_app_readme_no_project_bundles_selects_no_group(self):
         """A README inside a host app that no Xcode project copies into a bundle still selects nothing.
 

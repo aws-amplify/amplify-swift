@@ -38,10 +38,13 @@ SwiftPM/unit inputs.
 
 Documentation (`.md`) is ignored everywhere, except a file an Xcode project in the checkout copies into
 a bundle (a host app's README in a test target's Copy Bundle Resources): deleting or renaming that one
-breaks the host app's build, so it is attributed like any other host-app file. The projects are read
-from `--repo-root` (default: the current directory, which is the checkout in CI). A rename is seen
-only if the changed list names the old path too (`git diff --name-only --no-renames`); with rename
-detection on, git lists only the new path, which no project bundles yet.
+breaks the host app's build, so it is attributed like any other host-app file, in every group file. With
+the integration groups that selects the host app's own group. With unit_test_groups.json it selects
+AWSPluginsCore, whose `paths` hold `AmplifyPlugins/` and so cover every plugin host app, as any other
+host-app file already does there: the unit and build workflows then run AWSPluginsCore's group.
+The projects are read from `--repo-root` (default: the current directory, which is the checkout in
+CI). A rename is seen only if the changed list names the old path too (`git diff --name-only
+--no-renames`); with rename detection on, git lists only the new path, which no project bundles yet.
 
 It also validates the group config: if any group references a target that is absent from the
 SwiftPM graph (a rename, a typo, or a not-yet-wired target), it exits non-zero rather than
@@ -408,7 +411,8 @@ def main():
 
     # Groups selected by a path rule (dirs that are not SwiftPM targets). An ignored file (a README
     # under a group's path that no Xcode project bundles, say) selects nothing here either, as in the
-    # file loop above; a README a host app bundles selects the group whose path covers it.
+    # file loop above; a README a host app bundles selects every group whose path covers it (with the unit
+    # groups, AWSPluginsCore's `AmplifyPlugins/`).
     relevant = [f for f in changed if not ignored(f)]
     for name, group in groups.items():
         if any(f.startswith(p) for p in group.get("paths", []) for f in relevant):
