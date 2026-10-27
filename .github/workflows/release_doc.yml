@@ -33,6 +33,6 @@ jobs:
 
       - name: Generate doc
         env:
-          GITHUB_EMAIL: 336707698+aws-amplify-ops-app[bot]@users.noreply.github.com
-          GITHUB_USER: aws-amplify-ops-app[bot]
+          GITHUB_EMAIL: aws-amplify-ops@amazon.com
+          GITHUB_USER: aws-amplify-ops
         run: bash ./scripts/jazzy_doc_gen.sh

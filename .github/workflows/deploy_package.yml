@@ -40,8 +40,8 @@ jobs:
     needs: [unit-tests, fortify, build-amplify-swift]
     runs-on: macos-latest
     env:
-      GITHUB_EMAIL: 336707698+aws-amplify-ops-app[bot]@users.noreply.github.com
-      GITHUB_USER: aws-amplify-ops-app[bot]
+      GITHUB_EMAIL: aws-amplify-ops@amazon.com
+      GITHUB_USER: aws-amplify-ops
     steps:
       - id: retrieve-token
         name: Generate GitHub App token
