@@ -18,7 +18,8 @@
 # files is DRIFT, by name, with the files that differ, never a hash or a URL; that a URL that is not https:// on a
 # Lambda code bucket's S3 host (the real hosts' shapes are, other amazonaws.com hosts and look-alikes are not; file://
 # and http://127.0.0.1 only in the self-tests), a redirect, a download over 50 MB or one that is no zip is refused
-# (over a local server on 127.0.0.1, which only the self-tests' variable lets through); that record
+# (over a local server on 127.0.0.1, which only the self-tests' variable lets through), and a malformed URL is
+# unreadable (exit 1), not a traceback; that record
 # shows the same and writes nothing without --accept-deployed, and with it the deployed files, which compare then
 # accepts until the sources change; that check-baseline is 0 with the recorded sources, 1 once one changed, 3 with
 # no baseline; that an unexpected error is status 4, never 1; and that the committed baseline, when there is one,
@@ -220,6 +221,14 @@ only_an_aws_https_url_is_downloaded() {
         run compare "$WORK/deployed.json" "$WORK/u" --baseline "$BASELINE"
         (( STATUS == 1 )) && [[ "$OUT" == *"! ccit-ci-pre-sign-up: the deployed code could not be read: $REFUSED_URL"* ]] \
             && [[ "$OUT" != *"$url"* ]] || { echo "$url: $OUT"; return 1; }
+    done
+    # A URL that urlsplit cannot parse (the last one holds a full-width slash): unreadable, not the script's own failure.
+    for url in "https://[::1].amazonaws.com/x" "https://[awslambda-us-east-1-tasks.s3.us-east-1.amazonaws.com/x" \
+        "https://a／b-tasks.s3.us-east-1.amazonaws.com/x"; do
+        relocate pre-sign-up "$url"
+        run compare "$WORK/deployed.json" "$WORK/u" --baseline "$BASELINE"
+        (( STATUS == 1 )) && [[ "$OUT" == *"! ccit-ci-pre-sign-up: the deployed code could not be read: its code location is not a well-formed URL."* ]] \
+            && [[ "$OUT" != *Traceback* && "$OUT" != *"$url"* && "$OUT" != *amazonaws* ]] || { echo "$url: $STATUS $OUT"; return 1; }
     done
     # file:// only for the self-tests.
     relocate pre-sign-up "file://$WORK/deployed/pre-sign-up.zip"

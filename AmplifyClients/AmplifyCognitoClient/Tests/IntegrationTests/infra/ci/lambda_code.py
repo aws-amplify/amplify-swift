@@ -198,7 +198,11 @@ OPENER = urllib.request.build_opener(RefuseRedirects)
 
 def download(url, directory, suffix):
     """The deployed zip's bytes, downloaded into `directory` (private) as <suffix>.zip."""
-    if not isinstance(url, str) or not allowed_url(url):
+    try:
+        allowed = isinstance(url, str) and allowed_url(url)
+    except ValueError:  # urlsplit's, for a malformed netloc such as [::1].amazonaws.com
+        raise Unreadable("its code location is not a well-formed URL") from None
+    if not allowed:
         raise Unreadable("its code location is not an https:// URL on a Lambda code bucket's S3 host")
     path = os.path.join(directory, f"{suffix}.zip")
     try:
