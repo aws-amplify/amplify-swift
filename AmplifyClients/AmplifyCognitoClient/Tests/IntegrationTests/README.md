@@ -778,7 +778,8 @@ first, and a Lambda's `Layers` keep their order. Its `.docs.json` beside it keep
 the fields that changed, with every secret in them hashed first (the Lambdas' environment values, app client
 secrets and the SMS external ids). Given both `.docs.json` files, `verify-unchanged` hashes both sides again that
 way, so an earlier version's snapshot compares with a version-3 one, over the kinds both read. `teardown` removes
-only these resources, and is a dry run by default.
+only these resources, and is a dry run by default. `snapshot`, `key-expiry` and `lambda-drift` only read, and refuse
+`--apply` (a usage error), which would switch the script's read-only guard off for them.
 
 ```bash
 cd AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests

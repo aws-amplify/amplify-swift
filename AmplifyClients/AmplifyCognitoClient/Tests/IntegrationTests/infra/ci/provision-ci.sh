@@ -60,6 +60,8 @@
 #       lists them; AppSync schemas, resolvers and keys, and S3 objects' contents, are not read) into
 #       $CCIT_CI_DISCOVERY_DIR/snapshot-<time>.json (default /tmp/ci-disc), mode 600, beside the documents
 #       themselves, with their secrets hashed, in snapshot-<time>.docs.json, mode 600
+#   (snapshot, key-expiry and lambda-drift refuse --apply: every call they make is a read, and the read-only guard
+#   stays on for them)
 #   infra/ci/provision-ci.sh verify-unchanged <before.json> <after.json> [--allow-foreign-additions]
 #       no AWS call: fails on any changed or removed resource, and on any added one that is not ccit-ci-
 #   infra/ci/provision-ci.sh teardown [--dry-run | --apply]
@@ -100,6 +102,7 @@ ALLOW_FOREIGN=0
 POSITIONAL=()
 RECORD=0
 ACCEPT_DEPLOYED=""
+APPLY_GIVEN=0
 
 usage() {
     sed -n '/^#   infra\/ci\/provision-ci.sh/,/^# Environment/p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//' >&2
@@ -109,7 +112,7 @@ usage() {
 while (( $# > 0 )); do
     case "$1" in
         --dry-run) CI_MODE="plan" ;;
-        --apply) CI_MODE="apply" ;;
+        --apply) CI_MODE="apply"; APPLY_GIVEN=1 ;;
         --upload) UPLOAD=1 ;;
         --scope) [[ $# -ge 2 ]] || usage; SCOPE="$2"; shift ;;
         --allow-foreign-additions) ALLOW_FOREIGN=1 ;;
@@ -139,6 +142,11 @@ if [[ "$RECORD" == 1 && "$COMMAND" != "key-expiry" && "$COMMAND" != "lambda-drif
     usage
 fi
 if [[ -n "$ACCEPT_DEPLOYED" && ( "$COMMAND" != "lambda-drift" || "$RECORD" != 1 ) ]]; then
+    usage
+fi
+# The read-only commands take no --apply, which would switch aws_into's read-only guard off for them.
+if [[ "$APPLY_GIVEN" == 1 && ( "$COMMAND" == "snapshot" || "$COMMAND" == "key-expiry" || "$COMMAND" == "lambda-drift" ) ]]; then
+    echo "$COMMAND is read-only: it takes no --apply." >&2
     usage
 fi
 

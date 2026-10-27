@@ -28,14 +28,14 @@
 # old key are replaced; that the AppSync headroom is checked only by a run that
 # creates the API, against CCIT_CI_APPSYNC_API_QUOTA; that a dry run refuses a custom sender to build without npm,
 # and a failed npm ci stops --apply before the sender; that lambda-drift downloads each deployed zip and tells a
-# Lambda whose files are not this checkout's, which --record --accept-deployed alone accepts; that snapshot and verify-unchanged ignore a user count, and
-# fail on a changed, removed or foreign added resource (a foreign role's inline policy, key policy, parameter or log
-# group included), but not on a ccit-ci- addition or change, nor on a Lambda's runtime version, and that the
-# snapshot's documents hold no secret; that
-# teardown is a dry run by default, deletes only the ccit-ci- resources with --apply, refuses an untagged one, and
-# schedules the key's deletion before removing its alias; that a run in another region is refused; that a pool made
-# again gets its Lambdas' invoke permissions replaced; and that the library's guards refuse a name that is not
-# ccit-ci- and a mutating call in a dry run.
+# Lambda whose files are not this checkout's, which --record --accept-deployed alone accepts; that snapshot and
+# verify-unchanged ignore a user count, and fail on a changed, removed or foreign added resource (a foreign role's
+# inline policy, key policy, parameter or log group included), but not on a ccit-ci- addition or change, nor on a
+# Lambda's runtime version, and that the snapshot's documents hold no secret; that snapshot, key-expiry and
+# lambda-drift refuse --apply; that teardown is a dry run by default, deletes only the ccit-ci- resources with
+# --apply, refuses an untagged one, and schedules the key's deletion before removing its alias; that a run in another
+# region is refused; that a pool made again gets its Lambdas' invoke permissions replaced; and that the library's
+# guards refuse a name that is not ccit-ci- and a mutating call in a dry run.
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT="$CI_DIR/provision-ci.sh"
@@ -148,6 +148,21 @@ plus_lines_are_ours() {
 usage_is_refused() {
     run --scope bogus
     (( STATUS == 2 )) && { [[ ! -s "$FAKE_LOG" ]] || [[ -z "$(calls)" ]]; }
+}
+
+# snapshot, key-expiry and lambda-drift only read: --apply, which would switch the read-only guard off for them, is a
+# usage error, before any AWS call.
+read_only_commands_refuse_apply() {
+    local command
+    for command in snapshot key-expiry lambda-drift; do
+        run --apply "$command"
+        (( STATUS == 2 )) && [[ "$OUT" == *"$command is read-only: it takes no --apply."* ]] && [[ -z "$(calls)" ]] \
+            || { echo "$command: $OUT"; return 1; }
+    done
+    run key-expiry --record --apply
+    (( STATUS == 2 )) && [[ -z "$(calls)" ]] || return 1
+    run lambda-drift --apply --record --accept-deployed
+    (( STATUS == 2 )) && [[ -z "$(calls)" ]]
 }
 
 a_missing_config_url_is_refused() {
@@ -1085,6 +1100,7 @@ library_guards() {
 }
 
 check "bad usage is refused" usage_is_refused
+check "snapshot, key-expiry and lambda-drift refuse --apply, before any AWS call" read_only_commands_refuse_apply
 check "a missing config URL is refused before any AWS call" a_missing_config_url_is_refused
 check "a config URL without a path is refused, unprinted" a_config_url_without_a_path_is_refused
 check "the default dry run (phase 1) plans exactly the device-alias pool and what it needs" \
