@@ -1,5 +1,5 @@
 {
-  "comment": "U-REQ-TS, the plugin's MFA-required backend (AWSCognitoAuthPluginMFARequiredIntegrationTests): as U-DEF, but MFA required with TOTP and SMS, and no custom auth. Both app clients also allow choice-based sign-in (USER_AUTH), with the password as the only first factor, for the USER_AUTH sign-in that must set MFA up (RequiredMFATests), which skips on an app client that refuses USER_AUTH. `ci` is `client` as the plugin's CI backend has it (plugin-configs.py --ci-shape): no USER_PASSWORD_AUTH.",
+  "comment": "U-REQ-TS, the plugin's MFA-required backend (AWSCognitoAuthPluginMFARequiredIntegrationTests): as U-DEF, but MFA required with TOTP and SMS, and no custom auth. Both app clients also allow choice-based sign-in (USER_AUTH), with the password as the only first factor, for the USER_AUTH sign-in that must set MFA up (RequiredMFATests), which skips on an app client that refuses USER_AUTH. `ci` is `client` without USER_PASSWORD_AUTH, as the plugin's CI backend has it (plugin-configs.py --ci-shape), but with USER_AUTH, which that backend is not known to allow: for this pool, --ci-shape mirrors the client's own CI pool made from this template (ccit-ci-mfa-req-totp-sms, which CI's overlay puts in the plugin backend's place), no longer the plugin's backend.",
   "userPool": {
     "UserPoolTier": "ESSENTIALS",
     "DeletionProtection": "INACTIVE",
