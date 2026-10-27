@@ -40,9 +40,9 @@
 #   after a pool is deleted and made again, is replaced), the reset Lambda's role policy (to decrypt its parameter
 #   with the key), and an SSM parameter stored under another key than the script's own, which it stores again, with
 #   the same value, under that key. It never updates a pool or a Lambda's code: after a change to a pool template, or
-#   to lambda/triggers/triggers.mjs, lambda/custom-sender or ci/lambda/*, delete that pool or function by hand and
-#   rerun, which makes it again (with its invoke permissions). lambda-drift tells a function whose deployed code is
-#   not this checkout's.
+#   to lambda/triggers/triggers.mjs, lambda/custom-sender or ci/lambda/*, check that the pool or function carries
+#   purpose=amplify-cognito-client-integ, delete it by hand and rerun, which makes it again (with its invoke
+#   permissions). lambda-drift tells a function whose deployed files are not this checkout's.
 #
 # Every resource is named ccit-ci-… (identity pool ccit_ci_default, parameters /ccit-ci/…) and tagged
 # purpose=amplify-cognito-client-integ. The script finds them by name, creates only what is missing, refuses any
@@ -69,11 +69,12 @@
 #       read-only: prints the code sink's API key's expiry and what the reminder (code_sink_key.py check) says of
 #       it; --record writes the date to code-sink-key-expiry.json beside this script, to commit. --apply --scope all
 #       records it too, whenever it reads, creates or extends the key
-#   infra/ci/provision-ci.sh lambda-drift [--record]
-#       read-only: whether each ccit-ci- Lambda's deployed code is this checkout's (its zip, built deterministically,
-#       or the deployment lambda-baseline.json records for the same sources); exit 1 on any DRIFT. --record writes
-#       that baseline from what is deployed, to commit, once it is known to be this checkout's code. A Lambda's
-#       RuntimeVersionConfig, which Lambda moves by itself, is not compared
+#   infra/ci/provision-ci.sh lambda-drift [--record [--accept-deployed]]
+#       read-only: downloads each ccit-ci- Lambda's deployed zip (GetFunction's presigned URL) and compares its
+#       files, by path and content hash, with the zip built from this checkout, or with the files
+#       lambda-baseline.json accepted for the same sources; exit 1 on any DRIFT. --record prints that per-file
+#       comparison and, only with --accept-deployed, writes the deployed files as the baseline, to commit. The
+#       CodeSha256 is a note only, and a Lambda's RuntimeVersionConfig, which Lambda moves by itself, is not read
 #
 # Environment: COGNITO_CLIENT_INTEG_CI_CONFIG_URL, s3://<bucket>/<path>, the value of CI's AWS_S3_BUCKET_INTEG_V2
 # (the folder that holds auth/); CCIT_CI_REGION, default us-east-1; CCIT_CI_APPSYNC_API_QUOTA, the account's AppSync
@@ -97,6 +98,7 @@ COMMAND="provision"
 ALLOW_FOREIGN=0
 POSITIONAL=()
 RECORD=0
+ACCEPT_DEPLOYED=""
 
 usage() {
     sed -n '/^#   infra\/ci\/provision-ci.sh/,/^# Environment/p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//' >&2
@@ -111,6 +113,7 @@ while (( $# > 0 )); do
         --scope) [[ $# -ge 2 ]] || usage; SCOPE="$2"; shift ;;
         --allow-foreign-additions) ALLOW_FOREIGN=1 ;;
         --record) RECORD=1 ;;
+        --accept-deployed) ACCEPT_DEPLOYED=1 ;;
         snapshot|verify-unchanged|teardown|key-expiry|lambda-drift) COMMAND="$1" ;;
         -h|--help) usage ;;
         -*) usage ;;
@@ -132,6 +135,9 @@ if [[ "$COMMAND" != "provision" && "$UPLOAD" == 1 ]]; then
     usage
 fi
 if [[ "$RECORD" == 1 && "$COMMAND" != "key-expiry" && "$COMMAND" != "lambda-drift" ]]; then
+    usage
+fi
+if [[ -n "$ACCEPT_DEPLOYED" && ( "$COMMAND" != "lambda-drift" || "$RECORD" != 1 ) ]]; then
     usage
 fi
 
@@ -770,8 +776,8 @@ generate_temporary() {
 
 # Sets ZIP to the zip for function $1 in $CI_WORK, built once per code: the sandbox's triggers.mjs, the sandbox's
 # custom sender (npm ci), or this directory's discard sender or new-password reset. The zip is deterministic
-# (lambda_code.py), so the CodeSha256 Lambda reports is the one lambda-drift builds from the same checkout. Built in
-# --apply, and for lambda-drift (BUILD_ZIPS=1). It sets a variable rather than printing the path, so
+# (lambda_code.py), and lambda-drift compares a deployed function's files with it. Built in --apply, and for
+# lambda-drift (BUILD_ZIPS=1). It sets a variable rather than printing the path, so
 # that it runs in this shell, never in a $(…), where a refusal would end only the subshell and the run would go on.
 # The custom sender needs npm, which a dry run checks too, so --apply's dry run refuses before any change without it.
 ZIP="" BUILD_ZIPS=0
@@ -1339,33 +1345,38 @@ key_expiry() {
 
 # --- Lambda drift (lambda_code.py) ------------------------------------------------------------------------
 
-# lambda-drift [--record]: read-only. Compares each ccit-ci- Lambda's deployed CodeSha256 with the zip built from
-# this checkout (the custom sender's only with npm on PATH), and, for one deployed before the zips were
-# deterministic, with the baseline lambda-baseline.json records (CCIT_CI_LAMBDA_BASELINE names another). --record
-# writes the baseline from what is deployed: only once the deployed code is known to be this checkout's.
+# lambda-drift [--record [--accept-deployed]]: read-only. Reads each ccit-ci- Lambda (its name and purpose tag checked
+# first) with GetFunction, whose Code.Location is a presigned URL to the deployed zip, and has lambda_code.py
+# download each zip into a private temporary directory and compare its files, path by path and by the SHA-256 of
+# their contents, with the zip built from this checkout (the custom sender's only with npm on PATH), or with the
+# files lambda-baseline.json accepted for the same sources (CCIT_CI_LAMBDA_BASELINE names another). The zips'
+# CodeSha256s are only a note: they hang on the compressor. --record prints the same comparison and writes the
+# deployed files as the baseline, only with --accept-deployed. The URLs reach lambda_code.py in a mode-600 file, and
+# jq through its environment: never a command line, never the output.
 lambda_drift() {
-    local suffix out deployed zips sha
+    local suffix name out deployed zips entry
     zips="$CI_WORK/zips"
     mkdir -p "$zips"
     deployed="{}"
     BUILD_ZIPS=1
     for suffix in "${TRIGGERS_ALL[@]}" discard-sender custom-sender new-password-reset; do
-        sha="null"
-        if read_aws_or_missing out ResourceNotFoundException lambda get-function-configuration \
-            --function-name "$(fn_name "$suffix")"; then
-            sha=$(jq -c '.CodeSha256' <<<"$out")
+        name=$(fn_name "$suffix")
+        entry="null"
+        if read_aws_or_missing out ResourceNotFoundException lambda get-function --function-name "$name"; then
+            require_ours lambda "$name" "$name"
+            entry=$(jq -c '{codeSha256: .Configuration.CodeSha256, location: .Code.Location}' <<<"$out")
         fi
-        deployed=$(jq -c --arg k "$suffix" --argjson v "$sha" '.[$k] = $v' <<<"$deployed")
+        deployed=$(CCIT_SECRET_E="$entry" jq -c --arg k "$suffix" '.[$k] = ($ENV.CCIT_SECRET_E | fromjson)' <<<"$deployed")
         if [[ "$suffix" == custom-sender ]] && ! command -v npm >/dev/null; then
             continue
         fi
         zip_for "$suffix"
         cp "$ZIP" "$zips/$suffix.zip"
     done
-    printf '%s\n' "$deployed" > "$CI_WORK/deployed.json"
-    say "The ccit-ci- Lambdas' code (read-only), against this checkout:"
+    (umask 077 && printf '%s\n' "$deployed" > "$CI_WORK/deployed.json")
+    say "The ccit-ci- Lambdas' deployed files (read-only), against this checkout:"
     if (( RECORD )); then
-        python3 "$CI_DIR/lambda_code.py" record "$CI_WORK/deployed.json"
+        python3 "$CI_DIR/lambda_code.py" record "$CI_WORK/deployed.json" "$zips" ${ACCEPT_DEPLOYED:+--accept-deployed}
     else
         python3 "$CI_DIR/lambda_code.py" compare "$CI_WORK/deployed.json" "$zips" ${GITHUB_ACTIONS:+--github}
     fi

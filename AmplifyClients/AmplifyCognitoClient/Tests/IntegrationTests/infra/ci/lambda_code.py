@@ -6,29 +6,39 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 """The code of the CI Lambdas (provision-ci.sh), and the check that what is deployed is what the repository holds.
-No AWS call is made here: provision-ci.sh's `lambda-drift` reads the deployed CodeSha256s and hands them over.
+No AWS call is made here: provision-ci.sh's `lambda-drift` reads each function with GetFunction (read-only) and
+hands over its CodeSha256 and the presigned URL of its deployed zip, which this script downloads and reads.
 
     lambda_code.py zip <suffix> <out.zip> [<build-dir>]
         Writes function <suffix>'s zip, deterministic (the files sorted, each dated 1980-01-01 and mode 644, as
-        parity.py builds the sandbox's), so its SHA-256 is the CodeSha256 Lambda reports for that code. The custom
-        sender's comes from <build-dir>, where `npm ci` has run (index.mjs, package.json and node_modules).
+        parity.py builds the sandbox's). The custom sender's comes from <build-dir>, where `npm ci` has run
+        (index.mjs, package.json and node_modules).
     lambda_code.py compare <deployed.json> <zips-dir> [--baseline FILE] [--github]
-        <deployed.json>: {"<suffix>": "<CodeSha256>" or null when the function does not exist}; <zips-dir> holds
-        <suffix>.zip as `zip` built it from this checkout (a missing one is not checked). Each deployed function is
-        in sync when its CodeSha256 is its zip's, or else when the baseline records that CodeSha256 for the same
-        sources (a function deployed before the zips were deterministic). Prints one line a function, by name, never
-        a hash. Exit 1 on any DRIFT, else 0.
-    lambda_code.py record <deployed.json> [--baseline FILE]
-        Records each deployed function's CodeSha256 with the digest of its sources now, as the baseline: run it only
-        when the deployed code is known to be this checkout's (right after a deploy from it).
+        <deployed.json>: {"<suffix>": {"codeSha256": …, "location": <presigned URL>} or null when the function
+        does not exist}, a mode-600 file (the URL is a credential for a few minutes: it is never printed, nor put on
+        a command line). <zips-dir> holds <suffix>.zip as `zip` built it from this checkout (a missing one is not
+        compared). Each deployed zip is downloaded into a private temporary directory and read file by file; the
+        function is in sync when its files (paths and SHA-256 of their contents) are its checkout zip's, or else
+        when they are the files the baseline accepted for the same sources. The compression, dates and modes in
+        the zip, and so its CodeSha256, do not count: CodeSha256 is printed only as a note. Prints, a function, one
+        line by name and, when it differs, which files differ, never a hash. Exit 1 on any DRIFT (or a deployed zip
+        that cannot be read), else 0.
+    lambda_code.py record <deployed.json> <zips-dir> [--baseline FILE] [--accept-deployed]
+        Prints the same per-file comparison, then records each deployed function's files (paths and content
+        hashes), with the digest of its sources now, as the baseline. Without --accept-deployed it records nothing
+        and exits 1: the operator accepts what is deployed, as the comparison shows it, by passing it.
     lambda_code.py check-baseline [--baseline FILE] [--github]
-        Offline: whether the sources each recorded function was deployed from are still this checkout's. Exit 0
-        when they are, 1 when one changed (redeploy it: delete the function, rerun provision-ci.sh --apply, then
-        lambda-drift --record), 3 when no baseline is recorded.
+        Offline: whether the sources each recorded function was accepted for are still this checkout's. Exit 0
+        when they are, 1 when one changed (redeploy it, then lambda-drift), 3 when no baseline is recorded.
+
+Any other exit status is a failure of the script itself (4: an unexpected error, with its traceback; 2: usage).
 
 The baseline is lambda-baseline.json beside this script (CCIT_CI_LAMBDA_BASELINE, or --baseline, names another), and
-holds only CodeSha256s and source digests: no identifier, no secret. Only the code is compared. A function's
-RuntimeVersionConfig, which Lambda moves by itself with the runtime's automatic updates, is never read.
+holds only file paths, content hashes and source digests: no identifier, no secret. Only the code is compared. A
+function's RuntimeVersionConfig, which Lambda moves by itself with the runtime's automatic updates, is never read.
+
+A deployed zip's URL must be https:// on an amazonaws.com host. The self-tests set CCIT_CI_TEST_FILE_CODE_URLS=1,
+which also lets a file:// URL through, for the zips their fake AWS CLI serves from local files.
 """
 
 import base64
@@ -36,7 +46,12 @@ import hashlib
 import io
 import json
 import os
+import shutil
 import sys
+import tempfile
+import traceback
+import urllib.parse
+import urllib.request
 import zipfile
 
 CI_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -55,6 +70,15 @@ SOURCES = {
     "new-password-reset": ("ci/lambda/new-password-reset", ("index.mjs",)),
     "custom-sender": ("lambda/custom-sender", ("index.mjs", "package.json", "package-lock.json")),
 }
+# Lambda takes a zip of up to 50 MB directly and 250 MB unzipped; anything far past that is not one of these.
+MAX_ZIP_BYTES = 128 * 1024 * 1024
+MAX_UNZIPPED_BYTES = 512 * 1024 * 1024
+# How many paths of each kind a difference lists before it says how many more.
+LISTED = 20
+REDEPLOY = ("Redeploy it: check that the function carries purpose=amplify-cognito-client-integ (aws lambda "
+            "list-tags), delete it by hand, and rerun provision-ci.sh --apply, which makes it again from this "
+            "checkout; or, once you accept the deployed files, run provision-ci.sh lambda-drift --record "
+            "--accept-deployed.")
 
 
 def baseline_path(argv):
@@ -103,6 +127,77 @@ def source_digest(suffix):
     return digest.hexdigest()
 
 
+class Unreadable(Exception):
+    """A deployed zip that could not be downloaded or read; the message names no URL."""
+
+
+def manifest(data):
+    """{path: SHA-256 hex of its contents} for every file in zip `data` (directory entries left out). The members
+    are read one by one, never extracted, so no path in the zip can write anywhere."""
+    files, total = {}, 0
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as archive:
+            for info in archive.infolist():
+                if info.is_dir():
+                    continue
+                total += info.file_size
+                if total > MAX_UNZIPPED_BYTES:
+                    raise Unreadable("it unzips to more than a Lambda function can hold")
+                digest = hashlib.sha256()
+                with archive.open(info) as member:
+                    for chunk in iter(lambda: member.read(1 << 20), b""):
+                        digest.update(chunk)
+                files[info.filename] = digest.hexdigest()
+    except (zipfile.BadZipFile, zipfile.LargeZipFile, OSError, ValueError, NotImplementedError) as error:
+        raise Unreadable(f"it is not a zip this script can read ({type(error).__name__})") from None
+    return files
+
+
+def allowed_url(url):
+    parsed = urllib.parse.urlsplit(url)
+    if parsed.scheme == "https":
+        host = (parsed.hostname or "").lower()
+        return host == "amazonaws.com" or host.endswith(".amazonaws.com")
+    return parsed.scheme == "file" and os.environ.get("CCIT_CI_TEST_FILE_CODE_URLS") == "1"
+
+
+def download(url, directory, suffix):
+    """The deployed zip's bytes, downloaded into `directory` (private) as <suffix>.zip."""
+    if not isinstance(url, str) or not allowed_url(url):
+        raise Unreadable("its code location is not an https:// URL on an amazonaws.com host")
+    path = os.path.join(directory, f"{suffix}.zip")
+    try:
+        with urllib.request.urlopen(url, timeout=60) as response, open(path, "wb") as out:
+            size = 0
+            for chunk in iter(lambda: response.read(1 << 20), b""):
+                size += len(chunk)
+                if size > MAX_ZIP_BYTES:
+                    raise Unreadable("its zip is larger than a Lambda function's can be")
+                out.write(chunk)
+    except Unreadable:
+        raise
+    except Exception as error:  # urllib's errors can quote the URL: only the error's kind is told.
+        raise Unreadable(f"its zip could not be downloaded ({type(error).__name__})") from None
+    with open(path, "rb") as f:
+        return f.read()
+
+
+def difference(deployed, built):
+    """(changed, only deployed, only in the checkout): sorted path lists."""
+    changed = sorted(p for p in deployed.keys() & built.keys() if deployed[p] != built[p])
+    return changed, sorted(deployed.keys() - built.keys()), sorted(built.keys() - deployed.keys())
+
+
+def difference_lines(changed, extra, missing):
+    lines = []
+    for label, paths in (("changed", changed), ("only deployed", extra), ("only in the checkout", missing)):
+        if paths:
+            shown = ", ".join(paths[:LISTED])
+            more = f", and {len(paths) - LISTED} more" if len(paths) > LISTED else ""
+            lines.append(f"      {label} ({len(paths)}): {shown}{more}")
+    return lines
+
+
 def load_baseline(path):
     try:
         with open(path) as f:
@@ -116,49 +211,91 @@ def say(line, github, level=None):
     print(f"::{level}::{line}" if github and level else line)
 
 
-def compare(argv):
+def compared(argv):
+    """Each function's comparison, in name order: (status, files, lines). `status` is "absent", "unchecked",
+    "unreadable", "same", "accepted" or "drift"; `files` the deployed files (None when there are none to record);
+    `lines` what to print, each with the level of its annotation (None for a plain line)."""
     with open(argv[1]) as f:
         deployed = json.load(f)
-    zips, github = argv[2], "--github" in argv
+    zips = argv[2]
     baseline = load_baseline(baseline_path(argv)) or {}
-    drift = False
-    for suffix in sorted(SOURCES):
-        name = PREFIX + suffix
-        sha = deployed.get(suffix)
-        zip_path = os.path.join(zips, f"{suffix}.zip")
-        if sha is None:
-            say(f"  - {name}: not deployed", github)
-            continue
-        if not os.path.isfile(zip_path):
-            say(f"  ? {name}: not checked (no zip built from this checkout)", github)
-            continue
-        with open(zip_path, "rb") as f:
-            built = code_sha256(f.read())
-        recorded = baseline.get(suffix) or {}
-        if sha == built:
-            say(f"  = {name}: the deployed code is this checkout's", github)
-        elif recorded.get("codeSha256") == sha and recorded.get("sources") == source_digest(suffix):
-            say(f"  = {name}: the deployed code is the recorded deployment of this checkout's sources", github)
-        else:
-            reason = ("its sources changed since the recorded deployment" if recorded.get("codeSha256") == sha
-                      else "the deployed code is neither this checkout's nor the recorded deployment's")
-            say(f"DRIFT {name}: {reason}. Delete the function by hand and rerun provision-ci.sh --apply, which makes "
-                f"it again from this checkout; then provision-ci.sh lambda-drift --record.", github, "error")
-            drift = True
-    return 1 if drift else 0
+    results = {}
+    workdir = tempfile.mkdtemp(prefix="ccit-ci-lambda-code.")
+    try:
+        for suffix in sorted(SOURCES):
+            name = PREFIX + suffix
+            entry = deployed.get(suffix)
+            if not isinstance(entry, dict):
+                results[suffix] = ("absent", None, [(f"  - {name}: not deployed", None)])
+                continue
+            try:
+                files = manifest(download(entry.get("location"), workdir, suffix))
+            except Unreadable as error:
+                results[suffix] = ("unreadable", None,
+                                   [(f"! {name}: the deployed code could not be read: {error}.", "error")])
+                continue
+            zip_path = os.path.join(zips, f"{suffix}.zip")
+            if not os.path.isfile(zip_path):
+                results[suffix] = ("unchecked", files,
+                                   [(f"  ? {name}: not compared (no zip built from this checkout)", None)])
+                continue
+            with open(zip_path, "rb") as f:
+                built_bytes = f.read()
+            built = manifest(built_bytes)
+            note = ("      CodeSha256, a note only: the same as this checkout's zip's"
+                    if entry.get("codeSha256") == code_sha256(built_bytes)
+                    else "      CodeSha256, a note only: not this checkout's zip's (the files decide)")
+            recorded = baseline.get(suffix) if isinstance(baseline.get(suffix), dict) else {}
+            detail = [(line, None) for line in difference_lines(*difference(files, built))]
+            if files == built:
+                results[suffix] = ("same", files,
+                                   [(f"  = {name}: the deployed files are this checkout's", None), (note, None)])
+            elif recorded.get("files") == files and recorded.get("sources") == source_digest(suffix):
+                results[suffix] = ("accepted", files,
+                                   [(f"  = {name}: the deployed files are the ones the baseline accepted for this "
+                                     f"checkout's sources. Against this checkout:", None)] + detail + [(note, None)])
+            else:
+                reason = ("its sources changed since the baseline accepted its deployed files"
+                          if recorded.get("files") == files
+                          else "the deployed files are neither this checkout's nor the ones the baseline accepted")
+                results[suffix] = ("drift", files,
+                                   [(f"DRIFT {name}: {reason}. Against this checkout:", "error")] + detail
+                                   + [(note, None), (f"      {REDEPLOY}", None)])
+    finally:
+        shutil.rmtree(workdir, ignore_errors=True)
+    return results
+
+
+def print_results(results, github):
+    for _, _, lines in results.values():
+        for line, level in lines:
+            say(line, github, level)
+
+
+def compare(argv):
+    results = compared(argv)
+    print_results(results, "--github" in argv)
+    return 1 if any(status in ("drift", "unreadable") for status, _, _ in results.values()) else 0
 
 
 def record(argv):
-    with open(argv[1]) as f:
-        deployed = json.load(f)
-    functions = {suffix: {"codeSha256": sha, "sources": source_digest(suffix)}
-                 for suffix, sha in sorted(deployed.items()) if suffix in SOURCES and isinstance(sha, str)}
+    results = compared(argv)
+    print_results(results, False)
+    if any(status == "unreadable" for status, _, _ in results.values()):
+        print("Nothing recorded: a deployed function's code could not be read.")
+        return 1
+    if "--accept-deployed" not in argv:
+        print("Nothing recorded. The baseline accepts the deployed files, as compared above, for this checkout's "
+              "sources: rerun with --accept-deployed once you have checked every difference.")
+        return 1
+    functions = {suffix: {"files": files, "sources": source_digest(suffix)}
+                 for suffix, (_, files, _) in results.items() if files is not None}
     path = baseline_path(argv)
     with open(path + ".tmp", "w") as f:
         json.dump({"functions": functions}, f, indent=1, sort_keys=True)
         f.write("\n")
     os.replace(path + ".tmp", path)
-    print(f"Recorded {len(functions)} deployed functions in {os.path.basename(path)}; commit it.")
+    print(f"Recorded the deployed files of {len(functions)} functions in {os.path.basename(path)}; commit it.")
     return 0
 
 
@@ -167,17 +304,19 @@ def check_baseline(argv):
     baseline = load_baseline(baseline_path(argv))
     if baseline is None:
         say("No CI Lambda deployment is recorded (infra/ci/lambda-baseline.json): run infra/ci/provision-ci.sh "
-            "lambda-drift (read-only), then lambda-drift --record once it is in sync, and commit the file.",
-            github, "warning")
+            "lambda-drift (read-only), then lambda-drift --record --accept-deployed once you accept what it shows, "
+            "and commit the file.", github, "warning")
         return 3
     changed = [suffix for suffix, entry in sorted(baseline.items())
-               if suffix in SOURCES and entry.get("sources") != source_digest(suffix)]
+               if suffix in SOURCES and (not isinstance(entry, dict) or entry.get("sources") != source_digest(suffix))]
     for suffix in changed:
-        say(f"CHANGED {PREFIX}{suffix}: its sources are not the ones its recorded deployment was built from. "
-            f"Redeploy it (delete the function, rerun infra/ci/provision-ci.sh --apply), then lambda-drift --record.",
+        say(f"CHANGED {PREFIX}{suffix}: its sources are not the ones its recorded deployment was accepted for. "
+            f"Redeploy it (check that it carries purpose=amplify-cognito-client-integ, delete the function, rerun "
+            f"infra/ci/provision-ci.sh --apply), then record it again: lambda-drift --record --accept-deployed.",
             github, "error")
     if not changed:
-        say(f"The sources of the {len(baseline)} recorded CI Lambdas are the ones they were deployed from.", github)
+        say(f"The sources of the {len(baseline)} recorded CI Lambdas are the ones their deployment was accepted for.",
+            github)
     return 1 if changed else 0
 
 
@@ -189,7 +328,7 @@ def main(argv):
         return 0
     if argv[:1] == ["compare"] and len(argv) >= 3:
         return compare(argv)
-    if argv[:1] == ["record"] and len(argv) >= 2:
+    if argv[:1] == ["record"] and len(argv) >= 3:
         return record(argv)
     if argv[:1] == ["check-baseline"]:
         return check_baseline(argv)
@@ -198,4 +337,8 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    try:
+        sys.exit(main(sys.argv[1:]))
+    except Exception:  # Not a status the callers act on (1, 3): the script itself failed.
+        traceback.print_exc()
+        sys.exit(4)

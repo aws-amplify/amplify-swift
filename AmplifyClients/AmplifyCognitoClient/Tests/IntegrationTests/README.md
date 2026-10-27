@@ -843,20 +843,28 @@ check and opens one issue: "renew the code sink API key" when it fails, or "reco
 while none is recorded, which passes with a warning. It also runs `lambda_code.py check-baseline` (below).
 
 A rerun never updates a user pool or a Lambda's code. After a change to a pool template, to
-`infra/lambda/triggers/triggers.mjs`, `infra/lambda/custom-sender` or `infra/ci/lambda/*`, delete that pool or function
-by hand and rerun: the rerun makes it again, and replaces the invoke permissions that name a pool's old ARN.
+`infra/lambda/triggers/triggers.mjs`, `infra/lambda/custom-sender` or `infra/ci/lambda/*`, check that the pool or
+function carries `purpose=amplify-cognito-client-integ` (the script's own resources all do), delete it by hand and
+rerun: the rerun makes it again, and replaces the invoke permissions that name a pool's old ARN.
 
-**Lambda drift.** `infra/ci/provision-ci.sh lambda-drift` (read-only: one `GetFunctionConfiguration` a function)
-compares each `ccit-ci-` Lambda's deployed `CodeSha256` with the zip built from the checkout, and exits 1 on a DRIFT,
-naming the function. The zips are deterministic (`infra/ci/lambda_code.py`: files sorted, dated 1980-01-01, mode
-644, as `parity.py` builds the sandbox's), so a function made from this checkout matches. Functions made before that,
-from `zip -X` zips, never match their sources' zip: after confirming they are this checkout's code, `lambda-drift
---record` writes their deployed `CodeSha256`s, with a digest of their sources, to `infra/ci/lambda-baseline.json`,
-to commit, and they then count as the recorded deployment until their sources change (or redeploy them: delete and
-rerun). `lambda_code.py check-baseline` is the offline half: it reads only the committed baseline and the
-checkout, and fails (exit 1) when a recorded function's sources changed since its deployment, or exits 3 with no
-baseline. Only the code is compared: `RuntimeVersionConfig`, which Lambda moves by itself, is not.
-`bash infra/ci/test_lambda_code.sh` tests it offline, and `test_provision_ci.sh` runs `lambda-drift` over the fake.
+**Lambda drift.** `infra/ci/provision-ci.sh lambda-drift` is read-only: for each `ccit-ci-` Lambda it checks the name
+and the purpose tag, calls `GetFunction`, and downloads the deployed zip from the presigned URL in its
+`Code.Location` (never printed) into a private temporary directory. `infra/ci/lambda_code.py` then compares the zip's
+files, by path and by the SHA-256 of their contents, with the zip built from the checkout (the custom sender's only
+with npm on `PATH`), and `lambda-drift` exits 1 on a DRIFT, naming the function and which files changed, are only
+deployed, or are only in the checkout. The zips' compression, dates and modes don't count, so a function made from
+older `zip -X` zips of the same files is in sync, and so is one deployed from a machine with another zlib: its
+`CodeSha256` is printed only as a note. A deployed function whose files differ but are accepted, as they are, can be
+recorded: `lambda-drift --record` prints the same per-file comparison and records nothing; `lambda-drift --record
+--accept-deployed` writes each deployed function's files (paths and content hashes), with a digest of the checkout's
+sources, to `infra/ci/lambda-baseline.json`, to commit. A function whose files are the baseline's then counts as the
+accepted deployment until its sources change; otherwise, redeploy it (check its tag, delete it and rerun).
+`lambda_code.py check-baseline` is the offline half: it reads only the committed baseline and the checkout, and fails
+(exit 1) when a recorded function's sources changed since its deployment was accepted, or exits 3 with no baseline.
+Only the code is compared: `RuntimeVersionConfig`, which Lambda moves by itself, is not.
+`bash infra/ci/test_lambda_code.sh` tests it offline, and `test_provision_ci.sh` runs `lambda-drift` over the fake,
+whose `Code.Location` is a `file://` URL to the zip it was given (`CCIT_CI_TEST_FILE_CODE_URLS=1`, which only the
+self-tests set, lets that through; otherwise only an `https://` URL on an `amazonaws.com` host is downloaded).
 
 ## Optional: the sandbox
 

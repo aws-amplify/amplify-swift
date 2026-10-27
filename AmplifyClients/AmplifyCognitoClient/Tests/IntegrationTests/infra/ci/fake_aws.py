@@ -19,6 +19,8 @@ import sys
 import uuid
 
 STATE = os.environ["FAKE_STATE"]
+# Each Lambda's deployed zip, as create-function was given it.
+CODE_DIR = STATE + ".code"
 WORDS = []
 LOG = os.environ["FAKE_LOG"]
 
@@ -343,12 +345,18 @@ def handle(state, service, verb, o, data):
             if not data["Role"].split("/")[-1] in s.get("roles", {}):
                 raise Fail("InvalidParameterValueException", "The role defined for the function cannot be assumed by Lambda.")
             config = {k: v for k, v in data.items() if k != "Tags"}
-            # As Lambda reports it: the base64 SHA-256 of the zip.
+            # As Lambda reports it: the base64 SHA-256 of the zip, which it keeps (here beside the state file, where
+            # get-function's Code.Location, a file:// URL, serves it).
             with open(one(o, "zip-file")[len("fileb://"):], "rb") as f:
-                code_sha = base64.b64encode(hashlib.sha256(f.read()).digest()).decode()
+                code = f.read()
+            code_sha = base64.b64encode(hashlib.sha256(code).digest()).decode()
+            code_path = os.path.join(CODE_DIR, f"{name}.zip")
+            os.makedirs(CODE_DIR, exist_ok=True)
+            with open(code_path, "wb") as f:
+                f.write(code)
             config.update({"FunctionArn": f"arn:aws:lambda:{region}:{acct}:function:{name}", "State": "Active",
                            "CodeSha256": code_sha, "RevisionId": new_id(s, "rev", 8)})
-            functions[name] = {"config": config, "tags": data.get("Tags", {}), "policy": [], "zip": one(o, "zip-file")}
+            functions[name] = {"config": config, "tags": data.get("Tags", {}), "policy": [], "code": code_path}
             return config
         name = one(o, "function-name") or (one(o, "resource") or "").rsplit(":", 1)[-1]
         name = name.rsplit(":function:", 1)[-1]
@@ -357,6 +365,12 @@ def handle(state, service, verb, o, data):
         function = functions[name]
         if verb == "get-function-configuration":
             return function["config"]
+        if verb == "get-function":
+            # Lambda's Code.Location is a presigned https:// URL to the deployed zip; the fake's is the zip's file.
+            code = {"RepositoryType": "S3"}
+            if function.get("code"):
+                code["Location"] = "file://" + function["code"]
+            return {"Configuration": function["config"], "Code": code, "Tags": function["tags"]}
         if verb == "wait":
             return None
         if verb == "list-tags":
