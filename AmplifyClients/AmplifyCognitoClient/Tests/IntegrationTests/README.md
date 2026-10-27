@@ -876,6 +876,14 @@ Only the code is compared: `RuntimeVersionConfig`, which Lambda moves by itself,
 whose `Code.Location` is a `file://` URL to the zip it was given (`CCIT_CI_TEST_FILE_CODE_URLS=1`, which only the
 self-tests set, lets that through; otherwise only an `https://` URL on an `amazonaws.com` host is downloaded).
 
+Once `infra/ci/lambda-baseline.json` is committed, editing the Lambda sources (`infra/lambda/triggers/triggers.mjs`,
+`infra/lambda/custom-sender` or `infra/ci/lambda/*`) needs someone with access to the CI account: the infra
+self-tests (`auth_client_infra_self_tests.yml`, through `test_lambda_code.sh`) fail on the committed baseline, and
+the weekly reminder opens its "redeploy" issue, until
+the changed functions are redeployed (tag checked, deleted, `--apply` rerun) and re-recorded (`lambda-drift --record
+--accept-deployed`, then commit the new baseline). The sandbox shares those sources, so a sandbox-only edit needs that
+too. Ship such a change together with the redeploy and the new baseline.
+
 ## Optional: the sandbox
 
 This directory's own Cognito sandbox (`infra/`) is no longer the default for local runs: run on the plugin's CI
