@@ -962,8 +962,10 @@ The scripts use whatever credentials the AWS CLI resolves, and the first `provis
 `state.json`. From then on `provision.sh`, `prepare-run.sh`, `self-sign-up.sh`, `teardown.sh` and `parity.py`
 refuse any other account (`require_recorded_account` in `lib.sh` and `parity.py`). While no account is recorded
 yet, `lib.sh`'s check exits before any AWS call unless `AWS_PROFILE` is set and none of `AWS_ACCESS_KEY_ID`,
-`AWS_SECRET_ACCESS_KEY` and `AWS_SESSION_TOKEN` is exported (the CLI would use exported keys instead of the
-profile). That is all it checks: it doesn't know which account the profile belongs to. Set `AWS_PROFILE` to the
+`AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`, `AWS_ROLE_ARN`, `AWS_WEB_IDENTITY_TOKEN_FILE` and the
+`AWS_CONTAINER_CREDENTIALS_*` variables is exported (the CLI can use exported keys, a web identity role or container
+credentials instead of the profile; CI runners and EKS often export the web identity ones). That is all it checks:
+it doesn't know which account the profile belongs to. Set `AWS_PROFILE` to the
 sandbox account's profile and check `aws sts get-caller-identity` before that first run.
 
 The sandbox lives in one region, because its IAM roles are global. `provision.sh` refuses a region other than the one

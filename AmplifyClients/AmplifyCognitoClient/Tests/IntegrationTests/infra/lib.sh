@@ -80,9 +80,11 @@ require_free_disk() {
 # another account can never act on this sandbox's recorded resources (or mint a second sandbox under
 # the same state directory). Sets ACCOUNT, which is never printed. Run before any mutating call.
 # With no account recorded yet (the first provision.sh), nothing else checks the account, so it also exits, before
-# any AWS call, unless AWS_PROFILE is set and none of AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN
-# is: the CLI takes exported keys over AWS_PROFILE. That is all it checks. It does not check that the profile is the
-# sandbox account's, or which credentials the profile itself resolves to.
+# any AWS call, unless AWS_PROFILE is set and none of the variables that give the CLI credentials of their own is:
+# AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN (exported keys), AWS_ROLE_ARN and
+# AWS_WEB_IDENTITY_TOKEN_FILE (a web identity role, common on CI runners and EKS), and any AWS_CONTAINER_CREDENTIALS_*
+# (container credentials). The CLI can take any of those over the profile AWS_PROFILE names. That is all it checks.
+# It does not check that the profile is the sandbox account's, or which credentials the profile itself resolves to.
 require_recorded_account() {
     local recorded="" exported=() variable
     if [[ -f "$STATE_DIR/state.json" ]]; then
@@ -94,13 +96,15 @@ require_recorded_account() {
         exit 1
     fi
     if [[ -z "$recorded" ]]; then
-        for variable in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN; do
+        # shellcheck disable=SC2046  # the variable names, one a word
+        for variable in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_ROLE_ARN \
+            AWS_WEB_IDENTITY_TOKEN_FILE $(compgen -e | grep '^AWS_CONTAINER_CREDENTIALS_' || true); do
             [[ -z "${!variable:-}" ]] || exported+=("$variable")
         done
         if (( ${#exported[@]} > 0 )); then
             echo "Refusing: no account is recorded in $STATE_DIR/state.json yet, and the environment exports ${exported[*]}." \
-                "The AWS CLI would use those keys instead of the profile AWS_PROFILE names. Unset them for the" \
-                "first run." >&2
+                "The AWS CLI would use those credentials (exported keys, a web identity role, container credentials)" \
+                "instead of the profile AWS_PROFILE names. Unset them for the first run." >&2
             exit 1
         fi
     fi
