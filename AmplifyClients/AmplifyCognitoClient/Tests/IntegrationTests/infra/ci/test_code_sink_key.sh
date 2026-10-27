@@ -13,8 +13,9 @@
 # It checks that a key with more than 30 days left passes; that one within 30 days, on its last day, or expired
 # fails, with a GitHub warning or error that says how to renew it (extended in place before the expiry; after it, a
 # new key, recorded only once the uploaded files that name the old one are replaced); that no record, or one that does
-# not read, is its own status (3) with a warning; that `record` writes the date of an expiry in epoch seconds; and
-# that the committed record reads (a date, or null until the owner records it).
+# not read, is its own status (3) with a warning; that an unexpected error is 4, never 1; that `record` writes the
+# date of an expiry in epoch seconds; and that the committed record reads (a date, or null until the owner records
+# it).
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT="$CI_DIR/code_sink_key.py"
@@ -76,6 +77,12 @@ a_key_within_its_last_days_is_extended_in_place() {
         && [[ "$OUT" != *"delete"* && "$OUT" != *"cannot be extended"* ]]
 }
 
+# A failure of the script itself is status 4 (its traceback printed), never 1, which the reminder reads as "renew".
+an_unexpected_error_is_status_4() {
+    recorded 2027-10-22
+    run check --today not-a-date --record "$RECORD"
+    (( STATUS == 4 )) && [[ "$OUT" == *Traceback* ]]
+}
 
 no_record_is_its_own_status() {
     local content
@@ -110,6 +117,7 @@ check "a key with more than 30 days left passes" more_than_30_days_left_passes
 check "a key within its last 30 days fails, with a warning that says how to extend it" within_30_days_fails_with_a_warning
 check "an expired key fails, with an error that says what to replace" an_expired_key_fails_with_an_error
 check "a key within its last 30 days is to be extended in place, the same key" a_key_within_its_last_days_is_extended_in_place
+check "an unexpected error is status 4, never 1" an_unexpected_error_is_status_4
 check "no record, or one that does not read, is status 3 with a warning" no_record_is_its_own_status
 check "record writes the expiry's date" record_writes_the_date
 check "the committed record is a date, or null" the_committed_record_reads

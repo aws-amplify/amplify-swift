@@ -840,12 +840,17 @@ as it is. Both record it only while no uploaded file names another key than that
 tell): a key made after the last one expired is not what CI reads until both files are replaced, so the record keeps
 the expired date, and the reminder keeps failing, until then. Commit the file after either. `infra/ci/code_sink_key.py check`
 reads only that file, so it needs no AWS credentials: it passes while the key has more than 30 days left, and fails
-(exit 1) within them or once it has expired, saying what to run; exit 3 means no expiry is recorded. With the
+(exit 1) within them or once it has expired, saying what to run; exit 3 means no expiry is recorded, and any other
+status (2, usage; 4, an unexpected error) is a failure of the check itself, never a reason to renew. With the
 `extended` role, `ci-overlay.sh` prints its warning or error as an annotation on every client CI run in those last
 30 days or after the expiry. `bash infra/ci/test_code_sink_key.sh` tests it offline. The scheduled workflow
 `.github/workflows/auth_client_ci_reminders.yml` (Mondays, upstream repository only, no AWS credentials) runs the
-check and opens one issue: "renew the code sink API key" when it fails, or "record the code sink API key's expiry"
-while none is recorded, which passes with a warning. It also runs `lambda_code.py check-baseline` (below).
+check and opens one issue: "renew the code sink API key" on exit 1, or "record the code sink API key's expiry"
+while none is recorded, which passes with a warning. It also runs `lambda_code.py check-baseline` (below), and opens
+one "redeploy the CI Lambdas whose sources changed" issue when it fails with exit 1. Any other status of either check
+fails the run with a message to investigate the check, and opens no issue. Each issue is opened only while none with
+its title is open, and the workflow's runs never overlap (one `concurrency` group), so a manual dispatch during the
+scheduled run cannot open a second one.
 
 A rerun never updates a user pool or a Lambda's code. After a change to a pool template, to
 `infra/lambda/triggers/triggers.mjs`, `infra/lambda/custom-sender` or `infra/ci/lambda/*`, check that the pool or

@@ -17,6 +17,9 @@ the reminder needs no AWS call and no credentials: a scheduled job, or any CI ru
         Writes the record (provision-ci.sh, once it has read, created or extended the key, and the uploaded files
         that name a key name that one). Prints the date.
 
+Any other exit status is a failure of the script itself (2: usage; 4: an unexpected error, with its traceback),
+never a status of the key.
+
 --record (or CCIT_CI_KEY_RECORD) names another record file than the committed one, as the self-tests do. Within the
 30 days, `infra/ci/provision-ci.sh --apply --scope all` extends the key in place (the same id, so the uploaded files
 stay valid) and records the new date. An expired key cannot be extended: that rerun makes a new key, but the two
@@ -29,6 +32,7 @@ import datetime
 import json
 import os
 import sys
+import traceback
 
 WARN_DAYS = 30
 DEFAULT_RECORD = os.path.join(os.path.dirname(os.path.abspath(__file__)), "code-sink-key-expiry.json")
@@ -107,4 +111,8 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    try:
+        sys.exit(main(sys.argv[1:]))
+    except Exception:  # Not a status of the key (1, 3): the script itself failed.
+        traceback.print_exc()
+        sys.exit(4)

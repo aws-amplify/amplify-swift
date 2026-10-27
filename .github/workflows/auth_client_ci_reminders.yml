@@ -4,7 +4,11 @@
 #   last 30 days and once it has expired, and opens one reminder issue to renew it. While no expiry is recorded (the
 #   committed {"expires": null}), the run passes with a warning and opens one issue to record it.
 # - lambda_code.py check-baseline: whether the sources of the recorded Lambda deployment (lambda-baseline.json) are
-#   still the repository's. Fails when one changed; a missing baseline is only a warning.
+#   still the repository's. Fails when one changed, and opens one issue to redeploy it; a missing baseline is only a
+#   warning.
+# Any other exit status of either check is a failure of the check itself: the run fails, says to investigate it, and
+# opens no issue. Each issue is opened only while none with its title is open, and the runs never overlap, so a
+# manual dispatch during the Monday run cannot open a second one.
 # Runs only in the upstream repository, so a fork's schedule opens no issues.
 name: Auth | Cognito Client CI reminders
 
@@ -15,6 +19,10 @@ on:
 
 permissions:
   contents: read
+
+concurrency:
+  group: auth-client-ci-reminders
+  cancel-in-progress: false
 
 jobs:
   reminders:
@@ -33,17 +41,23 @@ jobs:
         with:
           persist-credentials: false
 
-      # Exit 0: more than 30 days left. 1: within them, or expired (the step fails). 3: no expiry recorded (a
-      # warning; the step passes). Anything else is a usage error and fails the step.
+      # Exit 0: more than 30 days left. 1: within them, or expired (renew it; the step fails). 3: no expiry recorded
+      # (a warning; the step passes). Anything else (2, a usage error; 4, an unexpected error) is the check's own
+      # failure: the step fails and no issue is opened.
       - name: Code sink API key expiry
         id: key
         run: |
           status=0
           python3 code_sink_key.py check --github || status=$?
           echo "status=$status" >> "$GITHUB_OUTPUT"
-          [ "$status" -eq 0 ] || [ "$status" -eq 3 ]
+          case "$status" in
+            0|3) ;;
+            1) exit 1 ;;
+            *) echo "::error::code_sink_key.py check exited $status, which is not a status of the key: investigate the check itself (its output is above). No issue was opened."
+               exit 1 ;;
+          esac
 
-      - name: Open a reminder issue
+      - name: Open a code sink key issue
         if: always() && (steps.key.outputs.status == '1' || steps.key.outputs.status == '3')
         env:
           GH_TOKEN: ${{ github.token }}
@@ -51,13 +65,16 @@ jobs:
         run: |
           if [ "$STATUS" = "3" ]; then
             title="Cognito client CI: record the code sink API key's expiry"
-            todo="Run it with the CI account's read-only credentials. Until the expiry is recorded, nothing warns before
-          the key lapses (364 days after it was made), and the client's code-reading tests on CI then fail."
+            todo="Run \`infra/ci/provision-ci.sh key-expiry --record\` (read-only) with the CI account's read-only
+          credentials and \`COGNITO_CLIENT_INTEG_CI_CONFIG_URL\` set to the value of CI's \`AWS_S3_BUCKET_INTEG_V2\` (it
+          reads the code sink's API keys, and the uploaded files that name the key), then commit
+          \`infra/ci/code-sink-key-expiry.json\`. Until the expiry is recorded, nothing warns before the key lapses
+          (364 days after it was made), and the client's code-reading tests on CI then fail."
           else
             title="Cognito client CI: renew the code sink API key"
-            todo="Run \`infra/ci/provision-ci.sh --apply --scope all\` with the CI account's credentials (before the
-          expiry it extends the key in place; it records the new expiry either way), then commit
-          \`infra/ci/code-sink-key-expiry.json\`."
+            todo="Follow the steps above with the CI account's credentials and \`COGNITO_CLIENT_INTEG_CI_CONFIG_URL\`
+          set to the value of CI's \`AWS_S3_BUCKET_INTEG_V2\`, then commit \`infra/ci/code-sink-key-expiry.json\`.
+          The weekly check fails until the new expiry is committed."
           fi
           open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq length)
           if [ "$open" = "0" ]; then
@@ -68,11 +85,40 @@ jobs:
             echo "An open issue already says so: $title"
           fi
 
-      # Exit 0: in sync. 1: a recorded function's sources changed (the step fails). 3: no baseline recorded (a
-      # warning; the step passes).
+      # Exit 0: in sync. 1: a recorded function's sources changed (redeploy it; the step fails). 3: no baseline
+      # recorded (a warning; the step passes). Anything else is the check's own failure: the step fails and no issue
+      # is opened.
       - name: Recorded Lambda deployment
+        id: lambda
         if: always()
         run: |
           status=0
           python3 lambda_code.py check-baseline --github || status=$?
-          [ "$status" -eq 0 ] || [ "$status" -eq 3 ]
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          case "$status" in
+            0|3) ;;
+            1) exit 1 ;;
+            *) echo "::error::lambda_code.py check-baseline exited $status, which is not a status of the baseline: investigate the check itself (its output is above). No issue was opened."
+               exit 1 ;;
+          esac
+
+      - name: Open a Lambda baseline issue
+        if: always() && steps.lambda.outputs.status == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Cognito client CI: redeploy the CI Lambdas whose sources changed"
+          todo="With the CI account's credentials and \`COGNITO_CLIENT_INTEG_CI_CONFIG_URL\` set to the value of CI's
+          \`AWS_S3_BUCKET_INTEG_V2\`: check that each function named above carries
+          \`purpose=amplify-cognito-client-integ\`, delete it, and rerun \`infra/ci/provision-ci.sh --apply --scope all\`,
+          which makes it again from the repository. Then run \`infra/ci/provision-ci.sh lambda-drift\` (read-only) and
+          \`lambda-drift --record --accept-deployed\`, and commit \`infra/ci/lambda-baseline.json\`. The weekly check
+          fails until then."
+          open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq length)
+          if [ "$open" = "0" ]; then
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$(python3 lambda_code.py check-baseline || true)
+
+          $todo"
+          else
+            echo "An open issue already says so: $title"
+          fi
