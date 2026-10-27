@@ -7,8 +7,8 @@
 #   still the repository's. Fails when one changed, and opens one issue to redeploy it; a missing baseline is only a
 #   warning.
 # Any other exit status of either check is a failure of the check itself: the run fails, says to investigate it, and
-# opens no issue. Each issue is opened only while none with its title is open, and the runs never overlap, so a
-# manual dispatch during the Monday run cannot open a second one.
+# opens no issue. Each issue is opened only while no open issue has exactly its title (the open issues are listed,
+# not searched), and the runs never overlap, so a manual dispatch during the Monday run cannot open a second one.
 # Runs only in the upstream repository, so a fork's schedule opens no issues.
 name: Auth | Cognito Client CI reminders
 
@@ -76,7 +76,10 @@ jobs:
           set to the value of CI's \`AWS_S3_BUCKET_INTEG_V2\`, then commit \`infra/ci/code-sink-key-expiry.json\`.
           The weekly check fails until the new expiry is committed."
           fi
-          open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq length)
+          # Listed, not searched (the search API matches loosely and lags behind a just-opened issue), and matched
+          # by exact title.
+          open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 1000 --json title \
+            | jq --arg title "$title" '[.[] | select(.title == $title)] | length')
           if [ "$open" = "0" ]; then
             gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$(python3 code_sink_key.py check || true)
 
@@ -114,7 +117,10 @@ jobs:
           which makes it again from the repository. Then run \`infra/ci/provision-ci.sh lambda-drift\` (read-only) and
           \`lambda-drift --record --accept-deployed\`, and commit \`infra/ci/lambda-baseline.json\`. The weekly check
           fails until then."
-          open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq length)
+          # Listed, not searched (the search API matches loosely and lags behind a just-opened issue), and matched
+          # by exact title.
+          open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 1000 --json title \
+            | jq --arg title "$title" '[.[] | select(.title == $title)] | length')
           if [ "$open" = "0" ]; then
             gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$(python3 lambda_code.py check-baseline || true)
 
