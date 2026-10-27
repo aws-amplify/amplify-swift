@@ -31,7 +31,8 @@ hands over its CodeSha256 and the presigned URL of its deployed zip, which this 
         Offline: whether the sources each recorded function was accepted for are still this checkout's. Exit 0
         when they are, 1 when one changed (redeploy it, then lambda-drift), 3 when no baseline is recorded.
 
-Any other exit status is a failure of the script itself (4: an unexpected error, with its traceback; 2: usage).
+Any other exit status is a failure of the script itself (4: an unexpected error, with its traceback, or a
+<deployed.json> that anyone but its owner can read; 2: usage).
 
 The baseline is lambda-baseline.json beside this script (CCIT_CI_LAMBDA_BASELINE, or --baseline, names another), and
 holds only file paths, content hashes and source digests: no identifier, no secret. Only the code is compared. A
@@ -57,6 +58,7 @@ import json
 import os
 import re
 import shutil
+import stat
 import sys
 import tempfile
 import traceback
@@ -136,6 +138,10 @@ def source_digest(suffix):
         with open(os.path.join(INFRA, directory, name), "rb") as f:
             digest.update(name.encode() + b"\0" + f.read() + b"\0")
     return digest.hexdigest()
+
+
+class NotPrivate(Exception):
+    """A <deployed.json> that anyone but its owner can read: the presigned URLs in it are credentials."""
 
 
 class Unreadable(Exception):
@@ -261,6 +267,10 @@ def compared(argv):
     """Each function's comparison, in name order: (status, files, lines). `status` is "absent", "unchecked",
     "unreadable", "same", "accepted" or "drift"; `files` the deployed files (None when there are none to record);
     `lines` what to print, each with the level of its annotation (None for a plain line)."""
+    mode = stat.S_IMODE(os.stat(argv[1]).st_mode)
+    if mode & 0o077:
+        raise NotPrivate(f"{os.path.basename(argv[1])} is mode {mode:o}: it holds presigned URLs, which are "
+                         "credentials, so only its owner may read it (mode 600). Nothing was downloaded.")
     with open(argv[1]) as f:
         deployed = json.load(f)
     zips = argv[2]
@@ -385,6 +395,9 @@ def main(argv):
 if __name__ == "__main__":
     try:
         sys.exit(main(sys.argv[1:]))
+    except NotPrivate as refusal:
+        print(f"lambda_code.py: {refusal}", file=sys.stderr)
+        sys.exit(4)
     except Exception:  # Not a status the callers act on (1, 3): the script itself failed.
         traceback.print_exc()
         sys.exit(4)

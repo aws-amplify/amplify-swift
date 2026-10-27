@@ -62,6 +62,9 @@ export CCIT_CI_KEY_RECORD="$WORK/code-sink-key-expiry.json"
 export CCIT_CI_LAMBDA_BASELINE="$WORK/lambda-baseline.json"
 # The fake's Code.Location is a file:// URL to the zip it keeps, which lambda_code.py takes only with this set.
 export CCIT_CI_TEST_FILE_CODE_URLS=1
+# A umask that leaves new files readable by all, so a file the script leaves open to others is one, and is caught
+# (lambda_code.py refuses a deployed.json anyone but its owner can read).
+umask 022
 unset AWS_PROFILE AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN CCIT_CI_REGION
 [[ "$(command -v aws)" == "$BIN/aws" ]] || { echo "FAIL: the fake aws is not first on PATH"; exit 1; }
 ACCOUNT=123456789012
@@ -993,6 +996,7 @@ PY
 # and how to redeploy it after its tag check, and exit 1, never a URL or a hash printed. --record shows the same and
 # records nothing without --accept-deployed; with it, the deployed files are the baseline, and the function is then
 # the accepted deployment. A changed runtime version is not compared, and an untagged ccit-ci- function is refused.
+# deployed.json is the owner's only (lambda_code.py refuses it otherwise), and no download directory is left behind.
 lambda_drift_compares_the_deployed_files() {
     local summary
     fresh_state
@@ -1006,7 +1010,7 @@ lambda_drift_compares_the_deployed_files() {
         && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 8 ]] \
         && [[ "$(grep -c "CodeSha256, a note only: the same as this checkout's zip's" <<<"$OUT")" == 8 ]] \
         && [[ "$(calls | grep -c '^lambda get-function$')" == 8 && "$(calls | grep -c '^lambda list-tags$')" == 8 ]] \
-        || { echo "$OUT"; return 1; }
+        && [[ -z "$(find "$TMPDIR" -name 'ccit-ci-lambda-code.*')" ]] || { echo "$OUT"; return 1; }
     hand_deploy ccit-ci-discard-sender rezipped
     run lambda-drift
     (( STATUS == 0 )) && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 8 ]] \

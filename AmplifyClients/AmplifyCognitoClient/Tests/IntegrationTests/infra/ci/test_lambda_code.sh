@@ -23,8 +23,9 @@
 # unreadable (exit 1), not a traceback; that record
 # shows the same and writes nothing without --accept-deployed, and with it the deployed files, which compare then
 # accepts until the sources change; that check-baseline is 0 with the recorded sources, 1 once one changed, 3 with
-# no baseline; that an unexpected error is status 4, never 1; and that the committed baseline, when there is one,
-# names this checkout's sources.
+# no baseline; that an unexpected error is status 4, never 1, and so is a deployed.json anyone but its owner can read;
+# that no download directory is left behind; and that the committed baseline, when there is one, names this
+# checkout's sources.
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INFRA="$(cd "$CI_DIR/.." && pwd)"
@@ -33,6 +34,8 @@ WORK=$(mktemp -d)
 SERVER=""
 trap '[[ -z "$SERVER" ]] || kill "$SERVER" 2>/dev/null; rm -rf "$WORK"' EXIT
 unset CCIT_CI_LAMBDA_BASELINE
+# Files written here are the owner's only, as provision-ci.sh writes deployed.json (one test opens it up).
+umask 077
 # A copy of the sources, so a test can change one.
 COPY="$WORK/infra"
 mkdir -p "$COPY/lambda" "$COPY/ci/lambda"
@@ -407,6 +410,46 @@ no_baseline_is_its_own_status() {
     (( STATUS == 3 )) && [[ "$OUT" == "::warning::No CI Lambda deployment is recorded"* ]]
 }
 
+# deployed.json holds presigned URLs: compare and record refuse it (status 4, before any download) unless only its
+# owner can read it.
+a_deployed_json_others_can_read_is_refused() {
+    local mode command baseline="$WORK/p-baseline.json"
+    build_all "$WORK/p"
+    deploy_all "$WORK/p"
+    [[ "$(stat -f '%Lp' "$WORK/deployed.json" 2>/dev/null || stat -c '%a' "$WORK/deployed.json")" == 600 ]] || return 1
+    for mode in 644 640 604; do
+        chmod "$mode" "$WORK/deployed.json"
+        for command in compare record; do
+            run "$command" "$WORK/deployed.json" "$WORK/p" --baseline "$baseline" --accept-deployed
+            (( STATUS == 4 )) && [[ "$OUT" == "lambda_code.py: deployed.json is mode $mode: it holds presigned URLs"*"Nothing was downloaded." ]] \
+                && [[ ! -e "$baseline" ]] || { echo "$command at $mode: $STATUS $OUT"; return 1; }
+        done
+    done
+    chmod 600 "$WORK/deployed.json"
+    run compare "$WORK/deployed.json" "$WORK/p" --baseline "$baseline"
+    (( STATUS == 0 )) || { echo "at 600: $OUT"; return 1; }
+}
+
+# compare and record download into a private ccit-ci-lambda-code.* directory under TMPDIR, and remove it, whether the
+# functions are in sync, DRIFT or unreadable.
+no_download_directory_is_left_behind() {
+    local baseline="$WORK/t-baseline.json"
+    build_all "$WORK/t"
+    deploy_all "$WORK/t"
+    redeploy pre-sign-up edited
+    relocate discard-sender "file://$WORK/deployed/missing.zip"
+    mkdir -p "$WORK/tmp"
+    STATUS=0
+    OUT=$(TMPDIR="$WORK/tmp" python3 "$SCRIPT" compare "$WORK/deployed.json" "$WORK/t" --baseline "$baseline" 2>&1) || STATUS=$?
+    (( STATUS == 1 )) && [[ "$OUT" == *"DRIFT ccit-ci-pre-sign-up"* && "$OUT" == *"! ccit-ci-discard-sender"* ]] || { echo "$OUT"; return 1; }
+    OUT=$(TMPDIR="$WORK/tmp" python3 "$SCRIPT" record "$WORK/deployed.json" "$WORK/t" --baseline "$baseline" 2>&1) || true
+    deploy_all "$WORK/t"
+    STATUS=0
+    OUT=$(TMPDIR="$WORK/tmp" python3 "$SCRIPT" compare "$WORK/deployed.json" "$WORK/t" --baseline "$baseline" 2>&1) || STATUS=$?
+    (( STATUS == 0 )) || { echo "$OUT"; return 1; }
+    [[ -z "$(ls -A "$WORK/tmp")" ]] || { ls -la "$WORK/tmp"; return 1; }
+}
+
 an_unexpected_error_is_status_4() {
     echo 'not json' > "$WORK/broken.json"
     run compare "$WORK/broken.json" "$WORK/z" --baseline "$BASELINE"
@@ -433,6 +476,8 @@ check "a redirect is not followed, and a download over 50 MB is refused" a_redir
 check "record writes the deployed files only with --accept-deployed; they are in sync until the sources change" \
     an_accepted_deployment_is_in_sync_until_its_sources_change
 check "no baseline is status 3 with a warning" no_baseline_is_its_own_status
+check "a deployed.json anyone but its owner can read is refused, status 4" a_deployed_json_others_can_read_is_refused
+check "no download directory is left behind" no_download_directory_is_left_behind
 check "an unexpected error is status 4, never 1" an_unexpected_error_is_status_4
 check "the committed baseline, when there is one, names this checkout's sources" \
     the_committed_baseline_names_this_checkouts_sources
