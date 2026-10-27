@@ -15,7 +15,8 @@
 # holds only the function's files; that the custom sender's holds node_modules but not npm's .package-lock.json;
 # that compare reads the deployed zips file by file: a function deployed from this checkout is in sync, so is one
 # whose zip holds the same files compressed and dated otherwise (its CodeSha256 only noted), and one with other
-# files is DRIFT, by name, with the files that differ, never a hash or a URL; that a URL that is not https:// on a
+# files is DRIFT, by name, with the files that differ, never a hash or a URL, each name escaped (so with --github none
+# can end its line or start a workflow command); that a URL that is not https:// on a
 # Lambda code bucket's S3 host (the real hosts' shapes are, other amazonaws.com hosts and look-alikes are not; file://
 # and http://127.0.0.1 only in the self-tests), a redirect, a download over 50 MB or one that is no zip is refused
 # (over a local server on 127.0.0.1, which only the self-tests' variable lets through), and a malformed URL is
@@ -208,6 +209,27 @@ refused = [
 wrong = [u for u in allowed if not lambda_code.allowed_url(u)] + [u for u in refused if lambda_code.allowed_url(u)]
 assert not wrong, wrong
 PY
+}
+
+# A deployed zip whose member names hold a newline, a carriage return, an escape, a line separator and a backslash:
+# with --github each prints escaped, on its line, and the only workflow command is the DRIFT annotation.
+member_names_print_escaped() {
+    build_all "$WORK/n"
+    deploy_all "$WORK/n"
+    python3 - "$WORK/deployed/discard-sender.zip" <<'PY'
+import sys, zipfile
+with zipfile.ZipFile(sys.argv[1], "a") as z:
+    for name in ("a\n::error::injected", "b\r\n::warning file=x::injected", "c\x1b[31m", "d\u2028::notice::injected", "e\\n"):
+        z.writestr(name, b"x")
+PY
+    jq -c --arg s "$(sha "$WORK/deployed/discard-sender.zip")" '.["discard-sender"].codeSha256 = $s' "$WORK/deployed.json" \
+        > "$WORK/d" && mv "$WORK/d" "$WORK/deployed.json"
+    run compare "$WORK/deployed.json" "$WORK/n" --baseline "$BASELINE" --github
+    local expected='      only deployed (5): a\n::error::injected, b\r\n::warning file=x::injected, c\x1b[31m, d\u2028::notice::injected, e\\n'
+    (( STATUS == 1 )) && [[ "$(grep -c '^::' <<<"$OUT")" == 1 && "$(grep '^::' <<<"$OUT")" == "::error::DRIFT ccit-ci-discard-sender: "* ]] \
+        && grep -qxF -- "$expected" <<<"$OUT" \
+        && python3 -c 'import sys; sys.exit(any(c in sys.stdin.read() for c in "\r\x1b\u2028"))' <<<"$OUT" \
+        || { echo "$OUT"; return 1; }
 }
 
 only_an_aws_https_url_is_downloaded() {
@@ -403,6 +425,7 @@ the_committed_baseline_names_this_checkouts_sources() {
 check "zips are deterministic and hold only the function's files" zips_are_deterministic_and_hold_only_the_functions_files
 check "compare reads the deployed files: the same files in another zip are in sync, other files are DRIFT" \
     compare_reads_the_deployed_files
+check "a deployed zip's member names print escaped: none ends its line or starts a workflow command" member_names_print_escaped
 check "only the hosts of Lambda's code buckets are allowed, at a label boundary" real_code_hosts_are_the_only_ones_allowed
 check "only an https:// URL on a Lambda code bucket's host is downloaded, and a download that is no zip is refused" \
     only_an_aws_https_url_is_downloaded

@@ -21,8 +21,8 @@ hands over its CodeSha256 and the presigned URL of its deployed zip, which this 
         function is in sync when its files (paths and SHA-256 of their contents) are its checkout zip's, or else
         when they are the files the baseline accepted for the same sources. The compression, dates and modes in
         the zip, and so its CodeSha256, do not count: CodeSha256 is printed only as a note. Prints, a function, one
-        line by name and, when it differs, which files differ, never a hash. Exit 1 on any DRIFT (or a deployed zip
-        that cannot be read), else 0.
+        line by name and, when it differs, which files differ (names escaped), never a hash. Exit 1 on any DRIFT
+        (or a deployed zip that cannot be read), else 0.
     lambda_code.py record <deployed.json> <zips-dir> [--baseline FILE] [--accept-deployed]
         Prints the same per-file comparison, then records each deployed function's files (paths and content
         hashes), with the digest of its sources now, as the baseline. Without --accept-deployed it records nothing
@@ -227,13 +227,20 @@ def difference(deployed, built):
     return changed, sorted(deployed.keys() - built.keys()), sorted(built.keys() - deployed.keys())
 
 
+def shown(path):
+    """`path` as it prints: a zip member's name is the deployed zip's to choose, so a backslash and every character
+    that is not printable (a newline, a carriage return, an escape, a line separator) are escaped as in a Python
+    string. A name can then never end the line it is on, nor start a line, and so never a workflow command."""
+    return "".join(c if c.isprintable() and c != "\\" else c.encode("unicode_escape").decode("ascii") for c in path)
+
+
 def difference_lines(changed, extra, missing):
     lines = []
     for label, paths in (("changed", changed), ("only deployed", extra), ("only in the checkout", missing)):
         if paths:
-            shown = ", ".join(paths[:LISTED])
+            shown_paths = ", ".join(shown(path) for path in paths[:LISTED])
             more = f", and {len(paths) - LISTED} more" if len(paths) > LISTED else ""
-            lines.append(f"      {label} ({len(paths)}): {shown}{more}")
+            lines.append(f"      {label} ({len(paths)}): {shown_paths}{more}")
     return lines
 
 

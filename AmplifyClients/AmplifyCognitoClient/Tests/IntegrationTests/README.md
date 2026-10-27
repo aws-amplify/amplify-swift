@@ -863,9 +863,9 @@ and the purpose tag, calls `GetFunction`, and downloads the deployed zip from th
 `Code.Location` (never printed) into a private temporary directory. `infra/ci/lambda_code.py` then compares the zip's
 files, by path and by the SHA-256 of their contents, with the zip built from the checkout (the custom sender's only
 with npm on `PATH`), and `lambda-drift` exits 1 on a DRIFT, naming the function and which files changed, are only
-deployed, or are only in the checkout. The zips' compression, dates and modes don't count, so a function made from
-older `zip -X` zips of the same files is in sync, and so is one deployed from a machine with another zlib: its
-`CodeSha256` is printed only as a note. A deployed function whose files differ but are accepted, as they are, can be
+deployed, or are only in the checkout (each name escaped, so none can end its line or start a workflow command).
+The zips' compression, dates and modes don't count, so a function made from older `zip -X` zips of the same files is
+in sync, and so is one deployed from a machine with another zlib: its `CodeSha256` is printed only as a note. A deployed function whose files differ but are accepted, as they are, can be
 recorded: `lambda-drift --record` prints the same per-file comparison and records nothing; `lambda-drift --record
 --accept-deployed` writes each deployed function's files (paths and content hashes), with a digest of the checkout's
 sources, to `infra/ci/lambda-baseline.json`, to commit. A function whose files are the baseline's then counts as the
