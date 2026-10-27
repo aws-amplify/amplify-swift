@@ -19,7 +19,7 @@
     { "step": "S6", "from": { "module": "Amplify", "name": "AuthSignInStep" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineSignInStep" } },
     { "step": "S6", "from": { "module": "Amplify", "name": "AuthSignUpResult" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineSignUpResult" } },
     { "step": "S6", "from": { "module": "Amplify", "name": "AuthCodeDeliveryDetails" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineCodeDeliveryDetails" } },
-    { "step": "S6", "from": { "module": "Amplify", "name": "DeviceInfo" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineDeviceInfo" } },
+    { "step": "S6", "from": { "module": "Amplify", "name": "DeviceInfo" }, "to": { "module": "AmplifyCognitoASF", "name": "EngineDeviceInfo" } },
     { "step": "S6", "from": { "module": "Amplify", "name": "DeliveryDestination" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineDeliveryDestination" } },
     { "step": "S6", "from": { "module": "Amplify", "name": "TOTPSetupDetails" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineTOTPSetupDetails" } },
     { "step": "S6", "from": { "module": "Amplify", "name": "AuthSignUpStep" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineSignUpStep" } },
