@@ -6,7 +6,8 @@
 # - scripts/cognito-engine/check_fixture_lock.sh: the plugin behavior snapshot lock's self-file check
 #   (test_check_fixture_lock.sh, in a scratch repository built from this checkout).
 # - scripts/python/affected_targets.py: the test selector the unit and integration workflows run, over the real
-#   group files and a stub package dump (test_affected_targets.py), so it needs no Swift toolchain.
+#   group files, this checkout's Xcode projects (the READMEs host apps bundle) and a stub package dump
+#   (test_affected_targets.py), so it needs no Swift toolchain. A project change runs it too.
 #
 # No AWS call is made, and the jobs need no credentials and no secrets.
 
@@ -20,6 +21,8 @@ on:
       - 'scripts/cognito-engine/test_check_fixture_lock.sh'
       - '.github/workflows/auth_golden_fixture_lock.yml'
       - 'scripts/python/**'
+      # The selector's self-test reads the host apps' Copy Bundle Resources from the real Xcode projects.
+      - '**/*.xcodeproj/project.pbxproj'
       - '.github/workflows/ci_script_self_tests.yml'
   push:
     branches:
@@ -30,6 +33,8 @@ on:
       - 'scripts/cognito-engine/test_check_fixture_lock.sh'
       - '.github/workflows/auth_golden_fixture_lock.yml'
       - 'scripts/python/**'
+      # The selector's self-test reads the host apps' Copy Bundle Resources from the real Xcode projects.
+      - '**/*.xcodeproj/project.pbxproj'
       - '.github/workflows/ci_script_self_tests.yml'
 
 permissions:
