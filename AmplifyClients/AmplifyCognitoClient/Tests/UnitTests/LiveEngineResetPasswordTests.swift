@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AmplifyCognitoASF
 import AWSCognitoIdentityProvider
 import Foundation
 import InternalAWSCognitoAuth
@@ -334,7 +335,7 @@ final class LiveEngineResetPasswordTests: XCTestCase {
     // MARK: Helpers
 
     /// The username and ASF device ID in an encoded advanced-security context: base64 JSON whose `payload` is
-    /// JSON with `username` and `contextData` (`CognitoUserPoolASF.userContextData`).
+    /// JSON with `username` and `contextData` (`UserContextDataEncoder.encodedData`).
     private static func advancedSecurityContext(
         _ context: CognitoIdentityProviderClientTypes.UserContextDataType?
     ) throws -> (username: String?, deviceId: String?) {
@@ -344,7 +345,7 @@ final class LiveEngineResetPasswordTests: XCTestCase {
         let payload = try XCTUnwrap(result["payload"] as? String)
         let inner = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(payload.utf8)) as? [String: Any])
         let contextData = inner["contextData"] as? [String: String]
-        return (inner["username"] as? String, contextData?[CognitoUserPoolASF.deviceIdKey])
+        return (inner["username"] as? String, contextData?[UserContextDataEncoder.deviceIdKey])
     }
 }
 

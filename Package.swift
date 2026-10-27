@@ -204,8 +204,8 @@ let apiTargets: [Target] = [
 ]
 
 let authTargets: [Target] = [
-    // AmplifyBigInteger, AmplifySRP, AmplifyAvailability and libtommathAmplify are Amplify-free internals
-    // shared by the plugin and the client, so they live under AmplifyClients/Internal/: the client
+    // AmplifyBigInteger, AmplifySRP, AmplifyCognitoASF, AmplifyAvailability and libtommathAmplify are Amplify-free
+    // internals shared by the plugin and the client, so they live under AmplifyClients/Internal/: the client
     // never builds a target that lives in a plugin directory.
     .target(
         name: "AmplifyBigInteger",
@@ -221,15 +221,27 @@ let authTargets: [Target] = [
         ],
         path: "AmplifyClients/Internal/AmplifySRP/Sources"
     ),
+    // Advanced-security user context data, also a product: `CognitoUserContextData`, public under
+    // `@_spi(AmplifyExperimental)`, and the engine's encoder and readers.
+    .target(
+        name: "AmplifyCognitoASF",
+        dependencies: [
+            .target(name: "AmplifyAvailability")
+        ],
+        path: "AmplifyClients/Internal/AmplifyCognitoASF/Sources",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ]
+    ),
     .target(
         name: "InternalAWSCognitoAuth",
         // The Cognito engine, shared by AWSCognitoAuthPlugin and AmplifyCognitoClient. Amplify-free: never
         // `Amplify`, `AWSPluginsCore`, `InternalAmplifyCredentials` or `AmplifyCognitoClient`, and nothing in
         // its closure lives under AmplifyPlugins/ (gate G6, scripts/cognito-engine/check_engine_deps.py --stage final).
         dependencies: [
-            .target(name: "AmplifyAvailability"),
             // Declared, not only reached through AmplifySRP: SRP/AmplifySRPClient.swift imports it.
             .target(name: "AmplifyBigInteger"),
+            .target(name: "AmplifyCognitoASF"),
             .target(name: "AmplifyFoundation"),
             .target(name: "AmplifySRP"),
             .target(name: "InternalAmplifyKeychain"),
@@ -281,6 +293,7 @@ let authTargets: [Target] = [
             "InternalAWSCognitoAuth",
             "AWSPluginsTestCommon",
             "AmplifyTestCommon",
+            "AmplifyCognitoASF",
             "InternalAmplifyKeychain",
             "AmplifyKeychainTestCommon",
             // Tests only: the rollback matrix drives the client's real storage beside the plugin's, over
@@ -296,6 +309,13 @@ let authTargets: [Target] = [
             "AmplifyBigInteger"
         ],
         path: "AmplifyClients/Internal/AmplifyBigInteger/Tests"
+    ),
+    .testTarget(
+        name: "AmplifyCognitoASFTests",
+        dependencies: [
+            "AmplifyCognitoASF"
+        ],
+        path: "AmplifyClients/Internal/AmplifyCognitoASF/Tests"
     )
 ]
 
@@ -740,6 +760,7 @@ let cognitoClientTargets: [Target] = [
         name: "AmplifyCognitoClientTests",
         dependencies: [
             "AmplifyCognitoClient",
+            "AmplifyCognitoASF",
             "AmplifyFoundation",
             "InternalAmplifyKeychain",
             "AmplifyKeychainTestCommon",
@@ -879,6 +900,11 @@ let package = Package(
         .library(
             name: "AmplifyCognitoClient",
             targets: ["AmplifyCognitoClient"]
+        ),
+        // Experimental, as AmplifyCognitoClient: the user context data for Cognito requests an app sends itself.
+        .library(
+            name: "AmplifyCognitoASF",
+            targets: ["AmplifyCognitoASF"]
         ),
         .library(
             name: "AmplifyFoundation",

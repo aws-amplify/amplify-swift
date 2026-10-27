@@ -20,9 +20,10 @@ import IOKit
 import AppKit
 #endif
 
-/// The engine's copy of the members of `Amplify.DeviceInfo` (`Amplify/Core/Support/DeviceInfo.swift`)
-/// that the engine reads: `name`, `hostName`, `model`, `operatingSystem`, `identifierForVendor` and
-/// `screenBounds`. Each body, and each platform branch, is Amplify's.
+/// The Cognito engine's copy of the members of `Amplify.DeviceInfo` (`Amplify/Core/Support/DeviceInfo.swift`)
+/// that it reads: `name`, `hostName`, `model`, `operatingSystem`, `identifierForVendor` and
+/// `screenBounds`. Each body, and each platform branch, is Amplify's. It lives here so that
+/// `CognitoUserContextData` describes the device as the engine does.
 ///
 /// These values reach Cognito: the confirmed device's name (`ConfirmDevice`) and the advanced security
 /// fingerprint (`ASFDeviceInfo`). A drift would make Cognito see a new device, so a per-platform
