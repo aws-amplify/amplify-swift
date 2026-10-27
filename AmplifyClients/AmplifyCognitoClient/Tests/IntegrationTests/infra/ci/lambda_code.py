@@ -37,8 +37,17 @@ The baseline is lambda-baseline.json beside this script (CCIT_CI_LAMBDA_BASELINE
 holds only file paths, content hashes and source digests: no identifier, no secret. Only the code is compared. A
 function's RuntimeVersionConfig, which Lambda moves by itself with the runtime's automatic updates, is never read.
 
-A deployed zip's URL must be https:// on an amazonaws.com host. The self-tests set CCIT_CI_TEST_FILE_CODE_URLS=1,
-which also lets a file:// URL through, for the zips their fake AWS CLI serves from local files.
+A deployed zip's URL must be https:// on the host of one of Lambda's code buckets: <bucket>.s3.<region>.amazonaws.com
+(or <bucket>.s3.amazonaws.com), the bucket's name ending in -tasks, as GetFunction's example in the Lambda
+documentation (awslambda-us-west-2-tasks.s3.us-west-2.amazonaws.com) and the code buckets seen in us-east-1
+(prod-04-2014-tasks and others) are. It is a pattern, not a list: Lambda does not document the names, and anyone can
+name an S3 bucket <something>-tasks, so it keeps out other AWS endpoints (execute-api, path-style S3, most customer
+buckets) but cannot prove the bucket is Lambda's: that the URL comes from GetFunction's response does. A host
+outside the pattern only makes lambda-drift say that the code could not be read, naming no URL.
+A redirect is never followed (S3 answers a presigned GET with the object), and a download larger than a zip Lambda
+takes directly (50 MB; provision-ci.sh uploads them with --zip-file) is refused. The self-tests set
+CCIT_CI_TEST_FILE_CODE_URLS=1, which also lets through a file:// URL, for the zips their fake AWS CLI serves from local
+files, and an http:// URL on 127.0.0.1, for a local server.
 """
 
 import base64
@@ -46,6 +55,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -70,8 +80,9 @@ SOURCES = {
     "new-password-reset": ("ci/lambda/new-password-reset", ("index.mjs",)),
     "custom-sender": ("lambda/custom-sender", ("index.mjs", "package.json", "package-lock.json")),
 }
-# Lambda takes a zip of up to 50 MB directly and 250 MB unzipped; anything far past that is not one of these.
-MAX_ZIP_BYTES = 128 * 1024 * 1024
+# Lambda takes a zip of up to 50 MB directly (provision-ci.sh's --zip-file) and 250 MB unzipped; anything past the
+# first is not one of these, and anything far past the second neither.
+MAX_ZIP_BYTES = 50 * 1024 * 1024
 MAX_UNZIPPED_BYTES = 512 * 1024 * 1024
 # How many paths of each kind a difference lists before it says how many more.
 LISTED = 20
@@ -153,26 +164,50 @@ def manifest(data):
     return files
 
 
+AWS_DOMAIN = ".amazonaws.com"
+# What comes before AWS_DOMAIN in the host of a Lambda code bucket (see the docstring): <bucket>.s3[.<region>].
+CODE_BUCKET = re.compile(r"[a-z0-9][a-z0-9-]*-tasks\.s3(?:\.[a-z0-9-]+)?")
+
+
+def allowed_host(host):
+    """Whether `host` is a Lambda code bucket's: it ends in .amazonaws.com, at a label boundary, and what precedes
+    that is <bucket>-tasks.s3 or <bucket>-tasks.s3.<region>."""
+    host = host.lower()
+    return host.endswith(AWS_DOMAIN) and CODE_BUCKET.fullmatch(host[:-len(AWS_DOMAIN)]) is not None
+
+
 def allowed_url(url):
     parsed = urllib.parse.urlsplit(url)
     if parsed.scheme == "https":
-        host = (parsed.hostname or "").lower()
-        return host == "amazonaws.com" or host.endswith(".amazonaws.com")
-    return parsed.scheme == "file" and os.environ.get("CCIT_CI_TEST_FILE_CODE_URLS") == "1"
+        return allowed_host(parsed.hostname or "")
+    if os.environ.get("CCIT_CI_TEST_FILE_CODE_URLS") != "1":
+        return False
+    return parsed.scheme == "file" or (parsed.scheme == "http" and parsed.hostname == "127.0.0.1")
+
+
+class RefuseRedirects(urllib.request.HTTPRedirectHandler):
+    """Ends the download at a redirect: the allowlist holds for the code location, not for where it points."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise Unreadable(f"its code location answered with a redirect ({code}), which is not followed")
+
+
+# urlopen's default opener follows redirects to any http, https or ftp URL; this one stops at them.
+OPENER = urllib.request.build_opener(RefuseRedirects)
 
 
 def download(url, directory, suffix):
     """The deployed zip's bytes, downloaded into `directory` (private) as <suffix>.zip."""
     if not isinstance(url, str) or not allowed_url(url):
-        raise Unreadable("its code location is not an https:// URL on an amazonaws.com host")
+        raise Unreadable("its code location is not an https:// URL on a Lambda code bucket's S3 host")
     path = os.path.join(directory, f"{suffix}.zip")
     try:
-        with urllib.request.urlopen(url, timeout=60) as response, open(path, "wb") as out:
+        with OPENER.open(url, timeout=60) as response, open(path, "wb") as out:
             size = 0
             for chunk in iter(lambda: response.read(1 << 20), b""):
                 size += len(chunk)
                 if size > MAX_ZIP_BYTES:
-                    raise Unreadable("its zip is larger than a Lambda function's can be")
+                    raise Unreadable(f"its zip is larger than the {MAX_ZIP_BYTES >> 20} MB a Lambda zip upload can be")
                 out.write(chunk)
     except Unreadable:
         raise

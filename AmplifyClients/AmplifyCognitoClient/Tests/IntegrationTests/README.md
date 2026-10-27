@@ -875,7 +875,11 @@ accepted deployment until its sources change; otherwise, redeploy it (check its 
 Only the code is compared: `RuntimeVersionConfig`, which Lambda moves by itself, is not.
 `bash infra/ci/test_lambda_code.sh` tests it offline, and `test_provision_ci.sh` runs `lambda-drift` over the fake,
 whose `Code.Location` is a `file://` URL to the zip it was given (`CCIT_CI_TEST_FILE_CODE_URLS=1`, which only the
-self-tests set, lets that through; otherwise only an `https://` URL on an `amazonaws.com` host is downloaded).
+self-tests set, lets that through, and `http://127.0.0.1` for a local test server). Otherwise only an `https://` URL
+on the S3 host of a Lambda code bucket (`<bucket>-tasks.s3.<region>.amazonaws.com`, the shape of the
+`Code.Location` in Lambda's documentation) is downloaded, a redirect is not followed, and a download over 50 MB (the largest
+zip `--zip-file` uploads) is refused. The host pattern keeps out other AWS endpoints, but anyone can name a bucket
+`…-tasks`: that the URL comes from `GetFunction` is what makes it Lambda's.
 
 Once `infra/ci/lambda-baseline.json` is committed, editing the Lambda sources (`infra/lambda/triggers/triggers.mjs`,
 `infra/lambda/custom-sender` or `infra/ci/lambda/*`) needs someone with access to the CI account: the infra

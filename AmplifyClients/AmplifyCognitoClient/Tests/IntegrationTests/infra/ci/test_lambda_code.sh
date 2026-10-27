@@ -15,8 +15,10 @@
 # holds only the function's files; that the custom sender's holds node_modules but not npm's .package-lock.json;
 # that compare reads the deployed zips file by file: a function deployed from this checkout is in sync, so is one
 # whose zip holds the same files compressed and dated otherwise (its CodeSha256 only noted), and one with other
-# files is DRIFT, by name, with the files that differ, never a hash or a URL; that a URL that is not https:// on an
-# amazonaws.com host (or file:// outside the self-tests), or a download that is no zip, is refused; that record
+# files is DRIFT, by name, with the files that differ, never a hash or a URL; that a URL that is not https:// on a
+# Lambda code bucket's S3 host (the real hosts' shapes are, other amazonaws.com hosts and look-alikes are not; file://
+# and http://127.0.0.1 only in the self-tests), a redirect, a download over 50 MB or one that is no zip is refused
+# (over a local server on 127.0.0.1, which only the self-tests' variable lets through); that record
 # shows the same and writes nothing without --accept-deployed, and with it the deployed files, which compare then
 # accepts until the sources change; that check-baseline is 0 with the recorded sources, 1 once one changed, 3 with
 # no baseline; that an unexpected error is status 4, never 1; and that the committed baseline, when there is one,
@@ -26,7 +28,8 @@ CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INFRA="$(cd "$CI_DIR/.." && pwd)"
 SCRIPT="$CI_DIR/lambda_code.py"
 WORK=$(mktemp -d)
-trap 'rm -rf "$WORK"' EXIT
+SERVER=""
+trap '[[ -z "$SERVER" ]] || kill "$SERVER" 2>/dev/null; rm -rf "$WORK"' EXIT
 unset CCIT_CI_LAMBDA_BASELINE
 # A copy of the sources, so a test can change one.
 COPY="$WORK/infra"
@@ -35,6 +38,8 @@ cp -R "$INFRA/lambda/triggers" "$INFRA/lambda/custom-sender" "$COPY/lambda/"
 cp -R "$INFRA/ci/lambda/discard-sender" "$INFRA/ci/lambda/new-password-reset" "$COPY/ci/lambda/"
 rm -rf "$COPY/lambda/custom-sender/node_modules"
 export CCIT_CI_INFRA_DIR="$COPY" CCIT_CI_TEST_FILE_CODE_URLS=1
+# The local server is never reached through a proxy.
+export no_proxy="127.0.0.1${no_proxy:+,$no_proxy}"
 BASELINE="$WORK/baseline.json"
 SUFFIXES=(create-auth-challenge custom-sender define-auth-challenge discard-sender new-password-reset pre-sign-up
           pre-sign-up-confirmable verify-auth-challenge)
@@ -168,15 +173,52 @@ compare_reads_the_deployed_files() {
     (( STATUS == 0 )) && [[ "$OUT" == *"ccit-ci-discard-sender: not deployed"* && "$OUT" == *"ccit-ci-custom-sender: not compared"* ]]
 }
 
+REFUSED_URL="its code location is not an https:// URL on a Lambda code bucket's S3 host."
+
+# The hosts of Lambda's code buckets, as GetFunction's Code.Location names them, are allowed; other AWS endpoints, a
+# path-style S3 URL (any bucket), a bucket not named -tasks and look-alike domains are not.
+real_code_hosts_are_the_only_ones_allowed() {
+    env -u CCIT_CI_TEST_FILE_CODE_URLS python3 - "$CI_DIR" <<'PY'
+import sys
+sys.path.insert(0, sys.argv[1])
+import lambda_code
+allowed = [
+    "https://awslambda-us-west-2-tasks.s3.us-west-2.amazonaws.com/snapshots/123456789012/f-1?versionId=v&X-Amz-Signature=s",
+    "https://prod-04-2014-tasks.s3.us-east-1.amazonaws.com/snapshots/123456789012/f-1",
+    "https://prod-iad-c1-djusa-tasks.s3.us-east-1.amazonaws.com/snapshots/123456789012/f-1",
+    "https://awslambda-ap-ne-1-tasks.s3.ap-northeast-1.amazonaws.com/snapshots/123456789012/f-1",
+    "https://prod-04-2014-tasks.s3.amazonaws.com/snapshots/123456789012/f-1",
+    "https://AWSLAMBDA-US-EAST-2-TASKS.S3.US-EAST-2.AMAZONAWS.COM/x",
+]
+refused = [
+    "https://amazonaws.com/x", "https://evilamazonaws.com/x",
+    "https://s3.us-east-1.amazonaws.com/awslambda-us-east-1-tasks/x", "https://my-bucket.s3.us-east-1.amazonaws.com/x",
+    "https://abc123.execute-api.us-east-1.amazonaws.com/x", "https://lambda.us-east-1.amazonaws.com/x",
+    "https://awslambda-us-east-1-tasks.s3.us-east-1amazonaws.com/x",
+    "https://awslambda-us-east-1-tasks.s3.us-east-1.amazonaws.com.example.com/x",
+    "https://awslambda-us-east-1-tasks.s3.us-east-1.amazonaws.com./x",
+    "https://x.awslambda-us-east-1-tasks.s3.us-east-1.amazonaws.com/x",
+    "https://-tasks.s3.us-east-1.amazonaws.com/x", "https://tasks.s3.us-east-1.amazonaws.com/x",
+    "https://awslambda-us-east-1-tasks.s3.us-east-1.amazonaws.com@example.com/x",
+    "http://awslambda-us-east-1-tasks.s3.us-east-1.amazonaws.com/x",
+    "ftp://awslambda-us-east-1-tasks.s3.us-east-1.amazonaws.com/x",
+    "http://127.0.0.1/x", "file:///tmp/x.zip",
+]
+wrong = [u for u in allowed if not lambda_code.allowed_url(u)] + [u for u in refused if lambda_code.allowed_url(u)]
+assert not wrong, wrong
+PY
+}
+
 only_an_aws_https_url_is_downloaded() {
     local url
     build_all "$WORK/u"
     deploy_all "$WORK/u"
     for url in "https://example.com/code.zip" "https://amazonaws.com.example.com/code.zip" "http://lambda.us-east-1.amazonaws.com/x" \
-        "ftp://lambda.amazonaws.com/x"; do
+        "ftp://lambda.amazonaws.com/x" "https://evilamazonaws.com/x" "https://awslambda-us-east-1-tasks.s3.us-east-1amazonaws.com/x" \
+        "https://my-bucket.s3.us-east-1.amazonaws.com/x" "https://abc123.execute-api.us-east-1.amazonaws.com/x"; do
         relocate pre-sign-up "$url"
         run compare "$WORK/deployed.json" "$WORK/u" --baseline "$BASELINE"
-        (( STATUS == 1 )) && [[ "$OUT" == *"! ccit-ci-pre-sign-up: the deployed code could not be read: its code location is not an https:// URL on an amazonaws.com host."* ]] \
+        (( STATUS == 1 )) && [[ "$OUT" == *"! ccit-ci-pre-sign-up: the deployed code could not be read: $REFUSED_URL"* ]] \
             && [[ "$OUT" != *"$url"* ]] || { echo "$url: $OUT"; return 1; }
     done
     # file:// only for the self-tests.
@@ -194,6 +236,109 @@ only_an_aws_https_url_is_downloaded() {
         && [[ "$OUT" != *missing.zip* ]] || { echo "$OUT"; return 1; }
     run record "$WORK/deployed.json" "$WORK/u" --baseline "$BASELINE" --accept-deployed
     (( STATUS == 1 )) && [[ "$OUT" == *"Nothing recorded: a deployed function's code could not be read."* && ! -e "$BASELINE" ]]
+}
+
+# A local server on 127.0.0.1 only (an ephemeral port), which logs each path it is asked for: /zip serves $1,
+# /redirect redirects to /zip, /large streams 51 MB.
+start_server() {
+    cat > "$WORK/server.py" <<'PY'
+import http.server
+import os
+import sys
+
+port_file, log_file, zip_file = sys.argv[1:]
+
+
+class Handler(http.server.BaseHTTPRequestHandler):
+    def log_message(self, *args):
+        pass
+
+    def do_GET(self):
+        if self.path == "/ready":
+            self.send_response(204)
+            self.end_headers()
+            return
+        with open(log_file, "a") as log:
+            log.write(self.path + "\n")
+        if self.path == "/redirect":
+            self.send_response(302)
+            self.send_header("Location", f"http://127.0.0.1:{self.server.server_port}/zip")
+            self.end_headers()
+        elif self.path == "/zip":
+            with open(zip_file, "rb") as f:
+                data = f.read()
+            self.send_response(200)
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+        elif self.path == "/large":
+            self.send_response(200)
+            self.send_header("Content-Length", str(51 << 20))
+            self.end_headers()
+            try:
+                for _ in range(51):
+                    self.wfile.write(bytes(1 << 20))
+            except OSError:
+                pass
+        else:
+            self.send_error(404)
+
+
+server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+with open(port_file + ".tmp", "w") as f:
+    f.write(str(server.server_port))
+os.replace(port_file + ".tmp", port_file)
+server.serve_forever()
+PY
+    rm -f "$WORK/port" "$WORK/server.log"
+    python3 "$WORK/server.py" "$WORK/port" "$WORK/server.log" "$1" &
+    SERVER=$!
+    local tries
+    PORT=""
+    for tries in $(seq 100); do
+        if [[ -s "$WORK/port" ]] && PORT=$(cat "$WORK/port") \
+            && python3 -c 'import sys, urllib.request; urllib.request.urlopen(sys.argv[1], timeout=1)' \
+                "http://127.0.0.1:$PORT/ready" 2>/dev/null; then
+            return 0
+        fi
+        sleep 0.1
+    done
+    echo "the local server did not start"
+    return 1
+}
+
+stop_server() {
+    kill "$SERVER" 2>/dev/null || true
+    wait "$SERVER" 2>/dev/null || true
+    SERVER=""
+}
+
+# A redirect is refused wherever it points (here to a URL the self-tests allow, which serves the right zip), and its
+# target is never asked for; a download over 50 MB is refused; http://127.0.0.1 only with the self-tests' variable.
+a_redirect_and_a_large_download_are_refused() {
+    build_all "$WORK/h"
+    deploy_all "$WORK/h"
+    start_server "$WORK/h/pre-sign-up.zip" || { stop_server; return 1; }
+    relocate pre-sign-up "http://127.0.0.1:$PORT/zip"
+    run compare "$WORK/deployed.json" "$WORK/h" --baseline "$BASELINE"
+    (( STATUS == 0 )) && [[ "$OUT" == *"= ccit-ci-pre-sign-up: the deployed files are this checkout's"* ]] \
+        || { echo "served: $OUT"; stop_server; return 1; }
+    relocate pre-sign-up "http://127.0.0.1:$PORT/redirect"
+    run compare "$WORK/deployed.json" "$WORK/h" --baseline "$BASELINE"
+    (( STATUS == 1 )) && [[ "$OUT" == *"! ccit-ci-pre-sign-up: the deployed code could not be read: its code location answered with a redirect (302), which is not followed."* ]] \
+        && [[ "$(cat "$WORK/server.log")" == "/zip"$'\n'"/redirect" && "$OUT" != *127.0.0.1* ]] \
+        || { echo "redirect: $OUT"; cat "$WORK/server.log"; stop_server; return 1; }
+    relocate pre-sign-up "http://127.0.0.1:$PORT/large"
+    run compare "$WORK/deployed.json" "$WORK/h" --baseline "$BASELINE"
+    (( STATUS == 1 )) && [[ "$OUT" == *"! ccit-ci-pre-sign-up: the deployed code could not be read: its zip is larger than the 50 MB a Lambda zip upload can be."* ]] \
+        || { echo "large: $OUT"; stop_server; return 1; }
+    relocate pre-sign-up "http://127.0.0.1:$PORT/zip"
+    STATUS=0
+    OUT=$(env -u CCIT_CI_TEST_FILE_CODE_URLS python3 "$SCRIPT" compare "$WORK/deployed.json" "$WORK/h" --baseline "$BASELINE" 2>&1) \
+        || STATUS=$?
+    stop_server
+    (( STATUS == 1 )) && [[ "$OUT" == *"! ccit-ci-pre-sign-up: the deployed code could not be read: $REFUSED_URL"* ]] \
+        && [[ "$(grep -c '^/zip$' "$WORK/server.log")" == 1 ]] || { echo "without the variable: $OUT"; return 1; }
 }
 
 an_accepted_deployment_is_in_sync_until_its_sources_change() {
@@ -249,8 +394,10 @@ the_committed_baseline_names_this_checkouts_sources() {
 check "zips are deterministic and hold only the function's files" zips_are_deterministic_and_hold_only_the_functions_files
 check "compare reads the deployed files: the same files in another zip are in sync, other files are DRIFT" \
     compare_reads_the_deployed_files
-check "only an https:// URL on an amazonaws.com host is downloaded, and a download that is no zip is refused" \
+check "only the hosts of Lambda's code buckets are allowed, at a label boundary" real_code_hosts_are_the_only_ones_allowed
+check "only an https:// URL on a Lambda code bucket's host is downloaded, and a download that is no zip is refused" \
     only_an_aws_https_url_is_downloaded
+check "a redirect is not followed, and a download over 50 MB is refused" a_redirect_and_a_large_download_are_refused
 check "record writes the deployed files only with --accept-deployed; they are in sync until the sources change" \
     an_accepted_deployment_is_in_sync_until_its_sources_change
 check "no baseline is status 3 with a warning" no_baseline_is_its_own_status
