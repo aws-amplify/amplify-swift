@@ -36,13 +36,32 @@
 #
 #   A rerun over resources an earlier run made adds what is missing and updates, after their tag checks, only
 #   these of its own: the KMS key's policy and the sender's and triggers' role policies (each to name the new pool
-#   or log group), the invoke permissions of the Lambdas the new pool names (one that names another pool's ARN, as
-#   after a pool is deleted and made again, is replaced), the reset Lambda's role policy (to decrypt its parameter
-#   with the key), and an SSM parameter stored under another key than the script's own, which it stores again, with
-#   the same value, under that key. It never updates a pool or a Lambda's code: after a change to a pool template, or
-#   to lambda/triggers/triggers.mjs, lambda/custom-sender or ci/lambda/*, check that the pool or function carries
-#   purpose=amplify-cognito-client-integ, delete it by hand and rerun, which makes it again (with its invoke
-#   permissions). lambda-drift tells a function whose deployed files are not this checkout's.
+#   or log group), the trust of the SNS caller role ccit-ci-cognito-sms (opened to the account's pools while the
+#   default or the MFA-required pool is made, as the key policy is, then narrowed to those two pools; a run that
+#   stops in between leaves it open, still held to the external ID and the account, until a rerun narrows it), the
+#   invoke permissions of the Lambdas the new pool names (one that names another pool's ARN, as after a pool is
+#   deleted and made again, is replaced), the reset Lambda's role policy (to decrypt its parameter with the key, or
+#   to name a default pool made again), the identity pool roles' trust (to name an identity pool made again), and
+#   an SSM parameter stored under another key than the script's own, which it stores again, with the same value,
+#   under that key.
+#
+#   It never updates a pool or a Lambda's code, so either is replaced: deleted by hand, after its tag check, then
+#   made again by infra/ci/provision-ci.sh --apply --scope all. Never a plain --apply: that is phase 1, which makes
+#   only pre-sign-up and the discard sender again, and adds invoke permissions for the device-alias pool only, while
+#   lambda-drift and the baseline check still pass. Do it while no CI run is going: until the rerun, the pools
+#   cannot use what was deleted.
+#   - A Lambda, after a change to lambda/triggers/triggers.mjs, lambda/custom-sender or ci/lambda/* (lambda-drift
+#     tells a function whose deployed files are not this checkout's): check that it carries
+#     purpose=amplify-cognito-client-integ, delete it, and run --apply --scope all, which makes it again with every
+#     pool's invoke permissions.
+#   - A pool, after a change to its template: --upload never overwrites a file, so the uploaded files that name the
+#     pool go too, or CI goes on reading the deleted pool. Check that the pool and each of those files carries
+#     purpose=amplify-cognito-client-integ (the files: aws s3api get-object-tagging), then delete the pool and its
+#     auth/cognito-client-ci/ccit-ci-<pool>-amplify_outputs.json. For ccit-ci-default, also delete
+#     ccit-ci-rotation-amplify_outputs.json, the identity pool ccit_ci_default (it federates the old pool's client,
+#     so the rerun would refuse) and the Lambda ccit-ci-new-password-reset (it names the old pool, and runs once,
+#     to make the new-password users, only when it is made), each after its tag check. Then run --apply --scope all
+#     --upload, which makes them again and uploads the new files; the other uploaded files stay as they are.
 #
 # Every resource is named ccit-ci-… (identity pool ccit_ci_default, parameters /ccit-ci/…) and tagged
 # purpose=amplify-cognito-client-integ. The script finds them by name, creates only what is missing, refuses any
