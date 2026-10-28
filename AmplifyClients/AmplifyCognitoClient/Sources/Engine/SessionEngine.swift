@@ -107,9 +107,9 @@ protocol SessionEngine: Sendable {
     /// **Which failures keep the attempt** (ported from the plugin's `AWSAuthConfirmSignInTask`:
     /// `analyzeCurrentStateAndCreateEvent`, `answerTOTPSetup` and its selection checks). The attempt is kept, and
     /// `pendingChallenge` still reports its step, so the user can retry:
-    /// - an answer the retained machine records as an error **inside** the challenge or the TOTP setup
-    ///   (`resolvingChallenge(.error)`, `resolvingTOTPSetup(.error)`): a wrong code, an invalid new
-    ///   password, a failed TOTP verification, whatever the mapped error;
+    /// - an answer the retained machine records as an error **inside** the challenge or a TOTP setup that still
+    ///   has its setup data (`resolvingChallenge(.error)`, `resolvingTOTPSetup(.error(setup?, _))`): a wrong code,
+    ///   an invalid new password, a failed TOTP verification, whatever the mapped error;
     /// - an answer rejected before it is sent: `validation` (the core already checks an empty answer, an MFA or
     ///   first-factor selection that names no type, an MFA setup selection outside the step's choices, and a
     ///   `WEB_AUTHN` first factor the step does not offer, with the client's own strings, `SessionCore.validate`).
@@ -125,7 +125,10 @@ protocol SessionEngine: Sendable {
     /// The attempt is dropped, and `pendingChallenge` becomes `nil`:
     /// - `challengeExpired`, when Cognito's challenge session has expired;
     /// - an SRP or migrate-auth step that failed (`signingInWithSRP(.error)`,
-    ///   `signingInViaMigrateAuth(.error)`): `invalidState("Cannot use confirmSignIn in the current state.
+    ///   `signingInViaMigrateAuth(.error)`), or a TOTP setup with no setup data left
+    ///   (`resolvingTOTPSetup(.error(nil, _))`: its `AssociateSoftwareToken` or its last
+    ///   `RespondToAuthChallenge` failed, and the attempt was kept on the `.resetPassword` or `.confirmSignUp`
+    ///   step that failure was): `invalidState("Cannot use confirmSignIn in the current state.
     ///   Call signIn to start the sign-in again.", …)` (the plugin's message, naming the client's calls);
     /// - any other retained state: `invalidState("There is no sign-in in progress for this session", …)`,
     ///   also thrown when nothing is pending;
