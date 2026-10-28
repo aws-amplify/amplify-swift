@@ -81,7 +81,10 @@ extension AWSCognitoAuthCredentialStore {
             return
         }
 
-        // What `KeychainStoreMigrator.migrate()` does, over this store's own factory. Keep the two in step.
+        // Built as `KeychainStoreMigrator.migrate()` builds its migrator, over this store's own factory, so both move
+        // one item at a time and skip collisions. Only this store resumes an interrupted run (removing a guest's
+        // session record, or a configuration record another process saved since, in the login's way) and moves the
+        // configuration record last (`movingLast`): the public `migrate()` does neither.
         let newAccessGroup = accessGroup
         let migrator = KeychainItemMigrator(
             source: KeychainItemAttributes(service: oldService, accessGroup: oldAccessGroup),
