@@ -426,7 +426,7 @@ design.
 | 22 | A known refusal of a carried session's identity step | **The AWS credentials provider fails loudly**: `CredentialsError.notConfigured` (`.failLoudly`), with the refusal underneath. `fetchAuthSession`'s identity fields keep the refusal itself, and the token provider still vends the access token. |
 | 23 | Which AWSMobileClient credentials a `.default` sign-out clears | **Every identity pool's** credentials service the app's keychain holds, not only the configured one's. The plugin is unchanged. |
 | 24 | A network failure (the request may not have reached Cognito) | **A retryable `.service` with no code**, in every call, with the client's network texts. The plugin keeps its mapping. |
-| 25 | When a hosted-UI sign-in cancelled with `cancelWebUISignIn()` answers | **Once it has released the system sheet**, within a second: `systemSheetHolder` no longer names the session. A passkey call too. |
+| 25 | When a hosted-UI sign-in cancelled with `cancelWebUISignIn()` answers | **Once it has released the system sheet**: `systemSheetHolder` no longer names the session. If the sheet isn't released within a second, the call throws anyway, and the sheet stays held until the sign-in's remaining calls, or the passkey ceremony, finish. A passkey call too. |
 | 26 | A forgotten device key on a sign-in that isn't SRP | **Dropped and retried once**, in the shared engine: the password (`USER_PASSWORD_AUTH`), `USER_AUTH`, custom and auto sign-in flows remove the device record and resend without a device key. Plugin and client alike. |
 | 27 | The user ID of a `signUp` that completes with auto sign-in | **Carried**: Cognito's sub, as `.done` and `.confirmUser` already carried it. Plugin and client alike. `confirmSignUp`'s `.completeAutoSignIn` and `.done` still carry none, since Cognito's answer there has no sub. |
 | 28 | A refresh refused as a reused refresh token | **The 30-second dead-token rule holds within one launch**, and is not persisted; a refused forced refresh fails with the retryable error instead of returning the tokens it sent, and counts toward the rule: a second one at least 30 seconds later expires the session, with its own `sessionExpired` text (`refreshTokenReused` underneath; #35). |
@@ -466,7 +466,8 @@ not retried.
 **#25.** The caller was answered at once while the browser was still closing, so `systemSheetHolder` still named the
 session and an immediate retry got `browserBusy`. The caller's own task cancellation and `resetSystemSheet()` still
 answer at once; a sheet not released within a second (the browser slow to close, or the code exchange already
-running) doesn't hold the caller longer, and stays held until the sign-in's remaining calls finish.
+running) doesn't hold the caller longer, and stays held until the sign-in's remaining calls, or the passkey
+ceremony, finish.
 
 **#26.** `forgetDevice` keeps this device's record, as the plugin does, so the next sign-in sends the forgotten key.
 Only an SRP sign-in's password verifier and the answers to a sign-in's challenges handled Cognito's answer; a

@@ -1105,8 +1105,10 @@ public func signInWithWebUI(presentationAnchor: AuthClientPresentationAnchor,
 // The public cancel and reset. cancelWebUISignIn closes this session's sheet (its
 // sign-in, sign-out page or passkey sheet): a sign-in or passkey call throws
 // `userCancelled`, and a closed sign-out page is `.failed(.userCancelled)`. A hosted-UI
-// sign-in or passkey call throws once it has released the sheet (at most a second), so
-// systemSheetHolder no longer names its session by then.
+// sign-in or passkey call throws once it has released the sheet, so systemSheetHolder
+// no longer names its session by then. If the sheet isn't released within a second, the
+// call throws anyway, and the sheet stays held until the sign-in's remaining calls, or
+// the passkey ceremony, finish.
 // resetSystemSheet frees the client's sheet, whichever session holds it, and returns
 // the session that held it.
 public func cancelWebUISignIn() async
