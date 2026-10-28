@@ -478,6 +478,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
     func testQueryImplicitlyStarts() async throws {
         await setUp(withModels: TestModelRegistration())
         let dataStoreStarted = expectation(description: "dataStoreStarted")
+        // A sync engine restart emits ready again.
+        dataStoreStarted.assertForOverFulfill = false
         let sink = Amplify
             .Hub
             .publisher(for: .dataStore)
@@ -509,6 +511,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
         // Wait for the restarted engine to reach `.ready` before saving, otherwise the create's
         // sync event is never delivered (same reason the initial wait uses ready, not syncStarted).
         let readyAfterRestart = expectation(description: "DataStore ready after clear/start")
+        // A sync engine restart emits ready again.
+        readyAfterRestart.assertForOverFulfill = false
         let readySink = Amplify.Hub.publisher(for: .dataStore)
             .filter { $0.eventName == HubPayload.EventName.DataStore.ready }
             .sink { _ in readyAfterRestart.fulfill() }
@@ -565,13 +569,16 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
         XCTAssertEqual(createdPost.id, createdComment.id)
     }
 
+    /// Parallel mutations made while the outgoing mutation queue waits for events are not lost
     ///
     /// - Given: DataStore with clean state
     /// - When:
-    ///     - do some mutaions to ensure MutationEventPublisher works fine
-    ///     - wait 1 second for OutgoingMutationQueue stateMachine transform to waitingForEventToProcess state
-    ///     - do some mutations in parallel
-    /// - Then: verify no mutaiton loss
+    ///    - do some mutations to ensure MutationEventPublisher works fine
+    ///    - wait 1 second for OutgoingMutationQueue stateMachine transform to waitingForEventToProcess state
+    ///    - do some mutations in parallel
+    /// - Then:
+    ///    - verify no mutation loss
+    ///
     func testParallelMutations_whenWaitingForEventToProcess_noMutationLoss() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
@@ -602,11 +609,10 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
                     initExpectation.fulfill()
                 }
 
-                if post.title.hasPrefix(titlePrefix) {
-                    expectedResult.insert(post.title)
-                }
-
-                if expectedResult.count == parallelSize {
+                // Fulfill once, when the last new title arrives, not on every later processed event
+                if post.title.hasPrefix(titlePrefix),
+                   expectedResult.insert(post.title).inserted,
+                   expectedResult.count == parallelSize {
                     parallelExpectation.fulfill()
                 }
             }
@@ -614,16 +620,26 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
         await fulfillment(of: [initExpectation], timeout: 10)
         try await Task.sleep(seconds: 1)
 
-        for post in posts {
+        let saveTasks = posts.map { post in
             Task {
                 try? await Amplify.DataStore.save(post)
             }
         }
         await fulfillment(of: [parallelExpectation], timeout: Double(parallelSize))
+        await cancelAndDrain(saveTasks)
         cancellable.cancel()
         XCTAssertEqual(expectedResult, Set(posts.map(\.title)))
     }
 
+    /// Saves in progress when DataStore stops still reach the local store
+    ///
+    /// - Given: DataStore has started syncing
+    /// - When:
+    ///    - 1,000 posts are saved in parallel, each after a random 50-150 ms delay
+    ///    - DataStore is stopped after 100 ms
+    /// - Then:
+    ///    - Every save completes and every post can be queried from the local store
+    ///
     func testStop_whenSavingInProgress() async throws {
         let startTime = Temporal.DateTime.now()
         let syncExpression = DataStoreSyncExpression(modelSchema: Post.schema) {
@@ -654,7 +670,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
         let queryLocalFinished = expectation(description: "Query local finished")
         queryLocalFinished.expectedFulfillmentCount = postCount
 
-        for post in posts {
+        let saveTasks = posts.map { post in
             Task {
                 try await sleepMill(UInt64.random(in: 50 ..< 150))
                 do {
@@ -667,13 +683,14 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
             }
         }
 
-        Task {
+        let stopTask = Task {
             try await sleepMill(100)
             try await Amplify.DataStore.stop()
             stopped.fulfill()
         }
 
         await fulfillment(of: [saveFinished, stopped], timeout: 30)
+        await cancelAndDrain(saveTasks + [stopTask])
 
         var localSuccess = 0
         for post in posts {
@@ -694,6 +711,22 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
 
     private func sleepMill(_ milliseconds: UInt64) async throws {
         try await Task.sleep(nanoseconds: milliseconds * NSEC_PER_MSEC)
+    }
+
+    /// Cancels `tasks` and waits, up to `timeout`, for them to finish, so none outlives the test.
+    private func cancelAndDrain<Success: Sendable, Failure: Error>(
+        _ tasks: [Task<Success, Failure>],
+        timeout: TimeInterval = 30
+    ) async {
+        tasks.forEach { $0.cancel() }
+        let drained = expectation(description: "Tasks finished")
+        Task {
+            for task in tasks {
+                _ = await task.result
+            }
+            drained.fulfill()
+        }
+        await fulfillment(of: [drained], timeout: timeout)
     }
 
     func validateSavePost() async throws {

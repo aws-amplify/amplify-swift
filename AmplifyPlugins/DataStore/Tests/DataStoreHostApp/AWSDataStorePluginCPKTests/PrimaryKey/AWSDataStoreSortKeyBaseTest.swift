@@ -22,13 +22,24 @@ import AWSDataStorePlugin
 class AWSDataStoreSortKeyBaseTest: XCTestCase, @unchecked Sendable {
     static let defaultConfigFile = "AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests-amplifyconfiguration"
     override func setUp() async throws {
-        continueAfterFailure = false
+        // With `false`, an async failure runs tearDown alongside the abandoned test body, then exits the process.
+        continueAfterFailure = true
     }
 
     override func tearDown() async throws {
-        try await Amplify.DataStore.clear()
+        var teardownError: Error?
+        do {
+            try await Amplify.DataStore.stop()
+            try await Amplify.DataStore.clear()
+        } catch {
+            teardownError = error
+        }
+        try? await Task.sleep(seconds: 1)
+        // Reset even if stop or clear threw, so the next test can configure Amplify.
         await Amplify.reset()
-        try await Task.sleep(seconds: 1)
+        if let teardownError {
+            throw teardownError
+        }
     }
 
     func setUp(

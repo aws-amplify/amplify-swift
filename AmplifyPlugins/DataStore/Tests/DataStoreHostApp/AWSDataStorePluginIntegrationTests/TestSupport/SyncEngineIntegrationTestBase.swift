@@ -49,10 +49,19 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase, @unchecked Sendable {
         // the API plugin's `session`. Otherwise a late DataStore sync query/mutate reaches the
         // force-unwrapped `session` and crashes with "Unexpectedly found nil while implicitly
         // unwrapping an Optional value". (The prior settle sat after reset, where it did not help.)
-        try await stopDataStore()
-        try await clearDataStore()
-        try await Task.sleep(seconds: 1)
+        var teardownError: Error?
+        do {
+            try await stopDataStore()
+            try await clearDataStore()
+        } catch {
+            teardownError = error
+        }
+        try? await Task.sleep(seconds: 1)
+        // Reset even if stop or clear threw, so the next test can configure Amplify.
         await Amplify.reset()
+        if let teardownError {
+            throw teardownError
+        }
     }
 
     func setUp(
@@ -110,6 +119,8 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase, @unchecked Sendable {
         }
     }
 
+    /// A save made right after `syncStarted` can miss the outbox's first check and never sync;
+    /// tests that wait for a save to sync should use `startAmplifyAndWaitForReady()`.
     func startAmplifyAndWaitForSync() async throws {
         try await startAmplifyAndWait(for: HubPayload.EventName.DataStore.syncStarted)
     }
@@ -123,6 +134,8 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase, @unchecked Sendable {
         try startAmplify()
 
         let eventReceived = expectation(description: "DataStore \(eventName) event")
+        // A sync engine restart dispatches the event again.
+        eventReceived.assertForOverFulfill = false
         Amplify.Hub.publisher(for: .dataStore)
             .filter { $0.eventName == eventName }
             .sink { _ in

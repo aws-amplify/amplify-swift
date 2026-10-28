@@ -71,7 +71,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
 
     func testSaveCommentThenQuery() async throws {
         await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         guard let comment = try await saveComment() else {
             XCTFail("Failed to save comment")
@@ -82,7 +82,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
 
     func testSavePostThenQuery() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         guard let post = try await savePost() else {
             XCTFail("Failed to save post")
@@ -93,7 +93,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
 
     func testSaveBlogThenQuery() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         guard let blog = try await saveBlog() else {
             XCTFail("Failed to save blog ")
@@ -104,7 +104,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
 
     func testSaveCommentThenUpdateWithPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard var comment = try await saveComment(),
               let post = try await savePost() else {
             XCTFail("Failed to save comment and post")
@@ -134,7 +134,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
 
     func testSavePostThenUpdateWithBlog() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard var post = try await savePost(),
               let blog = try await saveBlog() else {
             XCTFail("Failed to save post and blog")
@@ -164,7 +164,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
 
     func testUpdateCommentWithPostAndPostWithBlog() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard var comment = try await saveComment(),
               var post = try await savePost(),
               let blog = try await saveBlog() else {

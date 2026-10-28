@@ -25,6 +25,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
     var apiOnly: Bool = false
     var modelsOnly: Bool = false
     var clearOnTearDown: Bool = false
+    private var waitedForReady = false
 
     override func setUp() {
         // With `false`, an async failure runs tearDown alongside the abandoned test body, then exits the process.
@@ -33,12 +34,21 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
 
     override func tearDown() async throws {
         // Let in-flight sync work unwind before `Amplify.reset()`, as SyncEngineIntegrationTestBase does.
+        var teardownError: Error?
         if !(apiOnly || modelsOnly) {
-            try await stopDataStore()
-            try await clearDataStore()
+            do {
+                try await stopDataStore()
+                try await clearDataStore()
+            } catch {
+                teardownError = error
+            }
         }
-        try await Task.sleep(seconds: 1)
+        try? await Task.sleep(seconds: 1)
+        // Reset even if stop or clear threw, so the next test can configure Amplify.
         await Amplify.reset()
+        if let teardownError {
+            throw teardownError
+        }
     }
 
     func setupConfig() {
@@ -62,11 +72,14 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
     }
 
     /// Setup DataStore with given models
-    /// - Parameter models: DataStore models
+    /// - Parameters:
+    ///   - models: DataStore models
+    ///   - waitForReady: Wait for `ready`, so a save right after setup doesn't race the sync engine's start
     func setup(
         withModels models: AmplifyModelRegistration,
         logLevel: LogLevel = .verbose,
-        clearOnTearDown: Bool = false
+        clearOnTearDown: Bool = false,
+        waitForReady: Bool = true
     ) async {
         self.clearOnTearDown = clearOnTearDown
         do {
@@ -96,7 +109,11 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
             // DataStore is configured now, so tearDown must unwind it even after a models-only `setUp`.
             modelsOnly = false
 
-            try await Amplify.DataStore.start()
+            if waitForReady {
+                try await startAndWaitForReady()
+            } else {
+                try await Amplify.DataStore.start()
+            }
         } catch {
             XCTFail("Error during setup: \(error)")
         }
@@ -155,8 +172,14 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
     }
 
     func startAndWaitForReady() async throws {
+        // `ready` fires once per start, and `setup(withModels:)` may already have waited for it.
+        guard !waitedForReady else {
+            return
+        }
         var requests: Set<AnyCancellable> = []
         let dataStoreReady = expectation(description: "DataStore `ready` event received")
+        // A sync engine restart dispatches ready again.
+        dataStoreReady.assertForOverFulfill = false
         let dataStoreEvents = HubPayload.EventName.DataStore.self
         Amplify
             .Hub
@@ -169,6 +192,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
             .store(in: &requests)
         try await startDataStore()
         await fulfillment(of: [dataStoreReady], timeout: 60)
+        waitedForReady = true
     }
 
     func startDataStore() async throws {
@@ -243,7 +267,8 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
             }
             .store(in: &requests)
         try await Amplify.DataStore.delete(model)
-        await fulfillment(of: [modelSynced], timeout: 10)
+        // The same round trip as create and update, so the same budget.
+        await fulfillment(of: [modelSynced], timeout: 100)
     }
 
     enum AssertListState {

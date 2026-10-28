@@ -389,6 +389,14 @@ final class AWSDataStoreLazyLoadBlogPostComment8V2Tests: AWSDataStoreLazyLoadBas
     ///    - The model should be decoded from the mutation event
     ///    - Lazy reference of the post should retrievable and loadable.
     ///
+    /// A comment received from `observe` for its delete lazy loads its post
+    ///
+    /// - Given: A post and a comment for it, created and synced
+    /// - When:
+    ///    - The comment is deleted through the API, and its delete mutation event is received
+    /// - Then:
+    ///    - The received comment's post is not loaded, and the comment's post lazy loads
+    ///
     func testObserveToQueryPostFromDeletedComment() async throws {
         await setup(withModels: BlogPostComment8V2Models())
         try await startAndWaitForReady()
@@ -400,6 +408,10 @@ final class AWSDataStoreLazyLoadBlogPostComment8V2Tests: AWSDataStoreLazyLoadBas
         let mutationEvents = Amplify.DataStore.observe(Comment.self)
         Task {
             for try await mutationEvent in mutationEvents {
+                // A late event for the comment's own create can still arrive here.
+                guard mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue else {
+                    continue
+                }
                 if let receivedComment = try? mutationEvent.decodeModel(as: Comment.self),
                    receivedComment.id == comment.id {
                     assertLazyReference(
@@ -416,6 +428,7 @@ final class AWSDataStoreLazyLoadBlogPostComment8V2Tests: AWSDataStoreLazyLoadBas
                         state: .loaded(model: post)
                     )
                     mutationEventReceived.fulfill()
+                    return
                 } else {
                     XCTFail("The model should be correctly decoded")
                 }

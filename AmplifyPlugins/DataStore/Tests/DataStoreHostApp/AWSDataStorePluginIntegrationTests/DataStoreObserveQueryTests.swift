@@ -44,6 +44,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
         try startAmplify()
         try await clearDataStore()
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
+        snapshotWithIsSynced.assertForOverFulfill = false
         let querySnapshotsCancelled = expectation(description: "query snapshots cancelled")
         let querySnapshots = Amplify.DataStore.observeQuery(for: Post.self)
         let task = Task {
@@ -59,7 +60,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
                 XCTFail("\(error)")
             }
             XCTAssertTrue(snapshots.count >= 2)
-            XCTAssertFalse(snapshots[0].isSynced)
+            XCTAssertFalse(try XCTUnwrap(snapshots.first).isSynced)
             querySnapshotsCancelled.fulfill()
         }
         let receivedPost = expectation(description: "received Post")
@@ -114,7 +115,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
         await fulfillment(of: [snapshotWithIsSynced], timeout: 100)
 
         XCTAssertTrue(snapshots.count >= 2)
-        XCTAssertFalse(snapshots[0].isSynced)
+        XCTAssertFalse(try XCTUnwrap(snapshots.first).isSynced)
     }
 
     /// ObserveQuery API will eventually return a snapshot when sync state is toggled  from false to true.
@@ -274,6 +275,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
                 model.id == post2.id
             }) {
                 var items = querySnapshot.items
+                XCTAssertGreaterThanOrEqual(items.count, 2)
+                guard items.count >= 2 else { return }
                 let actualPost2 = items.removeLast()
                 let actualPost1 = items.removeLast()
                 XCTAssertEqual(actualPost2.id, post2.id)
@@ -305,6 +308,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
         XCTAssertTrue(numberOfPosts > 0)
         try await stopDataStore()
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
+        snapshotWithIsSynced.assertForOverFulfill = false
         var snapshots = [DataStoreQuerySnapshot<Post>]()
         Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self)).sink { completed in
             switch completed {
@@ -326,9 +330,10 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
         )
         await fulfillment(of: [snapshotWithIsSynced], timeout: 30)
         XCTAssertTrue(snapshots.count >= 2)
-        XCTAssertFalse(snapshots[0].isSynced)
-        XCTAssertTrue(snapshots.last!.isSynced)
-        XCTAssertTrue(snapshots.last!.items.count > numberOfPosts)
+        XCTAssertFalse(try XCTUnwrap(snapshots.first).isSynced)
+        let lastSnapshot = try XCTUnwrap(snapshots.last)
+        XCTAssertTrue(lastSnapshot.isSynced)
+        XCTAssertTrue(lastSnapshot.items.count > numberOfPosts)
     }
 
 
@@ -425,6 +430,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
                 // See (1), subsequent snapshot should have item with "xyz 1".
                 self.log.info("\(#function) 2/3. \(querySnapshot)")
                 XCTAssertEqual(items.count, 1)
+                guard !items.isEmpty else { return }
                 XCTAssertEqual(items[0].title, "xyz 1")
                 snapshotExpectation23.fulfill()
             } else if snapshotCount == 4 {
@@ -437,6 +443,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
                 // See (4). the post that now matches the snapshot should be added
                 self.log.info("\(#function) 5/6. \(querySnapshot)")
                 XCTAssertEqual(items.count, 1)
+                guard !items.isEmpty else { return }
                 XCTAssertEqual(items[0].title, "xyz 2")
                 snapshotExpectation56.fulfill()
             } else if snapshotCount == 7 {
@@ -448,6 +455,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
                 // See (6). Snapshot that is emitted due to "xyz 3" should not contain the deleted model
                 self.log.info("\(#function) 8. \(querySnapshot)")
                 XCTAssertEqual(items.count, 1)
+                guard !items.isEmpty else { return }
                 XCTAssertEqual(items[0].title, "xyz 3")
                 snapshotExpectation8.fulfill()
             }
@@ -533,32 +541,39 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
                     observeQueryReadyForTest.fulfill()
                 case 2, 3:
                     XCTAssertEqual(items.count, 1)
+                    guard !items.isEmpty else { return }
                     XCTAssertEqual(items[0].title, "a")
                 case 4, 5:
                     XCTAssertEqual(items.count, 2)
+                    guard items.count >= 2 else { return }
                     XCTAssertEqual(items[0].title, "a")
                     XCTAssertEqual(items[1].title, "m")
                 case 6, 7:
                     XCTAssertEqual(items.count, 3)
+                    guard items.count >= 3 else { return }
                     XCTAssertEqual(items[0].title, "a")
                     XCTAssertEqual(items[1].title, "m")
                     XCTAssertEqual(items[2].title, "z")
                 case 8, 9:
                     XCTAssertEqual(items.count, 3)
+                    guard items.count >= 3 else { return }
                     XCTAssertEqual(items[0].title, "m")
                     XCTAssertEqual(items[1].title, "n")
                     XCTAssertEqual(items[2].title, "z")
                 case 10, 11:
                     XCTAssertEqual(items.count, 3)
+                    guard items.count >= 3 else { return }
                     XCTAssertEqual(items[0].title, "b")
                     XCTAssertEqual(items[1].title, "m")
                     XCTAssertEqual(items[2].title, "n")
                 case 12:
                     XCTAssertEqual(items.count, 2)
+                    guard items.count >= 2 else { return }
                     XCTAssertEqual(items[0].title, "b")
                     XCTAssertEqual(items[1].title, "n")
                 case 13:
                     XCTAssertEqual(items.count, 1)
+                    guard !items.isEmpty else { return }
                     XCTAssertEqual(items[0].title, "b")
                 case 14:
                     XCTAssertEqual(items.count, 0)
@@ -611,6 +626,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
         let firstSnapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
+        firstSnapshotWithIsSynced.assertForOverFulfill = false
         var onComplete: ((Subscribers.Completion<Error>) -> Void) = { _ in }
         Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self))
             .sink { onComplete($0) } receiveValue: { querySnapshot in
@@ -646,6 +662,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
         let firstSnapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
+        firstSnapshotWithIsSynced.assertForOverFulfill = false
         var onComplete: ((Subscribers.Completion<Error>) -> Void) = { _ in }
         Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self))
             .sink { onComplete($0) } receiveValue: { querySnapshot in

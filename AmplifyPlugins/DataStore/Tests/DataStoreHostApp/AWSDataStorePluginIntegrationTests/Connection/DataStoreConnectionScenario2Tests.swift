@@ -47,7 +47,7 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase, @uncheck
 
     func testSaveTeamAndProjectSyncToCloud() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team2(name: "name1")
         let project = Project2(teamID: team.id, team: team)
         let syncedTeamReceived = expectation(description: "received team from sync event")
@@ -87,7 +87,7 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase, @uncheck
 
     func testUpdateProjectWithAnotherTeam() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team2(name: "name1")
         let anotherTeam = Team2(name: "name1")
         var project = Project2(teamID: team.id, team: team)
@@ -130,7 +130,7 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase, @uncheck
 
     func testDeleteAndGetProjectReturnsNilWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team2(id: UUID().uuidString, name: UUID().uuidString)
         let project = Project2(id: UUID().uuidString, name: UUID().uuidString, teamID: team.id, team: team)
 

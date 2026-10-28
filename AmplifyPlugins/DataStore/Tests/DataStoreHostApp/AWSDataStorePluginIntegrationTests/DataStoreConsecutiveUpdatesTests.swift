@@ -118,7 +118,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
     /// - Then: The Post should not be returned when queried for immediately and in the eventual consistent state
     func testSaveAndImmediatelyDelete() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let newPost = Post(
             title: "MyPost",
@@ -197,7 +197,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
     /// - Then: The Post should not be returned when queried for
     func testSaveThenUpdateAndImmediatelyDelete() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let newPost = Post(
             title: "MyPost",
@@ -284,11 +284,11 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
     }
 
     /// - Given: API has been setup with `Post` model registered
-    /// - When: A Post is saved with sync complete, then it is updated 10 times
+    /// - When: A Post is saved with sync complete, then it is updated 10 times, the last 9 while the first update is in flight
     /// - Then: The Post should be updated with new fields
     func testSaveThenMultipleUpdate() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let newPost = Post(
             title: "MyPost",
@@ -341,7 +341,10 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
         _ = try await Amplify.DataStore.save(newPost)
         await fulfillment(of: [saveSyncReceived], timeout: networkTimeout)
 
-        for index in 1 ... updateCount {
+        // Save the rest only once the first update is in flight, otherwise the outbox folds them all into one
+        updatedPost.title = updatedPostDefaultTitle + "1"
+        try await saveAndWaitUntilInFlight(updatedPost)
+        for index in 2 ... updateCount {
             updatedPost.title = updatedPostDefaultTitle + String(index)
             _ = try await Amplify.DataStore.save(updatedPost)
         }
