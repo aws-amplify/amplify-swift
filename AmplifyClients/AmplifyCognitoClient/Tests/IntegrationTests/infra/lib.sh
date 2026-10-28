@@ -83,8 +83,13 @@ require_free_disk() {
 # any AWS call, unless AWS_PROFILE is set and none of the variables that give the CLI credentials of their own is:
 # AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN (exported keys), AWS_ROLE_ARN and
 # AWS_WEB_IDENTITY_TOKEN_FILE (a web identity role, common on CI runners and EKS), and any AWS_CONTAINER_CREDENTIALS_*
-# (container credentials). The CLI can take any of those over the profile AWS_PROFILE names. That is all it checks.
-# It does not check that the profile is the sandbox account's, or which credentials the profile itself resolves to.
+# (container credentials). The CLI takes exported keys over every profile, and a web identity role before the
+# profile's own credentials. Container credentials are different: the CLI uses them, like an EC2 instance role,
+# AWS_CREDENTIAL_FILE and the boto files, only when the profile AWS_PROFILE names resolves no credentials of its own.
+# They are refused anyway, which is conservative. That is all it checks. It does not check that the profile is the
+# sandbox account's, or that it holds credentials of its own: with a profile that holds none (only a region, say),
+# the CLI falls back to an instance role or one of those files, which this check lets through, and a first run then
+# builds the sandbox in that account and records it.
 require_recorded_account() {
     local recorded="" exported=() variable
     if [[ -f "$STATE_DIR/state.json" ]]; then
@@ -103,8 +108,9 @@ require_recorded_account() {
         done
         if (( ${#exported[@]} > 0 )); then
             echo "Refusing: no account is recorded in $STATE_DIR/state.json yet, and the environment exports ${exported[*]}." \
-                "The AWS CLI would use those credentials (exported keys, a web identity role, container credentials)" \
-                "instead of the profile AWS_PROFILE names. Unset them for the first run." >&2
+                "The AWS CLI takes exported keys and a web identity role over the profile AWS_PROFILE names, and" \
+                "container credentials whenever that profile holds no credentials of its own. Unset them for the" \
+                "first run." >&2
             exit 1
         fi
     fi

@@ -11,17 +11,17 @@
 #
 #   bash infra/test_provision.sh
 #
-# It checks that a region other than the one state.json records is refused before any AWS call; that without an
-# argument the recorded region wins over AWS_REGION; that with no state.json yet, a run without AWS_PROFILE is refused
-# before any AWS call, and so is one with it while AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY or AWS_SESSION_TOKEN is
-# exported (the CLI would take the keys over the profile), or AWS_ROLE_ARN, AWS_WEB_IDENTITY_TOKEN_FILE or an
-# AWS_CONTAINER_CREDENTIALS_* variable (its web identity and container providers), and one with it and none of them
-# goes on; that once state.json records the account, exported keys go on to the caller's identity, which the account
-# check compares; that the region refusal points at a teardown, and a sandbox in another region (its global role's
-# identity pool) is refused before any change, with no region recorded and with one recorded (another state directory's
-# sandbox); that find_by_name follows NextToken to the
-# page that has the name, and stops at the last page without it; and that record_state merges into state.json (mode
-# 600), keeping what it does not set (the parity section).
+# It checks that a region other than the one state.json records is refused before any AWS call; that without an argument
+# the recorded region wins over AWS_REGION; that with no state.json yet, a run without AWS_PROFILE is refused before any
+# AWS call, and so is one with it while AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY or AWS_SESSION_TOKEN is exported (the
+# CLI would take the keys over the profile), or AWS_ROLE_ARN, AWS_WEB_IDENTITY_TOKEN_FILE or an
+# AWS_CONTAINER_CREDENTIALS_* variable (its web identity provider, and its container provider, which the CLI uses only
+# when the profile holds no credentials, refused anyway), and one with it and none of them goes on; that once state.json
+# records the account, exported keys go on to the caller's identity, which the account check compares; that the region
+# refusal points at a teardown, and a sandbox in another region (its global role's identity pool) is refused before any
+# change, with no region recorded and with one recorded (another state directory's sandbox); that find_by_name follows
+# NextToken to the page that has the name, and stops at the last page without it; and that record_state merges into
+# state.json (mode 600), keeping what it does not set (the parity section).
 set -euo pipefail
 INFRA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT="$INFRA_DIR/provision.sh"
@@ -100,15 +100,16 @@ a_first_run_with_exported_keys_is_refused_before_any_aws_call() {
         OUT=$(env "$variable=placeholder-key-value" AWS_PROFILE=sandbox COGNITO_CLIENT_INTEG_DIR="$WORK/fresh" \
             "$SCRIPT" us-west-2 2>&1) || STATUS=$?
         (( STATUS == 1 )) && [[ "$OUT" == *"no account is recorded"*"exports $variable"* ]] \
-            && [[ "$OUT" == *"would use those credentials"*"instead of the profile"* ]] \
+            && [[ "$OUT" == *"takes exported keys and a web identity role over the profile"* ]] \
             && [[ "$OUT" != *placeholder-key-value* ]] && ! grep -v '^configure ' "$FAKE_LOG" | grep -q . \
             || { echo "$variable: $OUT"; return 1; }
     done
 }
 
-# The CLI's web identity and container providers can take over AWS_PROFILE too, so with no account recorded a run
-# with AWS_PROFILE and AWS_ROLE_ARN, AWS_WEB_IDENTITY_TOKEN_FILE or an AWS_CONTAINER_CREDENTIALS_* variable exported
-# must stop before its first AWS call as well, and name the variable, never its value.
+# The CLI's web identity provider comes before the profile's own credentials, so with no account recorded a run with
+# AWS_PROFILE and AWS_ROLE_ARN or AWS_WEB_IDENTITY_TOKEN_FILE exported must stop before its first AWS call as well, and
+# name the variable, never its value. The container provider comes after them (the CLI uses it only when the profile
+# holds no credentials), but an AWS_CONTAINER_CREDENTIALS_* variable is refused the same way, to be safe.
 a_first_run_with_web_identity_or_container_credentials_is_refused_before_any_aws_call() {
     local variable
     for variable in AWS_ROLE_ARN AWS_WEB_IDENTITY_TOKEN_FILE AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
@@ -118,7 +119,7 @@ a_first_run_with_web_identity_or_container_credentials_is_refused_before_any_aws
         OUT=$(env "$variable=placeholder-credential-value" AWS_PROFILE=sandbox COGNITO_CLIENT_INTEG_DIR="$WORK/fresh" \
             "$SCRIPT" us-west-2 2>&1) || STATUS=$?
         (( STATUS == 1 )) && [[ "$OUT" == *"no account is recorded"*"exports $variable."* ]] \
-            && [[ "$OUT" == *"a web identity role, container credentials"* ]] \
+            && [[ "$OUT" == *"container credentials whenever that profile holds no credentials of its own"* ]] \
             && [[ "$OUT" != *placeholder-credential-value* ]] && ! grep -v '^configure ' "$FAKE_LOG" | grep -q . \
             || { echo "$variable: $OUT"; return 1; }
     done
