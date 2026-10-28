@@ -1000,8 +1000,10 @@ let accessToken = try await client.userPoolTokenProvider.accessToken()
   retryable `unknown` an unforced refresh gets there (unless another writer saved a refresh meanwhile, with a new
   refresh token, which it adopts). It counts toward the dead-token rule (see
   [Known limitations](#known-limitations)): a second refusal at least 30 seconds later, with nothing saved meanwhile,
-  reports `sessionExpired` and expires the session even though its saved tokens are still valid. From then on, an
-  unforced fetch and both providers fail with `sessionExpired` too, until the session signs in again or signs out.
+  reports `sessionExpired` and expires the session even though its saved tokens are still valid. From then on, while
+  the session is in memory (until every handle and provider for it is released, or a relaunch), an unforced fetch and
+  both providers fail with `sessionExpired` too, until the session signs in again or signs out. The same credentials
+  saved again by another writer don't end that.
 - There is no `isSignedIn` field. Use `currentSessionState()`.
 - Tokens and AWS credentials print redacted.
 
@@ -1310,7 +1312,7 @@ await client.signOut(options: .init(purgeStoredSession: true))
 | Result | Meaning |
 |---|---|
 | `.complete` | Tokens revoked and cleared from this device, or there were none |
-| `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` | Signed out on this device, but part of the work failed. `revokeTokenError`: the refresh token stays valid until it expires, unless a global sign-out succeeded (`globalSignOutError` is `nil`), which already invalidated it. After a failed global sign-out the token isn't revoked and this holds a placeholder `.service` error with empty texts, as in the plugin. `globalSignOutError`: other devices stay signed in. Neither is retried, and signing out again doesn't retry it: the session is signed out on this device, so a second sign-out is `.complete` and sends nothing. `hostedUIError`: the browser keeps its hosted-UI cookie; only for a sign-out without a window (`signOut(options:)` or `signOutStoredSession`, as `.validation`), or a closed page on a session a refresh in this launch found expired. `storageError`: with `purgeStoredSession`, the row couldn't be removed; purge it again |
+| `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` | Signed out on this device, but part of the work failed. `revokeTokenError`: the refresh token stays valid until it expires, unless a global sign-out succeeded (`globalSignOutError` is `nil`), which already invalidated it. After a failed global sign-out the token isn't revoked and this holds a placeholder `.service` error with empty texts, as in the plugin. `globalSignOutError`: other devices stay signed in. Neither is retried, and signing out again doesn't retry it: the session is signed out on this device, so a second sign-out is `.complete` and sends nothing. `hostedUIError`: the browser keeps its hosted-UI cookie; only for a sign-out without a window (`signOut(options:)` or `signOutStoredSession`, as `.validation`), or a closed page on a session a refresh found expired while the session was in memory (until every handle and provider for it is released, or a relaunch), when the login signed out still has that refresh token. `storageError`: with `purgeStoredSession`, the row couldn't be removed; purge it again |
 | `.failed(AuthClientError)` | Not signed out: the session is still signed in on this device. See below |
 
 `.failed` carries:
@@ -1383,8 +1385,10 @@ func hostedUISignOut(client: AmplifyCognitoClient, window: AuthClientPresentatio
   signs out in the browser. Until then, sign in to the hosted UI with `prompt: [.login]` or
   `prefersEphemeralSession: true`.
 - If the user closes the sign-out page, the result is `.failed(.userCancelled)` and the session stays signed in, as
-  with the plugin, unless a refresh in this launch has already found the session expired (the client keeps that in
-  memory; the plugin saves it with the session). Then it signs out anyway and returns `.partial` with `hostedUIError`
+  with the plugin, unless a refresh has already found the session expired while it was in memory (the client keeps
+  that on the session until every handle and provider for it is released, or a relaunch; the plugin saves it with the
+  session), and the login being signed out still has the refresh token found dead. A new login another app in the
+  access group saved since then stays signed in: `.failed(.userCancelled)`. Otherwise it signs out anyway and returns `.partial` with `hostedUIError`
   `.userCancelled`, which says the session was signed out on this device but not from the hosted UI: as without a
   window, signing out again won't clear the cookie. The same goes when `cancelWebUISignIn()` closes this session's
   sign-out page, or `resetSystemSheet()` closes it before it finished.

@@ -1549,8 +1549,9 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
     `==` compares errors as `AuthSessionState.failed` does (`isEquivalent(to:)`).
   - **`.failed`, with the session still signed in:** another sign-in replaced the session during the sign-out
     (`.invalidState`); a storage failure before the local sign-out; `sessionConfigurationMismatch` and any other
-    error before anything was revoked; a closed hosted-UI sign-out page (`.userCancelled`), unless a refresh in
-    this launch had found the session expired; any hosted-UI sign-out page that could not be shown or completed,
+    error before anything was revoked; a closed hosted-UI sign-out page (`.userCancelled`), unless a refresh had
+    found the session expired while it was in memory and the login signed out still has the refresh token found
+    dead; any hosted-UI sign-out page that could not be shown or completed,
     including no hosted-UI configuration or sign-out redirect URI; task cancellation before anything was revoked,
     as `.failed(.unknown("The sign-out was cancelled before anything was revoked; the session is still signed
     in.", "Retry the sign-out.", CancellationError()))`.
