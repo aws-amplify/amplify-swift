@@ -10,6 +10,8 @@
 # opens no issue. Each issue is opened only while no open issue has exactly its title (the open issues are listed,
 # not searched), and the runs never overlap, so a manual dispatch during the Monday run cannot open a second one. A
 # failure to list the open issues fails the step instead of reading as "already open" (the steps run with pipefail).
+# Each issue is labelled pending-triage: an issue the workflow's token opens starts no issue_opened.yml run, which
+# would otherwise add it.
 # Runs only in the upstream repository, so a fork's schedule opens no issues.
 name: Auth | Cognito Client CI reminders
 
@@ -90,7 +92,7 @@ jobs:
                          exit 1 ;;
           esac
           if [ "$open" = "0" ]; then
-            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$(python3 code_sink_key.py check || true)
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --label pending-triage --body "$(python3 code_sink_key.py check || true)
 
           $todo"
           else
@@ -138,7 +140,7 @@ jobs:
                          exit 1 ;;
           esac
           if [ "$open" = "0" ]; then
-            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$(python3 lambda_code.py check-baseline || true)
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --label pending-triage --body "$(python3 lambda_code.py check-baseline || true)
 
           $todo"
           else
