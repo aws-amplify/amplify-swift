@@ -718,14 +718,23 @@ extension SessionCore {
             .replacingOccurrences(of: "=", with: "")
     }
 
-    /// The refusal of a hosted-UI sign-in while this session's previous call is still in progress, naming the session
-    /// that holds the sheet: another session, when the previous call is queued behind it (`.alreadyQueued`), else this
-    /// one (`.alreadyInFlight`: its call holds the sheet, or has not asked for it yet).
+    /// The refusal of a hosted-UI sign-in while this session's previous call is still in progress, from one read of the
+    /// sheet lock:
+    ///
+    /// | The previous call | Reason | `holder` |
+    /// |---|---|---|
+    /// | queued for the sheet | `.alreadyQueued` | the session holding it |
+    /// | holding the sheet (this session holds it) | `.alreadyInFlight` | this session |
+    /// | neither: before its lease, or committing after it | `.signInInProgress` | the session holding the sheet, else this session |
     private nonisolated func webUISignInInProgress() async -> AuthClientError {
-        if let holder = await sheetLock.currentHolder, holder != sessionId {
+        let (holder, queued) = await sheetLock.holderAndQueue(for: sessionId)
+        if let holder, queued {
             return .browserBusy(heldBy: holder, requestedBy: sessionId, reason: .alreadyQueued)
         }
-        return .browserBusy(heldBy: sessionId, requestedBy: sessionId, reason: .alreadyInFlight)
+        if holder == sessionId {
+            return .browserBusy(heldBy: sessionId, requestedBy: sessionId, reason: .alreadyInFlight)
+        }
+        return .browserBusy(heldBy: holder ?? sessionId, requestedBy: sessionId, reason: .signInInProgress)
     }
 
     static func webUISignInCancelled() -> AuthClientError {

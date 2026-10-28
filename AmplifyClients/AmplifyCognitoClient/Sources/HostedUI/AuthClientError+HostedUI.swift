@@ -26,6 +26,12 @@ enum BrowserBusyReason: Equatable {
     /// The asking session's previous flow was cancelled and its sheet is still closing.
     case stillClosing
 
+    /// The asking session's previous hosted-UI sign-in call is still in progress, and is neither holding the sheet
+    /// nor queued for it: before its lease (waiting for the sign-in lock, or listing the other sessions), or after it,
+    /// committing. The holder is another session, named, or, when none holds the sheet, the asking session itself.
+    /// The one text that names the hosted UI: it is about the call, not the sheet.
+    case signInInProgress
+
     /// The asking session waited with `whenBrowserBusy: .wait(timeout:)`, and the timeout expired first.
     case timedOut
 }
@@ -50,6 +56,13 @@ extension AuthClientError {
                 holder: holder,
                 "Session \"\(requester)\" is already waiting for the system sheet, which session \"\(holder)\" holds.",
                 "Wait for the earlier call to finish, or cancel it. One session queues for the sheet at most once."
+            )
+        case .signInInProgress:
+            let held = holder == requester ? "" : ", and session \"\(holder)\" holds the system sheet"
+            return .browserBusy(
+                holder: holder,
+                "Session \"\(requester)\" already has a hosted-UI sign-in in progress\(held).",
+                "Wait for it to finish, or cancel it, before starting another for the same session."
             )
         case .stillClosing:
             return .browserBusy(

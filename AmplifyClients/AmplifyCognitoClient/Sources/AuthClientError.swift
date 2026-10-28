@@ -43,7 +43,8 @@ public enum AuthClientError {
     /// a hosted-UI sign-out page or a passkey ceremony (sign-in or registration), of another session or of
     /// this one. Also thrown when this session already has a hosted-UI sign-in in progress or queued, and when
     /// a `WebUIOptions.whenBrowserBusy` `.wait(timeout:)` expired before the sheet was free. `holder` is the
-    /// session holding the sheet when the call was refused.
+    /// session holding the sheet when the call was refused; for a hosted-UI sign-in refused because this session's
+    /// previous one is still in progress while no session holds the sheet, it is the requesting session itself.
     case browserBusy(holder: SessionID, ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// A client was constructed with a session ID that is already live in this process under a different
