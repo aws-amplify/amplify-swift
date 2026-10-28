@@ -51,8 +51,9 @@ rename through its old path, which the project still lists). With the integratio
 the host app's own group. With unit_test_groups.json it selects AWSPluginsCore, whose `paths` hold
 `AmplifyPlugins/` and so cover every plugin host app, as any other host-app file already does there:
 the unit and build workflows then run AWSPluginsCore's group.
-The projects are read from `--repo-root` (default: the current directory, which is the checkout in
-CI).
+The projects are read from `--repo-root` (default: the checkout that holds this script, wherever it is
+run from). A root with no Xcode project at all is treated as unread, so its docs count as bundled
+rather than none of them.
 
 It also validates the group config: if any group references a target that is absent from the
 SwiftPM graph (a rename, a typo, or a not-yet-wired target), it exits non-zero rather than
@@ -268,12 +269,13 @@ def bundled_files(root):
     `bundled` holds the repo-relative paths of every file a project copies into a bundle. `unread`
     holds the repo-relative directories (with a trailing `/`) of projects that could not be parsed;
     every ignorable file under one of them is treated as bundled, so a project this parser cannot read
-    makes its docs run their group rather than silently skipping a possible build break.
+    makes its docs run their group rather than silently skipping a possible build break. A root with no
+    `project.pbxproj` at all (a wrong `--repo-root`, say) is unread as a whole, for the same reason.
     """
     def rel(path):
         return os.path.relpath(os.path.normpath(path), root).replace(os.sep, "/")
 
-    bundled, unread = set(), []
+    bundled, unread, found = set(), [], False
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = sorted(d for d in dirnames if d not in SCAN_SKIP_DIRS)
         if not dirpath.endswith(".xcodeproj"):
@@ -281,6 +283,7 @@ def bundled_files(root):
         dirnames[:] = []
         if "project.pbxproj" not in filenames:
             continue
+        found = True
         project_dir = os.path.dirname(dirpath)
         try:
             with open(os.path.join(dirpath, "project.pbxproj"), encoding="utf-8") as f:
@@ -290,6 +293,9 @@ def bundled_files(root):
                              "its directory as bundled\n" % (rel(dirpath), error))
             directory = rel(project_dir)
             unread.append("" if directory == "." else directory + "/")
+    if not found:
+        sys.stderr.write("found no Xcode project under %s; treating every file under it as bundled\n" % root)
+        unread.append("")
     return bundled, unread
 
 
@@ -314,6 +320,10 @@ def build_graph(pkg):
     return path_of, deps_of, is_test
 
 
+# The checkout that holds this script (scripts/python/affected_targets.py), the default --repo-root.
+SCRIPT_CHECKOUT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
 def read_paths(path):
     """The non-blank lines of a path-list file, stripped."""
     with open(path) as f:
@@ -328,8 +338,9 @@ def main():
     ap.add_argument("--renamed-from",
                     help="file with one rename source (old path) per line; attributed, but never failing closed")
     ap.add_argument("--groups", required=True, help="group definition JSON")
-    ap.add_argument("--repo-root", default=".",
-                    help="checkout whose Xcode projects are read for bundled docs (default: current directory)")
+    ap.add_argument("--repo-root", default=SCRIPT_CHECKOUT,
+                    help="checkout whose Xcode projects are read for bundled docs (default: the one holding "
+                         "this script)")
     args = ap.parse_args()
 
     pkg = json.load(open(args.package))

@@ -12,7 +12,7 @@ Self-test for affected_targets.py, run over this directory's real group files an
 
 The stub names every target the group files reference (each under a placeholder path, so the group-target check
 passes), plus the Cognito client's source and unit-test targets at their real paths. The host-app README cases read
-this checkout's Xcode projects, or a scratch checkout holding one small project.
+this checkout's Xcode projects, or a scratch checkout holding one small project or none.
 """
 import json
 import os
@@ -66,19 +66,20 @@ class AffectedTargetsTests(unittest.TestCase):
             f.write("\n".join(paths) + "\n")
         return path
 
-    def run_selector(self, groups, changed, repo_root=REPO, renamed_from=None):
+    def run_selector(self, groups, changed, repo_root=REPO, renamed_from=None, cwd=None):
         """The selector's completed process for these changed files and rename sources, read against `repo_root`'s
-        Xcode projects."""
+        Xcode projects (`None` passes no `--repo-root`), run from `cwd`."""
         command = [sys.executable, SCRIPT, "--package", self.package,
                    "--changed", self.write_list("changed.txt", changed), "--groups", groups]
         if renamed_from is not None:
             command += ["--renamed-from", self.write_list("renamed_from.txt", renamed_from)]
-        command += ["--repo-root", repo_root]
-        return subprocess.run(command, capture_output=True, text=True, check=True)
+        if repo_root is not None:
+            command += ["--repo-root", repo_root]
+        return subprocess.run(command, capture_output=True, text=True, check=True, cwd=cwd)
 
-    def selected(self, groups, *changed, repo_root=REPO, renamed_from=None):
+    def selected(self, groups, *changed, repo_root=REPO, renamed_from=None, cwd=None):
         """The `selected=` array the selector prints for these changed files."""
-        result = self.run_selector(groups, changed, repo_root, renamed_from)
+        result = self.run_selector(groups, changed, repo_root, renamed_from, cwd)
         return selection(result)
 
     def use_package(self, package):
@@ -267,6 +268,33 @@ class AffectedTargetsTests(unittest.TestCase):
         self.assertEqual(self.selected(UNIT_GROUPS, RECORD_CACHE + "Sources/Moved.swift",
                                        renamed_from=[CLIENT + "Sources/Moved.swift"]),
                          ["AWSCognitoAuthPlugin", "AmplifyCognitoClient", "AmplifyRecordCache"])
+
+    def test_the_default_repo_root_is_the_checkout_holding_the_selector(self):
+        """Run from another directory without `--repo-root`, the selector still reads this checkout's projects.
+
+        - Given: a working directory outside the checkout, and no `--repo-root`
+        - When:
+           - the only changed file is a README the Auth host app bundles
+        - Then:
+           - `auth` is selected, as when run from the checkout's root
+        """
+        readme = "AmplifyPlugins/Auth/Tests/AuthHostApp/AuthIntegrationTests/README.md"
+        self.assertEqual(self.selected(INTEG_GROUPS, readme, repo_root=None, cwd=self.work.name), ["auth"])
+
+    def test_a_root_with_no_project_is_unread(self):
+        """A `--repo-root` holding no Xcode project makes every doc count as bundled, not none of them.
+
+        - Given: an empty directory as `--repo-root`
+        - When:
+           - the only changed file is the Auth plugin's README, under the `auth` group's path
+        - Then:
+           - `auth` is selected, and the selector says on stderr that it found no project
+        """
+        root = os.path.join(self.work.name, "empty")
+        os.makedirs(root)
+        result = self.run_selector(INTEG_GROUPS, ["AmplifyPlugins/Auth/README.md"], root)
+        self.assertEqual(selection(result), ["auth"])
+        self.assertIn("found no Xcode project", result.stderr)
 
 
 def selection(result):
