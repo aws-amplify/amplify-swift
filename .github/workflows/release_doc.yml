@@ -3,7 +3,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
   contents: write
 
 jobs:
@@ -13,22 +12,13 @@ jobs:
     runs-on: macos-latest
     environment: Release
     steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          role-session-name: ${{ format('{0}.release-doc', github.run_id) }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Retrieve Token
+      - name: Generate GitHub App token
         id: retrieve-token
-        env:
-          DEPLOY_SECRET_ARN: ${{ secrets.DEPLOY_SECRET_ARN }}
-        run: |
-          PAT=$(aws secretsmanager get-secret-value \
-          --secret-id "$DEPLOY_SECRET_ARN" \
-          | jq -r ".SecretString | fromjson | .Credential")
-          echo "token=$PAT" >> $GITHUB_OUTPUT
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: Iv23lil6abCFOvhL0fxO
+          private-key: ${{ secrets.AWS_AMPLIFY_OPS_APP_PRIVATE_KEY }}
+          permission-contents: write
 
       - name: Checkout repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
