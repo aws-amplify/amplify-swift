@@ -1228,20 +1228,20 @@ DIR=$(mktemp -d /tmp/ccit-plugin-set.XXXXXX)
 AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/plugin-configs.py --dir "$DIR"
 cd AmplifyPlugins/Auth/Tests/AuthHostApp
 AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
-  -project AuthHostApp.xcodeproj -scheme AuthIntegrationTests -destination "$DEST"          # Gen1
+  -project AuthHostApp.xcodeproj -scheme AuthIntegrationTests -destination "$DEST" -skipPackagePluginValidation  # Gen1
 AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
-  -project AuthHostApp.xcodeproj -scheme AuthGen2IntegrationTests -destination "$DEST"      # Gen2
+  -project AuthHostApp.xcodeproj -scheme AuthGen2IntegrationTests -destination "$DEST" -skipPackagePluginValidation  # Gen2
 AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
-  -project AuthHostApp.xcodeproj -scheme AuthStressTests -destination "$DEST"
+  -project AuthHostApp.xcodeproj -scheme AuthStressTests -destination "$DEST" -skipPackagePluginValidation
 cd ../AuthHostedUIApp
 AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
-  -project AuthHostedUIApp.xcodeproj -scheme AuthHostedUIAppUITests -destination "$DEST"    # Gen1
+  -project AuthHostedUIApp.xcodeproj -scheme AuthHostedUIAppUITests -destination "$DEST" -skipPackagePluginValidation  # Gen1
 AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
-  -project AuthHostedUIApp.xcodeproj -scheme AuthHostedUIAppGen2UITests -destination "$DEST" # Gen2
+  -project AuthHostedUIApp.xcodeproj -scheme AuthHostedUIAppGen2UITests -destination "$DEST" -skipPackagePluginValidation  # Gen2
 cd ../AuthWebAuthnApp
 (cd LocalServer && npm install && npm start) &                          # the simulator server
 AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
-  -project AuthWebAuthnApp.xcodeproj -scheme AuthWebAuthnAppUITests -destination "$DEST"
+  -project AuthWebAuthnApp.xcodeproj -scheme AuthWebAuthnAppUITests -destination "$DEST" -skipPackagePluginValidation
 rm -rf "$DIR"
 ```
 
