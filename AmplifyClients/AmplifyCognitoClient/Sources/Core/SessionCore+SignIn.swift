@@ -438,7 +438,7 @@ extension SessionCore {
                     // The sign-in is complete, so its challenge record goes, under the same gate. Best effort: a
                     // record left beside a signed-in session is deleted by the next restore, never resumed.
                     await deleteChallengeRecord(in: store)
-                    await apply(SessionSnapshot(committed), challenge: .set(nil), event: .signedIn)
+                    await apply(SessionSnapshot(committed), challenge: .set(nil), event: .signedIn, newLogin: true)
                     return replaced
                 }
                 let reread = try await store.load(sessionId)

@@ -150,7 +150,10 @@ extension SessionCore {
 
     /// An expired session re-reads its record before failing, so a fresh sign-in stored by another
     /// process — an app extension sharing the access group — is picked up rather than ignored for the
-    /// rest of this session's life. New credentials clear the expiry (see `apply`).
+    /// rest of this session's life. A record whose bytes changed is installed; new credentials clear the expiry, but
+    /// the same login saved again, holding the refresh token proved dead (the same credentials in other bytes, or the
+    /// plugin's save of them with its expired flag set), keeps it (see `apply`), so the dead token is not refreshed
+    /// again.
     nonisolated func rereadIfExpired() async throws {
         guard await isExpired else {
             return
@@ -230,8 +233,8 @@ extension SessionCore {
         if pendingChallenge != nil {
             throw Self.notSignedIn(sessionId)
         }
-        if isExpired {
-            throw expiredError(holding: restoredSnapshotIfAny?.credentials)
+        if let dead = expiredCredentials {
+            throw expiredError(holding: dead)
         }
         guard let snapshot = restoredSnapshotIfAny else {
             throw Self.notSignedIn(sessionId)
@@ -295,7 +298,9 @@ extension SessionCore {
     ///
     /// Both expiries install the record they re-read, which holds the credentials proved dead, as they mark the
     /// session expired (`markExpired(installing:)`), so the next call does not take that record, saved again in other
-    /// bytes by another writer, for a new login and refresh the dead token again.
+    /// bytes by another writer, for a new login and refresh the dead token again. A record saved again after the proof
+    /// with the same refresh token keeps the expiry as well (`apply`); only credentials with another refresh token, or
+    /// none, end it.
     ///
     /// **A refresh that cannot be saved throws the storage error**; it never hands out tokens storage does
     /// not hold. Known limit: with rotation, the retry then uses a refresh token the server may already

@@ -1003,8 +1003,10 @@ let accessToken = try await client.userPoolTokenProvider.accessToken()
   [Known limitations](#known-limitations)): a second refusal at least 30 seconds later, with nothing saved meanwhile,
   reports `sessionExpired` and expires the session even though its saved tokens are still valid. From then on, while
   the session is in memory (until every handle and provider for it is released, or a relaunch), an unforced fetch and
-  both providers fail with `sessionExpired` too, until the session signs in again or signs out. The same credentials
-  saved again by another writer don't end that.
+  both providers fail with `sessionExpired` too, until the session signs in again or signs out. Another writer saving
+  the same login again doesn't end that, before or after the expiry: the same credentials in other bytes, or the Auth
+  plugin's save of them marked expired, still hold the refresh token found dead. A login with another refresh token
+  does.
 - There is no `isSignedIn` field. Use `currentSessionState()`.
 - Tokens and AWS credentials print redacted.
 

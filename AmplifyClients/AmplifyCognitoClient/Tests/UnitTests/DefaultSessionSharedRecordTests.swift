@@ -236,6 +236,121 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertEqual(events.received, [.sessionExpired, .signedOut])
     }
 
+    /// The same credentials saved again after the proof keep the expiry too: the re-read installs them, but they still
+    /// hold the refresh token proved dead.
+    ///
+    /// - Given: a refresh token reused twice, `RefreshTokenReuse.minimumGap` apart, which expires the session, then the
+    ///   plugin saving the same credentials again in other bytes (pretty-printed)
+    /// - When: credentials are requested, then again after another `minimumGap`
+    /// - Then:
+    ///    - both are the same `sessionExpired` ("already used"), with no third refresh
+    ///    - the re-saved bytes are what the store holds, and one `.sessionExpired` event is sent in all
+    func testPluginReEncodingTheSameCredentialsAfterTheExpiry_keepsIt() async throws {
+        let stale = FakePayload.signedIn("alice", stale: true)
+        harness.keychain.put(stale.data, pluginAccount)
+        let client = try harness.client(.default)
+        let engine = try XCTUnwrap(harness.engine(for: .default))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
+        let events = StreamRecorder(client.listenToAuthEvents())
+        _ = await credentialsError { try await client.credentialsProvider.resolve() }
+        harness.advanceClock(by: RefreshTokenReuse.minimumGap)
+        let expiry = await credentialsError { try await client.credentialsProvider.resolve() }
+        XCTAssertEqual(expiry?.isSessionExpired, true, "\(String(describing: expiry))")
+        let resaved = try prettyPrinted(stale)
+        harness.keychain.put(resaved, pluginAccount)
+
+        let third = await credentialsError { try await client.credentialsProvider.resolve() }
+        harness.advanceClock(by: RefreshTokenReuse.minimumGap)
+        let fourth = await credentialsError { try await client.credentialsProvider.resolve() }
+
+        for (name, error) in [("third", third), ("fourth", fourth)] {
+            XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
+            XCTAssertEqual((error?.underlyingError as? AuthClientError)?.errorDescription, Self.refreshTokenAlreadyUsed, name)
+        }
+        XCTAssertEqual(engine.refreshCalls.count, 2)
+        XCTAssertEqual(harness.keychain.value(pluginAccount), resaved)
+        // Ends with a known event, so an extra `.sessionExpired` still in the recorder's buffer is counted too.
+        _ = await client.signOut()
+        await events.waitFor(2)
+        XCTAssertEqual(events.received, [.sessionExpired, .signedOut])
+    }
+
+    /// Only the dead refresh token keeps the expiry: a new login saved after it ends it.
+    ///
+    /// - Given: a refresh token reused twice, `RefreshTokenReuse.minimumGap` apart, which expires the session, then
+    ///   another writer saving a new login for the same user, with another refresh token, that needs no refresh
+    /// - When: credentials are requested
+    /// - Then:
+    ///    - they are the new login's, with no third refresh, and the session is signed in as alice
+    func testANewLoginSavedAfterTheExpiry_endsIt() async throws {
+        let stale = FakePayload.signedIn("alice", stale: true)
+        harness.keychain.put(stale.data, pluginAccount)
+        let client = try harness.client(.default)
+        let engine = try XCTUnwrap(harness.engine(for: .default))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
+        _ = await credentialsError { try await client.credentialsProvider.resolve() }
+        harness.advanceClock(by: RefreshTokenReuse.minimumGap)
+        let expiry = await credentialsError { try await client.credentialsProvider.resolve() }
+        XCTAssertEqual(expiry?.isSessionExpired, true, "\(String(describing: expiry))")
+        let newLogin = FakePayload.signedIn("alice", version: 2)
+        XCTAssertNotEqual(newLogin.userPoolTokens?.refreshToken, stale.userPoolTokens?.refreshToken)
+        harness.keychain.put(newLogin.data, pluginAccount)
+
+        let credentials = try await client.credentialsProvider.resolve()
+
+        XCTAssertEqual(credentials as? CognitoAWSCredentials, newLogin.awsCredentials)
+        XCTAssertEqual(engine.refreshCalls.count, 2)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedIn(alice))
+    }
+
+    /// Through the live engine, with the plugin's own re-save: once its refresh finds the token dead, the plugin saves
+    /// the same tokens with `isRefreshTokenExpired` set, which are other credentials by their decoded equality, but
+    /// the same dead refresh token.
+    ///
+    /// - Given: alice signed in on `.default` through the live engine, two forced refreshes refused as reused,
+    ///   `RefreshTokenReuse.minimumGap` apart, which expire the session, then the plugin saving her tokens again with
+    ///   its expired flag set
+    /// - When: the session is fetched, and AWS credentials are requested
+    /// - Then:
+    ///    - the flagged bytes are not the same credentials (`sameCredentials`), but hold the same refresh token
+    ///    - both fail with the same `sessionExpired` ("already used"), with no third `GetTokensFromRefreshToken`
+    func testLivePluginSavingTheDeadTokensWithItsExpiredFlag_keepsTheExpiry() async throws {
+        let live = LiveEngineHarness()
+        live.scriptSRP()
+        live.scriptIdentityPool()
+        live.cognito.always("GetTokensFromRefreshToken") { (_: GetTokensFromRefreshTokenInput) -> GetTokensFromRefreshTokenOutput in
+            throw RefreshTokenReuseException(message: "Refresh token has been used")
+        }
+        let client = try liveClient(live)
+        _ = try await client.signIn(username: "alice", password: "password")
+        _ = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+        harness.advanceClock(by: RefreshTokenReuse.minimumGap)
+        let expired = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+        guard case .failure(let expiry) = expired.userPoolTokensResult else {
+            return XCTFail("the second forced refresh should have expired the session")
+        }
+        XCTAssertEqual(expiry.errorDescription, Self.refreshTokenAlreadyUsed)
+        let stored = try XCTUnwrap(harness.keychain.value(pluginAccount))
+        let flagged = try flaggedExpired(stored)
+        let engine = try live.engine()
+        XCTAssertFalse(engine.sameCredentials(flagged, stored), "the flag is part of the credentials")
+        XCTAssertEqual(try engine.userPoolTokens(in: flagged)?.refreshToken, try engine.userPoolTokens(in: stored)?.refreshToken)
+        harness.keychain.put(flagged, pluginAccount)
+
+        let session = try await client.fetchAuthSession()
+        let aws = await credentialsError { try await client.credentialsProvider.resolve() }
+
+        guard case .failure(let error) = session.userPoolTokensResult else {
+            return XCTFail("the plugin's flagged re-save was taken for a new login")
+        }
+        XCTAssertEqual(error.kind, .sessionExpired, "\(error)")
+        XCTAssertEqual(error.errorDescription, Self.refreshTokenAlreadyUsed)
+        XCTAssertEqual(aws?.isSessionExpired, true, "\(String(describing: aws))")
+        XCTAssertEqual((aws?.underlyingError as? AuthClientError)?.errorDescription, Self.refreshTokenAlreadyUsed)
+        XCTAssertEqual(live.cognito.operations.count(where: { $0 == "GetTokensFromRefreshToken" }), 2)
+    }
+
     /// The description of the dead token after a reuse, for `.default`.
     private static let refreshTokenAlreadyUsed =
         "Session \"$default\"'s refresh token was already used, and no refreshed tokens were saved, so the session cannot be renewed."
@@ -924,6 +1039,24 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertNotEqual(data, payload.data)
         XCTAssertEqual(FakePayload.decode(data), payload)
         return data
+    }
+
+    /// A live payload with `isRefreshTokenExpired` set, as the plugin saves it once its refresh found the token dead.
+    private func flaggedExpired(_ payload: Data) throws -> Data {
+        switch try JSONDecoder().decode(AmplifyCredentials.self, from: payload) {
+        case .userPoolAndIdentityPool(var signedInData, let identityID, let credentials):
+            signedInData.isRefreshTokenExpired = true
+            return try JSONEncoder().encode(AmplifyCredentials.userPoolAndIdentityPool(
+                signedInData: signedInData,
+                identityID: identityID,
+                credentials: credentials
+            ))
+        case .userPoolOnly(var signedInData):
+            signedInData.isRefreshTokenExpired = true
+            return try JSONEncoder().encode(AmplifyCredentials.userPoolOnly(signedInData: signedInData))
+        case .identityPoolOnly, .identityPoolWithFederation, .noCredentials:
+            throw FixtureError(description: "the payload has no user pool tokens")
+        }
     }
 
     /// A live payload's credentials encoded again: pretty-printed with sorted keys, so its bytes always differ from
