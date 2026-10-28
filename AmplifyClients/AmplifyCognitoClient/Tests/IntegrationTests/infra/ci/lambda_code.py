@@ -23,12 +23,14 @@ hands over its CodeSha256 and the presigned URL of its deployed zip, which this 
         the zip, and so its CodeSha256, do not count: CodeSha256 is printed only as a note. Nor do the custom
         sender's node_modules/.bin/ entries: npm's links to its packages' commands, which Lambda never loads, and
         which a zip stores as links or as copies of their targets depending on how it was made. Prints, a function,
-        one line by name and, when it differs, which files differ (names escaped), never a hash. Exit 1 on any DRIFT
-        (or a deployed zip that cannot be read), else 0.
+        one line by name and, when it differs, which files differ (names escaped), never a hash. A function the
+        baseline records that is not deployed is DRIFT too. Exit 1 on any DRIFT (or a deployed zip that cannot be
+        read), else 0.
     lambda_code.py record <deployed.json> <zips-dir> [--baseline FILE] [--accept-deployed]
         Prints the same per-file comparison, then records each deployed function's files (paths and content
         hashes), with the digest of its sources now, as the baseline. Without --accept-deployed it records nothing
-        and exits 1: the operator accepts what is deployed, as the comparison shows it, by passing it.
+        and exits 1: the operator accepts what is deployed, as the comparison shows it, by passing it. It records
+        nothing either (exit 1) while a function the baseline records is not deployed.
     lambda_code.py check-baseline [--baseline FILE] [--github]
         Offline: whether the sources each recorded function was accepted for are still this checkout's. Exit 0
         when they are, 1 when one changed (redeploy it, then lambda-drift), 3 when no baseline is recorded.
@@ -90,9 +92,14 @@ MAX_ZIP_BYTES = 50 * 1024 * 1024
 MAX_UNZIPPED_BYTES = 512 * 1024 * 1024
 # How many paths of each kind a difference lists before it says how many more.
 LISTED = 20
-REDEPLOY = ("Redeploy it: check that the function carries purpose=amplify-cognito-client-integ (aws lambda "
-            "list-tags), delete it by hand, and rerun provision-ci.sh --apply, which makes it again from this "
-            "checkout; or, once you accept the deployed files, run provision-ci.sh lambda-drift --record "
+# A redeploy reruns every scope: a plain --apply is phase 1, which makes only pre-sign-up and discard-sender again,
+# and adds the invoke permissions of its own pool only.
+ALL_SCOPES = "provision-ci.sh --apply --scope all"
+PHASE_1 = ("(not a plain --apply: that is phase 1, which makes only two of the functions and leaves the other pools "
+           "without their invoke permissions)")
+REDEPLOY = ("Redeploy it: first check that the function carries purpose=amplify-cognito-client-integ (aws lambda "
+            f"list-tags), and only then delete it by hand and rerun {ALL_SCOPES}, which makes it again from this "
+            f"checkout {PHASE_1}; or, once you accept the deployed files, run provision-ci.sh lambda-drift --record "
             "--accept-deployed.")
 
 
@@ -278,9 +285,10 @@ def say(line, github, level=None):
 
 
 def compared(argv):
-    """Each function's comparison, in name order: (status, files, lines). `status` is "absent", "unchecked",
-    "unreadable", "same", "accepted" or "drift"; `files` the deployed files as compared (None when there are none
-    to record); `lines` what to print, each with the level of its annotation (None for a plain line)."""
+    """Each function's comparison, in name order: (status, files, lines). `status` is "absent", "missing" (not
+    deployed, though the baseline records it), "unchecked", "unreadable", "same", "accepted" or "drift"; `files` the
+    deployed files as compared (None when there are none to record); `lines` what to print, each with the level of
+    its annotation (None for a plain line)."""
     mode = stat.S_IMODE(os.stat(argv[1]).st_mode)
     if mode & 0o077:
         raise NotPrivate(f"{os.path.basename(argv[1])} is mode {mode:o}: it holds presigned URLs, which are "
@@ -295,6 +303,11 @@ def compared(argv):
         for suffix in sorted(SOURCES):
             name = PREFIX + suffix
             entry = deployed.get(suffix)
+            if not isinstance(entry, dict) and suffix in baseline:
+                results[suffix] = ("missing", None,
+                                   [(f"DRIFT {name}: not deployed, though the baseline records its deployment. Make "
+                                     f"it again: rerun {ALL_SCOPES} {PHASE_1}, then lambda-drift.", "error")])
+                continue
             if not isinstance(entry, dict):
                 results[suffix] = ("absent", None, [(f"  - {name}: not deployed", None)])
                 continue
@@ -345,7 +358,11 @@ def print_results(results, github):
 def compare(argv):
     results = compared(argv)
     print_results(results, "--github" in argv)
-    return 1 if any(status in ("drift", "unreadable") for status, _, _ in results.values()) else 0
+    return 1 if any(status in ("drift", "missing", "unreadable") for status, _, _ in results.values()) else 0
+
+
+def with_status(results, wanted):
+    return ", ".join(PREFIX + suffix for suffix, (status, _, _) in results.items() if status == wanted)
 
 
 def record(argv):
@@ -353,6 +370,10 @@ def record(argv):
     print_results(results, False)
     if any(status == "unreadable" for status, _, _ in results.values()):
         print("Nothing recorded: a deployed function's code could not be read.")
+        return 1
+    if missing := with_status(results, "missing"):
+        print(f"Nothing recorded: not deployed, though the baseline records it: {missing}. Make it again with "
+              f"{ALL_SCOPES} first; a record never drops a function.")
         return 1
     if "--accept-deployed" not in argv:
         print("Nothing recorded. The baseline accepts the deployed files, as compared above, for this checkout's "
@@ -381,9 +402,9 @@ def check_baseline(argv):
                if suffix in SOURCES and (not isinstance(entry, dict) or entry.get("sources") != source_digest(suffix))]
     for suffix in changed:
         say(f"CHANGED {PREFIX}{suffix}: its sources are not the ones its recorded deployment was accepted for. "
-            f"Redeploy it (check that it carries purpose=amplify-cognito-client-integ, delete the function, rerun "
-            f"infra/ci/provision-ci.sh --apply), then record it again: lambda-drift --record --accept-deployed.",
-            github, "error")
+            f"Redeploy it: first check that it carries purpose=amplify-cognito-client-integ (aws lambda list-tags), "
+            f"and only then delete the function and rerun infra/ci/{ALL_SCOPES} {PHASE_1}. Then record it again: "
+            f"lambda-drift --record --accept-deployed.", github, "error")
     if not changed:
         say(f"The sources of the {len(baseline)} recorded CI Lambdas are the ones their deployment was accepted for.",
             github)

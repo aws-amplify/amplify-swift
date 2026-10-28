@@ -27,7 +27,9 @@
 # that no download directory is left behind; and that the committed baseline, when there is one, names this
 # checkout's sources. It also checks:
 # - that npm's node_modules/.bin/ links count on neither side, so a sender zipped with `zip -r` (which stores a copy
-#   of each link's target) is in sync.
+#   of each link's target) is in sync;
+# - that a function the baseline records but that is not deployed is DRIFT, and record keeps it rather than drop it,
+#   and that the redeploy advice checks the purpose tag first and reruns --apply --scope all.
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INFRA="$(cd "$CI_DIR/.." && pwd)"
@@ -407,6 +409,11 @@ an_accepted_deployment_is_in_sync_until_its_sources_change() {
     cp "$INFRA/lambda/triggers/triggers.mjs" "$COPY/lambda/triggers/triggers.mjs"
 }
 
+# Sets deployed function $1 to null in deployed.json: not deployed.
+undeploy() {
+    jq -c --arg k "$1" '.[$k] = null' "$WORK/deployed.json" > "$WORK/d" && mv "$WORK/d" "$WORK/deployed.json"
+}
+
 # Sets deployed function $1's CodeSha256 in deployed.json to its deployed zip's.
 resha() {
     jq -c --arg k "$1" --arg s "$(sha "$WORK/deployed/$1.zip")" '.[$k].codeSha256 = $s' "$WORK/deployed.json" > "$WORK/d" \
@@ -455,6 +462,44 @@ PY
     run compare "$WORK/deployed.json" "$WORK/bin" --baseline "$WORK/bin-none.json"
     (( STATUS == 1 )) && [[ "$OUT" == *"DRIFT ccit-ci-custom-sender"*"changed (1): node_modules/dependency/index.js"* ]] \
         && [[ "$OUT" != *.bin* ]] || { echo "edited: $OUT"; return 1; }
+}
+
+# The redeploy that a DRIFT or a CHANGED line asks for checks the purpose tag first and then reruns every scope: a
+# plain --apply (phase 1) makes only two of the functions again. If it was run anyway, the functions it did not make
+# are not deployed though the baseline records them: DRIFT, and record keeps them rather than drop them. Without a
+# baseline, a function that is not deployed is only reported, as on an account that has phase 1 only.
+a_baselined_function_that_is_not_deployed_is_drift() {
+    local baseline="$WORK/m-baseline.json" suffix
+    local advice="first check that the function carries purpose=amplify-cognito-client-integ (aws lambda list-tags), and only then delete it by hand and rerun provision-ci.sh --apply --scope all, which makes it again"
+    build_all "$WORK/m"
+    deploy_all "$WORK/m"
+    redeploy pre-sign-up edited
+    run compare "$WORK/deployed.json" "$WORK/m" --baseline "$baseline"
+    (( STATUS == 1 )) && [[ "$OUT" == *"DRIFT ccit-ci-pre-sign-up"*"$advice"*"not a plain --apply: that is phase 1"* ]] \
+        || { echo "the advice: $OUT"; return 1; }
+    deploy_all "$WORK/m"
+    run record "$WORK/deployed.json" "$WORK/m" --baseline "$baseline" --accept-deployed
+    (( STATUS == 0 )) && [[ "$(jq '.functions | length' "$baseline")" == 8 ]] || { echo "record: $OUT"; return 1; }
+    cp "$baseline" "$WORK/m-recorded.json"
+    # The five triggers deleted, then a plain --apply, which makes pre-sign-up again but not the other four.
+    for suffix in create-auth-challenge define-auth-challenge pre-sign-up-confirmable verify-auth-challenge; do
+        undeploy "$suffix"
+    done
+    run compare "$WORK/deployed.json" "$WORK/m" --baseline "$baseline" --github
+    (( STATUS == 1 )) && [[ "$(grep -c '^::error::DRIFT ccit-ci-.*: not deployed, though the baseline records its deployment. Make it again: rerun provision-ci.sh --apply --scope all (not a plain --apply' <<<"$OUT")" == 4 ]] \
+        && [[ "$OUT" == *"::error::DRIFT ccit-ci-verify-auth-challenge: not deployed"* && "$(grep -c "are this checkout's" <<<"$OUT")" == 4 ]] \
+        || { echo "compare: $OUT"; return 1; }
+    run record "$WORK/deployed.json" "$WORK/m" --baseline "$baseline" --accept-deployed
+    (( STATUS == 1 )) && [[ "$OUT" == *"Nothing recorded: not deployed, though the baseline records it: ccit-ci-create-auth-challenge, ccit-ci-define-auth-challenge, ccit-ci-pre-sign-up-confirmable, ccit-ci-verify-auth-challenge. Make it again with provision-ci.sh --apply --scope all first"* ]] \
+        && cmp -s "$baseline" "$WORK/m-recorded.json" || { echo "record: $OUT"; return 1; }
+    run compare "$WORK/deployed.json" "$WORK/m" --baseline "$WORK/m-none.json"
+    (( STATUS == 0 )) && [[ "$(grep -c ': not deployed$' <<<"$OUT")" == 4 && "$OUT" != *DRIFT* ]] || { echo "no baseline: $OUT"; return 1; }
+    # The CHANGED line gives the same advice.
+    echo '// changed' >> "$COPY/ci/lambda/discard-sender/index.mjs"
+    run check-baseline --baseline "$baseline"
+    cp "$INFRA/ci/lambda/discard-sender/index.mjs" "$COPY/ci/lambda/discard-sender/index.mjs"
+    (( STATUS == 1 )) && [[ "$OUT" == *"CHANGED ccit-ci-discard-sender"*"Redeploy it: first check that it carries purpose=amplify-cognito-client-integ (aws lambda list-tags), and only then delete the function and rerun infra/ci/provision-ci.sh --apply --scope all (not a plain --apply"* ]] \
+        || { echo "check-baseline: $OUT"; return 1; }
 }
 
 no_baseline_is_its_own_status() {
@@ -529,6 +574,8 @@ check "record writes the deployed files only with --accept-deployed; they are in
     an_accepted_deployment_is_in_sync_until_its_sources_change
 check "npm's node_modules/.bin/ links count on neither side: a sender zipped with zip -r is in sync" \
     npm_bin_links_count_on_neither_side
+check "a function the baseline records that is not deployed is DRIFT, and record keeps it; the advice is --scope all" \
+    a_baselined_function_that_is_not_deployed_is_drift
 check "no baseline is status 3 with a warning" no_baseline_is_its_own_status
 check "a deployed.json anyone but its owner can read is refused, status 4" a_deployed_json_others_can_read_is_refused
 check "no download directory is left behind" no_download_directory_is_left_behind
