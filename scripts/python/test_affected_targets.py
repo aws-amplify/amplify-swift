@@ -144,7 +144,8 @@ class AffectedTargetsTests(unittest.TestCase):
            - the only changed file is one of those READMEs (an edit or a deletion: either way the project still
              lists it, and a deletion breaks the host app's build)
         - Then:
-           - the group whose path covers the host app is selected, and nothing else
+           - the group whose path covers the host app is selected, and nothing else (selection only: the Storage
+             README is copied by StorageStressTests, which no PR job builds, so its group's jobs can't see the break)
         """
         for readme, group in (("AmplifyPlugins/Auth/Tests/AuthHostApp/AuthIntegrationTests/README.md", "auth"),
                               ("AmplifyPlugins/Storage/Tests/StorageHostApp/StorageStressTests/README.md", "storage"),
@@ -162,8 +163,9 @@ class AffectedTargetsTests(unittest.TestCase):
         - When:
            - the only changed file is one of those READMEs
         - Then:
-           - AWSPluginsCore alone is selected, which the unit and build workflows then run (accepted: it is what
-             any other file under a plugin's host app selects there)
+           - AWSPluginsCore alone is selected, as any other file under a plugin's host app selects there: unit_test.yml
+             runs AWSPluginsCore's unit tests, and the three build workflows, which only check that something is
+             selected, build the whole package (accepted: none of them builds a host app, so none sees the break)
         """
         for readme in ("AmplifyPlugins/Auth/Tests/AuthHostApp/AuthIntegrationTests/README.md",
                        "AmplifyPlugins/Storage/Tests/StorageHostApp/StorageStressTests/README.md",

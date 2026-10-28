@@ -46,11 +46,17 @@ the new paths select, not every group. A plain deletion is in the changed list a
 
 Documentation (`.md`) is ignored everywhere, except a file an Xcode project in the checkout copies into
 a bundle (a host app's README in a test target's Copy Bundle Resources): deleting or renaming that one
-breaks the host app's build, so it is attributed like any other host-app file, in every group file (a
-rename through its old path, which the project still lists). With the integration groups that selects
-the host app's own group. With unit_test_groups.json it selects AWSPluginsCore, whose `paths` hold
-`AmplifyPlugins/` and so cover every plugin host app, as any other host-app file already does there:
-the unit and build workflows then run AWSPluginsCore's group.
+breaks the build of the target that copies it, so it is attributed like any other host-app file, in
+every group file (a rename through its old path, which the project still lists). With the integration
+groups that selects the host app's own group. That catches the break only where the group's PR jobs
+build the copying target: six of the bundled READMEs are copied only by stress-test targets
+(GraphQLAPIStressTests, AnalyticsStressTests, AuthStressTests, DatastoreStressTests, GeoStressTests,
+StorageStressTests), which no PR job builds, so for those the selected jobs pass and the break shows
+only in stress_test.yml after the merge. With unit_test_groups.json it selects AWSPluginsCore, whose
+`paths` hold `AmplifyPlugins/` and so cover every plugin host app, as any other host-app file already
+does there: unit_test.yml then runs AWSPluginsCore's unit tests, and the three build workflows, which
+only check that something is selected, build the whole package on all their platforms. None of those
+builds a host app.
 The projects are read from `--repo-root` (default: the checkout that holds this script, wherever it is
 run from). A root with no Xcode project at all is treated as unread, so its docs count as bundled
 rather than none of them.
@@ -81,8 +87,10 @@ import sys
 # doc inside a target dir is usually just prose: it is never compiled, so editing it should not
 # trigger that target's 5-platform matrix. The exception is a file an Xcode project lists in a
 # target's Copy Bundle Resources phase (several integration host apps bundle their READMEs): deleting
-# or renaming it breaks that host app's build, so such a file is NOT ignored and is attributed like
-# any other host-app file (see bundled_files). (`.yml`/`.yaml` are deliberately NOT promoted — an
+# or renaming it breaks that target's build, so such a file is NOT ignored and is attributed like
+# any other host-app file (see bundled_files). That runs a job that sees the break only where the
+# selected group's PR jobs build the copying target, which the stress-test targets' READMEs miss (see
+# the module docstring). (`.yml`/`.yaml` are deliberately NOT promoted — an
 # in-target YAML fixture is real test input and must stay owned; see the unowned-only list.)
 ALWAYS_IGNORE_SUFFIXES = (".gitignore", ".gitattributes", ".swiftformat", ".editorconfig", ".md")
 ALWAYS_IGNORE_NAMES = ("LICENSE", "NOTICE", ".git-blame-ignore-revs", ".gitallowed",
