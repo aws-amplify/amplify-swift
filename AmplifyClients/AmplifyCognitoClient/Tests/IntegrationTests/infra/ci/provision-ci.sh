@@ -1344,10 +1344,10 @@ find_stale_uploads() {
 }
 
 stale_uploads_message() {
-    printf '%s' "the uploaded auth/$CI_S3_FOLDER/ files $STALE_UPLOADS name another code sink key than the one" \
-        "that expires on $(expiry_date), and --upload never overwrites them, so the expiry is not recorded and the" \
-        "reminder keeps failing. Check that each carries $CI_TAG_KEY=$CI_TAG_VALUE (aws s3api get-object-tagging)," \
-        "delete them by hand, then run infra/ci/provision-ci.sh --apply --scope all --upload: it uploads them again" \
+    printf '%s' "the uploaded auth/$CI_S3_FOLDER/ files $STALE_UPLOADS name another code sink key than the one " \
+        "that expires on $(expiry_date), and --upload never overwrites them, so the expiry is not recorded and the " \
+        "reminder keeps failing. Check that each carries $CI_TAG_KEY=$CI_TAG_VALUE (aws s3api get-object-tagging), " \
+        "delete them by hand, then run infra/ci/provision-ci.sh --apply --scope all --upload: it uploads them again " \
         "with the current key and records its expiry. Commit $(basename "$KEY_RECORD") after it."
 }
 

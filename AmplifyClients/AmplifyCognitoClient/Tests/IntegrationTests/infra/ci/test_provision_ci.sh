@@ -500,6 +500,8 @@ an_expired_key_is_recorded_only_once_the_uploads_name_the_new_one() {
     (( STATUS == 1 )) && [[ "$OUT" == *"+ create the tests' read-only API key, for 364 days"* ]] \
         && [[ "$OUT" == *"Not recorded: the uploaded auth/cognito-client-ci/ files $stale"* ]] \
         && [[ "$OUT" == *"purpose=amplify-cognito-client-integ"*"--apply --scope all --upload"* ]] \
+        && [[ "$OUT" == *"than the one that expires on"*"and the reminder keeps failing"* ]] \
+        && [[ "$OUT" == *"get-object-tagging), delete them"*"uploads them again with the current key"* ]] \
         && [[ "$OUT" == *"nothing is ever overwritten"* ]] && ! calls | grep -q 'put-object' \
         && [[ "$(cat "$CCIT_CI_KEY_RECORD")" == "$old_record" ]] && no_identifiers || { echo "$OUT" | tail -8; return 1; }
     run key-expiry --record
