@@ -422,9 +422,11 @@ def serialized(name, document):
 def relation(path, directory):
     """"same" when `path` is `directory`, "inside" when it is inside it, else None, as the file system sees them:
     each of `path` and its ancestors that exists is compared with `directory` by os.path.samefile, so another case
-    of the same name on a case-insensitive volume (macOS's default) is the same directory. While `directory` does
-    not exist, the paths are compared as text, case-folded (refusing a case-sensitive volume's other directory is
-    harmless; writing into the owner's under another spelling is not)."""
+    of the same name on a case-insensitive volume (macOS's default) is the same directory. So is a spelling realpath
+    keeps that differs by more than case, which only this walk recognizes: on macOS, the /System/Volumes/Data
+    firmlink alias of a home or temporary directory (/System/Volumes/Data/Users/<me>/...), or an NFD spelling of an
+    NFC name. While `directory` does not exist, the paths are compared as text, case-folded (refusing a
+    case-sensitive volume's other directory is harmless; writing into the owner's under another spelling is not)."""
     path, directory = os.path.realpath(path), os.path.realpath(directory)
     if os.path.isdir(directory):
         current = path

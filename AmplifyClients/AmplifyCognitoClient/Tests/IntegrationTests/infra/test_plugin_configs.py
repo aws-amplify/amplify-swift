@@ -403,6 +403,68 @@ class PluginConfigsTests(unittest.TestCase):
             self.skipTest("the temporary directory's volume is case-sensitive")
         return variant
 
+    def data_volume_alias(self, path):
+        """`path` under macOS's /System/Volumes/Data firmlink: the same directory, in a spelling realpath keeps and
+        case-folding does not match, so only relation()'s samefile walk recognizes it. Skips where there is none."""
+        real = os.path.realpath(path)
+        alias = "/System/Volumes/Data" + real
+        if not (os.path.exists(alias) and os.path.samefile(alias, real)):
+            self.skipTest("no /System/Volumes/Data alias of the temporary directory")
+        self.assertEqual(os.path.realpath(alias), alias, "realpath keeps the alias's spelling")
+        self.assertNotEqual(alias.casefold(), real.casefold())
+        return alias
+
+    def test_relation_recognizes_the_data_volume_alias(self):
+        """Given: a directory, and its /System/Volumes/Data alias, which realpath keeps.
+        When: relation() compares the alias, a path under it that does not exist yet, and the alias's parent with it.
+        Then: they are the same directory, inside it, and neither."""
+        owner = os.path.join(self.root, "owner", "testconfiguration")
+        os.makedirs(owner)
+        alias = self.data_volume_alias(owner)
+        self.assertEqual(self.pc.relation(alias, owner), "same")
+        self.assertEqual(self.pc.relation(alias + "/", owner), "same")
+        self.assertEqual(self.pc.relation(os.path.join(alias, "nested", "deeper"), owner), "inside")
+        self.assertIsNone(self.pc.relation(os.path.dirname(alias), owner))
+        self.assertIsNone(self.pc.relation(os.path.join(os.path.dirname(alias), "other"), owner))
+
+    def test_dir_refuses_the_owner_directory_under_its_data_volume_alias(self):
+        """Given: the owner's directory (here a temporary one) holding the developer's file.
+        When: --dir names it, or a directory inside it, through its /System/Volumes/Data alias, with and without
+            --ci-shape.
+        Then: each is refused as the owner's, and the developer's file is untouched."""
+        owner = os.path.join(self.root, "owner", "testconfiguration")
+        os.makedirs(owner)
+        with open(os.path.join(owner, OWNER_FILE), "w") as f:
+            f.write("the developer's own file")
+        self.pc.OWNER_TESTCONFIGURATION_DIR = owner
+        alias = self.data_volume_alias(owner)
+        for directory in (alias, os.path.join(alias, "nested")):
+            for ci in (False, True):
+                with self.assertRaises(SystemExit):
+                    self.quiet(lambda: self.pc.write_into(directory, ci=ci))
+        self.assertEqual(os.listdir(owner), [OWNER_FILE])
+        with open(os.path.join(owner, OWNER_FILE)) as f:
+            self.assertEqual(f.read(), "the developer's own file")
+
+    def test_dir_naming_the_configured_directory_under_its_data_volume_alias_keeps_the_manifest_and_backups(self):
+        """Given: the configured directory holding the developer's file.
+        When: --dir names it through its /System/Volumes/Data alias: with --ci-shape, or a directory inside it, and
+            then plainly, followed by --remove.
+        Then: the first are refused; the plain one writes as without --dir, with the manifest and a backup, so
+            --remove puts the developer's file back."""
+        self.put(OWNER_FILE, "owner April file")
+        alias = self.data_volume_alias(self.target)
+        for directory, ci in ((alias, True), (os.path.join(alias, "nested"), False),
+                              (os.path.join(alias, "nested"), True)):
+            with self.assertRaises(SystemExit):
+                self.quiet(lambda: self.pc.write_into(directory, ci=ci))
+        self.assertEqual(os.listdir(self.target), [OWNER_FILE])
+        self.quiet(lambda: self.pc.write_into(alias))
+        self.assertIn(OWNER_FILE, self.manifest()["backups"])
+        self.quiet(self.pc.remove_all)
+        self.assertEqual(self.read(OWNER_FILE), "owner April file")
+        self.assertEqual(os.listdir(self.target), [OWNER_FILE])
+
     def test_dir_refuses_the_owner_directory_in_another_case(self):
         # The owner's directory, here a temporary one, spelt in another case: on a case-insensitive volume it is the
         # same directory, and must be refused as the owner's, with and without --ci-shape, nested or not, and before
