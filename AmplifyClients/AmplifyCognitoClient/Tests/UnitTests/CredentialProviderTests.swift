@@ -954,11 +954,13 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(first?.disposition, .retryAfterReauthentication)
         XCTAssertEqual(second?.isSessionExpired, true)
         XCTAssertEqual(engine.refreshCalls.count, 1)
-        await events.waitFor(1)
-        XCTAssertEqual(events.received, [.sessionExpired])
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, stale.data)
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        // Ends with a known event, so an extra `.sessionExpired` still in the recorder's buffer is counted too.
+        _ = await client.signOut()
+        await events.waitFor(2)
+        XCTAssertEqual(events.received, [.sessionExpired, .signedOut])
     }
 
     /// With rotation, a refresh racing another process's refresh can be told its token is invalid even
@@ -1019,8 +1021,10 @@ final class CredentialProviderTests: XCTestCase {
 
         XCTAssertEqual(credentials as? CognitoAWSCredentials, extensionSignIn.awsCredentials)
         XCTAssertEqual(engine.refreshCalls.count, 1)
-        await events.waitFor(1)
-        XCTAssertEqual(events.received, [.sessionExpired])
+        // Ends with a known event, so a second `.sessionExpired` still in the recorder's buffer is counted too.
+        _ = await client.signOut()
+        await events.waitFor(2)
+        XCTAssertEqual(events.received, [.sessionExpired, .signedOut])
     }
 
     /// A lost commit race means the record moved to something newer. Re-read and adopt it; rewriting
