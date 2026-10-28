@@ -841,7 +841,8 @@ def ensure_api_resolvers(api_id, api_arn, data_source_role_arn):
 def rotate_api_key(api_id, api_arn):
     """The read-only API key: a secret, kept only in users.json. It lives 7 days; a new one is made
     when the recorded one has under 4 days left (so a bundle built from it keeps working for at least
-    3 more days), and keys that have already expired are deleted."""
+    3 more days), and keys that have already expired are deleted. A key an overlapping prepare-run.sh deleted
+    after this run listed it is tolerated (NotFound); any other error still stops it."""
     keys = {k["id"]: k for k in aws("appsync", "list-api-keys", "--api-id", api_id)["apiKeys"]}
     recorded = users().get("codeSinkApiKey")
     now = time.time()
@@ -858,8 +859,10 @@ def rotate_api_key(api_id, api_arn):
     for key_id, key in keys.items():
         if key_id != recorded and (key["expires"] < now or key["expires"] > longest):
             require_appsync_tag(api_arn)
-            aws("appsync", "delete-api-key", "--api-id", api_id, "--id", key_id)
-            say("Deleted an expired or over-long code sink API key")
+            if aws_or_none("appsync", "delete-api-key", "--api-id", api_id, "--id", key_id) is None:
+                say("An expired or over-long code sink API key: already deleted by another run")
+            else:
+                say("Deleted an expired or over-long code sink API key")
 
 
 def run_with_iam_retry(call, attempts=15):

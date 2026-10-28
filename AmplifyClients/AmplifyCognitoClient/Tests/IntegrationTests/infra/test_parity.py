@@ -10,7 +10,8 @@ only a missing pool, one left on outside a self-sign-up.sh run, or one on agains
 turns it on; and `self-sign-up on|off` sends each pool's full configuration back with only the flag changed. And
 the reset of the plugin's new-password users tolerates an overlapping run; and the WebAuthn harness's committed
 relying party and app ID are found, and provision never switches a live WebAuthn pool off; and the plugin
-identity pool (P-13) federates the passwordless pool, and the passwordless outputs name it.
+identity pool (P-13) federates the passwordless pool, and the passwordless outputs name it; and the code sink key
+rotation tolerates an overlapping run's delete.
 
     python3 infra/test_parity.py
 
@@ -2471,6 +2472,71 @@ class PluginDeviceAliasUserOverlapTests(unittest.TestCase):
         with self.assertRaises(self.parity.AwsError):
             self.parity.plugin_users()
         self.assertEqual(self.operations().count("admin-forget-device"), 1)
+
+
+
+class CodeSinkKeyRotationOverlapTests(unittest.TestCase):
+    """rotate_api_key (parity.py rotate-key, run by every prepare-run.sh) beside an overlapping run: an expired key
+    both runs listed, which the other run deletes first, is tolerated; any other error still stops it. Over a scripted
+    AppSync (placeholder ids only)."""
+
+    def setUp(self):
+        self.state = tempfile.mkdtemp()
+        os.environ["COGNITO_CLIENT_INTEG_DIR"] = self.state
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        self.parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.parity)
+        self.said = []
+        self.parity.say = self.said.append
+        self.parity.require_appsync_tag = lambda api_arn: None
+        self.parity.set_user_secret("codeSinkApiKey", "placeholder-current")
+        now = time.time()
+        self.keys = [{"id": "placeholder-current", "expires": int(now + 6 * 86400)},
+                     {"id": "placeholder-expired", "expires": int(now - 86400)}]
+        self.delete_error = None
+        self.calls = []
+        self.parity.aws = self.fake_aws
+
+    def tearDown(self):
+        shutil.rmtree(self.state)
+        del os.environ["COGNITO_CLIENT_INTEG_DIR"]
+
+    def fake_aws(self, *args, stdin=None, **kwargs):
+        operation = args[1]
+        self.calls.append(operation)
+        if operation == "list-api-keys":
+            return {"apiKeys": self.keys}
+        if operation == "delete-api-key" and self.delete_error:
+            raise self.parity.AwsError(self.delete_error, "scripted")
+        if operation == "create-api-key":
+            self.fail("the recorded key has 6 days left, so none is made")
+        return {}
+
+    def test_an_expired_key_another_run_deleted_first_is_tolerated(self):
+        """Given: the recorded key has 6 days left, and an expired key is listed, which another run deletes before
+            this run does (NotFoundException).
+        When: rotate_api_key runs.
+        Then: it finishes, says the key was already deleted by another run, and keeps the recorded key."""
+        self.delete_error = "NotFoundException"
+        self.parity.rotate_api_key("placeholder-api", "arn:placeholder-api")
+        self.assertEqual(self.calls, ["list-api-keys", "delete-api-key"])
+        self.assertIn("already deleted by another run", " ".join(self.said))
+        self.assertEqual(self.parity.users()["codeSinkApiKey"], "placeholder-current")
+
+    def test_a_deleted_key_is_reported_as_deleted(self):
+        """Given: the same keys, and the delete succeeds.
+        When: rotate_api_key runs.
+        Then: it says it deleted the key."""
+        self.parity.rotate_api_key("placeholder-api", "arn:placeholder-api")
+        self.assertEqual(self.said, ["Deleted an expired or over-long code sink API key"])
+
+    def test_any_other_error_still_stops_it(self):
+        """Given: the delete is refused for another reason than an overlapping run.
+        When: rotate_api_key runs.
+        Then: it stops with that error."""
+        self.delete_error = "AccessDeniedException"
+        with self.assertRaises(self.parity.AwsError):
+            self.parity.rotate_api_key("placeholder-api", "arn:placeholder-api")
 
 
 if __name__ == "__main__":
