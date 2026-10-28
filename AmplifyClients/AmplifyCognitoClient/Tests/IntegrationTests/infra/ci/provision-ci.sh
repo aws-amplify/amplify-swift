@@ -647,22 +647,24 @@ ensure_api_resolvers() {
     done
 }
 
-# The tests' read-only API key: one that lives at least 30 more days is reused; one that lives fewer but has not
-# expired is extended to 364 days from now, keeping its id, so the two uploaded files that name it (the default and
-# alias-codes pools' outputs, which --upload never rewrites) stay valid; else a new one, for 364 days. Its expiry is
-# noted (recorded, with --apply) right there, before any later step can stop the run (note_key_expiry).
+# The tests' read-only API key: one that lives more than code_sink_key.py's REUSE_DAYS (31) more days is reused, so
+# a rerun extends every key the reminder warns about (it counts whole UTC days, 30 of them); one that lives fewer but
+# has not expired is extended to 364 days from now, keeping its id, so the two uploaded files that name it (the
+# default and alias-codes pools' outputs, which --upload never rewrites) stay valid; else a new one, for 364 days.
+# Its expiry is noted (recorded, with --apply) right there, before any later step can stop the run (note_key_expiry).
 ensure_api_key() {
-    local out now expires input
+    local out now expires input reuse_days
+    reuse_days=$(python3 "$CI_DIR/code_sink_key.py" reuse-days)
     now=$(date +%s)
     expires=$((now + 364 * 86400))
     API_KEY_EXPIRES="$expires"
     if ! is_new "$API_ID"; then
         read_aws out appsync list-api-keys --api-id "$API_ID"
-        API_KEY=$(jq -r --argjson soon "$((now + 30 * 86400))" \
+        API_KEY=$(jq -r --argjson soon "$((now + reuse_days * 86400))" \
             '[.apiKeys[] | select(.description == "ccit-ci tests" and .expires > $soon)] | sort_by(.expires) | last | .id // empty' <<<"$out")
         if [[ -n "$API_KEY" ]]; then
             API_KEY_EXPIRES=$(CCIT_SECRET_K="$API_KEY" jq -r '[.apiKeys[] | select(.id == $ENV.CCIT_SECRET_K)][0].expires' <<<"$out")
-            say "  = the code sink API key (lives at least 30 more days)"
+            say "  = the code sink API key (lives more than $reuse_days more days)"
             note_key_expiry "$CI_MODE" || true
             return
         fi

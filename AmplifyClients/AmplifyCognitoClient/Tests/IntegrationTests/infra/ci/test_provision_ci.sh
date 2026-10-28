@@ -23,7 +23,8 @@
 # rerun over phase 2 as it was first applied (the script at 80712afe4 when git has it, else skipped) plans and makes
 # only the alias-codes and MFA-required pools and what they need, updates only the script's own resources, and
 # uploads only the three new files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after phase 2 makes no call, and
-# a code sink key near its expiry is extended in place, its expiry recorded for the reminder (and by key-expiry
+# a code sink key near its expiry is extended in place (every key the reminder warns about, at the edges of its 30
+# days too), its expiry recorded for the reminder (and by key-expiry
 # --record, read-only; a record that cannot be written is never reported as written), and that an expired one's
 # replacement is recorded only once the uploaded files that name the old key are replaced; that the AppSync headroom
 # is checked only by a run that
@@ -425,6 +426,43 @@ an_api_key_near_its_expiry_is_extended_in_place() {
         '[.apis[] | .keys[]] | length == 1 and .[0].id == $k and .[0].expires > $e' "$FAKE_STATE" >/dev/null || return 1
     [[ "$OUT" == *"Recorded the code sink's API key's expiry, $(jq -r .expires "$CCIT_CI_KEY_RECORD")"* ]] \
         && [[ "$(jq -r .expires "$CCIT_CI_KEY_RECORD")" > "$(days_from_now 300)" ]]
+}
+
+# The reminder (code_sink_key.py check) and a rerun agree at the edges of its window. The record is the expiry's UTC
+# date only, so each case is a key expiring at the first or last second of a date, D days after today (UTC): with 30
+# left (its last second) the check warns and a rerun extends the key; with 31 (its first second) the check passes and
+# a rerun extends it a day early; with 31 (its last second) or 32 it passes and a rerun reuses it. On the expiry date
+# the check gives both paths, and a rerun extends a key that has not expired yet, or makes a new one. Dry runs only;
+# the key's expiry is put back after.
+the_reminder_and_a_rerun_agree_at_the_window_edges() {
+    local before midnight today case expires plan status note
+    before=$(jq -c '[.apis[] | .keys[] | .expires]' "$FAKE_STATE")
+    [[ "$(jq length <<<"$before")" == 1 ]] || { echo "not one key: $before"; return 1; }
+    # Clear of midnight UTC, so the script's clock and the check's date are the same day.
+    (( 86400 - $(date +%s) % 86400 > 300 )) || sleep $(( 86400 - $(date +%s) % 86400 + 5 ))
+    midnight=$(( $(date +%s) / 86400 * 86400 ))
+    today=$(python3 -c 'import datetime,sys;print(datetime.datetime.fromtimestamp(int(sys.argv[1]),datetime.timezone.utc).date())' "$midnight")
+    # <expiry, from today's midnight>:<the check's status>:<what the rerun plans>
+    for case in $((31 * 86400 - 1)):1:extend $((31 * 86400)):0:extend $((32 * 86400 - 1)):0:reuse $((32 * 86400)):0:reuse \
+        $((86400 - 1)):1:extend 0:1:create; do
+        expires=$(( midnight + ${case%%:*} ))
+        jq --argjson e "$expires" '(.apis[] | .keys[]).expires = $e' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+        python3 "$CI_DIR/code_sink_key.py" record "$expires" --record "$WORK/edge.json" >/dev/null
+        status=0
+        note=$(python3 "$CI_DIR/code_sink_key.py" check --today "$today" --record "$WORK/edge.json") || status=$?
+        run --scope all
+        plan=$(sed -nE 's/^  \+ //p' <<<"$OUT")
+        (( STATUS == 0 && status == $(cut -d: -f2 <<<"$case") )) && only_reads || { echo "$case: $status $note"; return 1; }
+        case "${case##*:}" in
+            extend) [[ "$plan" == "extend the tests' read-only API key to 364 days from now (the same key)" ]] ;;
+            reuse) [[ -z "$plan" && "$OUT" == *"= the code sink API key (lives more than 31 more days)"* ]] ;;
+            create) [[ "$plan" == "create the tests' read-only API key, for 364 days" ]] ;;
+        esac || { echo "$case: $plan"; return 1; }
+        # Whenever the check fails, it says what the rerun does: extend the key, or (on the expiry date) either.
+        (( status == 0 )) || [[ "$note" == *"extends it in place"* ]] || { echo "$case: $note"; return 1; }
+    done
+    jq --argjson e "$before" '(.apis[] | .keys[]).expires = $e[0]' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    [[ "$(jq -c '[.apis[] | .keys[] | .expires]' "$FAKE_STATE")" == "$before" ]]
 }
 
 # The expiry is recorded as soon as the key is extended, not at the end of the run: a later step that stops it (here
@@ -1150,6 +1188,8 @@ check "a phase-1 --apply --upload after phase 2 makes no call: the triggers' rol
     a_phase_1_rerun_after_phase_2_makes_no_call
 check "the code sink's API key near its expiry is extended in place, and the uploaded files stay valid" \
     an_api_key_near_its_expiry_is_extended_in_place
+check "the reminder and a rerun agree at the window's edges: a key the reminder warns about is extended" \
+    the_reminder_and_a_rerun_agree_at_the_window_edges
 check "the code sink key's expiry is recorded as soon as the key is extended, though a later step stops the run" \
     the_expiry_is_recorded_when_the_key_is_extended
 check "the code sink key's expiry is recorded by --apply and by key-expiry --record, with read calls only" \

@@ -12,7 +12,9 @@
 #
 # It checks that a key with more than 30 days left passes; that one within 30 days, on its last day, or expired
 # fails, with a GitHub warning or error that says how to renew it (extended in place before the expiry; after it, a
-# new key, recorded only once the uploaded files that name the old one are replaced); that no record, or one that does
+# new key, recorded only once the uploaded files that name the old one are replaced; on the expiry date, both); that
+# the window's edges (32, 31, 30, 1, 0 and -1 days left) are where provision-ci.sh's reuse threshold, `reuse-days`,
+# makes a rerun extend every key it warns about; that no record, or one that does
 # not read, is its own status (3) with a warning; that an unexpected error is 4, never 1; that `record` writes the
 # date of an expiry in epoch seconds; and that the committed record reads (a date, or null until the owner records
 # it).
@@ -48,7 +50,7 @@ more_than_30_days_left_passes() {
 within_30_days_fails_with_a_warning() {
     local today
     recorded 2027-10-22
-    for today in 2027-09-22 2027-10-22; do
+    for today in 2027-09-22 2027-10-21; do
         run check --today "$today" --record "$RECORD" --github
         (( STATUS == 1 )) && [[ "$OUT" == "::warning::The CI code sink's API key expires on 2027-10-22, in "* ]] \
             && [[ "$OUT" == *"provision-ci.sh --apply --scope all"* ]] || { echo "$today: $OUT"; return 1; }
@@ -75,6 +77,29 @@ a_key_within_its_last_days_is_extended_in_place() {
     run check --today 2027-10-01 --record "$RECORD"
     (( STATUS == 1 )) && [[ "$OUT" == *"extends it in place to 364 days from then (the same key"* ]] \
         && [[ "$OUT" != *"delete"* && "$OUT" != *"cannot be extended"* ]]
+}
+
+# The edges of the window, by days left: 32 and 31 pass, 30 to 1 warn and say to extend, 0 (the expiry date, whose
+# hour the record does not hold) is an error that gives both the extension and the replacement, and -1 the
+# replacement only. reuse-days is one more than the 30: a key the check gives 30 days can live up to a second short
+# of 31 days from now, so provision-ci.sh, which reuses only a key that lives more than reuse-days, extends it.
+the_window_edges_match_the_reuse_threshold() {
+    local today expected
+    recorded 2027-10-22
+    for today in 2027-09-20:0:none 2027-09-21:0:none 2027-09-22:1:warning 2027-10-21:1:warning 2027-10-22:1:both \
+        2027-10-23:1:replace; do
+        expected="${today#*:}"
+        run check --today "${today%%:*}" --record "$RECORD" --github
+        (( STATUS == ${expected%%:*} )) || { echo "$today: $STATUS $OUT"; return 1; }
+        case "${expected#*:}" in
+            none) [[ "$OUT" == "The CI code sink's API key expires on 2027-10-22, in 3"[12]" days." ]] ;;
+            warning) [[ "$OUT" == "::warning::"*"extends it in place"* && "$OUT" != *"cannot be extended"* ]] ;;
+            both) [[ "$OUT" == "::error::The CI code sink's API key expires today, 2027-10-22"*"If it has not expired yet, rerun"*"extends it in place"*"If it has,"*"An expired key cannot be extended."*"--upload"* ]] ;;
+            replace) [[ "$OUT" == "::error::"*"An expired key cannot be extended."* && "$OUT" != *"extends it"* ]] ;;
+        esac || { echo "$today: $OUT"; return 1; }
+    done
+    run reuse-days
+    (( STATUS == 0 )) && [[ "$OUT" == 31 ]]
 }
 
 # A failure of the script itself is status 4 (its traceback printed), never 1, which the reminder reads as "renew".
@@ -117,6 +142,8 @@ check "a key with more than 30 days left passes" more_than_30_days_left_passes
 check "a key within its last 30 days fails, with a warning that says how to extend it" within_30_days_fails_with_a_warning
 check "an expired key fails, with an error that says what to replace" an_expired_key_fails_with_an_error
 check "a key within its last 30 days is to be extended in place, the same key" a_key_within_its_last_days_is_extended_in_place
+check "the window's edges (32, 31, 30, 1, 0, -1 days) match provision-ci.sh's reuse threshold" \
+    the_window_edges_match_the_reuse_threshold
 check "an unexpected error is status 4, never 1" an_unexpected_error_is_status_4
 check "no record, or one that does not read, is status 3 with a warning" no_record_is_its_own_status
 check "record writes the expiry's date" record_writes_the_date

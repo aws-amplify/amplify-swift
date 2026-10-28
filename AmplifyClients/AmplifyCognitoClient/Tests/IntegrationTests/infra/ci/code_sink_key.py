@@ -12,7 +12,11 @@ the reminder needs no AWS call and no credentials: a scheduled job, or any CI ru
     code_sink_key.py check [--today YYYY-MM-DD] [--github] [--record FILE]
         Exit 0 while the key has more than WARN_DAYS (30) days left; 1 within them, or once it has expired (renew
         it); 3 when no expiry is recorded (or the record does not read). Prints one line; with --github, as a GitHub
-        Actions annotation (::warning:: within the 30 days or unrecorded, ::error:: once expired).
+        Actions annotation (::warning:: within the 30 days or unrecorded, ::error:: on the expiry date, when the key
+        may already have expired, and after it).
+    code_sink_key.py reuse-days
+        Prints REUSE_DAYS (31): provision-ci.sh reuses a key only while it lives more than that many days from the
+        run, and extends it otherwise (until it expires).
     code_sink_key.py record <expires-epoch-seconds> [--record FILE]
         Writes the record (provision-ci.sh, once it has read, created or extended the key, and the uploaded files
         that name a key name that one). Prints the date.
@@ -35,6 +39,11 @@ import sys
 import traceback
 
 WARN_DAYS = 30
+# The record is a date only, and `check` counts whole UTC days, so a key it gives WARN_DAYS days left can still live up
+# to a second short of WARN_DAYS + 1 days from now. provision-ci.sh reuses a key only while it lives more than
+# REUSE_DAYS (it reads them from `reuse-days`), so a rerun extends every key this check warns about. A key with
+# WARN_DAYS + 1 days left passes, and a rerun may extend it a day early or reuse it.
+REUSE_DAYS = WARN_DAYS + 1
 DEFAULT_RECORD = os.path.join(os.path.dirname(os.path.abspath(__file__)), "code-sink-key-expiry.json")
 UPLOADED_FILES = ("ccit-ci-default-amplify_outputs.json", "ccit-ci-email-alias-codes-amplify_outputs.json")
 EXTEND = ("rerun infra/ci/provision-ci.sh --apply --scope all, which extends it in place to 364 days from then (the "
@@ -79,6 +88,12 @@ def check(argv):
             level, status = "error", 1
             message = (f"The CI code sink's API key expired on {expires.isoformat()}: the client's code-reading tests "
                        f"on CI fail until it is replaced. {REPLACE}")
+        elif left == 0:
+            # The date alone does not tell whether the key has expired yet: both paths.
+            level, status = "error", 1
+            message = (f"The CI code sink's API key expires today, {expires.isoformat()}, at an hour the record does "
+                       f"not hold. If it has not expired yet, {EXTEND}. If it has, the client's code-reading tests on "
+                       f"CI fail until it is replaced. {REPLACE}")
         elif left <= WARN_DAYS:
             level, status = "warning", 1
             message = (f"The CI code sink's API key expires on {expires.isoformat()}, in {left} days. Before then, "
@@ -104,6 +119,9 @@ def record(argv):
 def main(argv):
     if argv[:1] == ["check"]:
         return check(argv)
+    if argv == ["reuse-days"]:
+        print(REUSE_DAYS)
+        return 0
     if argv[:1] == ["record"] and len(argv) >= 2 and argv[1].isdigit():
         return record(argv)
     print(__doc__, file=sys.stderr)
