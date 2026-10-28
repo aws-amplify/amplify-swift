@@ -39,7 +39,8 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase, @unchecked Sendable {
 
     override func setUp() async throws {
         try await super.setUp()
-        continueAfterFailure = false
+        // With `false`, an async failure runs tearDown alongside the abandoned test body, then exits the process.
+        continueAfterFailure = true
     }
 
     override func tearDown() async throws {

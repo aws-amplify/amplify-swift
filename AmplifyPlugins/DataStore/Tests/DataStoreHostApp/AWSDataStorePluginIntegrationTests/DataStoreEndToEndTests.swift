@@ -38,6 +38,16 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
         }
     }
 
+    /// Saving a new post emits its outbox, sync and mutation events
+    ///
+    /// - Given: DataStore is ready
+    /// - When:
+    ///    - A new post is saved
+    /// - Then:
+    ///    - Outbox enqueued, non-empty and empty status, and processed events are received
+    ///    - A `syncReceived` create with version 1 is received
+    ///    - Mutation events with version nil (local) and version 1 (remote) are received
+    ///
     func testCreate() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
@@ -96,20 +106,24 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
                 }
             }.store(in: &cancellables)
 
-        Task {
-            let mutationEvents = Amplify.DataStore.observe(Post.self)
-            do {
-                for try await mutationEvent in mutationEvents {
-                    if mutationEvent.version == nil {
-                        localEventReceived.fulfill()
-                    } else if mutationEvent.version == 1 {
-                        remoteEventReceived.fulfill()
-                    }
+        // Unlike `observe(_:)`, subscribes before the save, so the local event can't be missed.
+        let plugin = try XCTUnwrap(Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as? AWSDataStorePlugin)
+        let mutationEventSink = plugin.publisher(for: Post.modelName)
+            .filter { $0.modelId == newPost.id }
+            .sink { completed in
+                switch completed {
+                case .finished:
+                    break
+                case .failure(let error):
+                    XCTFail("Failed \(error)")
                 }
-            } catch {
-                XCTFail("Failed \(error)")
+            } receiveValue: { mutationEvent in
+                if mutationEvent.version == nil {
+                    localEventReceived.fulfill()
+                } else if mutationEvent.version == 1 {
+                    remoteEventReceived.fulfill()
+                }
             }
-        }
 
         let savedPost = try await Amplify.DataStore.save(newPost)
         XCTAssertEqual(savedPost.content, newPost.content)
@@ -122,6 +136,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
             localEventReceived,
             remoteEventReceived
         ], timeout: 30)
+        mutationEventSink.cancel()
     }
 
     func testCreateMutateDelete() async throws {

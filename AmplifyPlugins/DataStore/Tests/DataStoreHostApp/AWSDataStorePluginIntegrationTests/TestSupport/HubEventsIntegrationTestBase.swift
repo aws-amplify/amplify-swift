@@ -39,13 +39,16 @@ class HubEventsIntegrationTestBase: XCTestCase, @unchecked Sendable {
 
     override func setUp() async throws {
         try await super.setUp()
-        continueAfterFailure = false
+        // With `false`, an async failure runs tearDown alongside the abandoned test body, then exits the process.
+        continueAfterFailure = true
     }
 
     override func tearDown() async throws {
+        // Let in-flight sync work unwind before `Amplify.reset()`, as SyncEngineIntegrationTestBase does.
+        try await Amplify.DataStore.stop()
         try await Amplify.DataStore.clear()
-        await Amplify.reset()
         try await Task.sleep(seconds: 1)
+        await Amplify.reset()
     }
 
     func configureAmplify(withModels models: AmplifyModelRegistration) throws {

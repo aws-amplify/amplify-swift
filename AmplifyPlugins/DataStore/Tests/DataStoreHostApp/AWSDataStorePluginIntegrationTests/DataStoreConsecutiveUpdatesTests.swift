@@ -30,7 +30,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
     }
 
     /// - Given: API has been setup with `Post` model registered
-    /// - When: A Post is saved and then immediately updated
+    /// - When: A Post is saved and then immediately updated, while its create mutation is in flight
     /// - Then: The post should be updated with new fields immediately and in the eventual consistent state
     func testSaveAndImmediatelyUpdate() async throws {
         await setUp(withModels: TestModelRegistration())
@@ -80,8 +80,8 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
             return
         }
 
-        // Post is saved and then immediately updated
-        _ = try await Amplify.DataStore.save(newPost)
+        // Update only once the create is in flight, otherwise the outbox folds the update into it
+        try await saveAndWaitUntilInFlight(newPost)
         _ = try await Amplify.DataStore.save(updatedPost)
 
         // query the updated post immediately
@@ -114,7 +114,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
     }
 
     /// - Given: API has been setup with `Post` model registered
-    /// - When: A Post is saved and deleted immediately
+    /// - When: A Post is saved and deleted immediately, while its create mutation is in flight
     /// - Then: The Post should not be returned when queried for immediately and in the eventual consistent state
     func testSaveAndImmediatelyDelete() async throws {
         await setUp(withModels: TestModelRegistration())
@@ -159,8 +159,8 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
             return
         }
 
-        // Post is saved and then immediately deleted
-        _ = try await Amplify.DataStore.save(newPost)
+        // Delete only once the create is in flight, otherwise the outbox drops both mutations
+        try await saveAndWaitUntilInFlight(newPost)
         try await Amplify.DataStore.delete(newPost)
 
         // query the deleted post immediately
@@ -193,7 +193,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
     }
 
     /// - Given: API has been setup with `Post` model registered
-    /// - When: A Post is saved with sync complete, updated and deleted immediately
+    /// - When: A Post is saved with sync complete, updated and deleted immediately, while the update mutation is in flight
     /// - Then: The Post should not be returned when queried for
     func testSaveThenUpdateAndImmediatelyDelete() async throws {
         await setUp(withModels: TestModelRegistration())
@@ -245,11 +245,12 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
             return
         }
 
-        // save the post, update and delete immediately
+        // save the post and wait for it to sync
         _ = try await Amplify.DataStore.save(newPost)
         await fulfillment(of: [saveSyncReceived], timeout: networkTimeout)
 
-        _ = try await Amplify.DataStore.save(updatedPost)
+        // Delete only once the update is in flight, otherwise the outbox folds the delete into it
+        try await saveAndWaitUntilInFlight(updatedPost)
         try await Amplify.DataStore.delete(updatedPost)
 
         // query the deleted post immediately
@@ -371,6 +372,37 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
         case .failure(let error):
             XCTFail("Error: \(error)")
         }
+    }
+
+    /// Saves `post` and waits until the outbox picks up its mutation.
+    private func saveAndWaitUntilInFlight(_ post: Post) async throws {
+        let mutationEnqueued = expectation(description: "Mutation event enqueued in outbox for Post")
+        // The same Post can be enqueued more than once before the listener is removed
+        mutationEnqueued.assertForOverFulfill = false
+
+        let outboxListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.outboxMutationEnqueued
+        ) { payload in
+            guard let outboxMutationEvent = payload.data as? OutboxMutationEvent else {
+                XCTFail("Can't cast payload as outbox mutation event")
+                return
+            }
+
+            guard let enqueuedPost = outboxMutationEvent.element.model as? Post, enqueuedPost == post else {
+                return
+            }
+
+            mutationEnqueued.fulfill()
+        }
+        defer { Amplify.Hub.removeListener(outboxListener) }
+
+        guard try await HubListenerTestUtilities.waitForListener(with: outboxListener, timeout: 5.0) else {
+            throw "Listener not registered for hub"
+        }
+
+        _ = try await Amplify.DataStore.save(post)
+        await fulfillment(of: [mutationEnqueued], timeout: networkTimeout)
     }
 
     func queryPost(byId id: String) async throws -> Post? {

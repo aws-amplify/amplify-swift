@@ -27,15 +27,18 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
     var clearOnTearDown: Bool = false
 
     override func setUp() {
-        continueAfterFailure = false
+        // With `false`, an async failure runs tearDown alongside the abandoned test body, then exits the process.
+        continueAfterFailure = true
     }
 
     override func tearDown() async throws {
+        // Let in-flight sync work unwind before `Amplify.reset()`, as SyncEngineIntegrationTestBase does.
         if !(apiOnly || modelsOnly) {
+            try await stopDataStore()
             try await clearDataStore()
         }
-        await Amplify.reset()
         try await Task.sleep(seconds: 1)
+        await Amplify.reset()
     }
 
     func setupConfig() {
@@ -90,6 +93,8 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
             #endif
             try Amplify.add(plugin: AWSAPIPlugin(sessionFactory: AmplifyURLSessionFactory()))
             try Amplify.configure(amplifyConfig)
+            // DataStore is configured now, so tearDown must unwind it even after a models-only `setUp`.
+            modelsOnly = false
 
             try await Amplify.DataStore.start()
         } catch {
@@ -168,6 +173,10 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
 
     func startDataStore() async throws {
         try await Amplify.DataStore.start()
+    }
+
+    func stopDataStore() async throws {
+        try await Amplify.DataStore.stop()
     }
 
     func printDBPath() {

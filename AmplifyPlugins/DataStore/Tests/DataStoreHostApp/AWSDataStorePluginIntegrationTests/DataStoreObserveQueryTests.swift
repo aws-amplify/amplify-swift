@@ -374,11 +374,10 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
 
         await fulfillment(of: [snapshotWithIsSynced], timeout: 30)
         XCTAssertTrue(snapshots.count >= 2)
-        XCTAssertFalse(snapshots[0].isSynced)
+        XCTAssertFalse(try XCTUnwrap(snapshots.first).isSynced)
 
-        let theSyncedSnapshot = snapshots.first(where: { $0.isSynced })
-        XCTAssertNotNil(theSyncedSnapshot)
-        XCTAssertTrue(theSyncedSnapshot!.items.contains(newPost))
+        let theSyncedSnapshot = try XCTUnwrap(snapshots.first(where: { $0.isSynced }))
+        XCTAssertTrue(theSyncedSnapshot.items.contains(newPost))
     }
 
     /// ObserveQuery is set up with a query predicate.
@@ -703,8 +702,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
 
     // MARK: - Helpers
     func savePostAndWaitForSync(_ post: Post, postSyncedExpctation: XCTestExpectation? = nil) async throws {
-        // Wait for a fulfillment count of 2 (first event due to the locally source mutation saved to the local store
-        // and the second event due to the subscription event received from the remote store)
+        // Count 2: the local event, then the first remote copy to reconcile (mutation response or subscription).
         let receivedPost = postSyncedExpctation ?? {
             let e = expectation(description: "received Post")
             e.expectedFulfillmentCount = 2
@@ -712,26 +710,15 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
         }()
         receivedPost.assertForOverFulfill = false
 
-        Task {
-            let mutationEvents = Amplify.DataStore.observe(Post.self)
-            do {
-                for try await mutationEvent in mutationEvents {
-                    if mutationEvent.modelId == post.id {
-                        receivedPost.fulfill()
-                    }
-                }
-            } catch {
-                XCTFail("Failed \(error)")
-            }
-        }
+        let sink = try observeMutationEvents(of: post, fulfilling: receivedPost)
+        defer { sink.cancel() }
 
         _ = try await Amplify.DataStore.save(post)
         await fulfillment(of: [receivedPost], timeout: 100)
     }
 
     func deletePostAndWaitForSync(_ post: Post, postSyncedExpctation: XCTestExpectation? = nil) async throws {
-        // Wait for a fulfillment count of 2 (first event due to the locally source mutation deleted from the local
-        // store and the second event due to the subscription event received from the remote store)
+        // Count 2: the local event, then the first remote copy to reconcile (mutation response or subscription).
         let deletedPost = postSyncedExpctation ?? {
             let e = expectation(description: "deleted Post")
             e.expectedFulfillmentCount = 2
@@ -739,21 +726,28 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Send
         }()
         deletedPost.assertForOverFulfill = false
 
-        Task {
-            let mutationEvents = Amplify.DataStore.observe(Post.self)
-            do {
-                for try await mutationEvent in mutationEvents {
-                    if mutationEvent.modelId == post.id {
-                        deletedPost.fulfill()
-                    }
-                }
-            } catch {
-                XCTFail("Failed \(error)")
-            }
-        }
+        let sink = try observeMutationEvents(of: post, fulfilling: deletedPost)
+        defer { sink.cancel() }
 
         _ = try await Amplify.DataStore.delete(post)
         await fulfillment(of: [deletedPost], timeout: 100)
+    }
+
+    /// Unlike `observe(_:)`, subscribes before returning, so the local mutation event can't be missed.
+    private func observeMutationEvents(of post: Post, fulfilling expectation: XCTestExpectation) throws -> AnyCancellable {
+        let plugin = try XCTUnwrap(Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as? AWSDataStorePlugin)
+        return plugin.publisher(for: Post.modelName)
+            .filter { $0.modelId == post.id }
+            .sink { completed in
+                switch completed {
+                case .finished:
+                    break
+                case .failure(let error):
+                    XCTFail("Failed \(error)")
+                }
+            } receiveValue: { _ in
+                expectation.fulfill()
+            }
     }
 
     func queryNumberOfPosts() async throws -> Int {

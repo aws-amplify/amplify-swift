@@ -79,8 +79,14 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
         /// each detached task is a `save` (implicit `start`) or a `start`.
         func multipleSavesWithInterruptions(_ savesSyncedExpectation: XCTestExpectation) async throws {
             subscribeToOutboxEvent(savesSyncedExpectation)
+            var secondsWaited = 0
             while isOutboxEmpty == false {
+                // Bounded, so an outbox that never reports empty can't hang the job.
+                guard secondsWaited < 120 else {
+                    throw "Outbox never reported empty"
+                }
                 try await Task.sleep(seconds: 1)
+                secondsWaited += 1
             }
             for i in 0 ..< count {
                 let post = Post(title: "title")

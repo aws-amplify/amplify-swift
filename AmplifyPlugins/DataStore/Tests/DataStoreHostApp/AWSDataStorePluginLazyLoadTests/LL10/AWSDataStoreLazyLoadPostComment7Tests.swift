@@ -216,6 +216,15 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest,
         try await assertModelDoesNotExist(savedPost)
     }
 
+    /// A post received from `observe` lazy loads a comment saved after it
+    ///
+    /// - Given: DataStore is ready and observing `Post`
+    /// - When:
+    ///    - A post is created through the API, and its version 1 mutation event is received
+    ///    - A comment for the post is then created and synced
+    /// - Then:
+    ///    - The received post lazy loads the comment
+    ///
     func testObservePost() async throws {
         await setup(withModels: PostComment7Models())
         try await startAndWaitForReady()
@@ -223,28 +232,17 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest,
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Post.self)
-        Task {
+        let receivedPostTask = Task { () -> Post? in
             for try await mutationEvent in mutationEvents {
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
                    receivedPost.postId == post.postId {
-
-                    try await createAndWaitForSync(comment)
-                    guard let comments = receivedPost.comments else {
-                        XCTFail("Lazy List does not exist")
-                        return
-                    }
-                    do {
-                        try await comments.fetch()
-                    } catch {
-                        XCTFail("Failed to lazy load comments \(error)")
-                    }
-                    XCTAssertEqual(comments.count, 1)
-
                     mutationEventReceived.fulfill()
+                    return receivedPost
                 }
             }
+            return nil
         }
 
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
@@ -256,6 +254,22 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest,
 
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
+        guard let receivedPost = try await receivedPostTask.value else {
+            return
+        }
+
+        // Follow-up waits run here, not in the task, so the task can't outlive the test.
+        try await createAndWaitForSync(comment)
+        guard let comments = receivedPost.comments else {
+            XCTFail("Lazy List does not exist")
+            return
+        }
+        do {
+            try await comments.fetch()
+        } catch {
+            XCTFail("Failed to lazy load comments \(error)")
+        }
+        XCTAssertEqual(comments.count, 1)
     }
 
     func testObserveComment() async throws {
@@ -289,6 +303,15 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest,
         mutationEvents.cancel()
     }
 
+    /// A post received from `observeQuery` lazy loads a comment saved after it
+    ///
+    /// - Given: DataStore is ready and observing a query for the post
+    /// - When:
+    ///    - A post is created through the API, and a snapshot containing it is received
+    ///    - A comment for the post is then created and synced
+    /// - Then:
+    ///    - The received post lazy loads the comment
+    ///
     func testObserveQueryPost() async throws {
         await setup(withModels: PostComment7Models())
         try await startAndWaitForReady()
@@ -296,24 +319,14 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest,
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         let snapshotReceived = expectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: Post.self, where: Post.keys.postId == post.postId)
-        Task {
+        let receivedPostTask = Task { () -> Post? in
             for try await querySnapshot in querySnapshots {
                 if let receivedPost = querySnapshot.items.first {
-                    try await createAndWaitForSync(comment)
-                    guard let comments = receivedPost.comments else {
-                        XCTFail("Lazy List does not exist")
-                        return
-                    }
-                    do {
-                        try await comments.fetch()
-                    } catch {
-                        XCTFail("Failed to lazy load comments \(error)")
-                    }
-                    XCTAssertEqual(comments.count, 1)
-
                     snapshotReceived.fulfill()
+                    return receivedPost
                 }
             }
+            return nil
         }
 
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
@@ -325,6 +338,21 @@ final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest,
 
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
+        guard let receivedPost = try await receivedPostTask.value else {
+            return
+        }
+
+        try await createAndWaitForSync(comment)
+        guard let comments = receivedPost.comments else {
+            XCTFail("Lazy List does not exist")
+            return
+        }
+        do {
+            try await comments.fetch()
+        } catch {
+            XCTFail("Failed to lazy load comments \(error)")
+        }
+        XCTAssertEqual(comments.count, 1)
     }
 
     func testObserveQueryComment() async throws {

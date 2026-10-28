@@ -59,8 +59,6 @@ import XCTest
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, @unchecked Sendable {
 
-    var token: UnsubscribeToken?
-
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
             registry.register(modelType: Blog8.self)
@@ -260,26 +258,23 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
         }
 
         let waitForSync = expectation(description: "synced")
-        // syncReceived can arrive more than once before the listener is removed asynchronously.
+        // syncReceived can arrive more than once before the listener is removed.
         waitForSync.assertForOverFulfill = false
-        token = Amplify.Hub.listen(to: .dataStore) { payload in
+        let token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
             case .syncReceived(let mutationEvent):
                 if mutationEvent.modelId == commentToSave.id {
                     waitForSync.fulfill()
-                    if let token = self.token {
-                        Amplify.Hub.removeListener(token)
-                    }
                 }
             default:
                 break
             }
         }
+        defer { Amplify.Hub.removeListener(token) }
         // Ensure the listener is registered before saving, otherwise the synchronously-dispatched
         // syncReceived event can fire before the listener exists and the wait never fulfills.
-        guard let token,
-              try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5) else {
             XCTFail("Hub listener was not registered")
             return nil
         }
@@ -297,26 +292,23 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
         }
 
         let waitForSync = expectation(description: "synced")
-        // syncReceived can arrive more than once before the listener is removed asynchronously.
+        // syncReceived can arrive more than once before the listener is removed.
         waitForSync.assertForOverFulfill = false
-        token = Amplify.Hub.listen(to: .dataStore) { payload in
+        let token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
             case .syncReceived(let mutationEvent):
                 if mutationEvent.modelId == postToSave.id {
                     waitForSync.fulfill()
-                    if let token = self.token {
-                        Amplify.Hub.removeListener(token)
-                    }
                 }
             default:
                 break
             }
         }
+        defer { Amplify.Hub.removeListener(token) }
         // Ensure the listener is registered before saving, otherwise the synchronously-dispatched
         // syncReceived event can fire before the listener exists and the wait never fulfills.
-        guard let token,
-              try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5) else {
             XCTFail("Hub listener was not registered")
             return nil
         }
@@ -345,27 +337,24 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
         }
 
         let waitForSync = expectation(description: "synced")
-        // syncReceived can arrive more than once before the listener is removed asynchronously.
+        // syncReceived can arrive more than once before the listener is removed.
         waitForSync.assertForOverFulfill = false
-        token = Amplify.Hub.listen(to: .dataStore) { payload in
+        let token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
             case .syncReceived(let mutationEvent):
                 if mutationEvent.modelId == blogToSave.id {
                     waitForSync.fulfill()
-                    if let token = self.token {
-                        Amplify.Hub.removeListener(token)
-                    }
                 }
 
             default:
                 break
             }
         }
+        defer { Amplify.Hub.removeListener(token) }
         // Ensure the listener is registered before saving, otherwise the synchronously-dispatched
         // syncReceived event can fire before the listener exists and the wait never fulfills.
-        guard let token,
-              try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5) else {
             XCTFail("Hub listener was not registered")
             return nil
         }
