@@ -297,10 +297,12 @@ if let picked = rows.first {
 - Signed-out rows are listed only with `includingSignedOut: true`.
 - A session whose first sign-in stopped on a challenge is not listed until that sign-in completes.
 - `.default`'s row comes from the Auth plugin's saved login, with its label while the label belongs to the user the
-  plugin's record holds. After the plugin signs out (or deletes its record), `.default` is a signed-out row naming
-  the last user *the client* saved it for: the client keeps that name beside the plugin's record and updates it only
-  when it writes the session itself. So if the plugin signs bob in over alice's session and then signs out, without
-  the client running in between, the row still names alice, with alice's label.
+  plugin's record holds. After the plugin signs out (or deletes its record), `.default` is a signed-out row naming the
+  last user *the client* saved it for: the client keeps that name beside the plugin's record and updates it only when it
+  writes the session itself. So if the plugin signs bob in over alice's session and then signs out, without the client
+  running in between, the row still names alice, with alice's label. With an access group, the plugin's sign-out of a
+  login saves the signed-out record (plugin releases after 2.63.0; earlier ones delete it), so with no such name beside
+  it `.default` is still listed with `includingSignedOut: true`, as a signed-out row without a label or username.
 - A row's kind follows the current configuration: after a change that removes the identity pool, `.default`'s copied
   login is listed as `.userPoolOnly`, and a copied guest or federated identity as signed out, as a named session is,
   although its saved bytes are the plugin's as they were.
@@ -1553,24 +1555,25 @@ let rows = try await AmplifyCognitoClient.storedSessions(
 )
 ```
 
-One rollback caveat: a purge, or the plugin's own sign-out, after a configuration change that copied the login, then
-a rollback to the build with the earlier configuration: that build finds the earlier copy and signs the user back in.
-A sign-out through the client doesn't do this: it keeps the user signed out under the same configuration, and across
-rollbacks, and clears the AWSMobileClient logins any plugin release would migrate over it (best effort; see
-[Sign-out](#sign-out)). The exception, as with the plugin, is a later configuration change onto an earlier
-configuration's copy. An AWSMobileClient login that failed to clear (a warning says so) can still undo it on a
-plugin release up to 2.63.0, which migrates it over the signed-out login. Later plugin releases don't: the signed-out
-login stops their migration, which then clears the old logins, until a guest replaces the signed-out login. See
-[Rolling back and forward](#rolling-back-and-forward).
+One rollback caveat: a purge, or the plugin's own sign-out without an access group, after a configuration change that
+copied the login, then a rollback to the build with the earlier configuration: that build finds the earlier copy and
+signs the user back in. A sign-out through the client doesn't do this, nor does a plugin sign-out under an access group
+on plugin releases after 2.63.0, which saves the same signed-out login. A sign-out through the client keeps the user
+signed out under the same configuration, and across rollbacks, and clears the AWSMobileClient logins any plugin release
+would migrate over it (best effort; see [Sign-out](#sign-out)). The exception, as with the plugin, is a later
+configuration change onto an earlier configuration's copy. An AWSMobileClient login that failed to clear (a warning says
+so) can still undo it on a plugin release up to 2.63.0, which migrates it over the signed-out login. Later plugin
+releases don't: the signed-out login stops their migration, which then clears the old logins, until a guest replaces the
+signed-out login. See [Rolling back and forward](#rolling-back-and-forward).
 
 ### Labels and the signed-out row after a plugin action
 
-For example: alice signs in through the client, and the app labels the session "Personal". Later the plugin
-deletes alice (`deleteUser`). The plugin deletes its own record, but it doesn't know the client's note beside it,
-so a picker that lists signed-out rows (`storedSessions(…includingSignedOut: true)`) still shows a row naming alice,
-labelled "Personal". The row lasts until the client writes the session again, for example a sign-in through the
-client, a client refresh of another user the plugin signed in, a guest fetch or a purge. A sign-in through the
-plugin doesn't replace it.
+For example: alice signs in through the client, and the app labels the session "Personal". Later the plugin deletes
+alice (`deleteUser`). The plugin deletes its own record (with an access group, plugin releases after 2.63.0 save the
+signed-out record in its place), but it doesn't know the client's note beside it, so a picker that lists signed-out rows
+(`storedSessions(…includingSignedOut: true)`) still shows a row naming alice, labelled "Personal". The row lasts until
+the client writes the session again, for example a sign-in through the client, a client refresh of another user the
+plugin signed in, a guest fetch or a purge. A sign-in through the plugin doesn't replace it.
 
 The rule behind it: what the plugin's format has no room for, the label and the user a signed-out row names, is
 kept beside the plugin's record and bound to the last user the client wrote the session for. The plugin never
@@ -1605,7 +1608,7 @@ never log it. The warning is temporary: it goes when the plugin uses the client 
 |---|---|
 | Back to a plugin-only release | The plugin reads `.default`'s latest login, signed in or signed out. Named sessions are not seen, and come back on roll-forward, unless a plugin release before 2.63.0 wiped its keychain service on an access-group transition, or a release before 2.53.3 at its first configuration (the next row) |
 | Back to a plugin release before 2.53.3, on an install where no such release has run (a fresh install of the client build, say) | **That release wipes the plugin's keychain service the first time it configures** (2.51.3 to 2.53.2 only without an access group): `.default`'s login, its label and interrupted sign-in, the named sessions and the device records. The plugin starts signed out, and nothing comes back on roll-forward. Plugin-only apps rolled back across 2.53.3 have the same hazard. Roll back to 2.53.3 or later |
-| A purge, or the plugin's own sign-out, after a configuration change that copied the login, then a rollback to the build with the earlier configuration | **That build finds the earlier copy and signs the user back in.** The copy keeps its source, as the plugin's does, and a purge or the plugin's sign-out deletes only the current configuration's login. A sign-out through the client doesn't do this: it saves a signed-out login, which that build reads as signed out |
+| A purge, or the plugin's own sign-out without an access group, after a configuration change that copied the login, then a rollback to the build with the earlier configuration | **That build finds the earlier copy and signs the user back in.** The copy keeps its source, as the plugin's does, and a purge or the plugin's sign-out deletes only the current configuration's login. A sign-out through the client doesn't do this: it saves a signed-out login, which that build reads as signed out. Nor does the plugin's sign-out under an access group on releases after 2.63.0, which saves the same signed-out login; on releases up to 2.63.0 it deletes the login, as without one |
 | A sign-out through the client, then a later configuration change that the rule doesn't copy across, onto a configuration whose key still holds an earlier copy of the user | **That copy is restored signed in**, as with the plugin: the change deletes the signed-out login and lands on the old copy. For example: alice signs in under A; B adds an identity pool and copies her, keeping A's copy; she signs out under B; D (the same user pool with a new app client, and A's identity pool) deletes B's signed-out login, and its key is A's, which still holds her |
 | Back to a plugin release before 2.51.0, with refresh-token rotation on | That plugin can't refresh on the app client at all, whatever the client did |
 | Forward from the plugin to the client, with refresh-token rotation on, after the plugin rotated the token | **The user stays signed in**: `.default` reads the plugin's record in place, so the client refreshes with the newest token the plugin saved |

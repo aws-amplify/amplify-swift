@@ -47,18 +47,18 @@ on, that session can be fully live again. The old binary cannot be fixed.
 
 Options: state a minimum rollback target (the first plugin release with the reader), or add a release note.
 
-**Solved by the shared saved login (2026-10-02).** The forward-compatible reader was removed before it shipped, and
-the client no longer writes a `$default` session record. No plugin release reads a client record, so none can sign a
-user back in from one. A user signed out through the client stays signed out on every plugin release, because the
-shared record holds `{"noCredentials":{}}` (`testMatrix_signedOutUserIsNeverSignedBackIn`,
+**Solved by the shared saved login (2026-10-02).** The forward-compatible reader was removed before it shipped, and the
+client no longer writes a `$default` session record. No plugin release reads a client record, so none can sign a user
+back in from one. A user signed out through the client stays signed out on every plugin release, because the shared
+record holds `{"noCredentials":{}}` (`testMatrix_signedOutUserIsNeverSignedBackIn`,
 `testMatrix_clientSignOut_readByEveryPluginAsSignedOut`), unless an AWSMobileClient login left on the device migrates
-over it (releases up to 2.63.0 migrate over a signed-out record; design §4.8). One caveat remains, from the plugin's own rule: after a
-configuration change that copied the login, a purge (or the plugin's own sign-out, which deletes) leaves the earlier
-configuration's copy, which a rollback to the build with that configuration reads
-(`testMatrix_purgeAfterACarry_leavesTheEarlierConfigurationsCopy_caveat`). A second caveat, also the plugin's own
-rule: a later configuration change that the rule does not carry deletes the signed-out record, and can land on an
-earlier configuration's key that still holds the user's old copy, which then restores the user signed in (design
-§4.8). Both caveats are accepted for the beta.
+over it (releases up to 2.63.0 migrate over a signed-out record; design §4.8). One caveat remains, from the plugin's own
+rule: after a configuration change that copied the login, a purge (or the plugin's own sign-out without an access group,
+or on plugin releases up to 2.63.0, which deletes) leaves the earlier configuration's copy, which a rollback to the
+build with that configuration reads (`testMatrix_purgeAfterACarry_leavesTheEarlierConfigurationsCopy_caveat`). A second
+caveat, also the plugin's own rule: a later configuration change that the rule does not carry deletes the signed-out
+record, and can land on an earlier configuration's key that still holds the user's old copy, which then restores the
+user signed in (design §4.8). Both caveats are accepted for the beta.
 
 ## 3. Rolling forward to the client after 1 — resolved within one launch
 

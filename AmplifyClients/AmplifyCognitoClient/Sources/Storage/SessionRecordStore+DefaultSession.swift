@@ -46,16 +46,16 @@ import InternalAWSCognitoAuth
 // **Sign-out and purge clear the AWSMobileClient logins**, as the plugin's sign-out does (`clearLegacyLogins()`): the
 // plugin migrates them into this record at configure whenever it holds no session, or only a guest, so they must not
 // outlive a sign-out. They are cleared before the signed-out write or the purge's delete, so a failure there leaves
-// none. A signed-out record (`{"noCredentials":{}}`) stops that migration too, and the migration then clears them,
-// but only until a guest replaces it: the migration reads a guest as no session. So a guest the client fetches over a
+// none. A signed-out record (`{"noCredentials":{}}`) stops that migration too, and the migration then clears them, but
+// only until a guest replaces it: the migration reads a guest as no session. So a guest the client fetches over a
 // signed-out record (`acquireGuestOnce`) clears them again first, best effort; over no record it leaves them, as a
 // client-only app that never signed in keeps them for a plugin build to migrate. A sidecar alone (a label set before
 // anyone signed in) is no record. The signed-out record may be the plugin's: under an access group, the plugin's own
-// sign-out saves the same bytes (plugin releases after 2.63.0; earlier ones delete the record), so a guest the client
-// fetches after one clears them too. Without an access group the plugin's sign-out deletes the record, and the
-// client's guest then leaves them, as over no record. A guest the plugin, or an app extension on it, saves over the
-// signed-out record clears nothing, so after it only an earlier clear protects the user. A purge leaves no record.
-// The client never migrates them.
+// sign-out of a login saves the same bytes (plugin releases after 2.63.0; earlier ones delete the record), so a guest
+// the client fetches after one clears them too. Without an access group the plugin's sign-out deletes the record, and
+// the client's guest then leaves them, as over no record. A guest the plugin, or an app extension on it, saves over the
+// signed-out record clears nothing, so after it only an earlier clear protects the user. A purge leaves no record. The
+// client never migrates them.
 extension SessionRecordStore {
 
     /// Whether a store re-reads an absent shared record by default: on macOS only, where the keychain's `set`

@@ -64,7 +64,7 @@ package struct ClearCredentialStore: Action {
     ///
     /// Best effort: a failure is logged and never fails the clear, because the session itself is
     /// already gone. If a legacy store survives, the next migration still finds it; that is no worse
-    /// than before this clear ran. Under an access group the session is ended by saving the signed-out
+    /// than before this clear ran. Under an access group a login is ended by saving the signed-out
     /// record, which stops that migration, so it clears the store without migrating it, until a guest
     /// replaces the record (`MigrateLegacyCredentialStore`).
     private func clearLegacyStores(for credentialEnvironment: CredentialEnvironment, environment: Environment) {
