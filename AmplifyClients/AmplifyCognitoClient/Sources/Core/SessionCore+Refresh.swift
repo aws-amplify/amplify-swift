@@ -284,13 +284,18 @@ extension SessionCore {
     ///    `RefreshTokenReuse.minimumGap` after the first, whose re-read record's credentials are still exactly
     ///    the ones sent, means nobody else refreshed: the token is dead (a record rolled forward over a token
     ///    the plugin rotated away), so, as for step 4, the session is marked expired, with its own `sessionExpired`
-    ///    (`refreshTokenAlreadyUsed`, `refreshTokenReused` underneath), which it answers with from then on. Forced or
-    ///    not: a forced refresh refused this way counts too, so a second one expires a session whose saved tokens are
-    ///    still valid, and an unforced call then stops handing them out.
+    ///    (`refreshTokenAlreadyUsed`, `refreshTokenReused` underneath), which it answers with from then on while the
+    ///    session is in memory: until every handle and provider for it is released, or a relaunch, since the expiry
+    ///    is this core's (`isExpired`). Forced or not: a forced refresh refused this way counts too, so a second one
+    ///    expires a session whose saved tokens are still valid, and an unforced call then stops handing them out.
     /// 4. `refreshTokenInvalid` means the session needs a fresh sign-in — unless another writer has
     ///    meanwhile stored different credentials (with rotation, a refresh racing another process's can be
     ///    told its token is invalid), so re-read first, as for reuse, and adopt them if so. Otherwise send
     ///    `.sessionExpired` and throw it. The record is kept, and the state stays signed in as its user.
+    ///
+    /// Both expiries install the record they re-read, which holds the credentials proved dead, as they mark the
+    /// session expired (`markExpired(installing:)`), so the next call does not take that record, saved again in other
+    /// bytes by another writer, for a new login and refresh the dead token again.
     ///
     /// **A refresh that cannot be saved throws the storage error**; it never hands out tokens storage does
     /// not hold. Known limit: with rotation, the retry then uses a refresh token the server may already
@@ -335,7 +340,7 @@ extension SessionCore {
                 // a fresh sign-in.
                 if let held = reread.credentials, engine.sameCredentials(held, payload),
                    refreshTokenReuse.repeated(payload, at: now(), same: engine.sameCredentials) {
-                    await markExpired()
+                    await markExpired(installing: reread)
                     throw Self.refreshTokenAlreadyUsed(sessionId)
                 }
                 throw AuthClientError.unknown(
@@ -350,7 +355,7 @@ extension SessionCore {
                 }
                 // Expired by this refusal, not by an earlier reuse: the session answers with its text from now on.
                 refreshTokenReuse.reset()
-                await markExpired()
+                await markExpired(installing: reread)
                 throw expiredError(holding: payload)
             } catch {
                 throw Self.engineFailure(error)

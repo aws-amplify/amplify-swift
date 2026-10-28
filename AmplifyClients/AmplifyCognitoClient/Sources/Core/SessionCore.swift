@@ -98,8 +98,15 @@ actor SessionCore {
     /// The last state sent on `states`, to send only changes.
     private var lastPublished: AuthSessionState?
 
-    /// Set when a refresh proved the refresh token dead. Cleared when the credentials change.
-    private(set) var isExpired = false
+    /// The credentials a refresh proved dead (`markExpired(installing:)`), while the session is known to be expired.
+    /// Cleared when the credentials change.
+    private(set) var expiredCredentials: Data?
+
+    /// Whether a refresh proved the refresh token dead. Cleared when the credentials change. In memory, on this core:
+    /// once every handle and provider for the session is released, or after a relaunch, a new core starts unexpired.
+    var isExpired: Bool {
+        expiredCredentials != nil
+    }
 
     /// Whether a hosted-UI sign-in call of this session is in progress, from before it waits for the
     /// sign-in lock until it returns: a second call (a double tap) is refused at once rather than queued
@@ -197,7 +204,7 @@ actor SessionCore {
         event: AuthEvent?
     ) -> SessionSnapshot {
         if newSnapshot.credentials != snapshot?.credentials {
-            isExpired = false
+            expiredCredentials = nil
         }
         snapshot = newSnapshot
         if case .set(let step) = update {
@@ -357,14 +364,20 @@ actor SessionCore {
         webUISignInInFlight = false
     }
 
-    /// Records that the refresh token is dead. The state does not change: the session stays signed in
-    /// as its user, so an app knows whom to re-authenticate, and its operations throw `sessionExpired`.
-    func markExpired() {
-        guard !isExpired else {
-            return
+    /// Records that the refresh token of `reread` is dead: installs `reread`, the record the refresh re-read and
+    /// proved dead, remembers its credentials, and sends `.sessionExpired` unless the session was already expired, in
+    /// one step on the actor, so no reader sees the record with the flag still clear. Installed so the next call's
+    /// re-read (`rereadIfExpired`) compares with what the store holds, which may be newer bytes than this core last
+    /// read (the same credentials saved again by another writer), and does not take them for a new login. The state
+    /// does not change: the session stays signed in as its user, so an app knows whom to re-authenticate, and its
+    /// operations throw `sessionExpired`.
+    func markExpired(installing reread: SessionSnapshot) {
+        let wasExpired = isExpired
+        apply(reread, event: nil)
+        expiredCredentials = reread.credentials
+        if !wasExpired, isExpired {
+            events.send(.sessionExpired)
         }
-        isExpired = true
-        events.send(.sessionExpired)
     }
 
     private func publish(_ state: AuthSessionState) {

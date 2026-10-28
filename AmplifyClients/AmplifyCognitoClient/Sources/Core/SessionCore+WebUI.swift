@@ -32,7 +32,7 @@ extension SessionCore {
     /// | this session's passkey registration holds the sheet (or its lease is granted, not yet attached) | refused; the registration is stopped, then the page waits up to `passkeySheetClosingTimeout` for its sheet to close | as below | as below; with no registration to stop, asked for once more with `.fail`, else the busy row |
     /// | the sheet stays busy (this session's passkey sheet did not close in time, or passed to another session as it closed) | none | — | throws `SignOutRefusal(.browserBusy(holder:))`: nothing cleared |
     /// | lease taken | around this attempt | `.present` | first stops this session's passkey registrations still before their sheet, then the engine's outcome; a page that could not be shown or completed (the window gone, the browser failed) is the engine's `SignOutRefusal`: nothing cleared |
-    /// | the user closed the page | released | — | rethrows `.userCancelled`: nothing cleared, unless the session is known to be expired in this launch, which reruns `.skip` and reports it |
+    /// | the user closed the page | released | — | rethrows `.userCancelled`: nothing cleared, unless the session is known to be expired while in memory (`afterClosedLogout`) and the login signed out still has the refresh token proved dead, which reruns `.skip` and reports it |
     /// | `cancelWebUISignIn()` or `resetSystemSheet()` interrupted the lease | released | — | waits for the sign-out's own result: the row above if that closed the page, else what it did (signed out, or its failure reported as the revoke's) |
     /// | the interrupt came before the body began (between the grant and the start; the body is abandoned, never runs) | released | — | the closed-page row, at once: nothing ran |
     /// | the caller's task was cancelled | released | — | the same decision: `CancellationError` if the body never began or closed the page (nothing cleared), else what it did, and the session is cleared |
@@ -228,13 +228,20 @@ extension SessionCore {
     #endif
 
     /// The user closed the logout page: they stay signed in, as with the plugin. Unless the session is known to be
-    /// expired in this launch (the plugin's #3956 behaviour): its tokens are dead anyway, so it signs out without the
-    /// page and reports the cookie left behind (`expiredLogoutClosed(_:)`). The plugin keys that on
-    /// `isRefreshTokenExpired`, which it saves with the session, so it holds across launches; here it is `isExpired`,
-    /// in memory, set when a refresh in this launch found the refresh token dead. After a relaunch, until a refresh
-    /// finds it again, a closed page keeps the session signed in.
+    /// expired (the plugin's #3956 behaviour): its tokens are dead anyway, so it signs out without the page and
+    /// reports the cookie left behind (`expiredLogoutClosed(_:)`). The plugin keys that on `isRefreshTokenExpired`,
+    /// which it saves with the session, so it holds across launches; here it is this core's expiry
+    /// (`expiredCredentials`), in memory, set when a refresh found the refresh token dead. So it holds only while the
+    /// session is in memory: once every handle and provider for it is released, or after a relaunch, until a refresh
+    /// finds the token dead again, a closed page keeps the session signed in.
+    ///
+    /// `payload` is what the sign-out read from the store, which may be a login another writer saved since this core
+    /// marked the session expired (an app sharing the access group signed the session out and in again). Only a
+    /// `payload` with the refresh token proved dead is signed out here: compared by refresh token, not by whole
+    /// credentials, since the plugin saves the same dead tokens again with its expired flag set. A new login keeps
+    /// the closed page's `.userCancelled`, and stays signed in.
     private nonisolated func afterClosedLogout(_ payload: Data, global: Bool, _ error: AuthClientError) async throws -> EngineSignOutOutcome {
-        guard await isExpired else {
+        guard let dead = await expiredCredentials, (try? sameRefreshToken(payload, dead)) == true else {
             throw error
         }
         return try await skippingHostedUI(payload, global: global, reporting: Self.expiredLogoutClosed(error))

@@ -161,23 +161,84 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
 
     /// - Given: a refresh token reused twice, `RefreshTokenReuse.minimumGap` apart, with the plugin re-encoding the
     ///   same credentials in between
-    /// - When: credentials are requested each time
+    /// - When: credentials are requested each time, then again, and once more after another `minimumGap`
     /// - Then:
     ///    - the first is retryable and the second `sessionExpired`, as when nothing was saved again
+    ///    - the third and fourth are the same `sessionExpired` ("already used") without another refresh: the expiry
+    ///      installed the re-encoded record it proved dead, so the next call's re-read does not take it for a new login
+    ///    - one `.sessionExpired` event is sent in all
     func testPluginReEncodingTheSameCredentials_stillLetsTheDeadTokenRuleFire() async throws {
         let stale = FakePayload.signedIn("alice", stale: true)
         harness.keychain.put(stale.data, pluginAccount)
         let client = try harness.client(.default)
-        harness.engine(for: .default)?.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
+        let engine = try XCTUnwrap(harness.engine(for: .default))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
+        let events = StreamRecorder(client.listenToAuthEvents())
 
         let first = await credentialsError { try await client.credentialsProvider.resolve() }
         harness.keychain.put(try reencode(stale), pluginAccount)
         harness.advanceClock(by: RefreshTokenReuse.minimumGap)
         let second = await credentialsError { try await client.credentialsProvider.resolve() }
+        let third = await credentialsError { try await client.credentialsProvider.resolve() }
+        harness.advanceClock(by: RefreshTokenReuse.minimumGap)
+        let fourth = await credentialsError { try await client.credentialsProvider.resolve() }
 
         XCTAssertEqual(first?.isUnknown, true, "\(String(describing: first))")
-        XCTAssertEqual(second?.isSessionExpired, true, "\(String(describing: second))")
+        for (name, error) in [("second", second), ("third", third), ("fourth", fourth)] {
+            XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
+            XCTAssertEqual((error?.underlyingError as? AuthClientError)?.errorDescription, Self.refreshTokenAlreadyUsed, name)
+        }
+        XCTAssertEqual(engine.refreshCalls.count, 2)
+        // Ends with a known event, so an extra `.sessionExpired` still in the recorder's buffer is counted too.
+        _ = await client.signOut()
+        await events.waitFor(2)
+        XCTAssertEqual(events.received, [.sessionExpired, .signedOut])
     }
+
+    /// The same for a refused refresh token: the plugin saving the same credentials again while the refresh is at
+    /// Cognito does not undo the expiry.
+    ///
+    /// - Given: alice restored, and a refresh refused as `refreshTokenInvalid` while the plugin re-encodes the same
+    ///   credentials
+    /// - When: credentials are requested, then again
+    /// - Then:
+    ///    - both are `sessionExpired` ("expired or been revoked"), after one refresh, and one `.sessionExpired` event
+    ///      is sent
+    func testPluginReEncodingTheSameCredentials_keepsAnInvalidRefreshTokensExpiry() async throws {
+        let stale = FakePayload.signedIn("alice", stale: true)
+        harness.keychain.put(stale.data, pluginAccount)
+        let client = try harness.client(.default)
+        let engine = try XCTUnwrap(harness.engine(for: .default))
+        let reencoded = try reencode(stale)
+        let keychain = harness.keychain
+        let account = pluginAccount
+        engine.scriptRefresh { _ in
+            keychain.put(reencoded, account)
+            throw SessionEngineError.refreshTokenInvalid
+        }
+        let events = StreamRecorder(client.listenToAuthEvents())
+
+        let first = await credentialsError { try await client.credentialsProvider.resolve() }
+        let second = await credentialsError { try await client.credentialsProvider.resolve() }
+
+        for (name, error) in [("first", first), ("second", second)] {
+            XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
+            XCTAssertEqual(
+                (error?.underlyingError as? AuthClientError)?.errorDescription,
+                "Session \"$default\"'s refresh token has expired or been revoked.",
+                name
+            )
+        }
+        XCTAssertEqual(engine.refreshCalls.count, 1)
+        // Ends with a known event, so an extra `.sessionExpired` still in the recorder's buffer is counted too.
+        _ = await client.signOut()
+        await events.waitFor(2)
+        XCTAssertEqual(events.received, [.sessionExpired, .signedOut])
+    }
+
+    /// The description of the dead token after a reuse, for `.default`.
+    private static let refreshTokenAlreadyUsed =
+        "Session \"$default\"'s refresh token was already used, and no refreshed tokens were saved, so the session cannot be renewed."
 
     /// `identityPending` is derived for `.default`: a `userPoolOnly` record under a configuration with an
     /// identity pool.

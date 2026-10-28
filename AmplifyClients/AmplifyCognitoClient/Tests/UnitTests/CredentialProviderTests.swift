@@ -769,6 +769,45 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(second?.isSessionExpired, true, "\(String(describing: second))")
     }
 
+    /// The dead-token proof installs the record it proved dead: another writer that saved the record after this client
+    /// last read it, before the token died, is not taken for a new login by the next call.
+    ///
+    /// - Given: a session restored, then its record saved again by another writer with other credentials that still
+    ///   need a refresh, and every refresh refused as reused
+    /// - When: credentials are requested; again after `RefreshTokenReuse.minimumGap`; then again
+    /// - Then:
+    ///    - the first is retryable; the second and third throw `sessionExpired` saying the token was already used, with
+    ///      no third refresh, both refreshes sending the other writer's credentials
+    ///    - one `.sessionExpired` event is sent
+    func testAReuseProofInstallsTheRecordItProvedDead() async throws {
+        let stale = FakePayload.signedIn("alice", version: 1, stale: true)
+        let saved = FakePayload.signedIn("alice", version: 2, stale: true)
+        try harness.signIn(work, stale)
+        let client = try harness.client(work)
+        _ = await client.currentSessionState()
+        guard case .record(let envelope) = try harness.store().read(work) else {
+            return XCTFail("the record was not saved")
+        }
+        try harness.store().write(saved.record(), for: work, expecting: envelope.version)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
+        let events = StreamRecorder(client.listenToAuthEvents())
+
+        let first = await credentialsError { try await client.credentialsProvider.resolve() }
+        harness.advanceClock(by: RefreshTokenReuse.minimumGap)
+        let second = await credentialsError { try await client.credentialsProvider.resolve() }
+        let third = await credentialsError { try await client.credentialsProvider.resolve() }
+
+        XCTAssertEqual(first?.isUnknown, true, "\(String(describing: first))")
+        assertRefreshTokenAlreadyUsed(second?.underlyingError as? AuthClientError, "the second")
+        assertRefreshTokenAlreadyUsed(third?.underlyingError as? AuthClientError, "the third")
+        XCTAssertEqual(engine.refreshCalls, [saved.data, saved.data])
+        // Ends with a known event, so an extra `.sessionExpired` still in the recorder's buffer is counted too.
+        _ = await client.signOut()
+        await events.waitFor(2)
+        XCTAssertEqual(events.received, [.sessionExpired, .signedOut])
+    }
+
     /// A second reuse whose re-read record holds other credentials, still stale, is not the same dead token: another
     /// writer stored something while the refresh ran, so it stays retryable.
     ///

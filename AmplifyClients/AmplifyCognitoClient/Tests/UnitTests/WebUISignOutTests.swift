@@ -988,6 +988,47 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(again, .complete)
     }
 
+    /// The #3956 exception covers only the login proved dead
+    ///
+    /// - Given: a shared-cookie session whose refresh token a refresh proved dead, then a new login with another refresh
+    ///   token saved over its record by another writer (an app sharing the access group signed it out and in again),
+    ///   before any other call of this session
+    /// - When: the user closes the logout page
+    /// - Then:
+    ///    - the sign-out is `.failed(.userCancelled)`, with the page's error: nothing is revoked without the page, and
+    ///      the new login is kept
+    func testClosingTheLogoutPageKeepsALoginSavedAfterTheExpiry() async throws {
+        var payload = HostedUIFixtures.hostedUIPayload()
+        payload.stale = true
+        try harness.signIn(work, payload)
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
+        let expired = try await client.fetchAuthSession()
+        guard case .failure(let expiry) = expired.userPoolTokensResult else {
+            return XCTFail("the fetch should have found the session expired")
+        }
+        XCTAssertEqual(expiry.kind, .sessionExpired)
+        let newLogin = HostedUIFixtures.hostedUIPayload(version: 2)
+        guard case .record(let envelope) = try harness.store().read(work) else {
+            return XCTFail("the expired record was not kept")
+        }
+        try harness.store().write(newLogin.record(), for: work, expecting: envelope.version)
+        engine.scriptHostedUIRevoke { _, _, plan in
+            if case .present = plan {
+                throw AuthClientError.userCancelled("closed", "Sign out again.")
+            }
+            return .complete
+        }
+
+        let error = await failedSignOutError(signOut(client))
+
+        XCTAssertEqual(error?.kind, .userCancelled)
+        XCTAssertEqual(error?.errorDescription, "closed")
+        XCTAssertEqual(plans(engine), ["present"])
+        XCTAssertEqual(try harness.storedRecord(work)?.credentials, newLogin.data)
+    }
+
     /// Retries never present
     ///
     /// - Given: a shared-cookie session whose credentials another writer refreshes during the first revoke
