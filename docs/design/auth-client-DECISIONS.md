@@ -221,7 +221,7 @@ nothing to bridge from.
 *Changed while building (#12, #13).* The bridge is not built for the beta, and the "reader ships first" rule is
 gone with the reader: the default session is the plugin's own saved login, so there is no new format for the
 plugin to read. A different release-order rule holds instead: the plugin's scoped keychain wipe ships with the
-client, in the same release (#17).
+client, in the same release (#17). Both shipped in 2.63.0.
 
 ---
 
@@ -373,8 +373,9 @@ to the plugin's session.** So the plugin's access-group migration and the public
 with the login, and an access-group transition wipe and the migration's destination clear remove them. Every
 other client record is spared by the plugin's wipes and migrations.
 
-**Release order.** The plugin's scoped wipe ships with the client, in the same release, because a released
-plugin's access-group transition wipes the whole keychain service, the client's records included.
+**Release order.** The plugin's scoped wipe ships with the client, in the same release, because the access-group
+transition of a plugin release without it wipes the whole keychain service, the client's records included. Both
+shipped in 2.63.0, so the releases that wipe the whole service are those before 2.63.0.
 
 ## 18. Rollback caveats that remain
 
@@ -386,9 +387,10 @@ because the plugin behaves the same way; the third is the client's own:
   A sign-out through the client does not do this: it writes the signed-out value, which every build carries.
 - **A later change that the rule does not carry, onto an earlier configuration's key,** deletes the signed-out
   login and can find the user's old copy there, which then restores signed in.
-- **A rollback to a released plugin while AWSMobileClient logins are still on the device** replaces whatever
-  `.default` holds with the old AWSMobileClient user: a released plugin migrates that data at configure with no
-  check. The plugin's own migration deletes those logins at its first configure, so a plugin-only app has none
+- **A rollback to a plugin release before 2.63.0 while AWSMobileClient logins are still on the device** replaces
+  whatever `.default` holds with the old AWSMobileClient user: those releases migrate that data at configure with no
+  check. 2.63.0 keeps a user signed in through the client, but migrates over a guest and over a signed-out
+  `.default`; later releases also keep a signed-out `.default` (#36). The plugin's own migration deletes those logins at its first configure, so a plugin-only app has none
   left; a client-only app keeps them until `.default` signs out or is purged. An app moving from AWSMobileClient
   ships a plugin release that migrated them first.
 
@@ -501,7 +503,7 @@ the design where it describes what the decision changes: #32, #33 and #34 are no
 
 | # | Decision | Answer |
 |---|---|---|
-| 29 | An AWSMobileClient (Amplify v1) guest against a guest the plugin already saved | **The legacy guest replaces it**, as released plugins do; a saved login still wins, and a failed legacy read still keeps every legacy location. Reverses the earlier rule that an old guest does not replace a saved one. The plugin's migration only: the client runs none. |
+| 29 | An AWSMobileClient (Amplify v1) guest against a guest the plugin already saved | **The legacy guest replaces it**, as every plugin release does; a saved login still wins, and a failed legacy read still keeps every legacy location. Reverses the earlier rule that an old guest does not replace a saved one. The plugin's migration only: the client runs none. |
 | 30 | A guest or federated `.default` copied to a configuration without an identity pool | **It reads as signed out**, as a named session there does, with its saved bytes kept, so `signIn` works and writes over them. |
 | 31 | A rollback that finds a newer login of the same user under the configuration it leaves | **The newer login is carried back over the untouched copy**, by the carry's rules, with its guards. |
 | 32 | A `signIn` or `confirmSignIn` whose identity pool step fails after the user pool signed the user in | **It ends signed out**, as documented: the call throws the identity pool's error, and the issued tokens are revoked. |
@@ -564,7 +566,11 @@ token was used, and no one saved the refresh that used it.
 record, so an app that uses only the plugin is not affected. Before, the plugin read the record as no session, so an
 AWSMobileClient login that the client's sign-out failed to clear, or that an app stopped part-way kept, was migrated
 over it and signed the user back in. The clear comes first so that a failed write or delete, or a process stopped
-after it, leaves no login behind. A purge leaves no record, so after one only the clear protects the user.
+after it, leaves no login behind. A purge leaves no record, so after one only the clear protects the user. The record
+protects the user only until a guest replaces it, since a guest is no session to the migration. The client's guest
+fetch over `.default`'s signed-out record clears the logins again first, best effort; never over an absent record,
+whose logins a plugin build must still migrate. This rule ships in the first plugin release after 2.63.0: 2.63.0
+reads the signed-out record as no session.
 
 **#37.** These are failures Cognito reports as its own, which the `.service` case's documentation already described.
 Where the client saw the failure's cause, the description and recovery suggestion are the ones it gave before, and
