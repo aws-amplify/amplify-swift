@@ -398,7 +398,8 @@ final class LiveEngineFederationTests: XCTestCase {
     /// - When: it federates, is fetched, clears the federation, and federates and signs out
     /// - Then:
     ///    - the result, the state, the session and the stored record all hold the federated identity and its
-    ///      credentials, with no user
+    ///      credentials, with no user; the session's user fields fail with the federated session's `notSignedIn`,
+    ///      which names the federation, not a sign-in
     ///    - clearing leaves the row signed out; the sign-out makes no Cognito call
     func testFederationOverTheLiveEngine() async throws {
         let clientHarness = ClientHarness()
@@ -433,7 +434,23 @@ final class LiveEngineFederationTests: XCTestCase {
         XCTAssertEqual(state, .federated(identityId: "us-east-1:federated-id"))
         XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:federated-id")
         XCTAssertEqual(try session.awsCredentialsResult.get().accessKeyId, "AKID-v1")
-        XCTAssertThrowsError(try session.userPoolTokensResult.get())
+        // The user fields say what lets a user in: `signIn` is refused over a federated session, so not "sign in".
+        for (field, result) in [
+            ("userSub", session.userSubResult.map { _ in () }),
+            ("userPoolTokens", session.userPoolTokensResult.map { _ in () })
+        ] {
+            guard case .failure(let error) = result else {
+                XCTFail("\(field) should fail")
+                continue
+            }
+            XCTAssertEqual(error.kind, .notSignedIn, field)
+            XCTAssertEqual(error.errorDescription, "Session \"work\" has no user pool user: it is federated to the identity pool.", field)
+            XCTAssertEqual(
+                error.recoverySuggestion,
+                "Call clearFederationToIdentityPool() or sign the session out, then sign in through the user pool.",
+                field
+            )
+        }
         XCTAssertEqual(record?.kind, .federated)
         XCTAssertNil(record?.username)
 

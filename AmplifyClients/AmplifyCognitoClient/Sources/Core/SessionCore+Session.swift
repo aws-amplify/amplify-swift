@@ -232,7 +232,8 @@ extension SessionCore {
         }
         let summary = try engine.checkedDescribe(payload)
         let user = summary.user
-        let noUser = Self.notSignedIn(sessionId)
+        // A federated session has no user pool user, and `signIn` refuses one: say what lets a user in.
+        let noUser = summary.kind == .federated ? Self.federatedHasNoUser(sessionId) : Self.notSignedIn(sessionId)
 
         let identityId: Result<String, AuthClientError>
         let awsCredentials: Result<AuthClientAWSCredentials, AuthClientError>
