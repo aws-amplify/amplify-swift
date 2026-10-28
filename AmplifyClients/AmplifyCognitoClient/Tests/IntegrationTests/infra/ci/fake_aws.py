@@ -363,6 +363,9 @@ def handle(state, service, verb, o, data):
         if name not in functions:
             raise Fail("ResourceNotFoundException", "Function not found")
         function = functions[name]
+        # Lambda is regional: a call in another region than the function's finds none.
+        if one(o, "region", region) != function["config"]["FunctionArn"].split(":")[3]:
+            raise Fail("ResourceNotFoundException", "Function not found")
         if verb == "get-function-configuration":
             return function["config"]
         if verb == "get-function":

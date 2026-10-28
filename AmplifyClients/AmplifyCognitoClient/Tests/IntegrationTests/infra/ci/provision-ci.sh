@@ -238,7 +238,8 @@ ANSWER="" TEMPORARY="" SMS_EXTERNAL_ID=""
 # Dies unless the ccit-ci- resources, when there are any, are in CI_REGION. The roles are global and the rest is
 # regional, so a run in another region would re-point the roles' policies at that region's resources (and a
 # teardown would delete the roles under the first region's). The triggers' role, made first, names its region in
-# its log group ARNs.
+# its log group ARNs. lambda-drift checks it too: in another region it would find no function, pass, and with
+# --record --accept-deployed record an empty baseline.
 require_recorded_region() {
     local out regions
     read_aws_or_missing out NoSuchEntity iam get-role-policy --role-name "$(role_name trigger-exec)" \
@@ -1704,5 +1705,10 @@ case "$COMMAND" in
         ;;
     snapshot) snapshot ;;
     key-expiry) key_expiry ;;
-    lambda-drift) lambda_drift ;;
+    lambda-drift)
+        # Read-only too: in another region (or account) every function is missing, which is no DRIFT, and
+        # --record --accept-deployed would record an empty baseline.
+        require_recorded_region
+        lambda_drift
+        ;;
 esac

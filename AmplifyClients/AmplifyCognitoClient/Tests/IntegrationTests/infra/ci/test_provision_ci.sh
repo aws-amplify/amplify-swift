@@ -34,7 +34,8 @@
 # Lambda's runtime version, and that the snapshot's documents hold no secret; that snapshot, key-expiry and
 # lambda-drift refuse --apply; that teardown is a dry run by default, deletes only the ccit-ci- resources with
 # --apply, refuses an untagged one, and schedules the key's deletion before removing its alias; that a run in another
-# region is refused; that a pool made again gets its Lambdas' invoke permissions replaced; and that the library's
+# region is refused (lambda-drift too, which there would find nothing to compare); that a pool made again gets its
+# Lambdas' invoke permissions replaced; and that the library's
 # guards refuse a name that is not ccit-ci- and a mutating call in a dry run.
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -860,16 +861,31 @@ a_remade_pool_gets_its_lambdas_invoke_permissions() {
 }
 
 # Once the ccit-ci- resources exist in one region, a run in another (whose global roles it would re-point, or
-# delete) is refused before any change, provision and teardown alike.
+# delete) is refused before any change, provision and teardown alike; and lambda-drift, which there would find no
+# function (the fake's Lambdas are regional), pass, and with --record --accept-deployed record an empty baseline, is
+# refused before it reads a function, the baseline left as it was.
 another_region_is_refused() {
+    local baseline args
     fresh_state
+    rm -f "$CCIT_CI_LAMBDA_BASELINE"
     run --apply
     (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
     CCIT_CI_REGION=us-west-2 run --apply
     (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"ccit-ci- resources are in us-east-1, not CCIT_CI_REGION's us-west-2"* ]] \
         || { echo "$OUT" | tail -5; return 1; }
     CCIT_CI_REGION=us-west-2 run teardown --apply
-    (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"Set CCIT_CI_REGION to theirs."* ]]
+    (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"Set CCIT_CI_REGION to theirs."* ]] || { echo "$OUT" | tail -5; return 1; }
+    run lambda-drift --record --accept-deployed
+    (( STATUS == 0 )) && [[ "$OUT" == *"Recorded the deployed files of 2 functions"* ]] || { echo "$OUT" | tail -5; return 1; }
+    baseline=$(cat "$CCIT_CI_LAMBDA_BASELINE")
+    for args in "" "--record --accept-deployed"; do
+        # shellcheck disable=SC2086
+        CCIT_CI_REGION=us-west-2 run lambda-drift $args
+        (( STATUS == 1 )) && only_reads && ! calls | grep -q '^lambda get-function$' \
+            && [[ "$OUT" == *"ccit-ci- resources are in us-east-1, not CCIT_CI_REGION's us-west-2"* ]] \
+            && [[ "$(cat "$CCIT_CI_LAMBDA_BASELINE")" == "$baseline" ]] || { echo "$OUT" | tail -5; return 1; }
+    done
+    rm -f "$CCIT_CI_LAMBDA_BASELINE"
 }
 
 # A teardown whose key deletion fails (denied, or throttled) keeps the alias, so a rerun finds the key and finishes;
