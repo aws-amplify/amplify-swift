@@ -891,9 +891,10 @@ and `oauth` sends the secret with the hosted UI's token exchange (`Authorization
 
 One system sheet (a hosted-UI sign-in, a hosted-UI sign-out page, or a passkey sheet) is shown at a time across the
 client's sessions: every session of every `AmplifyCognitoClient` in the process. By default a second request throws
-`.browserBusy(holder:)`, naming the session that holds it. A hosted-UI sign-in can queue with `.wait(timeout:)`
-instead, for at most one hour; a passkey sheet or the sign-out page fails at once while another session holds the
-sheet.
+`.browserBusy(holder:)`, naming the session that holds it. For a second hosted-UI sign-in of a session whose first is
+still in progress while no session holds the sheet, `holder` is the session itself: "Session "work" already has a
+hosted-UI sign-in in progress." A hosted-UI sign-in can queue with `.wait(timeout:)` instead, for at most one hour; a
+passkey sheet or the sign-out page fails at once while another session holds the sheet.
 
 The Auth plugin's hosted UI and passkey sheets don't take part: one can be up beside a client sheet, and
 `systemSheetHolder` doesn't report it.
