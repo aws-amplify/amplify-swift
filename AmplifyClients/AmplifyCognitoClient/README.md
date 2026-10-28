@@ -720,8 +720,8 @@ or `.done`.
 | `.confirmSignInWithPassword` | The password (after choosing `.password` or `.passwordSRP`). A wrong password ends the sign-in: call `signIn` again |
 | `.continueSignInWithFirstFactorSelection(factors)` | `AuthClientFactorType.<type>.challengeResponse`. Anything else is `.validation`, and so is `"WEB_AUTHN"` when `factors` does not offer it |
 | `.confirmSignInWithCustomChallenge(info)` | Your custom answer |
-| `.resetPassword(info)` | Not answered here: reset the password, then sign in again |
-| `.confirmSignUp(info)` | Not answered here: confirm the sign-up, then sign in again |
+| `.resetPassword(info)` | Not answered here: reset the password, then sign in again. After a TOTP setup, `confirmSignIn` refuses an answer with `.invalidState` |
+| `.confirmSignUp(info)` | Not answered here: confirm the sign-up, then sign in again. After a TOTP setup, `confirmSignIn` refuses an answer with `.invalidState` |
 | `.done` | Nothing: signed in |
 
 `AuthClientMFAType.rawValue` (`"sms"`, `"totp"`, `"email"`) is not a valid answer. Use `challengeResponse`.
