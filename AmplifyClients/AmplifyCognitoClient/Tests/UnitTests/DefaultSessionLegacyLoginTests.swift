@@ -153,6 +153,28 @@ final class DefaultSessionLegacyLoginTests: XCTestCase {
         assertLegacyLogins(present: false)
     }
 
+    /// An unreadable saved login is replaced with the signed-out record, and the AWSMobileClient logins are cleared
+    /// before that replacement too: a replacement that fails leaves bytes a plugin build reads as no session, so a login
+    /// left beside them would be migrated.
+    ///
+    /// - Given: `.default`'s saved login holding bytes that are not the plugin's format, AWSMobileClient logins, and every
+    ///   write of the saved login failing
+    /// - When: `.default` is signed out
+    /// - Then:
+    ///    - the sign-out throws, and the saved login still holds the unreadable bytes
+    ///    - the AWSMobileClient logins are already cleared
+    func testASignOutWhoseReplacementOfAnUnreadableLoginFailsHasClearedThem() throws {
+        harness.keychain.put(StorageFixtures.corruptRecord, pluginAccount)
+        seedLegacyLogins()
+        harness.keychain.failingWrites(of: pluginAccount, with: errSecInteractionNotAllowed)
+
+        XCTAssertThrowsError(try store().signOut(.default))
+
+        harness.keychain.clearFailures()
+        XCTAssertEqual(harness.keychain.value(pluginAccount), StorageFixtures.corruptRecord)
+        assertLegacyLogins(present: false)
+    }
+
     /// The AWSMobileClient logins are cleared before the purge's delete: once the saved login is gone, a plugin build
     /// migrates any login left.
     ///
