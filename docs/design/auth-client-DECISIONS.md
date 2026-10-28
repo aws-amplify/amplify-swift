@@ -441,8 +441,10 @@ replaced; with nothing but a guest or nothing to move, the shared guest is kept,
 nothing to move never discards a guest identity the app already migrated. An extension's first migration whose own
 old service holds a login does move it over that guest. A signed-out record is not a guest's: it keeps blocking, so
 a stale login in another process's old service cannot undo a sign-out through the client's `.default`, which saves
-that record. A plugin sign-out deletes the record instead, so after one only a device record (which a user-pool
-sign-in writes) stops an extension's first migration, and an extension whose old service holds a login moves it in.
+that record. A plugin sign-out deletes the record instead, so after one only a device record stops an extension's
+first migration: the device metadata a user-pool sign-in saves for a tracked device, or the advanced-security device
+ID that any user-pool sign-in, hosted-UI sign-in, sign-up or password-reset attempt saves when no device metadata is
+held. Without one, an extension whose old service holds a login moves it in.
 The access-group transition without migration is unchanged.
 
 **#22.** The client doesn't retry a known refusal (`notAuthorized`, `resourceNotFound`, `invalidParameter`,
