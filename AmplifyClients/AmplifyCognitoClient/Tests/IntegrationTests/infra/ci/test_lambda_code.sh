@@ -32,7 +32,8 @@
 #   and that the redeploy advice checks the purpose tag first and reruns --apply --scope all;
 # - that no function deployed at all (another region or account) fails compare and record, and that an empty
 #   baseline is no baseline;
-# - that a function not compared (no zip from this checkout) is never recorded.
+# - that a function not compared (no zip from this checkout) is never recorded;
+# - that a corrupt or encrypted member is unreadable (exit 1), not a traceback.
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INFRA="$(cd "$CI_DIR/.." && pwd)"
@@ -544,6 +545,41 @@ an_unchecked_function_is_never_recorded() {
         || { echo "record: $OUT"; return 1; }
 }
 
+# A deployed zip whose member's deflate data is corrupt, or whose member is marked encrypted: unreadable, exit 1,
+# with every other function still compared, and nothing recorded; never a traceback.
+a_corrupt_or_encrypted_member_is_unreadable() {
+    local baseline="$WORK/k-baseline.json"
+    build_all "$WORK/k"
+    deploy_all "$WORK/k"
+    python3 - "$WORK/deployed/discard-sender.zip" "$WORK/deployed/pre-sign-up.zip" <<'PY'
+import struct, sys
+corrupt, encrypted = sys.argv[1:]
+with open(corrupt, "rb") as f:
+    data = bytearray(f.read())
+name_length, extra_length = struct.unpack("<HH", data[26:30])
+data[30 + name_length + extra_length] = 0x07  # a final block of the reserved type: zlib's "invalid block type"
+with open(corrupt, "wb") as f:
+    f.write(data)
+with open(encrypted, "rb") as f:
+    data = bytearray(f.read())
+data[6] |= 1  # the local header's encrypted flag
+central = data.index(b"PK\x01\x02")
+data[central + 8] |= 1  # and the central directory's
+with open(encrypted, "wb") as f:
+    f.write(data)
+PY
+    resha discard-sender
+    resha pre-sign-up
+    run compare "$WORK/deployed.json" "$WORK/k" --baseline "$baseline"
+    (( STATUS == 1 )) && [[ "$OUT" == *"! ccit-ci-discard-sender: the deployed code could not be read: it is not a zip this script can read (error)."* ]] \
+        && [[ "$OUT" == *"! ccit-ci-pre-sign-up: the deployed code could not be read: it is not a zip this script can read (RuntimeError)."* ]] \
+        && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 6 && "$OUT" != *Traceback* ]] \
+        || { echo "compare: $STATUS $OUT"; return 1; }
+    run record "$WORK/deployed.json" "$WORK/k" --baseline "$baseline" --accept-deployed
+    (( STATUS == 1 )) && [[ "$OUT" == *"Nothing recorded: a deployed function's code could not be read."* && ! -e "$baseline" ]] \
+        || { echo "record: $STATUS $OUT"; return 1; }
+}
+
 no_baseline_is_its_own_status() {
     run check-baseline --baseline "$WORK/none.json" --github
     (( STATUS == 3 )) && [[ "$OUT" == "::warning::No CI Lambda deployment is recorded"* ]]
@@ -620,6 +656,7 @@ check "a function the baseline records that is not deployed is DRIFT, and record
     a_baselined_function_that_is_not_deployed_is_drift
 check "no function deployed fails compare and record, and an empty baseline is no baseline" nothing_deployed_is_refused
 check "a function not compared (no zip from this checkout) is never recorded" an_unchecked_function_is_never_recorded
+check "a corrupt or encrypted member is unreadable, exit 1, not a traceback" a_corrupt_or_encrypted_member_is_unreadable
 check "no baseline is status 3 with a warning" no_baseline_is_its_own_status
 check "a deployed.json anyone but its owner can read is refused, status 4" a_deployed_json_others_can_read_is_refused
 check "no download directory is left behind" no_download_directory_is_left_behind

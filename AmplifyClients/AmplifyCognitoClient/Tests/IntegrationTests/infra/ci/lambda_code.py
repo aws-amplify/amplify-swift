@@ -191,7 +191,9 @@ def manifest(data):
                     for chunk in iter(lambda: member.read(1 << 20), b""):
                         digest.update(chunk)
                 files[info.filename] = digest.hexdigest()
-    except (zipfile.BadZipFile, zipfile.LargeZipFile, OSError, ValueError, NotImplementedError) as error:
+    except Unreadable:
+        raise
+    except Exception as error:  # BadZipFile, zlib.error, RuntimeError (an encrypted member), EOFError, LZMAError, …
         raise Unreadable(f"it is not a zip this script can read ({type(error).__name__})") from None
     return files
 
