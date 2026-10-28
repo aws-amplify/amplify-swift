@@ -1,8 +1,8 @@
 # Weekly reminders for the Cognito client's CI resources (AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/
 # infra/ci), from files committed beside provision-ci.sh only: no AWS call, no credentials, no secrets.
 # - code_sink_key.py check: the code sink's API key's recorded expiry (code-sink-key-expiry.json). Fails in the key's
-#   last 30 days and once it has expired, and opens one reminder issue to renew it. While no expiry is recorded (the
-#   committed {"expires": null}), the run passes with a warning and opens one issue to record it.
+#   last 30 days and once it has expired, and opens one reminder issue to renew it. While no expiry is recorded (or
+#   the record does not read), the run passes with a warning and opens one issue to record it.
 # - lambda_code.py check-baseline: whether the sources of the recorded Lambda deployment (lambda-baseline.json) are
 #   still the repository's. Fails when one changed, and opens one issue to redeploy it; a missing baseline is only a
 #   warning.
@@ -11,7 +11,7 @@
 # not searched), and the runs never overlap, so a manual dispatch during the Monday run cannot open a second one. A
 # failure to list the open issues fails the step instead of reading as "already open" (the steps run with pipefail).
 # Each issue is labelled pending-triage: an issue the workflow's token opens starts no issue_opened.yml run, which
-# would otherwise add it.
+# would otherwise add it. Nothing closes an issue, so each issue's text asks to close it once it is done.
 # Runs only in the upstream repository, so a fork's schedule opens no issues.
 name: Auth | Cognito Client CI reminders
 
@@ -73,12 +73,14 @@ jobs:
           credentials and \`COGNITO_CLIENT_INTEG_CI_CONFIG_URL\` set to the value of CI's \`AWS_S3_BUCKET_INTEG_V2\` (it
           reads the code sink's API keys, and the uploaded files that name the key), then commit
           \`infra/ci/code-sink-key-expiry.json\`. Until the expiry is recorded, nothing warns before the key lapses
-          (364 days after it was made), and the client's code-reading tests on CI then fail."
+          (364 days after it was made), and the client's code-reading tests on CI then fail. Close this issue once
+          the record is committed: while it stays open, the weekly run opens no new one."
           else
             title="Cognito client CI: renew the code sink API key"
             todo="Follow the steps above with the CI account's credentials and \`COGNITO_CLIENT_INTEG_CI_CONFIG_URL\`
           set to the value of CI's \`AWS_S3_BUCKET_INTEG_V2\`, then commit \`infra/ci/code-sink-key-expiry.json\`.
-          The weekly check fails until the new expiry is committed."
+          The weekly check fails until the new expiry is committed. Close this issue once it is: while it stays open,
+          the weekly run opens no new one, not even for the next renewal."
           fi
           # Listed, not searched (the search API matches loosely and lags behind a just-opened issue), and matched
           # by exact title. A failed listing fails the step: it must not read as "already open".
@@ -127,7 +129,8 @@ jobs:
           \`purpose=amplify-cognito-client-integ\`, delete it, and rerun \`infra/ci/provision-ci.sh --apply --scope all\`,
           which makes it again from the repository. Then run \`infra/ci/provision-ci.sh lambda-drift\` (read-only) and
           \`lambda-drift --record --accept-deployed\`, and commit \`infra/ci/lambda-baseline.json\`. The weekly check
-          fails until then."
+          fails until then. Close this issue once the baseline is committed: while it stays open, the weekly run opens
+          no new one."
           # Listed, not searched (the search API matches loosely and lags behind a just-opened issue), and matched
           # by exact title. A failed listing fails the step: it must not read as "already open".
           if ! open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 1000 --json title \
