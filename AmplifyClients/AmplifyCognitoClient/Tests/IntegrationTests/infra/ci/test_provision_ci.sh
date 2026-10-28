@@ -547,7 +547,7 @@ RERUN_PLAN="create log group /aws/lambda/ccit-ci-pre-sign-up-confirmable
 keep /aws/lambda/ccit-ci-pre-sign-up-confirmable for 7 days
 open the key policy of alias/ccit-ci-senders to the account's pools while a ccit-ci- pool is made
 set the one inline policy of ccit-ci-trigger-exec
-set the trust of ccit-ci-cognito-sms
+open the trust of ccit-ci-cognito-sms to the account's pools while a ccit-ci- SMS pool is made
 store /ccit-ci/custom-challenge-answer again, the same value, encrypted with alias/ccit-ci-senders
 store /ccit-ci/new-password-temporary again, the same value, encrypted with alias/ccit-ci-senders
 create Lambda ccit-ci-pre-sign-up-confirmable (Node.js 22, no reserved concurrency)
@@ -562,7 +562,7 @@ set the MFA configuration of ccit-ci-mfa-req-totp-sms
 create app client ccit-ci-mfa-req-totp-sms-ci (public, pools/mfa-req-totp-sms.json \`ci\`)
 set the key policy of alias/ccit-ci-senders to the ccit-ci- pools
 set the one inline policy of ccit-ci-sender-exec
-set the trust of ccit-ci-cognito-sms
+set the trust of ccit-ci-cognito-sms to the ccit-ci- SMS pools
 set the one inline policy of ccit-ci-reset-exec
 upload auth/cognito-client-ci/ccit-ci-email-alias-codes-amplify_outputs.json (new key only)
 upload auth/cognito-client-ci/ccit-ci-capabilities.json (new key only)

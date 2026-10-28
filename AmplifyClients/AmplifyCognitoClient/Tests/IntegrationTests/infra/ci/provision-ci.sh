@@ -672,6 +672,18 @@ ensure_api_key() {
 
 # --- IAM roles --------------------------------------------------------------------------------------------
 
+# How the plan names an update of role $1's trust to $2. The SNS caller role's is opened to the account's pools while
+# an SMS pool is made (its ARN is not known yet), and narrowed to the ccit-ci- SMS pools after, as the key policy is.
+trust_update() {
+    if [[ "$1" != "$(role_name cognito-sms)" ]]; then
+        printf 'set the trust of %s' "$1"
+    elif jq -e '.Statement[0].Condition.ArnLike' <<<"$2" >/dev/null; then
+        printf "open the trust of %s to the account's pools while a ccit-ci- SMS pool is made" "$1"
+    else
+        printf 'set the trust of %s to the ccit-ci- SMS pools' "$1"
+    fi
+}
+
 # Ensures role $1 (a suffix) with trust $2 and, unless $3 is empty, exactly one inline policy $3; a role that has
 # any other policy is refused.
 ensure_role() {
@@ -680,7 +692,7 @@ ensure_role() {
     if [[ -n "$(kv_get PLANNED_TRUST "$role")" ]]; then
         # Planned in this dry run: compare with what was planned.
         if ! same_json "$(kv_get PLANNED_TRUST "$role")" "$trust"; then
-            mutate "$role" "set the trust of $role" -- iam update-assume-role-policy --role-name "$role" \
+            mutate "$role" "$(trust_update "$role" "$trust")" -- iam update-assume-role-policy --role-name "$role" \
                 --policy-document "file://$(input_file "$trust")"
             kv_set PLANNED_TRUST "$role" "$trust"
         fi
@@ -693,7 +705,7 @@ ensure_role() {
         require_ours role "$role" "$role"
         say "  = role $role"
         if ! same_json "$(jq -c '.Role.AssumeRolePolicyDocument' <<<"$out")" "$trust"; then
-            mutate "$role" "set the trust of $role" -- iam update-assume-role-policy --role-name "$role" \
+            mutate "$role" "$(trust_update "$role" "$trust")" -- iam update-assume-role-policy --role-name "$role" \
                 --policy-document "file://$(input_file "$trust")"
         fi
         read_aws out iam list-attached-role-policies --role-name "$role"
