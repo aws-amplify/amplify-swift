@@ -15,8 +15,8 @@ import XCTest
 
 /// A guest written over `.default`'s signed-out record clears the AWSMobileClient logins again first. The signed-out
 /// record stops a plugin build from migrating a login whose clear failed at sign-out, but a guest counts as no session
-/// there, so once the guest replaces it only the clear protects the user. Over an absent record nothing is cleared: a
-/// client-only app that never signed in keeps those logins for a plugin build to migrate.
+/// there, so once the guest replaces it only the clear protects the user. Over an absent record nothing is cleared, nor
+/// over a label alone: a client-only app that never signed in keeps those logins for a plugin build to migrate.
 final class DefaultSessionGuestLegacyLoginTests: XCTestCase {
 
     private var harness: ClientHarness!
@@ -87,6 +87,29 @@ final class DefaultSessionGuestLegacyLoginTests: XCTestCase {
         _ = try await client.fetchAuthSession()
 
         XCTAssertEqual(try harness.storedRecord(.default)?.kind, .guest)
+        assertLegacyLogins(present: true)
+    }
+
+    /// A label alone is no record: it is the sidecar, which reads as a signed-out row, but the plugin's record is
+    /// still absent.
+    ///
+    /// - Given: nothing saved under `.default`, then a label set on it before anyone signed in, and AWSMobileClient logins
+    /// - When: `.default`'s session is fetched, which fetches a guest
+    /// - Then:
+    ///    - the label was written to the sidecar only, with no shared record
+    ///    - the record holds a guest with that label, and the logins are kept, for a plugin build to migrate
+    func testAGuestOverALabelAloneKeepsThem() async throws {
+        seedLegacyLogins()
+        let client = try defaultClient()
+        try await client.setSessionLabel("Personal")
+        XCTAssertNil(harness.keychain.value(pluginAccount), "a label should write the sidecar only")
+        XCTAssertNotNil(harness.keychain.value(SessionRecordKey.metaAccount(in: pools)), "the label's sidecar")
+
+        _ = try await client.fetchAuthSession()
+
+        let stored = try harness.storedRecord(.default)
+        XCTAssertEqual(stored?.kind, .guest)
+        XCTAssertEqual(stored?.label, "Personal")
         assertLegacyLogins(present: true)
     }
 

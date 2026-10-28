@@ -49,7 +49,8 @@ import InternalAWSCognitoAuth
 // none. A signed-out record (`{"noCredentials":{}}`) stops that migration too, and the migration then clears them,
 // but only until a guest replaces it: the migration reads a guest as no session. So a guest the client fetches over a
 // signed-out record (`acquireGuestOnce`) clears them again first, best effort; over no record it leaves them, as a
-// client-only app that never signed in keeps them for a plugin build to migrate. A guest the plugin, or an app
+// client-only app that never signed in keeps them for a plugin build to migrate. A sidecar alone (a label set before
+// anyone signed in) is no record. A guest the plugin, or an app
 // extension on it, saves over the signed-out record clears nothing, so after it only an earlier clear protects the
 // user. A purge leaves no record. The client never migrates them.
 extension SessionRecordStore {

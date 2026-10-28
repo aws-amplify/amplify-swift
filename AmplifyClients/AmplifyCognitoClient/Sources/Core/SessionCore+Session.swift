@@ -187,7 +187,8 @@ extension SessionCore {
     /// plugin build from migrating a login whose clear failed at sign-out (or that a release clearing after the
     /// signed-out write left when stopped in between); a guest counts as no session there, so once the guest replaces
     /// it only the clear protects the user. Never over an absent record: a client-only app that never signed in keeps
-    /// those logins for a plugin build to migrate.
+    /// those logins for a plugin build to migrate. That includes a sidecar with no shared record beside it (a label set
+    /// before anyone signed in), which reads as a signed-out row with no version: the plugin's record is absent there.
     private nonisolated func acquireGuestOnce() async throws -> GuestAcquisition {
         try await withRecord { [self] store in
             let current = try await store.load(sessionId)
@@ -204,7 +205,8 @@ extension SessionCore {
                 throw Self.engineFailure(error)
             }
             let summary = try engine.checkedDescribe(guest)
-            if sessionId == .default, current.ownRecord != nil {
+            // `.default`'s version is the shared record's bytes, so it is `nil` when only the sidecar is stored.
+            if sessionId == .default, current.ownRecord != nil, current.version != nil {
                 _ = try? await store.perform { $0.clearLegacyLogins() }
             }
             let record = SessionRecord(

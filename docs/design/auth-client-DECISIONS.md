@@ -571,7 +571,7 @@ over it and signed the user back in. The clear comes first so that a failed writ
 after it, leaves no login behind. A purge leaves no record, so after one only the clear protects the user. The record
 protects the user only until a guest replaces it, since a guest is no session to the migration. The client's guest
 fetch over `.default`'s signed-out record clears the logins again first, best effort; never over an absent record,
-whose logins a plugin build must still migrate. This rule ships in the first plugin release after 2.63.0: 2.63.0
+whose logins a plugin build must still migrate, a label alone (the sidecar, with no record) included. This rule ships in the first plugin release after 2.63.0: 2.63.0
 reads the signed-out record as no session.
 
 **#37.** These are failures Cognito reports as its own, which the `.service` case's documentation already described.
