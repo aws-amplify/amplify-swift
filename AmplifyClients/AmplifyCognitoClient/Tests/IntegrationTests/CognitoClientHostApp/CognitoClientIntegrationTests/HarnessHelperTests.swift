@@ -391,7 +391,7 @@ extension HarnessHelperTests {
             }
         }
         XCTAssertEqual(Set(CISkipReason.allCases.map(\.message)).count, CISkipReason.allCases.count)
-        XCTAssertEqual(CISkipReason.allCases.count, 6)
+        XCTAssertEqual(CISkipReason.allCases.count, 7)
 
         for pool in SandboxPool.allCases {
             let skip = SandboxSignUp.ciSkip(for: pool)
