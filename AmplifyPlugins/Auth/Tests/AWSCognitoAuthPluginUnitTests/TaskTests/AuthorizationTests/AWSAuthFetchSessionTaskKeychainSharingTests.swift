@@ -106,13 +106,21 @@ class AWSAuthFetchSessionTaskKeychainSharingTests: XCTestCase, @unchecked Sendab
 
     // MARK: - Tests
 
-    /// Given: state machine is `.signingIn(.resolvingChallenge(.waitingForAnswer))`,
-    ///        remote keychain has no signed-in credentials.
-    /// Then:  reconcile defers — state machine never transitions to `.configuringAuth`.
+    /// A signed-out shared record holds no user-pool tokens, so a guest's in-flight sign-in is left to finish
+    /// rather than reconfigured over.
+    ///
+    /// - Given: the state machine is `.signingIn(.resolvingChallenge(.waitingForAnswer))` over a guest session
+    ///   (authorization `.sessionEstablished(.identityPoolOnly)`), and the shared keychain holds the signed-out
+    ///   record, which differs from the guest so the reconcile gets past the match check
+    /// - When:
+    ///    - the fetch task reconciles with the shared keychain
+    /// - Then:
+    ///    - the reconcile defers: the state machine never goes through `.configuringAuth`
+    ///
     func testInflightSigningInWithRemoteSignedOut_doesNotReconfigure() async {
         let initial = AuthState.configured(
             .signingIn(makeWaitingForCustomChallengeState()),
-            .configured,
+            .sessionEstablished(.testDataIdentityPool),
             .notStarted
         )
 
@@ -215,11 +223,12 @@ class AWSAuthFetchSessionTaskKeychainSharingTests: XCTestCase, @unchecked Sendab
         )
     }
 
-    /// A shared keychain with no session record at all reads as signed out, which holds no user-pool tokens, so an
-    /// in-flight sign-in is left to finish.
+    /// A shared keychain with no session record at all reads as signed out, which holds no user-pool tokens, so a
+    /// guest's in-flight sign-in is left to finish.
     ///
-    /// - Given: the state machine is `.signingIn(.resolvingChallenge(.waitingForAnswer))`, and the shared keychain
-    ///   holds no session record (the read throws `itemNotFound`)
+    /// - Given: the state machine is `.signingIn(.resolvingChallenge(.waitingForAnswer))` over a guest session
+    ///   (authorization `.sessionEstablished(.identityPoolOnly)`), and the shared keychain holds no session record
+    ///   (the read throws `itemNotFound`), which reads as signed out and so differs from the guest
     /// - When:
     ///    - the fetch task reconciles with the shared keychain
     /// - Then:
@@ -228,7 +237,7 @@ class AWSAuthFetchSessionTaskKeychainSharingTests: XCTestCase, @unchecked Sendab
     func testInflightSigningInWithNoRemoteRecord_doesNotReconfigure() async {
         let initial = AuthState.configured(
             .signingIn(makeWaitingForCustomChallengeState()),
-            .configured,
+            .sessionEstablished(.testDataIdentityPool),
             .notStarted
         )
 
