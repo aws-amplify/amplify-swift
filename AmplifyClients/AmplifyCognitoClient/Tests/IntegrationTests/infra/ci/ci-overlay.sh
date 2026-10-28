@@ -41,8 +41,9 @@
 # no user pool, the sandbox's mark, a credentials file that is not all strings, a rotation client on another
 # pool, an alias-codes pool without email as the username or a code API, capabilities that are not the known
 # ones, an MFA-required file whose MFA is not required, or whose mfa_methods is not an array of exactly TOTP and
-# SMS) refuses the whole overlay: exit 1, no <dest-dir>. With the extended role, it also prints the code sink key's reminder (code_sink_key.py) as a GitHub
-# annotation, within the key's last 30 days or once it has expired. Prints file names and roles, never their contents.
+# SMS) refuses the whole overlay: exit 1, no <dest-dir>. With the extended role, it also prints the code sink key's
+# reminder (code_sink_key.py) as a GitHub annotation, within the key's last 30 days or once it has expired. Prints
+# file names and roles, never their contents.
 set -euo pipefail
 
 usage() {
