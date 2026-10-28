@@ -179,6 +179,13 @@ extension SessionCore {
     /// Fetches and commits guest credentials, under the record's gate. If the record meanwhile holds
     /// credentials — another handle signed in or became a guest — it adopts them instead, and a lost write
     /// race is answered by adopting the re-read record, never by overwriting it.
+    ///
+    /// **Over `.default`'s signed-out record, the AWSMobileClient logins are cleared again first**, best effort
+    /// (`SessionRecordStore.clearLegacyLogins()`), before the guest is written. The signed-out record is what stops a
+    /// plugin build from migrating a login whose clear failed at sign-out (or that a release clearing after the
+    /// signed-out write left when stopped in between); a guest counts as no session there, so once the guest replaces
+    /// it only the clear protects the user. Never over an absent record: a client-only app that never signed in keeps
+    /// those logins for a plugin build to migrate.
     private nonisolated func acquireGuestOnce() async throws -> GuestAcquisition {
         try await withRecord { [self] store in
             let current = try await store.load(sessionId)
@@ -195,6 +202,9 @@ extension SessionCore {
                 throw Self.engineFailure(error)
             }
             let summary = try engine.checkedDescribe(guest)
+            if sessionId == .default, current.ownRecord != nil {
+                _ = try? await store.perform { $0.clearLegacyLogins() }
+            }
             let record = SessionRecord(
                 // A signed-out row left by a user keeps that user's label, which the guest must not take:
                 // only a label that names no user yet passes to the guest.
