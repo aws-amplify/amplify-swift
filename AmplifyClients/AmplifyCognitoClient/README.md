@@ -1116,8 +1116,8 @@ try await client.clearFederationToIdentityPool()
 ```
 
 - The session reports `.federated(identityId:)`. It has AWS credentials and no user pool user, so user operations
-  throw `.notSignedIn` (their recovery suggestion: clear the federation or sign out, then sign in) and the token
-  provider throws `notConfigured`.
+  throw `.notSignedIn` (their recovery suggestion: clear the federation or sign out, then sign in), and so do
+  `fetchAuthSession`'s `userSubResult` and `userPoolTokensResult`, and the token provider throws `notConfigured`.
 - The credentials refresh with the saved provider token. When the identity pool stops accepting it, the session
   sends `.sessionExpired` and its fields and providers fail with `sessionExpired`, saying so. Call
   `federateToIdentityPool` with a new provider token to recover.
