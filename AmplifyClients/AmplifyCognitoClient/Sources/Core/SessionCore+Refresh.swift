@@ -532,7 +532,7 @@ extension SessionCore {
     }
 
     /// `notSignedIn(_:)` for the AWS credentials of a signed-out session, which never fall back to guest credentials,
-    /// as the plugin's provider does.
+    /// unlike the plugin's provider.
     static func signedOutHasNoGuestCredentials(_ sessionId: SessionID) -> AuthClientError {
         .notSignedIn(
             "Session \"\(sessionId)\" is not signed in.",
