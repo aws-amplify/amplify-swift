@@ -121,7 +121,8 @@ final class StoredSessionManagementTests: XCTestCase {
     /// - When: it is purged through the static call
     /// - Then:
     ///    - the purge goes through the live session: its record is gone, it asks its engine to cancel any sign-in,
-    ///      it sends `.signedOut` and is now `.signedOut`, and its provider throws `notSignedIn`
+    ///      it is now `.signedOut`, and its provider throws `notSignedIn`
+    ///    - it sent `.signedOut` once: a later sign-in's `.signedIn` follows it with nothing between
     func testPurgeRoutesThroughALiveSession() async throws {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
@@ -131,8 +132,6 @@ final class StoredSessionManagementTests: XCTestCase {
 
         try await purge(work)
 
-        await events.waitFor(1)
-        XCTAssertEqual(events.received, [.signedOut])
         XCTAssertEqual(try harness.store().read(work), .absent)
         XCTAssertEqual(harness.engine(for: work)?.cancelPendingSignInCount, 1)
         let state = await client.currentSessionState()
@@ -140,6 +139,11 @@ final class StoredSessionManagementTests: XCTestCase {
         await assertThrowsAsync({ try await provider.resolve() }) { error in
             XCTAssertEqual((error as? CredentialsError)?.isNotSignedIn, true, "\(error)")
         }
+        // Ends on an event no purge sends: the stream is in order, so once `.signedIn` has arrived every event the
+        // purge sent has too, a late duplicate included.
+        _ = try await client.signInForTest()
+        await waitUntil("the sign-in's event arrives") { events.received.last == .signedIn }
+        XCTAssertEqual(events.received, [.signedOut, .signedIn])
     }
 
     /// A session registered while a static purge holds the record's gate is blocked in its restore until
