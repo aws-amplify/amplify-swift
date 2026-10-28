@@ -918,7 +918,8 @@ another_region_is_refused() {
     local baseline args
     fresh_state
     rm -f "$CCIT_CI_LAMBDA_BASELINE"
-    run --apply
+    # Phase 2, so that the record below has every CI Lambda to record.
+    run --apply --scope all
     (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
     CCIT_CI_REGION=us-west-2 run --apply
     (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"ccit-ci- resources are in us-east-1, not CCIT_CI_REGION's us-west-2"* ]] \
@@ -926,7 +927,7 @@ another_region_is_refused() {
     CCIT_CI_REGION=us-west-2 run teardown --apply
     (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"Set CCIT_CI_REGION to theirs."* ]] || { echo "$OUT" | tail -5; return 1; }
     run lambda-drift --record --accept-deployed
-    (( STATUS == 0 )) && [[ "$OUT" == *"Recorded the deployed files of 2 functions"* ]] || { echo "$OUT" | tail -5; return 1; }
+    (( STATUS == 0 )) && [[ "$OUT" == *"Recorded the deployed files of 8 functions"* ]] || { echo "$OUT" | tail -5; return 1; }
     baseline=$(cat "$CCIT_CI_LAMBDA_BASELINE")
     for args in "" "--record --accept-deployed"; do
         # shellcheck disable=SC2086
