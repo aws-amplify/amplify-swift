@@ -28,9 +28,10 @@
 # printed or passed to the AWS CLI as an argument. It refuses to start with under 2 GiB free on the volume holding
 # $STATE_DIR (COGNITO_CLIENT_INTEG_MIN_FREE_GIB sets another minimum, 0 none).
 #
-# Overlapping runs (two runners, or a run beside DU-1) are tolerated: a user another run created or deleted first, a
-# password set on erin after another run deleted her (the reset is tried again, a few times), and plugin-configs.py
-# --refresh, which waits for the other run's.
+# Overlapping runs (two runners' prepare-run.sh) are tolerated: a user another run created or deleted first, a password
+# set on erin after another run deleted her (the reset is tried again, a few times), erin missing from the report while
+# another run resets her, an expired code sink API key another run deleted first (parity.py rotate-key), and
+# plugin-configs.py --refresh, which waits for the other run's.
 #
 # Usage: AWS_PROFILE=<sandbox-profile> ./prepare-run.sh
 set -euo pipefail
@@ -95,9 +96,9 @@ set_password_unless_gone() {
 }
 
 # --- erin: recreated with the stored permanent password ---------------------------------------------
-# Deleted, created and given her password. An overlapping run (another runner's prepare-run.sh, or DU-1) may delete
-# her at any point of that: a delete or create it got to first is tolerated, and a password set on a user it has
-# since deleted starts the reset again, up to ERIN_ATTEMPTS times, a second apart.
+# Deleted, created and given her password. An overlapping run (another runner's prepare-run.sh) may delete her at any
+# point of that: a delete or create it got to first is tolerated, and a password set on a user it has since deleted
+# starts the reset again, up to ERIN_ATTEMPTS times, a second apart.
 ERIN_ATTEMPTS=5
 reset_erin() {
     local delete_error
@@ -131,12 +132,22 @@ reset_erin_until_set() {
 reset_erin_until_set
 
 # --- Report (read-only) -----------------------------------------------------------------------------
-for user in dave erin; do
-    # An overlapping run may be resetting the user right now: a user it has just deleted is reported, not fatal.
-    status=$(aws cognito-idp admin-get-user --user-pool-id "$USER_POOL_ID" --username "$user" \
-        --query UserStatus --output text 2>/dev/null) || status="not found (another run is resetting it)"
-    echo "$user: $status"
-done
+# Prints user $1's status. Only erin may be missing, and only while an overlapping run resets her (nothing else
+# deletes her): UserNotFoundException for erin is reported, not fatal. Any other error, for either user, prints the
+# redacted error and stops the script.
+report_user() {
+    local status
+    if ! status=$(command aws --region "$REGION" --output json cognito-idp admin-get-user \
+        --user-pool-id "$USER_POOL_ID" --username "$1" --query UserStatus --output text 2>&1); then
+        case "$1:$status" in
+            erin:*UserNotFoundException*) status="not found (another run is resetting her)" ;;
+            *) printf '%s\n' "$status" | redact >&2; exit 1 ;;
+        esac
+    fi
+    printf '%s: %s\n' "$1" "$status" | redact
+}
+report_user dave
+report_user erin
 
 # --- P-12: test-created users in the parity pools, older than 24 hours ------------------------------
 if python3 -c "import json,sys;sys.exit(0 if json.load(open(sys.argv[1])).get('parity') else 1)" "$STATE"; then
