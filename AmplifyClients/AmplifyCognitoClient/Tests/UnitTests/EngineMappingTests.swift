@@ -546,8 +546,9 @@ final class EngineMappingTests: XCTestCase {
                 "authentication",
                 AuthenticationError.service(message: "\(SignInError.service(error: userPool))", error: SignInError.service(error: userPool))
             ),
-            // The passkey sign-in actions' shape (`FetchCredentialOptions`, `VerifyWebAuthnCredential`).
-            ("WebAuthn sign-in", SignInError.webAuthn(.service(error: userPool))),
+            // The passkey sign-in actions' shape (`FetchCredentialOptions`, `VerifyWebAuthnCredential`): the exception
+            // wrapped in `ServiceFailure`, which prints as its engine error.
+            ("WebAuthn sign-in", SignInError.webAuthn(.service(error: WebAuthnError.ServiceFailure(userPool)))),
             ("authorization", AuthorizationError.service(error: identityPool)),
             ("session", AuthorizationError.sessionError(.service(identityPool), .noCredentials)),
             ("refresh", FetchSessionError.service(userPool)),
