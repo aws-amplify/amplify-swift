@@ -769,6 +769,48 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(second?.isSessionExpired, true, "\(String(describing: second))")
     }
 
+    /// The reuse proof outlives the client that made it, but the expiry does not (it is the core's): a new client of the
+    /// session restores the dead token unexpired and refreshes it again. If Cognito now refuses it as invalid, that
+    /// refusal answers, not the earlier proof.
+    ///
+    /// - Given: a session needing a refresh, whose refreshes are refused as reused twice, `RefreshTokenReuse.minimumGap`
+    ///   apart, which proves its token dead; the client is then released
+    /// - When: a new client of the session, whose refresh is refused as `refreshTokenInvalid`, requests credentials,
+    ///   then again
+    /// - Then:
+    ///    - the first client's second call says the token was already used
+    ///    - the new client's calls throw `sessionExpired` saying the refresh token has expired or been revoked, with
+    ///      `refreshTokenInvalid` underneath, after one refresh
+    func testAnInvalidRefreshTokenAfterAReuseProofOfAReleasedClientAnswersWithItsOwnText() async throws {
+        let stale = FakePayload.signedIn("alice", stale: true)
+        try harness.signIn(work, stale)
+        var client: AmplifyCognitoClient? = try harness.client(work)
+        harness.engine(for: work)?.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
+        _ = await credentialsError { try await XCTUnwrap(client).credentialsProvider.resolve() }
+        harness.advanceClock(by: RefreshTokenReuse.minimumGap)
+        let proof = await credentialsError { try await XCTUnwrap(client).credentialsProvider.resolve() }
+        assertRefreshTokenAlreadyUsed(proof?.underlyingError as? AuthClientError, "the proof")
+        client = nil
+        await harness.waitForBaseline()
+
+        let next = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
+        let first = await credentialsError { try await next.credentialsProvider.resolve() }
+        let second = await credentialsError { try await next.credentialsProvider.resolve() }
+
+        for (name, error) in [("the first", first), ("the second", second)] {
+            XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
+            let underlying = error?.underlyingError as? AuthClientError
+            XCTAssertEqual(underlying?.errorDescription, "Session \"work\"'s refresh token has expired or been revoked.", name)
+            guard case SessionEngineError.refreshTokenInvalid? = underlying?.underlyingError as? SessionEngineError else {
+                XCTFail("\(name): expected refreshTokenInvalid underneath, got \(String(describing: underlying?.underlyingError))")
+                continue
+            }
+        }
+        XCTAssertEqual(engine.refreshCalls.count, 1)
+    }
+
     /// The dead-token proof installs the record it proved dead: another writer that saved the record after this client
     /// last read it, before the token died, is not taken for a new login by the next call.
     ///

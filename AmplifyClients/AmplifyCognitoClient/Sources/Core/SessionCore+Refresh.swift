@@ -353,7 +353,11 @@ extension SessionCore {
                 if !reread.holdsCredentials(payload, engine: engine) {
                     return await .adopted(apply(reread, event: nil))
                 }
-                // Expired by this refusal, not by an earlier reuse: the session answers with its text from now on.
+                // Expired by this refusal, not by an earlier reuse. The reuse memory is the record's, for the process,
+                // and outlives this core (`RefreshTokenReuse`): a new core of a session an earlier one proved dead after
+                // a reuse restores it unexpired and refreshes it again. Forgotten here, so this refusal's own text
+                // ("expired or been revoked", `refreshTokenInvalid` underneath) answers, now and on later calls, not
+                // the earlier proof's "already used".
                 refreshTokenReuse.reset()
                 await markExpired(installing: reread)
                 throw expiredError(holding: payload)
