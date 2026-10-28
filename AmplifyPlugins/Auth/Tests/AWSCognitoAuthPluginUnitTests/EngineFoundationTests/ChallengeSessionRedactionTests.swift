@@ -199,4 +199,66 @@ final class ChallengeSessionRedactionTests: XCTestCase {
         let line = try XCTUnwrap(messages.first { $0.contains("VerifyPasswordSRP.swift Sending event") }, "\(messages)")
         XCTAssertTrue(line.contains(#"session: Optional("<REDACTED>")"#), line)
     }
+
+    /// Test that the error of an MFA setup the plugin cannot continue carries the challenge without its session
+    ///
+    /// - Given: an MFA setup challenge with a session and a username that offers only SMS, which the plugin does not
+    ///   set up
+    /// - When:
+    ///    - the sign-in resolves the challenge's next step
+    /// - Then:
+    ///    - it fails with `SignInError.unknown`, whose message, and the `AuthError.unknown` the plugin throws with it,
+    ///      holds the challenge as it prints: the session `<REDACTED>`, the usernames masked
+    ///
+    func testAnUnresolvableMFASetupErrorHoldsTheChallengeWithoutItsSession() async throws {
+        let challenge = RespondToAuthChallenge(
+            challenge: .mfaSetup,
+            availableChallenges: [],
+            username: Self.username,
+            session: Self.session,
+            parameters: ["MFAS_CAN_SETUP": #"["SMS_MFA"]"#],
+            inputUsername: Self.inputUsername
+        )
+        let action = InitializeResolveChallenge(challenge: challenge, signInMethod: .apiBased(.userSRP))
+        let failed = expectation(description: "the sign-in fails")
+        let messages = RecordedMessages()
+        let dispatcher = MockDispatcher { event in
+            guard case .throwAuthError(let error) = (event as? SignInEvent)?.eventType else {
+                return
+            }
+            guard case .unknown(let message) = error else {
+                return XCTFail("the sign-in failed with \(error), not unknown")
+            }
+            messages.append(message)
+            messages.append(error.authError.errorDescription)
+            failed.fulfill()
+        }
+
+        await action.execute(withDispatcher: dispatcher, environment: Defaults.makeDefaultAuthEnvironment())
+
+        await fulfillment(of: [failed], timeout: 1)
+        let recorded = messages.all
+        XCTAssertEqual(recorded.count, 2)
+        for message in recorded {
+            XCTAssertTrue(message.contains(challenge.description), message)
+            XCTAssertTrue(message.contains(#"session: Optional("<REDACTED>")"#), message)
+            for clear in [Self.session, Self.username, Self.inputUsername] {
+                XCTAssertFalse(message.contains(clear), "\(clear) in \(message)")
+            }
+        }
+    }
+}
+
+/// The messages a dispatcher's events carried, from its `@Sendable` callback.
+private final class RecordedMessages: @unchecked Sendable {
+    private let lock = NSLock()
+    private var messages: [String] = []
+
+    var all: [String] {
+        lock.withLock { messages }
+    }
+
+    func append(_ message: String) {
+        lock.withLock { messages.append(message) }
+    }
 }
