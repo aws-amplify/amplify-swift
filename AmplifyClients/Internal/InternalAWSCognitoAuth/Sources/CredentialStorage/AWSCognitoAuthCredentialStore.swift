@@ -262,7 +262,8 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
             try removeSession(for: authConfiguration)
             return
         }
-        // Read as the migration's checks read the shared service: quietly, so the sign-out logs no new line.
+        // Read as the migration's checks read the shared service, quietly: a read failure is logged at verbose only.
+        // The read still logs the keychain store's verbose lines for opening the service and retrieving an item.
         let shared = EngineKeychainStore.quiet(makeKeychainStore(sharedService, accessGroup), logger: logger)
         switch Self.savedSession(at: generateSessionKey(for: authConfiguration), in: shared) {
         case .login, .signedOut:
