@@ -75,10 +75,11 @@ final class LiveEngineCoreRaceTests: XCTestCase {
         await cancelGate.open()
         _ = try await signOut.value(within: 10)
         await getId.open()
-        let result = await Result { try await second.value(within: 10) }
-
-        guard case .success(let signedIn) = result else {
-            return XCTFail("bob's sign-in should finish, got \(result)")
+        let signedIn: AuthClientSignInResult
+        do {
+            signedIn = try await second.value(within: 10)
+        } catch {
+            return XCTFail("bob's sign-in should finish, got \(error)")
         }
         XCTAssertEqual(signedIn.nextStep, .done)
         let state = await client.currentSessionState()
