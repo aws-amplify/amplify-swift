@@ -7,9 +7,13 @@
 # - Privacy manifests: the engine is not a product and has no manifest, so every library product that links
 #   it must declare, with an accepted reason, each required-reason API category the engine uses, in the
 #   manifest of a target on its path to the engine (scripts/cognito-engine/check_engine_privacy_manifest.py).
-# - Error matches: the engine no longer throws AuthErrorConvertible or KeychainStoreError errors, so a `catch`, cast
-#   or type test on one would compile and never match. No engine or engine-destined source names
-#   AuthErrorConvertible, no other plugin code outside Support/EngineBridge/ casts, catches or type-tests it, and
+# - Error matches: in the plugin, a `catch`, cast or type test on AuthErrorConvertible matches AuthError,
+#   KeychainStoreError and the eight engine error types the plugin conforms, and silently misses EngineAuthError,
+#   EngineCredentialStoreError and the SDK exceptions, which are only EngineAuthErrorConvertible, so only
+#   AuthError(converting:) in Support/EngineBridge/ may make one. The engine no longer throws KeychainStoreError (its
+#   copy is EngineCredentialStoreError), so a match on it would compile and never match an engine error. No engine
+#   or engine-destined source names AuthErrorConvertible, no other plugin code outside Support/EngineBridge/ casts,
+#   catches or type-tests it, and
 #   KeychainStoreError appears nowhere in the engine and nowhere in the plugin outside EngineBridge/ and
 #   KeychainStoreError+AuthConvertible.swift (scripts/cognito-engine/error_match_gate.sh check S9, over the file
 #   list in scripts/cognito-engine/engine_paths.txt). Matches on AWSCognitoAuthError and AuthError are listed by
