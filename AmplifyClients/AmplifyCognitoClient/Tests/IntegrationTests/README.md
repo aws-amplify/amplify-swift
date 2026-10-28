@@ -734,7 +734,7 @@ but in `SandboxPool.optionalRoles`, and the build phases copy its files as optio
 | `ccit-ci-new-password-1` … `-12`, kept in `FORCE_CHANGE_PASSWORD` every 10 minutes by `ccit-ci-new-password-reset` (`infra/ci/lambda/new-password-reset`) and an EventBridge rule; the temporary password in SSM | CH-1, P-3, and the fixture check with the credentials file |
 | The custom sender (`lambda/custom-sender`), the code sink (AppSync API and table `ccit-ci-codes`, `codesink/`), their roles, and the SNS caller role for SMS MFA | AT-2, its second half, AT-4, RP-3; Cognito sends nothing |
 | Pool `ccit-ci-email-alias-codes` (`pools/email-alias.json`, on **Lite**) and its `client` app client, with Lambda `ccit-ci-pre-sign-up-confirmable` (`triggers.mjs` without `REFUSE_CONFIRMATION_USERS`, so it leaves `ccit-confirm-` users to confirm) and the custom sender into the code sink | The client's own role `SandboxPool.emailAliasCodes` (optional, not in `allCases`): the email-alias code check; Cognito sends nothing |
-| Pool `ccit-ci-mfa-req-totp-sms` (`pools/mfa-req-totp-sms.json`, on Essentials) and its `ci` app client (SRP and `USER_AUTH`, no `USER_PASSWORD_AUTH`), MFA required with TOTP and SMS, with `ccit-ci-pre-sign-up` and the discard sender as both custom senders; the SNS caller role's trust names it beside `ccit-ci-default` | The client's overlay role `mfa-req-totp-sms`, in place of the plugin's MFA-required backend: MF-13, MF-15…17 and the two `USER_AUTH` MFA-setup checks, and that role in the every-pool checks; Cognito sends nothing |
+| Pool `ccit-ci-mfa-req-totp-sms` (`pools/mfa-req-totp-sms.json`, on Essentials) and its `ci` app client (SRP and `USER_AUTH`, no `USER_PASSWORD_AUTH`), MFA required with TOTP and SMS, with `ccit-ci-pre-sign-up` and the discard sender as both custom senders; the SNS caller role's trust names it beside `ccit-ci-default`. A run that makes either of the two opens that trust to the account's pools while the pool is made (still held to the external ID and `aws:SourceAccount`), as it opens the key policy, and narrows it again after (the plan says both). A run that stops in between leaves it open until a rerun narrows it | The client's overlay role `mfa-req-totp-sms`, in place of the plugin's MFA-required backend: MF-13, MF-15…17 and the two `USER_AUTH` MFA-setup checks, and that role in the every-pool checks; Cognito sends nothing |
 | `ccit-ci-capabilities.json`: `refuses_non_test_users` and `reset_password_codes` on `extended`, `email_alias_codes` on `email-alias-codes` | The three sandbox checks, on those roles ("Sandbox checks", above) |
 
 The alias-codes pool and the capabilities came after the first phase-2 run uploaded its four files, so they are new
@@ -827,7 +827,8 @@ one) with `xcrun xcresulttool get test-results summary`, lists the skipped tests
 `allowed_skips` skipped. The plugin's jobs leave it off. On CI: 0 skipped in `CognitoClientIntegrationTests` and 0 in
 `CognitoClientPluginInteropTests`. To reproduce it locally, see "Run as CI does (recommended)", above.
 
-The code sink's API key (phase 2) lives 364 days. A rerun of `--apply --scope all` in its last 30 days extends it to
+The code sink's API key (phase 2) lives 364 days. A rerun of `--apply --scope all` in its last 31 days (one more than
+the reminder's 30, which it counts in whole UTC days, so every key the reminder warns about is extended) extends it to
 364 days from then, keeping its id, so the two uploaded files that name it (`ccit-ci-default-amplify_outputs.json` and
 `ccit-ci-email-alias-codes-amplify_outputs.json`) stay valid. Rerun before it expires: an expired key cannot be
 extended, so the rerun makes a new key, and both files must be replaced, which `--upload` never does (it never
@@ -842,8 +843,9 @@ as it is. Both record it only while no uploaded file names another key than that
 tell): a key made after the last one expired is not what CI reads until both files are replaced, so the record keeps
 the expired date, and the reminder keeps failing, until then. Commit the file after either. `infra/ci/code_sink_key.py check`
 reads only that file, so it needs no AWS credentials: it passes while the key has more than 30 days left, and fails
-(exit 1) within them or once it has expired, saying what to run; exit 3 means no expiry is recorded, and any other
-status (2, usage; 4, an unexpected error) is a failure of the check itself, never a reason to renew. With the
+(exit 1) within them or once it has expired, saying what to run (on the expiry date itself, whose hour the record
+does not hold, as an error that gives both the extension and the replacement); exit 3 means no expiry is recorded,
+and any other status (2, usage; 4, an unexpected error) is a failure of the check itself, never a reason to renew. With the
 `extended` role, `ci-overlay.sh` prints its warning or error as an annotation on every client CI run in those last
 30 days or after the expiry. `bash infra/ci/test_code_sink_key.sh` tests it offline. The scheduled workflow
 `.github/workflows/auth_client_ci_reminders.yml` (Mondays, upstream repository only, no AWS credentials) runs the
@@ -852,27 +854,61 @@ while none is recorded, which passes with a warning. It also runs `lambda_code.p
 one "redeploy the CI Lambdas whose sources changed" issue when it fails with exit 1. Any other status of either check
 fails the run with a message to investigate the check, and opens no issue. Each issue is opened only while none with
 its title is open, and the workflow's runs never overlap (one `concurrency` group), so a manual dispatch during the
-scheduled run cannot open a second one.
+scheduled run cannot open a second one. A failure to list the open issues fails the run instead of reading as
+"already open". Each issue is labelled `pending-triage`. Nothing closes an issue: close it once the new expiry or
+baseline is committed, because while it stays open the workflow opens no new one, not even for the next renewal.
 
-A rerun never updates a user pool or a Lambda's code. After a change to a pool template, to
-`infra/lambda/triggers/triggers.mjs`, `infra/lambda/custom-sender` or `infra/ci/lambda/*`, check that the pool or
-function carries `purpose=amplify-cognito-client-integ` (the script's own resources all do), delete it by hand and
-rerun: the rerun makes it again, and replaces the invoke permissions that name a pool's old ARN.
+A rerun never updates a user pool or a Lambda's code, so either one is replaced: deleted by hand, after its tag check,
+then made again by `infra/ci/provision-ci.sh --apply --scope all`. Never use a plain `--apply` for this. That is
+phase 1, which makes only `ccit-ci-pre-sign-up` and `ccit-ci-discard-sender` again, and adds invoke permissions for the
+device-alias pool only, while `lambda-drift` and `check-baseline` still pass. Do it while no CI run is going: until the
+rerun, the pools can't use what was deleted. Everything deleted below is the script's own. Before each delete, check
+that it carries `purpose=amplify-cognito-client-integ`.
+
+- **A Lambda**, after a change to `infra/lambda/triggers/triggers.mjs`, `infra/lambda/custom-sender` or
+  `infra/ci/lambda/*` (`lambda-drift` finds a function whose deployed files are not the checkout's): check its tag
+  (`aws lambda list-tags`), delete it, and run `--apply --scope all`. That makes it again, with every pool's invoke
+  permissions.
+- **A pool**, after a change to its template: `--upload` never overwrites a file, so the uploaded files that name the
+  pool must be deleted too, or CI goes on reading the deleted pool. Check the tag of the pool and of each file
+  (`aws s3api get-object-tagging`). Then delete the pool and its
+  `auth/cognito-client-ci/ccit-ci-<pool>-amplify_outputs.json`. For `ccit-ci-default`, also delete these:
+  - `ccit-ci-rotation-amplify_outputs.json`;
+  - the identity pool `ccit_ci_default`, which federates the old pool's client, so the rerun would refuse;
+  - the Lambda `ccit-ci-new-password-reset`, which names the old pool and runs once, to make the new-password users,
+    only when it is made.
+
+  Then run `--apply --scope all --upload`. It makes them again and uploads the new files, and the other uploaded files
+  stay as they are.
+
+The rerun also replaces the invoke permissions that name a pool's old ARN.
 
 **Lambda drift.** `infra/ci/provision-ci.sh lambda-drift` is read-only: for each `ccit-ci-` Lambda it checks the name
 and the purpose tag, calls `GetFunction`, and downloads the deployed zip from the presigned URL in its
 `Code.Location` (never printed) into a private temporary directory. `infra/ci/lambda_code.py` then compares the zip's
 files, by path and by the SHA-256 of their contents, with the zip built from the checkout (the custom sender's only
 with npm on `PATH`), and `lambda-drift` exits 1 on a DRIFT, naming the function and which files changed, are only
-deployed, or are only in the checkout (each name escaped, so none can end its line or start a workflow command).
-The zips' compression, dates and modes don't count, so a function made from older `zip -X` zips of the same files is
-in sync, and so is one deployed from a machine with another zlib: its `CodeSha256` is printed only as a note. A deployed function whose files differ but are accepted, as they are, can be
+deployed, or are only in the checkout (each name escaped, so none can end its line or start a workflow command, nor
+hold a legacy `##[` one). The zips' compression, dates and modes don't count, so a function made from older `zip -X`
+zips of the same files is in sync, and so is one deployed from a machine with another zlib: its `CodeSha256` is
+printed only as a note. Nor do the custom sender's `node_modules/.bin/` entries, npm's links to its packages'
+commands, which Lambda never loads: the checkout's zip leaves the links out, and the older `zip -r` zips stored a copy
+of each link's target (`.bin/uuid`). A deployed function whose files differ but are accepted, as they are, can be
 recorded: `lambda-drift --record` prints the same per-file comparison and records nothing; `lambda-drift --record
 --accept-deployed` writes each deployed function's files (paths and content hashes), with a digest of the checkout's
 sources, to `infra/ci/lambda-baseline.json`, to commit. A function whose files are the baseline's then counts as the
-accepted deployment until its sources change; otherwise, redeploy it (check its tag, delete it and rerun).
+accepted deployment until its sources change; otherwise, redeploy it: first check that it carries
+`purpose=amplify-cognito-client-integ`, then delete it and rerun `provision-ci.sh --apply --scope all`, never a plain
+`--apply` (phase 1, which makes only `ccit-ci-pre-sign-up` and `ccit-ci-discard-sender` again, and adds only its own
+pool's invoke permissions). A function the baseline records that is not deployed is a DRIFT too. `--record` records
+nothing while any of the CI Lambdas is not deployed, the first record included: a baseline holds every one, so a
+redeploy that did not make a function again can't be accepted. `lambda-drift` refuses to run in another region than
+the CI resources' (as `--apply` does), and with no `ccit-ci-` function deployed at all (another account), it fails
+and `--record` records nothing. `--record --accept-deployed` also records nothing while a function was not compared
+(the custom sender without npm on `PATH`).
 `lambda_code.py check-baseline` is the offline half: it reads only the committed baseline and the checkout, and fails
-(exit 1) when a recorded function's sources changed since its deployment was accepted, or exits 3 with no baseline.
+(exit 1) when a recorded function's sources changed since its deployment was accepted, or exits 3 with no baseline
+(a baseline that records no function counts as none).
 Only the code is compared: `RuntimeVersionConfig`, which Lambda moves by itself, is not.
 `bash infra/ci/test_lambda_code.sh` tests it offline, and `test_provision_ci.sh` runs `lambda-drift` over the fake,
 whose `Code.Location` is a `file://` URL to the zip it was given (`CCIT_CI_TEST_FILE_CODE_URLS=1`, which only the
@@ -885,10 +921,10 @@ zip `--zip-file` uploads) is refused. The host pattern keeps out other AWS endpo
 Once `infra/ci/lambda-baseline.json` is committed, editing the Lambda sources (`infra/lambda/triggers/triggers.mjs`,
 `infra/lambda/custom-sender` or `infra/ci/lambda/*`) needs someone with access to the CI account: the infra
 self-tests (`auth_client_infra_self_tests.yml`, through `test_lambda_code.sh`) fail on the committed baseline, and
-the weekly reminder opens its "redeploy" issue, until
-the changed functions are redeployed (tag checked, deleted, `--apply` rerun) and re-recorded (`lambda-drift --record
---accept-deployed`, then commit the new baseline). The sandbox shares those sources, so a sandbox-only edit needs that
-too. Ship such a change together with the redeploy and the new baseline.
+the weekly reminder opens its "redeploy" issue, until the changed functions are redeployed (tag checked first,
+deleted, `--apply --scope all` rerun) and re-recorded (`lambda-drift --record --accept-deployed`, then commit the new
+baseline). The sandbox shares those sources, so a sandbox-only edit needs that too. Ship such a change together with
+the redeploy and the new baseline.
 
 ## Optional: the sandbox
 
