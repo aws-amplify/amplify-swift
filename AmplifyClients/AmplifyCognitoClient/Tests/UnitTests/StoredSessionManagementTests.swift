@@ -567,34 +567,48 @@ final class StoredSessionManagementTests: XCTestCase {
     }
 
     /// After a failed global sign-out the engine sends no `RevokeToken`, and its revoke error is the plugin's empty
-    /// placeholder: the error underneath a sign-out that could not finish is the real `GlobalSignOut` failure.
+    /// placeholder: the error underneath a sign-out that could not finish is the real `GlobalSignOut` failure, mapped
+    /// as any other call maps it. The session is still signed in, and a retried sign-out sends `GlobalSignOut` again,
+    /// so it never says the session was signed out or that nothing is retried. The same goes for a revoke-only
+    /// sign-out's failed revoke.
     ///
-    /// - Given: alice's live session, whose every global sign-out fails, with the placeholder revoke error, while
-    ///   another process refreshes alice's credentials
-    /// - When: it is signed out globally
+    /// - Given: live sessions whose every sign-out fails, through the engine's mapping, while another process
+    ///   refreshes their credentials: a global sign-out that Cognito failed with `InternalErrorException`, one that
+    ///   failed on the network (each with the placeholder revoke error), and a revoke that failed on the network
+    /// - When: each is signed out, globally for the first two
     /// - Then:
-    ///    - it gives up with `.failed(.storageUnavailable(.interrupted))`, whose underlying error is the global
-    ///      sign-out's failure, not the placeholder
-    func testAContendedGlobalSignOutCarriesTheGlobalSignOutFailure() async throws {
-        try harness.signIn(work, .signedIn("alice", version: 1))
-        let client = try harness.client(work)
-        let engine = try XCTUnwrap(harness.engine(for: work))
-        let store = harness.store()
-        let work = work
-        let globalFailure = AuthClientError.unknown("GlobalSignOut failed", "Retry.")
-        engine.scriptRevokeOutcome { _, _ in
-            if case .record(let envelope) = try store.read(work),
-               let current = envelope.record.credentials.flatMap(FakePayload.decode) {
-                try store.write(current.refreshed.record(), for: work, expecting: envelope.version)
+    ///    - each gives up with `.failed(.storageUnavailable(.interrupted))`, whose underlying error is the global
+    ///      sign-out's, or the revoke's, failure, not the placeholder: `.service` with no code, Cognito's message or
+    ///      the network description, and the retry suggestion any other call gives it
+    ///    - no underlying error says the session was signed out on this device, or that it will not be retried
+    func testAContendedSignOutCarriesTheServerFailureWithoutTheSignOutsContext() async throws {
+        let rows = SignOutOutcomeFixtures.unfinishedSignOutRows
+        for (index, (label, global, outcome, description, suggestion)) in rows.enumerated() {
+            let sessionId = ClientFixtures.id("contended-\(index)")
+            try harness.signIn(sessionId, .signedIn("alice", version: 1))
+            let client = try harness.client(sessionId)
+            let engine = try XCTUnwrap(harness.engine(for: sessionId))
+            let store = harness.store()
+            engine.scriptRevokeOutcome { _, _ in
+                if case .record(let envelope) = try store.read(sessionId),
+                   let current = envelope.record.credentials.flatMap(FakePayload.decode) {
+                    try store.write(current.refreshed.record(), for: sessionId, expecting: envelope.version)
+                }
+                return outcome
             }
-            return EngineSignOutOutcome(revokeError: .service(nil, "", ""), globalSignOutError: globalFailure)
+
+            let error = await failedSignOutError(client.signOut(options: .init(globalSignOut: global)))
+
+            XCTAssertEqual(error?.storageUnavailableReason, .interrupted, "\(label): \(String(describing: error))")
+            let underlying = try XCTUnwrap(error?.underlyingError as? AuthClientError, label)
+            XCTAssertEqual(underlying.kind, .service(nil), label)
+            XCTAssertEqual(underlying.errorDescription, description, label)
+            XCTAssertEqual(underlying.recoverySuggestion, suggestion, label)
+            XCTAssertFalse(underlying.recoverySuggestion.contains("signed out on this device"), label)
+            XCTAssertFalse(underlying.recoverySuggestion.contains("will not be retried"), label)
+            XCTAssertEqual(engine.revokeGlobalFlags, Array(repeating: global, count: SessionSignOut.maximumAttempts), label)
+            XCTAssertEqual(try harness.storedRecord(sessionId)?.isSignedOut, false, label)
         }
-
-        let error = await failedSignOutError(client.signOut(options: .init(globalSignOut: true)))
-
-        XCTAssertEqual(error?.storageUnavailableReason, .interrupted, "\(String(describing: error))")
-        XCTAssertEqual((error?.underlyingError as? AuthClientError)?.errorDescription, "GlobalSignOut failed")
-        XCTAssertEqual(engine.revokeGlobalFlags, Array(repeating: true, count: SessionSignOut.maximumAttempts))
     }
 
     // MARK: Sign-out through a live session

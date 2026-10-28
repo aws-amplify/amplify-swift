@@ -306,7 +306,8 @@ final class LiveEngineServiceFailureTests: XCTestCase {
     ///    - the deletion and the passkey calls throw `.service` with no code, the retry suggestion and Cognito's
     ///      message or the status in the description, never a bug report
     ///    - the sign-out's revoke error and global sign-out error are `.service` with no code and the same
-    ///      description, with the sign-out's not-retried suggestion
+    ///      description, with the sign-out's not-retried suggestion; the global sign-out's says the other sessions
+    ///      stay signed in, without the network failure's "unless the request reached the service"
     func testACognitoFailureInTheCallsTheEngineCarriesTheCauseForIsAServiceError() async throws {
         let unmodelled = UnknownAWSHTTPServiceError(
             httpResponse: HTTPResponse(body: .empty, statusCode: .internalServerError),
@@ -356,7 +357,7 @@ final class LiveEngineServiceFailureTests: XCTestCase {
             let globalSignOutError = try XCTUnwrap(global.globalSignOutError, label)
             Self.assertCodelessService(
                 globalSignOutError,
-                suggesting: AuthClientError.globalSignOutNotRetriedSuggestion,
+                suggesting: AuthClientError.globalSignOutFailedNotRetriedSuggestion,
                 "globalSignOut, \(label)"
             )
             XCTAssertTrue(globalSignOutError.errorDescription.contains(shown), "globalSignOut, \(label): \(globalSignOutError)")

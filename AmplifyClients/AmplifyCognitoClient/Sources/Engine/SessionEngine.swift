@@ -525,6 +525,12 @@ struct EngineSignOutOutcome: Sendable, Equatable {
     /// engine continued past a failure that is not a `HostedUIError`. A device-side failure, reported beside the
     /// server-side ones.
     var hostedUIError: AuthClientError?
+    /// `revokeError` and `globalSignOutError` mapped as any other call maps them (`AuthClientError(engine:cause:)`),
+    /// without the sign-out's context ("The session was signed out on this device, and … will not be retried"),
+    /// which holds only once the session is cleared: what a sign-out that could not finish carries (`firstError`).
+    /// `nil` when the failure has no other mapping (one the core built itself); each is kept with its pair.
+    var plainRevokeError: AuthClientError?
+    var plainGlobalSignOutError: AuthClientError?
 
     static let complete = EngineSignOutOutcome()
 
@@ -532,10 +538,16 @@ struct EngineSignOutOutcome: Sendable, Equatable {
         revokeError == nil && globalSignOutError == nil && hostedUIError == nil
     }
 
-    /// Keeps the first failure of each kind across attempts.
+    /// Keeps the first failure of each kind across attempts, with its plain mapping.
     mutating func merge(_ other: EngineSignOutOutcome) {
-        revokeError = revokeError ?? other.revokeError
-        globalSignOutError = globalSignOutError ?? other.globalSignOutError
+        if revokeError == nil {
+            revokeError = other.revokeError
+            plainRevokeError = other.plainRevokeError
+        }
+        if globalSignOutError == nil {
+            globalSignOutError = other.globalSignOutError
+            plainGlobalSignOutError = other.plainGlobalSignOutError
+        }
         hostedUIError = hostedUIError ?? other.hostedUIError
     }
 
@@ -555,9 +567,13 @@ struct EngineSignOutOutcome: Sendable, Equatable {
 
     /// The first failure of any kind: what a sign-out that could not finish carries as its underlying error. The
     /// global sign-out's first: it runs before the revoke, and after it fails `revokeError` is only the placeholder of
-    /// a revoke never sent.
+    /// a revoke never sent. Each is its plain mapping, when it has one: the session is still signed in on this device
+    /// (`.contended`), or its record was left as it is (`.unreadable`), so the sign-out's "signed out on this device"
+    /// does not hold, and a retried sign-out of a session still signed in sends the revoke and global sign-out again.
     var firstError: AuthClientError? {
-        globalSignOutError ?? revokeError ?? hostedUIError
+        globalSignOutError.map { plainGlobalSignOutError ?? $0 }
+            ?? revokeError.map { plainRevokeError ?? $0 }
+            ?? hostedUIError
     }
 
     /// Errors compare as `AuthClientSignOutResult` compares them.

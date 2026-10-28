@@ -1034,6 +1034,48 @@ final class EngineMappingTests: XCTestCase {
         XCTAssertFalse(description.contains("access-token"))
     }
 
+    /// Test that a sign-out that could not finish carries the first failure of the attempts, each mapped as any other
+    /// call maps it, and that merging keeps each kind's two mappings together
+    ///
+    /// - Given: a first attempt whose revoke failed with an error the sign-out built itself (no other mapping), and a
+    ///   second whose revoke and global sign-out failed on the network, through the engine's mapping
+    /// - When:
+    ///    - the second is merged into the first, and the second is merged into an empty outcome
+    /// - Then:
+    ///    - the first merge's error is the first attempt's revoke error, not the second's network failure, until the
+    ///      second's global sign-out failure, which goes first
+    ///    - the second merge's error is the global sign-out's network failure as any other call reports it, without
+    ///      the sign-out's not-retried suggestion; its public fields keep that suggestion
+    ///
+    func testAnUnfinishedSignOutsErrorKeepsTheFirstFailuresMapping() {
+        let own = AuthClientError.unknown("revoke failed", "retry")
+        let timedOut = URLError(.timedOut)
+        let network = EngineSignOutOutcome(
+            revokeFailure: EngineRevokeTokenFailure(refreshToken: "refresh-token", error: .service("", "", timedOut), cause: timedOut),
+            globalSignOutFailure: nil
+        )
+        var first = EngineSignOutOutcome(revokeError: own)
+        first.merge(network)
+        XCTAssertEqual(first.firstError?.errorDescription, "revoke failed")
+
+        let global = EngineSignOutOutcome(
+            revokeFailure: nil,
+            globalSignOutFailure: EngineGlobalSignOutFailure(
+                accessToken: "access-token",
+                error: .service("", "", timedOut),
+                cause: timedOut
+            )
+        )
+        var merged = EngineSignOutOutcome.complete
+        merged.merge(global)
+        first.merge(global)
+        for outcome in [merged, first] {
+            XCTAssertEqual(outcome.firstError?.errorDescription, AuthClientError.networkFailureDescription)
+            XCTAssertEqual(outcome.firstError?.recoverySuggestion, AuthClientError.clientServiceSuggestion)
+            XCTAssertEqual(outcome.globalSignOutError?.recoverySuggestion, SignOutTexts.globalSignOutNotRetried)
+        }
+    }
+
     /// A sign-out's revoke or global sign-out that failed in transport keeps the sign-out's context, as a network
     /// failure does: nothing retries it.
     ///
@@ -1071,7 +1113,8 @@ final class EngineMappingTests: XCTestCase {
     }
 
     /// A sign-out's revoke or global sign-out that Cognito failed itself is a service error that keeps the sign-out's
-    /// context, once the failure carries the exception it was made from.
+    /// context, once the failure carries the exception it was made from. The request reached Cognito, so the global
+    /// sign-out's suggestion has no "unless the request reached the service".
     ///
     /// - Given: revoke and global sign-out failures from the user pool's `InternalErrorException` (its engine error,
     ///   with the exception as the cause), and from an error status the SDK does not model (500, then 400)
@@ -1079,9 +1122,15 @@ final class EngineMappingTests: XCTestCase {
     ///    - the outcome is built from them, and the internal error is also mapped without its cause
     /// - Then:
     ///    - each is `.service` with no code, the engine's description, and the suggestion that the revoke, or the
-    ///      global sign-out, will not be retried
+    ///      global sign-out, will not be retried; the global sign-out's says the other sessions stay signed in, with
+    ///      no hedge
+    ///    - the outcome's error for a sign-out that could not finish is the global sign-out's failure mapped as any
+    ///      other call maps it: the suggestion that call gives, without the sign-out's context
     ///    - without its cause, the internal error stays `.unknown` with the engine's text
     func testASignOutsServiceFaultSaysItIsNotRetried() {
+        let globalSignOutRefused = "The session was signed out on this device, and the global sign-out will not be "
+            + "retried: the user's other sessions stay signed in until their tokens expire. To sign them out, sign in "
+            + "again and sign out with globalSignOut: true."
         let internalError = AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
         func unmodelled(_ status: HTTPStatusCode) -> UnknownAWSHTTPServiceError {
             UnknownAWSHTTPServiceError(
@@ -1092,12 +1141,12 @@ final class EngineMappingTests: XCTestCase {
                 typeName: nil
             )
         }
-        let rows: [(String, EngineAuthError, Error)] = [
-            ("internal error", internalError.engineError, internalError),
-            ("500", unmodelled(.internalServerError).engineError, unmodelled(.internalServerError)),
-            ("400", unmodelled(.badRequest).engineError, unmodelled(.badRequest))
+        let rows: [(String, EngineAuthError, Error, String)] = [
+            ("internal error", internalError.engineError, internalError, AuthClientError.serviceFaultSuggestion),
+            ("500", unmodelled(.internalServerError).engineError, unmodelled(.internalServerError), AuthClientError.serviceFaultSuggestion),
+            ("400", unmodelled(.badRequest).engineError, unmodelled(.badRequest), AuthClientError.unrecognisedServiceErrorSuggestion)
         ]
-        for (label, engine, cause) in rows {
+        for (label, engine, cause, plainSuggestion) in rows {
             let outcome = EngineSignOutOutcome(
                 revokeFailure: EngineRevokeTokenFailure(refreshToken: "refresh-token", error: engine, cause: cause),
                 globalSignOutFailure: EngineGlobalSignOutFailure(accessToken: "access-token", error: engine, cause: cause)
@@ -1110,7 +1159,10 @@ final class EngineMappingTests: XCTestCase {
             XCTAssertEqual(revokeDescription, engine.errorDescription, label)
             XCTAssertEqual(revokeSuggestion, SignOutTexts.revokeNotRetried, label)
             XCTAssertEqual(globalDescription, engine.errorDescription, label)
-            XCTAssertEqual(globalSuggestion, SignOutTexts.globalSignOutNotRetried, label)
+            XCTAssertEqual(globalSuggestion, globalSignOutRefused, label)
+            XCTAssertEqual(outcome.firstError?.kind, .service(nil), label)
+            XCTAssertEqual(outcome.firstError?.errorDescription, engine.errorDescription, label)
+            XCTAssertEqual(outcome.firstError?.recoverySuggestion, plainSuggestion, label)
         }
 
         let causeless = AuthClientError.revokeFailure(engine: internalError.engineError)
@@ -1251,5 +1303,65 @@ final class EngineMappingTests: XCTestCase {
         case .signedOut: return 6
         case .sessionExpired: return 7
         }
+    }
+}
+
+/// Sign-out outcomes built through the engine's mapping, for the tests of a sign-out that could not finish
+/// (`StoredSessionManagementTests`, which can't import the engine's module beside the client's: both declare
+/// `AuthEvent`).
+enum SignOutOutcomeFixtures {
+
+    /// Each row: a label, whether the sign-out is global, the outcome every attempt returns, and the underlying
+    /// error's expected description and recovery suggestion: a global sign-out that Cognito failed with
+    /// `InternalErrorException`, one that failed on the network (each with the placeholder revoke error), and a
+    /// revoke that failed on the network.
+    static var unfinishedSignOutRows: [(String, Bool, EngineSignOutOutcome, String, String)] {
+        let internalError = AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+        let timedOut = URLError(.timedOut)
+        let placeholder = EngineRevokeTokenFailure(refreshToken: "refresh-token", error: .service("", "", nil))
+        return [
+            (
+                "global, internal error",
+                true,
+                EngineSignOutOutcome(
+                    revokeFailure: placeholder,
+                    globalSignOutFailure: EngineGlobalSignOutFailure(
+                        accessToken: "access-token",
+                        error: internalError.engineError,
+                        cause: internalError
+                    )
+                ),
+                "Unexpected error occurred with message: boom",
+                AuthClientError.serviceFaultSuggestion
+            ),
+            (
+                "global, network",
+                true,
+                EngineSignOutOutcome(
+                    revokeFailure: placeholder,
+                    globalSignOutFailure: EngineGlobalSignOutFailure(
+                        accessToken: "access-token",
+                        error: .service("", "", timedOut),
+                        cause: timedOut
+                    )
+                ),
+                AuthClientError.networkFailureDescription,
+                AuthClientError.clientServiceSuggestion
+            ),
+            (
+                "revoke, network",
+                false,
+                EngineSignOutOutcome(
+                    revokeFailure: EngineRevokeTokenFailure(
+                        refreshToken: "refresh-token",
+                        error: .service("", "", timedOut),
+                        cause: timedOut
+                    ),
+                    globalSignOutFailure: nil
+                ),
+                AuthClientError.networkFailureDescription,
+                AuthClientError.clientServiceSuggestion
+            )
+        ]
     }
 }

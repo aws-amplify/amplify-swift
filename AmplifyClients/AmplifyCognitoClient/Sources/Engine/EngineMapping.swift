@@ -758,28 +758,44 @@ extension AuthClientError {
             + "the server, sign in again and sign out with globalSignOut: true."
 
     /// A failed global sign-out under a sign-out, mapped as `init(engine:cause:)` maps it, except a failure that keeps
-    /// the sign-out's context, as a revoke's does (`revokeFailure(engine:cause:)`).
+    /// the sign-out's context, as a revoke's does (`revokeFailure(engine:cause:)`). One Cognito failed itself (an
+    /// internal error, an error status the SDK does not model) reached the service, so its suggestion says the other
+    /// sessions stay signed in; one that failed in transport may or may not have, so its suggestion hedges.
     static func globalSignOutFailure(engine error: EngineAuthError, cause: Error? = nil) -> AuthClientError {
         let mapped = AuthClientError(engine: error, cause: cause)
         guard case .service(nil, let description, let suggestion, let underlying) = mapped,
               isSignOutContextFailure(description: description, suggestion: suggestion) else {
             return mapped
         }
-        return .service(nil, description, globalSignOutNotRetriedSuggestion, underlying ?? error)
+        let reachedService = [serviceFaultSuggestion, unrecognisedServiceErrorSuggestion].contains(suggestion)
+        return .service(
+            nil,
+            description,
+            reachedService ? globalSignOutFailedNotRetriedSuggestion : globalSignOutNotRetriedSuggestion,
+            underlying ?? error
+        )
     }
 
-    /// What a global sign-out that failed in transport, or that Cognito failed itself, suggests: the session is signed
-    /// out on this device, so nothing is left to retry it with.
+    /// What a global sign-out that failed in transport suggests: the session is signed out on this device, so nothing
+    /// is left to retry it with, and the request may or may not have reached the service.
     static let globalSignOutNotRetriedSuggestion =
         "The session was signed out on this device, and the global sign-out will not be retried: unless the request "
             + "reached the service, the user's other sessions stay signed in until their tokens expire. To sign them "
             + "out, sign in again and sign out with globalSignOut: true."
+
+    /// What a global sign-out that Cognito failed itself suggests: the session is signed out on this device, so
+    /// nothing is left to retry it with, and the other sessions were not signed out.
+    static let globalSignOutFailedNotRetriedSuggestion =
+        "The session was signed out on this device, and the global sign-out will not be retried: the user's other "
+            + "sessions stay signed in until their tokens expire. To sign them out, sign in again and sign out with "
+            + "globalSignOut: true."
 }
 
 extension EngineSignOutOutcome {
 
-    /// The sign-out failures, mapped with the errors they were made from. The refresh and access tokens they carry
-    /// are dropped (not exposed).
+    /// The sign-out failures, mapped with the errors they were made from: with the sign-out's context, and plainly,
+    /// for a sign-out that could not finish (`firstError`). The refresh and access tokens they carry are dropped (not
+    /// exposed).
     init(
         revokeFailure: EngineRevokeTokenFailure?,
         globalSignOutFailure: EngineGlobalSignOutFailure?,
@@ -790,7 +806,9 @@ extension EngineSignOutOutcome {
             globalSignOutError: globalSignOutFailure.map {
                 AuthClientError.globalSignOutFailure(engine: $0.error, cause: $0.cause)
             },
-            hostedUIError: hostedUIFailure.map { AuthClientError(engine: $0.error) }
+            hostedUIError: hostedUIFailure.map { AuthClientError(engine: $0.error) },
+            plainRevokeError: revokeFailure.map { AuthClientError(engine: $0.error, cause: $0.cause) },
+            plainGlobalSignOutError: globalSignOutFailure.map { AuthClientError(engine: $0.error, cause: $0.cause) }
         )
     }
 }
