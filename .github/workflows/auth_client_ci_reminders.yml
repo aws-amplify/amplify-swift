@@ -8,7 +8,8 @@
 #   warning.
 # Any other exit status of either check is a failure of the check itself: the run fails, says to investigate it, and
 # opens no issue. Each issue is opened only while no open issue has exactly its title (the open issues are listed,
-# not searched), and the runs never overlap, so a manual dispatch during the Monday run cannot open a second one.
+# not searched), and the runs never overlap, so a manual dispatch during the Monday run cannot open a second one. A
+# failure to list the open issues fails the step instead of reading as "already open" (the steps run with pipefail).
 # Runs only in the upstream repository, so a fork's schedule opens no issues.
 name: Auth | Cognito Client CI reminders
 
@@ -35,6 +36,7 @@ jobs:
       issues: write
     defaults:
       run:
+        shell: bash
         working-directory: AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/ci
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
@@ -77,9 +79,16 @@ jobs:
           The weekly check fails until the new expiry is committed."
           fi
           # Listed, not searched (the search API matches loosely and lags behind a just-opened issue), and matched
-          # by exact title.
-          open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 1000 --json title \
-            | jq --arg title "$title" '[.[] | select(.title == $title)] | length')
+          # by exact title. A failed listing fails the step: it must not read as "already open".
+          if ! open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 1000 --json title \
+            | jq --arg title "$title" '[.[] | select(.title == $title)] | length'); then
+            echo "::error::Could not list the open issues, so none was opened: $title"
+            exit 1
+          fi
+          case "$open" in
+            ''|*[!0-9]*) echo "::error::Listing the open issues gave no count ($open), so none was opened: $title"
+                         exit 1 ;;
+          esac
           if [ "$open" = "0" ]; then
             gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$(python3 code_sink_key.py check || true)
 
@@ -118,9 +127,16 @@ jobs:
           \`lambda-drift --record --accept-deployed\`, and commit \`infra/ci/lambda-baseline.json\`. The weekly check
           fails until then."
           # Listed, not searched (the search API matches loosely and lags behind a just-opened issue), and matched
-          # by exact title.
-          open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 1000 --json title \
-            | jq --arg title "$title" '[.[] | select(.title == $title)] | length')
+          # by exact title. A failed listing fails the step: it must not read as "already open".
+          if ! open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 1000 --json title \
+            | jq --arg title "$title" '[.[] | select(.title == $title)] | length'); then
+            echo "::error::Could not list the open issues, so none was opened: $title"
+            exit 1
+          fi
+          case "$open" in
+            ''|*[!0-9]*) echo "::error::Listing the open issues gave no count ($open), so none was opened: $title"
+                         exit 1 ;;
+          esac
           if [ "$open" = "0" ]; then
             gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$(python3 lambda_code.py check-baseline || true)
 
