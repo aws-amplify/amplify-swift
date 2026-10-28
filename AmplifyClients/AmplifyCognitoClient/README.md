@@ -1899,8 +1899,10 @@ The client keeps the plugin's semantics except where listed here and in the sect
   out), and, with an identity pool configured, a signed-out session at its next `fetchAuthSession` (without one, a
   signed-out session doesn't pick up another writer's login in that process). The Auth plugin with an access group
   reads it at every `fetchAuthSession`. An extension on the Auth plugin that holds a guest in memory while the app's
-  access-group migration moves its login can write that guest back over it only from a guest refresh already running
-  at that moment.
+  access-group migration moves its login can write that guest back over it in two cases: from a guest refresh already
+  running at that moment, and from a refresh that one of its user-pool calls starts once the guest's AWS credentials
+  need refreshing (`fetchUserAttributes`, the attribute, device, MFA, TOTP and WebAuthn calls, `updatePassword`,
+  `deleteUser`), since those calls don't re-read the shared keychain first. Relaunch the extension after an update.
 - **The plugin and the client side by side over `.default`** in one app are not supported: they share one saved
   login, but each keeps its tokens in memory. See [Side by side is not supported](#side-by-side-is-not-supported).
 - **`.default`'s signed-out row names the last user the client wrote**, not the plugin's: after the plugin deletes
