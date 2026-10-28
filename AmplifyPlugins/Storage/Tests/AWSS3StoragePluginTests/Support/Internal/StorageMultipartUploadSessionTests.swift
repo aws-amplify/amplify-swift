@@ -99,10 +99,12 @@ class StorageMultipartUploadSessionTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(client.completeMultipartUploadCount, 1)
     }
 
-    /// `pause()` while CompleteMultipartUpload is in flight re-arms the timer through the `.parts`
-    /// case, and `uploadParts` then finds nothing pending, so nothing cancels it again before
-    /// completion returns. Cancelling at the completion call site is not enough on its own --
-    /// `fireProgressStallTimeout`'s state guard is what closes this one.
+    /// Given: A session whose CompleteMultipartUpload takes longer than the stall interval, paused
+    ///   and resumed once every part is done
+    /// When: `resume()` re-arms the timer through the `.parts` case, where `uploadParts` finds
+    ///   nothing pending, so nothing cancels it again before completion returns
+    /// Then: the upload completes and is never aborted -- cancelling at the completion call site is
+    ///   not enough on its own, `fireProgressStallTimeout`'s state guard is what closes this one
     func testProgressStallTimeoutDoesNotAbortAfterPauseResumeDuringCompletion() throws {
         let stallInterval: TimeInterval = 0.1
         let completedExp = expectation(description: "Completed")
@@ -139,6 +141,48 @@ class StorageMultipartUploadSessionTests: XCTestCase, @unchecked Sendable {
         XCTAssertTrue(session.isCompleted)
         XCTAssertEqual(client.abortMultipartUploadCount, 0)
         XCTAssertEqual(client.completeMultipartUploadCount, 1)
+    }
+
+    /// Given: A session whose parts report an empty eTag, so `validateForCompletion()` fails once
+    ///   every part is done, while the stall timer is still armed
+    /// When: validation fails and the stall deadline then elapses
+    /// Then: the caller is told `.failed` exactly once and no AbortMultipartUpload is sent --
+    ///   `fireProgressStallTimeout`'s `case .parts` check is what stops the timer firing in
+    ///   `.failed`, which would otherwise abort an upload the caller has already been told failed
+    func testProgressStallTimeoutDoesNotAbortAfterCompletionValidationFails() throws {
+        let stallInterval: TimeInterval = 0.1
+        let failedExp = expectation(description: "Failed exactly once")
+        let notAbortedExp = expectation(description: "Never aborted")
+        notAbortedExp.isInverted = true
+
+        let client = MockMultipartUploadClient()
+        client.eTagForPart = { _ in "" }
+        client.didAbortMultipartUpload = { _, _ in notAbortedExp.fulfill() }
+
+        let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { event in
+            switch event {
+            case .initiated, .inProcess:
+                break
+            case .failed:
+                failedExp.fulfill()
+            case .completed:
+                XCTFail("Must not complete when the parts fail validation")
+            }
+        }
+
+        let session = StorageMultipartUploadSession(
+            client: client,
+            bucket: "bucket",
+            key: "key",
+            onEvent: onEvent,
+            progressStallTimeoutSeconds: stallInterval
+        )
+        session.startUpload()
+
+        wait(for: [failedExp], timeout: stallInterval + 0.5)
+        wait(for: [notAbortedExp], timeout: stallInterval * 4)
+        XCTAssertEqual(client.abortMultipartUploadCount, 0)
+        XCTAssertEqual(client.completeMultipartUploadCount, 0)
     }
 
     func testSessionCreation() throws {

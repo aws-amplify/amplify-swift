@@ -42,6 +42,8 @@ class MockMultipartUploadClient: StorageMultipartUploadClient, @unchecked Sendab
     var shouldStallPartUpload = false
     /// Delays the `.completed` event from `completeMultipartUpload`, simulating a slow request.
     var completeMultipartUploadDelay: TimeInterval = 0
+    /// Overrides the eTag a completed part reports. An empty eTag fails `validateForCompletion()`.
+    var eTagForPart: ((PartNumber) -> String)?
     var didCompletePartUpload: ((StorageMultipartUploadSession, PartNumber, String, TaskIdentifier) -> Void)?
     var didFailPartUpload: ((StorageMultipartUploadSession, PartNumber, Error) -> Void)?
     var didCompleteMultipartUpload: ((StorageMultipartUploadSession, UploadID) -> Void)?
@@ -96,7 +98,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient, @unchecked Sendab
 
         if let part = session.part(for: partNumber) {
             if part.inProgress {
-                let eTag = UUID().uuidString
+                let eTag = eTagForPart?(partNumber) ?? UUID().uuidString
                 session.handle(uploadPartEvent: .completed(partNumber: partNumber, eTag: eTag, taskIdentifier: taskIdentifier))
                 didCompletePartUpload?(session, partNumber, eTag, taskIdentifier)
             }

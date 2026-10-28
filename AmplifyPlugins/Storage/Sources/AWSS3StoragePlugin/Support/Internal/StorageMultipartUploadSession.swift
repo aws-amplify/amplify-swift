@@ -234,7 +234,6 @@ class StorageMultipartUploadSession: @unchecked Sendable {
         do {
             let reference = StorageTaskReference(transferTask)
             onEvent(.initiated(reference))
-            resetProgressStallTimer()
             logger.debug("Creating Multipart Upload")
             try client.createMultipartUpload()
         } catch {
@@ -266,11 +265,7 @@ class StorageMultipartUploadSession: @unchecked Sendable {
         stallTimerQueue.async { [weak self] in
             self?.stallTimerWorkItem = nil
         }
-        // Only a part transfer can stall; ignore a timer that outlived one. Without this the timer
-        // can still abort an upload that is not transferring: after `pause()`/`resume()` re-arms it
-        // while CompleteMultipartUpload is in flight, after `validateForCompletion()` has failed,
-        // or in `.creating` while CreateMultipartUpload is slow -- the last of which reports
-        // `.failed` to the caller and then still lands the object in S3.
+        // Only a part transfer can stall; ignore a timer that outlived one.
         let isUploadingParts = serialQueue.sync {
             guard case .parts = multipartUpload else { return false }
             return !multipartUpload.partsCompleted
