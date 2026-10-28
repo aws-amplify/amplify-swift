@@ -31,7 +31,8 @@
 # - that a function the baseline records but that is not deployed is DRIFT, and record keeps it rather than drop it,
 #   and that the redeploy advice checks the purpose tag first and reruns --apply --scope all;
 # - that no function deployed at all (another region or account) fails compare and record, and that an empty
-#   baseline is no baseline.
+#   baseline is no baseline;
+# - that a function not compared (no zip from this checkout) is never recorded.
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INFRA="$(cd "$CI_DIR/.." && pwd)"
@@ -525,6 +526,22 @@ nothing_deployed_is_refused() {
         || { echo "check-baseline: $OUT"; return 1; }
 }
 
+# A deployed function that was not compared (no zip from this checkout: the custom sender's needs npm) is never
+# recorded, whatever it holds; the ? line says why.
+an_unchecked_function_is_never_recorded() {
+    local baseline="$WORK/c-baseline.json"
+    build_all "$WORK/c"
+    deploy_all "$WORK/c"
+    redeploy custom-sender edited
+    rm "$WORK/c/custom-sender.zip"
+    run compare "$WORK/deployed.json" "$WORK/c" --baseline "$baseline"
+    (( STATUS == 0 )) && [[ "$OUT" == *"  ? ccit-ci-custom-sender: not compared: no zip was built from this checkout (it needs npm on PATH)"* ]] \
+        || { echo "compare: $OUT"; return 1; }
+    run record "$WORK/deployed.json" "$WORK/c" --baseline "$baseline" --accept-deployed
+    (( STATUS == 1 )) && [[ "$OUT" == *"Nothing recorded: not compared, since no zip was built from this checkout (the custom sender's needs npm on PATH): ccit-ci-custom-sender."* && ! -e "$baseline" ]] \
+        || { echo "record: $OUT"; return 1; }
+}
+
 no_baseline_is_its_own_status() {
     run check-baseline --baseline "$WORK/none.json" --github
     (( STATUS == 3 )) && [[ "$OUT" == "::warning::No CI Lambda deployment is recorded"* ]]
@@ -600,6 +617,7 @@ check "npm's node_modules/.bin/ links count on neither side: a sender zipped wit
 check "a function the baseline records that is not deployed is DRIFT, and record keeps it; the advice is --scope all" \
     a_baselined_function_that_is_not_deployed_is_drift
 check "no function deployed fails compare and record, and an empty baseline is no baseline" nothing_deployed_is_refused
+check "a function not compared (no zip from this checkout) is never recorded" an_unchecked_function_is_never_recorded
 check "no baseline is status 3 with a warning" no_baseline_is_its_own_status
 check "a deployed.json anyone but its owner can read is refused, status 4" a_deployed_json_others_can_read_is_refused
 check "no download directory is left behind" no_download_directory_is_left_behind

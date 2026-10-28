@@ -30,8 +30,9 @@ hands over its CodeSha256 and the presigned URL of its deployed zip, which this 
         Prints the same per-file comparison, then records each deployed function's files (paths and content
         hashes), with the digest of its sources now, as the baseline. Without --accept-deployed it records nothing
         and exits 1: the operator accepts what is deployed, as the comparison shows it, by passing it. It records
-        nothing either (exit 1) while a function the baseline records is not deployed, or no function is deployed
-        at all.
+        nothing either (exit 1) while a deployed function could not be read or was not compared (no zip from this
+        checkout: the custom sender's needs npm), a function the baseline records is not deployed, or no function
+        is deployed at all.
     lambda_code.py check-baseline [--baseline FILE] [--github]
         Offline: whether the sources each recorded function was accepted for are still this checkout's. Exit 0
         when they are, 1 when one changed (redeploy it, then lambda-drift), 3 when no baseline is recorded (or it
@@ -323,8 +324,9 @@ def compared(argv):
                 continue
             zip_path = os.path.join(zips, f"{suffix}.zip")
             if not os.path.isfile(zip_path):
+                why = " (it needs npm on PATH)" if suffix == "custom-sender" else ""
                 results[suffix] = ("unchecked", files,
-                                   [(f"  ? {name}: not compared (no zip built from this checkout)", None)])
+                                   [(f"  ? {name}: not compared: no zip was built from this checkout{why}", None)])
                 continue
             with open(zip_path, "rb") as f:
                 built_bytes = f.read()
@@ -389,6 +391,10 @@ def record(argv):
     if missing := with_status(results, "missing"):
         print(f"Nothing recorded: not deployed, though the baseline records it: {missing}. Make it again with "
               f"{ALL_SCOPES} first; a record never drops a function.")
+        return 1
+    if unchecked := with_status(results, "unchecked"):
+        print(f"Nothing recorded: not compared, since no zip was built from this checkout (the custom sender's needs "
+              f"npm on PATH): {unchecked}. Rerun where it can be built: only what was compared can be accepted.")
         return 1
     if "--accept-deployed" not in argv:
         print("Nothing recorded. The baseline accepts the deployed files, as compared above, for this checkout's "
