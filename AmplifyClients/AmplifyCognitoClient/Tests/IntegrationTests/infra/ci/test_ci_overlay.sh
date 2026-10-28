@@ -17,8 +17,10 @@
 # capabilities, kept only for the roles it gives; and that a file with the sandbox's mark, without a user pool, a
 # credentials file with a non-string, a rotation client on another pool, an alias-codes file without a code API, or
 # an unknown capability refuses the whole overlay, leaving no directory; and that the mfa-req-totp-sms role replaces
-# only the plugin's Gen2 MFA-required file, with a file whose MFA is required with TOTP and SMS; and that the extended
-# role annotates the code sink key's last 30 days and its expiry (code_sink_key.py).
+# only the plugin's Gen2 MFA-required file, with a file whose MFA is required with an array of exactly TOTP and SMS
+# (either half alone, a string, a superset or a null among them refuses), and that without that file CI's other two
+# roles are still overlaid; and that the extended role annotates the code sink key's last 30 days and its expiry
+# (code_sink_key.py).
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT="$CI_DIR/ci-overlay.sh"
@@ -197,10 +199,41 @@ mfa_required_role() {
         > "$WORK/m/$file"
     run "$WORK/m" "$WORK/m-out4" "extended mfa-req-totp-sms"
     (( STATUS == 1 )) && [[ ! -e "$WORK/m-out4" && "$OUT" == *"does not require MFA with TOTP and SMS"* ]] || return 1
-    outputs us-east-1_PLACEHOLDM clientmfa | jq -c '.auth += {mfa_configuration: "REQUIRED", mfa_methods: ["TOTP"]}' \
+    # The methods in another order are the same set.
+    outputs us-east-1_PLACEHOLDM clientmfa | jq -c '.auth += {mfa_configuration: "REQUIRED", mfa_methods: ["TOTP", "SMS"]}' \
         > "$WORK/m/$file"
     run "$WORK/m" "$WORK/m-out5" "mfa-req-totp-sms"
-    (( STATUS == 1 )) && [[ ! -e "$WORK/m-out5" ]]
+    if (( STATUS != 0 )) || ! jq -e '.auth.user_pool_client_id == "clientmfa"' "$WORK/m-out5/$gen2" >/dev/null; then
+        echo "$OUT"
+        return 1
+    fi
+    # Each half alone, a string that names both, a superset, a null among them, and no methods at all.
+    local methods n=6
+    for methods in '["TOTP"]' '["SMS"]' '"SMS,TOTP"' '["SMS","TOTP","EMAIL"]' '["SMS","TOTP",null]' 'null'; do
+        outputs us-east-1_PLACEHOLDM clientmfa \
+            | jq -c --argjson methods "$methods" '.auth += {mfa_configuration: "REQUIRED", mfa_methods: $methods}' \
+            > "$WORK/m/$file"
+        run "$WORK/m" "$WORK/m-out$n" "email-alias extended mfa-req-totp-sms"
+        (( STATUS == 1 )) && [[ ! -e "$WORK/m-out$n" && "$OUT" == *"does not require MFA with TOTP and SMS"* ]] \
+            || { echo "mfa_methods $methods: $OUT"; return 1; }
+        n=$((n + 1))
+    done
+}
+
+# CI's roles, all three, without the MFA-required file: the other two roles are still overlaid, and the MFA-required
+# role stays the plugin's (its Gen1 file as downloaded, no Gen2 file), so a missing file drops only its own role.
+mfa_required_file_missing_keeps_the_other_roles() {
+    local gen1="AWSCognitoAuthPluginMFARequiredIntegrationTests-amplifyconfiguration.json"
+    download "$WORK/n" full
+    echo '{"plugin": true}' > "$WORK/n/$gen1"
+    run "$WORK/n" "$WORK/n-out" "email-alias extended mfa-req-totp-sms"
+    (( STATUS == 0 )) \
+        && jq -e '.auth.user_pool_id == "us-east-1_PLACEHOLDA"' "$WORK/n-out/AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json" >/dev/null \
+        && jq -e '.auth.user_pool_client_id == "clientdefault"' "$WORK/n-out/AmplifyCognitoClientExtendedIntegrationTests-amplify_outputs.json" >/dev/null \
+        && jq -e '.plugin' "$WORK/n-out/$gen1" >/dev/null \
+        && [[ ! -e "$WORK/n-out/AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs.json" ]] \
+        && [[ "$OUT" == *"mfa-req-totp-sms: no ccit-ci-mfa-req-totp-sms"* && "$OUT" == *"ci-overlay: wrote 9 files"* ]] \
+        || { echo "$OUT"; return 1; }
 }
 
 # With the extended role, the code sink key's reminder: an annotation within the key's last 30 days or once it has
@@ -253,6 +286,8 @@ check "the capabilities are kept only for the roles the overlay gives" capabilit
 check "extended alone leaves the device-alias file the plugin's" extended_alone_leaves_the_alias
 check "the MFA-required role replaces the plugin's Gen2 file only, and needs MFA required with TOTP and SMS" \
     mfa_required_role
+check "CI's three roles without the MFA-required file: the other two are overlaid, that role stays the plugin's" \
+    mfa_required_file_missing_keeps_the_other_roles
 check "with the extended role, the code sink key's last 30 days or its expiry are annotated" the_code_sink_key_reminder
 check "a file with the sandbox's mark refuses the overlay" refuses marked "sandbox's mark"
 check "a file without a user pool refuses the overlay" refuses no-pool "with a user pool"

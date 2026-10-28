@@ -40,8 +40,8 @@
 # COGNITO_CLIENT_INTEG_DIR unset, and the tests that need those files fail. A file that does not check out (not JSON,
 # no user pool, the sandbox's mark, a credentials file that is not all strings, a rotation client on another
 # pool, an alias-codes pool without email as the username or a code API, capabilities that are not the known
-# ones, an MFA-required file whose MFA is not required with TOTP and SMS) refuses the whole overlay: exit 1, no
-# <dest-dir>. With the extended role, it also prints the code sink key's reminder (code_sink_key.py) as a GitHub
+# ones, an MFA-required file whose MFA is not required, or whose mfa_methods is not an array of exactly TOTP and
+# SMS) refuses the whole overlay: exit 1, no <dest-dir>. With the extended role, it also prints the code sink key's reminder (code_sink_key.py) as a GitHub
 # annotation, within the key's last 30 days or once it has expired. Prints file names and roles, never their contents.
 set -euo pipefail
 
@@ -157,7 +157,10 @@ for role in $ROLES; do
                 continue
             fi
             check_outputs "$mfa"
-            jq -e '.auth.mfa_configuration == "REQUIRED" and ((.auth.mfa_methods // []) | index("TOTP") and index("SMS"))' \
+            # An array of exactly TOTP and SMS, as provision-ci.sh writes it: not a string (on which index() is a
+            # substring search), and not a superset.
+            jq -e '.auth.mfa_configuration == "REQUIRED"
+                and (.auth.mfa_methods | type == "array" and sort == ["SMS", "TOTP"])' \
                 "$mfa" >/dev/null 2>&1 \
                 || refuse "ccit-ci-mfa-req-totp-sms-amplify_outputs.json does not require MFA with TOTP and SMS."
             PLAN+=("ccit-ci-mfa-req-totp-sms-amplify_outputs.json AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs.json")
