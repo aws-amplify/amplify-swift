@@ -1013,16 +1013,22 @@ The scripts use whatever credentials the AWS CLI resolves, and the first `provis
 refuse any other account (`require_recorded_account` in `lib.sh` and `parity.py`). While no account is recorded
 yet, `lib.sh`'s check exits before any AWS call unless `AWS_PROFILE` is set and none of `AWS_ACCESS_KEY_ID`,
 `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`, `AWS_ROLE_ARN`, `AWS_WEB_IDENTITY_TOKEN_FILE` and the
-`AWS_CONTAINER_CREDENTIALS_*` variables is exported (the CLI can use exported keys, a web identity role or container
-credentials instead of the profile; CI runners and EKS often export the web identity ones). That is all it checks:
-it doesn't know which account the profile belongs to. Set `AWS_PROFILE` to the
-sandbox account's profile and check `aws sts get-caller-identity` before that first run.
+`AWS_CONTAINER_CREDENTIALS_*` variables is exported. The CLI takes exported keys over any profile, and a web identity
+role before the profile's own credentials (CI runners and EKS often export the web identity variables). Container
+credentials come later: the CLI uses them only when the profile holds no credentials of its own, as it does an EC2
+instance role, `AWS_CREDENTIAL_FILE` and the boto files. The check refuses them anyway, to be safe. That is all it
+checks. It doesn't know which account the profile belongs to, or whether the profile holds credentials at all: with
+a profile that holds only a region, on an EC2 host the CLI uses the instance role, and the first run then builds the
+sandbox in that role's account and records it. Set `AWS_PROFILE` to the sandbox account's profile, make sure that
+profile has credentials of its own, and check `aws sts get-caller-identity` before that first run.
 
 The sandbox lives in one region, because its IAM roles are global. `provision.sh` refuses a region other than the one
-`state.json` records, and, with none recorded (a first run, a lost or another state directory), one other than the
-region of the identity pool that `amplify-cognito-client-integ-authenticated` already trusts. Another
-`COGNITO_CLIENT_INTEG_DIR` is no way round it: it would build a second sandbox and re-point the roles at it. To move
-the sandbox, run `teardown.sh` first.
+`state.json` records, and, on every run, a region recorded or not, one other than the region of the identity pool
+that `amplify-cognito-client-integ-authenticated` already trusts. Another `COGNITO_CLIENT_INTEG_DIR` is no way round
+it: it would build a second sandbox and re-point the roles at it. A pair of state directories made that way before
+this check (each records its own region) is refused too, from whichever directory's sandbox the roles don't point
+at. To keep one of them, run `teardown.sh` with the other (it deletes the shared roles too), then `provision.sh` with
+the one you keep. To move the sandbox, run `teardown.sh` first.
 
 | User | State | Set up by |
 |---|---|---|
@@ -1036,9 +1042,11 @@ users, and take CH-1's user from the sandbox's new-password users (`ccit-plugin-
 scripts' checks. `provision.sh` runs `prepare-run.sh` once at the end; after that, `prepare-run.sh` is optional
 before a run (it resets the new-password users and rotates the code sink's key). It never touches `alice`, `bob` or
 `carol`, and it keeps every password stable. Two `prepare-run.sh` runs may overlap (two runners): a user the other
-run created or deleted first, or a device it forgot first, is tolerated; `erin`'s reset is tried again (up to five
-times) when the other run deletes her before her password is set; and `plugin-configs.py --refresh` waits for the
-other run's (up to two minutes). No script prints a secret or passes one to the AWS CLI as an argument.
+run created or deleted first, a device it forgot first, or an expired code sink API key it deleted first
+(`parity.py rotate-key`), is tolerated; `erin`'s reset is tried again (up to five times) when the other run deletes
+her before her password is set; the report says `erin: not found (another run is resetting her)` when the other run
+has just deleted her (any other error reading `dave` or `erin` stops the run); and `plugin-configs.py --refresh`
+waits for the other run's (up to two minutes). No script prints a secret or passes one to the AWS CLI as an argument.
 
 **AWS CLI history must be off.** Passwords, tokens and carol's TOTP secret reach the CLI through
 `--cli-input-json`. With `cli_history = enabled` in `~/.aws/config`, the CLI would record them in
