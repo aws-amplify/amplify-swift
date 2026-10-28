@@ -184,17 +184,24 @@ final class RequiredMFATests: ClientIntegrationTestCase {
     /// saying so, where Cognito refuses the flow (`requireUserAuth(on:)`).
     ///
     /// - Given: a fresh user without a phone number on U-REQ-TS (MFA required, TOTP and SMS, no email MFA), whose
-    ///   app client allows `USER_AUTH`
+    ///   app client allows `USER_AUTH`, and the recorder installed
     /// - When:
     ///    - the user signs in with `userAuth(preferredFirstFactor: .password)` and the password
     ///    - and confirms with a code from the shared secret
     /// - Then:
     ///    - the step is `.continueSignInWithTOTPSetup`, with a shared secret and the user's username, and the
     ///      session waits on it
+    ///    - it sent one `InitiateAuth` `USER_AUTH` preferring `PASSWORD`
     ///    - the confirmation returns `.done`, and the session is signed in as the user
+    ///    - the only challenge it answered was `MFA_SETUP`
     ///
     func testUserAuthPasswordSignInSetsUpTOTPWhenMFASetupIsRequired() async throws {
-        try await assertUserAuthSignInSetsUpTOTP(.password, tag: "mf-ua-password")
+        try await assertUserAuthSignInSetsUpTOTP(
+            .password,
+            tag: "mf-ua-password",
+            preferring: "PASSWORD",
+            answering: ["MFA_SETUP"]
+        )
     }
 
     /// A `USER_AUTH` sign-in with the `PASSWORD_SRP` first factor, answered with `MFA_SETUP`, sets TOTP up, and
@@ -203,17 +210,25 @@ final class RequiredMFATests: ClientIntegrationTestCase {
     /// As `testUserAuthPasswordSignInSetsUpTOTPWhenMFASetupIsRequired`, with the SRP proof for the password; it
     /// skips where the app client refuses `USER_AUTH`.
     ///
-    /// - Given: a fresh user without a phone number on U-REQ-TS, whose app client allows `USER_AUTH`
+    /// - Given: a fresh user without a phone number on U-REQ-TS, whose app client allows `USER_AUTH`, and the
+    ///   recorder installed
     /// - When:
     ///    - the user signs in with `userAuth(preferredFirstFactor: .passwordSRP)` and the password
     ///    - and confirms with a code from the shared secret
     /// - Then:
     ///    - the step is `.continueSignInWithTOTPSetup`, with a shared secret and the user's username, and the
     ///      session waits on it
+    ///    - it sent one `InitiateAuth` `USER_AUTH` preferring `PASSWORD_SRP`
     ///    - the confirmation returns `.done`, and the session is signed in as the user
+    ///    - the challenges it answered were `PASSWORD_VERIFIER`, then `MFA_SETUP`
     ///
     func testUserAuthPasswordSRPSignInSetsUpTOTPWhenMFASetupIsRequired() async throws {
-        try await assertUserAuthSignInSetsUpTOTP(.passwordSRP, tag: "mf-ua-srp")
+        try await assertUserAuthSignInSetsUpTOTP(
+            .passwordSRP,
+            tag: "mf-ua-srp",
+            preferring: "PASSWORD_SRP",
+            answering: ["PASSWORD_VERIFIER", "MFA_SETUP"]
+        )
     }
 }
 
@@ -252,11 +267,24 @@ extension RequiredMFATests {
     }
 
     /// Signs a fresh U-REQ-TS user in with `USER_AUTH` and `factor`, expects the TOTP setup, completes it with a
-    /// fresh code, and checks the session is signed in as the user, which is then deleted.
-    func assertUserAuthSignInSetsUpTOTP(_ factor: AuthClientFactorType, tag: String) async throws {
+    /// fresh code, and checks the session is signed in as the user, which is then deleted. From the requests the
+    /// client sent (`RecordingHTTPClient`), it checks the sign-in was one `InitiateAuth` `USER_AUTH` preferring
+    /// `preferredChallenge`, and that the challenges answered were exactly `challenges`, in order: an SRP or other
+    /// sign-in reaches the same steps on this pool (MF-15), so only the requests tell the flows apart.
+    func assertUserAuthSignInSetsUpTOTP(
+        _ factor: AuthClientFactorType,
+        tag: String,
+        preferring preferredChallenge: String,
+        answering challenges: [String]
+    ) async throws {
         try await requireUserAuth(on: .mfaRequiredTOTPSMS)
         let user = try await makeFreshUser(on: .mfaRequiredTOTPSMS)
-        let client = try makeClient(tag, pool: .mfaRequiredTOTPSMS)
+        let recorder = RecordingHTTPClient()
+        let client = try makeClient(
+            tag,
+            pool: .mfaRequiredTOTPSMS,
+            configureUserPoolClient: recorder.configureUserPoolClient
+        )
 
         let result = try await client.signIn(
             username: user.username,
@@ -264,6 +292,7 @@ extension RequiredMFATests {
             options: AuthClientSignInOptions(authFlowType: .userAuth(preferredFirstFactor: factor))
         )
 
+        assertInitiated(recorder, preferring: preferredChallenge)
         let details = try totpSetupDetails(result.nextStep, of: user)
         let secret = TOTPSecret(details.sharedSecret)
         user.recordTOTPSecret(secret)
@@ -273,6 +302,7 @@ extension RequiredMFATests {
         let confirmed = try await client.confirmSignIn(challengeResponse: TOTP.freshCode(secret: secret))
 
         XCTAssertStep(confirmed.nextStep, .done)
+        XCTAssertEqual(recorder.answered.compactMap(\.challengeName), challenges)
         try await assertSignedInThenDelete(user, on: client)
     }
 

@@ -718,22 +718,6 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
         return factors
     }
 
-    /// Asserts the sign-in sent exactly one `InitiateAuth`, first, with `USER_AUTH`, preferring `factor`
-    /// (nil: no preference).
-    private func assertInitiated(
-        _ recorder: RecordingHTTPClient,
-        preferring factor: String?,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) {
-        let requests = recorder.answered
-        let initiations = requests.filter { $0.operation == "InitiateAuth" }
-        XCTAssertEqual(initiations.count, 1, "exactly one InitiateAuth", file: file, line: line)
-        XCTAssertEqual(requests.first?.operation, "InitiateAuth", file: file, line: line)
-        XCTAssertEqual(initiations.first?.authFlow, "USER_AUTH", file: file, line: line)
-        XCTAssertEqual(initiations.first?.preferredChallenge, factor, file: file, line: line)
-    }
-
     /// Asserts the one `SELECT_CHALLENGE` answer chose `factor`, and the challenges answered were exactly
     /// `challenges`, in order.
     private func assertSelected(
@@ -813,5 +797,24 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
         let tokens = try await client.fetchAuthSession().userPoolTokensResult.get()
         let sub = try IntegrationTestEnvironment.jwtClaims(tokens.idToken)["sub"] as? String
         XCTAssertTrue(sub == user.userSub, "the id token belongs to another user", file: file, line: line)
+    }
+}
+
+extension ClientIntegrationTestCase {
+
+    /// Asserts the sign-in sent exactly one `InitiateAuth`, first, with `USER_AUTH`, preferring `factor`
+    /// (nil: no preference). Shared with `RequiredMFATests`' `USER_AUTH` checks.
+    func assertInitiated(
+        _ recorder: RecordingHTTPClient,
+        preferring factor: String?,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let requests = recorder.answered
+        let initiations = requests.filter { $0.operation == "InitiateAuth" }
+        XCTAssertEqual(initiations.count, 1, "exactly one InitiateAuth", file: file, line: line)
+        XCTAssertEqual(requests.first?.operation, "InitiateAuth", file: file, line: line)
+        XCTAssertEqual(initiations.first?.authFlow, "USER_AUTH", file: file, line: line)
+        XCTAssertEqual(initiations.first?.preferredChallenge, factor, file: file, line: line)
     }
 }
