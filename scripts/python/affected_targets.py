@@ -28,7 +28,8 @@ dependents, and there is no own group to run. Its impact on dependents is covere
 (push to main / nightly).
 
 Fail-closed: a changed file that matches no TARGET at all (and no group path / ignore rule) selects
-ALL groups — genuinely-unattributable changes are never silently skipped. Package.swift and
+ALL groups — genuinely-unattributable changes are never silently skipped (a rename's old path is the
+one exception, see Renames below). Package.swift and
 Package.resolved are NOT among these: manifest/lockfile edits are always-ignored (see
 ALWAYS_IGNORE_NAMES), on the basis that the source changes using a new/changed target trigger their
 own groups. Integration-test host apps and Xcode project bundles (`HostApp/` and `.xcodeproj/`
@@ -36,15 +37,22 @@ contents — see IGNORE_PATH_SUBSTRINGS) are likewise not fail-closed: they are 
 they are attributed to their integ group by its path rule when covered and otherwise ignored, never
 SwiftPM/unit inputs.
 
+Renames: `--changed` is a rename-detecting list (`git diff --name-only -M`), which names a rename's new
+path only, and `--renamed-from` holds the renames' old paths (the source column of `git diff
+--name-status -M --diff-filter=R`). An old path is attributed like any changed file, with one
+difference: one that nothing owns, covers or ignores is skipped rather than failing closed, since its
+new path is already in the changed list. So moving a target's files to a new directory selects what
+the new paths select, not every group. A plain deletion is in the changed list and still fails closed.
+
 Documentation (`.md`) is ignored everywhere, except a file an Xcode project in the checkout copies into
 a bundle (a host app's README in a test target's Copy Bundle Resources): deleting or renaming that one
-breaks the host app's build, so it is attributed like any other host-app file, in every group file. With
-the integration groups that selects the host app's own group. With unit_test_groups.json it selects
-AWSPluginsCore, whose `paths` hold `AmplifyPlugins/` and so cover every plugin host app, as any other
-host-app file already does there: the unit and build workflows then run AWSPluginsCore's group.
+breaks the host app's build, so it is attributed like any other host-app file, in every group file (a
+rename through its old path, which the project still lists). With the integration groups that selects
+the host app's own group. With unit_test_groups.json it selects AWSPluginsCore, whose `paths` hold
+`AmplifyPlugins/` and so cover every plugin host app, as any other host-app file already does there:
+the unit and build workflows then run AWSPluginsCore's group.
 The projects are read from `--repo-root` (default: the current directory, which is the checkout in
-CI). A rename is seen only if the changed list names the old path too (`git diff --name-only
---no-renames`); with rename detection on, git lists only the new path, which no project bundles yet.
+CI).
 
 It also validates the group config: if any group references a target that is absent from the
 SwiftPM graph (a rename, a typo, or a not-yet-wired target), it exits non-zero rather than
@@ -52,7 +60,8 @@ silently never selecting that group.
 
 Usage:
     python3 scripts/python/affected_targets.py \
-        --package package.json --changed changed.txt --groups scripts/python/<groups>.json
+        --package package.json --changed changed.txt [--renamed-from renamed_from.txt] \
+        --groups scripts/python/<groups>.json
 
 Writes to stdout (append to "$GITHUB_OUTPUT"):
     selected=<json array of affected group names>
@@ -305,10 +314,19 @@ def build_graph(pkg):
     return path_of, deps_of, is_test
 
 
+def read_paths(path):
+    """The non-blank lines of a path-list file, stripped."""
+    with open(path) as f:
+        return [line.strip() for line in f if line.strip()]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--package", required=True, help="swift package dump-package JSON")
-    ap.add_argument("--changed", required=True, help="file with one changed path per line")
+    ap.add_argument("--changed", required=True,
+                    help="file with one changed path per line, from a rename-detecting diff (a rename's new path)")
+    ap.add_argument("--renamed-from",
+                    help="file with one rename source (old path) per line; attributed, but never failing closed")
     ap.add_argument("--groups", required=True, help="group definition JSON")
     ap.add_argument("--repo-root", default=".",
                     help="checkout whose Xcode projects are read for bundled docs (default: current directory)")
@@ -316,14 +334,15 @@ def main():
 
     pkg = json.load(open(args.package))
     groups = json.load(open(args.groups))
-    changed = [line.strip() for line in open(args.changed) if line.strip()]
+    changed = read_paths(args.changed)
+    renamed_from = read_paths(args.renamed_from) if args.renamed_from else []
 
     path_of, deps_of, is_test = build_graph(pkg)
 
     # An always-ignored file is ignored unless an Xcode project copies it into a bundle (see
     # ALWAYS_IGNORE_SUFFIXES). The projects are read only when some changed file needs the answer.
-    bundled, unread = (bundled_files(args.repo_root) if any(is_always_ignored(f) for f in changed)
-                       else (set(), []))
+    bundled, unread = (bundled_files(args.repo_root)
+                       if any(is_always_ignored(f) for f in changed + renamed_from) else (set(), []))
 
     def ignored(f):
         return is_always_ignored(f) and f not in bundled and not f.startswith(tuple(unread))
@@ -352,29 +371,37 @@ def main():
     # Map each changed file to its owning target (longest matching path wins). A file owned by no
     # target, matching no group path, and not ignorable is unknown -> fail closed to all groups.
     changed_targets = set()
-    for f in changed:
+
+    def attribute(f):
+        """Record f's owning target; False when nothing owns, covers or ignores f."""
         if ignored(f):
-            continue
+            return True
         owner = max((n for n, p in path_of.items() if f.startswith(p)),
                     key=lambda n: len(path_of[n]), default=None)
         if owner:
             changed_targets.add(owner)
-        elif f.startswith(XCSCHEME_DIR) and f.endswith(XCSCHEME_SUFFIX):
+            return True
+        if f.startswith(XCSCHEME_DIR) and f.endswith(XCSCHEME_SUFFIX):
             # A per-target scheme -> attribute to that target and let dependency logic narrow it.
-            # An umbrella/aggregate scheme names no target -> fail closed (whole-package impact).
+            # An umbrella/aggregate scheme names no target -> unknown (whole-package impact).
             scheme = f[len(XCSCHEME_DIR):-len(XCSCHEME_SUFFIX)]
             if scheme in path_of:
                 changed_targets.add(scheme)
-            else:
-                emit(groups.keys())
-        elif any(f.startswith(p) for p in group_paths):
-            continue  # attributed to a group by its path rule below
-        elif (f.endswith(IGNORE_SUFFIXES) or f.startswith(IGNORE_PREFIXES)
-              or f.rsplit("/", 1)[-1] in IGNORE_NAMES
-              or any(s in f for s in IGNORE_PATH_SUBSTRINGS)):
-            continue
-        else:
+                return True
+            return False
+        if any(f.startswith(p) for p in group_paths):
+            return True  # attributed to a group by its path rule below
+        return (f.endswith(IGNORE_SUFFIXES) or f.startswith(IGNORE_PREFIXES)
+                or f.rsplit("/", 1)[-1] in IGNORE_NAMES
+                or any(s in f for s in IGNORE_PATH_SUBSTRINGS))
+
+    for f in changed:
+        if not attribute(f):
             emit(groups.keys())
+    # A rename's old path: attributed the same way, but an unknown one is skipped rather than failing
+    # closed, since the rename's new path is in `changed` (see the module docstring).
+    for f in renamed_from:
+        attribute(f)
 
     # Each group's source target(s) -> group name.
     source_to_group = {t: name for name, g in groups.items() for t in g.get("targets", [])}
@@ -412,8 +439,8 @@ def main():
     # Groups selected by a path rule (dirs that are not SwiftPM targets). An ignored file (a README
     # under a group's path that no Xcode project bundles, say) selects nothing here either, as in the
     # file loop above; a README a host app bundles selects every group whose path covers it (with the unit
-    # groups, AWSPluginsCore's `AmplifyPlugins/`).
-    relevant = [f for f in changed if not ignored(f)]
+    # groups, AWSPluginsCore's `AmplifyPlugins/`). A rename's old path counts here too.
+    relevant = [f for f in changed + renamed_from if not ignored(f)]
     for name, group in groups.items():
         if any(f.startswith(p) for p in group.get("paths", []) for f in relevant):
             selected.add(name)

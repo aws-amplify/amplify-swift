@@ -52,10 +52,14 @@ jobs:
           fi
           base="$BASE_REF"
           git fetch --no-tags origin "$base" || true
-          git diff --name-only --no-renames "$(git merge-base HEAD "origin/$base")" HEAD > /tmp/changed.txt
+          # With rename detection a rename lists only its new path; its old path goes to --renamed-from, which
+          # the selector attributes (a bundled file's old path still selects its group) but never fails closed on.
+          mb="$(git merge-base HEAD "origin/$base")"
+          git diff --name-only -M "$mb" HEAD > /tmp/changed.txt
+          git diff --name-status -M --diff-filter=R "$mb" HEAD | cut -f2 > /tmp/renamed_from.txt
           swift package dump-package > /tmp/package.json
           python3 scripts/python/affected_targets.py \
-            --package /tmp/package.json --changed /tmp/changed.txt \
+            --package /tmp/package.json --changed /tmp/changed.txt --renamed-from /tmp/renamed_from.txt \
             --groups scripts/python/integ_test_groups.json | tee -a "$GITHUB_OUTPUT"
 
   datastore-base-test:

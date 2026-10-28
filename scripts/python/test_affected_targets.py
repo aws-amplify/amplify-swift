@@ -30,7 +30,8 @@ REPO = os.path.dirname(os.path.dirname(HERE))
 CLIENT = "AmplifyClients/AmplifyCognitoClient/"
 
 
-def stub_package():
+def stub_package(moved=None):
+    """The stub package dump; `moved` maps a target name to the path it has instead (a test target is added)."""
     names = set()
     for path in (INTEG_GROUPS, UNIT_GROUPS):
         with open(path) as f:
@@ -43,6 +44,10 @@ def stub_package():
                     "dependencies": []})
     targets.append({"name": "AmplifyCognitoClientTests", "path": real["AmplifyCognitoClientTests"], "type": "test",
                     "dependencies": [{"byName": ["AmplifyCognitoClient", None]}]})
+    for name, path in (moved or {}).items():
+        targets = [t for t in targets if t["name"] != name]
+        targets.append({"name": name, "path": path, "type": "test" if name.endswith("Tests") else "regular",
+                        "dependencies": []})
     return {"targets": targets}
 
 
@@ -55,21 +60,30 @@ class AffectedTargetsTests(unittest.TestCase):
         with open(self.package, "w") as f:
             json.dump(stub_package(), f)
 
-    def run_selector(self, groups, changed, repo_root=REPO):
-        """The selector's completed process for these changed files, read against `repo_root`'s Xcode projects."""
-        changed_file = os.path.join(self.work.name, "changed.txt")
-        with open(changed_file, "w") as f:
-            f.write("\n".join(changed) + "\n")
-        return subprocess.run(
-            [sys.executable, SCRIPT, "--package", self.package, "--changed", changed_file, "--groups", groups,
-             "--repo-root", repo_root],
-            capture_output=True, text=True, check=True)
+    def write_list(self, name, paths):
+        path = os.path.join(self.work.name, name)
+        with open(path, "w") as f:
+            f.write("\n".join(paths) + "\n")
+        return path
 
-    def selected(self, groups, *changed, repo_root=REPO):
+    def run_selector(self, groups, changed, repo_root=REPO, renamed_from=None):
+        """The selector's completed process for these changed files and rename sources, read against `repo_root`'s
+        Xcode projects."""
+        command = [sys.executable, SCRIPT, "--package", self.package,
+                   "--changed", self.write_list("changed.txt", changed), "--groups", groups]
+        if renamed_from is not None:
+            command += ["--renamed-from", self.write_list("renamed_from.txt", renamed_from)]
+        command += ["--repo-root", repo_root]
+        return subprocess.run(command, capture_output=True, text=True, check=True)
+
+    def selected(self, groups, *changed, repo_root=REPO, renamed_from=None):
         """The `selected=` array the selector prints for these changed files."""
-        result = self.run_selector(groups, changed, repo_root)
-        line = next(line for line in result.stdout.splitlines() if line.startswith("selected="))
-        return json.loads(line[len("selected="):])
+        result = self.run_selector(groups, changed, repo_root, renamed_from)
+        return selection(result)
+
+    def use_package(self, package):
+        with open(self.package, "w") as f:
+            json.dump(package, f)
 
     def scratch_checkout(self, pbxproj):
         """A scratch checkout holding only `GEO_PROJECT` with this `project.pbxproj` text; returns its root."""
@@ -202,11 +216,66 @@ class AffectedTargetsTests(unittest.TestCase):
         """
         root = self.scratch_checkout(GEO_PBXPROJ[:len(GEO_PBXPROJ) // 2])
         result = self.run_selector(INTEG_GROUPS, [GEO_HOST_APP + "GeoStressTests/Notes/README.md"], root)
-        self.assertIn("selected=[\"geo\"]", result.stdout.splitlines())
+        self.assertEqual(selection(result), ["geo"])
         self.assertIn(GEO_PROJECT, result.stderr)
         self.assertEqual(self.selected(INTEG_GROUPS, "AmplifyPlugins/Auth/README.md", repo_root=root), [])
 
+    def test_a_move_that_changes_a_target_directory_selects_only_what_the_new_paths_select(self):
+        """Moving a target's files to a new directory selects the target's group, not every group.
 
+        - Given: a package dump where AmplifyRecordCacheTests now lives at `Tests/UnitTests`, so no target owns its
+          old directory, and the real group files
+        - When:
+           - the changed list names the new paths and Package.swift (as `git diff --name-only -M` does), and the
+             old paths come through `--renamed-from`
+           - or the old paths are in the changed list itself, as plain deletions
+        - Then:
+           - the unit groups select AmplifyRecordCache alone and the integration groups select nothing
+           - a plain deletion of an unattributable path still selects every group (fail closed)
+        """
+        self.use_package(stub_package({"AmplifyRecordCacheTests": RECORD_CACHE + "Tests/UnitTests"}))
+        names = ("AutoFlushSchedulerTests.swift", "RecordCacheTests.swift")
+        new = [RECORD_CACHE + "Tests/UnitTests/" + n for n in names] + ["Package.swift"]
+        old = [RECORD_CACHE + "Tests/" + n for n in names]
+        self.assertEqual(self.selected(UNIT_GROUPS, *new, renamed_from=old), ["AmplifyRecordCache"])
+        self.assertEqual(self.selected(INTEG_GROUPS, *new, renamed_from=old), [])
+        with open(UNIT_GROUPS) as f:
+            every_group = sorted(json.load(f))
+        self.assertEqual(self.selected(UNIT_GROUPS, *(new + old)), every_group)
+
+    def test_a_rename_source_is_attributed_like_a_changed_file(self):
+        """A rename's old path still selects what it would select as a changed file.
+
+        - Given: this checkout's Xcode projects, where the Auth host app bundles `AuthIntegrationTests/README.md`,
+          and the real group files
+        - When:
+           - that README is renamed: the changed list names only its new path, which no project bundles, and the
+             old path comes through `--renamed-from`
+           - or a file moves out of the Cognito client's sources into AmplifyRecordCache's
+        - Then:
+           - the README's old path selects `auth` with the integration groups and AWSPluginsCore with the unit
+             groups, as its deletion does; without `--renamed-from` the rename selects nothing
+           - the moved file selects the groups of the target it left as well as the one it joined
+        """
+        old = "AmplifyPlugins/Auth/Tests/AuthHostApp/AuthIntegrationTests/README.md"
+        new = "AmplifyPlugins/Auth/Tests/AuthHostApp/AuthIntegrationTests/Docs/README.md"
+        self.assertEqual(self.selected(INTEG_GROUPS, new, renamed_from=[old]), ["auth"])
+        self.assertEqual(self.selected(UNIT_GROUPS, new, renamed_from=[old]), ["AWSPluginsCore"])
+        self.assertEqual(self.selected(INTEG_GROUPS, new), [])
+
+        self.use_package(stub_package({"AmplifyRecordCache": RECORD_CACHE + "Sources"}))
+        self.assertEqual(self.selected(UNIT_GROUPS, RECORD_CACHE + "Sources/Moved.swift",
+                                       renamed_from=[CLIENT + "Sources/Moved.swift"]),
+                         ["AWSCognitoAuthPlugin", "AmplifyCognitoClient", "AmplifyRecordCache"])
+
+
+def selection(result):
+    """The `selected=` array in a selector run's output."""
+    line = next(line for line in result.stdout.splitlines() if line.startswith("selected="))
+    return json.loads(line[len("selected="):])
+
+
+RECORD_CACHE = "AmplifyClients/AmplifyRecordCache/"
 GEO_HOST_APP = "AmplifyPlugins/Geo/Tests/GeoHostApp/"
 GEO_PROJECT = GEO_HOST_APP + "GeoHostApp.xcodeproj"
 
