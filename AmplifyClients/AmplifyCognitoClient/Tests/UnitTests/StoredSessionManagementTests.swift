@@ -615,6 +615,79 @@ final class StoredSessionManagementTests: XCTestCase {
         }
     }
 
+    /// A revoke that throws an error the engine did not map is mapped by the sign-out itself. Under a sign-out that
+    /// could not finish, that error is the plain mapping: the session is still signed in, and a retried sign-out
+    /// revokes again.
+    ///
+    /// - Given: saved sessions whose every revoke throws while another process refreshes their credentials: one with a
+    ///   network failure (`URLError.notConnectedToInternet`), one with an error that is not a transport failure
+    /// - When: each is signed out through the static call
+    /// - Then:
+    ///    - each gives up with `.failed(.storageUnavailable(.interrupted))`, and the session is still signed in
+    ///    - the network failure's underlying error has the network texts any other call gives it; the other's says the
+    ///      tokens could not be revoked and suggests retrying the sign-out
+    ///    - no underlying error says the session was signed out on this device, or that it will not be retried
+    func testAContendedSignOutCarriesAThrownRevokeFailureWithoutTheSignOutsContext() async throws {
+        let rows: [(label: String, error: Error, kind: AuthClientError.Kind, description: String, suggestion: String)] = [
+            (
+                "network",
+                URLError(.notConnectedToInternet),
+                .service(nil),
+                AuthClientError.networkFailureDescription,
+                AuthClientError.clientServiceSuggestion
+            ),
+            (
+                "other",
+                NSError(domain: "RevokeTestDomain", code: 7),
+                .unknown,
+                "The session's tokens could not be revoked.",
+                "Retry the sign-out."
+            )
+        ]
+        for (index, row) in rows.enumerated() {
+            let sessionId = ClientFixtures.id("contended-thrown-\(index)")
+            try harness.signIn(sessionId, .signedIn("alice", version: 1))
+            let store = harness.store()
+            let thrown = row.error
+            harness.revoker.scriptRevoke { _ in
+                if case .record(let envelope) = try store.read(sessionId),
+                   let current = envelope.record.credentials.flatMap(FakePayload.decode) {
+                    try store.write(current.refreshed.record(), for: sessionId, expecting: envelope.version)
+                }
+                throw thrown
+            }
+
+            let error = await failedSignOutError(signOut(sessionId))
+
+            XCTAssertEqual(error?.storageUnavailableReason, .interrupted, "\(row.label): \(String(describing: error))")
+            let underlying = try XCTUnwrap(error?.underlyingError as? AuthClientError, row.label)
+            XCTAssertEqual(underlying.kind, row.kind, row.label)
+            XCTAssertEqual(underlying.errorDescription, row.description, row.label)
+            XCTAssertEqual(underlying.recoverySuggestion, row.suggestion, row.label)
+            XCTAssertFalse(underlying.recoverySuggestion.contains("signed out on this device"), row.label)
+            XCTAssertFalse(underlying.recoverySuggestion.contains("will not be retried"), row.label)
+            XCTAssertEqual(try harness.storedRecord(sessionId)?.isSignedOut, false, row.label)
+        }
+    }
+
+    /// - Given: a revoke retry cancelled before it was sent, after an earlier attempt revoked
+    /// - When: the sign-out maps it
+    /// - Then:
+    ///    - for a `.partial` result it keeps the sign-out's context: the revoke will not be retried
+    ///    - for a sign-out that could not finish it says the latest tokens could not be revoked and suggests retrying
+    ///      the sign-out, never that the session was signed out on this device
+    func testACancelledRevokeRetryHasAPlainMappingForAnUnfinishedSignOut() throws {
+        let outcome = SessionSignOut.revokeFailureOutcome(CancellationError())
+
+        XCTAssertEqual(outcome.revokeError?.recoverySuggestion, AuthClientError.revokeNotRetriedSuggestion)
+        let plain = try XCTUnwrap(outcome.firstError)
+        XCTAssertEqual(plain.kind, .unknown)
+        XCTAssertEqual(plain.errorDescription, "The sign-out was cancelled before it could revoke the session's latest tokens.")
+        XCTAssertEqual(plain.recoverySuggestion, "Retry the sign-out.")
+        XCTAssertTrue(plain.underlyingError is CancellationError)
+        XCTAssertFalse(plain.recoverySuggestion.contains("signed out on this device"))
+    }
+
     // MARK: Sign-out through a live session
 
     /// - Given: a live, signed-in session with an event subscriber

@@ -528,7 +528,8 @@ struct EngineSignOutOutcome: Sendable, Equatable {
     /// `revokeError` and `globalSignOutError` mapped as any other call maps them (`AuthClientError(engine:cause:)`),
     /// without the sign-out's context ("The session was signed out on this device, and … will not be retried"),
     /// which holds only once the session is cleared: what a sign-out that could not finish carries (`firstError`).
-    /// `nil` when the failure has no other mapping (one the core built itself); each is kept with its pair.
+    /// `nil` when the failure has no other mapping (a newer schema's record the sign-out could not revoke); each is
+    /// kept with its pair. A revoke attempt that threw has both (`SessionSignOut.revokeFailureOutcome(_:)`).
     var plainRevokeError: AuthClientError?
     var plainGlobalSignOutError: AuthClientError?
 
