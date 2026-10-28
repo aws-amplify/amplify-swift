@@ -31,8 +31,8 @@ hands over its CodeSha256 and the presigned URL of its deployed zip, which this 
         hashes), with the digest of its sources now, as the baseline. Without --accept-deployed it records nothing
         and exits 1: the operator accepts what is deployed, as the comparison shows it, by passing it. It records
         nothing either (exit 1) while a deployed function could not be read or was not compared (no zip from this
-        checkout: the custom sender's needs npm), a function the baseline records is not deployed, or no function
-        is deployed at all.
+        checkout: the custom sender's needs npm), or any function of SOURCES (every one this script zips) is not
+        deployed: a baseline holds all of them, so a record never leaves one out, nor drops one.
     lambda_code.py check-baseline [--baseline FILE] [--github]
         Offline: whether the sources each recorded function was accepted for are still this checkout's. Exit 0
         when they are, 1 when one changed (redeploy it, then lambda-drift), 3 when no baseline is recorded (or it
@@ -382,8 +382,8 @@ def compare(argv):
     return 1 if any(status in ("drift", "missing", "unreadable") for status, _, _ in results.values()) else 0
 
 
-def with_status(results, wanted):
-    return ", ".join(PREFIX + suffix for suffix, (status, _, _) in results.items() if status == wanted)
+def with_status(results, *wanted):
+    return ", ".join(PREFIX + suffix for suffix, (status, _, _) in results.items() if status in wanted)
 
 
 def record(argv):
@@ -395,9 +395,12 @@ def record(argv):
     if any(status == "unreadable" for status, _, _ in results.values()):
         print("Nothing recorded: a deployed function's code could not be read.")
         return 1
-    if missing := with_status(results, "missing"):
-        print(f"Nothing recorded: not deployed, though the baseline records it: {missing}. Make it again with "
-              f"{ALL_SCOPES} first; a record never drops a function.")
+    # Every function this script zips, recorded before or not: a record of part of them would let check-baseline
+    # pass while the others are gone.
+    if missing := with_status(results, "absent", "missing"):
+        print(f"Nothing recorded: not deployed: {missing}. A baseline holds every CI Lambda, so a record never leaves "
+              "one out: first check that the deployed ccit-ci- functions carry purpose=amplify-cognito-client-integ "
+              f"(aws lambda list-tags), then rerun {ALL_SCOPES}, which makes the missing ones from this checkout.")
         return 1
     if unchecked := with_status(results, "unchecked"):
         print(f"Nothing recorded: not compared, since no zip was built from this checkout (the custom sender's needs "

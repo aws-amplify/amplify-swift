@@ -33,6 +33,7 @@
 # - that no function deployed at all (another region or account) fails compare and record, and that an empty
 #   baseline is no baseline;
 # - that a function not compared (no zip from this checkout) is never recorded;
+# - that a record, the first one too, refuses while any of the functions lambda_code.py zips is not deployed;
 # - that a corrupt or encrypted member is unreadable (exit 1), not a traceback.
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -498,7 +499,7 @@ a_baselined_function_that_is_not_deployed_is_drift() {
         && [[ "$OUT" == *"::error::DRIFT ccit-ci-verify-auth-challenge: not deployed"* && "$(grep -c "are this checkout's" <<<"$OUT")" == 4 ]] \
         || { echo "compare: $OUT"; return 1; }
     run record "$WORK/deployed.json" "$WORK/m" --baseline "$baseline" --accept-deployed
-    (( STATUS == 1 )) && [[ "$OUT" == *"Nothing recorded: not deployed, though the baseline records it: ccit-ci-create-auth-challenge, ccit-ci-define-auth-challenge, ccit-ci-pre-sign-up-confirmable, ccit-ci-verify-auth-challenge. Make it again with provision-ci.sh --apply --scope all first"* ]] \
+    (( STATUS == 1 )) && [[ "$OUT" == *"Nothing recorded: not deployed: ccit-ci-create-auth-challenge, ccit-ci-define-auth-challenge, ccit-ci-pre-sign-up-confirmable, ccit-ci-verify-auth-challenge. A baseline holds every CI Lambda"*"first check that the deployed ccit-ci- functions carry purpose=amplify-cognito-client-integ (aws lambda list-tags), then rerun provision-ci.sh --apply --scope all"* ]] \
         && cmp -s "$baseline" "$WORK/m-recorded.json" || { echo "record: $OUT"; return 1; }
     run compare "$WORK/deployed.json" "$WORK/m" --baseline "$WORK/m-none.json"
     (( STATUS == 0 )) && [[ "$(grep -c ': not deployed$' <<<"$OUT")" == 4 && "$OUT" != *DRIFT* ]] || { echo "no baseline: $OUT"; return 1; }
@@ -582,6 +583,31 @@ PY
         || { echo "record: $STATUS $OUT"; return 1; }
 }
 
+# A baseline holds every function lambda_code.py zips: with one not deployed, even a first record (no baseline yet)
+# writes nothing and names it; the complete set records, every function in it.
+a_record_holds_every_function() {
+    local baseline="$WORK/a-baseline.json"
+    build_all "$WORK/a8"
+    deploy_all "$WORK/a8"
+    undeploy new-password-reset
+    run record "$WORK/deployed.json" "$WORK/a8" --baseline "$baseline" --accept-deployed
+    (( STATUS == 1 )) && [[ "$OUT" == *"Nothing recorded: not deployed: ccit-ci-new-password-reset. A baseline holds every CI Lambda"* ]] \
+        && [[ "$OUT" == *"carry purpose=amplify-cognito-client-integ (aws lambda list-tags), then rerun provision-ci.sh --apply --scope all"* ]] \
+        && [[ ! -e "$baseline" ]] || { echo "one missing: $OUT"; return 1; }
+    deploy_all "$WORK/a8"
+    run record "$WORK/deployed.json" "$WORK/a8" --baseline "$baseline" --accept-deployed
+    (( STATUS == 0 )) && [[ "$OUT" == *"Recorded the deployed files of 8 functions"* ]] \
+        && python3 - "$SCRIPT" "$baseline" <<'PY' || { echo "the complete set: $OUT"; return 1; }
+import importlib.util, json, sys
+spec = importlib.util.spec_from_file_location("lambda_code", sys.argv[1])
+lambda_code = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(lambda_code)
+with open(sys.argv[2]) as f:
+    recorded = json.load(f)["functions"]
+assert sorted(recorded) == sorted(lambda_code.SOURCES), sorted(recorded)
+PY
+}
+
 no_baseline_is_its_own_status() {
     run check-baseline --baseline "$WORK/none.json" --github
     (( STATUS == 3 )) && [[ "$OUT" == "::warning::No CI Lambda deployment is recorded"* ]]
@@ -659,6 +685,8 @@ check "a function the baseline records that is not deployed is DRIFT, and record
 check "no function deployed fails compare and record, and an empty baseline is no baseline" nothing_deployed_is_refused
 check "a function not compared (no zip from this checkout) is never recorded" an_unchecked_function_is_never_recorded
 check "a corrupt or encrypted member is unreadable, exit 1, not a traceback" a_corrupt_or_encrypted_member_is_unreadable
+check "a record, the first one too, refuses while any function is not deployed; the complete set records" \
+    a_record_holds_every_function
 check "no baseline is status 3 with a warning" no_baseline_is_its_own_status
 check "a deployed.json anyone but its owner can read is refused, status 4" a_deployed_json_others_can_read_is_refused
 check "no download directory is left behind" no_download_directory_is_left_behind
