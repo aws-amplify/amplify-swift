@@ -16,7 +16,7 @@
 # that compare reads the deployed zips file by file: a function deployed from this checkout is in sync, so is one
 # whose zip holds the same files compressed and dated otherwise (its CodeSha256 only noted), and one with other
 # files is DRIFT, by name, with the files that differ, never a hash or a URL, each name escaped (so with --github none
-# can end its line or start a workflow command); that a URL that is not https:// on a
+# can end its line or start a workflow command, nor hold a legacy ##[ one); that a URL that is not https:// on a
 # Lambda code bucket's S3 host (the real hosts' shapes are, other amazonaws.com hosts and look-alikes are not; file://
 # and http://127.0.0.1 only in the self-tests), a redirect, a download over 50 MB or one that is no zip is refused
 # (over a local server on 127.0.0.1, which only the self-tests' variable lets through), and a malformed URL is
@@ -221,23 +221,25 @@ assert not wrong, wrong
 PY
 }
 
-# A deployed zip whose member names hold a newline, a carriage return, an escape, a line separator and a backslash:
-# with --github each prints escaped, on its line, and the only workflow command is the DRIFT annotation.
+# A deployed zip whose member names hold a newline, a carriage return, an escape, a line separator, a backslash and
+# the runner's legacy ##[ commands: with --github each prints escaped, on its line, and the only workflow command is
+# the DRIFT annotation.
 member_names_print_escaped() {
     build_all "$WORK/n"
     deploy_all "$WORK/n"
     python3 - "$WORK/deployed/discard-sender.zip" <<'PY'
 import sys, zipfile
 with zipfile.ZipFile(sys.argv[1], "a") as z:
-    for name in ("a\n::error::injected", "b\r\n::warning file=x::injected", "c\x1b[31m", "d\u2028::notice::injected", "e\\n"):
+    for name in ("a\n::error::injected", "b\r\n::warning file=x::injected", "c\x1b[31m", "d\u2028::notice::injected", "e\\n",
+                 "f/##[warning]injected", "x/##[stop-commands]t"):
         z.writestr(name, b"x")
 PY
     jq -c --arg s "$(sha "$WORK/deployed/discard-sender.zip")" '.["discard-sender"].codeSha256 = $s' "$WORK/deployed.json" \
         > "$WORK/d" && mv "$WORK/d" "$WORK/deployed.json"
     run compare "$WORK/deployed.json" "$WORK/n" --baseline "$BASELINE" --github
-    local expected='      only deployed (5): a\n::error::injected, b\r\n::warning file=x::injected, c\x1b[31m, d\u2028::notice::injected, e\\n'
+    local expected='      only deployed (7): a\n::error::injected, b\r\n::warning file=x::injected, c\x1b[31m, d\u2028::notice::injected, e\\n, f/\x23\x23[warning]injected, x/\x23\x23[stop-commands]t'
     (( STATUS == 1 )) && [[ "$(grep -c '^::' <<<"$OUT")" == 1 && "$(grep '^::' <<<"$OUT")" == "::error::DRIFT ccit-ci-discard-sender: "* ]] \
-        && grep -qxF -- "$expected" <<<"$OUT" \
+        && grep -qxF -- "$expected" <<<"$OUT" && [[ "$OUT" != *'##['* ]] \
         && python3 -c 'import sys; sys.exit(any(c in sys.stdin.read() for c in "\r\x1b\u2028"))' <<<"$OUT" \
         || { echo "$OUT"; return 1; }
 }

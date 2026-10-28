@@ -262,8 +262,10 @@ def difference(deployed, built):
 def shown(path):
     """`path` as it prints: a zip member's name is the deployed zip's to choose, so a backslash and every character
     that is not printable (a newline, a carriage return, an escape, a line separator) are escaped as in a Python
-    string. A name can then never end the line it is on, nor start a line, and so never a workflow command."""
-    return "".join(c if c.isprintable() and c != "\\" else c.encode("unicode_escape").decode("ascii") for c in path)
+    string. A name can then never end the line it is on, nor start a line, and so never a workflow command. A `#` is
+    escaped too (as \\x23), since the runner's legacy commands (##[…]) are found anywhere in a line."""
+    return "".join(c if c.isprintable() and c not in "\\#" else "\\x23" if c == "#"
+                   else c.encode("unicode_escape").decode("ascii") for c in path)
 
 
 def difference_lines(changed, extra, missing):
