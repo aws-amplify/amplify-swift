@@ -116,6 +116,141 @@ final class LiveEngineServiceFailureTests: XCTestCase {
         }
     }
 
+    /// The sign-in flows whose Cognito failure the engine reports as its authentication error
+    /// (`ThrowSignInError`): `USER_AUTH`, auto sign-in, and the device SRP answers of a sign-in on a remembered device.
+    ///
+    /// - Given: the user pool's `InternalErrorException` from `InitiateAuth` for `USER_AUTH` (with the password factor,
+    ///   and with no preference) and for an auto sign-in after carol's sign-up, and from the `DEVICE_SRP_AUTH` answer,
+    ///   then the `DEVICE_PASSWORD_VERIFIER` answer, of a sign-in with alice's device record
+    /// - When: the live engine signs in, and signs in automatically
+    /// - Then:
+    ///    - each throws `.service` with no code, Cognito's message in the description and the retry suggestion; none
+    ///      asks for a bug report
+    func testACognitoInternalErrorInTheOtherSignInFlowsSuggestsARetry() async throws {
+        let rows: [(String, (LiveEngineHarness, LiveSessionEngine) async throws -> Void)] = [
+            ("USER_AUTH, password", { harness, engine in
+                harness.cognito.always("InitiateAuth") { (_: InitiateAuthInput) -> InitiateAuthOutput in
+                    throw AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+                }
+                _ = try await engine.signIn(.flow(.userAuth(preferredFirstFactor: .password)), current: nil)
+            }),
+            ("USER_AUTH, no preference", { harness, engine in
+                harness.cognito.always("InitiateAuth") { (_: InitiateAuthInput) -> InitiateAuthOutput in
+                    throw AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+                }
+                _ = try await engine.signIn(.flow(.userAuth(preferredFirstFactor: nil), password: nil), current: nil)
+            }),
+            ("autoSignIn", { harness, engine in
+                harness.cognito.once("SignUp") { (_: SignUpInput) in
+                    SignUpOutput(session: "sign-up-session", userConfirmed: false, userSub: "sub")
+                }
+                harness.cognito.once("ConfirmSignUp") { (_: ConfirmSignUpInput) in ConfirmSignUpOutput(session: "auto-session") }
+                harness.cognito.always("InitiateAuth") { (_: InitiateAuthInput) -> InitiateAuthOutput in
+                    throw AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+                }
+                _ = try await engine.signUp(.carol)
+                _ = try await engine.confirmSignUp(EngineConfirmSignUpRequest(
+                    username: "carol",
+                    confirmationCode: "123456",
+                    clientMetadata: [:],
+                    forceAliasCreation: nil
+                ))
+                _ = try await engine.autoSignIn(current: nil)
+            }),
+            ("DEVICE_SRP_AUTH", { harness, engine in
+                try Self.scriptDeviceSignIn(on: harness, failingAnswer: 1)
+                _ = try await engine.signIn(.srp(), current: nil)
+            }),
+            ("DEVICE_PASSWORD_VERIFIER", { harness, engine in
+                try Self.scriptDeviceSignIn(on: harness, failingAnswer: 2)
+                _ = try await engine.signIn(.srp(), current: nil)
+            })
+        ]
+        for (name, body) in rows {
+            let fresh = LiveEngineHarness()
+            harness = fresh
+            let engine = try fresh.engine()
+            await assertThrowsAsync({ try await body(fresh, engine) }) { error in
+                Self.assertCodelessService(error, suggesting: AuthClientError.serviceFaultSuggestion, name)
+                XCTAssertTrue(Self.mapped(error)?.errorDescription.contains("boom") == true, "\(name): \(error)")
+            }
+        }
+    }
+
+    #if os(iOS) || os(macOS) || os(visionOS)
+    /// A passkey sign-in's own calls: answering the `WEB_AUTHN` selection for the credential options, and answering
+    /// `WEB_AUTHN` with the sheet's credential.
+    ///
+    /// - Given: a passkey sheet that presents nothing, and the user pool's `InternalErrorException` from the
+    ///   `RespondToAuthChallenge` that sends the credential, after `InitiateAuth` preferring `WEB_AUTHN`; and from the
+    ///   one that answers the first-factor selection with `WEB_AUTHN`
+    /// - When: alice signs in with the preference and a window; and signs in with no preference and selects `WEB_AUTHN`
+    /// - Then:
+    ///    - each throws `.service` with no code, Cognito's message in the description and the retry suggestion; none
+    ///      asks for a bug report
+    func testACognitoInternalErrorInAPasskeySignInSuggestsARetry() async throws {
+        guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
+            throw XCTSkip("Passkeys need iOS 17.4, macOS 13.5 or visionOS 1.0")
+        }
+        let window = await WebAuthnFixtures.window()
+        let anchor = await MainActor.run { EnginePresentationAnchorBox(window) }
+        let context = EngineCeremonyContext(anchor: anchor, ceremony: WebAuthnCredentialOperations.runCeremonyDirectly)
+        let rows: [(String, (LiveEngineHarness, LiveSessionEngine) async throws -> Void)] = [
+            ("credential", { harness, engine in
+                harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in
+                    LiveEngineFixtures.initiateChallenge(.webAuthn, parameters: ["CREDENTIAL_REQUEST_OPTIONS": WebAuthnFixtures.requestOptions])
+                }
+                harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) -> RespondToAuthChallengeOutput in
+                    throw AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+                }
+                _ = try await engine.signIn(EngineSignInRequest(
+                    username: "alice",
+                    password: nil,
+                    authFlowType: .userAuth(preferredFirstFactor: .webAuthn),
+                    clientMetadata: [:],
+                    webAuthn: context
+                ), current: nil)
+            }),
+            ("selection", { harness, engine in
+                harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in
+                    InitiateAuthOutput(
+                        availableChallenges: [.password, .webAuthn],
+                        challengeName: .selectChallenge,
+                        challengeParameters: [:],
+                        session: "select-session"
+                    )
+                }
+                harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) -> RespondToAuthChallengeOutput in
+                    throw AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+                }
+                let first = try await engine.signIn(EngineSignInRequest(
+                    username: "alice",
+                    password: nil,
+                    authFlowType: .userAuth(preferredFirstFactor: nil),
+                    clientMetadata: [:],
+                    webAuthn: context
+                ), current: nil)
+                guard case .challenge(.continueSignInWithFirstFactorSelection) = first else {
+                    throw FixtureError(description: "expected the first-factor selection, got \(first)")
+                }
+                var answer = EngineConfirmSignInRequest.answer("WEB_AUTHN")
+                answer.webAuthn = context
+                _ = try await engine.confirmSignIn(answer, current: nil)
+            })
+        ]
+        for (name, body) in rows {
+            let fresh = LiveEngineHarness()
+            harness = fresh
+            let engine = try fresh.engine(sheet: FakePasskeySheet())
+            await assertThrowsAsync({ try await body(fresh, engine) }) { error in
+                Self.assertCodelessService(error, suggesting: AuthClientError.serviceFaultSuggestion, name)
+                XCTAssertTrue(Self.mapped(error)?.errorDescription.contains("boom") == true, "\(name): \(error)")
+            }
+            fresh.cognito.assertConsumed()
+        }
+    }
+    #endif
+
     /// - Given: `InitiateAuth` and `GetId` failing with an error status the SDK does not model, of 500, 503 and 400
     /// - When: the live engine signs in, and federates
     /// - Then:
@@ -334,6 +469,28 @@ final class LiveEngineServiceFailureTests: XCTestCase {
     }
 
     // MARK: Helpers
+
+    /// Scripts a sign-in on alice's remembered device: her device record, `InitiateAuth` answering the password
+    /// verifier, its answer `DEVICE_SRP_AUTH`, and that answer `DEVICE_PASSWORD_VERIFIER`. Answer `failingAnswer`
+    /// of the device's two (1: `DEVICE_SRP_AUTH`, 2: `DEVICE_PASSWORD_VERIFIER`) fails with the user pool's
+    /// `InternalErrorException`.
+    private static func scriptDeviceSignIn(on harness: LiveEngineHarness, failingAnswer: Int) throws {
+        let device = DeviceMetadata.metadata(.init(deviceKey: "us-east-1_device-alice", deviceGroupKey: "group-alice"))
+        try harness.keychain.deviceStore(for: harness.namespace).saveDeviceMetadata(device, for: "alice")
+        harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in LiveEngineFixtures.passwordVerifier("alice") }
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in
+            LiveEngineFixtures.challenge(.deviceSrpAuth, session: "device-srp-session")
+        }
+        if failingAnswer == 2 {
+            let verifier = LiveEngineFixtures.passwordVerifier("alice").challengeParameters ?? [:]
+            harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in
+                LiveEngineFixtures.challenge(.devicePasswordVerifier, parameters: verifier, session: "device-verifier-session")
+            }
+        }
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) -> RespondToAuthChallengeOutput in
+            throw AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+        }
+    }
 
     /// The client error a live engine call threw: itself, or the one a session operation carries.
     private static func mapped(_ error: Error) -> AuthClientError? {

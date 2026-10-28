@@ -496,9 +496,9 @@ final class EngineMappingTests: XCTestCase {
     ///
     /// - Given: engine `.unknown` errors over an error status the SDK does not model (`UnknownAWSHTTPServiceError`)
     ///   of 500, 503, 400 and 404; engine failures made from either pool's `InternalErrorException`, on its own and
-    ///   inside the sign-in, WebAuthn, authorization, session and sign-up errors, and inside one of them inside another,
-    ///   as the engine's mapping unwraps them, which the engine reports as
-    ///   `.unknown` with nothing underneath; and an engine `.unknown` with no cause, with a cause that is not a
+    ///   inside the sign-in, authentication, WebAuthn, authorization, session and sign-up errors, and inside one of them
+    ///   inside another, as the engine's mapping unwraps them, which the engine reports as `.unknown` with nothing
+    ///   underneath; and an engine `.unknown` with no cause, with a cause that is not a
     ///   service error, and with another Cognito exception as its cause
     /// - When:
     ///    - each is mapped
@@ -541,6 +541,12 @@ final class EngineMappingTests: XCTestCase {
             ("user pool", userPool),
             ("identity pool", identityPool),
             ("sign-in", SignInError.service(error: userPool)),
+            // `ThrowSignInError`'s shape: how `USER_AUTH`, auto sign-in and device SRP report a failed call.
+            (
+                "authentication",
+                AuthenticationError.service(message: "\(SignInError.service(error: userPool))", error: SignInError.service(error: userPool))
+            ),
+            // The passkey sign-in actions' shape (`FetchCredentialOptions`, `VerifyWebAuthnCredential`).
             ("WebAuthn sign-in", SignInError.webAuthn(.service(error: userPool))),
             ("authorization", AuthorizationError.service(error: identityPool)),
             ("session", AuthorizationError.sessionError(.service(identityPool), .noCredentials)),

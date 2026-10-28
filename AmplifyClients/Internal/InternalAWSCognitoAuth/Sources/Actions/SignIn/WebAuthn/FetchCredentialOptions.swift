@@ -81,7 +81,9 @@ package struct FetchCredentialOptions: Action {
             return webAuthnError
         }
         if let authError = error as? EngineAuthErrorConvertible {
-            return .service(error: authError.engineError)
+            // The service's exception itself, not only its engine error, which reads the same: a caller that maps
+            // the failure itself needs it (the engine error keeps nothing under an `InternalErrorException`).
+            return .service(error: authError)
         }
         return .unknown(
             message: "Unable to fetch credential creation options",

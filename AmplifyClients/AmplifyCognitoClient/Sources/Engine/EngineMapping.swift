@@ -326,8 +326,10 @@ extension AuthClientError {
     /// fits it in place of the engine's "report a bug" text (`serviceFailureSuggestion(underlying:cause:)`): an error
     /// status the SDK does not model, or Cognito's `InternalErrorException`. The engine keeps nothing under the
     /// latter, so only `cause`, the failure the engine error was made from, tells it apart. Every call that reaches
-    /// Cognito passes it: for `deleteUser`, a sign-out's revoke and global sign-out, and the passkey credential calls,
-    /// the engine carries it beside the engine error.
+    /// Cognito passes it: the sign-in flows' state-machine errors hold the exception (`serviceException(in:)`: a
+    /// `USER_AUTH`, auto or device SRP sign-in's authentication error, a passkey sign-in's `WebAuthnError.service`), and
+    /// for `deleteUser`, a sign-out's revoke and global sign-out, and the passkey credential calls, the engine carries
+    /// it beside the engine error.
     ///
     /// Engine texts that name the plugin's calls are given the client's names (`clientText(_:)`): the recovery
     /// suggestions in `clientRecoverySuggestions` ("Invoke Auth.signIn …" becomes "Call signIn …"), and
@@ -620,6 +622,9 @@ extension AuthClientError {
              SignUpError.service(let error):
             return serviceException(in: error)
         case SignInError.webAuthn(.service(let error as Error)):
+            return serviceException(in: error)
+        case AuthenticationError.service(_, let error?):
+            // `ThrowSignInError`: how `USER_AUTH`, auto sign-in and device SRP end a failed call.
             return serviceException(in: error)
         case AuthorizationError.sessionError(let error, _):
             return serviceException(in: error)
