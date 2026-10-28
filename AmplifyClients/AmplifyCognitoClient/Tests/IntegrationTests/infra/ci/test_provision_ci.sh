@@ -24,8 +24,9 @@
 # only the alias-codes and MFA-required pools and what they need, updates only the script's own resources, and
 # uploads only the three new files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after phase 2 makes no call, and
 # a code sink key near its expiry is extended in place, its expiry recorded for the reminder (and by key-expiry
-# --record, read-only), and that an expired one's replacement is recorded only once the uploaded files that name the
-# old key are replaced; that the AppSync headroom is checked only by a run that
+# --record, read-only; a record that cannot be written is never reported as written), and that an expired one's
+# replacement is recorded only once the uploaded files that name the old key are replaced; that the AppSync headroom
+# is checked only by a run that
 # creates the API, against CCIT_CI_APPSYNC_API_QUOTA; that a dry run refuses a custom sender to build without npm,
 # and a failed npm ci stops --apply before the sender; that lambda-drift downloads each deployed zip and tells a
 # Lambda whose files are not this checkout's, which --record --accept-deployed alone accepts; that snapshot and
@@ -450,7 +451,8 @@ days_from_now() { python3 -c 'import datetime,sys;print(datetime.datetime.now(da
 
 # The code sink key's expiry, recorded for the reminder (code_sink_key.py): --apply --scope all records it, and says
 # so when it changed; key-expiry reads it with read calls only, and --record writes it; and the record holds the date
-# alone.
+# alone. A record that cannot be written (here under a missing directory) is never reported as recorded: key-expiry
+# --record exits 1, and --apply says so and goes on.
 the_key_expiry_is_recorded() {
     local recorded
     recorded=$(jq -r .expires "$CCIT_CI_KEY_RECORD") || return 1
@@ -466,6 +468,14 @@ the_key_expiry_is_recorded() {
     run key-expiry --record
     (( STATUS == 0 )) && only_reads && [[ "$(jq -r .expires "$CCIT_CI_KEY_RECORD")" == "$recorded" ]] \
         && [[ "$OUT" == *"Recorded the code sink's API key's expiry, $recorded"* ]] || { echo "$OUT"; return 1; }
+    CCIT_CI_KEY_RECORD="$WORK/no-such-dir/code-sink-key-expiry.json" run key-expiry --record
+    (( STATUS == 1 )) && only_reads && [[ ! -e "$WORK/no-such-dir" && "$OUT" != *"Recorded the code sink"* ]] \
+        && [[ "$OUT" == *"Not recorded: the code sink's API key's expiry, $recorded, could not be written to"* ]] \
+        || { echo "$OUT"; return 1; }
+    CCIT_CI_KEY_RECORD="$WORK/no-such-dir/code-sink-key-expiry.json" run --apply --scope all
+    (( STATUS == 0 )) && [[ "$OUT" == *"Done: 0 calls made."* && "$OUT" != *"Recorded the code sink"* ]] \
+        && [[ "$OUT" == *"Not recorded: the code sink's API key's expiry, $recorded, could not be written to"* ]] \
+        && [[ ! -e "$WORK/no-such-dir" ]] || { echo "$OUT" | tail -5; return 1; }
     run --record
     (( STATUS == 2 ))
 }

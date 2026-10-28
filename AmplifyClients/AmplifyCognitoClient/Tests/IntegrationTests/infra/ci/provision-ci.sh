@@ -1376,7 +1376,11 @@ note_key_expiry() {
         return 0
     fi
     before=$(jq -r '.expires // ""' "$KEY_RECORD" 2>/dev/null || true)
-    python3 "$CI_DIR/code_sink_key.py" record "$API_KEY_EXPIRES" --record "$KEY_RECORD" >/dev/null
+    # Checked here: this function runs on the left of || only, where set -e is off.
+    python3 "$CI_DIR/code_sink_key.py" record "$API_KEY_EXPIRES" --record "$KEY_RECORD" >/dev/null || {
+        say "Not recorded: the code sink's API key's expiry, $date, could not be written to $KEY_RECORD (above)."
+        return 1
+    }
     if [[ "$before" == "$date" ]]; then
         say "The code sink's API key expires on $date, as $(basename "$KEY_RECORD") records."
     else
