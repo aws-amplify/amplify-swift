@@ -60,7 +60,8 @@ final class DefaultSessionGuestLegacyLoginTests: XCTestCase {
     }
 
     /// - Given: `.default`'s record holding `{"noCredentials":{}}`, as a sign-out stopped between its signed-out write
-    ///   and its clear left it, and AWSMobileClient logins
+    ///   and its clear left it, or a plugin sign-out under an access group whose clear failed, and AWSMobileClient
+    ///   logins
     /// - When: `.default`'s session is fetched, which fetches a guest
     /// - Then:
     ///    - the record holds a guest, and the logins are gone

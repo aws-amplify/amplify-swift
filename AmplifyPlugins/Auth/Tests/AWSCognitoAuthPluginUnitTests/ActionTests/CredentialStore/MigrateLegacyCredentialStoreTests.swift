@@ -474,7 +474,8 @@ extension MigrateLegacyCredentialStoreTests {
     /// Test that a signed-out record stops the migration, so a user who signed out is not signed back in
     ///
     /// - Given: A new credential store holding the signed-out record (`.noCredentials`, which a sign-out through
-    ///   the Cognito client's default session saves; the plugin's own sign-out deletes the record), and in turn
+    ///   the Cognito client's default session saves, and the plugin's own sign-out under an access group; without
+    ///   one the plugin's sign-out deletes the record), and in turn
     ///   a readable legacy login, a readable legacy guest, and a legacy login whose refresh token read fails
     ///   with `errSecInteractionNotAllowed`
     /// - When:
