@@ -17,8 +17,9 @@
 # exported (the CLI would take the keys over the profile), or AWS_ROLE_ARN, AWS_WEB_IDENTITY_TOKEN_FILE or an
 # AWS_CONTAINER_CREDENTIALS_* variable (its web identity and container providers), and one with it and none of them
 # goes on; that once state.json records the account, exported keys go on to the caller's identity, which the account
-# check compares; that the region refusal points at a teardown, and with no region recorded a sandbox in another
-# region (its global role's identity pool) is refused before any change; that find_by_name follows NextToken to the
+# check compares; that the region refusal points at a teardown, and a sandbox in another region (its global role's
+# identity pool) is refused before any change, with no region recorded and with one recorded (another state directory's
+# sandbox); that find_by_name follows NextToken to the
 # page that has the name, and stops at the last page without it; and that record_state merges into state.json (mode
 # 600), keeping what it does not set (the parity section).
 set -euo pipefail
@@ -158,6 +159,24 @@ a_first_run_beside_a_sandbox_in_another_region_is_refused() {
     done
 }
 
+# A region recorded in this state directory does not rule out a sandbox in another region under another one: its
+# global role's identity pool there is refused before any change too, and one in the recorded region goes on.
+a_recorded_region_beside_a_sandbox_in_another_region_is_refused() {
+    : > "$FAKE_LOG"
+    STATUS=0
+    OUT=$(FAKE_ACCOUNT=000000000000 FAKE_ROLE_AUDIENCE="us-east-1:00000000-0000-4000-8000-000000000000" \
+        "$SCRIPT" 2>&1) || STATUS=$?
+    (( STATUS == 1 )) && [[ "$OUT" == *"trusts an identity pool in us-east-1, not us-west-2"* ]] \
+        && [[ "$OUT" != *00000000-0000-4000* ]] && grep -q -- '--region us-west-2 .*iam get-role' "$FAKE_LOG" \
+        && ! grep -vE 'configure |sts get-caller-identity|iam get-role' "$FAKE_LOG" | grep -q . \
+        || { echo "$OUT"; return 1; }
+    : > "$FAKE_LOG"
+    STATUS=0
+    OUT=$(FAKE_ACCOUNT=000000000000 FAKE_ROLE_AUDIENCE="us-west-2:00000000-0000-4000-8000-000000000000" \
+        "$SCRIPT" 2>&1) || STATUS=$?
+    [[ "$OUT" != *"trusts an identity pool"* ]] && grep -q -- 'iam get-role' "$FAKE_LOG" || { echo "$OUT"; return 1; }
+}
+
 # provision.sh's helpers, run over a fake `aws` function that pages its items two at a time.
 eval "$(python3 - "$SCRIPT" <<'PY'
 import sys
@@ -221,6 +240,8 @@ check "the region refusal points at a teardown, not at another state directory" 
     the_region_refusal_does_not_advise_another_state_directory
 check "with no region recorded, a sandbox already in another region is refused before any change" \
     a_first_run_beside_a_sandbox_in_another_region_is_refused
+check "with a region recorded, a sandbox in another region (another state directory's) is refused before any change" \
+    a_recorded_region_beside_a_sandbox_in_another_region_is_refused
 check "find_by_name follows NextToken to the name's page, and reads to the last page without it" \
     find_by_name_reads_every_page
 check "record_state merges into state.json (mode 600) and keeps the parity section" record_state_merges_and_keeps_the_rest

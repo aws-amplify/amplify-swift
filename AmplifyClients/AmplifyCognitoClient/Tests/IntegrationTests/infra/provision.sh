@@ -57,12 +57,13 @@ require_free_disk
 # stderr passes through redact (lib.sh), so an error cannot print an account, pool or client id.
 aws() { command aws --region "$REGION" --output json "$@" 2> >(redact >&2); }
 
-# With no region recorded (a first run, or a lost or another state directory): exits if the sandbox's global
-# authenticated role already trusts an identity pool in another region, since this run would re-point it here.
-# Read-only; a role that cannot be read counts as none.
+# On every run, a region recorded or not: exits if the sandbox's global authenticated role already trusts an identity
+# pool in another region, since this run would re-point it here. A state directory that records its own region does
+# not rule that out: another directory (one made before this check, say) may hold a sandbox in another region, and
+# with a region recorded $REGION is that region, so the same comparison applies. Read-only; a role that cannot be read
+# counts as none.
 require_roles_region() {
     local audience
-    [[ -z "$RECORDED_REGION" ]] || return 0
     audience=$(aws iam get-role --role-name "$NAME-authenticated" \
         --query 'Role.AssumeRolePolicyDocument.Statement[0].Condition.StringEquals."cognito-identity.amazonaws.com:aud"' \
         --output text 2>/dev/null || true)
