@@ -58,7 +58,7 @@ final class LiveEngineCoreRaceTests: XCTestCase {
         live.scriptSignOut()
 
         let signOut = Task { await client.signOut() }
-        await cancelGate.waitForArrivals(1)
+        try await cancelGate.arrivals(1)
         let getId = Gate()
         live.scriptSRP("bob")
         live.cognito.once("GetId") { (_: GetIdInput) in
@@ -73,9 +73,9 @@ final class LiveEngineCoreRaceTests: XCTestCase {
         // would wait for a cancel opened only below.
         try await bounded(10, "bob's sign-in reaches GetId") { await getId.waitForArrivals(1) }
         await cancelGate.open()
-        _ = await signOut.value
+        _ = try await signOut.value(within: 10)
         await getId.open()
-        let result = await second.result
+        let result = await Result { try await second.value(within: 10) }
 
         guard case .success(let signedIn) = result else {
             return XCTFail("bob's sign-in should finish, got \(result)")
@@ -113,14 +113,14 @@ final class LiveEngineCoreRaceTests: XCTestCase {
         live.cognito.clearCalls()
 
         let signOut = Task { await client.signOut() }
-        await cancelGate.waitForArrivals(1)
+        try await cancelGate.arrivals(1)
         // Bounded: were the confirmation to need the record's gate, which the sign-out holds, it would wait for a
         // cancel opened only below.
         let confirm = try await bounded(10, "the confirmation") {
             await authClientError { try await client.confirmSignIn(challengeResponse: "123456") }
         }
         await cancelGate.open()
-        _ = await signOut.value
+        _ = try await signOut.value(within: 10)
 
         XCTAssertEqual(confirm?.kind, .invalidState)
         XCTAssertEqual(live.cognito.operations, [], "the old attempt's answer was sent")

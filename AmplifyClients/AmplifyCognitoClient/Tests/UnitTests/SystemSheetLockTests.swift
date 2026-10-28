@@ -122,6 +122,8 @@ final class SystemSheetLockTests: XCTestCase {
         }
     }
 
+    /// Bounded, as `assertCancelled` is: a task that is never answered fails the test with `WaitTimedOut` rather than
+    /// hanging it.
     private static func assertBrowserBusy(
         _ task: Task<SessionID, Error>,
         holder expected: SessionID,
@@ -129,7 +131,7 @@ final class SystemSheetLockTests: XCTestCase {
         line: UInt = #line
     ) async {
         do {
-            let value = try await task.value
+            let value = try await task.value(within: 10)
             XCTFail("Expected browserBusy, got \(value)", file: file, line: line)
         } catch AuthClientError.browserBusy(let holder, _, _, _) {
             XCTAssertEqual(holder, expected, file: file, line: line)
@@ -138,13 +140,15 @@ final class SystemSheetLockTests: XCTestCase {
         }
     }
 
+    /// Bounded: a task that is never answered, as when a release wait's timer stops answering, fails the test with
+    /// `WaitTimedOut` rather than hanging it.
     private static func assertCancelled(
         _ task: Task<SessionID, Error>,
         file: StaticString = #filePath,
         line: UInt = #line
     ) async {
         do {
-            let value = try await task.value
+            let value = try await task.value(within: 10)
             XCTFail("Expected CancellationError, got \(value)", file: file, line: line)
         } catch {
             XCTAssertTrue(error is CancellationError, "Expected CancellationError, got \(error)", file: file, line: line)
