@@ -1924,6 +1924,8 @@ def ensure_identity_only_pool(parity):
         else:
             say(f"Reusing identity pool {IDENTITY_ONLY_POOL}")
     parity["identityOnlyPoolId"] = pool_id
+    # Recorded before the roles and their retries, so a teardown after any later failure finds the pool.
+    save_parity(parity)
     auth_role = ensure_permissionless_role("identity-only-authenticated", identity_trust(pool_id, "authenticated"))
     unauth_role = ensure_permissionless_role("identity-only-unauthenticated", identity_trust(pool_id, "unauthenticated"))
     require_identity_pool_tag(pool_id, IDENTITY_ONLY_POOL)
@@ -1998,6 +2000,8 @@ def ensure_plugin_identity_pool(parity):
         else:
             say(f"Reusing identity pool {PLUGIN_IDENTITY_POOL}")
     parity["pluginIdentityPoolId"] = pool_id
+    # Recorded before the roles and their retries, so a teardown after any later failure finds the pool.
+    save_parity(parity)
     auth_role = ensure_permissionless_role("plugin-authenticated", identity_trust(pool_id, "authenticated"))
     unauth_role = ensure_permissionless_role("plugin-unauthenticated", identity_trust(pool_id, "unauthenticated"))
     require_identity_pool_tag(pool_id, PLUGIN_IDENTITY_POOL)

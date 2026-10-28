@@ -11,7 +11,7 @@ turns it on; and `self-sign-up on|off` sends each pool's full configuration back
 the reset of the plugin's new-password users tolerates an overlapping run; and the WebAuthn harness's committed
 relying party and app ID are found, and provision never switches a live WebAuthn pool off; and the plugin
 identity pool (P-13) federates the passwordless pool, and the passwordless outputs name it; and the code sink key
-rotation tolerates an overlapping run's delete.
+rotation tolerates an overlapping run's delete; and the two parity identity pools are recorded as soon as they exist.
 
     python3 infra/test_parity.py
 
@@ -2537,6 +2537,67 @@ class CodeSinkKeyRotationOverlapTests(unittest.TestCase):
         self.delete_error = "AccessDeniedException"
         with self.assertRaises(self.parity.AwsError):
             self.parity.rotate_api_key("placeholder-api", "arn:placeholder-api")
+
+
+class IdentityPoolsRecordedAtOnceTests(unittest.TestCase):
+    """The identity-only pool and the plugin identity pool (P-13) are recorded in state.json as soon as they are made,
+    before their roles and the role-setting retries, so a teardown after a failure there still finds them. Over a
+    scripted Cognito Identity and IAM (placeholder ids only)."""
+
+    def setUp(self):
+        self.state = tempfile.mkdtemp()
+        os.environ["COGNITO_CLIENT_INTEG_DIR"] = self.state
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        self.parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.parity)
+        self.parity.REGION = "xx-test-1"
+        self.parity.say = lambda message: None
+        self.parity.save_json(self.parity.STATE_FILE, {"region": "xx-test-1"})
+        self.parity.aws = self.fake_aws
+        self.parity.require_identity_pool_tag = lambda pool_id, label: None
+
+        def role_refused(suffix, trust):
+            raise self.parity.AwsError("AccessDenied", "scripted")
+        self.parity.ensure_permissionless_role = role_refused
+
+    def tearDown(self):
+        shutil.rmtree(self.state)
+        del os.environ["COGNITO_CLIENT_INTEG_DIR"]
+
+    def fake_aws(self, *args, stdin=None, **kwargs):
+        operation = args[1]
+        if operation == "list-identity-pools":
+            return {"IdentityPools": []}
+        if operation == "create-identity-pool":
+            return {"IdentityPoolId": "xx-test-1:placeholder-new"}
+        self.fail(f"unexpected call {operation}")
+
+    def recorded(self):
+        with open(self.parity.STATE_FILE) as f:
+            return json.load(f).get("parity", {})
+
+    def test_the_identity_only_pool_is_recorded_before_its_roles(self):
+        """Given: no identity-only pool, and its first role is refused.
+        When: ensure_identity_only_pool runs.
+        Then: it stops with that error, and state.json already records the new pool."""
+        parity = {}
+        with self.assertRaises(self.parity.AwsError):
+            self.parity.ensure_identity_only_pool(parity)
+        self.assertEqual(self.recorded().get("identityOnlyPoolId"), "xx-test-1:placeholder-new")
+
+    def test_the_plugin_identity_pool_is_recorded_before_its_roles(self):
+        """Given: no plugin identity pool, and its first role is refused.
+        When: ensure_plugin_identity_pool runs.
+        Then: it stops with that error, and state.json already records the new pool."""
+        parity = {"pools": {
+            "default": {"userPoolId": "xx-test-1_default", "clients": {"plugin": "c-plugin",
+                                                                        "hostedui-plugin": "c-hosted-plugin"}},
+            "passwordless": {"userPoolId": "xx-test-1_passwordless", "clients": {"client": "c-passwordless",
+                                                                                  "ci": "c-passwordless-ci"}}}}
+        with self.assertRaises(self.parity.AwsError):
+            self.parity.ensure_plugin_identity_pool(parity)
+        self.assertEqual(self.recorded().get("pluginIdentityPoolId"), "xx-test-1:placeholder-new")
+        self.assertEqual(self.recorded()["pools"]["default"]["userPoolId"], "xx-test-1_default")
 
 
 if __name__ == "__main__":
