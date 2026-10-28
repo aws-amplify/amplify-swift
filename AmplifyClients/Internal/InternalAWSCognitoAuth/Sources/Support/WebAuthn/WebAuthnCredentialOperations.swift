@@ -138,10 +138,10 @@ package enum WebAuthnCredentialOperations {
     /// - no box (`nil`) makes the registrant with no window, whose own fallback applies (the plugin's
     ///   optional anchor; the client always passes a box).
     ///
-    /// **Errors from the runner.** The ceremony body converts its own errors to `EngineAuthError` (as
-    /// every other error here is converted) before they reach `ceremony`. So whatever `ceremony` throws is
-    /// either one of those, already converted, or the runner's own error (the client's lease refusal),
-    /// and both are rethrown unchanged, as the caller's errors are.
+    /// **Errors from the runner.** The ceremony body converts its own errors to a bare `EngineAuthError`
+    /// before they reach `ceremony` (every other error here becomes a `Failure`). So whatever `ceremony`
+    /// throws is either one of those, already converted, or the runner's own error (the client's lease
+    /// refusal), and both are rethrown unchanged, as the caller's errors are.
     ///
     /// - Parameters:
     ///   - anchor: the window the sheet attaches to, boxed on the main actor by the caller.
