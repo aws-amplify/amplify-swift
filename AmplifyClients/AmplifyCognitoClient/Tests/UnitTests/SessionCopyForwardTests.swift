@@ -548,6 +548,50 @@ final class SessionCopyForwardTests: XCTestCase {
         XCTAssertFalse(try XCTUnwrap(currentRecord()).identityPending)
     }
 
+    /// A refresh whose identity step failed, but whose commit lost to another process's sign-out, answers as the
+    /// signed-out session it now is: `notSignedIn`, never `sessionExpired` or the identity step's failure.
+    ///
+    /// - Given: alice's session carried from the user pool alone, and a refresh during which another process signs
+    ///   the session out, then which stores new tokens and fails the identity step with a refusal
+    /// - When: the session is fetched; then, the same again, its AWS credentials are asked for
+    /// - Then:
+    ///    - every field of the fetch fails with `notSignedIn`, and the state is `.signedOut`
+    ///    - the provider throws `notSignedIn`
+    func testAnIdentityFailureWhoseCommitLostToASignOutIsNotSignedIn() async throws {
+        let refusal = AuthClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
+        for call in ["fetchAuthSession", "credentialsProvider"] {
+            harness = ClientHarness()
+            try aliceUnderTheUserPoolOnly()
+            let client = try harness.client(work)
+            _ = await client.currentSessionState()
+            let engine = try XCTUnwrap(harness.engine(for: work))
+            let store = harness.store()
+            let work = work
+            let stored = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 2)
+            engine.scriptRefresh { _ in
+                _ = try store.signOut(work)
+                throw SessionEngineError.refreshedThenFailed(payload: stored.data, error: .service(refusal))
+            }
+
+            if call == "fetchAuthSession" {
+                let session = try await client.fetchAuthSession()
+                for result in [session.userPoolTokensResult.map { _ in () }, session.userSubResult.map { _ in () },
+                               session.identityIdResult.map { _ in () }, session.awsCredentialsResult.map { _ in () }] {
+                    guard case .failure(let error) = result else {
+                        XCTFail("\(call): every field should fail")
+                        continue
+                    }
+                    XCTAssertEqual(error.kind, .notSignedIn, "\(call): \(error)")
+                }
+            } else {
+                let error = await providerError { try await client.credentialsProvider.resolve() }
+                XCTAssertEqual(error?.isNotSignedIn, true, "\(call): \(String(describing: error))")
+            }
+            let state = await client.currentSessionState()
+            XCTAssertEqual(state, .signedOut, call)
+        }
+    }
+
     /// A refresh whose refresh token is refused reports the session expired in every field, as the plugin does;
     /// only an identity-step failure keeps the tokens.
     ///
@@ -893,8 +937,9 @@ final class SessionCopyForwardTests: XCTestCase {
     /// - Given: alice under the user pool alone
     /// - When: a client over both pools is built with a warm restore, while `purgeStoredSession` runs over the user
     ///   pool alone
-    /// - Then: the purge either refuses with `sessionConfigurationMismatch` (the session was live under both pools)
-    ///   or succeeds, and in both cases the session never ends signed in with a purged source it did not copy
+    /// - Then: the purge either refuses with `sessionConfigurationMismatch` (the session was live under both pools,
+    ///   and keeps both records), or succeeds, having run before the restore carried: the session is then signed out,
+    ///   with nothing carried
     func testAStoredSessionCallRacingAWarmRestore() async throws {
         for _ in 1 ... 20 {
             harness = ClientHarness(restoresOnConstruction: true)
@@ -918,9 +963,11 @@ final class SessionCopyForwardTests: XCTestCase {
 
             switch outcome {
             case .success:
-                // The purge ran before the restore carried (and the restore then found nothing), or after: then the
-                // restore's copy is its own record, and the user-pool record was the purge's to delete.
-                XCTAssertTrue(state == .signedOut || state == .signedIn(alice), "\(state)")
+                // The purge ran before the restore carried, and the restore then found nothing to carry. It cannot
+                // have run after: the client is registered before its restore, which holds the user pool's gate as
+                // well as its own, and the purge checks the registry once it holds the gates.
+                XCTAssertEqual(state, .signedOut)
+                XCTAssertEqual(try harness.store().read(work), .absent)
             case .failure(let error):
                 guard case .sessionConfigurationMismatch = error as? AuthClientError else {
                     return XCTFail("unexpected \(error)")

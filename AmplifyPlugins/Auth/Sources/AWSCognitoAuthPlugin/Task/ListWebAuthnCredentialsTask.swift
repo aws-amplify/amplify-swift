@@ -32,8 +32,8 @@ final class ListWebAuthnCredentialsTask: AuthListWebAuthnCredentialsTask, Defaul
     }
 
     /// The engine's `WebAuthnCredentialOperations.list` does the work. It rethrows the token lookup's
-    /// `AuthError` unchanged and re-expresses every other error as an `EngineAuthError`, which
-    /// `AuthError(converting:)` bridges back to the `AuthError` this task has always thrown.
+    /// `AuthError` unchanged and re-expresses every other error as a `WebAuthnCredentialOperations.Failure`, which
+    /// `AuthError(converting:)` bridges back, through its `engineError`, to the `AuthError` this task has always thrown.
     func execute() async throws -> AuthListWebAuthnCredentialsResult {
         do {
             await taskHelper.didStateMachineConfigured()

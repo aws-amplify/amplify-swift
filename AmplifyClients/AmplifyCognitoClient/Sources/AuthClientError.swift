@@ -21,7 +21,9 @@ public enum AuthClientError {
     /// show a sign-in screen in response to it.
     case storageUnavailable(StorageUnavailableReason, ErrorDescription, RecoverySuggestion, Error? = nil)
 
-    /// The refresh token expired or was revoked, so this session needs a fresh sign-in. Other
+    /// The session can no longer renew its credentials: its refresh token expired, was revoked, or was already used
+    /// with no refreshed tokens saved (`refreshTokenReused` underneath), so it needs a fresh sign-in; or, for a
+    /// federated session, the identity pool no longer accepts its provider token, so it federates again. Other
     /// sessions are unaffected.
     case sessionExpired(ErrorDescription, RecoverySuggestion, Error? = nil)
 
@@ -41,15 +43,16 @@ public enum AuthClientError {
     /// a hosted-UI sign-out page or a passkey ceremony (sign-in or registration), of another session or of
     /// this one. Also thrown when this session already has a hosted-UI sign-in in progress or queued, and when
     /// a `WebUIOptions.whenBrowserBusy` `.wait(timeout:)` expired before the sheet was free. `holder` is the
-    /// session holding the sheet when the call was refused.
+    /// session holding the sheet when the call was refused; for a hosted-UI sign-in refused because this session's
+    /// previous one is still in progress while no session holds the sheet, it is the requesting session itself.
     case browserBusy(holder: SessionID, ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// A client was constructed with a session ID that is already live in this process under a different
     /// configuration: a different user pool, identity pool or keychain access group, or different settings
     /// (such as one handle passing `Options.configureUserPoolClient` and another none). Two handles on one
     /// session must agree, so the second construction throws rather than silently attaching. Also thrown by
-    /// `signOutStoredSession` and `purgeStoredSession` when a client for the session is live in this process
-    /// with a different user pool or identity pool: its records are that client's to change.
+    /// `purgeStoredSession`, and returned in `.failed` by `signOutStoredSession`, when a client for the session is
+    /// live in this process with a different user pool or identity pool: its records are that client's to change.
     case sessionConfigurationMismatch(SessionID, ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// A value supplied by the caller was invalid. `field` names it. The counterpart of Amplify
@@ -64,6 +67,12 @@ public enum AuthClientError {
     /// Also a request that could not be completed: a network failure has no code and the network error itself
     /// underneath (the `URLError`, or the CFNetwork or POSIX error), and a response that could not be read, or
     /// another URL loading failure, has no code either.
+    ///
+    /// And, with no code, a failure Cognito reported as its own, which the plugin reports as `AuthError.unknown`: its
+    /// internal error (`InternalErrorException`, from either pool), whose suggestion says to retry, and an error
+    /// status the SDK does not model, whose suggestion says to retry (a 5xx) or that Cognito refused the request with
+    /// an error this client does not recognise. The description has Cognito's message, and the status when there is
+    /// one. Under a sign-out, the revoke's or global sign-out's suggestion says instead that it will not be retried.
     case service(AuthClientServiceErrorCode?, ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// The caller is not allowed to perform the operation: for example, a wrong password, or a
@@ -78,11 +87,13 @@ public enum AuthClientError {
     /// The user dismissed a system sheet the operation needed: the passkey sheet of a WebAuthn ceremony, or the
     /// hosted UI's sign-in browser. Also thrown when `cancelWebUISignIn()` or `resetSystemSheet()` closes the
     /// sheet. Nothing was changed; retrying is the user's choice. For the hosted UI's sign-out page it is not
-    /// thrown but returned, in `AuthClientSignOutResult.failed`, and the session stays signed in; unless the session
-    /// had expired, which is signed out on this device anyway: then it is the `.partial` result's `hostedUIError`.
+    /// thrown but returned, in `AuthClientSignOutResult.failed`, and the session stays signed in; unless a refresh had
+    /// found the session's refresh token dead while the session was in memory (until every handle and provider for it
+    /// is released, or a relaunch), and the login being signed out still has that token: it is signed out on this
+    /// device anyway, and this is the `.partial` result's `hostedUIError`.
     case userCancelled(ErrorDescription, RecoverySuggestion, Error? = nil)
 
-    /// A local WebAuthn ceremony failed before Cognito was asked anything. The underlying error is the
+    /// A local WebAuthn ceremony failed before its result was sent to Cognito. The underlying error is the
     /// platform's `ASAuthorizationError` for `.credentialAlreadyExists` and `.failed`, and an internal encoding
     /// or decoding error for `.invalidCredential`. Cognito's own WebAuthn rejections are `.service` instead.
     case webAuthnCeremonyFailed(AuthClientWebAuthnCeremonyFailure, ErrorDescription, RecoverySuggestion, Error? = nil)

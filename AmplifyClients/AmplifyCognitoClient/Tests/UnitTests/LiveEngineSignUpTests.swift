@@ -816,13 +816,15 @@ final class LiveEngineSignUpTests: XCTestCase {
         XCTAssertEqual(harness.cognito.operations, ["ResendConfirmationCode", "ResendConfirmationCode"])
     }
 
-    /// An answer without delivery details is the plugin's `unknown`; a refusal is mapped.
+    /// An answer without delivery details is the plugin's `unknown`, built as the other operations build it; a
+    /// refusal is mapped.
     ///
     /// - Given: Cognito answers `ResendConfirmationCode` with no details, then `LimitExceededException`
     /// - When:
     ///    - the code is resent twice
     /// - Then:
-    ///    - the first throws `.unknown("Unable to get Auth code delivery details")`
+    ///    - the first throws `.unknown` with the plugin's "Unexpected error occurred with message: Unable to get Auth
+    ///      code delivery details", and the suggestion the engine mapping gives it
     ///    - the second throws `.service(.limitExceeded)`
     ///
     func testResendSignUpCodeFailures() async throws {
@@ -834,11 +836,14 @@ final class LiveEngineSignUpTests: XCTestCase {
             throw LimitExceededException(message: "Attempt limit exceeded, please try after some time.")
         }
 
+        let mapped = AuthClientError(engine: .unknown("Unable to get Auth code delivery details"))
         await assertThrowsAsync({ try await engine.resendSignUpCode(username: "carol", clientMetadata: [:]) }) { error in
-            guard case .unknown(let description, _, _) = authError(error) else {
+            guard case .unknown(let description, let suggestion, _) = authError(error) else {
                 return XCTFail("\(error)")
             }
-            XCTAssertEqual(description, "Unable to get Auth code delivery details")
+            XCTAssertEqual(description, "Unexpected error occurred with message: Unable to get Auth code delivery details")
+            XCTAssertEqual(description, mapped.errorDescription)
+            XCTAssertEqual(suggestion, mapped.recoverySuggestion)
         }
         await assertThrowsAsync({ try await engine.resendSignUpCode(username: "carol", clientMetadata: [:]) }) { error in
             guard case .service(.limitExceeded?, _, _, _) = authError(error) else {

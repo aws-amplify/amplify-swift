@@ -250,11 +250,11 @@ struct DeletionProgress {
             return false
         case .userDeleted:
             return true
-        case .error(let error):
+        case .error(let error, let cause):
             if deleted {
                 return true
             }
-            throw AuthClientError(engine: error)
+            throw AuthClientError(engine: error, cause: cause)
         case .notStarted, .deletingUser:
             return false
         }

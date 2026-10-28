@@ -108,21 +108,25 @@ public extension AmplifyCognitoClient {
     }
 
     /// Cancels this session's hosted-UI sign-in, once it holds or is queued for the system sheet: the browser
-    /// is dismissed and the call throws `userCancelled`, once the browser has closed, so `systemSheetHolder` no
-    /// longer names this session by then; if it hasn't closed within a second, the call throws anyway, and the
-    /// sheet is freed when it closes. Idempotent; never throws; a no-op when there is none.
+    /// is dismissed and the call throws `userCancelled` once the sign-in has released the sheet, so
+    /// `systemSheetHolder` no longer names this session by then (it is `nil`, or a session that was queued behind
+    /// it). If the sheet isn't released within a second (the browser is slow to close, or the code exchange was
+    /// already running), the call throws anyway, and the sheet stays held until the sign-in's remaining calls
+    /// finish. Idempotent; never throws; a no-op when there is none.
     ///
     /// It also closes this session's hosted-UI sign-out page, if one is showing: that sign-out is then
-    /// `.failed(.userCancelled)` and the session stays signed in, as when the user closes the page (a session
-    /// whose refresh token is already dead signs out anyway).
+    /// `.failed(.userCancelled)` and the session stays signed in, as when the user closes the page (a session a
+    /// refresh found expired while it was in memory signs out anyway, when the login signed out still has the
+    /// refresh token found dead).
     ///
     /// A call still waiting behind another of this session's sign-ins (its sign-in lock) is not reached yet, and
     /// goes on; cancel its task to stop it there.
     ///
     /// It also closes this session's passkey sheet, but only **while the sheet is up**: the ceremony holds
     /// the system sheet from just before the sheet is presented until it answers. The passkey call then throws
-    /// `userCancelled`. Before or after that window (the Cognito calls around the ceremony) there is nothing
-    /// to cancel; cancel the call's task instead.
+    /// `userCancelled` once it has released the sheet. If the sheet isn't released within a second, the call throws
+    /// anyway, and the sheet stays held until the passkey ceremony finishes. Before or after that window (the Cognito
+    /// calls around the ceremony) there is nothing to cancel; cancel the call's task instead.
     func cancelWebUISignIn() async {
         let core = core
         await core.cancelWebUISignIn()

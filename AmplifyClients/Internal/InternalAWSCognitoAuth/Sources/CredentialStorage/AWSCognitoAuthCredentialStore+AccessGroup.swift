@@ -81,7 +81,10 @@ extension AWSCognitoAuthCredentialStore {
             return
         }
 
-        // What `KeychainStoreMigrator.migrate()` does, over this store's own factory. Keep the two in step.
+        // Built as `KeychainStoreMigrator.migrate()` builds its migrator, over this store's own factory, so both move
+        // one item at a time and skip collisions. Only this store resumes an interrupted run (removing a guest's
+        // session record, or a configuration record another process saved since, in the login's way) and moves the
+        // configuration record last (`movingLast`): the public `migrate()` does neither.
         let newAccessGroup = accessGroup
         let migrator = KeychainItemMigrator(
             source: KeychainItemAttributes(service: oldService, accessGroup: oldAccessGroup),
@@ -173,11 +176,12 @@ extension AWSCognitoAuthCredentialStore {
     /// or a federated identity (an identity-pool-only configuration's included). A signed-out record
     /// (`{"noCredentials":{}}`, which a sign-out through the Cognito client's default session saves) is not a
     /// guest's: it counts, as a login does, so a user who signed out that way is never signed back in by the
-    /// migration. A plugin sign-out deletes the session record instead, so after one, only a device record left by
-    /// a user-pool sign-in stops an extension's first migration from moving its login in.
-    /// With no login to move, a guest's record still counts, so a launch with nothing to migrate never clears
-    /// another process's guest identity. Any other item
-    /// counts as before; a device record without reading it, since only a sign-in writes one. A session
+    /// migration. A plugin sign-out deletes the session record instead, so after one, only a device record stops an
+    /// extension's first migration from moving its login in: the device metadata a user-pool sign-in saves for a
+    /// tracked device, or the advanced-security device ID that any user-pool sign-in, hosted-UI sign-in, sign-up or
+    /// password-reset attempt saves when no device metadata is held. With no login to move, a guest's record still
+    /// counts, so a launch with nothing to migrate never clears another process's guest identity. Any other item
+    /// counts as before; a device record without reading it, since only such a user's attempt writes one. A session
     /// record that cannot be read or decoded counts as a login.
     ///
     /// - Parameter source: the migration's source store, built only when the shared service holds nothing but

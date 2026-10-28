@@ -44,8 +44,15 @@ import InternalAWSCognitoAuth
 // no namespace marker: nothing is carried forward or swept for it by the named sessions' rule.
 //
 // **Sign-out and purge clear the AWSMobileClient logins**, as the plugin's sign-out does (`clearLegacyLogins()`): the
-// plugin migrates them into this record at configure whenever it holds no session, so they must not outlive a
-// sign-out. The client never migrates them.
+// plugin migrates them into this record at configure whenever it holds no session, or only a guest, so they must not
+// outlive a sign-out. They are cleared before the signed-out write or the purge's delete, so a failure there leaves
+// none. A signed-out record (`{"noCredentials":{}}`) stops that migration too, and the migration then clears them,
+// but only until a guest replaces it: the migration reads a guest as no session. So a guest the client fetches over a
+// signed-out record (`acquireGuestOnce`) clears them again first, best effort; over no record it leaves them, as a
+// client-only app that never signed in keeps them for a plugin build to migrate. A sidecar alone (a label set before
+// anyone signed in) is no record. A guest the plugin, or an app
+// extension on it, saves over the signed-out record clears nothing, so after it only an earlier clear protects the
+// user. A purge leaves no record. The client never migrates them.
 extension SessionRecordStore {
 
     /// Whether a store re-reads an absent shared record by default: on macOS only, where the keychain's `set`
@@ -360,13 +367,15 @@ extension SessionRecordStore {
 
     // MARK: Sign-out and purge
 
-    /// `purge(_:)` for `.default`: the shared record, then the sidecar, then the interrupted-sign-in record, then, best
-    /// effort, the AWSMobileClient logins (`clearLegacyLogins()`).
+    /// `purge(_:)` for `.default`: first, best effort, the AWSMobileClient logins (`clearLegacyLogins()`), then the
+    /// shared record, the sidecar and the interrupted-sign-in record. The logins go first: once the shared record is
+    /// gone, a plugin build migrates whatever logins are left, so a failed delete, or a process stopped after it, must
+    /// find none.
     func purgeDefault() throws {
+        clearLegacyLogins()
         try perform("delete the default session's saved login") { try keychain.remove(sharedRecordAccount) }
         try perform("delete the default session's sidecar") { try keychain.remove(sidecarAccount) }
         try perform("delete the interrupted sign-in record") { try keychain.remove(challengeAccount(for: .default)) }
-        clearLegacyLogins()
     }
 
     // MARK: AWSMobileClient logins
@@ -377,11 +386,15 @@ extension SessionRecordStore {
 
     /// Clears the AWSMobileClient logins once `.default` has been signed out or purged, as the Auth plugin's own
     /// sign-out does (`ClearCredentialStore`): `.default` is the plugin's saved login, and every plugin configure first
-    /// migrates those logins into it when it holds no session, so a login kept for a later migration would otherwise
-    /// sign its user in again under the next plugin build. Like the plugin's, it runs on a sign-out that had nothing to
-    /// sign out too, or that another writer's sign-out beat: `SessionSignOut.run()` calls it when this store's own
-    /// sign-out did not run. Best effort, as the plugin's: each service that fails to clear logs one warning, and none
-    /// fails the sign-out or purge, whose record is already gone.
+    /// migrates those logins into it when it holds no session, or only a guest, so a login kept for a later migration
+    /// would otherwise sign its user in again under the next plugin build. Like the plugin's, it runs on a sign-out that
+    /// had nothing to sign out too, or that another writer's sign-out beat: `SessionSignOut.run()` calls it when this
+    /// store's own sign-out did not run. Best effort, as the plugin's: each service that fails to clear logs one
+    /// warning, and none fails the sign-out or purge. It runs before the signed-out write or the purge's delete, so a
+    /// failed write or delete leaves no login behind. A login that fails to clear is left for the next sign-out or
+    /// purge, or for the clear that a guest the client fetches over the signed-out record runs first
+    /// (`acquireGuestOnce`). After a sign-out, the signed-out record also stops a plugin build from migrating it, but
+    /// only until a guest replaces that record; from then on only a clear does.
     ///
     /// The services are the plugin's for this store's own pools (`namespace.pools`), plus every other identity pool's
     /// credentials service found in the app's keychain (`legacyLoginStores(for:listServices:makeStore:)`), which the

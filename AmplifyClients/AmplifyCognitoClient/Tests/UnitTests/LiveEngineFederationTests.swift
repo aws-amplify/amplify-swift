@@ -345,8 +345,9 @@ final class LiveEngineFederationTests: XCTestCase {
     /// - Given: a client federated over the live engine, whose stored login the identity pool then refuses
     /// - When: the session is force-refreshed, fetched again, and federated again
     /// - Then:
-    ///    - the refresh reports `sessionExpired` in every field and sends `.sessionExpired` once; the state is
-    ///      still `.federated`; the second fetch makes no request
+    ///    - the refresh reports `sessionExpired` in every field, saying the provider token is no longer accepted and
+    ///      to federate again, and sends `.sessionExpired` once; the state is still `.federated`; the second fetch
+    ///      makes no request
     ///    - federating again succeeds, and the session's credentials are served again
     func testAnExpiredProviderTokenExpiresTheSessionUntilItFederatesAgain() async throws {
         let clientHarness = ClientHarness()
@@ -366,19 +367,28 @@ final class LiveEngineFederationTests: XCTestCase {
 
         for session in [expired, again] {
             XCTAssertThrowsError(try session.awsCredentialsResult.get()) { error in
-                guard case .sessionExpired = authError(error) else {
+                guard case .sessionExpired(let description, let suggestion, _) = authError(error) else {
                     return XCTFail("expected sessionExpired, got \(error)")
                 }
+                // A federated session has no refresh token, and a sign-in is refused over it: it federates again.
+                XCTAssertEqual(description, "Session \"work\"'s provider token is no longer accepted by the identity pool.")
+                XCTAssertEqual(
+                    suggestion,
+                    "Call federateToIdentityPool with a new provider token for this session. Other sessions are unaffected."
+                )
             }
         }
         XCTAssertEqual(harness.cognito.operations, [])
         XCTAssertEqual(state, .federated(identityId: "us-east-1:federated-id"))
-        await events.waitFor(1)
-        XCTAssertEqual(events.received, [.sessionExpired])
 
         _ = try await client.federateToIdentityPool(withProviderToken: "fresh-token", for: .google)
         let recovered = try await client.fetchAuthSession()
         XCTAssertEqual(try recovered.awsCredentialsResult.get().accessKeyId, "AKID-v1")
+        // Ends on an event no fetch or federation sends: once `.signedOut` has arrived, a second `.sessionExpired`
+        // has too.
+        _ = await client.signOut()
+        await waitUntil("the sign-out's event arrives") { events.received.last == .signedOut }
+        XCTAssertEqual(events.received, [.sessionExpired, .signedOut])
     }
 
 
@@ -388,7 +398,8 @@ final class LiveEngineFederationTests: XCTestCase {
     /// - When: it federates, is fetched, clears the federation, and federates and signs out
     /// - Then:
     ///    - the result, the state, the session and the stored record all hold the federated identity and its
-    ///      credentials, with no user
+    ///      credentials, with no user; the session's user fields fail with the federated session's `notSignedIn`,
+    ///      which names the federation, not a sign-in
     ///    - clearing leaves the row signed out; the sign-out makes no Cognito call
     func testFederationOverTheLiveEngine() async throws {
         let clientHarness = ClientHarness()
@@ -423,7 +434,23 @@ final class LiveEngineFederationTests: XCTestCase {
         XCTAssertEqual(state, .federated(identityId: "us-east-1:federated-id"))
         XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:federated-id")
         XCTAssertEqual(try session.awsCredentialsResult.get().accessKeyId, "AKID-v1")
-        XCTAssertThrowsError(try session.userPoolTokensResult.get())
+        // The user fields say what lets a user in: `signIn` is refused over a federated session, so not "sign in".
+        for (field, result) in [
+            ("userSub", session.userSubResult.map { _ in () }),
+            ("userPoolTokens", session.userPoolTokensResult.map { _ in () })
+        ] {
+            guard case .failure(let error) = result else {
+                XCTFail("\(field) should fail")
+                continue
+            }
+            XCTAssertEqual(error.kind, .notSignedIn, field)
+            XCTAssertEqual(error.errorDescription, "Session \"work\" has no user pool user: it is federated to the identity pool.", field)
+            XCTAssertEqual(
+                error.recoverySuggestion,
+                "Call clearFederationToIdentityPool() or sign the session out, then sign in through the user pool.",
+                field
+            )
+        }
         XCTAssertEqual(record?.kind, .federated)
         XCTAssertNil(record?.username)
 

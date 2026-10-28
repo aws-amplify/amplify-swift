@@ -988,6 +988,47 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(again, .complete)
     }
 
+    /// The #3956 exception covers only the login proved dead
+    ///
+    /// - Given: a shared-cookie session whose refresh token a refresh proved dead, then a new login with another refresh
+    ///   token saved over its record by another writer (an app sharing the access group signed it out and in again),
+    ///   before any other call of this session
+    /// - When: the user closes the logout page
+    /// - Then:
+    ///    - the sign-out is `.failed(.userCancelled)`, with the page's error: nothing is revoked without the page, and
+    ///      the new login is kept
+    func testClosingTheLogoutPageKeepsALoginSavedAfterTheExpiry() async throws {
+        var payload = HostedUIFixtures.hostedUIPayload()
+        payload.stale = true
+        try harness.signIn(work, payload)
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
+        let expired = try await client.fetchAuthSession()
+        guard case .failure(let expiry) = expired.userPoolTokensResult else {
+            return XCTFail("the fetch should have found the session expired")
+        }
+        XCTAssertEqual(expiry.kind, .sessionExpired)
+        let newLogin = HostedUIFixtures.hostedUIPayload(version: 2)
+        guard case .record(let envelope) = try harness.store().read(work) else {
+            return XCTFail("the expired record was not kept")
+        }
+        try harness.store().write(newLogin.record(), for: work, expecting: envelope.version)
+        engine.scriptHostedUIRevoke { _, _, plan in
+            if case .present = plan {
+                throw AuthClientError.userCancelled("closed", "Sign out again.")
+            }
+            return .complete
+        }
+
+        let error = await failedSignOutError(signOut(client))
+
+        XCTAssertEqual(error?.kind, .userCancelled)
+        XCTAssertEqual(error?.errorDescription, "closed")
+        XCTAssertEqual(plans(engine), ["present"])
+        XCTAssertEqual(try harness.storedRecord(work)?.credentials, newLogin.data)
+    }
+
     /// Retries never present
     ///
     /// - Given: a shared-cookie session whose credentials another writer refreshes during the first revoke
@@ -1276,7 +1317,8 @@ final class WebUISignOutTests: XCTestCase {
     }
 
     /// Interrupts an anchored sign-out of a shared-cookie session in `window`, then checks that it answers the
-    /// closed-page row at once, and that a later sign-out on the same client is not blocked behind it.
+    /// closed-page row at once, that its body (an abandoned one included, which may still run) never reaches the
+    /// engine, and that a later sign-out on the same client is not blocked behind it.
     private func assertAnEarlyInterruptAnswers(_ window: EarlyWindow, file: StaticString = #filePath, line: UInt = #line) async throws {
         let held = Gate()
         switch window {
@@ -1316,7 +1358,11 @@ final class WebUISignOutTests: XCTestCase {
         }
         let result = try XCTUnwrap(outcome.value?.get(), file: file, line: line)
         XCTAssertEqual(failedSignOutError(result, file: file, line: line)?.kind, .userCancelled, file: file, line: line)
-        XCTAssertEqual(engine.revokeCalls.count, 0, "the body never ran", file: file, line: line)
+        // Checked once the lease is released, so an abandoned body that went on to run has run by then.
+        let lock = harness.sheetLock
+        await waitUntil("the interrupted lease is released", file: file, line: line) { await lock.currentHolder == nil }
+        XCTAssertEqual(plans(engine), [], "the engine was never asked to sign out", file: file, line: line)
+        XCTAssertEqual(engine.revokeCalls.count, 0, "the body never revoked", file: file, line: line)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false, file: file, line: line)
 
         let followUp = expectation(description: "a later sign-out on the same client returns")
@@ -1328,6 +1374,7 @@ final class WebUISignOutTests: XCTestCase {
         await fulfillment(of: [followUp], timeout: 10)
         XCTAssertEqual(try later.value?.get().signedOutLocally, true, file: file, line: line)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true, file: file, line: line)
+        XCTAssertEqual(plans(engine), ["skip"], "only the later sign-out reached the engine", file: file, line: line)
     }
 
     /// - Given: an anchored sign-out whose lease has been granted but not yet registered its flow

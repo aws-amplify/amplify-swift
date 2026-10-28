@@ -190,9 +190,11 @@ extension SessionCore {
         }
     }
 
-    /// The plugin's two checks before an answer is sent (`AWSAuthConfirmSignInTask.swift:167-190`). The
-    /// strings name the client's types, and the MFA selection's names all three values it accepts (the
-    /// plugin's leaves out `EMAIL_OTP`). A failure keeps the attempt: nothing reached the engine.
+    /// The checks before an answer is sent. Two are the plugin's (`AWSAuthConfirmSignInTask`'s
+    /// `validateRequestForMFASelection` and `validateRequestForFactorSelection`), with strings that name the client's
+    /// types; the MFA selection's names all three values it accepts (the plugin's leaves out `EMAIL_OTP`). The client
+    /// adds two: an MFA setup selection must be one of the step's choices, and a `WEB_AUTHN` first factor one the step
+    /// offers. A failure keeps the attempt: nothing reached the engine.
     static func validate(_ response: String, for step: AuthClientSignInStep?) throws {
         switch step {
         case .continueSignInWithMFASelection:
@@ -221,7 +223,7 @@ extension SessionCore {
                     """
                 )
             }
-        case .continueSignInWithFirstFactorSelection:
+        case .continueSignInWithFirstFactorSelection(let offered):
             guard ["PASSWORD", "PASSWORD_SRP", "SMS_OTP", "EMAIL_OTP", "WEB_AUTHN"].contains(response) else {
                 throw AuthClientError.validation(
                     field: "challengeResponse",
@@ -229,6 +231,20 @@ extension SessionCore {
                     """
                     Make sure that a valid challenge response is passed for confirmSignIn.
                     Try using `AuthClientFactorType.<type>.challengeResponse` as the challenge response.
+                    """
+                )
+            }
+            // Only where the step offers it, which it never does where WebAuthn is not available (before iOS 17.4
+            // or macOS 13.5, and on tvOS and watchOS), as the plugin's factor parser refuses it there. Sent anyway,
+            // Cognito's WebAuthn challenge would end the sign-in, and the selection with it.
+            let names = offered.map(\.challengeResponse).sorted()
+            guard response != "WEB_AUTHN" || names.contains(response) else {
+                throw AuthClientError.validation(
+                    field: "challengeResponse",
+                    "challengeResponse WEB_AUTHN is not one of the factors this step offers: \(Self.choices(names)).",
+                    """
+                    Make sure that a valid challenge response is passed for confirmSignIn.
+                    Try using `AuthClientFactorType.<type>.challengeResponse` of a factor the step offers as the challenge response.
                     """
                 )
             }
@@ -351,6 +367,12 @@ extension SessionCore {
                 throw Self.signInCancelled()
             }
             await saveChallengeRecord(epoch: epoch)
+            guard await signInEpoch == epoch else {
+                // The ending held the record's gate across its revoke and moved the epoch only at its end, after the
+                // guard above: the save waited behind it, and wrote nothing. The challenge it ended is no answer.
+                await engine.cancelPendingSignIn(before: epoch &+ 1)
+                throw Self.signInCancelled()
+            }
             return AuthClientSignInResult(nextStep: step)
         case .done(let payload):
             do {
@@ -416,7 +438,7 @@ extension SessionCore {
                     // The sign-in is complete, so its challenge record goes, under the same gate. Best effort: a
                     // record left beside a signed-in session is deleted by the next restore, never resumed.
                     await deleteChallengeRecord(in: store)
-                    await apply(SessionSnapshot(committed), challenge: .set(nil), event: .signedIn)
+                    await apply(SessionSnapshot(committed), challenge: .set(nil), event: .signedIn, newLogin: true)
                     return replaced
                 }
                 let reread = try await store.load(sessionId)

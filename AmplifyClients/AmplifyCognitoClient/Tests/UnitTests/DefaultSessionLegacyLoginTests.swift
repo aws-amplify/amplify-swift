@@ -14,8 +14,8 @@ import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
 /// `.default` is the Auth plugin's saved login, and every plugin configure first migrates the AWSMobileClient logins into
-/// it when it holds no session. So `.default`'s sign-out and purge clear those logins, as the plugin's own sign-out does
-/// (`ClearCredentialStore`); named sessions never touch them.
+/// it when it holds no session, or only a guest. So `.default`'s sign-out and purge clear those logins, as the plugin's
+/// own sign-out does (`ClearCredentialStore`); named sessions never touch them.
 final class DefaultSessionLegacyLoginTests: XCTestCase {
 
     private var harness: ClientHarness!
@@ -60,16 +60,26 @@ final class DefaultSessionLegacyLoginTests: XCTestCase {
     /// - Given: a store over the real keychain, and one a test builds
     /// - When: their AWSMobileClient stores are built
     /// - Then:
-    ///    - the real one has one item store per service, with no access group, even when the namespace has one; a
-    ///      test's has none, so it never reaches them
-    func testOnlyTheRealKeychainsStoreReachesTheServices() {
+    ///    - the real one has one item store per service: first the plugin's services for the pools
+    ///      (`legacyLoginServices(for:)`), then only other identity pools' `<bundle>.AWSCognitoCredentialsProvider.*`
+    ///      services, whichever the real keychain lists; each with no access group, even when the namespace has one
+    ///    - a test's has none, so it never reaches them
+    func testOnlyTheRealKeychainsStoreReachesTheServices() throws {
+        let bundle = try XCTUnwrap(Bundle.main.bundleIdentifier, "the test host has a bundle identifier")
         let namespace = SessionStorageNamespace(pools: pools, accessGroup: "group.example")
         let stores = SessionRecordStore(namespace: namespace).legacyLoginStores()
+        let own = SessionRecordStore.legacyLoginServices(for: pools)
 
-        XCTAssertEqual(
-            stores.compactMap { ($0 as? KeychainItemStore)?.attributes.service },
-            SessionRecordStore.legacyLoginServices(for: pools)
+        let services = stores.compactMap { ($0 as? KeychainItemStore)?.attributes.service }
+        XCTAssertEqual(services.count, stores.count, "every store is a keychain item store")
+        XCTAssertEqual(Array(services.prefix(own.count)), own)
+        let others = services.dropFirst(own.count)
+        XCTAssertTrue(
+            others.allSatisfy { $0.hasPrefix("\(bundle).\(SessionRecordStore.legacyCredentialsProviderService).") },
+            "only other identity pools' credentials services follow the plugin's"
         )
+        XCTAssertEqual(Set(others).count, others.count, "no service is listed twice")
+        XCTAssertTrue(Set(others).isDisjoint(with: own), "no service of the plugin's is listed twice")
         XCTAssertEqual(stores.compactMap { ($0 as? KeychainItemStore)?.attributes.accessGroup }, [])
         XCTAssertTrue(harness.keychain.recordStore(for: namespace).legacyLoginStores().isEmpty)
     }
@@ -105,26 +115,124 @@ final class DefaultSessionLegacyLoginTests: XCTestCase {
     }
 
     /// - Given: alice's saved login under `.default`, and AWSMobileClient logins
-    /// - When: a sign-out that revoked other credentials is superseded, a purge fails to delete the saved login, and a
-    ///   named session signs out and is purged
+    /// - When: a sign-out that revoked other credentials is superseded, and a named session signs out and is purged
     /// - Then:
-    ///    - none of them clears the AWSMobileClient logins: `.default` is still signed in after the first two, and a
-    ///      named session is not the plugin's login
-    func testOnlyAnEndedDefaultSessionClearsThem() throws {
+    ///    - none of them clears the AWSMobileClient logins: `.default` is still signed in after the first, and a named
+    ///      session is not the plugin's login
+    func testOnlyADefaultSessionThatIsEndingClearsThem() throws {
         harness.keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
         try harness.signIn(work, .signedIn("bob"))
         seedLegacyLogins()
         let store = store()
 
         XCTAssertEqual(try store.signOut(.default, removing: Data("other credentials".utf8)), .superseded)
-        harness.keychain.failingRemovals(of: pluginAccount, with: errSecInteractionNotAllowed)
-        XCTAssertThrowsError(try store.purge(.default))
-        harness.keychain.clearFailures()
         XCTAssertEqual(try store.signOut(work), .signedOut)
         try store.purge(work)
 
         XCTAssertEqual(harness.keychain.value(pluginAccount), PluginRecordFixtures.userPoolAndIdentityPool)
         assertLegacyLogins(present: true)
+    }
+
+    /// The AWSMobileClient logins are cleared before the signed-out write: a sign-out whose write fails must not leave a
+    /// login a plugin build would migrate.
+    ///
+    /// - Given: alice's saved login under `.default`, AWSMobileClient logins, and every write of the saved login failing
+    /// - When: `.default` is signed out
+    /// - Then:
+    ///    - the sign-out throws, and the saved login still holds alice's credentials
+    ///    - the AWSMobileClient logins are already cleared
+    func testASignOutWhoseWriteFailsHasClearedThem() throws {
+        harness.keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
+        seedLegacyLogins()
+        harness.keychain.failingWrites(of: pluginAccount, with: errSecInteractionNotAllowed)
+
+        XCTAssertThrowsError(try store().signOut(.default))
+
+        harness.keychain.clearFailures()
+        XCTAssertEqual(harness.keychain.value(pluginAccount), PluginRecordFixtures.userPoolAndIdentityPool)
+        assertLegacyLogins(present: false)
+    }
+
+    /// An unreadable saved login is replaced with the signed-out record, and the AWSMobileClient logins are cleared
+    /// before that replacement too: a replacement that fails leaves bytes a plugin build reads as no session, so a login
+    /// left beside them would be migrated.
+    ///
+    /// - Given: `.default`'s saved login holding bytes that are not the plugin's format, AWSMobileClient logins, and every
+    ///   write of the saved login failing
+    /// - When: `.default` is signed out
+    /// - Then:
+    ///    - the sign-out throws, and the saved login still holds the unreadable bytes
+    ///    - the AWSMobileClient logins are already cleared
+    func testASignOutWhoseReplacementOfAnUnreadableLoginFailsHasClearedThem() throws {
+        harness.keychain.put(StorageFixtures.corruptRecord, pluginAccount)
+        seedLegacyLogins()
+        harness.keychain.failingWrites(of: pluginAccount, with: errSecInteractionNotAllowed)
+
+        XCTAssertThrowsError(try store().signOut(.default))
+
+        harness.keychain.clearFailures()
+        XCTAssertEqual(harness.keychain.value(pluginAccount), StorageFixtures.corruptRecord)
+        assertLegacyLogins(present: false)
+    }
+
+    /// The AWSMobileClient logins are cleared before the purge's delete: once the saved login is gone, a plugin build
+    /// migrates any login left.
+    ///
+    /// - Given: alice's saved login under `.default`, AWSMobileClient logins, and every removal of the saved login failing
+    /// - When: `.default` is purged
+    /// - Then:
+    ///    - the purge throws, and the saved login is kept
+    ///    - the AWSMobileClient logins are already cleared
+    func testAPurgeWhoseDeleteFailsHasClearedThem() throws {
+        harness.keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
+        seedLegacyLogins()
+        harness.keychain.failingRemovals(of: pluginAccount, with: errSecInteractionNotAllowed)
+
+        XCTAssertThrowsError(try store().purge(.default))
+
+        harness.keychain.clearFailures()
+        XCTAssertEqual(harness.keychain.value(pluginAccount), PluginRecordFixtures.userPoolAndIdentityPool)
+        assertLegacyLogins(present: false)
+    }
+
+    /// The AWSMobileClient logins are cleared before the saved login is written or deleted.
+    ///
+    /// - Given: alice's saved login under `.default`, and AWSMobileClient logins
+    /// - When: `.default` is signed out, and in another run purged
+    /// - Then:
+    ///    - each AWSMobileClient service is cleared while the saved login still holds alice's credentials
+    ///    - after the sign-out or purge, the AWSMobileClient logins are gone
+    func testTheyAreClearedFirst() throws {
+        for purge in [false, true] {
+            harness = ClientHarness()
+            harness.keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
+            seedLegacyLogins()
+            let order = ClearOrder()
+            let keychain = harness.keychain
+            let pluginAccount = pluginAccount
+            let services = services
+            let store = store(legacyLoginStores: {
+                services.map { service in
+                    ObservedItemStore(keychain.itemStore(service: service)) {
+                        order.record(cleared: keychain.value(pluginAccount))
+                    }
+                }
+            })
+
+            if purge {
+                try store.purge(.default)
+            } else {
+                XCTAssertEqual(try store.signOut(.default), .signedOut)
+            }
+
+            let label = purge ? "purge" : "sign-out"
+            XCTAssertEqual(order.savedLoginsSeen.count, services.count, label)
+            XCTAssertTrue(
+                order.savedLoginsSeen.allSatisfy { $0 == PluginRecordFixtures.userPoolAndIdentityPool },
+                "\(label): the saved login was written or deleted before the AWSMobileClient logins were cleared"
+            )
+            assertLegacyLogins(present: false, label)
+        }
     }
 
     /// - Given: alice's saved login under `.default`, and AWSMobileClient stores whose clear fails
@@ -495,6 +603,59 @@ final class DefaultSessionLegacyLoginTests: XCTestCase {
         #endif
         return dependencies
     }
+}
+
+/// What the saved login held each time an AWSMobileClient service was cleared.
+private final class ClearOrder: @unchecked Sendable {
+    // `@unchecked Sendable`: `seen` is only touched while holding `lock`.
+    private let lock = NSLock()
+    private var seen: [Data?] = []
+
+    var savedLoginsSeen: [Data?] {
+        lock.lock()
+        defer { lock.unlock() }
+        return seen
+    }
+
+    func record(cleared savedLogin: Data?) {
+        lock.lock()
+        defer { lock.unlock() }
+        seen.append(savedLogin)
+    }
+}
+
+/// An item store that calls `onRemoveAll` before it clears `base`, and otherwise is `base`.
+private struct ObservedItemStore: KeychainItemStoreBehavior {
+    let base: any KeychainItemStoreBehavior
+    let onRemoveAll: @Sendable () -> Void
+
+    init(_ base: any KeychainItemStoreBehavior, onRemoveAll: @escaping @Sendable () -> Void) {
+        self.base = base
+        self.onRemoveAll = onRemoveAll
+    }
+
+    func getData(_ key: String) throws -> Data { try base.getData(key) }
+    func set(_ value: Data, key: String) throws { try base.set(value, key: key) }
+    func addIfAbsent(_ value: Data, key: String) throws -> Bool { try base.addIfAbsent(value, key: key) }
+    func replaceIfPresent(_ value: Data, key: String) throws -> Bool { try base.replaceIfPresent(value, key: key) }
+    func move(_ key: String, to destination: KeychainItemAttributes) throws -> KeychainMoveOutcome {
+        try base.move(key, to: destination)
+    }
+
+    func move(_ entry: KeychainEntry, to destination: KeychainItemAttributes) throws -> KeychainMoveOutcome {
+        try base.move(entry, to: destination)
+    }
+
+    func remove(_ key: String) throws { try base.remove(key) }
+    func remove(_ entry: KeychainEntry) throws { try base.remove(entry) }
+    func removeAll() throws {
+        onRemoveAll()
+        try base.removeAll()
+    }
+
+    func hasItems() throws -> Bool { try base.hasItems() }
+    func allAccounts() throws -> [String] { try base.allAccounts() }
+    func allEntries() throws -> [KeychainEntry] { try base.allEntries() }
 }
 
 /// An item store whose `removeAll` fails, and that holds nothing otherwise.

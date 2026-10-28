@@ -118,7 +118,8 @@ extension LiveSessionEngine {
                 // The page cannot be shown: the user stays signed in, nothing revoked.
                 throw SignOutRefusal(error: Self.presentationAnchorGone())
             }
-            let operation = try resources.makeOperation(seed: payload, presenter: presenter)
+            // Without the plugin's expired flag: a closed page stops the sign-out, whatever the plugin last saved.
+            let operation = try resources.makeOperation(seed: Self.presentingSignOutSeed(payload), presenter: presenter)
             try await operation.configure(resources.authConfiguration)
             return try await operation.firstState(
                 after: AuthenticationEvent(eventType: .signOutRequested(SignOutEventData(
@@ -171,6 +172,29 @@ extension LiveSessionEngine {
             throw AuthClientError(engineFailure: error)
         default:
             return nil
+        }
+    }
+
+    /// `payload` as a presenting sign-out's seed: with `isRefreshTokenExpired` cleared, and otherwise unchanged. The
+    /// Auth plugin sets and saves that flag in `.default`'s shared record when a refresh finds the token dead, and the
+    /// engine's logout step signs out past a closed page when it is set. A closed page is the core's to decide
+    /// (`SessionCore.afterClosedLogout`), on its own in-memory expiry, so the engine always stops there. A payload
+    /// without the flag set, or without user pool tokens, is returned as it is.
+    static func presentingSignOutSeed(_ payload: Data) throws -> Data {
+        switch try credentials(in: payload) {
+        case .userPoolOnly(var signedInData) where signedInData.isRefreshTokenExpired == true:
+            signedInData.isRefreshTokenExpired = false
+            return try CredentialSlot.encode(.userPoolOnly(signedInData: signedInData))
+        case .userPoolAndIdentityPool(var signedInData, let identityID, let credentials)
+            where signedInData.isRefreshTokenExpired == true:
+            signedInData.isRefreshTokenExpired = false
+            return try CredentialSlot.encode(.userPoolAndIdentityPool(
+                signedInData: signedInData,
+                identityID: identityID,
+                credentials: credentials
+            ))
+        case .userPoolOnly, .userPoolAndIdentityPool, .identityPoolOnly, .identityPoolWithFederation, .noCredentials:
+            return payload
         }
     }
 
@@ -267,18 +291,20 @@ extension AuthClientError {
     }
 
     /// The mismatch is the underlying error, so a caller can still read its reason. No string holds the
-    /// returned identity: that is in `returned`.
+    /// returned identity: that is in `returned`. A user who is not the one asked for suggests signing in with
+    /// `prompt: [.login]`; a response that could not be verified suggests `unverifiedHostedUIResponseSuggestion`, since
+    /// asking for credentials again would not change what the tokens say.
     init(hostedUIMismatch mismatch: HostedUIIdentityMismatch) {
-        let suggestion = HostedUIIdentityMismatch.recoverySuggestion
         guard mismatch.isIdentityMismatch else {
             self = .service(
                 nil,
                 "The hosted UI sign-in response could not be verified (\(Self.failedCheck(mismatch.reason))), so nobody was signed in.",
-                suggestion,
+                Self.unverifiedHostedUIResponseSuggestion,
                 mismatch
             )
             return
         }
+        let suggestion = HostedUIIdentityMismatch.recoverySuggestion
         // An identity reason always has the `sub`; the username falls back to it.
         let userId = mismatch.returnedUserId ?? ""
         self = .unexpectedIdentity(
@@ -289,6 +315,12 @@ extension AuthClientError {
             mismatch
         )
     }
+
+    /// The recovery suggestion of a hosted-UI response that could not be verified: its tokens were issued to another
+    /// app client or user pool, or for another sign-in, or do not name one user.
+    static let unverifiedHostedUIResponseSuggestion =
+        "Sign in again. If it keeps failing, check that the configuration's user pool, app client and hosted UI domain "
+            + "belong together."
 
     private static func failedCheck(_ reason: HostedUIIdentityMismatch.Reason) -> String {
         switch reason {

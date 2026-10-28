@@ -30,8 +30,8 @@ package extension DeleteUserState {
                 case .deleteUser(let accessToken, let skipHostedUISignOut):
                     let action = DeleteUser(accessToken: accessToken, skipHostedUISignOut: skipHostedUISignOut)
                     return .init(newState: .deletingUser, actions: [action])
-                case .throwError(let error):
-                    return .init(newState: .error(error))
+                case .throwError(let error, let cause):
+                    return .init(newState: .error(error, cause: cause))
                 default:
                     return .from(oldState)
                 }
@@ -48,8 +48,8 @@ package extension DeleteUserState {
                     )
                     let newState = DeleteUserState.signingOut(.notStarted)
                     return .init(newState: newState, actions: [action])
-                case .throwError(let error):
-                    return .init(newState: .error(error))
+                case .throwError(let error, let cause):
+                    return .init(newState: .error(error, cause: cause))
                 default:
                     return .from(oldState)
                 }

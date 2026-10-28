@@ -90,9 +90,9 @@ enum LiveSignInSteps {
         case send(StateMachineEvent)
     }
 
-    /// The plugin's `analyzeCurrentStateAndCreateEvent` (`AWSAuthConfirmSignInTask.swift:95-165`). The two
-    /// selection validations it runs first are the core's (`SessionCore.validate`), before the engine is
-    /// called. The plugin's WebAuthn retry (`signingInWithWebAuthn(.error)`) has no arm, deliberately: a
+    /// The plugin's `AWSAuthConfirmSignInTask.analyzeCurrentStateAndCreateEvent`, with its TOTP-setup arm
+    /// (`answerTOTPSetup`). The selection validations it runs first are the core's (`SessionCore.validate`), before
+    /// the engine is called. The plugin's WebAuthn retry (`signingInWithWebAuthn(.error)`) has no arm, deliberately: a
     /// failed WebAuthn step drops the attempt, so no attempt is ever
     /// retained in that state, and a new sign-in starts over.
     static func confirmation(for state: AuthState, answering data: ConfirmSignInEventData) throws -> Confirmation {
@@ -115,6 +115,10 @@ enum LiveSignInSteps {
             }
         case .resolvingTOTPSetup(let setupState, _):
             switch setupState {
+            case .error(nil, _):
+                // A setup that failed before its secret was issued, or at its last request, has no session to
+                // answer with: the engine would drop the answer, and this call would never return.
+                throw dropping(restartRequired())
             case .waitingForAnswer, .error:
                 return .send(SetUpTOTPEvent(eventType: .verifyChallengeAnswer(data)))
             default:
@@ -268,9 +272,11 @@ enum LiveSignInSteps {
         case .resolvingTOTPSetup(let setupState, _):
             switch setupState {
             case .error(let setup, let error):
-                // No setup means `AssociateSoftwareToken` failed, so there is no secret to verify a code
-                // against, and the engine drops a retried answer without a call or a state change. So the
-                // attempt is dropped instead of kept for an answer that would never return.
+                // No setup means `AssociateSoftwareToken` or the setup's last `RespondToAuthChallenge` failed, so
+                // there is no session to verify a code with: the engine turns a retried answer into `.notStarted`
+                // with no call, and the answer would never return. So a failure that is thrown drops the attempt
+                // instead of keeping it, and one that is a step (`.resetPassword`, `.confirmSignUp`, which keep
+                // it) refuses a further answer in `confirmation(for:answering:)`.
                 return try failed(error, retryable: setup != nil, confirming: confirming, challengeRejected: challengeRejected)
             case .waitingForAnswer(let setup):
                 return .continueSignInWithTOTPSetup(AuthClientTOTPSetupDetails(

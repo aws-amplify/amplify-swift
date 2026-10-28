@@ -11,8 +11,10 @@ import Security
 
 package extension KeychainItemStore {
 
-    /// The services of every generic-password item this app can read, in every access group it can read, each once
-    /// and sorted. Reads attributes only, no data, so one unreadable item cannot fail the listing.
+    /// The services of every non-synchronizable generic-password item this app can read in the data protection
+    /// keychain, in every access group it can read, each once and sorted: the query names no
+    /// `kSecAttrSynchronizable`, so iCloud Keychain items are not listed. Reads attributes only, no data, so one
+    /// unreadable item cannot fail the listing.
     ///
     /// For a caller that must find services it cannot name in advance, such as AWSMobileClient's per-identity-pool
     /// credentials services. An empty keychain lists none; any other failure throws.
@@ -25,8 +27,9 @@ package extension KeychainItemStore {
         return try services(fromStatus: status, result: result, logger: logger)
     }
 
-    /// Every generic-password item, in any access group, attributes only: no service, account or access group is
-    /// given, and `kSecMatchLimitAll` is set so the listing is not limited to one item.
+    /// Every non-synchronizable generic-password item, in any access group, attributes only: no service, account,
+    /// access group or `kSecAttrSynchronizable` is given, and `kSecMatchLimitAll` is set so the listing is not
+    /// limited to one item.
     static func listServicesQuery() -> [String: Any] {
         [
             KeychainConstants.Class: KeychainConstants.ClassGenericPassword,

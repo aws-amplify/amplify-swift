@@ -98,8 +98,16 @@ actor SessionCore {
     /// The last state sent on `states`, to send only changes.
     private var lastPublished: AuthSessionState?
 
-    /// Set when a refresh proved the refresh token dead. Cleared when the credentials change.
-    private(set) var isExpired = false
+    /// The credentials a refresh proved dead (`markExpired(installing:)`), while the session is known to be expired.
+    /// Cleared when the credentials change to ones without the dead refresh token (`holdsDeadRefreshToken(_:)`).
+    private(set) var expiredCredentials: Data?
+
+    /// Whether a refresh proved the refresh token dead. Cleared when the credentials change to ones without that refresh
+    /// token: a new login, a sign-out. In memory, on this core: once every handle and provider for the session is
+    /// released, or after a relaunch, a new core starts unexpired.
+    var isExpired: Bool {
+        expiredCredentials != nil
+    }
 
     /// Whether a hosted-UI sign-in call of this session is in progress, from before it waits for the
     /// sign-in lock until it returns: a second call (a double tap) is refused at once rather than queued
@@ -170,9 +178,10 @@ actor SessionCore {
         snapshot
     }
 
-    /// The snapshot and whether the refresh token is known dead, read in one hop so they agree.
-    var snapshotAndExpiry: (SessionSnapshot, Bool) {
-        (snapshot ?? .absent, isExpired)
+    /// The snapshot and, while the refresh token is known dead, the credentials proved dead (`expiredCredentials`), read
+    /// in one hop so they agree.
+    var snapshotAndExpiry: (SessionSnapshot, Data?) {
+        (snapshot ?? .absent, expiredCredentials)
     }
 
     /// The current state, or `nil` before the first restore.
@@ -188,16 +197,23 @@ actor SessionCore {
     /// Installs a snapshot read or written by an operation, publishes the state it projects to if that
     /// changed, then sends `event` if there is one. Events are never de-duplicated.
     ///
+    /// New credentials end a known expiry, unless they still hold the refresh token proved dead
+    /// (`holdsDeadRefreshToken(_:)`): another writer saved the same login again, in other bytes, after the proof.
+    ///
     /// Every mutation path ends here, after its storage commit and before the operation returns, so a
     /// caller that awaited an operation has already caused its event.
+    ///
+    /// - Parameter newLogin: `newSnapshot` holds a login this core just committed (a sign-in, a federation), which
+    ///   ends a known expiry whatever its credentials hold.
     @discardableResult
     func apply(
         _ newSnapshot: SessionSnapshot,
         challenge update: ChallengeUpdate = .unchanged,
-        event: AuthEvent?
+        event: AuthEvent?,
+        newLogin: Bool = false
     ) -> SessionSnapshot {
-        if newSnapshot.credentials != snapshot?.credentials {
-            isExpired = false
+        if newLogin || (newSnapshot.credentials != snapshot?.credentials && !holdsDeadRefreshToken(newSnapshot.credentials)) {
+            expiredCredentials = nil
         }
         snapshot = newSnapshot
         if case .set(let step) = update {
@@ -357,14 +373,37 @@ actor SessionCore {
         webUISignInInFlight = false
     }
 
-    /// Records that the refresh token is dead. The state does not change: the session stays signed in
-    /// as its user, so an app knows whom to re-authenticate, and its operations throw `sessionExpired`.
-    func markExpired() {
-        guard !isExpired else {
-            return
+    /// Records that the refresh token of `reread` is dead: installs `reread`, the record the refresh re-read and
+    /// proved dead, remembers its credentials, and sends `.sessionExpired` unless the session was already expired, in
+    /// one step on the actor, so no reader sees the record with the flag still clear. Installed so the next call's
+    /// re-read (`rereadIfExpired`) compares with what the store holds, which may be newer bytes than this core last
+    /// read (the same credentials saved again by another writer). A record saved again after this, holding the same
+    /// refresh token, keeps the expiry too (`apply`): neither is taken for a new login. The state
+    /// does not change: the session stays signed in as its user, so an app knows whom to re-authenticate, and its
+    /// operations throw `sessionExpired`.
+    func markExpired(installing reread: SessionSnapshot) {
+        let wasExpired = isExpired
+        apply(reread, event: nil)
+        expiredCredentials = reread.credentials
+        if !wasExpired, isExpired {
+            events.send(.sessionExpired)
         }
-        isExpired = true
-        events.send(.sessionExpired)
+    }
+
+    /// Whether `payload` holds the refresh token a refresh proved dead (`expiredCredentials`), so it is the same login
+    /// whose token died, whatever else changed: the same credentials saved again in other bytes, or the plugin's save of
+    /// the same tokens with its `isRefreshTokenExpired` flag set, which is part of its credentials' equality. Compared
+    /// by refresh token, as a closed logout page is (`afterClosedLogout`). Dead credentials without one (a federated
+    /// session's refused provider token) are compared whole (`SessionEngine.sameCredentials`), so a new federation ends
+    /// the expiry.
+    private func holdsDeadRefreshToken(_ payload: Data?) -> Bool {
+        guard let payload, let dead = expiredCredentials else {
+            return false
+        }
+        guard let deadToken = (try? engine.checkedUserPoolTokens(in: dead))??.refreshToken else {
+            return engine.sameCredentials(payload, dead)
+        }
+        return (try? engine.checkedUserPoolTokens(in: payload))??.refreshToken == deadToken
     }
 
     private func publish(_ state: AuthSessionState) {

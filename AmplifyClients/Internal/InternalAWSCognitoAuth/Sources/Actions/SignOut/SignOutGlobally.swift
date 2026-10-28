@@ -54,13 +54,15 @@ package struct SignOutGlobally: Action {
             let internalError = authErrorConvertible.engineError
             globalSignOutError = EngineGlobalSignOutFailure(
                 accessToken: signedInData.cognitoUserPoolTokens.accessToken,
-                error: internalError
+                error: internalError,
+                cause: error
             )
         } else if let error {
             let internalError = EngineAuthError.service("", "", error)
             globalSignOutError = EngineGlobalSignOutFailure(
                 accessToken: signedInData.cognitoUserPoolTokens.accessToken,
-                error: internalError
+                error: internalError,
+                cause: error
             )
         }
 

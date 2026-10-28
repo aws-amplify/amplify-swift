@@ -22,8 +22,9 @@ import XCTest
 /// the plugin's goldens, plugin <-> client by the model parity tests).
 ///
 /// Every table has one row per engine case. The `…CaseIndex` helpers are exhaustive switches with no
-/// `default:`, so a new engine case does not compile here until it has a row, and each test checks that its
-/// rows cover every index.
+/// `default:`, so a new engine case does not compile here until it has an index. Each test checks that its rows
+/// cover every index from 0 to the switch's `last…CaseIndex`, which sits beside the switches: raised with the new
+/// arm, it fails the test until the new case has its row. The switches cannot check the constant itself.
 final class EngineMappingTests: XCTestCase {
 
     private static let details = EngineCodeDeliveryDetails(destination: .sms("+1***"), attributeKey: "phone_number")
@@ -73,7 +74,7 @@ final class EngineMappingTests: XCTestCase {
             XCTAssertEqual(AuthClientSignInStep(engine), client, "\(engine)")
             XCTAssertEqual(Self.signInStepCaseIndex(engine), Self.signInStepCaseIndex(client), "\(engine)")
         }
-        XCTAssertEqual(Set(rows.map { Self.signInStepCaseIndex($0.0) }), Set(0 ..< 14))
+        XCTAssertEqual(Set(rows.map { Self.signInStepCaseIndex($0.0) }), Set(0 ... Self.lastSignInStepCaseIndex))
     }
 
     /// Test that the first-factor selection keeps WebAuthn where the platform has it
@@ -122,7 +123,7 @@ final class EngineMappingTests: XCTestCase {
             XCTAssertNotEqual(engine.rawValue, client.rawValue)
             XCTAssertEqual(client.challengeResponse, engine.challengeResponse)
         }
-        XCTAssertEqual(Set(rows.map { Self.mfaCaseIndex($0.0) }), Set(0 ..< 3))
+        XCTAssertEqual(Set(rows.map { Self.mfaCaseIndex($0.0) }), Set(0 ... Self.lastMFACaseIndex))
     }
 
     /// Test that factor types map case to case in both directions
@@ -137,13 +138,13 @@ final class EngineMappingTests: XCTestCase {
         var rows: [(EngineAuthFactorType, AuthClientFactorType)] = [
             (.password, .password), (.passwordSRP, .passwordSRP), (.smsOTP, .smsOTP), (.emailOTP, .emailOTP)
         ]
-        var expectedCases = 4
+        // WebAuthn, the last index where the platform has it, is only a value where the OS has it too.
+        var lastAvailable = Self.lastFactorCaseIndex
         #if os(iOS) || os(macOS) || os(visionOS)
-        expectedCases = 5
         if #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) {
             rows.append((.webAuthn, .webAuthn))
         } else {
-            expectedCases = 4
+            lastAvailable -= 1
         }
         #endif
         for (engine, client) in rows {
@@ -152,7 +153,7 @@ final class EngineMappingTests: XCTestCase {
             XCTAssertEqual(AuthClientFactorType(EngineAuthFactorType(client)), client)
             XCTAssertNotEqual(engine.rawValue, client.rawValue)
         }
-        XCTAssertEqual(Set(rows.map { Self.factorCaseIndex($0.0) }).count, expectedCases)
+        XCTAssertEqual(Set(rows.map { Self.factorCaseIndex($0.0) }), Set(0 ... lastAvailable))
     }
 
     /// Test that a factor's challenge response is Cognito's name for it, which a factor selection accepts
@@ -211,7 +212,7 @@ final class EngineMappingTests: XCTestCase {
             XCTAssertEqual(mapped, engine, "\(client)")
             XCTAssertNotEqual(mapped, .custom, "\(client)")
         }
-        XCTAssertEqual(Set(rows.map { Self.flowCaseIndex($0.0) }), Set(0 ..< 5))
+        XCTAssertEqual(Set(rows.map { Self.flowCaseIndex($0.0) }), Set(0 ... Self.lastFlowCaseIndex))
     }
 
     /// Test that delivery destinations map case to case, with their values
@@ -232,7 +233,7 @@ final class EngineMappingTests: XCTestCase {
         for (engine, client) in rows {
             XCTAssertEqual(AuthClientDeliveryDestination(engine), client)
         }
-        XCTAssertEqual(Set(rows.map { Self.destinationCaseIndex($0.0) }), Set(0 ..< 4))
+        XCTAssertEqual(Set(rows.map { Self.destinationCaseIndex($0.0) }), Set(0 ... Self.lastDestinationCaseIndex))
     }
 
     /// Test that the delivery details' attribute, a Cognito name in the engine, becomes the client's key
@@ -344,7 +345,7 @@ final class EngineMappingTests: XCTestCase {
             XCTAssertEqual(Self.errorCaseIndex(underlying), Self.errorCaseIndex(engine), "\(engine)")
             XCTAssertEqual(underlying.errorDescription, engine.errorDescription, "\(engine)")
         }
-        XCTAssertEqual(Set(rows.map { Self.errorCaseIndex($0.0) }), Set(0 ..< 8))
+        XCTAssertEqual(Set(rows.map { Self.errorCaseIndex($0.0) }), Set(0 ... Self.lastErrorCaseIndex))
         XCTAssertEqual(AuthClientError(engine: .unknown("boom")).errorDescription, "Unexpected error occurred with message: boom")
     }
 
@@ -427,8 +428,9 @@ final class EngineMappingTests: XCTestCase {
     ///    - every network failure is `.service` with no code, the network description and suggestion, and the network
     ///      error itself underneath
     ///    - a cancelled load, a response that arrived but was bad, an App Transport Security or authentication
-    ///      failure, a bad URL and the other POSIX error don't get the network description, and a code-less
-    ///      `.service` over one of them keeps its own; the coded `.unknown` stays `.unknown`
+    ///      failure, a bad URL and the other POSIX error don't get the network description; a code-less `.service`
+    ///      over the cancelled load or the POSIX error, neither a transport failure, keeps its own; the coded
+    ///      `.unknown` stays `.unknown`
     ///    - the placeholder keeps its empty texts; the other empty one gets the generic service description
     func testANetworkFailureIsARetryableServiceError() {
         let network: [Error] = [
@@ -457,8 +459,7 @@ final class EngineMappingTests: XCTestCase {
                 XCTAssertEqual(underlying?.code, (failure as NSError).code, "\(engine)")
             }
         }
-        // Failures that reached the service, or never left the device for another reason, are not network failures:
-        // a code-less `.service` over one keeps its description.
+        // Failures that reached the service, or never left the device for another reason, are not network failures.
         let notNetwork: [Error] = [
             URLError(.cancelled),
             URLError(.badServerResponse),
@@ -471,7 +472,12 @@ final class EngineMappingTests: XCTestCase {
             NSError(domain: NSPOSIXErrorDomain, code: Int(ENOENT))
         ]
         for failure in notNetwork {
-            XCTAssertNotEqual(AuthClientError(engine: .unknown("", failure)).errorDescription, AuthClientError.networkFailureDescription, "\(failure)")
+            for engine in [EngineAuthError.unknown("", failure), .service("Service error occurred", "", failure)] {
+                XCTAssertNotEqual(AuthClientError(engine: engine).errorDescription, AuthClientError.networkFailureDescription, "\(engine)")
+            }
+        }
+        // Neither is a transport failure either (`testATransportFailureIsAReadableServiceError` has the others).
+        for failure in [URLError(.cancelled) as Error, NSError(domain: NSPOSIXErrorDomain, code: Int(ENOENT))] {
             let service = AuthClientError(engine: .service("Service error occurred", "", failure))
             XCTAssertEqual(service.errorDescription, "Service error occurred", "\(failure)")
         }
@@ -485,23 +491,23 @@ final class EngineMappingTests: XCTestCase {
         XCTAssertEqual(emptyOther.recoverySuggestion, AuthClientError.clientServiceSuggestion)
     }
 
-    /// A Cognito failure the engine reports as `.unknown` keeps that case, with a recovery suggestion that fits it,
-    /// never the engine's "report a bug" text.
+    /// A Cognito failure the engine reports as `.unknown` is `.service` with no code, with a recovery suggestion that
+    /// fits it, never the engine's "report a bug" text.
     ///
     /// - Given: engine `.unknown` errors over an error status the SDK does not model (`UnknownAWSHTTPServiceError`)
     ///   of 500, 503, 400 and 404; engine failures made from either pool's `InternalErrorException`, on its own and
-    ///   inside the sign-in, WebAuthn, authorization, session and sign-up errors, and inside one of them inside another,
-    ///   as the engine's mapping unwraps them, which the engine reports as
-    ///   `.unknown` with nothing underneath; and an engine `.unknown` with no cause, with a cause that is not a
+    ///   inside the sign-in, authentication, WebAuthn, authorization, session and sign-up errors, and inside one of them
+    ///   inside another, as the engine's mapping unwraps them, which the engine reports as `.unknown` with nothing
+    ///   underneath; and an engine `.unknown` with no cause, with a cause that is not a
     ///   service error, and with another Cognito exception as its cause
     /// - When:
     ///    - each is mapped
     /// - Then:
-    ///    - each Cognito failure stays `.unknown`, with the engine's description and the engine error underneath; the
-    ///      5xx statuses and the internal errors suggest a retry, the 4xx statuses say the service refused the request
-    ///      with an error the client does not recognise, and none asks for a bug report
-    ///    - the others keep the engine's suggestion
-    func testACognitoFailureReportedAsUnknownSuggestsARetryOrNamesTheRefusal() throws {
+    ///    - each Cognito failure is `.service` with no code, with the engine's description and the engine error
+    ///      underneath; the 5xx statuses and the internal errors suggest a retry, the 4xx statuses say the service
+    ///      refused the request with an error the client does not recognise, and none asks for a bug report
+    ///    - the others stay `.unknown`, with the engine's suggestion
+    func testACognitoFailureReportedAsUnknownIsACodelessServiceError() throws {
         let fault = "The service could not complete the request, usually a temporary problem at the service. Retry the operation."
         let refusal = "The service refused the request with an error this client does not recognise. The description has the "
             + "service's status and message: check the request against it before retrying."
@@ -521,7 +527,7 @@ final class EngineMappingTests: XCTestCase {
             )
             let engine = unmodelled.engineError
             let mapped = AuthClientError(engine: engine)
-            XCTAssertEqual(mapped.kind, .unknown, "\(status)")
+            XCTAssertEqual(mapped.kind, .service(nil), "\(status)")
             XCTAssertEqual(mapped.errorDescription, engine.errorDescription, "\(status)")
             XCTAssertTrue(mapped.errorDescription.contains("\(status.rawValue)"), mapped.errorDescription)
             XCTAssertEqual(mapped.recoverySuggestion, expected, "\(status)")
@@ -535,7 +541,14 @@ final class EngineMappingTests: XCTestCase {
             ("user pool", userPool),
             ("identity pool", identityPool),
             ("sign-in", SignInError.service(error: userPool)),
-            ("WebAuthn sign-in", SignInError.webAuthn(.service(error: userPool))),
+            // `ThrowSignInError`'s shape: how `USER_AUTH`, auto sign-in and device SRP report a failed call.
+            (
+                "authentication",
+                AuthenticationError.service(message: "\(SignInError.service(error: userPool))", error: SignInError.service(error: userPool))
+            ),
+            // The passkey sign-in actions' shape (`FetchCredentialOptions`, `VerifyWebAuthnCredential`): the exception
+            // wrapped in `ServiceFailure`, which prints as its engine error.
+            ("WebAuthn sign-in", SignInError.webAuthn(.service(error: WebAuthnError.ServiceFailure(userPool)))),
             ("authorization", AuthorizationError.service(error: identityPool)),
             ("session", AuthorizationError.sessionError(.service(identityPool), .noCredentials)),
             ("refresh", FetchSessionError.service(userPool)),
@@ -548,12 +561,13 @@ final class EngineMappingTests: XCTestCase {
                 return XCTFail("\(name): the engine's mapping changed: \(engine)")
             }
             let mapped = AuthClientError(engineFailure: failure)
-            XCTAssertEqual(mapped.kind, .unknown, name)
+            XCTAssertEqual(mapped.kind, .service(nil), name)
             XCTAssertEqual(mapped.errorDescription, "Unexpected error occurred with message: boom", name)
             XCTAssertEqual(mapped.recoverySuggestion, fault, name)
             XCTAssertNotNil(mapped.underlyingError as? EngineAuthError, name)
             // The confirm path's mapping keeps the cause too.
             let confirming = AuthClientError(engineConfirmingSignIn: engine, rejectedByUserPool: false, cause: failure as? Error)
+            XCTAssertEqual(confirming.kind, .service(nil), name)
             XCTAssertEqual(confirming.recoverySuggestion, fault, name)
         }
 
@@ -575,19 +589,20 @@ final class EngineMappingTests: XCTestCase {
 
     /// A transport failure that is not a network failure is a readable, retryable service error too, never an empty
     /// `.unknown`: an unreadable response gets the refresh path's suggestion, any other URL loading failure the
-    /// client's network-or-service one.
+    /// client's network-or-service one. It reads the same whichever engine error carries it.
     ///
-    /// - Given: engine `.unknown` errors with an empty message over a body that is not JSON, URL loading's
-    ///   `badServerResponse` and `cannotParseResponse` (also in the CFNetwork domain), and over an App Transport
-    ///   Security refusal, an authentication failure and a bad URL; and over a cancelled load, a POSIX error that is
-    ///   not a network failure, and a service code
+    /// - Given: a body that is not JSON, URL loading's `badServerResponse` and `cannotParseResponse` (also in the
+    ///   CFNetwork domain), an App Transport Security refusal, an authentication failure and a bad URL, each under
+    ///   an engine `.unknown` with an empty message, a code-less `.service` with the engine's "report a bug" text, one
+    ///   with empty texts (a revoke's), and the passkey calls' fallback (`WebAuthnError.unknown`); and an `.unknown`
+    ///   over a cancelled load, a POSIX error that is not a network failure, and a service code
     /// - When:
     ///    - each is mapped
     /// - Then:
     ///    - the unreadable responses are `.service` with no code, "The service returned a response that could not be
     ///      read." and the retry suggestion; the other URL failures are `.service` with no code, "The service request
     ///      failed." and the network-or-service suggestion; each has the engine error underneath, and none asks for a
-    ///      bug report
+    ///      bug report or says it should not happen
     ///    - the cancelled load, the POSIX error and the coded one stay `.unknown`
     func testATransportFailureIsAReadableServiceError() {
         let unreadable: [Error] = [
@@ -596,29 +611,89 @@ final class EngineMappingTests: XCTestCase {
             URLError(.cannotParseResponse),
             NSError(domain: "kCFErrorDomainCFNetwork", code: NSURLErrorBadServerResponse)
         ]
-        for failure in unreadable {
-            let mapped = AuthClientError(engine: .unknown("", failure))
-            XCTAssertEqual(mapped.kind, .service(nil), "\(failure)")
-            XCTAssertEqual(mapped.errorDescription, "The service returned a response that could not be read.", "\(failure)")
-            XCTAssertEqual(mapped.recoverySuggestion, AuthClientError.unreadableServiceResponseSuggestion, "\(failure)")
-            XCTAssertNotNil(mapped.underlyingError as? EngineAuthError, "\(failure)")
-        }
         let otherURLFailures: [Error] = [
             URLError(.appTransportSecurityRequiresSecureConnection),
             URLError(.userCancelledAuthentication),
             URLError(.userAuthenticationRequired),
             URLError(.badURL)
         ]
-        for failure in otherURLFailures {
-            let mapped = AuthClientError(engine: .unknown("", failure))
-            XCTAssertEqual(mapped.kind, .service(nil), "\(failure)")
-            XCTAssertEqual(mapped.errorDescription, "The service request failed.", "\(failure)")
-            XCTAssertEqual(mapped.recoverySuggestion, AuthClientError.clientServiceSuggestion, "\(failure)")
-            XCTAssertFalse(mapped.recoverySuggestion.contains("bug"), "\(failure)")
+        let rows = unreadable.map { ($0, AuthClientError.unreadableResponseDescription, AuthClientError.unreadableServiceResponseSuggestion) }
+            + otherURLFailures.map { ($0, AuthClientError.emptyServiceFailureDescription, AuthClientError.clientServiceSuggestion) }
+        XCTAssertEqual(AuthClientError.unreadableResponseDescription, "The service returned a response that could not be read.")
+        XCTAssertEqual(AuthClientError.emptyServiceFailureDescription, "The service request failed.")
+        for (failure, description, suggestion) in rows {
+            for engine in Self.transportFailureShapes(failure) {
+                let mapped = AuthClientError(engine: engine)
+                XCTAssertEqual(mapped.kind, .service(nil), "\(engine)")
+                XCTAssertEqual(mapped.errorDescription, description, "\(engine)")
+                XCTAssertEqual(mapped.recoverySuggestion, suggestion, "\(engine)")
+                XCTAssertNotNil(mapped.underlyingError as? EngineAuthError, "\(engine)")
+                XCTAssertFalse(mapped.recoverySuggestion.contains("bug"), "\(engine)")
+                XCTAssertFalse(mapped.recoverySuggestion.contains("should not happen"), "\(engine)")
+            }
         }
         for failure in [URLError(.cancelled) as Error, NSError(domain: NSPOSIXErrorDomain, code: Int(ENOENT)), EngineServiceErrorCode.codeMismatch] {
             XCTAssertEqual(AuthClientError(engine: .unknown("", failure)).kind, .unknown, "\(failure)")
         }
+    }
+
+    /// A network failure reads the same whichever engine error carries it, the passkey calls' fallback included.
+    ///
+    /// - Given: an offline `URLError` under each engine shape of `transportFailureShapes(_:)`
+    /// - When:
+    ///    - each is mapped
+    /// - Then:
+    ///    - each is `.service` with no code, the network description and suggestion, and the `URLError` itself
+    ///      underneath
+    func testANetworkFailureReadsTheSameUnderEveryEngineShape() {
+        let offline = URLError(.notConnectedToInternet)
+        for engine in Self.transportFailureShapes(offline) {
+            let mapped = AuthClientError(engine: engine)
+            XCTAssertEqual(mapped.kind, .service(nil), "\(engine)")
+            XCTAssertEqual(mapped.errorDescription, AuthClientError.networkFailureDescription, "\(engine)")
+            XCTAssertEqual(mapped.recoverySuggestion, AuthClientError.clientServiceSuggestion, "\(engine)")
+            XCTAssertEqual((mapped.underlyingError as? URLError)?.code, .notConnectedToInternet, "\(engine)")
+        }
+    }
+
+    /// The passkey calls' fallback over an error the client doesn't recognise asks for no bug report.
+    ///
+    /// - Given: the engine's error for a passkey call that failed with an error it cannot convert
+    ///   (`WebAuthnError.unknown`, whose suggestion says "This should not happen" and asks for an issue)
+    /// - When:
+    ///    - it is mapped
+    /// - Then:
+    ///    - it is `.service` with no code, the engine's description, the client's network-or-service suggestion and
+    ///      the engine error underneath
+    func testThePasskeyFallbackAsksForNoBugReport() throws {
+        #if os(iOS) || os(macOS) || os(visionOS)
+        let engine = WebAuthnError.unknown(message: "Unable to list WebAuthn credentials", error: FixtureError(description: "x")).engineError
+        XCTAssertTrue(engine.recoverySuggestion.hasPrefix("This should not happen."), "the engine's text changed: \(engine.recoverySuggestion)")
+
+        let mapped = AuthClientError(engine: engine)
+
+        XCTAssertEqual(mapped.kind, .service(nil))
+        XCTAssertEqual(mapped.errorDescription, engine.errorDescription)
+        XCTAssertEqual(mapped.recoverySuggestion, AuthClientError.clientServiceSuggestion)
+        XCTAssertNotNil(mapped.underlyingError as? EngineAuthError)
+        #else
+        throw XCTSkip("WebAuthn is not available on this platform")
+        #endif
+    }
+
+    /// The engine errors a transport failure `failure` reaches the client in: `.unknown` with an empty message (the
+    /// sign-in flows), a code-less `.service` with the "report a bug" text (a refresh), one with empty texts (a
+    /// revoke's), and the passkey calls' fallback.
+    private static func transportFailureShapes(_ failure: Error) -> [EngineAuthError] {
+        var shapes: [EngineAuthError] = [
+            .unknown("", failure),
+            .service("Service error occurred", EngineErrorMessages.reportBugToAWS(function: "authError"), failure),
+            .service("", "", failure)
+        ]
+        #if os(iOS) || os(macOS) || os(visionOS)
+        shapes.append(WebAuthnError.unknown(message: "Unable to list WebAuthn credentials", error: failure).engineError)
+        #endif
+        return shapes
     }
 
     /// Test that an engine recovery suggestion naming the plugin's `Auth.*` calls names the client's calls
@@ -680,27 +755,37 @@ final class EngineMappingTests: XCTestCase {
 
     /// The engine's configuration suggestion, which names "Auth plugin", names the client's settings instead.
     ///
-    /// - Given: the engine's `.configuration` for a user pool without device tracking (Cognito's
-    ///   `InvalidUserPoolConfigurationException`), with the engine's configuration suggestion
+    /// - Given: Cognito's `InvalidUserPoolConfigurationException` for a user pool without device tracking, and the
+    ///   identity pool's `InvalidIdentityPoolConfigurationException`, each mapped by the engine to `.configuration`
+    ///   with the engine's configuration suggestion
     /// - When:
-    ///    - it is mapped
+    ///    - each is mapped
     /// - Then:
-    ///    - it is `.configuration` with Cognito's description, and a suggestion about the user pool's settings and the
+    ///    - each is `.configuration` with Cognito's description, and a suggestion about both pools' settings and the
     ///      client's configuration that doesn't name the plugin
     func testTheConfigurationSuggestionNamesTheClient() {
         XCTAssertEqual(AuthPluginErrorConstants.configurationError, "Make sure that the amplify configuration passed to Auth plugin is valid")
+        let suggestion = "Check the user pool's settings (device tracking, for the device calls), the identity pool's "
+            + "settings, and the client's configuration."
+        let failures: [(any EngineAuthErrorConvertible, String)] = [
+            (
+                AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException(message: "Device tracking not currently enabled for this pool."),
+                "Device tracking not currently enabled for this pool."
+            ),
+            (AWSCognitoIdentity.InvalidIdentityPoolConfigurationException(message: "Invalid role."), "Invalid role.")
+        ]
 
-        let mapped = AuthClientError(engine: .configuration(
-            "Device tracking not currently enabled for this pool.",
-            AuthPluginErrorConstants.configurationError
-        ))
+        for (failure, description) in failures {
+            let engine = failure.engineError
+            XCTAssertEqual(engine.recoverySuggestion, AuthPluginErrorConstants.configurationError, description)
 
-        XCTAssertEqual(mapped.kind, .configuration)
-        XCTAssertEqual(mapped.errorDescription, "Device tracking not currently enabled for this pool.")
-        XCTAssertEqual(
-            mapped.recoverySuggestion,
-            "Check the user pool's settings (device tracking, for the device calls) and the client's configuration."
-        )
+            let mapped = AuthClientError(engineFailure: failure)
+
+            XCTAssertEqual(mapped.kind, .configuration, description)
+            XCTAssertEqual(mapped.errorDescription, description)
+            XCTAssertEqual(mapped.recoverySuggestion, suggestion, description)
+            XCTAssertFalse(mapped.recoverySuggestion.contains("plugin"), description)
+        }
     }
 
     /// Test that an engine text naming the plugin's MFA type names the client's
@@ -738,8 +823,8 @@ final class EngineMappingTests: XCTestCase {
     /// - When:
     ///    - each is mapped
     /// - Then:
-    ///    - the first is `.service` with no code, the engine's description and the error underneath, and the
-    ///      "temporary problem, retry" recovery suggestion; the contrasts keep the engine's suggestion
+    ///    - the first is `.service` with no code, the unreadable-response description, the engine error underneath,
+    ///      and the "temporary problem, retry" recovery suggestion; the contrasts keep the engine's suggestion
     ///
     func testAnUnreadableServiceResponseIsATemporaryServiceProblem() {
         let notJSON = NSError(domain: NSCocoaErrorDomain, code: 3_840, userInfo: [
@@ -752,7 +837,7 @@ final class EngineMappingTests: XCTestCase {
                 return XCTFail("not a service error: \(mapped)")
             }
             XCTAssertNil(code)
-            XCTAssertEqual(description, "Service error occurred")
+            XCTAssertEqual(description, AuthClientError.unreadableResponseDescription)
             XCTAssertEqual(suggestion, AuthClientError.unreadableServiceResponseSuggestion)
             XCTAssertNotNil(error as? EngineAuthError)
         }
@@ -950,6 +1035,142 @@ final class EngineMappingTests: XCTestCase {
         XCTAssertFalse(description.contains("access-token"))
     }
 
+    /// Test that a sign-out that could not finish carries the first failure of the attempts, each mapped as any other
+    /// call maps it, and that merging keeps each kind's two mappings together
+    ///
+    /// - Given: a first attempt whose revoke failed with an error the sign-out built itself (no other mapping), and a
+    ///   second whose revoke and global sign-out failed on the network, through the engine's mapping
+    /// - When:
+    ///    - the second is merged into the first, and the second is merged into an empty outcome
+    /// - Then:
+    ///    - the first merge's error is the first attempt's revoke error, not the second's network failure, until the
+    ///      second's global sign-out failure, which goes first
+    ///    - the second merge's error is the global sign-out's network failure as any other call reports it, without
+    ///      the sign-out's not-retried suggestion; its public fields keep that suggestion
+    ///
+    func testAnUnfinishedSignOutsErrorKeepsTheFirstFailuresMapping() {
+        let own = AuthClientError.unknown("revoke failed", "retry")
+        let timedOut = URLError(.timedOut)
+        let network = EngineSignOutOutcome(
+            revokeFailure: EngineRevokeTokenFailure(refreshToken: "refresh-token", error: .service("", "", timedOut), cause: timedOut),
+            globalSignOutFailure: nil
+        )
+        var first = EngineSignOutOutcome(revokeError: own)
+        first.merge(network)
+        XCTAssertEqual(first.firstError?.errorDescription, "revoke failed")
+
+        let global = EngineSignOutOutcome(
+            revokeFailure: nil,
+            globalSignOutFailure: EngineGlobalSignOutFailure(
+                accessToken: "access-token",
+                error: .service("", "", timedOut),
+                cause: timedOut
+            )
+        )
+        var merged = EngineSignOutOutcome.complete
+        merged.merge(global)
+        first.merge(global)
+        for outcome in [merged, first] {
+            XCTAssertEqual(outcome.firstError?.errorDescription, AuthClientError.networkFailureDescription)
+            XCTAssertEqual(outcome.firstError?.recoverySuggestion, AuthClientError.clientServiceSuggestion)
+            XCTAssertEqual(outcome.globalSignOutError?.recoverySuggestion, SignOutTexts.globalSignOutNotRetried)
+        }
+    }
+
+    /// A sign-out's revoke or global sign-out that failed in transport keeps the sign-out's context, as a network
+    /// failure does: nothing retries it.
+    ///
+    /// - Given: the engine's revoke and global sign-out errors for a request that failed with a body that is not JSON,
+    ///   URL loading's `badServerResponse`, an App Transport Security refusal, or an error the engine cannot convert
+    ///   (each `.service` with empty texts, as the engine builds them); and the global sign-out's placeholder revoke
+    ///   error (empty texts, nothing underneath)
+    /// - When:
+    ///    - each is mapped as the outcome's revoke error and global sign-out error
+    /// - Then:
+    ///    - each is `.service` with no code and a description that isn't empty: the unreadable-response one, or "The
+    ///      service request failed."; the suggestion says the revoke, or the global sign-out, will not be retried
+    ///    - the placeholder keeps its empty texts
+    func testASignOutsTransportFailureSaysItIsNotRetried() {
+        let rows: [(Error, String)] = [
+            (NSError(domain: NSCocoaErrorDomain, code: NSPropertyListReadCorruptError), AuthClientError.unreadableResponseDescription),
+            (URLError(.badServerResponse), AuthClientError.unreadableResponseDescription),
+            (URLError(.appTransportSecurityRequiresSecureConnection), AuthClientError.emptyServiceFailureDescription),
+            (FixtureError(description: "x"), AuthClientError.emptyServiceFailureDescription)
+        ]
+        for (failure, description) in rows {
+            let engine = EngineAuthError.service("", "", failure)
+            let revoke = AuthClientError.revokeFailure(engine: engine)
+            XCTAssertEqual(revoke.kind, .service(nil), "\(failure)")
+            XCTAssertEqual(revoke.errorDescription, description, "\(failure)")
+            XCTAssertEqual(revoke.recoverySuggestion, SignOutTexts.revokeNotRetried, "\(failure)")
+            let global = AuthClientError.globalSignOutFailure(engine: engine)
+            XCTAssertEqual(global.kind, .service(nil), "\(failure)")
+            XCTAssertEqual(global.errorDescription, description, "\(failure)")
+            XCTAssertEqual(global.recoverySuggestion, SignOutTexts.globalSignOutNotRetried, "\(failure)")
+        }
+        let placeholder = AuthClientError.revokeFailure(engine: .service("", "", nil))
+        XCTAssertEqual(placeholder.errorDescription, "")
+        XCTAssertEqual(placeholder.recoverySuggestion, "")
+    }
+
+    /// A sign-out's revoke or global sign-out that Cognito failed itself is a service error that keeps the sign-out's
+    /// context, once the failure carries the exception it was made from. The request reached Cognito, so the global
+    /// sign-out's suggestion has no "unless the request reached the service".
+    ///
+    /// - Given: revoke and global sign-out failures from the user pool's `InternalErrorException` (its engine error,
+    ///   with the exception as the cause), and from an error status the SDK does not model (500, then 400)
+    /// - When:
+    ///    - the outcome is built from them, and the internal error is also mapped without its cause
+    /// - Then:
+    ///    - each is `.service` with no code, the engine's description, and the suggestion that the revoke, or the
+    ///      global sign-out, will not be retried; the global sign-out's says the other sessions stay signed in, with
+    ///      no hedge
+    ///    - the outcome's error for a sign-out that could not finish is the global sign-out's failure mapped as any
+    ///      other call maps it: the suggestion that call gives, without the sign-out's context
+    ///    - without its cause, the internal error stays `.unknown` with the engine's text
+    func testASignOutsServiceFaultSaysItIsNotRetried() {
+        let globalSignOutRefused = "The session was signed out on this device, and the global sign-out will not be "
+            + "retried: the user's other sessions stay signed in until their tokens expire. To sign them out, sign in "
+            + "again and sign out with globalSignOut: true."
+        let internalError = AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+        func unmodelled(_ status: HTTPStatusCode) -> UnknownAWSHTTPServiceError {
+            UnknownAWSHTTPServiceError(
+                httpResponse: HTTPResponse(body: .empty, statusCode: status),
+                message: "fixture message",
+                requestID: nil,
+                requestID2: nil,
+                typeName: nil
+            )
+        }
+        let rows: [(String, EngineAuthError, Error, String)] = [
+            ("internal error", internalError.engineError, internalError, AuthClientError.serviceFaultSuggestion),
+            ("500", unmodelled(.internalServerError).engineError, unmodelled(.internalServerError), AuthClientError.serviceFaultSuggestion),
+            ("400", unmodelled(.badRequest).engineError, unmodelled(.badRequest), AuthClientError.unrecognisedServiceErrorSuggestion)
+        ]
+        for (label, engine, cause, plainSuggestion) in rows {
+            let outcome = EngineSignOutOutcome(
+                revokeFailure: EngineRevokeTokenFailure(refreshToken: "refresh-token", error: engine, cause: cause),
+                globalSignOutFailure: EngineGlobalSignOutFailure(accessToken: "access-token", error: engine, cause: cause)
+            )
+            guard case .service(nil, let revokeDescription, let revokeSuggestion, _) = outcome.revokeError,
+                  case .service(nil, let globalDescription, let globalSuggestion, _) = outcome.globalSignOutError else {
+                XCTFail("\(label): expected .service with no code, got \(outcome)")
+                continue
+            }
+            XCTAssertEqual(revokeDescription, engine.errorDescription, label)
+            XCTAssertEqual(revokeSuggestion, SignOutTexts.revokeNotRetried, label)
+            XCTAssertEqual(globalDescription, engine.errorDescription, label)
+            XCTAssertEqual(globalSuggestion, globalSignOutRefused, label)
+            XCTAssertEqual(outcome.firstError?.kind, .service(nil), label)
+            XCTAssertEqual(outcome.firstError?.errorDescription, engine.errorDescription, label)
+            XCTAssertEqual(outcome.firstError?.recoverySuggestion, plainSuggestion, label)
+        }
+
+        let causeless = AuthClientError.revokeFailure(engine: internalError.engineError)
+        XCTAssertEqual(causeless.kind, .unknown)
+        XCTAssertEqual(causeless.recoverySuggestion, internalError.engineError.recoverySuggestion)
+    }
+
     // MARK: Exhaustive case indexes
 
     /// The highest index `standardKeyCaseIndex` gives. Raise it with the new case's arm.
@@ -982,6 +1203,18 @@ final class EngineMappingTests: XCTestCase {
         case .custom, .unknown: return nil
         }
     }
+
+    /// The highest index each switch below gives. Raise it with the new case's arm.
+    private static let lastSignInStepCaseIndex = 13
+    private static let lastMFACaseIndex = 2
+    #if os(iOS) || os(macOS) || os(visionOS)
+    private static let lastFactorCaseIndex = 4
+    #else
+    private static let lastFactorCaseIndex = 3
+    #endif
+    private static let lastFlowCaseIndex = 4
+    private static let lastDestinationCaseIndex = 3
+    private static let lastErrorCaseIndex = 7
 
     private static func signInStepCaseIndex(_ step: EngineSignInStep) -> Int {
         switch step {
@@ -1071,5 +1304,65 @@ final class EngineMappingTests: XCTestCase {
         case .signedOut: return 6
         case .sessionExpired: return 7
         }
+    }
+}
+
+/// Sign-out outcomes built through the engine's mapping, for the tests of a sign-out that could not finish
+/// (`StoredSessionManagementTests`, which can't import the engine's module beside the client's: both declare
+/// `AuthEvent`).
+enum SignOutOutcomeFixtures {
+
+    /// Each row: a label, whether the sign-out is global, the outcome every attempt returns, and the underlying
+    /// error's expected description and recovery suggestion: a global sign-out that Cognito failed with
+    /// `InternalErrorException`, one that failed on the network (each with the placeholder revoke error), and a
+    /// revoke that failed on the network.
+    static var unfinishedSignOutRows: [(String, Bool, EngineSignOutOutcome, String, String)] {
+        let internalError = AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+        let timedOut = URLError(.timedOut)
+        let placeholder = EngineRevokeTokenFailure(refreshToken: "refresh-token", error: .service("", "", nil))
+        return [
+            (
+                "global, internal error",
+                true,
+                EngineSignOutOutcome(
+                    revokeFailure: placeholder,
+                    globalSignOutFailure: EngineGlobalSignOutFailure(
+                        accessToken: "access-token",
+                        error: internalError.engineError,
+                        cause: internalError
+                    )
+                ),
+                "Unexpected error occurred with message: boom",
+                AuthClientError.serviceFaultSuggestion
+            ),
+            (
+                "global, network",
+                true,
+                EngineSignOutOutcome(
+                    revokeFailure: placeholder,
+                    globalSignOutFailure: EngineGlobalSignOutFailure(
+                        accessToken: "access-token",
+                        error: .service("", "", timedOut),
+                        cause: timedOut
+                    )
+                ),
+                AuthClientError.networkFailureDescription,
+                AuthClientError.clientServiceSuggestion
+            ),
+            (
+                "revoke, network",
+                false,
+                EngineSignOutOutcome(
+                    revokeFailure: EngineRevokeTokenFailure(
+                        refreshToken: "refresh-token",
+                        error: .service("", "", timedOut),
+                        cause: timedOut
+                    ),
+                    globalSignOutFailure: nil
+                ),
+                AuthClientError.networkFailureDescription,
+                AuthClientError.clientServiceSuggestion
+            )
+        ]
     }
 }

@@ -104,13 +104,15 @@ protocol SessionEngine: Sendable {
 
     /// Answers the pending sign-in's challenge.
     ///
-    /// **Which failures keep the attempt** (ported from the plugin's
-    /// `AWSAuthConfirmSignInTask.swift:95-190`). The attempt is kept, and `pendingChallenge` still reports its step, so the user can retry:
-    /// - an answer the retained machine records as an error **inside** the challenge or the TOTP setup
-    ///   (`resolvingChallenge(.error)`, `resolvingTOTPSetup(.error)`): a wrong code, an invalid new
-    ///   password, a failed TOTP verification, whatever the mapped error;
-    /// - an answer rejected before it is sent: `validation` (the core already checks an empty answer, and
-    ///   an MFA or first-factor selection that names no type, with the plugin's strings).
+    /// **Which failures keep the attempt** (ported from the plugin's `AWSAuthConfirmSignInTask`:
+    /// `analyzeCurrentStateAndCreateEvent`, `answerTOTPSetup` and its selection checks). The attempt is kept, and
+    /// `pendingChallenge` still reports its step, so the user can retry:
+    /// - an answer the retained machine records as an error **inside** the challenge or a TOTP setup that still
+    ///   has its setup data (`resolvingChallenge(.error)`, `resolvingTOTPSetup(.error(setup?, _))`): a wrong code,
+    ///   an invalid new password, a failed TOTP verification, whatever the mapped error;
+    /// - an answer rejected before it is sent: `validation` (the core already checks an empty answer, an MFA or
+    ///   first-factor selection that names no type, an MFA setup selection outside the step's choices, and a
+    ///   `WEB_AUTHN` first factor the step does not offer, with the client's own strings, `SessionCore.validate`).
     ///
     /// The plugin also retries a failed WebAuthn step (`signingInWithWebAuthn(.error)`). The client does not:
     /// a failed WebAuthn step drops the attempt, and the user signs in again.
@@ -123,7 +125,10 @@ protocol SessionEngine: Sendable {
     /// The attempt is dropped, and `pendingChallenge` becomes `nil`:
     /// - `challengeExpired`, when Cognito's challenge session has expired;
     /// - an SRP or migrate-auth step that failed (`signingInWithSRP(.error)`,
-    ///   `signingInViaMigrateAuth(.error)`): `invalidState("Cannot use confirmSignIn in the current state.
+    ///   `signingInViaMigrateAuth(.error)`), or a TOTP setup with no setup data left
+    ///   (`resolvingTOTPSetup(.error(nil, _))`: its `AssociateSoftwareToken` or its last
+    ///   `RespondToAuthChallenge` failed, and the attempt was kept on the `.resetPassword` or `.confirmSignUp`
+    ///   step that failure was): `invalidState("Cannot use confirmSignIn in the current state.
     ///   Call signIn to start the sign-in again.", …)` (the plugin's message, naming the client's calls);
     /// - any other retained state: `invalidState("There is no sign-in in progress for this session", …)`,
     ///   also thrown when nothing is pending;
@@ -520,6 +525,13 @@ struct EngineSignOutOutcome: Sendable, Equatable {
     /// engine continued past a failure that is not a `HostedUIError`. A device-side failure, reported beside the
     /// server-side ones.
     var hostedUIError: AuthClientError?
+    /// `revokeError` and `globalSignOutError` mapped as any other call maps them (`AuthClientError(engine:cause:)`),
+    /// without the sign-out's context ("The session was signed out on this device, and … will not be retried"),
+    /// which holds only once the session is cleared: what a sign-out that could not finish carries (`firstError`).
+    /// `nil` when the failure has no other mapping (a newer schema's record the sign-out could not revoke); each is
+    /// kept with its pair. A revoke attempt that threw has both (`SessionSignOut.revokeFailureOutcome(_:)`).
+    var plainRevokeError: AuthClientError?
+    var plainGlobalSignOutError: AuthClientError?
 
     static let complete = EngineSignOutOutcome()
 
@@ -527,10 +539,16 @@ struct EngineSignOutOutcome: Sendable, Equatable {
         revokeError == nil && globalSignOutError == nil && hostedUIError == nil
     }
 
-    /// Keeps the first failure of each kind across attempts.
+    /// Keeps the first failure of each kind across attempts, with its plain mapping.
     mutating func merge(_ other: EngineSignOutOutcome) {
-        revokeError = revokeError ?? other.revokeError
-        globalSignOutError = globalSignOutError ?? other.globalSignOutError
+        if revokeError == nil {
+            revokeError = other.revokeError
+            plainRevokeError = other.plainRevokeError
+        }
+        if globalSignOutError == nil {
+            globalSignOutError = other.globalSignOutError
+            plainGlobalSignOutError = other.plainGlobalSignOutError
+        }
         hostedUIError = hostedUIError ?? other.hostedUIError
     }
 
@@ -548,9 +566,15 @@ struct EngineSignOutOutcome: Sendable, Equatable {
         )
     }
 
-    /// The first failure of any kind: what a sign-out that could not finish carries as its underlying error.
+    /// The first failure of any kind: what a sign-out that could not finish carries as its underlying error. The
+    /// global sign-out's first: it runs before the revoke, and after it fails `revokeError` is only the placeholder of
+    /// a revoke never sent. Each is its plain mapping, when it has one: the session is still signed in on this device
+    /// (`.contended`), or its record was left as it is (`.unreadable`), so the sign-out's "signed out on this device"
+    /// does not hold, and a retried sign-out of a session still signed in sends the revoke and global sign-out again.
     var firstError: AuthClientError? {
-        revokeError ?? globalSignOutError ?? hostedUIError
+        globalSignOutError.map { plainGlobalSignOutError ?? $0 }
+            ?? revokeError.map { plainRevokeError ?? $0 }
+            ?? hostedUIError
     }
 
     /// Errors compare as `AuthClientSignOutResult` compares them.

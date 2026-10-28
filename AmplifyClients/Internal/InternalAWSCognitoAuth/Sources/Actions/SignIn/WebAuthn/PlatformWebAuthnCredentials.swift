@@ -264,7 +264,8 @@ extension PlatformWebAuthnCredentials: CredentialRegistrantProtocol {
 
 @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 package extension PlatformWebAuthnCredentials {
-    /// The scope of this delegate's lines: the plugin's pre-M2 category, written as a literal.
+    /// The scope of this delegate's lines: the plugin's category for them from before the engine was extracted,
+    /// written as a literal.
     static let logScope = EngineLogScope.category("PlatformWebAuthnCredentials")
 }
 

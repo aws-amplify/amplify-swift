@@ -167,6 +167,12 @@ actor SystemSheetLock {
         holder?.lease.holder
     }
 
+    /// The session holding the sheet, or `nil` when the lock is free, and whether `session` is queued for it, read
+    /// in one step so they agree.
+    func holderAndQueue(for session: SessionID) -> (holder: SessionID?, queued: Bool) {
+        (currentHolder, waiters.contains { $0.session == session })
+    }
+
     /// How many callers are queued behind the holder.
     var waiterCount: Int {
         waiters.count

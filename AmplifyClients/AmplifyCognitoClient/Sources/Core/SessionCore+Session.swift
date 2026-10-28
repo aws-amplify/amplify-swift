@@ -61,8 +61,10 @@ extension SessionCore {
                 return try await fetchSession(forceRefresh: forceRefresh && acquisition == .adopted, adopted: true)
             }
         case .guest, .federated, .signedIn:
-            if expired {
-                return Self.session(failingWith: Self.sessionExpired(sessionId))
+            if let dead = expired {
+                // The dead credentials, not the snapshot's: the same login saved again since (other bytes, or the
+                // plugin's expired flag) answers as the proof did.
+                return Self.session(failingWith: expiredError(holding: dead))
             }
             guard let payload = snapshot.credentials else {
                 return Self.session(failingWith: Self.notSignedIn(sessionId))
@@ -179,6 +181,14 @@ extension SessionCore {
     /// Fetches and commits guest credentials, under the record's gate. If the record meanwhile holds
     /// credentials — another handle signed in or became a guest — it adopts them instead, and a lost write
     /// race is answered by adopting the re-read record, never by overwriting it.
+    ///
+    /// **Over `.default`'s signed-out record, the AWSMobileClient logins are cleared again first**, best effort
+    /// (`SessionRecordStore.clearLegacyLogins()`), before the guest is written. The signed-out record is what stops a
+    /// plugin build from migrating a login whose clear failed at sign-out (or that a release clearing after the
+    /// signed-out write left when stopped in between); a guest counts as no session there, so once the guest replaces
+    /// it only the clear protects the user. Never over an absent record: a client-only app that never signed in keeps
+    /// those logins for a plugin build to migrate. That includes a sidecar with no shared record beside it (a label set
+    /// before anyone signed in), which reads as a signed-out row with no version: the plugin's record is absent there.
     private nonisolated func acquireGuestOnce() async throws -> GuestAcquisition {
         try await withRecord { [self] store in
             let current = try await store.load(sessionId)
@@ -195,6 +205,10 @@ extension SessionCore {
                 throw Self.engineFailure(error)
             }
             let summary = try engine.checkedDescribe(guest)
+            // `.default`'s version is the shared record's bytes, so it is `nil` when only the sidecar is stored.
+            if sessionId == .default, current.ownRecord != nil, current.version != nil {
+                _ = try? await store.perform { $0.clearLegacyLogins() }
+            }
             let record = SessionRecord(
                 // A signed-out row left by a user keeps that user's label, which the guest must not take:
                 // only a label that names no user yet passes to the guest.
@@ -232,7 +246,8 @@ extension SessionCore {
         }
         let summary = try engine.checkedDescribe(payload)
         let user = summary.user
-        let noUser = Self.notSignedIn(sessionId)
+        // A federated session has no user pool user, and `signIn` refuses one: say what lets a user in.
+        let noUser = summary.kind == .federated ? Self.federatedHasNoUser(sessionId) : Self.notSignedIn(sessionId)
 
         let identityId: Result<String, AuthClientError>
         let awsCredentials: Result<AuthClientAWSCredentials, AuthClientError>
@@ -349,10 +364,16 @@ extension SessionCore {
                 "Auth State not in a valid state",
                 "Operation performed is not a valid operation for the current auth state"
             )
-        case .signedOut, .guest, .federated:
+        case .signedOut, .guest:
             throw AuthClientError.notSignedIn(
                 "There is no user signed in to retrieve current user",
                 "Call signIn to sign a user in to this session, then call getCurrentUser."
+            )
+        case .federated:
+            // A sign-in is refused over a federated session (`signInSeed`): say what lets one in.
+            throw AuthClientError.notSignedIn(
+                "There is no user signed in to retrieve current user",
+                "Call clearFederationToIdentityPool() or sign the session out, then sign a user in to this session and call getCurrentUser."
             )
         case .unavailable(let reason):
             throw AuthClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later. Do not treat this as signed out.")

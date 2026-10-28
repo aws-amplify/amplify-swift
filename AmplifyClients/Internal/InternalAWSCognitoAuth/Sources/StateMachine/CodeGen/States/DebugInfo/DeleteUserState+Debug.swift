@@ -17,7 +17,7 @@ extension DeleteUserState: CustomDebugDictionaryConvertible {
             signedOutState.debugDictionary
         case .userDeleted:
             [:]
-        case .error(let error):
+        case .error(let error, _):
             [
                 "Error": error
             ]

@@ -337,8 +337,8 @@ final class ChallengeTests: XCTestCase {
 
     // MARK: Which confirmation failures keep the attempt
 
-    /// The plugin validates an MFA selection before sending it (`AWSAuthConfirmSignInTask.swift:167-177`),
-    /// and the attempt survives.
+    /// The plugin validates an MFA selection before sending it
+    /// (`AWSAuthConfirmSignInTask.validateRequestForMFASelection`), and the attempt survives.
     ///
     /// - Given: a sign-in waiting on an MFA selection
     /// - When: it is answered with something that is not an MFA type, then with `sms_mfa`
@@ -370,20 +370,16 @@ final class ChallengeTests: XCTestCase {
 
     /// An MFA setup selection is checked against the step's choices before it is sent, and the attempt survives.
     ///
-    /// - Given: a sign-in waiting on an MFA setup selection of email or TOTP, and a log sink
+    /// - Given: a sign-in waiting on an MFA setup selection of email or TOTP
     /// - When: it is answered with a code typed into the wrong prompt, with `SMS_MFA` (not one of the step's choices),
     ///   then with `email_otp`
     /// - Then:
     ///    - the first two throw `validation(field: "challengeResponse")` naming the step's two types, without
     ///      reaching the engine, and the challenge is still pending
-    ///    - no log line holds the answer
     ///    - the third (case-insensitive) is sent
     func testABadMFASetupSelectionIsRefusedBeforeItIsSent() async throws {
         let step = AuthClientSignInStep.continueSignInWithMFASetupSelection([.email, .totp])
         let (client, engine) = try await challengedClient(work, step: step)
-        let sink = CategoryCapture()
-        AmplifyLogging.addSink(sink)
-        defer { AmplifyLogging.removeSink(sink) }
 
         let code = await authClientError { try await client.confirmSignIn(challengeResponse: "000000") }
         let sms = await authClientError { try await client.confirmSignIn(challengeResponse: "SMS_MFA") }
@@ -401,6 +397,41 @@ final class ChallengeTests: XCTestCase {
         }
         XCTAssertEqual(state, .awaitingChallenge(step))
         XCTAssertEqual(engine.confirmSignInCalls.map(\.challengeResponse), ["email_otp"])
+    }
+
+    /// The live engine's MFA-type parser logs an answer it cannot parse, at error level ("Tried to initialize an
+    /// unsupported MFA type with value: …"). The check keeps a wrong setup selection from reaching it, so a code typed
+    /// into the wrong prompt is never logged.
+    ///
+    /// - Given: a client over the live engine, whose SRP sign-in stops on an MFA setup selection of TOTP or email, and
+    ///   a log sink
+    /// - When: the selection is answered with a code
+    /// - Then:
+    ///    - it throws `validation(field: "challengeResponse")`, nothing is sent to Cognito, and the selection is still
+    ///      pending
+    ///    - no log line holds the answer
+    func testABadMFASetupSelectionOverTheLiveEngineIsNeverLogged() async throws {
+        let live = LiveEngineHarness()
+        let client = try LiveEngineCoreRaceTests.client(over: live.engine(), harness: harness)
+        live.scriptSRP(then: LiveEngineFixtures.challenge(
+            .mfaSetup,
+            parameters: ["MFAS_CAN_SETUP": #"["SOFTWARE_TOKEN_MFA","EMAIL_OTP"]"#]
+        ))
+        let first = try await client.signIn(username: "alice", password: "password")
+        guard case .continueSignInWithMFASetupSelection = first.nextStep else {
+            return XCTFail("expected an MFA setup selection, got \(first.nextStep)")
+        }
+        live.cognito.clearCalls()
+        let sink = CategoryCapture()
+        AmplifyLogging.addSink(sink)
+        defer { AmplifyLogging.removeSink(sink) }
+
+        let bad = await authClientError { try await client.confirmSignIn(challengeResponse: "000000") }
+        let state = await client.currentSessionState()
+
+        XCTAssertEqual(bad?.kind, .validation(field: "challengeResponse"))
+        XCTAssertEqual(live.cognito.operations, [])
+        XCTAssertEqual(state, .awaitingChallenge(first.nextStep))
         XCTAssertEqual(sink.categories(containing: "000000"), [], "the answer was logged")
     }
 
@@ -418,7 +449,7 @@ final class ChallengeTests: XCTestCase {
     }
 
     /// The plugin validates a first-factor selection before sending it
-    /// (`AWSAuthConfirmSignInTask.swift:179-190`), and the attempt survives.
+    /// (`AWSAuthConfirmSignInTask.validateRequestForFactorSelection`), and the attempt survives.
     ///
     /// - Given: a sign-in waiting on a first-factor selection
     /// - When: it is answered with something that is not a factor, then with `EMAIL_OTP`
@@ -444,27 +475,56 @@ final class ChallengeTests: XCTestCase {
         XCTAssertEqual(engine.confirmSignInCalls.map(\.challengeResponse), ["EMAIL_OTP"])
     }
 
+    /// A `WEB_AUTHN` answer is checked against the factors the step offers. Where WebAuthn is not available (before
+    /// iOS 17.4 or macOS 13.5, and on tvOS and watchOS) the step never offers it, as the plugin's factor parser
+    /// refuses `WEB_AUTHN` there; sent anyway, Cognito's WebAuthn challenge would end the sign-in.
+    ///
+    /// - Given: a sign-in waiting on a first-factor selection of password or email OTP, without WebAuthn
+    /// - When: it is answered with `WEB_AUTHN`, then with `EMAIL_OTP`
+    /// - Then:
+    ///    - the first throws `validation(field: "challengeResponse")` naming the step's factors, without reaching the
+    ///      engine, and the selection is still pending; the second is sent
+    func testAWebAuthnAnswerTheStepDoesNotOfferIsRefusedBeforeItIsSent() async throws {
+        let step = AuthClientSignInStep.continueSignInWithFirstFactorSelection([.password, .emailOTP])
+        let (client, engine) = try await challengedClient(work, step: step)
+
+        let bad = await authClientError { try await client.confirmSignIn(challengeResponse: "WEB_AUTHN") }
+        let state = await client.currentSessionState()
+        _ = try await client.confirmSignIn(challengeResponse: "EMAIL_OTP")
+
+        XCTAssertEqual(bad?.kind, .validation(field: "challengeResponse"))
+        XCTAssertEqual(
+            bad?.errorDescription,
+            "challengeResponse WEB_AUTHN is not one of the factors this step offers: EMAIL_OTP or PASSWORD."
+        )
+        XCTAssertTrue(bad?.recoverySuggestion.contains("`AuthClientFactorType.<type>.challengeResponse`") == true)
+        XCTAssertEqual(state, .awaitingChallenge(step))
+        XCTAssertEqual(engine.ceremonyAnchorCalls.count, 0)
+        XCTAssertEqual(engine.confirmSignInCalls.map(\.challengeResponse), ["EMAIL_OTP"])
+    }
+
     /// WebAuthn needs a presentation anchor.
     ///
-    /// - Given: a sign-in, made without a window, waiting on a first-factor selection; and a signed-out session
+    /// - Given: a sign-in, made without a window, waiting on a first-factor selection that offers WebAuthn; and a
+    ///   signed-out session
     /// - When: the selection is answered with `WEB_AUTHN` without a window, and a sign-in asks for a WebAuthn
     ///   first factor through the overload without one
     /// - Then:
     ///    - both throw `.validation(field: "presentationAnchor")`; the selection is refused by the engine
     ///      before any ceremony, and stays pending; the sign-in never reaches the engine
     func testWebAuthnWithoutAPresentationAnchorIsRefused() async throws {
-        let step = AuthClientSignInStep.continueSignInWithFirstFactorSelection([.password, .emailOTP])
-        let (client, engine) = try await challengedClient(work, step: step)
-        let other = try harness.client(home)
-
-        let selection = await authClientError { try await client.confirmSignIn(challengeResponse: "WEB_AUTHN") }
-        let state = await client.currentSessionState()
-        XCTAssertEqual(selection?.kind, .validation(field: "presentationAnchor"))
-        XCTAssertEqual(state, .awaitingChallenge(step))
-        XCTAssertEqual(engine.ceremonyAnchorCalls.count, 0)
-
         #if os(iOS) || os(macOS) || os(visionOS)
         if #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) {
+            let step = AuthClientSignInStep.continueSignInWithFirstFactorSelection([.password, .emailOTP, .webAuthn])
+            let (client, engine) = try await challengedClient(work, step: step)
+            let other = try harness.client(home)
+
+            let selection = await authClientError { try await client.confirmSignIn(challengeResponse: "WEB_AUTHN") }
+            let state = await client.currentSessionState()
+            XCTAssertEqual(selection?.kind, .validation(field: "presentationAnchor"))
+            XCTAssertEqual(state, .awaitingChallenge(step))
+            XCTAssertEqual(engine.ceremonyAnchorCalls.count, 0)
+
             let firstFactor = await authClientError {
                 try await other.signIn(
                     username: "bob",
@@ -696,6 +756,49 @@ final class ChallengeTests: XCTestCase {
         XCTAssertNil(pending, "the engine must not keep a challenge the session has signed out of")
         let confirmError = await authClientError { try await client.confirmSignIn(challengeResponse: "123456") }
         XCTAssertEqual(confirmError?.kind, .invalidState)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedOut)
+    }
+
+    /// A challenge the step reaches while a sign-out holds the record's gate passes the epoch guard, which the sign-out
+    /// moves only at its end; its save then waits for the gate. Once the sign-out has ended the attempt, the sign-in
+    /// answers as cancelled, not with the challenge.
+    ///
+    /// - Given: an expired session (so a sign-in is allowed), a sign-in held in the engine, and a sign-out held in its
+    ///   revoke, holding the record's gate
+    /// - When: the sign-in is let go, so its challenge passes the guard and its save queues behind the sign-out; then
+    ///   the sign-out is let go
+    /// - Then:
+    ///    - the sign-in throws `invalidState`, not the challenge, and the sign-out completes
+    ///    - nothing is pending in the engine, no challenge record is saved, and the state is `.signedOut`
+    func testAChallengeWhoseSaveWaitsBehindASignOutIsCancelled() async throws {
+        try harness.signIn(work, .signedIn("alice", stale: true))
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
+        _ = try? await client.userPoolTokenProvider.accessToken()
+        let step = smsCode
+        engine.scriptSignIn { _, _ in .challenge(step) }
+        let latch = Gate()
+        engine.holdSignIns(on: latch)
+        let revoke = Gate()
+        engine.scriptRevoke { _ in await revoke.pass() }
+
+        let signIn = Task { try await client.signInForTest("alice") }
+        try await latch.arrivals(1)
+        let signOut = Task { await client.signOut() }
+        try await revoke.arrivals(1)
+        await latch.open()
+        await waitUntil("the challenge's save queues behind the sign-out") { await client.core.gate.waiterCount == 1 }
+        await revoke.open()
+        let error = try await withinTime(10, "the sign-in's answer") { await authClientError { try await signIn.value } }
+        let result = try await withinTime(10, "the sign-out") { await signOut.value }
+
+        XCTAssertEqual(error?.kind, .invalidState, "\(String(describing: error))")
+        XCTAssertEqual(result, .complete)
+        let pending = await engine.pendingChallenge
+        XCTAssertNil(pending, "the engine must not keep a challenge the session has signed out of")
+        XCTAssertEqual(try harness.store().readChallenge(work), .absent)
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedOut)
     }

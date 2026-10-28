@@ -106,13 +106,21 @@ class AWSAuthFetchSessionTaskKeychainSharingTests: XCTestCase, @unchecked Sendab
 
     // MARK: - Tests
 
-    /// Given: state machine is `.signingIn(.resolvingChallenge(.waitingForAnswer))`,
-    ///        remote keychain has no signed-in credentials.
-    /// Then:  reconcile defers — state machine never transitions to `.configuringAuth`.
+    /// A signed-out shared record holds no user-pool tokens, so a guest's in-flight sign-in is left to finish
+    /// rather than reconfigured over.
+    ///
+    /// - Given: the state machine is `.signingIn(.resolvingChallenge(.waitingForAnswer))` over a guest session
+    ///   (authorization `.sessionEstablished(.identityPoolOnly)`), and the shared keychain holds the signed-out
+    ///   record, which differs from the guest so the reconcile gets past the match check
+    /// - When:
+    ///    - the fetch task reconciles with the shared keychain
+    /// - Then:
+    ///    - the reconcile defers: the state machine never goes through `.configuringAuth`
+    ///
     func testInflightSigningInWithRemoteSignedOut_doesNotReconfigure() async {
         let initial = AuthState.configured(
             .signingIn(makeWaitingForCustomChallengeState()),
-            .configured,
+            .sessionEstablished(.testDataIdentityPool),
             .notStarted
         )
 
@@ -187,6 +195,57 @@ class AWSAuthFetchSessionTaskKeychainSharingTests: XCTestCase, @unchecked Sendab
         XCTAssertTrue(
             observed,
             "Reconfigure must run when remote diverges from a quiescent signed-in state"
+        )
+    }
+
+    /// A shared keychain with no session record at all reads as signed out, so a quiescent signed-in state
+    /// picks up the sibling's sign-out.
+    ///
+    /// - Given: the state machine is quiescent in `.signedIn`, and the shared keychain holds no session record
+    ///   (the read throws `itemNotFound`)
+    /// - When:
+    ///    - the fetch task reconciles with the shared keychain
+    /// - Then:
+    ///    - the state machine goes through `.configuringAuth`
+    ///
+    func testQuiescentSignedInWithNoRemoteRecord_reconfigures() async {
+        let initial = AuthState.configured(
+            .signedIn(.testData),
+            .sessionEstablished(.testData),
+            .notStarted
+        )
+
+        let recorder = await runReconcile(initial: initial, remote: nil)
+        let observed = await recorder.observed("AuthState.configuringAuth")
+        XCTAssertTrue(
+            observed,
+            "Reconfigure must run when the shared keychain has no record and the local state is signed in"
+        )
+    }
+
+    /// A shared keychain with no session record at all reads as signed out, which holds no user-pool tokens, so a
+    /// guest's in-flight sign-in is left to finish.
+    ///
+    /// - Given: the state machine is `.signingIn(.resolvingChallenge(.waitingForAnswer))` over a guest session
+    ///   (authorization `.sessionEstablished(.identityPoolOnly)`), and the shared keychain holds no session record
+    ///   (the read throws `itemNotFound`), which reads as signed out and so differs from the guest
+    /// - When:
+    ///    - the fetch task reconciles with the shared keychain
+    /// - Then:
+    ///    - the reconcile defers: the state machine never goes through `.configuringAuth`
+    ///
+    func testInflightSigningInWithNoRemoteRecord_doesNotReconfigure() async {
+        let initial = AuthState.configured(
+            .signingIn(makeWaitingForCustomChallengeState()),
+            .sessionEstablished(.testDataIdentityPool),
+            .notStarted
+        )
+
+        let recorder = await runReconcile(initial: initial, remote: nil)
+        let observed = await recorder.observed("AuthState.configuringAuth")
+        XCTAssertFalse(
+            observed,
+            "Reconfigure must not run while sign-in is in flight and the shared keychain has no record"
         )
     }
 

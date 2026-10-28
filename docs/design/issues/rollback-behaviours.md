@@ -51,22 +51,25 @@ Options: state a minimum rollback target (the first plugin release with the read
 the client no longer writes a `$default` session record. No plugin release reads a client record, so none can sign a
 user back in from one. A user signed out through the client stays signed out on every plugin release, because the
 shared record holds `{"noCredentials":{}}` (`testMatrix_signedOutUserIsNeverSignedBackIn`,
-`testMatrix_clientSignOut_readByEveryPluginAsSignedOut`). One caveat remains, from the plugin's own rule: after a
+`testMatrix_clientSignOut_readByEveryPluginAsSignedOut`), unless an AWSMobileClient login left on the device migrates
+over it (releases up to 2.63.0 migrate over a signed-out record; design §4.8). One caveat remains, from the plugin's own rule: after a
 configuration change that copied the login, a purge (or the plugin's own sign-out, which deletes) leaves the earlier
 configuration's copy, which a rollback to the build with that configuration reads
 (`testMatrix_purgeAfterACarry_leavesTheEarlierConfigurationsCopy_caveat`). A second caveat, also the plugin's own
 rule: a later configuration change that the rule does not carry deletes the signed-out record, and can land on an
 earlier configuration's key that still holds the user's old copy, which then restores the user signed in (design
-§4.8). Both caveats are accepted for the beta (2026-10-05).
+§4.8). Both caveats are accepted for the beta.
 
 ## 3. Rolling forward to the client after 1 — resolved within one launch
 
-The client used to stay `.signedIn` on a retryable error forever. It now reports `sessionExpired` when a second
-reuse in the same launch, at least 30 seconds after the first, finds its record unchanged. The rule is kept in
-memory: after an app terminated in the middle of a rotating refresh (Cognito rotated the token, and the new one was
-never saved), the retired token gives the retryable error at the first refusal of each launch, and `sessionExpired`
-at a second one at least 30 seconds later in the same launch, until the session is signed out, or signs in again
-after a `sessionExpired`. Before that `sessionExpired` the session is signed in as its user, and `signIn` refuses
-it, so after repeated refresh failures apps should sign the session out, then show sign-in. A forced refresh refused
-as reused fails with that retryable error, and never answers with the saved tokens it sent (decided 2026-10-19:
-forced refresh only; persisting the first refusal across launches was not taken).
+The client used to stay `.signedIn` on a retryable error forever. It now reports `sessionExpired` when a second reuse
+in the same launch, at least 30 seconds after the first, finds its record unchanged. The rule is kept in memory:
+after an app terminated in the middle of a rotating refresh (Cognito rotated the token, and the new one was never
+saved), the retired token gives the retryable error at the first refusal of each launch, and `sessionExpired` at a
+second one at least 30 seconds later in the same launch, until the session is signed out, or signs in again after a
+`sessionExpired`. Before that `sessionExpired` the session is signed in as its user, and `signIn` refuses it, so
+after repeated refresh failures apps should sign the session out, then show sign-in. A forced refresh refused as
+reused fails with that retryable error, and never answers with the saved tokens it sent. It counts toward the rule: a
+second forced refusal at least 30 seconds later expires the session even while its saved tokens are valid. That
+`sessionExpired` says the refresh token was already used and no refreshed tokens were saved, so the session cannot be
+renewed, with `refreshTokenReused` underneath. Persisting the first refusal across launches was not taken.

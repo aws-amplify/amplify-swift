@@ -218,7 +218,8 @@ final class RemoveAllExceptSessionRecordsTests: XCTestCase {
     /// - Then:
     ///    - it throws
     ///    - no success message is logged
-    ///    - one warning reports one failed removal, without naming the account
+    ///    - exactly one warning is logged: one failed removal and one kept session record, without naming the
+    ///      account
     func testFailedRemovalsAreCountedNotReportedAsSuccess() throws {
         let keychain = InMemoryKeychain()
         let store = keychain.store(service: service)
@@ -229,9 +230,10 @@ final class RemoveAllExceptSessionRecordsTests: XCTestCase {
         XCTAssertThrowsError(try store.removeAllExceptSessionRecords(logger: logger, sparingDefaultSessionItems: true))
 
         XCTAssertFalse(logger.messages(at: .verbose).contains { $0.contains("Removed") })
-        XCTAssertEqual(logger.messages(at: .warn).count, 1)
-        XCTAssertTrue(logger.messages(at: .warn)[0].contains("1"))
-        XCTAssertFalse(logger.messages(at: .warn)[0].contains("authConfiguration"))
+        XCTAssertEqual(
+            logger.messages(at: .warn),
+            ["[KeychainStore] Could not remove 1 keychain item(s); 1 session records were kept"]
+        )
         XCTAssertNil(keychain.value(service: service, account: "amplify.us-east-1_Pool.session"))
     }
 

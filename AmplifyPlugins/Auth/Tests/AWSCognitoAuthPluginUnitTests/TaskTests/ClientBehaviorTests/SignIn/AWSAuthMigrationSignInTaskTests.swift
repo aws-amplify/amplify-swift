@@ -15,6 +15,7 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 @testable import InternalAWSCognitoAuth
 
+// swiftlint:disable type_body_length
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 class AWSAuthMigrationSignInTaskTests: XCTestCase, @unchecked Sendable {
@@ -286,16 +287,18 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase, @unchecked Sendable {
     /// - When:
     ///    - the user signs in with `.userPassword`
     /// - Then:
-    ///    - `InitiateAuth` is called twice, the second time without the device key, and the sign-in fails with
-    ///      `.service` and `.resourceNotFound`
+    ///    - `InitiateAuth` is called twice, the first time with the device key and the second without it, and the
+    ///      sign-in fails with `.service` and `.resourceNotFound`
     ///
     func testSignInOperationResourceNotFound() async throws {
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
         // The test environment holds a device record, so a refusal is taken for a forgotten device key: the request
         // is sent once more without it, and the second refusal is reported.
         initiateAuthExpectation.expectedFulfillmentCount = 2
+        let deviceKeys = DeviceKeyRecorder()
 
-        let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
+        let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { input in
+            deviceKeys.record(input.authParameters?["DEVICE_KEY"])
             initiateAuthExpectation.fulfill()
             throw AWSCognitoIdentityProvider.ResourceNotFoundException(
                 message: "Error Occurred"
@@ -318,6 +321,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase, @unchecked Sendable {
             }
         }
         await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
+        XCTAssertEqual(deviceKeys.deviceKeys, ["key", nil])
     }
 
     func testSignInOperationTooManyRequest() async throws {
@@ -454,5 +458,20 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase, @unchecked Sendable {
             }
         }
         await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
+    }
+}
+
+/// The `DEVICE_KEY` of each `InitiateAuth` request, in order.
+private final class DeviceKeyRecorder: @unchecked Sendable {
+    // `@unchecked Sendable`: `keys` is only touched while holding `lock`.
+    private let lock = NSLock()
+    private var keys: [String?] = []
+
+    var deviceKeys: [String?] {
+        lock.withLock { keys }
+    }
+
+    func record(_ key: String?) {
+        lock.withLock { keys.append(key) }
     }
 }
