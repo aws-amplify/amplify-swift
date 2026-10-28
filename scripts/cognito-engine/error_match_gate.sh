@@ -5,16 +5,14 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Gate G8: silent error matches. A `catch` pattern, cast or type test that misses some of the errors
-# it is meant to catch still compiles. The engine no longer throws KeychainStoreError (its copy is
-# EngineCredentialStoreError), so a match on it never matches an engine error. A match on
-# AuthErrorConvertible matches AuthError, KeychainStoreError and the eight engine error types the
-# plugin conforms, and silently misses EngineAuthError, EngineCredentialStoreError and the SDK
-# exceptions, which are only EngineAuthErrorConvertible, so only AuthError(converting:) in
-# Support/EngineBridge/ may make one. `report` lists and
-# counts every site that matches one of the four types below; `check` enforces only the two rules
-# further down. The steps (S0 to S9) are the stages in which the Cognito engine was moved out of the
-# plugin, in order; S9 and later changes enforce both rules.
+# Gate G8: silent error matches. A `catch` pattern, cast or type test that misses some of the errors it is meant to
+# catch still compiles. The engine no longer throws KeychainStoreError (its copy is EngineCredentialStoreError), so a
+# match on it never matches an engine error. A match on AuthErrorConvertible matches AuthError, KeychainStoreError and
+# the eight engine error types the plugin conforms, and silently misses EngineAuthError, EngineCredentialStoreError and
+# the SDK exceptions, which are only EngineAuthErrorConvertible, so only AuthError(converting:) in Support/EngineBridge/
+# may make one. `report` lists and counts every site that matches one of the four types below; `check` enforces only the
+# two rules further down. The steps (S0 to S9) are the stages in which the Cognito engine was moved out of the plugin,
+# in order; S9 and later changes enforce both rules.
 #
 #   scripts/cognito-engine/error_match_gate.sh report                 # every site, classified engine-destined / split / glue
 #   scripts/cognito-engine/error_match_gate.sh diff <baseline.txt>    # compared with a committed report; exit 1 if sites were added
