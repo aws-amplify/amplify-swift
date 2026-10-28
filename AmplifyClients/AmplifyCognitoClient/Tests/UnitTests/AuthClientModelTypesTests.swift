@@ -111,8 +111,7 @@ final class AuthClientModelTypesTests: XCTestCase {
         XCTAssertNotEqual(details, AuthClientTOTPSetupDetails(sharedSecret: "SECRET", username: "bob"))
     }
 
-    /// The shared secret never reaches text: stricter than the plugin's `TOTPSetupDetails`, which is not
-    /// redacted.
+    /// The shared secret never reaches text, as with the plugin's `TOTPSetupDetails` from 2.63.0.
     ///
     /// - Given: TOTP setup details, alone and inside `continueSignInWithTOTPSetup` and a sign-in result
     /// - When: each is rendered by interpolation, `String(describing:)`, `String(reflecting:)`, `print`,
