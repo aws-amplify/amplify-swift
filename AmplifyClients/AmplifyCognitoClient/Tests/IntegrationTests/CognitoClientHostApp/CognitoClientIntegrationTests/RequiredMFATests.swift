@@ -180,8 +180,9 @@ final class RequiredMFATests: ClientIntegrationTestCase {
     /// A `USER_AUTH` sign-in with the `PASSWORD` first factor, answered with `MFA_SETUP`, sets TOTP up, and the
     /// setup completes the sign-in (MF-15 through choice-based sign-in; not counted).
     ///
-    /// It needs U-REQ-TS's app client to allow `ALLOW_USER_AUTH` (`infra/pools/mfa-req-totp-sms.json`), and skips,
-    /// saying so, where Cognito refuses the flow (`requireUserAuth(on:)`).
+    /// It needs U-REQ-TS's app client to allow `ALLOW_USER_AUTH` (`infra/pools/mfa-req-totp-sms.json`). Where
+    /// Cognito refuses the flow it fails, naming the remedies, or skips under the harness's CI-only skip rule
+    /// (`requireUserAuth(on:)`, `CISkipReason.mfaRequiredUserAuth`).
     ///
     /// - Given: a fresh user without a phone number on U-REQ-TS (MFA required, TOTP and SMS, no email MFA), whose
     ///   app client allows `USER_AUTH`, and the recorder installed
@@ -208,7 +209,7 @@ final class RequiredMFATests: ClientIntegrationTestCase {
     /// the setup completes the sign-in (not counted).
     ///
     /// As `testUserAuthPasswordSignInSetsUpTOTPWhenMFASetupIsRequired`, with the SRP proof for the password; it
-    /// skips where the app client refuses `USER_AUTH`.
+    /// fails or skips the same way where the app client refuses `USER_AUTH`.
     ///
     /// - Given: a fresh user without a phone number on U-REQ-TS, whose app client allows `USER_AUTH`, and the
     ///   recorder installed
@@ -306,10 +307,15 @@ extension RequiredMFATests {
         try await assertSignedInThenDelete(user, on: client)
     }
 
-    /// Skips the test unless `pool`'s app client allows choice-based sign-in (`ALLOW_USER_AUTH`), before any user
-    /// is signed up: a raw `InitiateAuth` with `USER_AUTH` and only a username no one has, which starts no factor and
-    /// sends no code, is refused with `InvalidParameterException` when the flow is not allowed (Cognito checks the
-    /// flow before it looks at the user). Cognito's message is not printed.
+    /// Requires `pool`'s app client to allow choice-based sign-in (`ALLOW_USER_AUTH`), before any user is signed
+    /// up: a raw `InitiateAuth` with `USER_AUTH` and only a username no one has, which starts no factor and sends no
+    /// code, is refused with `InvalidParameterException` when the flow is not allowed (Cognito checks the flow
+    /// before it looks at the user). Cognito's message is not printed.
+    ///
+    /// Where the flow is refused, the test fails, naming the remedies, unless the harness's CI-only skip rule
+    /// applies (`IntegrationTestEnvironment.skipOnCIIfMissing(_:present:)`, `CISkipReason.mfaRequiredUserAuth`):
+    /// a sandbox run never skips, and CI, which asks for no skip, overlays the client's own MFA-required role,
+    /// whose app client allows the flow.
     func requireUserAuth(on pool: SandboxPool) async throws {
         let raw = try SandboxPools.pool(pool)
         do {
@@ -319,11 +325,17 @@ extension RequiredMFATests {
         } catch is NotAuthorizedException {
             // The flow is allowed: Cognito looked the user up and refused it.
         } catch is InvalidParameterException {
-            throw XCTSkip("""
+            try IntegrationTestEnvironment.skipOnCIIfMissing(.mfaRequiredUserAuth, present: false)
+            throw HarnessError.malformedFixture("""
             \(pool.sourceName)'s app client refuses USER_AUTH (InvalidParameterException), so a USER_AUTH sign-in \
             that must set MFA up cannot be checked there. The backend needs ALLOW_USER_AUTH on that app client, with \
-            PASSWORD among the pool's allowed first factors (on the sandbox, infra/pools/mfa-req-totp-sms.json, \
-            applied by infra/provision.sh).
+            PASSWORD among the pool's allowed first factors. On the sandbox, run infra/provision.sh (it applies \
+            infra/pools/mfa-req-totp-sms.json), then infra/plugin-configs.py --dir <dir>, and rebuild with \
+            COGNITO_CLIENT_INTEG_DIR=<dir>. On CI's set, overlay the client's MFA-required role, whose app client \
+            allows it: download the set with infra/fetch-ci-config.sh <dir>, run infra/ci/ci-overlay.sh <dir> \
+            <new-dir> "email-alias extended mfa-req-totp-sms", and rebuild with COGNITO_CLIENT_INTEG_DIR=<new-dir>; \
+            if CI's set has no ccit-ci-mfa-req-totp-sms-amplify_outputs.json, upload it with \
+            infra/ci/provision-ci.sh --apply --scope all --upload.
             """)
         }
     }

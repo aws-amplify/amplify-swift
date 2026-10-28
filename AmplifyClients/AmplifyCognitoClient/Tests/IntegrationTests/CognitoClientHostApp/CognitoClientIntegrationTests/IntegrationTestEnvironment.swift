@@ -32,10 +32,11 @@ import XCTest
 /// only. The identity-only role is derived from the default backend's outputs without its user pool
 /// (`identityOnlyAuthSection()`). No user or secret is seeded: suites sign their own users up, read codes
 /// through each file's `data` API (`CodeSink`), and take the rest from the default backend's credentials file
-/// (`credentials()`), which the plugin's CI does not provide. On CI, the client's jobs may point the default and
-/// device-alias roles at the client's own CI resources instead (`infra/ci/provision-ci.sh`, mapped onto these
-/// names by `infra/ci/ci-overlay.sh`), which bring a credentials file, a code API and a rotation client; the
-/// plugin's files are never changed.
+/// (`credentials()`), which the plugin's CI does not provide. On CI, the client's jobs may point the device-alias
+/// and MFA-required (TOTP and SMS) roles at the client's own CI resources instead, and add the client's own roles
+/// beside the default one (`infra/ci/provision-ci.sh`, mapped onto these names by `infra/ci/ci-overlay.sh`), which
+/// bring a credentials file, a code API, a rotation client and an MFA-required app client that allows `USER_AUTH`;
+/// the plugin's files are never changed.
 enum IntegrationTestEnvironment {
 
     /// The main configuration: the plugin's default backend (`SandboxPool.standard`). The resource name
@@ -775,6 +776,9 @@ enum CISkipReason: CaseIterable, Sendable {
     /// A way to confirm a fresh sign-up on the device-alias backend: DV-10…19, its parity check, and its pool in
     /// the every-pool sign-up check.
     case deviceAliasConfirmation
+    /// An app client on the MFA-required backend (TOTP and SMS) that allows `USER_AUTH`: the two `USER_AUTH`
+    /// MFA-setup tests in `RequiredMFATests` (`requireUserAuth(on:)`).
+    case mfaRequiredUserAuth
 
     /// The skip's message.
     var message: String {
@@ -800,6 +804,11 @@ enum CISkipReason: CaseIterable, Sendable {
             "Skipped on CI: the plugin's device-alias backend (AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json) "
                 + "has no pre-sign-up trigger that confirms a fresh sign-up and names no code API, so no user is signed "
                 + "up there."
+        case .mfaRequiredUserAuth:
+            "Skipped on CI: the plugin's MFA-required backend (AWSCognitoAuthPluginMFARequiredIntegrationTests-"
+                + "amplifyconfiguration.json) has an app client that refuses USER_AUTH, so a USER_AUTH sign-in that "
+                + "must set MFA up cannot be checked there. The client's CI overlays its mfa-req-totp-sms role, whose "
+                + "app client allows it (infra/ci/ci-overlay.sh)."
         }
     }
 }
