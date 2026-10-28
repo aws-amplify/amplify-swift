@@ -105,8 +105,8 @@ public extension AmplifyCognitoClient {
     /// - Returns: `.complete`, or `.partial` with the revoke's failure or the hosted UI's cookie left behind,
     ///   when the session is signed out on this device. `.failed`, and the session is still signed in:
     ///   `storageUnavailable` if storage could not be read or written, or `storageUnavailable(.interrupted)` if
-    ///   the record kept changing under the sign-out (the first revoke failure, if any, is its underlying
-    ///   error); `sessionConfigurationMismatch` if a client for this session is live in this process with a
+    ///   the record kept changing under the sign-out (the first server-side failure, if any, the global sign-out's
+    ///   first, is its underlying error, mapped as any other call maps it); `sessionConfigurationMismatch` if a client for this session is live in this process with a
     ///   different user pool or identity pool, whose records this call would change (sign it out through that
     ///   client); `invalidState` if a different user signed in meanwhile; `unknown` with an underlying
     ///   `CancellationError` if the calling task was cancelled before anything was revoked.

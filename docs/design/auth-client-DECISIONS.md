@@ -460,8 +460,8 @@ suggestion. Only network failures count: offline, a failed DNS or host lookup, a
 timeout, or a failed secure connection. The text doesn't say the request never reached the service, since a lost
 connection may follow a request the service acted on. A response that arrived but couldn't be read, App Transport
 Security and authentication failures are `.service` with no code and their own texts, never an empty `.unknown`. A
-sign-out's revoke or global sign-out that failed on the network keeps the sign-out's context in its suggestion: it is
-not retried.
+sign-out's revoke or global sign-out that failed on the network keeps the sign-out's context in its suggestion in a
+`.partial` result: it is not retried.
 
 **#25.** The caller was answered at once while the browser was still closing, so `systemSheetHolder` still named the
 session and an immediate retry got `browserBusy`. The caller's own task cancellation and `resetSystemSheet()` still
@@ -550,7 +550,7 @@ README and the release notes. #38 and #39 keep limitations that the client's REA
 |---|---|---|
 | 35 | A second refusal of a reused refresh token, at least 30 seconds after the first, with nothing saved meanwhile | **The session still expires, forced or not**, even while its saved tokens are valid, and from then on its fields and providers answer `sessionExpired` until its credentials change. Its text says the refresh token was already used and no refreshed tokens were saved, so the session cannot be renewed, and to sign in again, with `refreshTokenReused` underneath, not the "expired or been revoked" text of a refused refresh token. Refines #28. |
 | 36 | AWSMobileClient (Amplify v1) logins against a signed-out `.default` | **The signed-out record stops the plugin's migration**, as a login does: nothing migrates over it, and the old logins are cleared. A `.default` sign-out or purge through the client clears those logins before it writes the signed-out record or deletes the record. |
-| 37 | A Cognito internal error (`InternalErrorException`, from either pool) and an error status the SDK does not model, in the client | **`.service` with no code**, in every call, `deleteUser`, a sign-out's revoke or global sign-out, and the passkey credential calls included, with a recovery suggestion to retry (a 5xx, an internal error) or naming the refusal (a 4xx); under a sign-out, the revoke's or global sign-out's suggestion says instead that it will not be retried. The plugin keeps `AuthError.unknown`. |
+| 37 | A Cognito internal error (`InternalErrorException`, from either pool) and an error status the SDK does not model, in the client | **`.service` with no code**, in every call, `USER_AUTH`, auto, device SRP and passkey sign-ins, `deleteUser`, a sign-out's revoke or global sign-out, and the passkey credential calls included, with a recovery suggestion to retry (a 5xx, an internal error) or naming the refusal (a 4xx). In a `.partial` sign-out, the revoke's or global sign-out's suggestion says instead that it will not be retried; a sign-out that could not finish (`.failed`) carries the failure as any other call maps it. The plugin keeps `AuthError.unknown`. |
 | 38 | A named session's configuration marker left naming an earlier configuration, by a purge stopped before its last step | **Not changed.** The next restore under the purge's configuration carries the session from the earlier one again, and the README says to purge the session again before building a client for it. |
 | 39 | `signOutStoredSession` with no client for the session live in the process, and `configureUserPoolClient` | **Not given one.** Its revoke uses SDK clients built from the configuration alone, so an app's `configureUserPoolClient` (a custom endpoint, a proxy, certificate pinning) is not applied; hold a client for the session to sign out through it. A purge revokes nothing. |
 
