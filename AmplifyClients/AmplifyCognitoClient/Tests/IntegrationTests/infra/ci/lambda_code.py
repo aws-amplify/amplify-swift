@@ -24,16 +24,18 @@ hands over its CodeSha256 and the presigned URL of its deployed zip, which this 
         sender's node_modules/.bin/ entries: npm's links to its packages' commands, which Lambda never loads, and
         which a zip stores as links or as copies of their targets depending on how it was made. Prints, a function,
         one line by name and, when it differs, which files differ (names escaped), never a hash. A function the
-        baseline records that is not deployed is DRIFT too. Exit 1 on any DRIFT (or a deployed zip that cannot be
-        read), else 0.
+        baseline records that is not deployed is DRIFT too. Exit 1 on any DRIFT, a deployed zip that cannot be
+        read, or no ccit-ci- function deployed at all (another region or account), else 0.
     lambda_code.py record <deployed.json> <zips-dir> [--baseline FILE] [--accept-deployed]
         Prints the same per-file comparison, then records each deployed function's files (paths and content
         hashes), with the digest of its sources now, as the baseline. Without --accept-deployed it records nothing
         and exits 1: the operator accepts what is deployed, as the comparison shows it, by passing it. It records
-        nothing either (exit 1) while a function the baseline records is not deployed.
+        nothing either (exit 1) while a function the baseline records is not deployed, or no function is deployed
+        at all.
     lambda_code.py check-baseline [--baseline FILE] [--github]
         Offline: whether the sources each recorded function was accepted for are still this checkout's. Exit 0
-        when they are, 1 when one changed (redeploy it, then lambda-drift), 3 when no baseline is recorded.
+        when they are, 1 when one changed (redeploy it, then lambda-drift), 3 when no baseline is recorded (or it
+        records no function).
 
 Any other exit status is a failure of the script itself (4: an unexpected error, with its traceback, or a
 <deployed.json> that anyone but its owner can read; 2: usage).
@@ -101,6 +103,8 @@ REDEPLOY = ("Redeploy it: first check that the function carries purpose=amplify-
             f"list-tags), and only then delete it by hand and rerun {ALL_SCOPES}, which makes it again from this "
             f"checkout {PHASE_1}; or, once you accept the deployed files, run provision-ci.sh lambda-drift --record "
             "--accept-deployed.")
+NONE_DEPLOYED = ("No ccit-ci- function is deployed where the AWS CLI is pointed: check CCIT_CI_REGION and the "
+                 "account of the profile before anything else.")
 
 
 def baseline_path(argv):
@@ -355,9 +359,17 @@ def print_results(results, github):
             say(line, github, level)
 
 
+def none_deployed(results):
+    return all(status in ("absent", "missing") for status, _, _ in results.values())
+
+
 def compare(argv):
+    github = "--github" in argv
     results = compared(argv)
-    print_results(results, "--github" in argv)
+    print_results(results, github)
+    if none_deployed(results):
+        say(NONE_DEPLOYED, github, "error")
+        return 1
     return 1 if any(status in ("drift", "missing", "unreadable") for status, _, _ in results.values()) else 0
 
 
@@ -368,6 +380,9 @@ def with_status(results, wanted):
 def record(argv):
     results = compared(argv)
     print_results(results, False)
+    if none_deployed(results):
+        print(f"Nothing recorded. {NONE_DEPLOYED}")
+        return 1
     if any(status == "unreadable" for status, _, _ in results.values()):
         print("Nothing recorded: a deployed function's code could not be read.")
         return 1
@@ -393,10 +408,10 @@ def record(argv):
 def check_baseline(argv):
     github = "--github" in argv
     baseline = load_baseline(baseline_path(argv))
-    if baseline is None:
-        say("No CI Lambda deployment is recorded (infra/ci/lambda-baseline.json): run infra/ci/provision-ci.sh "
-            "lambda-drift (read-only), then lambda-drift --record --accept-deployed once you accept what it shows, "
-            "and commit the file.", github, "warning")
+    if not baseline:  # None, or a baseline of no function (one recorded against another region or account)
+        say("No CI Lambda deployment is recorded (infra/ci/lambda-baseline.json, or it records no function): run "
+            "infra/ci/provision-ci.sh lambda-drift (read-only), then lambda-drift --record --accept-deployed once "
+            "you accept what it shows, and commit the file.", github, "warning")
         return 3
     changed = [suffix for suffix, entry in sorted(baseline.items())
                if suffix in SOURCES and (not isinstance(entry, dict) or entry.get("sources") != source_digest(suffix))]

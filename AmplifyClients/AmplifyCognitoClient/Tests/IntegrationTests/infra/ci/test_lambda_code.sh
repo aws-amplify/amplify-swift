@@ -29,7 +29,9 @@
 # - that npm's node_modules/.bin/ links count on neither side, so a sender zipped with `zip -r` (which stores a copy
 #   of each link's target) is in sync;
 # - that a function the baseline records but that is not deployed is DRIFT, and record keeps it rather than drop it,
-#   and that the redeploy advice checks the purpose tag first and reruns --apply --scope all.
+#   and that the redeploy advice checks the purpose tag first and reruns --apply --scope all;
+# - that no function deployed at all (another region or account) fails compare and record, and that an empty
+#   baseline is no baseline.
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INFRA="$(cd "$CI_DIR/.." && pwd)"
@@ -502,6 +504,27 @@ a_baselined_function_that_is_not_deployed_is_drift() {
         || { echo "check-baseline: $OUT"; return 1; }
 }
 
+# Another region or account, where no ccit-ci- function exists: compare fails rather than pass, record writes no
+# empty baseline, and an empty baseline, had one been committed, is no baseline (status 3), never a pass.
+nothing_deployed_is_refused() {
+    local baseline="$WORK/e-baseline.json" suffix
+    build_all "$WORK/e"
+    deploy_all "$WORK/e"
+    for suffix in "${SUFFIXES[@]}"; do
+        undeploy "$suffix"
+    done
+    run compare "$WORK/deployed.json" "$WORK/e" --baseline "$baseline" --github
+    (( STATUS == 1 )) && [[ "$OUT" == *"::error::No ccit-ci- function is deployed where the AWS CLI is pointed: check CCIT_CI_REGION and the account"* ]] \
+        || { echo "compare: $OUT"; return 1; }
+    run record "$WORK/deployed.json" "$WORK/e" --baseline "$baseline" --accept-deployed
+    (( STATUS == 1 )) && [[ "$OUT" == *"Nothing recorded. No ccit-ci- function is deployed"* && ! -e "$baseline" ]] \
+        || { echo "record: $OUT"; return 1; }
+    echo '{"functions": {}}' > "$baseline"
+    run check-baseline --baseline "$baseline" --github
+    (( STATUS == 3 )) && [[ "$OUT" == "::warning::No CI Lambda deployment is recorded"*"or it records no function"* ]] \
+        || { echo "check-baseline: $OUT"; return 1; }
+}
+
 no_baseline_is_its_own_status() {
     run check-baseline --baseline "$WORK/none.json" --github
     (( STATUS == 3 )) && [[ "$OUT" == "::warning::No CI Lambda deployment is recorded"* ]]
@@ -576,6 +599,7 @@ check "npm's node_modules/.bin/ links count on neither side: a sender zipped wit
     npm_bin_links_count_on_neither_side
 check "a function the baseline records that is not deployed is DRIFT, and record keeps it; the advice is --scope all" \
     a_baselined_function_that_is_not_deployed_is_drift
+check "no function deployed fails compare and record, and an empty baseline is no baseline" nothing_deployed_is_refused
 check "no baseline is status 3 with a warning" no_baseline_is_its_own_status
 check "a deployed.json anyone but its owner can read is refused, status 4" a_deployed_json_others_can_read_is_refused
 check "no download directory is left behind" no_download_directory_is_left_behind
