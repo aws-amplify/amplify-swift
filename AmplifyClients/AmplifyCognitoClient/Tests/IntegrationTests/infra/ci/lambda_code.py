@@ -212,6 +212,9 @@ def allowed_host(host):
 
 def allowed_url(url):
     parsed = urllib.parse.urlsplit(url)
+    if "[" in parsed.netloc or "]" in parsed.netloc:
+        # No code bucket's host is bracketed; urlsplit refuses some such netlocs only since its 2025 fixes.
+        raise ValueError("a bracketed host")
     if parsed.scheme == "https":
         return allowed_host(parsed.hostname or "")
     if os.environ.get("CCIT_CI_TEST_FILE_CODE_URLS") != "1":
@@ -234,7 +237,7 @@ def download(url, directory, suffix):
     """The deployed zip's bytes, downloaded into `directory` (private) as <suffix>.zip."""
     try:
         allowed = isinstance(url, str) and allowed_url(url)
-    except ValueError:  # urlsplit's, for a malformed netloc such as [::1].amazonaws.com
+    except ValueError:  # urlsplit's or allowed_url's, for a malformed netloc such as [::1].amazonaws.com
         raise Unreadable("its code location is not a well-formed URL") from None
     if not allowed:
         raise Unreadable("its code location is not an https:// URL on a Lambda code bucket's S3 host")
