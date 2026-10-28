@@ -25,7 +25,9 @@
 # accepts until the sources change; that check-baseline is 0 with the recorded sources, 1 once one changed, 3 with
 # no baseline; that an unexpected error is status 4, never 1, and so is a deployed.json anyone but its owner can read;
 # that no download directory is left behind; and that the committed baseline, when there is one, names this
-# checkout's sources.
+# checkout's sources. It also checks:
+# - that npm's node_modules/.bin/ links count on neither side, so a sender zipped with `zip -r` (which stores a copy
+#   of each link's target) is in sync.
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INFRA="$(cd "$CI_DIR/.." && pwd)"
@@ -405,6 +407,56 @@ an_accepted_deployment_is_in_sync_until_its_sources_change() {
     cp "$INFRA/lambda/triggers/triggers.mjs" "$COPY/lambda/triggers/triggers.mjs"
 }
 
+# Sets deployed function $1's CodeSha256 in deployed.json to its deployed zip's.
+resha() {
+    jq -c --arg k "$1" --arg s "$(sha "$WORK/deployed/$1.zip")" '.[$k].codeSha256 = $s' "$WORK/deployed.json" > "$WORK/d" \
+        && mv "$WORK/d" "$WORK/deployed.json"
+}
+
+# npm ci links each package's commands into node_modules/.bin/. zip_bytes leaves the links out, and the CI's sender
+# was first made with `zip -q -X -r` (no -y), which stores a copy of each link's target: neither side counts them,
+# at any depth, so that sender is in sync, and a record holds none.
+npm_bin_links_count_on_neither_side() {
+    local BUILD="$WORK/build-bin" baseline="$WORK/bin-baseline.json"
+    mkdir -p "$BUILD/node_modules/dependency/bin" "$BUILD/node_modules/.bin" \
+        "$BUILD/node_modules/dependency/node_modules/inner" "$BUILD/node_modules/dependency/node_modules/.bin"
+    cp "$COPY/lambda/custom-sender/index.mjs" "$COPY/lambda/custom-sender/package.json" "$BUILD/"
+    echo 'export {};' > "$BUILD/node_modules/dependency/index.js"
+    printf '#!/usr/bin/env node\n' > "$BUILD/node_modules/dependency/bin/cli.js"
+    printf '#!/usr/bin/env node\n// inner\n' > "$BUILD/node_modules/dependency/node_modules/inner/cli.js"
+    ln -s ../dependency/bin/cli.js "$BUILD/node_modules/.bin/dependency"
+    ln -s ../inner/cli.js "$BUILD/node_modules/dependency/node_modules/.bin/inner"
+    echo '{}' > "$BUILD/node_modules/.package-lock.json"
+    build_all "$WORK/bin"
+    deploy_all "$WORK/bin"
+    # The sender as the CI's was first made.
+    rm -f "$WORK/deployed/custom-sender.zip"
+    (cd "$BUILD" && rm -f node_modules/.package-lock.json && zip -q -X -r "$WORK/deployed/custom-sender.zip" index.mjs package.json node_modules)
+    resha custom-sender
+    python3 - "$WORK/deployed/custom-sender.zip" <<'PY' || { echo "the zip -r sender holds no copy of the links"; return 1; }
+import sys, zipfile
+with zipfile.ZipFile(sys.argv[1]) as z:
+    names = z.namelist()
+    assert z.read("node_modules/.bin/dependency").startswith(b"#!") and "node_modules/dependency/node_modules/.bin/inner" in names, names
+PY
+    run compare "$WORK/deployed.json" "$WORK/bin" --baseline "$baseline"
+    (( STATUS == 0 )) && [[ "$OUT" == *"= ccit-ci-custom-sender: the deployed files are this checkout's"* ]] \
+        && [[ "$OUT" != *.bin* && "$OUT" != *DRIFT* ]] || { echo "compare: $OUT"; return 1; }
+    run record "$WORK/deployed.json" "$WORK/bin" --baseline "$baseline" --accept-deployed
+    (( STATUS == 0 )) && jq -e '.functions["custom-sender"].files | keys
+        == ["index.mjs", "node_modules/dependency/bin/cli.js", "node_modules/dependency/index.js",
+            "node_modules/dependency/node_modules/inner/cli.js", "package.json"]' "$baseline" >/dev/null \
+        || { echo "record: $OUT"; return 1; }
+    # Any other file still counts.
+    echo '// edited' >> "$BUILD/node_modules/dependency/index.js"
+    rm -f "$WORK/deployed/custom-sender.zip"
+    (cd "$BUILD" && zip -q -X -r "$WORK/deployed/custom-sender.zip" index.mjs package.json node_modules)
+    resha custom-sender
+    run compare "$WORK/deployed.json" "$WORK/bin" --baseline "$WORK/bin-none.json"
+    (( STATUS == 1 )) && [[ "$OUT" == *"DRIFT ccit-ci-custom-sender"*"changed (1): node_modules/dependency/index.js"* ]] \
+        && [[ "$OUT" != *.bin* ]] || { echo "edited: $OUT"; return 1; }
+}
+
 no_baseline_is_its_own_status() {
     run check-baseline --baseline "$WORK/none.json" --github
     (( STATUS == 3 )) && [[ "$OUT" == "::warning::No CI Lambda deployment is recorded"* ]]
@@ -475,6 +527,8 @@ check "only an https:// URL on a Lambda code bucket's host is downloaded, and a 
 check "a redirect is not followed, and a download over 50 MB is refused" a_redirect_and_a_large_download_are_refused
 check "record writes the deployed files only with --accept-deployed; they are in sync until the sources change" \
     an_accepted_deployment_is_in_sync_until_its_sources_change
+check "npm's node_modules/.bin/ links count on neither side: a sender zipped with zip -r is in sync" \
+    npm_bin_links_count_on_neither_side
 check "no baseline is status 3 with a warning" no_baseline_is_its_own_status
 check "a deployed.json anyone but its owner can read is refused, status 4" a_deployed_json_others_can_read_is_refused
 check "no download directory is left behind" no_download_directory_is_left_behind

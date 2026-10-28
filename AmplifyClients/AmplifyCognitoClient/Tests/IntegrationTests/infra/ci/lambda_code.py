@@ -20,8 +20,10 @@ hands over its CodeSha256 and the presigned URL of its deployed zip, which this 
         compared). Each deployed zip is downloaded into a private temporary directory and read file by file; the
         function is in sync when its files (paths and SHA-256 of their contents) are its checkout zip's, or else
         when they are the files the baseline accepted for the same sources. The compression, dates and modes in
-        the zip, and so its CodeSha256, do not count: CodeSha256 is printed only as a note. Prints, a function, one
-        line by name and, when it differs, which files differ (names escaped), never a hash. Exit 1 on any DRIFT
+        the zip, and so its CodeSha256, do not count: CodeSha256 is printed only as a note. Nor do the custom
+        sender's node_modules/.bin/ entries: npm's links to its packages' commands, which Lambda never loads, and
+        which a zip stores as links or as copies of their targets depending on how it was made. Prints, a function,
+        one line by name and, when it differs, which files differ (names escaped), never a hash. Exit 1 on any DRIFT
         (or a deployed zip that cannot be read), else 0.
     lambda_code.py record <deployed.json> <zips-dir> [--baseline FILE] [--accept-deployed]
         Prints the same per-file comparison, then records each deployed function's files (paths and content
@@ -125,6 +127,18 @@ def zip_bytes(suffix, build_dir=None):
             if not os.path.islink(path) and name != ".package-lock.json":
                 names.append(os.path.relpath(path, build_dir))
     return deterministic_zip(build_dir, names)
+
+
+# npm's links to its packages' commands (node_modules/.bin/, at any depth): Lambda never loads them, zip_bytes leaves
+# the links out, and a `zip -r` without -y (how the CI's functions were first made) stores a copy of each target.
+NPM_BIN = re.compile(r"(?:^|/)node_modules/\.bin/")
+
+
+def compared_files(suffix, files):
+    """The files of function `suffix` that the comparison counts: the custom sender's without npm's .bin entries."""
+    if suffix != "custom-sender":
+        return files
+    return {path: digest for path, digest in files.items() if not NPM_BIN.search(path)}
 
 
 def code_sha256(data):
@@ -265,8 +279,8 @@ def say(line, github, level=None):
 
 def compared(argv):
     """Each function's comparison, in name order: (status, files, lines). `status` is "absent", "unchecked",
-    "unreadable", "same", "accepted" or "drift"; `files` the deployed files (None when there are none to record);
-    `lines` what to print, each with the level of its annotation (None for a plain line)."""
+    "unreadable", "same", "accepted" or "drift"; `files` the deployed files as compared (None when there are none
+    to record); `lines` what to print, each with the level of its annotation (None for a plain line)."""
     mode = stat.S_IMODE(os.stat(argv[1]).st_mode)
     if mode & 0o077:
         raise NotPrivate(f"{os.path.basename(argv[1])} is mode {mode:o}: it holds presigned URLs, which are "
@@ -285,7 +299,7 @@ def compared(argv):
                 results[suffix] = ("absent", None, [(f"  - {name}: not deployed", None)])
                 continue
             try:
-                files = manifest(download(entry.get("location"), workdir, suffix))
+                files = compared_files(suffix, manifest(download(entry.get("location"), workdir, suffix)))
             except Unreadable as error:
                 results[suffix] = ("unreadable", None,
                                    [(f"! {name}: the deployed code could not be read: {error}.", "error")])
@@ -297,7 +311,7 @@ def compared(argv):
                 continue
             with open(zip_path, "rb") as f:
                 built_bytes = f.read()
-            built = manifest(built_bytes)
+            built = compared_files(suffix, manifest(built_bytes))
             note = ("      CodeSha256, a note only: the same as this checkout's zip's"
                     if entry.get("codeSha256") == code_sha256(built_bytes)
                     else "      CodeSha256, a note only: not this checkout's zip's (the files decide)")
