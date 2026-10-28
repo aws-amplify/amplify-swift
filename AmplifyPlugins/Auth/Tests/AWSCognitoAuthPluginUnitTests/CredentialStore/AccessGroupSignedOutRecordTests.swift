@@ -17,11 +17,13 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import InternalAWSCognitoAuth
 
-/// Under an access group, every plugin path that ends the session saves the signed-out record,
-/// `{"noCredentials":{}}`, in the shared service instead of deleting the session record: sign-out, local and
-/// global, clearing the federation to the identity pool, and the local sign-out after a deleted user. The record
-/// then stops an app extension's first access-group migration, as a login does, so the extension's stale login is
-/// never moved in over the user who signed out. Without an access group the record is still deleted.
+/// Under an access group, every plugin path that ends a login saves the signed-out record, `{"noCredentials":{}}`, in
+/// the shared service instead of deleting the session record: sign-out, local and global, clearing the federation to
+/// the identity pool, and the local sign-out after a deleted user. So does one over a record that is already signed
+/// out. The record then stops an app extension's first access-group migration, as a login does, so the extension's
+/// stale login is never moved in over the user who signed out. A guest's sign-out still deletes the guest's record,
+/// and a sign-out with nothing saved writes nothing, so neither stops a login's migration. Without an access group
+/// the record is still deleted.
 ///
 /// The plugin runs its real credential store, through its test seam, over an in-memory keychain shared with the
 /// extension and with the Cognito client's `.default` session. Only the Cognito service calls are mocked.
@@ -85,6 +87,45 @@ final class AccessGroupSignedOutRecordTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(sharedRecord(), try JSONEncoder().encode(AmplifyCredentials.noCredentials))
         XCTAssertEqual(try shared.retrieveCredential(), .noCredentials)
         XCTAssertNil(keychain.value(service: service, account: sessionAccount))
+    }
+
+    /// Test that under an access group the store saves the signed-out record only over a login or a signed-out record
+    ///
+    /// - Given: the shared service holding, in turn, a user-pool login, a federated identity, the signed-out record, a
+    ///   guest's identity, a record the store cannot decode, and nothing
+    /// - When:
+    ///    - the store with the access group ends its session
+    /// - Then:
+    ///    - over a login, a federated identity or the signed-out record, the shared service holds
+    ///      `{"noCredentials":{}}`
+    ///    - over a guest's identity or an unreadable record, the record is deleted, as before
+    ///    - with nothing saved, nothing is written
+    ///
+    func testTheStoreSavesTheSignedOutRecordOnlyOverALoginOrASignedOutRecord() throws {
+        let federated = AmplifyCredentials.identityPoolWithFederation(
+            federatedToken: FederatedToken(token: "federated-token", provider: .facebook),
+            identityID: "federated-identity",
+            credentials: LongLivedCredentials.awsCredentials()
+        )
+        let saved: [(label: String, record: Data?, signsOut: Bool)] = try [
+            ("a login", JSONEncoder().encode(LongLivedCredentials.userPoolAndIdentityPool()), true),
+            ("a federated identity", JSONEncoder().encode(federated), true),
+            ("the signed-out record", signedOutRecord, true),
+            ("a guest", JSONEncoder().encode(Self.guest), false),
+            ("an unreadable record", Data("not a session".utf8), false),
+            ("nothing", nil, false)
+        ]
+        for (label, record, signsOut) in saved {
+            let shared = keychain.store(service: sharedService, accessGroup: accessGroup)
+            try shared.remove(sessionAccount)
+            if let record {
+                try shared.set(record, key: sessionAccount)
+            }
+
+            try makeStore(accessGroup: accessGroup).deleteCredential()
+
+            XCTAssertEqual(sharedRecord(), signsOut ? signedOutRecord : nil, label)
+        }
     }
 
     // MARK: Each path that ends the session
@@ -186,6 +227,57 @@ final class AccessGroupSignedOutRecordTests: XCTestCase, @unchecked Sendable {
         XCTAssertNil(keychain.value(service: service, account: sessionAccount), "after clearing the federation")
 
         XCTAssertNil(sharedRecord())
+    }
+
+    /// Test that a sign-out with nothing saved writes nothing under an access group, so the app's first migration
+    /// still moves its login
+    ///
+    /// - Given: nothing saved in the shared service, and an app extension's plugin configured with the access group,
+    ///   signed out
+    /// - When:
+    ///    - the extension signs out, before the app's first launch with the access group
+    ///    - then the app's store is configured with the access group and `migrateKeychainItems: true`, with alice's
+    ///      login in its unshared service
+    /// - Then:
+    ///    - the sign-out completes and the shared service holds no session record
+    ///    - the app's migration moves alice's login into the shared service
+    ///
+    func testASignOutWithNothingSavedWritesNothingAndTheAppsLoginStillMigrates() async throws {
+        let plugin = makePlugin(accessGroup: accessGroup, userPool: signOutUserPool())
+
+        let result = await plugin.signOut()
+
+        guard let signOut = result as? AWSCognitoSignOutResult, case .complete = signOut else {
+            return XCTFail("the sign-out did not complete: \(result)")
+        }
+        XCTAssertNil(sharedRecord())
+        try assertTheAppsFirstMigrationMovesItsLogin()
+    }
+
+    /// Test that a guest's sign-out deletes the guest's record under an access group, so the app's first migration
+    /// still moves its login
+    ///
+    /// - Given: a guest's identity in the shared service, and an app extension's plugin configured with the access
+    ///   group
+    /// - When:
+    ///    - the extension signs the guest out, before the app's first launch with the access group
+    ///    - then the app's store is configured with the access group and `migrateKeychainItems: true`, with alice's
+    ///      login in its unshared service
+    /// - Then:
+    ///    - the sign-out completes and the shared service holds no session record
+    ///    - the app's migration moves alice's login into the shared service
+    ///
+    func testAGuestsSignOutDeletesTheGuestRecordAndTheAppsLoginStillMigrates() async throws {
+        try makeStore(accessGroup: accessGroup).saveCredential(Self.guest)
+        let plugin = makePlugin(accessGroup: accessGroup, userPool: signOutUserPool())
+
+        let result = await plugin.signOut()
+
+        guard let signOut = result as? AWSCognitoSignOutResult, case .complete = signOut else {
+            return XCTFail("the guest's sign-out did not complete: \(result)")
+        }
+        XCTAssertNil(sharedRecord())
+        try assertTheAppsFirstMigrationMovesItsLogin()
     }
 
     // MARK: After the sign-out
@@ -481,6 +573,45 @@ final class AccessGroupSignedOutRecordTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(sharedRecord(), signedOutRecord, file: file, line: line)
         XCTAssertEqual(try store.retrieveCredential(), .noCredentials, file: file, line: line)
         XCTAssertEqual(extensionKeychain.value(service: service, account: sessionAccount), bob, file: file, line: line)
+    }
+
+    /// A guest's identity: an identity pool identity with no user pool tokens and no federated identity.
+    private static let guest = AmplifyCredentials.identityPoolOnly(
+        identityID: "guest-identity-id",
+        credentials: LongLivedCredentials.awsCredentials()
+    )
+
+    /// The app's first configuration with the access group and `migrateKeychainItems: true`, its unshared service
+    /// holding alice's login and its `UserDefaults` no access group, moves alice's login into the shared service. The
+    /// app's unshared service is in the same keychain as the shared service, so the migration can move items between
+    /// them.
+    private func assertTheAppsFirstMigrationMovesItsLogin(file: StaticString = #filePath, line: UInt = #line) throws {
+        let keychain = keychain!
+        let alice = try JSONEncoder().encode(LongLivedCredentials.userPoolAndIdentityPool(username: "alice"))
+        try keychain.store(service: service).set(alice, key: sessionAccount)
+        let suite = "AccessGroupSignedOutRecordTests.app.\(UUID().uuidString)"
+        let appDefaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { appDefaults.removePersistentDomain(forName: suite) }
+
+        let store = AWSCognitoAuthCredentialStore(
+            authConfiguration: authConfiguration,
+            accessGroup: accessGroup,
+            migrateKeychainItemsOfUserSession: true,
+            userDefaults: appDefaults,
+            makeKeychainStore: { service, accessGroup in
+                keychain.store(service: service, accessGroup: accessGroup)
+            },
+            logger: AmplifyEngineLogRouter()
+        )
+
+        XCTAssertEqual(sharedRecord(), alice, "alice's login was not migrated", file: file, line: line)
+        XCTAssertEqual(
+            try store.retrieveCredential(),
+            try JSONDecoder().decode(AmplifyCredentials.self, from: alice),
+            file: file,
+            line: line
+        )
+        XCTAssertNil(keychain.value(service: service, account: sessionAccount), file: file, line: line)
     }
 
     /// The plugin's credential store over the shared keychain, as `makeCredentialStore` builds it, without migration:

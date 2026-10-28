@@ -244,20 +244,32 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
         return amplifyCredential
     }
 
-    /// Ends the saved session. Every plugin path that ends one clears it through here: sign-out, local and global,
-    /// the local sign-out after a deleted user, and clearing the federation to the identity pool.
+    /// Ends the saved session. Every plugin path that ends one clears it through here: sign-out, local and global
+    /// (a guest's and one with nothing saved included), the local sign-out after a deleted user, and clearing the
+    /// federation to the identity pool.
     ///
-    /// Without an access group the session record is deleted. With one, it is replaced by the signed-out record,
-    /// `{"noCredentials":{}}`, the bytes the Cognito client's default session saves on sign-out, which every plugin
-    /// release reads as signed out. In the shared service a sign-out then counts as migrated: an app extension's
-    /// first access-group migration stops at the record (`sharedKeychainHasMigratedItems(accessGroup:source:)`)
-    /// and never moves its own stale login in over it. The next sign-in replaces the record.
+    /// Without an access group the session record is deleted. With one, a record that holds a login (user pool
+    /// tokens or a federated identity), or is already signed out, is replaced by the signed-out record,
+    /// `{"noCredentials":{}}`, the bytes the Cognito client's default session saves when it signs a session out,
+    /// which every plugin release reads as signed out. In the shared service ending a login then counts as migrated:
+    /// an app extension's first access-group migration stops at the record
+    /// (`sharedKeychainHasMigratedItems(accessGroup:source:)`) and never moves its own stale login in over it. The
+    /// next sign-in replaces the record. Any other record is deleted, as without an access group: a guest's, so a
+    /// guest alone still never stops a login's migration, and one this store cannot read. With nothing saved,
+    /// nothing is written, as the client writes nothing when there is nothing to sign out.
     package func deleteCredential() throws {
-        guard accessGroup != nil else {
+        guard let accessGroup else {
             try removeSession(for: authConfiguration)
             return
         }
-        try saveCredential(.noCredentials)
+        // Read as the migration's checks read the shared service: quietly, so the sign-out logs no new line.
+        let shared = EngineKeychainStore.quiet(makeKeychainStore(sharedService, accessGroup), logger: logger)
+        switch Self.savedSession(at: generateSessionKey(for: authConfiguration), in: shared) {
+        case .login, .signedOut:
+            try saveCredential(.noCredentials)
+        case .guest, .unknown:
+            try removeSession(for: authConfiguration)
+        }
     }
 
     package func saveDevice(_ deviceMetadata: DeviceMetadata, for username: String) throws {
