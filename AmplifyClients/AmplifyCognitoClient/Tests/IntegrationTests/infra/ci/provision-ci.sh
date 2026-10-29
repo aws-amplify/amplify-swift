@@ -100,8 +100,9 @@
 #       replaces one of the pools above (by its name, or the part after ccit-ci-) as the recipe above does: after the
 #       tag check of each, deletes the pool and its uploaded file, for ccit-ci-default also the rotation file, the
 #       identity pool and ccit-ci-new-password-reset, then reruns --apply --scope all --upload. A dry run by default,
-#       which checks the rerun's dry run too. It refuses any other name, and refuses while gh shows a CI run that
-#       reads the pools (it warns when gh cannot tell)
+#       which checks the rerun's dry run too. It refuses any other name, and refuses while gh shows a queued or
+#       running CI run that reads the pools. When gh is missing, or cannot list the runs (not logged in, say), it
+#       only warns and goes on: check that no CI run is going first
 #   infra/ci/provision-ci.sh lambda-drift [--record [--accept-deployed]]
 #       read-only: downloads each ccit-ci- Lambda's deployed zip (GetFunction's presigned URL) and compares its
 #       files, by path and content hash, with the zip built from this checkout, or with the files
