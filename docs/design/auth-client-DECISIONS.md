@@ -585,8 +585,8 @@ reads the signed-out record as no session.
 Where the client saw the failure's cause, the description and recovery suggestion are the ones it gave before, and
 only the case changes. The engine kept nothing under an internal error, so it now carries the service's exception
 beside the engine error for `deleteUser`, a sign-out's revoke and global sign-out, and the passkey credential calls,
-which lose the engine's "report a bug" suggestion. Under a sign-out, the revoke and the global sign-out keep the
-sign-out's not-retried suggestion, as a transport failure does: the sign-out has already finished on this device, so
+which lose the engine's "report a bug" suggestion. In a `.partial` sign-out, the revoke and the global sign-out keep
+the sign-out's not-retried suggestion, as a transport failure does: the sign-out has already finished on this device, so
 "retry" does not fit. The plugin reads only the engine error, so its errors are unchanged.
 
 **#38.** Rewriting the marker to the purge's own configuration before deleting it would close the window, but

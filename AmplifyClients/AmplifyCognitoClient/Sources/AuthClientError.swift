@@ -72,7 +72,8 @@ public enum AuthClientError {
     /// internal error (`InternalErrorException`, from either pool), whose suggestion says to retry, and an error
     /// status the SDK does not model, whose suggestion says to retry (a 5xx) or that Cognito refused the request with
     /// an error this client does not recognise. The description has Cognito's message, and the status when there is
-    /// one. Under a sign-out, the revoke's or global sign-out's suggestion says instead that it will not be retried.
+    /// one. In a `.partial` sign-out, the revoke's or global sign-out's suggestion says instead that it will not be
+    /// retried.
     case service(AuthClientServiceErrorCode?, ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// The caller is not allowed to perform the operation: for example, a wrong password, or a
