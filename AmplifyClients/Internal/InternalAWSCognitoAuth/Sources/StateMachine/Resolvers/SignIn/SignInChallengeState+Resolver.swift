@@ -38,13 +38,13 @@ package extension SignInChallengeState {
                         currentSignInStep: signInStep
                     )
                     return .init(
-                        newState: .verifying(challenge, signInMethod, answerEventData.answer, signInStep),
+                        newState: .verifying(challenge, signInMethod, signInStep),
                         actions: [action]
                     )
                 }
                 return .from(oldState)
 
-            case .verifying(let challenge, let signInMethod, _, let signInStep):
+            case .verifying(let challenge, let signInMethod, let signInStep):
 
                 if case .retryVerifyChallengeAnswer(let answerEventData, let signInStep) = event.isChallengeEvent {
                     let action = VerifySignInChallenge(
@@ -54,7 +54,7 @@ package extension SignInChallengeState {
                         currentSignInStep: signInStep
                     )
                     return .init(
-                        newState: .verifying(challenge, signInMethod, answerEventData.answer, signInStep),
+                        newState: .verifying(challenge, signInMethod, signInStep),
                         actions: [action]
                     )
                 }
@@ -82,7 +82,7 @@ package extension SignInChallengeState {
                         currentSignInStep: signInStep
                     )
                     return .init(
-                        newState: .verifying(challenge, signInMethod, answerEventData.answer, signInStep),
+                        newState: .verifying(challenge, signInMethod, signInStep),
                         actions: [action]
                     )
                 }
