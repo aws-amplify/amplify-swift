@@ -19,11 +19,11 @@ import XCTest
 
 /// Under an access group, every plugin path that ends a login saves the signed-out record, `{"noCredentials":{}}`, in
 /// the shared service instead of deleting the session record: sign-out, local and global, clearing the federation to
-/// the identity pool, and the local sign-out after a deleted user. So does one over a record that is already signed
-/// out. The record then stops an app extension's first access-group migration, as a login does, so the extension's
-/// stale login is never moved in over the user who signed out. A guest's sign-out still deletes the guest's record,
-/// and a sign-out with nothing saved writes nothing, so neither stops a login's migration. Without an access group
-/// the record is still deleted.
+/// the identity pool, and the local sign-out after a deleted user. One over a record that is already signed out
+/// leaves it as it is. The record then stops an app extension's first access-group migration, as a login does, so the
+/// extension's stale login is never moved in over the user who signed out. A guest's sign-out still deletes the
+/// guest's record, and a sign-out with nothing saved writes nothing, so neither stops a login's migration. Without an
+/// access group the record is still deleted.
 ///
 /// The plugin runs its real credential store, through its test seam, over an in-memory keychain shared with the
 /// extension and with the Cognito client's `.default` session. Only the Cognito service calls are mocked.
@@ -89,19 +89,20 @@ final class AccessGroupSignedOutRecordTests: XCTestCase, @unchecked Sendable {
         XCTAssertNil(keychain.value(service: service, account: sessionAccount))
     }
 
-    /// Test that under an access group the store saves the signed-out record only over a login or a signed-out record
+    /// Test that under an access group the store saves the signed-out record only over a login, and leaves a
+    /// signed-out record as it is
     ///
     /// - Given: the shared service holding, in turn, a user-pool login, a federated identity, the signed-out record, a
     ///   guest's identity, a record the store cannot decode, and nothing
     /// - When:
     ///    - the store with the access group ends its session
     /// - Then:
-    ///    - over a login, a federated identity or the signed-out record, the shared service holds
-    ///      `{"noCredentials":{}}`
+    ///    - over a login or a federated identity, the shared service holds `{"noCredentials":{}}`
+    ///    - the signed-out record is left as it is, so the shared service still holds `{"noCredentials":{}}`
     ///    - over a guest's identity or an unreadable record, the record is deleted, as before
     ///    - with nothing saved, nothing is written
     ///
-    func testTheStoreSavesTheSignedOutRecordOnlyOverALoginOrASignedOutRecord() throws {
+    func testTheStoreSavesTheSignedOutRecordOnlyOverALoginAndLeavesASignedOutOne() throws {
         let federated = AmplifyCredentials.identityPoolWithFederation(
             federatedToken: FederatedToken(token: "federated-token", provider: .facebook),
             identityID: "federated-identity",
