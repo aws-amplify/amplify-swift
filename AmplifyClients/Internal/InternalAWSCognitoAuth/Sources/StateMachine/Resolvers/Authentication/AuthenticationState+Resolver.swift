@@ -231,7 +231,8 @@ package extension AuthenticationState {
             case .cancelSignIn:
                 let action = InitiateSignOut(
                     signedInData: currentSignedInData,
-                    signOutEventData: .init(globalSignOut: false)
+                    signOutEventData: .init(globalSignOut: false),
+                    revokesSavedLogin: false
                 )
                 let signOutState = SignOutState.notStarted
                 let resolution = StateResolution(

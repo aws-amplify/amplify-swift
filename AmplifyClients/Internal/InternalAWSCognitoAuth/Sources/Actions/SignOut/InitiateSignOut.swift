@@ -14,9 +14,17 @@ package struct InitiateSignOut: Action {
     package let signedInData: SignedInData
     package let signOutEventData: SignOutEventData
 
+    /// Whether the sign-out ends the user pool login the credential store holds, when it holds one, rather than
+    /// `signedInData`. A cancelled sign-in passes `false`: it cancels from `.signedIn` only after the identity pool
+    /// step failed, before its tokens were saved, so the store can hold only another login (under a keychain access
+    /// group, another app's), and the tokens to revoke are the sign-in's own.
+    var revokesSavedLogin = true
+
     package func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        let updatedSignedInData = await getUpdatedSignedInData(environment: environment)
+        let updatedSignedInData = revokesSavedLogin
+            ? await getUpdatedSignedInData(environment: environment)
+            : signedInData
         let event: SignOutEvent
         // `signOutPresentsBrowser` is this branch's test (a hosted-UI sign-in that shared the browser's
         // cookies), shared with `AmplifyCognitoClient`, which decides from it whether a sign-out takes the
