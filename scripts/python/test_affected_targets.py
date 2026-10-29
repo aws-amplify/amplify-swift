@@ -341,6 +341,31 @@ class AffectedTargetsTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
         self.assertIn(GEO_HOST_APP + "GeoStressTests/amplifyconfiguration.json", result.stdout)
 
+    def test_the_check_escapes_a_missing_file_name_in_its_error(self):
+        """A missing bundled file whose name holds `%` and a newline is named in one escaped `::error` line, so the
+        name can't add lines, or workflow commands, of its own to the log.
+
+        - Given: a scratch checkout whose one project bundles `GeoStressTests/100%<newline>sure.md` (a quoted path
+          with a `\\n` escape) and no such file
+        - When:
+           - `--check-bundled` runs over it
+        - Then:
+           - it exits 1 with one `::error` line on the project file, naming the file as `100%25%0Asure.md`
+           - no other line of its output holds the name's second half
+        """
+        pbxproj = GEO_PBXPROJ.replace("path = README.md;", 'path = "100%\\nsure.md";', 1)
+        root = self.scratch_checkout(pbxproj, files=[GEO_HOST_APP + ".gitignore"])
+        with open(os.path.join(root, GEO_HOST_APP + ".gitignore"), "w") as f:
+            f.write("amplifyconfiguration.json\n")
+        result = self.run_check(root)
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        lines = result.stdout.splitlines()
+        errors = [line for line in lines if line.startswith("::error")]
+        self.assertEqual(len(errors), 1, result.stdout)
+        self.assertTrue(errors[0].startswith("::error file=" + GEO_PROJECT + "/project.pbxproj::"), errors[0])
+        self.assertIn(GEO_HOST_APP + "GeoStressTests/100%25%0Asure.md", errors[0])
+        self.assertEqual([line for line in lines if "sure.md" in line and line is not errors[0]], [], result.stdout)
+
     def test_the_check_fails_on_a_project_it_cannot_read(self):
         """A project the parser can't read fails the check, naming it, rather than passing unchecked.
 
