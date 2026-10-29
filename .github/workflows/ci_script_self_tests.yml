@@ -5,9 +5,9 @@
 #   integration-test jobs run it, with BSD find.
 # - scripts/cognito-engine/check_fixture_lock.sh: the plugin behavior snapshot lock's self-file check
 #   (test_check_fixture_lock.sh, in a scratch repository built from this checkout).
-# - scripts/python/affected_targets.py: the test selector the unit and integration workflows run, over the real
-#   group files, this checkout's Xcode projects (the READMEs host apps bundle) and a stub package dump
-#   (test_affected_targets.py), so it needs no Swift toolchain. A project change runs it too.
+#
+# The test selector's self-test is in ci_selector_self_tests.yml, so that a project change, which it reads, starts
+# only that one.
 #
 # No AWS call is made, and the jobs need no credentials and no secrets.
 
@@ -20,9 +20,6 @@ on:
       - 'scripts/cognito-engine/check_fixture_lock.sh'
       - 'scripts/cognito-engine/test_check_fixture_lock.sh'
       - '.github/workflows/auth_golden_fixture_lock.yml'
-      - 'scripts/python/**'
-      # The selector's self-test reads the host apps' Copy Bundle Resources from the real Xcode projects.
-      - '**/*.xcodeproj/project.pbxproj'
       - '.github/workflows/ci_script_self_tests.yml'
   push:
     branches:
@@ -32,9 +29,6 @@ on:
       - 'scripts/cognito-engine/check_fixture_lock.sh'
       - 'scripts/cognito-engine/test_check_fixture_lock.sh'
       - '.github/workflows/auth_golden_fixture_lock.yml'
-      - 'scripts/python/**'
-      # The selector's self-test reads the host apps' Copy Bundle Resources from the real Xcode projects.
-      - '**/*.xcodeproj/project.pbxproj'
       - '.github/workflows/ci_script_self_tests.yml'
 
 permissions:
@@ -64,15 +58,3 @@ jobs:
 
       - name: Run the self-test
         run: bash scripts/cognito-engine/test_check_fixture_lock.sh
-
-  test-selector:
-    name: Test selector
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
-        with:
-          persist-credentials: false
-
-      - name: Run the self-test
-        run: python3 -m unittest discover -s scripts/python -p 'test_*.py'
