@@ -284,7 +284,7 @@ class AWSCognitoAuthCredentialStoreInterruptedMigrationTests: XCTestCase {
     func testAMigrationKilledBeforeTheLoginMovedStillCarriesItAfterAnExtensionStarts() throws {
         let alice = try populateUnsharedServiceOnAUserPoolOnlyConfiguration()
 
-        try killFirstMigration(atTheMoveOf: userPoolOnlySessionAccount)
+        try killMigration(atTheMoveOf: userPoolOnlySessionAccount)
 
         XCTAssertNotNil(keychain.value(service: service, account: userPoolOnlySessionAccount))
         XCTAssertNotNil(keychain.value(service: service, account: "authConfiguration"))
@@ -314,9 +314,45 @@ class AWSCognitoAuthCredentialStoreInterruptedMigrationTests: XCTestCase {
     func testAMigrationKilledAfterTheLoginMovedStillCarriesItAfterAnExtensionStarts() throws {
         let alice = try populateUnsharedServiceOnAUserPoolOnlyConfiguration()
 
-        try killFirstMigration(atTheMoveOf: "authConfiguration")
+        try killMigration(atTheMoveOf: "authConfiguration")
 
         XCTAssertEqual(try keychain.store(service: service).allAccounts(), ["authConfiguration"])
+        try startAnExtensionThatSavesAGuest()
+
+        let relaunched = makeStore(accessGroup: accessGroup, migrate: true, listingTheConfigurationRecordFirst: true)
+
+        XCTAssertEqual(try relaunched.retrieveCredential(), alice)
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), [])
+        XCTAssertNil(userDefaults.object(forKey: migrationInProgressKey))
+    }
+
+    /// A resumed migration killed before the login moved, in the same update as a configuration change, leaves the
+    /// configuration record in the unshared service, so the next launch still carries the login after an app extension
+    /// with the new configuration has started again.
+    ///
+    /// - Given: alice signed in on a user-pool-only configuration without an access group, over a keychain that
+    ///   lists the configuration record first; the update adds the identity pool and the access group with
+    ///   migration, and its first launch is killed just before alice's session record moves; an app extension with
+    ///   the new configuration starts in the access group and saves its configuration record and a guest's session
+    ///   record there; the resumed launch is killed just before alice's session record moves too; then the extension
+    ///   starts again and saves its configuration record there once more
+    /// - When:
+    ///    - the app launches again with the new configuration, the access group and migration
+    /// - Then:
+    ///    - at the resumed launch's kill, alice's session and the configuration record are still in the unshared
+    ///      service, and the mark names the access group
+    ///    - after the relaunch, the new store reads alice's login, carried to the new configuration's account
+    ///    - nothing of the plugin's is left in the unshared service, and the mark is gone
+    func testAResumedMigrationKilledBeforeTheLoginMovedStillCarriesItAfterAnExtensionStartsAgain() throws {
+        let alice = try populateUnsharedServiceOnAUserPoolOnlyConfiguration()
+        try killMigration(atTheMoveOf: userPoolOnlySessionAccount)
+        try startAnExtensionThatSavesAGuest()
+
+        try killMigration(atTheMoveOf: userPoolOnlySessionAccount)
+
+        XCTAssertNotNil(keychain.value(service: service, account: userPoolOnlySessionAccount))
+        XCTAssertNotNil(keychain.value(service: service, account: "authConfiguration"))
+        XCTAssertEqual(userDefaults.string(forKey: migrationInProgressKey), accessGroup)
         try startAnExtensionThatSavesAGuest()
 
         let relaunched = makeStore(accessGroup: accessGroup, migrate: true, listingTheConfigurationRecordFirst: true)
@@ -349,9 +385,10 @@ class AWSCognitoAuthCredentialStoreInterruptedMigrationTests: XCTestCase {
         return try store.retrieveCredential()
     }
 
-    /// Runs the first launch with the access group, migration and `authConfiguration`, over a keychain that lists the
-    /// configuration record first, killed just before `account` moves.
-    private func killFirstMigration(atTheMoveOf account: String) throws {
+    /// Runs a launch with the access group, migration and `authConfiguration`, over a keychain that lists the
+    /// configuration record first, killed just before `account` moves: the update's first launch, or, once a kill has
+    /// left the mark, a resumed one.
+    private func killMigration(atTheMoveOf account: String) throws {
         let killPoint = KillPoint(keychain: keychain, userDefaults: userDefaults, suite: userDefaultsSuite)
         keychain.beforeMove { moving in
             if moving == account {

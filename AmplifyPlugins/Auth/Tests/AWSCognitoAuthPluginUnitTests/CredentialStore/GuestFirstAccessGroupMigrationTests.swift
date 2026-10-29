@@ -466,6 +466,34 @@ class GuestFirstAccessGroupMigrationTests: XCTestCase {
         XCTAssertEqual(try keychain.store(service: service).allAccounts(), ["authConfiguration"])
     }
 
+    /// A resumed migration in the same update as a configuration change does not carry the app's login over a login
+    /// an app extension saved under the new configuration's account since the interruption.
+    ///
+    /// - Given: the state a migration killed just before its first move leaves, in the update that adds the identity
+    ///   pool and the access group: alice's login on a user-pool-only configuration still in the unshared service,
+    ///   and the mark naming the access group; then an app extension's plugin with the new configuration starts in the
+    ///   access group and signs bob in, which saves its configuration record and bob's login in the shared service
+    /// - When:
+    ///    - the app launches again with the new configuration, the access group and migration
+    /// - Then:
+    ///    - the shared service still holds bob's login, and the new store reads it
+    ///    - the app's configuration record collides with the shared one and stays in the unshared service
+    func testAResumedMigrationDoesNotCarryTheLoginOverALoginAnExtensionSavedSince() throws {
+        try makeStore(accessGroup: nil, authConfiguration: userPoolOnlyConfiguration)
+            .saveCredential(LongLivedCredentials.userPoolAndIdentityPool())
+        userDefaults.set(accessGroup, forKey: migrationInProgressKey)
+        let bob = LongLivedCredentials.userPoolAndIdentityPool(username: "bob")
+        try makeExtensionStore(migrate: true).saveCredential(bob)
+        let saved = try XCTUnwrap(keychain.value(service: sharedService, accessGroup: accessGroup, account: sessionAccount))
+        XCTAssertNotNil(keychain.value(service: sharedService, accessGroup: accessGroup, account: "authConfiguration"))
+
+        let store = makeStore(accessGroup: accessGroup, migrate: true)
+
+        XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: sessionAccount), saved)
+        XCTAssertEqual(try store.retrieveCredential(), bob)
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), ["authConfiguration"])
+    }
+
     // MARK: Helpers
 
     /// alice signs in through the client's `.default` in the access group, then signs out: the shared service holds
