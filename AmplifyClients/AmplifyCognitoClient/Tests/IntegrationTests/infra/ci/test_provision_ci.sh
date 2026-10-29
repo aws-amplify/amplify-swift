@@ -25,8 +25,8 @@
 # rerun over phase 2 as it was first applied (the script at 80712afe4 when git has it, else skipped) plans and makes
 # only the alias-codes and MFA-required pools and what they need, and the key's weekly extension, updates only the
 # script's own resources, and
-# uploads only the three new files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after
-# phase 2 makes no call; that the code sink key is made and extended for 365 days, to the hour, within AppSync's
+# uploads only the three new files, finding the four uploaded ones byte for byte the same; that a phase-1 --apply
+# after phase 2 is refused before any change, naming --scope all, and its dry run plans nothing; that the code sink key is made and extended for 365 days, to the hour, within AppSync's
 # bounds (which the fake checks) though AppSync's clock is behind; that a rerun reuses a key that lives more than
 # KEY_REUSE_DAYS (120), the one the frozen script made too, extends one that lives fewer in place, and one that has
 # expired too, while AppSync keeps it, and makes a new one once AppSync has deleted it or refuses the extension
@@ -435,13 +435,23 @@ a_second_apply_makes_no_call_and_uploads_nothing() {
     (( STATUS == 0 )) && [[ "$OUT" == *"Done: 0 calls made."* ]] && ! calls | grep -q 'put-object' && no_identifiers
 }
 
-# The default scope after phase 2 changes nothing: the triggers' role keeps the phase-2 triggers' log groups.
-a_phase_1_rerun_after_phase_2_makes_no_call() {
-    run --apply --upload
-    if ! { (( STATUS == 0 )) && [[ "$OUT" == *"Done: 0 calls made."* ]] && ! calls | grep -q 'put-object'; }; then
-        echo "$OUT" | sed -nE 's/^  \+ //p'
-        return 1
-    fi
+# Phase 1 after phase 2: --apply refuses, the default scope and --scope email-alias alike, before its dry run, with
+# read calls only and nothing changed, naming the phase-2 resources it found and --scope all. A dry run says --apply
+# would refuse, and plans nothing: the triggers' role keeps the phase-2 triggers' log groups.
+PHASE_1_REFUSAL="Refusing: phase 2 exists here (ccit-ci-default ccit-ci-email-alias-codes ccit-ci-mfa-req-totp-sms and 15 more), and --scope email-alias, the default, is phase 1: it would make only ccit-ci-pre-sign-up and ccit-ci-discard-sender again, and give only ccit-ci-email-alias its invoke permissions. Run infra/ci/provision-ci.sh --apply --scope all instead."
+a_phase_1_apply_after_phase_2_is_refused() {
+    local before args
+    before=$(jq -S . "$FAKE_STATE")
+    for args in "--apply --upload" "--apply --scope email-alias"; do
+        # shellcheck disable=SC2086 # split on purpose: each case is a list of arguments
+        run $args
+        (( STATUS == 1 )) && only_reads && no_identifiers && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] \
+            && [[ "$OUT" == *"$PHASE_1_REFUSAL"* && "$OUT" != *"Checking with a dry run first"* ]] \
+            || { echo "$args: $OUT" | tail -5; return 1; }
+    done
+    run
+    (( STATUS == 0 )) && only_reads && [[ "$OUT" == *"Note: --apply would refuse: phase 2 exists here"* ]] \
+        && [[ "$OUT" == *"Planned: 0 calls."* ]] || { echo "$OUT" | tail -5; return 1; }
     no_identifiers && jq -e '.roles["ccit-ci-trigger-exec"].inline["ccit-ci-trigger-exec-policy"].Statement[0].Resource
         | any(contains(":log-group:/aws/lambda/ccit-ci-verify-auth-challenge:"))' "$FAKE_STATE" >/dev/null
 }
@@ -1238,8 +1248,8 @@ check "phase 1 --apply --upload makes only the Lite device-alias pool, its trigg
 check "phase 2 adds the default, alias-codes and MFA-required pools, narrowed, keeps phase 1, and uploads only the six new files" \
     phase_2_adds_the_default_pool_and_keeps_phase_1
 check "a second --apply --upload makes no call and uploads nothing" a_second_apply_makes_no_call_and_uploads_nothing
-check "a phase-1 --apply --upload after phase 2 makes no call: the triggers' role keeps every trigger's logs" \
-    a_phase_1_rerun_after_phase_2_makes_no_call
+check "a phase-1 --apply after phase 2 is refused, naming --scope all; its dry run plans nothing" \
+    a_phase_1_apply_after_phase_2_is_refused
 check "the code sink's API key near its expiry is extended in place, and the uploaded files stay valid" \
     an_api_key_near_its_expiry_is_extended_in_place
 check "a rerun reuses the key beyond the reuse threshold, extends it within it and once expired, and replaces a deleted one" \

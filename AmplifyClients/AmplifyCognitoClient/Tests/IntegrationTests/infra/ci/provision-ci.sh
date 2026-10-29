@@ -54,8 +54,8 @@
 #   It never updates a pool or a Lambda's code, so either is replaced: deleted by hand, after its tag check, then
 #   made again by infra/ci/provision-ci.sh --apply --scope all. Never a plain --apply: that is phase 1, which makes
 #   only pre-sign-up and the discard sender again, and adds invoke permissions for the device-alias pool only, while
-#   lambda-drift and the baseline check still pass. Do it while no CI run is going: until the rerun, the pools
-#   cannot use what was deleted.
+#   lambda-drift and the baseline check still pass; it refuses once any phase-2 ccit-ci- resource exists. Do it while
+#   no CI run is going: until the rerun, the pools cannot use what was deleted.
 #   - A Lambda, after a change to lambda/triggers/triggers.mjs, lambda/custom-sender or ci/lambda/* (lambda-drift
 #     tells a function whose deployed files are not this checkout's), or after the code sink's API is made again
 #     (ccit-ci-extend-api-key names the API it was made for): check that it carries
@@ -80,7 +80,9 @@
 #       --dry-run (the default) reads the account and prints every call it would make, identifiers masked;
 #       --apply makes them, then writes the client's configuration files into a new private directory (mode 600
 #       files); --upload also uploads them to <config>/auth/cognito-client-ci/: a key that exists is left alone when
-#       it holds the same bytes, and any other existing key refuses the whole upload. --scope picks the phase.
+#       it holds the same bytes, and any other existing key refuses the whole upload. --scope picks the phase;
+#       --apply refuses phase 1 (--scope email-alias, the default) once a phase-2 pool, Lambda, role or the code sink's
+#       API exists.
 #   infra/ci/provision-ci.sh snapshot
 #       read-only: hashes the metadata it reads of every existing resource of the kinds the script writes (snapshot.py
 #       lists them; AppSync schemas, resolvers and keys, and S3 objects' contents, are not read) into
@@ -273,6 +275,59 @@ require_recorded_region() {
         | select(startswith("arn:aws:logs:")) | split(":")[3]] | unique | join(" ")' <<<"$out")
     [[ -z "$regions" || "$regions" == "$CI_REGION" ]] \
         || die "the ccit-ci- resources are in $regions, not CCIT_CI_REGION's $CI_REGION. Set CCIT_CI_REGION to theirs."
+}
+
+# The phase-2 ccit-ci- resources that exist (PHASE_2_FOUND, their names, space-separated; "" when none): the pools,
+# functions and roles only --scope all makes, and the code sink's API. Read-only. It sets a variable rather than
+# printing, so that a refusal in a read ends the script (as zip_for).
+PHASE_2_POOL_KEYS=(default email-alias-codes mfa-req-totp-sms)
+PHASE_2_ROLES=(sender-exec appsync-codes cognito-sms reset-exec key-exec identity-authenticated identity-unauthenticated)
+PHASE_2_FOUND=""
+find_phase_2() {
+    local out key suffix
+    PHASE_2_FOUND=""
+    read_all_pages out UserPools cognito-idp list-user-pools
+    for key in "${PHASE_2_POOL_KEYS[@]}"; do
+        if jq -e --arg n "$(pool_name "$key")" 'any(.UserPools[]; .Name == $n)' <<<"$out" >/dev/null; then
+            PHASE_2_FOUND+=" $(pool_name "$key")"
+        fi
+    done
+    for suffix in "${PHASE_2_FUNCTIONS[@]}"; do
+        if read_aws_or_missing out ResourceNotFoundException lambda get-function-configuration \
+            --function-name "$(fn_name "$suffix")"; then
+            PHASE_2_FOUND+=" $(fn_name "$suffix")"
+        fi
+    done
+    for suffix in "${PHASE_2_ROLES[@]}"; do
+        if read_aws_or_missing out NoSuchEntity iam get-role --role-name "$(role_name "$suffix")"; then
+            PHASE_2_FOUND+=" $(role_name "$suffix")"
+        fi
+    done
+    read_aws out appsync list-graphql-apis
+    if jq -e --arg n "$API_NAME" 'any(.graphqlApis[]; .name == $n)' <<<"$out" >/dev/null; then
+        PHASE_2_FOUND+=" $API_NAME"
+    fi
+    PHASE_2_FOUND="${PHASE_2_FOUND# }"
+}
+
+# Phase 1 (--scope email-alias, the default) once phase 2 exists: --apply refuses, and a dry run says it would. Phase 1
+# makes only pre-sign-up and the discard sender again, and gives only the device-alias pool its invoke permissions,
+# so after a phase-2 resource was deleted by hand it would leave the other pools without what they name.
+refuse_phase_1_over_phase_2() {
+    local names count found why
+    [[ "$SCOPE" == "email-alias" ]] || return 0
+    find_phase_2
+    [[ -n "$PHASE_2_FOUND" ]] || return 0
+    read -r -a names <<<"$PHASE_2_FOUND"
+    count=${#names[@]}
+    names=("${names[@]:0:3}")
+    found="${names[*]}"
+    (( count <= 3 )) || found+=" and $((count - 3)) more"
+    why="phase 2 exists here ($found), and --scope email-alias, the default, is phase 1: it would make only \
+$(fn_name pre-sign-up) and $(fn_name discard-sender) again, and give only $(pool_name email-alias) its invoke \
+permissions. Run infra/ci/provision-ci.sh --apply --scope all instead."
+    [[ "$CI_MODE" != "apply" ]] || die "$why"
+    say "Note: --apply would refuse: $why"
 }
 
 # The account's headroom, read once; each create that needs it checks it (require_headroom), so a rerun that creates
@@ -1742,6 +1797,7 @@ teardown() {
 case "$COMMAND" in
     provision|teardown)
         require_recorded_region
+        [[ "$COMMAND" != "provision" ]] || refuse_phase_1_over_phase_2
         # --apply runs the whole dry run first, quietly, so a refusal anywhere (a ccit-ci- name without the tag, too
         # little quota, another region) stops it before its first change. An uploaded key with other contents is
         # not among them: the dry run has no file to compare it with, so --apply finds it, and refuses the whole
