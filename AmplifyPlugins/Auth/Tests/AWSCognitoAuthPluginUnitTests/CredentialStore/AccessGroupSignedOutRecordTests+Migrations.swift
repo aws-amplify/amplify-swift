@@ -67,7 +67,8 @@ extension AccessGroupSignedOutRecordTests {
     /// group, and still migrates it without one
     ///
     /// - Given: alice's login, and the plugin signed out, with the access group and without; then AWSMobileClient
-    ///   stores that still hold a login, as when the sign-out's clear of them failed, or a login was saved there since
+    ///   stores that still hold a login, as when the sign-out's clear of them failed, a login was saved there since, or
+    ///   they are another app's in the same group, named after its bundle ID, which this app's sign-out never clears
     /// - When:
     ///    - the plugin configures over them, as at the next launch, which runs the AWSMobileClient migration
     /// - Then:

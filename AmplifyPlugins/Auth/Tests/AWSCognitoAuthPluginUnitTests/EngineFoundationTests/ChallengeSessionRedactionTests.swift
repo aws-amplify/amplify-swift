@@ -202,6 +202,10 @@ final class ChallengeSessionRedactionTests: XCTestCase {
 
     /// Test that the error of an MFA setup the plugin cannot continue carries the challenge without its session
     ///
+    /// No sign-in reaches this throw today: the response that would carry such a challenge is refused earlier, with
+    /// "Cannot initiate MFA setup from available Types: …". The action is run on its own, so the text stays redacted
+    /// if a path to it appears.
+    ///
     /// - Given: an MFA setup challenge with a session and a username that offers only SMS, which the plugin does not
     ///   set up
     /// - When:
