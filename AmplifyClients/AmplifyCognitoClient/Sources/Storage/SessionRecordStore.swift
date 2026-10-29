@@ -81,8 +81,10 @@ struct SessionRecordStore: Sendable {
     /// keychain service: the plugin's own services for this store's pools (`legacyLoginServices(for:)`), then every
     /// other identity pool's `AWSCognitoCredentialsProvider` service of this app the keychain lists
     /// (`legacyLoginStores(for:bundleIdentifier:listServices:makeStore:)`). What `.default`'s sign-out and purge clear,
-    /// as the plugin's own sign-out does (`clearLegacyLogins()`). None unless given, so a store a test builds never
-    /// reaches them; `init(namespace:)` gives the real keychain's.
+    /// as the plugin's own sign-out does, and what the first guest the client fetches over `.default`'s signed-out
+    /// record clears again, with whatever AWSMobileClient or the AWS SDK for iOS saved there since the sign-out
+    /// (`clearLegacyLogins()`). None unless given, so a store a test builds never reaches them; `init(namespace:)` gives
+    /// the real keychain's.
     let legacyLoginStores: @Sendable () -> [any KeychainItemStoreBehavior]
 
     init(

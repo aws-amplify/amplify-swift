@@ -186,7 +186,10 @@ extension SessionCore {
     /// (`SessionRecordStore.clearLegacyLogins()`), before the guest is written. The signed-out record is what stops a
     /// plugin build from migrating a login whose clear failed at sign-out (or that a release clearing after the
     /// signed-out write left when stopped in between); a guest counts as no session there, so once the guest replaces
-    /// it only the clear protects the user. Never over an absent record: a client-only app that never signed in keeps
+    /// it only the clear protects the user. It is the sign-out's whole clear, so it also removes whatever AWSMobileClient
+    /// or the AWS SDK for iOS, used beside the client, saved in those services since the sign-out: an app's
+    /// `AWSCognitoCredentialsProvider` loses the identity ID and AWS credentials it cached for any identity pool, and
+    /// gets a new identity ID. Never over an absent record: a client-only app that never signed in keeps
     /// those logins for a plugin build to migrate. That includes a sidecar with no shared record beside it (a label set
     /// before anyone signed in), which reads as a signed-out row with no version: the plugin's record is absent there.
     private nonisolated func acquireGuestOnce() async throws -> GuestAcquisition {

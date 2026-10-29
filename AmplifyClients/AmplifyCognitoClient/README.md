@@ -1350,26 +1350,31 @@ Signing `.default` out or purging it (so also `deleteUser` and `clearFederationT
 clears the AWSMobileClient (Amplify v1) logins, as the Auth plugin's sign-out does, so a plugin build's migration
 can't bring an old login back over the signed-out one. Like the plugin's, it runs even when there was nothing to sign
 out. It runs before the signed-out login is written, or before a purge deletes it, so a write or delete that fails
-leaves no login behind. It is best effort: each service that fails to clear logs one warning under
-`AmplifyCognitoClient.SessionRecordStore`, and it never fails the sign-out or the purge. The services cleared follow
-the client's pools: the user pool's with a user pool, every identity pool's, and AWSMobileClient's own. The identity
-pools' services (`<bundle>.AWSCognitoCredentialsProvider.<identity pool ID>`) are the AWS SDK for iOS's
-`AWSCognitoCredentialsProvider` caches, which AWSMobileClient uses, whatever code wrote them. They are cleared for
-every identity pool the app's keychain holds one for, whatever the client is configured with: the client lists the
-app's keychain services to find them, and the plugin's sign-out clears only the configured one's. Left behind, such a
-login would come back under a plugin build as a guest holding the old user's identity and AWS credentials. If the
-listing fails, a warning says so and only the configured identity pool's is cleared. An app that still uses the AWS
-SDK for iOS's `AWSCognitoCredentialsProvider` loses its cached identity ID and AWS credentials for every identity
-pool on any `.default` sign-out or purge, and a guest there gets a new identity ID. The other two are cleared whole,
-as the plugin's sign-out clears them: the user pool service (`<bundle>.AWSCognitoIdentityUserPool`) holds the logins
-of every app client, and the AWSMobileClient service everything AWSMobileClient saved. The user pool service is
-cleared only when the client's configuration has a user pool: an identity-pool-only configuration leaves it, and any
-user pool login in it, which a plugin build with a user pool then migrates without AWS credentials, unless it is a
-plugin release later than 2.63.0 and finds the signed-out login under its own configuration, as when its
-rule copies the login on adding that user pool (see
-[The default session uses the plugin's saved login](#the-default-session-uses-the-plugins-saved-login)). The
-AWSMobileClient service is cleared on every `.default` sign-out or purge, a static one under another configuration
-than the app's included. Named sessions never touch those logins.
+leaves no login behind. The first `fetchAuthSession()` that saves a guest over `.default`'s signed-out login runs the
+same clear again, before it writes the guest: a plugin build reads a guest as no session, so a login the sign-out
+failed to clear would otherwise migrate over it. That second clear also removes whatever AWSMobileClient, or the AWS
+SDK for iOS used beside the client, saved in those services since the sign-out. It is best effort: each service that
+fails to clear logs one warning under `AmplifyCognitoClient.SessionRecordStore`, and it never fails the sign-out, the
+purge or the fetch. The services cleared follow the client's pools: the user pool's with a user pool, every identity
+pool's, and AWSMobileClient's own. The identity pools' services
+(`<bundle>.AWSCognitoCredentialsProvider.<identity pool ID>`) are the AWS SDK for iOS's `AWSCognitoCredentialsProvider`
+caches, which AWSMobileClient uses, whatever code wrote them. They are cleared for every identity pool the app's
+keychain holds one for, whatever the client is configured with: the client lists the app's keychain services to find
+them, and the plugin's sign-out clears only the configured one's. Left behind, such a login would come back under a
+plugin build as a guest holding the old user's identity and AWS credentials. If the listing fails, a warning says so
+and only the configured identity pool's is cleared. An app that still uses the AWS SDK for iOS's
+`AWSCognitoCredentialsProvider` loses its cached identity ID and AWS credentials for every identity pool on any
+`.default` sign-out or purge, and on the first `fetchAuthSession()` that saves a guest after one, and a guest there
+gets a new identity ID. So an identity ID the provider cached between the sign-out and that fetch, with an IoT policy
+attached to it, say, is gone after the fetch. The other two are cleared whole, as the plugin's sign-out clears them:
+the user pool service (`<bundle>.AWSCognitoIdentityUserPool`) holds the logins of every app client, and the
+AWSMobileClient service everything AWSMobileClient saved. The user pool service is cleared only when the client's
+configuration has a user pool: an identity-pool-only configuration leaves it, and any user pool login in it, which a
+plugin build with a user pool then migrates without AWS credentials, unless it is a plugin release later than 2.63.0
+and finds the signed-out login under its own configuration, as when its rule copies the login on adding that user pool
+(see [The default session uses the plugin's saved login](#the-default-session-uses-the-plugins-saved-login)). The
+AWSMobileClient service is cleared on every `.default` sign-out or purge, and at that guest
+fetch, a static one under another configuration than the app's included. Named sessions never touch those logins.
 
 ### Hosted-UI sign-out
 
@@ -1528,7 +1533,8 @@ Before you switch:
   take it too.
 - **Ship the plugin's migrations first.** The client does not migrate AWSMobileClient (Amplify v1) logins or move
   items between access groups: ship a plugin release first if your users may still need those migrations. It only
-  clears the AWSMobileClient logins when `.default` signs out or is purged, as the plugin's sign-out does.
+  clears the AWSMobileClient logins when `.default` signs out or is purged, as the plugin's sign-out does, and again
+  when `fetchAuthSession()` first saves a guest over `.default`'s signed-out login (see [Sign-out](#sign-out)).
 - **A migrated AWSMobileClient login without AWS credentials** fails the plugin's AWS credentials for a while. When
   the Auth plugin migrates an AWSMobileClient login that has user pool tokens but no saved AWS credentials (its user
   never fetched any, or an identity-pool-only client configuration's `.default` sign-out cleared them and kept the
@@ -1846,7 +1852,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | Events for `autoSignIn()` and `clearFederationToIdentityPool()` | No Hub event | `.signedIn` and `.signedOut` |
 | Storage failure | Reported as signed out | `.unavailable(reason)` / `storageUnavailable`, never signed out |
 | Another process's sign-in or sign-out in a shared access group | Seen at the next `fetchAuthSession` | Seen at the session's next refresh (`forceRefresh: true` forces one), or, by a signed-out session with an identity pool configured, at its next `fetchAuthSession` |
-| AWSMobileClient (Amplify v1) and access-group keychain migrations | Run when the plugin configures | Not run: ship a plugin release that migrates first. `.default`'s sign-out and purge clear the AWSMobileClient logins |
+| AWSMobileClient (Amplify v1) and access-group keychain migrations | Run when the plugin configures | Not run: ship a plugin release that migrates first. `.default`'s sign-out and purge clear the AWSMobileClient logins, and so does the first guest `fetchAuthSession()` saves after a sign-out |
 | Interrupted sign-in | Lost when the app closes | Saved, resumable for up to 15 minutes |
 | Hosted UI private session | `preferPrivateSession` defaults to `false` | `prefersEphemeralSession` defaults to `true` |
 | Hosted UI while another is up | Queues silently | `.browserBusy` by default; `.wait(timeout:)` to queue |

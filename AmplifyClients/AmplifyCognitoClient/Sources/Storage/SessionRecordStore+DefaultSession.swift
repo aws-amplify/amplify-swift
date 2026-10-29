@@ -48,7 +48,8 @@ import InternalAWSCognitoAuth
 // outlive a sign-out. They are cleared before the signed-out write or the purge's delete, so a failure there leaves
 // none. A signed-out record (`{"noCredentials":{}}`) stops that migration too, and the migration then clears them, but
 // only until a guest replaces it: the migration reads a guest as no session. So a guest the client fetches over a
-// signed-out record (`acquireGuestOnce`) clears them again first, best effort; over no record it leaves them, as a
+// signed-out record (`acquireGuestOnce`) clears them again first, best effort, with whatever AWSMobileClient or the AWS
+// SDK for iOS, used beside the client, saved in those services since the sign-out; over no record it leaves them, as a
 // client-only app that never signed in keeps them for a plugin build to migrate. A sidecar alone (a label set before
 // anyone signed in) is no record. The signed-out record may be the plugin's: under an access group, the plugin's own
 // sign-out of a login saves the same bytes (plugin releases after 2.63.0; earlier ones delete the record), so a guest
@@ -405,11 +406,12 @@ extension SessionRecordStore {
     /// configuration names would otherwise be migrated by a plugin build as a guest holding that user's identity and AWS
     /// credentials. Those services are the AWS SDK for iOS's `AWSCognitoCredentialsProvider` caches, whatever code
     /// wrote them, so an app still using that provider loses its cached identity ID and AWS credentials, and a guest
-    /// its identity. The user pool service is cleared whole, as the plugin's `ClearCredentialStore` clears it, only
+    /// its identity, at each clear: a sign-out, a purge, and the guest the client fetches over the signed-out record
+    /// after one. The user pool service is cleared whole, as the plugin's `ClearCredentialStore` clears it, only
     /// with a user pool configured: `<bundle>.AWSCognitoIdentityUserPool` holds every app client's logins
     /// (`<clientId>.*`).
     /// The AWSMobileClient service is cleared whole on any `.default` sign-out or purge, a static one under another
-    /// configuration than the app's included.
+    /// configuration than the app's included, and at that guest fetch.
     func clearLegacyLogins() {
         for store in legacyLoginStores() {
             do {
