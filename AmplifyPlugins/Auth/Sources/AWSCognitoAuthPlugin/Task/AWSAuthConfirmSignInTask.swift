@@ -58,7 +58,8 @@ final class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger, @unc
             throw invalidStateError
         }
 
-        try await analyzeCurrentStateAndCreateEvent(authNState, invalidStateError)
+        // Whether this call sent the answer, rather than finding a sign-in another app's reconcile adopted.
+        let answered = try await analyzeCurrentStateAndCreateEvent(authNState, invalidStateError)
 
         let stateSequences = await authStateMachine.listen()
         log.verbose("Waiting for response")
@@ -72,8 +73,13 @@ final class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger, @unc
                        return AuthSignInResult(nextStep: .done)
                    } else if case .error(let error) = authZState {
                        // The user pool accepted the answer but the identity pool step failed. The machine stays
-                       // here, so without this arm the call would never return.
+                       // here, so without this arm the call would never return. The tokens were never saved, so the
+                       // sign-in is cancelled, as `signIn` cancels it: the user ends signed out, never signed in
+                       // in memory only. A sign-in this call did not make is left as it is.
                        log.verbose("Authorization reached an error state \(error)")
+                       if answered {
+                           await waitForSignInCancel()
+                       }
                        throw error.authError
                    } else {
                        log.verbose("Signed In, waiting for authorization to complete")
@@ -97,13 +103,18 @@ final class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger, @unc
         throw invalidStateError
     }
 
-    fileprivate func analyzeCurrentStateAndCreateEvent(_ authNState: AuthenticationState, _ invalidStateError: AuthError) async throws {
+    /// Sends the answer for the sign-in step `authNState` waits on, and returns `true`; or returns `false` when the
+    /// state is already signed in and nothing is sent.
+    fileprivate func analyzeCurrentStateAndCreateEvent(
+        _ authNState: AuthenticationState,
+        _ invalidStateError: AuthError
+    ) async throws -> Bool {
         // The shared keychain reconcile may have adopted a sibling app's
         // sign-in while this flow was waiting for an answer. No event needs
         // to be dispatched; the listener loop in execute() observes
         // .signedIn and returns .done.
         if case .signedIn = authNState {
-            return
+            return false
         }
 
         guard case .signingIn(let signInState) = authNState else {
@@ -161,6 +172,26 @@ final class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger, @unc
             }
         default:
             throw invalidStateError
+        }
+        return true
+    }
+
+    /// Cancels the sign-in and waits until the user is signed out, as `AWSAuthSignInTask` does when a sign-in fails.
+    /// A sign-out that fails ends the wait too, so the caller still gets its error.
+    private func waitForSignInCancel() async {
+        await authStateMachine.send(AuthenticationEvent(eventType: .cancelSignIn))
+        let stateSequences = await authStateMachine.listen()
+        log.verbose("Wait for signIn to cancel")
+        for await state in stateSequences {
+            guard case .configured(let authenticationState, _, _) = state else {
+                continue
+            }
+            switch authenticationState {
+            case .signedOut, .signingOut(.error):
+                return
+            default:
+                continue
+            }
         }
     }
 

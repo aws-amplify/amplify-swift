@@ -864,30 +864,39 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest, @unchecked Senda
         }
     }
 
-    /// Test that confirmSignIn throws the identity pool's error when the user pool accepted the answer
+    /// Test that confirmSignIn throws the identity pool's error when the user pool accepted the answer, and leaves the
+    /// user signed out, as signIn does
     ///
     /// - Given: an auth plugin with mocked service. `RespondToAuthChallenge` accepts the code and answers tokens,
-    ///   and the identity pool's `GetId` fails with `InvalidParameterException`
+    ///   the identity pool's `GetId` fails with `InvalidParameterException`, and `RevokeToken` succeeds
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code, then getCurrentUser
+    ///    - I invoke confirmSignIn with a valid confirmation code
     /// - Then:
     ///    - confirmSignIn throws a `.service` error with `AWSCognitoAuthError.invalidParameter` as underlying error,
     ///      instead of never returning
-    ///    - the Auth call queued behind it returns too, each within the bound
+    ///    - the sign-in was cancelled as `signIn` cancels it: the tokens it got are revoked, the state machine is
+    ///      signed out, `fetchAuthSession` reports signed out and `getCurrentUser` throws `signedOut`
+    ///    - a second confirmSignIn throws `invalidState` without sending anything
     ///
-    func testConfirmSignInThrowsTheIdentityPoolsError() async {
+    func testConfirmSignInThrowsTheIdentityPoolsError() async throws {
         mockIdentity = MockIdentity(
             mockGetIdResponse: { _ in
                 throw AWSCognitoIdentity.InvalidParameterException(message: "Invalid parameter passed")
             },
             mockGetCredentialsResponse: getCredentials
         )
+        let answered = TestCounter()
+        let revoked = TestCounter()
         mockIdentityProvider = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                revoked.increment()
+                return RevokeTokenOutput()
+            },
             mockRespondToAuthChallengeResponse: { _ in
+                answered.increment()
                 return .testData()
             })
         let confirmed = expectation(description: "confirmSignIn returns")
-        let queued = expectation(description: "the queued call returns")
 
         Task {
             do {
@@ -902,10 +911,72 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest, @unchecked Senda
                 XCTFail("Should produce a service error instead of \(error)")
             }
             confirmed.fulfill()
-            _ = try? await self.plugin.getCurrentUser()
-            queued.fulfill()
+        }
+        await fulfillment(of: [confirmed], timeout: 5)
+
+        guard case .configured(.signedOut, _, _) = await plugin.authStateMachine.currentState else {
+            return XCTFail("the sign-in was not cancelled: \(await plugin.authStateMachine.currentState)")
+        }
+        XCTAssertEqual(revoked.get(), 1)
+        let session = try await plugin.fetchAuthSession(options: .init())
+        XCTAssertFalse(session.isSignedIn)
+        do {
+            let user = try await plugin.getCurrentUser()
+            XCTFail("getCurrentUser returned \(user.username)")
+        } catch AuthError.signedOut {
+        } catch {
+            XCTFail("getCurrentUser threw \(error), not signedOut")
+        }
+        do {
+            let result = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("a second confirmSignIn returned \(result)")
+        } catch AuthError.invalidState {
+        } catch {
+            XCTFail("a second confirmSignIn threw \(error), not invalidState")
+        }
+        XCTAssertEqual(answered.get(), 1)
+    }
+
+    /// Test that confirmSignIn leaves a sign-in it did not make as it is when its identity pool step has failed
+    ///
+    /// - Given: an auth plugin already signed in (a reconcile adopted a sibling app's sign-in while this flow was
+    ///   waiting for an answer) whose authorization is in an error state
+    /// - When:
+    ///    - I invoke confirmSignIn
+    /// - Then:
+    ///    - it throws that error without sending anything, and the user stays signed in: nothing is revoked
+    ///
+    func testConfirmSignInLeavesAnAdoptedSignInWhoseAuthorizationFailed() async throws {
+        let revoked = TestCounter()
+        let userPool = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                revoked.increment()
+                return RevokeTokenOutput()
+            },
+            mockRespondToAuthChallengeResponse: { _ in
+                XCTFail("Cognito service should not be called when already signed in")
+                return .testData()
+            })
+        let signedInPlugin = configureCustomPluginWith(
+            userPool: { userPool },
+            initialState: .configured(
+                .signedIn(.testData),
+                .error(.sessionError(.notAuthorized, .testData)),
+                .notStarted
+            )
+        )
+
+        do {
+            let result = try await signedInPlugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should not succeed, got \(result)")
+        } catch is AuthError {
+        } catch {
+            XCTFail("Should produce an AuthError instead of \(error)")
         }
 
-        await fulfillment(of: [confirmed, queued], timeout: 5, enforceOrder: true)
+        guard case .configured(.signedIn, _, _) = await signedInPlugin.authStateMachine.currentState else {
+            return XCTFail("the adopted sign-in was cancelled: \(await signedInPlugin.authStateMachine.currentState)")
+        }
+        XCTAssertEqual(revoked.get(), 0)
     }
 }
