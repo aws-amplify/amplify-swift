@@ -16,6 +16,7 @@ import hashlib
 import json
 import os
 import sys
+import time
 import uuid
 
 STATE = os.environ["FAKE_STATE"]
@@ -289,15 +290,24 @@ def handle(state, service, verb, o, data):
             return {"resolver": data}
         if verb == "list-api-keys":
             return {"apiKeys": api["keys"]}
+        if verb in ("create-api-key", "update-api-key"):
+            # As AppSync: 1 to 365 days from the call, stored rounded down to the hour. FAKE_APPSYNC_CLOCK_BEHIND
+            # (seconds) sets AppSync's clock behind the caller's.
+            expires = int(one(o, "expires") if verb == "create-api-key" else data["expires"])
+            now = time.time() - int(os.environ.get("FAKE_APPSYNC_CLOCK_BEHIND", "0"))
+            if not now + 86400 <= expires <= now + 365 * 86400:
+                raise Fail("ApiKeyValidityOutOfBoundsException", "API key must be valid for a minimum of 1 day and a "
+                           "maximum of 365 days.")
+            expires -= expires % 3600
         if verb == "create-api-key":
-            key = {"id": "da2-" + new_id(s, "apikey"), "description": one(o, "description"), "expires": int(one(o, "expires"))}
+            key = {"id": "da2-" + new_id(s, "apikey"), "description": one(o, "description"), "expires": expires}
             api["keys"].append(key)
             return {"apiKey": key}
         if verb == "update-api-key":
             key = next((k for k in api["keys"] if k["id"] == data["id"]), None)
             if key is None:
                 raise Fail("NotFoundException", "API key not found")
-            key["expires"] = int(data["expires"])
+            key["expires"] = expires
             return {"apiKey": key}
         if verb == "delete-graphql-api":
             del apis[api_id]

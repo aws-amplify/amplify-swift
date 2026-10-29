@@ -23,11 +23,13 @@
 # rerun over phase 2 as it was first applied (the script at 80712afe4 when git has it, else skipped) plans and makes
 # only the alias-codes and MFA-required pools and what they need, updates only the script's own resources, and
 # uploads only the three new files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after
-# phase 2 makes no call; that a rerun reuses a code sink key that lives more than KEY_REUSE_DAYS, extends one that
-# lives fewer in place, and makes a new one once it has expired, and that then the uploaded files that name the old
-# key are named, and --apply refuses at the end, until they are replaced; that the AppSync headroom is checked only
-# by a run that creates the API, against CCIT_CI_APPSYNC_API_QUOTA; that a dry run refuses a custom sender to build without npm,
-# and a failed npm ci stops --apply before the sender; that lambda-drift downloads each deployed zip and tells a
+# phase 2 makes no call; that the code sink key is made and extended for 365 days, to the hour, within AppSync's
+# bounds (which the fake checks) though AppSync's clock is behind; that a rerun reuses a key that lives more than
+# KEY_REUSE_DAYS (120), the one the frozen script made too, extends one that lives fewer in place, and makes a new
+# one once it has expired, and that then the uploaded files that name the old key are named, and --apply refuses at
+# the end, until they are replaced; that the AppSync headroom is checked only by a run that creates the API, against
+# CCIT_CI_APPSYNC_API_QUOTA; that a dry run refuses a custom sender to build without npm, and a failed npm ci stops
+# --apply before the sender; that lambda-drift downloads each deployed zip and tells a
 # Lambda whose files are not this checkout's, which --record --accept-deployed alone accepts; that snapshot and
 # verify-unchanged ignore a user count, and fail on a changed, removed or foreign added resource (a foreign role's
 # inline policy, key policy, parameter or log group included), but not on a ccit-ci- addition or change, nor on a
@@ -54,6 +56,16 @@ cat > "$BIN/npm" <<'EOF'
 mkdir -p node_modules/fake && echo 'export {};' > node_modules/fake/index.js
 EOF
 chmod +x "$BIN/npm"
+# A `date` whose epoch seconds (`date +%s`, the script's clock) run FAKE_DATE_OFFSET seconds ahead, when set.
+cat > "$BIN/date" <<'EOF'
+#!/usr/bin/env bash
+if [[ -n "${FAKE_DATE_OFFSET:-}" && "$*" == "+%s" ]]; then
+    echo $(( $(/bin/date +%s) + FAKE_DATE_OFFSET ))
+else
+    exec /bin/date "$@"
+fi
+EOF
+chmod +x "$BIN/date"
 export PATH="$BIN:$PATH" FAKE_STATE="$WORK/state.json" FAKE_LOG="$WORK/calls.log" TMPDIR="$WORK/tmp"
 export AWS_CONFIG_FILE=/dev/null AWS_SHARED_CREDENTIALS_FILE=/dev/null CCIT_CI_DISCOVERY_DIR="$WORK/disc"
 export COGNITO_CLIENT_INTEG_CI_CONFIG_URL="s3://fake-ci-bucket.example/v2/testconfiguration"
@@ -411,8 +423,8 @@ an_api_key_near_its_expiry_is_extended_in_place() {
     jq --argjson e "$soon" '(.apis[] | .keys[]).expires = $e' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
     run --scope all --upload
     (( STATUS == 0 )) && only_reads && no_identifiers \
-        && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "extend the tests' read-only API key to 364 days from now (the same key)" ]] \
-        && [[ "$OUT" == *"The code sink's API key expires on $(days_from_now 364) after this run."* ]] \
+        && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "extend the tests' read-only API key to 365 days from now (the same key)" ]] \
+        && [[ "$OUT" == *"The code sink's API key expires on $(new_key_date) after this run."* ]] \
         || { echo "$OUT" | sed -nE 's/^  \+ //p'; return 1; }
     run --apply --scope all --upload
     (( STATUS == 0 )) && [[ "$OUT" == *"Done: 1 calls made."* ]] && ! calls | grep -qE 'put-object|create-api-key' \
@@ -427,7 +439,7 @@ an_api_key_near_its_expiry_is_extended_in_place() {
 }
 
 # A rerun at the edges of the reuse threshold (dry runs only; the key's expiry is put back after): a key that lives
-# KEY_REUSE_DAYS (31) more days and 10 minutes is reused, one 10 minutes short of them is extended, so is one an hour
+# KEY_REUSE_DAYS (120) more days and 10 minutes is reused, one 10 minutes short of them is extended, so is one an hour
 # from its expiry, and an expired one is replaced by a new key.
 a_rerun_reuses_or_extends_the_key_at_the_threshold() {
     local before now case expires plan
@@ -435,16 +447,16 @@ a_rerun_reuses_or_extends_the_key_at_the_threshold() {
     [[ "$(jq length <<<"$before")" == 1 ]] || { echo "not one key: $before"; return 1; }
     now=$(date +%s)
     # <expiry, from now>:<what the rerun plans>
-    for case in $((31 * 86400 + 600)):reuse $((31 * 86400 - 600)):extend 3600:extend -1:create; do
+    for case in $((120 * 86400 + 600)):reuse $((120 * 86400 - 600)):extend 3600:extend -1:create; do
         expires=$(( now + ${case%%:*} ))
         jq --argjson e "$expires" '(.apis[] | .keys[]).expires = $e' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
         run --scope all
         plan=$(sed -nE 's/^  \+ //p' <<<"$OUT")
         (( STATUS == 0 )) && only_reads || { echo "$case: $OUT" | tail -5; return 1; }
         case "${case##*:}" in
-            extend) [[ "$plan" == "extend the tests' read-only API key to 364 days from now (the same key)" ]] ;;
-            reuse) [[ -z "$plan" && "$OUT" == *"= the code sink API key (lives more than 31 more days)"* ]] ;;
-            create) [[ "$plan" == "create the tests' read-only API key, for 364 days" ]] ;;
+            extend) [[ "$plan" == "extend the tests' read-only API key to 365 days from now (the same key)" ]] ;;
+            reuse) [[ -z "$plan" && "$OUT" == *"= the code sink API key (lives more than 120 more days)"* ]] ;;
+            create) [[ "$plan" == "create the tests' read-only API key, for 365 days" ]] ;;
         esac || { echo "$case: $plan"; return 1; }
     done
     jq --argjson e "$before" '(.apis[] | .keys[]).expires = $e[0]' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
@@ -452,6 +464,48 @@ a_rerun_reuses_or_extends_the_key_at_the_threshold() {
 }
 
 days_from_now() { python3 -c 'import datetime,sys;print(datetime.datetime.now(datetime.timezone.utc).date() + datetime.timedelta(days=int(sys.argv[1])))' "$1"; }
+
+# The UTC date a key made or extended now expires on: 365 days from now, less the 10-minute clock allowance, rounded
+# down to the hour.
+new_key_date() { python3 -c 'import datetime,time;e=(int(time.time())+365*86400-600)//3600*3600;print(datetime.datetime.fromtimestamp(e,datetime.timezone.utc).date())'; }
+
+# The key is made and extended for 365 days, AppSync's maximum, to the hour, and within AppSync's bounds (which the
+# fake checks, as AppSync does) though AppSync's clock is 5 minutes behind the script's. The script's clock is set
+# (through the fake `date`) to 1 minute past an hour, where rounding down alone would leave no room for that. The
+# state is put back after.
+the_key_lives_365_days_within_appsyncs_bounds() {
+    local saved="$WORK/key-bounds-state.json" offset now case expires
+    cp "$FAKE_STATE" "$saved"
+    for case in extend create; do
+        if [[ "$case" == extend ]]; then
+            jq --argjson e "$(( $(date +%s) + 10 * 86400 ))" '(.apis[] | .keys[]).expires = $e' "$FAKE_STATE" > "$WORK/s"
+        else
+            jq '(.apis[] | .keys) = []' "$FAKE_STATE" > "$WORK/s"
+        fi
+        mv "$WORK/s" "$FAKE_STATE"
+        now=$(date +%s)
+        # The script's clock: 60 s past the next hour; AppSync's: 300 s behind it.
+        offset=$(( 3600 - now % 3600 + 60 ))
+        : > "$FAKE_LOG"
+        STATUS=0
+        OUT=$(FAKE_DATE_OFFSET="$offset" FAKE_APPSYNC_CLOCK_BEHIND=$(( 300 - offset )) "$SCRIPT" --apply --scope all 2>&1) \
+            || STATUS=$?
+        expires=$(jq '[.apis[] | .keys[]] | sort_by(.expires) | last | .expires' "$FAKE_STATE")
+        # Made or extended (a new key's run then refuses at the end, over the uploaded files that name the old one).
+        [[ "$OUT" == *"+ "*"read-only API key"*"365 days"* && "$OUT" != *ApiKeyValidityOutOfBounds* ]] \
+            && (( expires % 3600 == 0 )) \
+            && (( expires > now + offset + 365 * 86400 - 3600 - 600 && expires <= now + offset + 365 * 86400 - 600 )) \
+            || { echo "$case: $expires"; echo "$OUT" | tail -5; return 1; }
+        if [[ "$case" == extend ]]; then (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }; fi
+    done
+    # And the fake refuses what AppSync refuses: more than 365 days from its own clock.
+    jq '(.apis[] | .keys) = []' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    : > "$FAKE_LOG"
+    STATUS=0
+    OUT=$(FAKE_APPSYNC_CLOCK_BEHIND=4500 "$SCRIPT" --apply --scope all 2>&1) || STATUS=$?
+    cp "$saved" "$FAKE_STATE"
+    (( STATUS == 1 )) && [[ "$OUT" == *ApiKeyValidityOutOfBoundsException* ]] || { echo "$OUT" | tail -5; return 1; }
+}
 
 # An expired key cannot be extended: --apply makes a new one, but the two uploaded files that name the old key are
 # never overwritten: the dry run names them, --apply says how to replace them and refuses at the end, its upload
@@ -464,10 +518,10 @@ an_expired_key_needs_the_uploads_that_name_it_replaced() {
         && mv "$WORK/s" "$FAKE_STATE"
     run --scope all
     (( STATUS == 0 )) && only_reads && no_identifiers \
-        && [[ "$OUT" == *"The code sink's API key expires on $(days_from_now 364) after this run, but the uploaded auth/cognito-client-ci/ files $stale"* ]] \
+        && [[ "$OUT" == *"The code sink's API key expires on $(new_key_date) after this run, but the uploaded auth/cognito-client-ci/ files $stale"* ]] \
         || { echo "$OUT" | tail -8; return 1; }
     run --apply --scope all --upload
-    (( STATUS == 1 )) && [[ "$OUT" == *"+ create the tests' read-only API key, for 364 days"* ]] \
+    (( STATUS == 1 )) && [[ "$OUT" == *"+ create the tests' read-only API key, for 365 days"* ]] \
         && [[ "$OUT" == *"after this run, but the uploaded auth/cognito-client-ci/ files $stale"* ]] \
         && [[ "$OUT" == *"purpose=amplify-cognito-client-integ"*"--apply --scope all --upload"* ]] \
         && [[ "$OUT" == *"than the one that expires on"*"go on using the other key"* ]] \
@@ -502,7 +556,8 @@ a_key_with_other_contents_refuses_the_upload() {
 
 # What a rerun over phase 2 as first applied (80712afe4) plans: the alias-codes and MFA-required pools and what they
 # need, the updates to the script's own resources that name them (the SMS role's trust opened while the MFA-required
-# pool is made, then narrowed), and the three new files.
+# pool is made, then narrowed), and the three new files. The code sink key that script made (for 364 days) is reused,
+# as the live one is: it lives more than KEY_REUSE_DAYS.
 RERUN_PLAN="create log group /aws/lambda/ccit-ci-pre-sign-up-confirmable
 keep /aws/lambda/ccit-ci-pre-sign-up-confirmable for 7 days
 open the key policy of alias/ccit-ci-senders to the account's pools while a ccit-ci- pool is made
@@ -563,6 +618,7 @@ a_rerun_over_phase_2_as_applied_adds_only_the_alias_codes_pool() {
         && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] \
         && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "$RERUN_PLAN" ]] \
         && [[ "$OUT" == *"Planned: 24 calls. Nothing was changed."* ]] \
+        && [[ "$OUT" == *"= the code sink API key (lives more than 120 more days)"* ]] \
         || { echo "$OUT" | sed -nE 's/^  \+ //p'; return 1; }
     before=$(plugin_part)
     run --apply --scope all --upload
@@ -1055,7 +1111,7 @@ appsync_headroom_is_checked_only_when_the_api_is_created() {
         && mv "$WORK/s" "$FAKE_STATE"
     run --apply --scope all
     (( STATUS == 0 )) && [[ "$OUT" == *"AppSync APIs 23 of 25"* && "$OUT" == *"Done: 1 calls made."* ]] \
-        && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "extend the tests' read-only API key to 364 days from now (the same key)" ]] \
+        && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "extend the tests' read-only API key to 365 days from now (the same key)" ]] \
         || { echo "$OUT" | tail -8; return 1; }
     fresh_state
     add_foreign_apis 23
@@ -1113,6 +1169,8 @@ check "the code sink's API key near its expiry is extended in place, and the upl
     an_api_key_near_its_expiry_is_extended_in_place
 check "a rerun reuses the key beyond the reuse threshold, extends it within it, and replaces an expired one" \
     a_rerun_reuses_or_extends_the_key_at_the_threshold
+check "the key is made and extended for 365 days, to the hour, within AppSync's bounds with its clock behind" \
+    the_key_lives_365_days_within_appsyncs_bounds
 check "an expired key's replacement refuses --apply until the uploaded files that name the old key are replaced" \
     an_expired_key_needs_the_uploads_that_name_it_replaced
 check "a key with other contents refuses the whole upload" a_key_with_other_contents_refuses_the_upload
