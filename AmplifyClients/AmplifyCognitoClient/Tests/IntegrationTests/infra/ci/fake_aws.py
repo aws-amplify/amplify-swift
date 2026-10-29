@@ -12,6 +12,7 @@ identifier is a placeholder. Installed by the test as `aws`, first on PATH; it n
 
 import base64
 import fcntl
+import fnmatch
 import hashlib
 import json
 import os
@@ -100,6 +101,41 @@ def page(o, field, items):
     if start + size < len(items):
         result["NextToken"] = str(start + size)
     return result
+
+
+def as_list(value):
+    return value if isinstance(value, list) else [] if value is None else [value]
+
+
+def require_sms_trust(state, sms, pool_arn):
+    """As Cognito, which assumes a pool's SMS role (SmsConfiguration.SnsCallerArn) when the pool is made or its SMS
+    MFA set: refuses unless one of the role's trust statements lets cognito-idp.amazonaws.com assume it for this pool,
+    with the pool's external id. A Condition the fake does not know refuses too."""
+    role = state.get("roles", {}).get(sms["SnsCallerArn"].rsplit("/", 1)[-1])
+    statements = as_list(role["Role"]["AssumeRolePolicyDocument"].get("Statement")) if role else []
+    for statement in statements:
+        if statement.get("Effect") != "Allow" or "sts:AssumeRole" not in as_list(statement.get("Action")):
+            continue
+        if "cognito-idp.amazonaws.com" not in as_list((statement.get("Principal") or {}).get("Service")):
+            continue
+        condition = statement.get("Condition", {})
+        if set(condition) - {"StringEquals", "ArnEquals", "ArnLike"}:
+            continue
+        equals = condition.get("StringEquals", {})
+        if set(equals) - {"sts:ExternalId", "aws:SourceAccount"}:
+            continue
+        if "sts:ExternalId" in equals and sms.get("ExternalId") not in as_list(equals["sts:ExternalId"]):
+            continue
+        if "aws:SourceAccount" in equals and state["account"] not in as_list(equals["aws:SourceAccount"]):
+            continue
+        if "ArnEquals" in condition and pool_arn not in as_list(condition["ArnEquals"].get("aws:SourceArn")):
+            continue
+        if "ArnLike" in condition and not any(fnmatch.fnmatchcase(pool_arn, pattern)
+                                              for pattern in as_list(condition["ArnLike"].get("aws:SourceArn"))):
+            continue
+        return
+    raise Fail("InvalidSmsRoleTrustRelationshipException",
+               "Role does not have a trust relationship allowing Cognito to assume the role.")
 
 
 def handle(state, service, verb, o, data):
@@ -485,6 +521,9 @@ def handle(state, service, verb, o, data):
                                          for p in pools.values()])
         if verb == "create-user-pool":
             pool_id = f"{region}_Fake{new_id(s, 'pool', 6)}"
+            if data.get("SmsConfiguration"):
+                arn = f"arn:aws:cognito-idp:{region}:{acct}:userpool/{pool_id}"
+                require_sms_trust(s, data["SmsConfiguration"], arn)
             pool = {k: v for k, v in data.items() if k != "PoolName"}
             pool.update({"Id": pool_id, "Name": data["PoolName"], "EstimatedNumberOfUsers": 0,
                          "LastModifiedDate": "2026-10-05T00:00:00Z", "CreationDate": "2026-10-05T00:00:00Z",
@@ -500,6 +539,10 @@ def handle(state, service, verb, o, data):
         if verb == "get-user-pool-mfa-config":
             return pool["mfa"]
         if verb == "set-user-pool-mfa-config":
+            sms = (data.get("SmsMfaConfiguration") or {}).get("SmsConfiguration")
+            if sms:
+                arn = pool["UserPool"].get("Arn", f"arn:aws:cognito-idp:{region}:{acct}:userpool/{pool_id}")
+                require_sms_trust(s, sms, arn)
             pool["mfa"] = {k: v for k, v in data.items() if k != "UserPoolId"}
             return pool["mfa"]
         if verb == "list-user-pool-clients":

@@ -43,7 +43,9 @@
 # region is refused (lambda-drift too, which there would find nothing to compare); that a pool made again gets its
 # Lambdas' invoke permissions replaced; that replace takes only the script's pools, is a dry run by default, refuses
 # an untagged pool and, through a fake gh, a CI run that reads the pools, and with --apply deletes the pool and what
-# names it, then reruns --scope all (phase 1 where phase 2 does not exist); and that the library's
+# names it, then reruns --scope all (phase 1 where phase 2 does not exist); that the fake, as Cognito, makes an SMS
+# pool only when the SNS caller role's trust admits it, so that an SMS pool made again (no git history needed) shows
+# the trust opened while it is made and narrowed after; and that the library's
 # guards refuse a name that is not ccit-ci- and a mutating call in a dry run.
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -72,6 +74,13 @@ else
 fi
 EOF
 chmod +x "$BIN/date"
+# A `sleep` that returns at once when FAKE_NO_SLEEP is set, so that a run retrying a refusal it waits out (as a role
+# Cognito cannot assume yet) fails in seconds.
+cat > "$BIN/sleep" <<'EOF'
+#!/usr/bin/env bash
+[[ -n "${FAKE_NO_SLEEP:-}" ]] || exec /bin/sleep "$@"
+EOF
+chmod +x "$BIN/sleep"
 # A fake gh, for replace's check that no CI run is going: FAKE_GH unset, no run is going; "dispatched", a run of
 # integ_test_auth_client.yml is; "called", a queued run of integ_test.yml has a Cognito client job queued; "other",
 # a running run of integ_test.yml has only other jobs going; "broken", gh cannot list the runs.
@@ -341,7 +350,9 @@ mfa_required_pool_is_right() {
         and ($p[0].mfa.MfaConfiguration == "ON") and ($p[0].mfa.SoftwareTokenMfaConfiguration.Enabled == true)
         and ([$p[0].clients[] | .ClientName] == ["ccit-ci-mfa-req-totp-sms-ci"])
         and ([$p[0].clients[] | .ExplicitAuthFlows] == [$t[0].appClients.ci.ExplicitAuthFlows])
-        and ([.lambdas["ccit-ci-discard-sender", "ccit-ci-pre-sign-up"].policy[].Sid] | index("cognito-mfa-req-totp-sms") != null)' \
+        and ([.lambdas["ccit-ci-discard-sender", "ccit-ci-pre-sign-up"]
+              | [.policy[] | select(.Sid == "cognito-mfa-req-totp-sms") | .Condition.ArnLike["AWS:SourceArn"]]]
+             == [[$p[0].UserPool.Arn], [$p[0].UserPool.Arn]])' \
         "$FAKE_STATE" >/dev/null || return 1
     jq -e '(.auth.mfa_configuration == "REQUIRED") and (.auth.mfa_methods == ["SMS", "TOTP"]) and (.data == null)
         and (.custom == null) and (.auth.identity_pool_id == null)' "$file" >/dev/null || return 1
@@ -1075,6 +1086,65 @@ replace_over_phase_1_reruns_phase_1() {
         || { echo "$out" | tail -8; return 1; }
 }
 
+# The fake, as Cognito, makes a pool that names the SNS caller role, or sets its SMS MFA, only when the role's trust
+# admits that pool, with its external id: a trust narrowed to other pools, or another external id, is refused.
+the_fake_checks_the_sms_roles_trust() {
+    local pool role="ccit-ci-cognito-sms" external status out id opened="$WORK/opened.json"
+    external=$(jq -r --arg r "$role" '.roles[$r].Role.AssumeRolePolicyDocument.Statement[0].Condition.StringEquals["sts:ExternalId"]' "$FAKE_STATE")
+    for id in "$external" not-the-external-id; do
+        jq -n --arg a "arn:aws:iam::$ACCOUNT:role/$role" --arg x "$id" '{PoolName: "ccit-ci-trust-probe",
+            SmsConfiguration: {SnsCallerArn: $a, ExternalId: $x, SnsRegion: "us-east-1"}}' > "$WORK/sms-pool-$id.json"
+    done
+    # The trust names the default and MFA-required pools only: no new pool is admitted, whatever its external id.
+    for id in "$external" not-the-external-id; do
+        status=0
+        out=$(aws --region us-east-1 --output json cognito-idp create-user-pool --cli-input-json "file://$WORK/sms-pool-$id.json" 2>&1) \
+            || status=$?
+        (( status == 254 )) && [[ "$out" == *"(InvalidSmsRoleTrustRelationshipException)"* ]] || { echo "create: $out"; return 1; }
+    done
+    # Its own pools are: their SMS MFA can be set again.
+    pool=$(jq -r '.pools[] | select(.UserPool.Name == "ccit-ci-mfa-req-totp-sms") | .UserPool.Id' "$FAKE_STATE")
+    jq --arg id "$pool" '.pools[$id].mfa + {UserPoolId: $id}' "$FAKE_STATE" > "$WORK/sms-mfa.json"
+    aws --region us-east-1 --output json cognito-idp set-user-pool-mfa-config --cli-input-json "file://$WORK/sms-mfa.json" \
+        >/dev/null || { echo "set-user-pool-mfa-config was refused"; return 1; }
+    # Opened to the account's pools, as the script opens it while it makes one: a new pool is admitted, with the
+    # role's external id only.
+    jq --arg r "$role" --arg p "arn:aws:cognito-idp:us-east-1:$ACCOUNT:userpool/*" \
+        '.roles[$r].Role.AssumeRolePolicyDocument.Statement[0].Condition |= (del(.ArnEquals) + {ArnLike: {"aws:SourceArn": $p}})' \
+        "$FAKE_STATE" > "$opened"
+    if FAKE_STATE="$opened" aws --region us-east-1 --output json cognito-idp create-user-pool \
+        --cli-input-json "file://$WORK/sms-pool-not-the-external-id.json" >/dev/null 2>&1; then
+        echo "another external id was admitted"
+        return 1
+    fi
+    FAKE_STATE="$opened" aws --region us-east-1 --output json cognito-idp create-user-pool \
+        --cli-input-json "file://$WORK/sms-pool-$external.json" >/dev/null
+}
+
+# The MFA-required pool deleted by hand (as a replace does) while the default pool stays: the rerun opens the SNS
+# caller role's trust to the account's pools while it makes the pool again, which the fake (as Cognito) requires,
+# then narrows it to the two SMS pools. A run that left the trust narrowed to the default pool would have its create
+# refused (retried, then failed). This needs no git history.
+a_remade_sms_pool_gets_the_sms_roles_trust() {
+    local before arn
+    before=$(plugin_part)
+    jq 'del(.pools[] | select(.UserPool.Name == "ccit-ci-mfa-req-totp-sms"))
+        | del(.s3["v2/testconfiguration/auth/cognito-client-ci/ccit-ci-mfa-req-totp-sms-amplify_outputs.json"])' \
+        "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    : > "$FAKE_LOG"
+    STATUS=0
+    OUT=$(FAKE_NO_SLEEP=1 "$SCRIPT" --apply --scope all --upload 2>&1) || STATUS=$?
+    (( STATUS == 0 )) && [[ "$(plugin_part)" == "$before" ]] && no_identifiers \
+        && [[ "$OUT" == *"+ open the trust of ccit-ci-cognito-sms to the account's pools while a ccit-ci- SMS pool is made"*"+ create user pool ccit-ci-mfa-req-totp-sms"*"+ set the trust of ccit-ci-cognito-sms to the ccit-ci- SMS pools"* ]] \
+        && [[ "$(calls | grep -c 'cognito-idp create-user-pool$')" == 1 ]] || { echo "$OUT" | tail -8; return 1; }
+    CONFIG=$(config_dir_of "$OUT")
+    mfa_required_pool_is_right || return 1
+    arn=$(jq -c '[.pools[] | select(.UserPool.Name == "ccit-ci-default" or .UserPool.Name == "ccit-ci-mfa-req-totp-sms")
+        | .UserPool.Arn] | sort' "$FAKE_STATE")
+    jq -e --argjson a "$arn" '.roles["ccit-ci-cognito-sms"].Role.AssumeRolePolicyDocument.Statement[0].Condition
+        | (.ArnEquals["aws:SourceArn"] == $a) and (has("ArnLike") | not)' "$FAKE_STATE" >/dev/null
+}
+
 teardown_is_a_dry_run_by_default() {
     local before
     before=$(jq -S . "$FAKE_STATE")
@@ -1430,6 +1500,10 @@ check "snapshot: a Lambda's RuntimeVersionConfig, which Lambda moves by itself, 
     snapshot_ignores_the_runtime_version
 check "the Cognito lists are read to their last page: a ccit-ci- pool on page 2 is found, snapshotted, torn down" \
     lists_are_read_to_their_last_page
+check "the fake makes an SMS pool, or sets its SMS MFA, only when the SNS caller role's trust admits it" \
+    the_fake_checks_the_sms_roles_trust
+check "an SMS pool made again opens the SNS caller role's trust while it is made, then narrows it (no git history)" \
+    a_remade_sms_pool_gets_the_sms_roles_trust
 check "replace takes only the script's pools, refusing any other name before any AWS call" \
     replace_takes_only_the_scripts_pools
 check "replace is a dry run by default, and refuses while a CI run that reads the pools is going" \
