@@ -403,7 +403,7 @@ actor SystemSheetLock {
                     continuation.resume(throwing: AuthClientError.browserBusy(
                         heldBy: holding,
                         requestedBy: session,
-                        reason: holding == session ? .stillClosing : .alreadyQueued
+                        reason: holding == session ? .stillClosingWithCallQueued : .alreadyQueued
                     ))
                     return
                 }

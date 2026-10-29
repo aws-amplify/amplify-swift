@@ -285,7 +285,8 @@ final class WebUISignInTests: XCTestCase {
     /// - When: "work" asks again, with `.fail` and with `.wait(timeout:)`
     /// - Then:
     ///    - each second call is refused at once with `browserBusy` naming "work", saying its previous sheet is still
-    ///      closing, not that "work" is waiting for a sheet "work" holds
+    ///      closing, not that "work" is waiting for a sheet "work" holds, and suggesting to wait for the queued retry,
+    ///      which starts by itself, not to retry
     ///    - once the old browser closes, the retry is shown and signs in; the engine was called twice
     func testADoubleTapQueuedBehindItsOwnClosingSheetSaysItIsStillClosing() async throws {
         let client = try client(work)
@@ -306,6 +307,12 @@ final class WebUISignInTests: XCTestCase {
             let error = await authClientError { try await startSignIn(client, options: WebUIOptions(whenBrowserBusy: policy)).value(within: 10) }
             XCTAssertEqual(error?.kind, .browserBusy(holder: work), "\(policy)")
             XCTAssertEqual(error?.errorDescription, "Session \"work\"'s previous system sheet is still closing.", "\(policy)")
+            XCTAssertEqual(
+                error?.recoverySuggestion,
+                "The earlier call is queued and starts by itself once the sheet has closed: wait for it to finish, "
+                    + "or cancel it. One session queues for the sheet at most once.",
+                "\(policy)"
+            )
         }
 
         browser.finish(.failure(CancellationError()))

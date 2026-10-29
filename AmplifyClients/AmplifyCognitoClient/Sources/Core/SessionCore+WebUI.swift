@@ -724,7 +724,7 @@ extension SessionCore {
     /// | The previous call | Reason | `holder` |
     /// |---|---|---|
     /// | queued behind another session's sheet | `.alreadyQueued` | the session holding it |
-    /// | queued behind this session's own closing sheet (a retry after a cancel) | `.stillClosing` | this session |
+    /// | queued behind this session's own closing sheet (a retry after a cancel) | `.stillClosingWithCallQueued` | this session |
     /// | holding the sheet (this session holds it) | `.alreadyInFlight` | this session |
     /// | neither: before its lease, or committing after it | `.signInInProgress` | the session holding the sheet, else this session |
     private nonisolated func webUISignInInProgress() async -> AuthClientError {
@@ -734,7 +734,7 @@ extension SessionCore {
         }
         if holder == sessionId {
             // Queued while holding: the lock queues a session only behind its own sheet once that sheet is closing.
-            return .browserBusy(heldBy: sessionId, requestedBy: sessionId, reason: queued ? .stillClosing : .alreadyInFlight)
+            return .browserBusy(heldBy: sessionId, requestedBy: sessionId, reason: queued ? .stillClosingWithCallQueued : .alreadyInFlight)
         }
         return .browserBusy(heldBy: holder ?? sessionId, requestedBy: sessionId, reason: .signInInProgress)
     }

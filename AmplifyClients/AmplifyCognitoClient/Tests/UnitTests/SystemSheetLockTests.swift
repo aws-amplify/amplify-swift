@@ -584,7 +584,8 @@ final class SystemSheetLockTests: XCTestCase {
     ///    - alice asks again, once with `.fail` and once with `.wait`, and the old flow then unwinds
     /// - Then:
     ///    - both repeat calls throw `browserBusy(holder: alice)` with the "still closing" message, not the queued one
-    ///      that would say alice waits for a sheet alice holds; only the first retry is ever queued, and it is served
+    ///      that would say alice waits for a sheet alice holds, and a suggestion to wait for the queued retry rather
+    ///      than to retry; only the first retry is ever queued, and it is served
     func testARepeatCallQueuedBehindItsOwnClosingSheetIsToldItIsStillClosing() async throws {
         let lock = SystemSheetLock()
         let closing = Gate()
@@ -605,6 +606,8 @@ final class SystemSheetLockTests: XCTestCase {
             } catch let error as AuthClientError {
                 XCTAssertEqual(error.kind, .browserBusy(holder: Self.alice), "\(policy)")
                 XCTAssertEqual(error.errorDescription, closingError.errorDescription, "\(policy)")
+                XCTAssertNotEqual(error.recoverySuggestion, closingError.recoverySuggestion, "\(policy)")
+                XCTAssertTrue(error.recoverySuggestion.hasPrefix("The earlier call is queued"), error.recoverySuggestion)
             }
         }
         let queued = await lock.waiterCount
