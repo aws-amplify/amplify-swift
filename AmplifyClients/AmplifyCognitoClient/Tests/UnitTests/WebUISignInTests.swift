@@ -278,6 +278,45 @@ final class WebUISignInTests: XCTestCase {
         await waitForFreeSheet()
     }
 
+    /// A double tap on a retry queued behind the session's own closing sheet says the sheet is still closing
+    ///
+    /// - Given: "work"'s hosted-UI sign-in cancelled with `cancelWebUISignIn()`, its browser still closing a second later
+    ///   (so the sheet stays held), and a retry with `.wait(timeout:)` queued behind that closing sheet
+    /// - When: "work" asks again, with `.fail` and with `.wait(timeout:)`
+    /// - Then:
+    ///    - each second call is refused at once with `browserBusy` naming "work", saying its previous sheet is still
+    ///      closing, not that "work" is waiting for a sheet "work" holds
+    ///    - once the old browser closes, the retry is shown and signs in; the engine was called twice
+    func testADoubleTapQueuedBehindItsOwnClosingSheetSaysItIsStillClosing() async throws {
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let browser = FakeBrowser(afterCancel: .keepRunning)
+        engine.showWebUISignIns(in: browser)
+        let first = await startSignIn(client)
+        await browser.shown.waitForArrivals(1)
+        await client.cancelWebUISignIn()
+        _ = await authClientError { try await first.value(within: 10) }
+        let lock = harness.sheetLock
+        let holder = await lock.currentHolder
+        XCTAssertEqual(holder, work, "the cancelled browser should still hold the sheet")
+        let retry = await startSignIn(client, options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        await waitUntil("the retry is queued behind its own closing sheet") { await lock.waiterCount == 1 }
+
+        for policy in [WebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
+            let error = await authClientError { try await startSignIn(client, options: WebUIOptions(whenBrowserBusy: policy)).value(within: 10) }
+            XCTAssertEqual(error?.kind, .browserBusy(holder: work), "\(policy)")
+            XCTAssertEqual(error?.errorDescription, "Session \"work\"'s previous system sheet is still closing.", "\(policy)")
+        }
+
+        browser.finish(.failure(CancellationError()))
+        await browser.shown.waitForArrivals(2)
+        browser.finishWithDefault()
+        let result = try await retry.value(within: 10)
+        XCTAssertEqual(result.nextStep, .done)
+        XCTAssertEqual(engine.webUISignInCalls.count, 2)
+        await waitForFreeSheet()
+    }
+
     /// A double tap
     ///
     /// - Given: a hosted-UI sign-in of this session showing its browser

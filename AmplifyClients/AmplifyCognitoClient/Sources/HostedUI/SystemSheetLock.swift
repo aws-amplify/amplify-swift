@@ -397,12 +397,13 @@ actor SystemSheetLock {
                 }
                 let holding = current.lease.holder
                 // A second call from a session that is already queued, such as a double tap, would
-                // otherwise be served straight after the first: a second browser nobody asked for.
+                // otherwise be served straight after the first: a second browser nobody asked for. Queued behind
+                // its own sheet, the session is waiting for that sheet to close, which is what it is told.
                 guard !waiters.contains(where: { $0.session == session }) else {
                     continuation.resume(throwing: AuthClientError.browserBusy(
                         heldBy: holding,
                         requestedBy: session,
-                        reason: .alreadyQueued
+                        reason: holding == session ? .stillClosing : .alreadyQueued
                     ))
                     return
                 }

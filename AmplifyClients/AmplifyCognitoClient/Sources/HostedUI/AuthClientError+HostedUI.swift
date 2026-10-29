@@ -20,10 +20,11 @@ enum BrowserBusyReason: Equatable {
     /// The asking session already holds the sheet.
     case alreadyInFlight
 
-    /// The asking session is already queued for the sheet.
+    /// The asking session is already queued for the sheet, which another session holds.
     case alreadyQueued
 
-    /// The asking session's previous flow was cancelled and its sheet is still closing.
+    /// The asking session's previous flow was cancelled and its sheet is still closing, whether or not the session
+    /// has queued a retry behind it.
     case stillClosing
 
     /// The asking session's previous hosted-UI sign-in call is still in progress, and is neither holding the sheet
