@@ -345,9 +345,30 @@ class AffectedTargetsTests(unittest.TestCase):
            - the only changed file is a README the Auth host app bundles
         - Then:
            - `auth` is selected, as when run from the checkout's root
+           - stderr has no "found no Xcode project" note: the projects were read, so the selection does not come from
+             the fallback that treats an unread root's docs as bundled (which selects `auth` too)
         """
         readme = "AmplifyPlugins/Auth/Tests/AuthHostApp/AuthIntegrationTests/README.md"
-        self.assertEqual(self.selected(INTEG_GROUPS, readme, repo_root=None, cwd=self.work.name), ["auth"])
+        result = self.run_selector(INTEG_GROUPS, [readme], repo_root=None, cwd=self.work.name)
+        self.assertEqual(selection(result), ["auth"])
+        self.assertNotIn("found no Xcode project", result.stderr)
+
+    def test_a_bundled_readme_renamed_away_from_md_is_read_through_its_old_path(self):
+        """A bundled README renamed to a name that isn't `.md` still makes the selector read the projects.
+
+        - Given: this checkout's Xcode projects, where the Auth host app bundles `AuthIntegrationTests/README.md`,
+          and the real group files
+        - When:
+           - that README is renamed to a `.txt` file under the ignored `scripts/`, so the only `.md` path in the change
+             is the rename's old path
+        - Then:
+           - the old path selects `auth` with the integration groups and AWSPluginsCore with the unit groups, as its
+             deletion does: the projects are read for a `.md` on the old side of a rename too
+        """
+        old = "AmplifyPlugins/Auth/Tests/AuthHostApp/AuthIntegrationTests/README.md"
+        new = "scripts/AuthIntegrationTests-README.txt"
+        self.assertEqual(self.selected(INTEG_GROUPS, new, renames=[(old, new)]), ["auth"])
+        self.assertEqual(self.selected(UNIT_GROUPS, new, renames=[(old, new)]), ["AWSPluginsCore"])
 
     def test_a_root_with_no_project_is_unread(self):
         """A `--repo-root` holding no Xcode project makes every doc count as bundled, not none of them.
