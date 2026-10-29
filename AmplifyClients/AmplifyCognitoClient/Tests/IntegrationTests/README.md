@@ -733,6 +733,7 @@ but in `SandboxPool.optionalRoles`, and the build phases copy its files as optio
 | The define, create and verify custom-auth triggers, and the answer in SSM `/ccit-ci/custom-challenge-answer` (a SecureString under the key `alias/ccit-ci-senders`, as the temporary password is; the Lambda holds only its SHA-256) | CA-1…3 and the stored-answer check |
 | `ccit-ci-new-password-1` … `-12`, kept in `FORCE_CHANGE_PASSWORD` every 10 minutes by `ccit-ci-new-password-reset` (`infra/ci/lambda/new-password-reset`) and an EventBridge rule; the temporary password in SSM | CH-1, P-3, and the fixture check with the credentials file |
 | The custom sender (`lambda/custom-sender`), the code sink (AppSync API and table `ccit-ci-codes`, `codesink/`), their roles, and the SNS caller role for SMS MFA | AT-2, its second half, AT-4, RP-3; Cognito sends nothing |
+| Lambda `ccit-ci-extend-api-key` (`infra/ci/lambda/extend-api-key`), run weekly by the EventBridge rule `ccit-ci-extend-api-key`, with the role `ccit-ci-key-exec` (its logs, and listing and updating the code sink API's keys only) | The code sink's API key keeps working: it is extended in place, keeping its id, once 120 or fewer days are left |
 | Pool `ccit-ci-email-alias-codes` (`pools/email-alias.json`, on **Lite**) and its `client` app client, with Lambda `ccit-ci-pre-sign-up-confirmable` (`triggers.mjs` without `REFUSE_CONFIRMATION_USERS`, so it leaves `ccit-confirm-` users to confirm) and the custom sender into the code sink | The client's own role `SandboxPool.emailAliasCodes` (optional, not in `allCases`): the email-alias code check; Cognito sends nothing |
 | Pool `ccit-ci-mfa-req-totp-sms` (`pools/mfa-req-totp-sms.json`, on Essentials) and its `ci` app client (SRP and `USER_AUTH`, no `USER_PASSWORD_AUTH`), MFA required with TOTP and SMS, with `ccit-ci-pre-sign-up` and the discard sender as both custom senders; the SNS caller role's trust names it beside `ccit-ci-default`. A run that makes either of the two opens that trust to the account's pools while the pool is made (still held to the external ID and `aws:SourceAccount`), as it opens the key policy, and narrows it again after (the plan says both). A run that stops in between leaves it open until a rerun narrows it | The client's overlay role `mfa-req-totp-sms`, in place of the plugin's MFA-required backend: MF-13, MF-15…17 and the two `USER_AUTH` MFA-setup checks, and that role in the every-pool checks; Cognito sends nothing |
 | `ccit-ci-capabilities.json`: `refuses_non_test_users` and `reset_password_codes` on `extended`, `email_alias_codes` on `email-alias-codes` | The three sandbox checks, on those roles ("Sandbox checks", above) |
@@ -867,16 +868,22 @@ R-IP (and the identity-only pool below R-IP2).
 The scripts use whatever credentials the AWS CLI resolves, and the first `provision.sh` records that account in
 `state.json`. From then on `provision.sh`, `prepare-run.sh`, `self-sign-up.sh`, `teardown.sh` and `parity.py`
 refuse any other account (`require_recorded_account` in `lib.sh` and `parity.py`). While no account is recorded
-yet, `lib.sh`'s check exits before any AWS call unless `AWS_PROFILE` is set and none of `AWS_ACCESS_KEY_ID`,
-`AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`, `AWS_ROLE_ARN`, `AWS_WEB_IDENTITY_TOKEN_FILE` and the
-`AWS_CONTAINER_CREDENTIALS_*` variables is exported. The CLI takes exported keys over any profile, and a web identity
-role before the profile's own credentials (CI runners and EKS often export the web identity variables). Container
-credentials come later: the CLI uses them only when the profile holds no credentials of its own, as it does an EC2
-instance role, `AWS_CREDENTIAL_FILE` and the boto files. The check refuses them anyway, to be safe. That is all it
-checks. It doesn't know which account the profile belongs to, or whether the profile holds credentials at all: with
-a profile that holds only a region, on an EC2 host the CLI uses the instance role, and the first run then builds the
-sandbox in that role's account and records it. Set `AWS_PROFILE` to the sandbox account's profile, make sure that
-profile has credentials of its own, and check `aws sts get-caller-identity` before that first run.
+yet, `lib.sh`'s check exits before any AWS call unless all three of these hold:
+- `AWS_PROFILE` is set.
+- None of `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`, `AWS_ROLE_ARN`,
+  `AWS_WEB_IDENTITY_TOKEN_FILE` and the `AWS_CONTAINER_CREDENTIALS_*` variables is exported. The CLI takes exported
+  keys over any profile, and a web identity role before the profile's own credentials (CI runners and EKS often
+  export the web identity variables). Container credentials come later, but the check refuses them too, to be safe.
+- `aws configure list` reports credentials the profile holds itself: keys in the credentials or config file
+  (`shared-credentials-file`, `config-file`), `sso`, `login`, a `credential_process` (`custom-process`), or a
+  `role_arn` it assumes (`assume-role`, `assume-role-with-web-identity`). A profile that holds none, only a region
+  say, leaves the CLI to fall back to an EC2 instance role (`iam-role`), container credentials (`container-role`),
+  `AWS_CREDENTIAL_FILE` or the boto files, and the first run would build the sandbox in that account, so those are
+  refused. So is a profile the CLI cannot resolve: a missing one, or one whose sign-in has expired.
+
+`aws configure list` reads the profile locally; it calls no AWS service, except to fetch an assumed role's or a
+sign-in's credentials, as the run's first call would. The check still doesn't know which account the profile belongs
+to: set `AWS_PROFILE` to the sandbox account's profile and check `aws sts get-caller-identity` before that first run.
 
 The sandbox lives in one region, because its IAM roles are global. `provision.sh` refuses a region other than the one
 `state.json` records, and, on every run, a region recorded or not, one other than the region of the identity pool
