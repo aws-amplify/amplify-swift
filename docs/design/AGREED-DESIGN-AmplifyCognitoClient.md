@@ -772,9 +772,9 @@ Both families live in the plugin's keychain service, `com.amplify.awsCognitoAuth
 | Item | Account | Payload |
 |---|---|---|
 | `.default`'s session record | the plugin's key, `amplify.<poolNamespace>.session` | the plugin's `AmplifyCredentials` JSON, exactly as the plugin writes it |
-| `.default`'s sidecar | `amplify.1.<poolNamespace>.$default.meta` | the label, and the last signed-in user's username and user ID |
+| `.default`'s sidecar | `amplify.1.<poolNamespace>.$default.meta` | the label, the last signed-in user's username and user ID, and a dead refresh token's saved expiry (`deadToken`) |
 | `.default`'s challenge record | `amplify.1.<poolNamespace>.$default.challenge`, unchanged | as for a named session (4.11) |
-| a named session | `amplify.1.<poolNamespace>.<sessionId>.<kind>`, kind `session` or `challenge` | `SessionRecordEnvelope`: a schema version, a generation, the kind, the label, the username and user ID, and the same `AmplifyCredentials` JSON in its `credentials` field |
+| a named session | `amplify.1.<poolNamespace>.<sessionId>.<kind>`, kind `session` or `challenge` | `SessionRecordEnvelope`: a schema version, a generation, the kind, the label, the username and user ID, a dead refresh token's saved expiry (`deadToken`, only when set), and the same `AmplifyCredentials` JSON in its `credentials` field |
 
 - **No `$default` session record.** Only the **session** record of `.default` moves to the plugin's key. Its challenge record and its sidecar stay in the client's own family, under `$default`. `SessionID.default` stays in the API, and is still distinct from `.named("default")`.
 - **Development leftovers.** Listing ignores `amplify.1.<poolNamespace>.$default.session`, the session record development builds wrote.
@@ -783,6 +783,7 @@ Both families live in the plugin's keychain service, `com.amplify.awsCognitoAuth
   - **while the shared record is signed out** (`noCredentials`) **or absent**, the picker shows a signed-out row with the sidecar's label and last username;
   - **when the shared record holds a different user**, the sidecar's label is hidden. The sidecar is rewritten for the new user, without the label, only at the client's next write of the record: a plugin sign-in leaves it as it is, so after a later plugin sign-out the row names the sidecar's user and label again;
   - **a sign-in over a signed-out row keeps its label only for the same user**, or when the sidecar has no user yet (a label set before anyone signed in). A different user drops it.
+- **A dead refresh token's expiry is saved beside the record** (`DeadToken`): `{"cause":"reused"|"invalid","token":"<SHA-256 hex>"}`, under `deadToken`, in a named session's envelope and in `.default`'s sidecar, both additive keys written only when set. `token` names the refresh token proved dead (SHA-256 of `refreshToken:<token>`), or, for credentials without one, the credentials' bytes. A core that installs a record whose credentials still hold that token starts expired, with no event, and a refresh re-reads first and never refreshes such a record. It is bound to the token, not to the record: the plugin saving a new login over `.default` leaves the sidecar, and the marker no longer applies. The client's own writes of other credentials and its sign-outs drop it; a label write keeps it. Best effort: a failed save leaves the expiry the core's only. A marker with a cause this build can't read is ignored. The plugin's `isRefreshTokenExpired` is not read: the plugin sets it on whatever record is stored after its own refusal, which may be a newer writer's valid login.
 - **The commit guard on `.default` compares the stored bytes.** `setIfUnchanged` already does this, so the default session has no generation number. The plugin itself writes unguarded. That is one reason running both in one process is not supported (§4.9). Whether another writer changed the *credentials* is decided on the decoded value, not on the bytes, because the plugin may save the same credentials again with other bytes.
 - **macOS: absent once is not signed out.** There the keychain's `set` deletes the item and adds it again, so a reader in another process can find it absent in between. A `.default` read that finds the shared record absent reads it once more before concluding "signed out".
 - **A write that loses a race updates once.** When another writer (the plugin beside a client, an app beside its extension) creates the same keychain item at the same moment, the write updates the item once instead of failing. The plugin and the client both behave this way.
@@ -1552,10 +1553,10 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
   - **`.failed`, with the session still signed in:** another sign-in replaced the session during the sign-out
     (`.invalidState`); a storage failure before the local sign-out; `sessionConfigurationMismatch` and any other
     error before anything was revoked; a closed hosted-UI sign-out page (`.userCancelled`), unless a refresh had
-    found the session expired while it was in memory and the login signed out still has the refresh token found
-    dead; any hosted-UI sign-out page that could not be shown or completed,
-    including no hosted-UI configuration or sign-out redirect URI; task cancellation before anything was revoked,
-    as `.failed(.unknown("The sign-out was cancelled before anything was revoked; the session is still signed
+    found the session expired (in this launch or an earlier one: the expiry is saved with the record) and the login
+    signed out still has the refresh token found dead; any hosted-UI sign-out page that could not be shown or
+    completed, including no hosted-UI configuration or sign-out redirect URI; task cancellation before anything was
+    revoked, as `.failed(.unknown("The sign-out was cancelled before anything was revoked; the session is still signed
     in.", "Retry the sign-out.", CancellationError()))`.
   - **A purge that fails after the local sign-out succeeded** returns `.partial` with `storageError` set, and
     `signedOutLocally == true`.
@@ -1841,7 +1842,7 @@ Verified against `amplify-swift`, `amplify-android`, and `amplify-flutter` at `o
 
 **C.2 The state machine is already per-instance.** No static session state on any platform. Flutter constructs one per plugin instance and its tests build them standalone. This is the finding that makes the change tractable.
 
-**C.3 Refresh-token expiry is not derivable offline.** The stored "refresh expired" marker is set only inside a session-expired error path, after a refresh has already failed over the network, and the refresh token is never parsed. Hence the rule in 4.2 that a picker row cannot promise liveness, and why the field is not on `StoredSession`.
+**C.3 Refresh-token expiry is not derivable offline.** The stored "refresh expired" marker is set only inside a session-expired error path, after a refresh has already failed over the network, and the refresh token is never parsed. Hence the rule in 4.2 that a picker row cannot promise liveness, and why the field is not on `StoredSession`. The client's own saved expiry (`deadToken`, §6) is the same kind of marker, set only after a refresh failed over the network, so a picker row still promises nothing.
 
 **C.4 The plugin's readiness check has no timeout.** Every task file waits on an internal "did configuration finish?" check with no bound and no failure state. It is safe today only because there is exactly one credential store per process, serialized by its own **inner** queue, not by the visible facade queue (see A.8). Stating this as "a process-wide queue" is the sloppiness that invites the reply "then just make more instances"; the point is that the load-bearing lock is the inner one. Two things follow for the implementer: do not assume the visible facade queue is what serializes access, and do not inherit the unbounded wait. The Android analogue, where a dropped store event could turn a readiness wait into an invisible hang rather than an error, is **Appendix E.1** - stated there as something to validate rather than something established, and an Android prerequisite either way.
 
