@@ -66,20 +66,20 @@ class AffectedTargetsTests(unittest.TestCase):
             f.write("\n".join(paths) + "\n")
         return path
 
-    def run_selector(self, groups, changed, repo_root=REPO, renamed_from=None, cwd=None):
-        """The selector's completed process for these changed files and rename sources, read against `repo_root`'s
-        Xcode projects (`None` passes no `--repo-root`), run from `cwd`."""
+    def run_selector(self, groups, changed, repo_root=REPO, renames=None, cwd=None):
+        """The selector's completed process for these changed files and (old, new) rename pairs, read against
+        `repo_root`'s Xcode projects (`None` passes no `--repo-root`), run from `cwd`."""
         command = [sys.executable, SCRIPT, "--package", self.package,
                    "--changed", self.write_list("changed.txt", changed), "--groups", groups]
-        if renamed_from is not None:
-            command += ["--renamed-from", self.write_list("renamed_from.txt", renamed_from)]
+        if renames is not None:
+            command += ["--renames", self.write_list("renames.txt", ["\t".join(pair) for pair in renames])]
         if repo_root is not None:
             command += ["--repo-root", repo_root]
         return subprocess.run(command, capture_output=True, text=True, check=True, cwd=cwd)
 
-    def selected(self, groups, *changed, repo_root=REPO, renamed_from=None, cwd=None):
+    def selected(self, groups, *changed, repo_root=REPO, renames=None, cwd=None):
         """The `selected=` array the selector prints for these changed files."""
-        result = self.run_selector(groups, changed, repo_root, renamed_from, cwd)
+        result = self.run_selector(groups, changed, repo_root, renames, cwd)
         return selection(result)
 
     def use_package(self, package):
@@ -230,7 +230,7 @@ class AffectedTargetsTests(unittest.TestCase):
           old directory, and the real group files
         - When:
            - the changed list names the new paths and Package.swift (as `git diff --name-only -M` does), and the
-             old paths come through `--renamed-from`
+             renames come through `--renames`
            - or the old paths are in the changed list itself, as plain deletions
         - Then:
            - the unit groups select AmplifyRecordCache alone and the integration groups select nothing
@@ -240,8 +240,9 @@ class AffectedTargetsTests(unittest.TestCase):
         names = ("AutoFlushSchedulerTests.swift", "RecordCacheTests.swift")
         new = [RECORD_CACHE + "Tests/UnitTests/" + n for n in names] + ["Package.swift"]
         old = [RECORD_CACHE + "Tests/" + n for n in names]
-        self.assertEqual(self.selected(UNIT_GROUPS, *new, renamed_from=old), ["AmplifyRecordCache"])
-        self.assertEqual(self.selected(INTEG_GROUPS, *new, renamed_from=old), [])
+        renames = list(zip(old, new))
+        self.assertEqual(self.selected(UNIT_GROUPS, *new, renames=renames), ["AmplifyRecordCache"])
+        self.assertEqual(self.selected(INTEG_GROUPS, *new, renames=renames), [])
         with open(UNIT_GROUPS) as f:
             every_group = sorted(json.load(f))
         self.assertEqual(self.selected(UNIT_GROUPS, *(new + old)), every_group)
@@ -253,23 +254,88 @@ class AffectedTargetsTests(unittest.TestCase):
           and the real group files
         - When:
            - that README is renamed: the changed list names only its new path, which no project bundles, and the
-             old path comes through `--renamed-from`
+             rename comes through `--renames`
            - or a file moves out of the Cognito client's sources into AmplifyRecordCache's
         - Then:
            - the README's old path selects `auth` with the integration groups and AWSPluginsCore with the unit
-             groups, as its deletion does; without `--renamed-from` the rename selects nothing
+             groups, as its deletion does; without `--renames` the rename selects nothing
            - the moved file selects the groups of the target it left as well as the one it joined
         """
         old = "AmplifyPlugins/Auth/Tests/AuthHostApp/AuthIntegrationTests/README.md"
         new = "AmplifyPlugins/Auth/Tests/AuthHostApp/AuthIntegrationTests/Docs/README.md"
-        self.assertEqual(self.selected(INTEG_GROUPS, new, renamed_from=[old]), ["auth"])
-        self.assertEqual(self.selected(UNIT_GROUPS, new, renamed_from=[old]), ["AWSPluginsCore"])
+        self.assertEqual(self.selected(INTEG_GROUPS, new, renames=[(old, new)]), ["auth"])
+        self.assertEqual(self.selected(UNIT_GROUPS, new, renames=[(old, new)]), ["AWSPluginsCore"])
         self.assertEqual(self.selected(INTEG_GROUPS, new), [])
 
         self.use_package(stub_package({"AmplifyRecordCache": RECORD_CACHE + "Sources"}))
-        self.assertEqual(self.selected(UNIT_GROUPS, RECORD_CACHE + "Sources/Moved.swift",
-                                       renamed_from=[CLIENT + "Sources/Moved.swift"]),
+        moved = (CLIENT + "Sources/Moved.swift", RECORD_CACHE + "Sources/Moved.swift")
+        self.assertEqual(self.selected(UNIT_GROUPS, moved[1], renames=[moved]),
                          ["AWSCognitoAuthPlugin", "AmplifyCognitoClient", "AmplifyRecordCache"])
+
+    def test_an_unknown_file_moved_where_nothing_attributes_it_selects_every_group(self):
+        """A file nothing owns or covers, moved to an ignored path, fails closed as its deletion does.
+
+        - Given: the real group files, where no target owns and no group path covers the package workspace's data
+          file or `AmplifyFoundationBridge/AmplifyFoundationBridge.xctestplan`
+        - When:
+           - one of them is renamed into `.github/` or `scripts/`, or to a `.md` name, all ignored: the changed list
+             names only the new path, and `--renames` the pair
+        - Then:
+           - every group is selected, with the integration and the unit groups
+        """
+        for old, new in ((".swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata",
+                          ".github/contents.xcworkspacedata"),
+                         ("AmplifyFoundationBridge/AmplifyFoundationBridge.xctestplan",
+                          "scripts/AmplifyFoundationBridge.xctestplan"),
+                         ("AmplifyFoundationBridge/AmplifyFoundationBridge.xctestplan",
+                          "AmplifyFoundationBridge/AmplifyFoundationBridge.md")):
+            for groups in (INTEG_GROUPS, UNIT_GROUPS):
+                with self.subTest(new=new, groups=os.path.basename(groups)):
+                    with open(groups) as f:
+                        every_group = sorted(json.load(f))
+                    self.assertEqual(self.selected(groups, new, renames=[(old, new)]), every_group)
+
+    def test_an_unknown_file_moved_where_something_attributes_it_selects_what_the_new_path_selects(self):
+        """A file nothing owns or covers, moved to an attributed path, selects only what that new path selects.
+
+        - Given: the real group files, where no target owns and no group path covers
+          `AmplifyFoundationBridge/AmplifyFoundationBridge.xctestplan`
+        - When:
+           - it is renamed under the Geo plugin's directory, a group path in both group files, or into the Cognito
+             client's sources, which a target owns
+           - or a file under the ignored `scripts/` is renamed within `scripts/`
+        - Then:
+           - the move into the Geo plugin selects `geo` with the integration groups and AWSPluginsCore with the unit
+             groups, the move into the client's sources selects what a change to them selects, and nothing
+             fails closed
+           - the move within `scripts/` selects nothing
+        """
+        old = "AmplifyFoundationBridge/AmplifyFoundationBridge.xctestplan"
+        for new, integ, unit in (("AmplifyPlugins/Geo/Tests/AmplifyFoundationBridge.xctestplan", ["geo"],
+                                  ["AWSPluginsCore"]),
+                                 (CLIENT + "Sources/AmplifyFoundationBridge.xctestplan",
+                                  ["auth_client", "auth_client_interop"],
+                                  ["AWSCognitoAuthPlugin", "AmplifyCognitoClient"])):
+            with self.subTest(new=new):
+                self.assertEqual(self.selected(INTEG_GROUPS, new, renames=[(old, new)]), integ)
+                self.assertEqual(self.selected(UNIT_GROUPS, new, renames=[(old, new)]), unit)
+        moved = ("scripts/old_name.sh", "scripts/new_name.sh")
+        for groups in (INTEG_GROUPS, UNIT_GROUPS):
+            with self.subTest(moved=moved, groups=os.path.basename(groups)):
+                self.assertEqual(self.selected(groups, moved[1], renames=[moved]), [])
+
+    def test_a_malformed_rename_list_fails(self):
+        """A `--renames` line without exactly two tab-separated paths stops the selector rather than being guessed at.
+
+        - Given: the real integration group file
+        - When:
+           - the rename list holds only an old path, as the source column alone would
+        - Then:
+           - the selector exits non-zero and names the line on stderr
+        """
+        with self.assertRaises(subprocess.CalledProcessError) as raised:
+            self.run_selector(INTEG_GROUPS, ["scripts/new_name.sh"], renames=[("scripts/old_name.sh",)])
+        self.assertIn("scripts/old_name.sh", raised.exception.stderr)
 
     def test_the_default_repo_root_is_the_checkout_holding_the_selector(self):
         """Run from another directory without `--repo-root`, the selector still reads this checkout's projects.

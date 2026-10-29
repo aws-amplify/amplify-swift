@@ -28,8 +28,8 @@ dependents, and there is no own group to run. Its impact on dependents is covere
 (push to main / nightly).
 
 Fail-closed: a changed file that matches no TARGET at all (and no group path / ignore rule) selects
-ALL groups — genuinely-unattributable changes are never silently skipped (a rename's old path is the
-one exception, see Renames below). Package.swift and
+ALL groups — genuinely-unattributable changes are never silently skipped (a rename's old path can be
+the exception, see Renames below). Package.swift and
 Package.resolved are NOT among these: manifest/lockfile edits are always-ignored (see
 ALWAYS_IGNORE_NAMES), on the basis that the source changes using a new/changed target trigger their
 own groups. Integration-test host apps and Xcode project bundles (`HostApp/` and `.xcodeproj/`
@@ -38,11 +38,14 @@ they are attributed to their integ group by its path rule when covered and other
 SwiftPM/unit inputs.
 
 Renames: `--changed` is a rename-detecting list (`git diff --name-only -M`), which names a rename's new
-path only, and `--renamed-from` holds the renames' old paths (the source column of `git diff
---name-status -M --diff-filter=R`). An old path is attributed like any changed file, with one
-difference: one that nothing owns, covers or ignores is skipped rather than failing closed, since its
-new path is already in the changed list. So moving a target's files to a new directory selects what
-the new paths select, not every group. A plain deletion is in the changed list and still fails closed.
+path only, and `--renames` holds each rename's old and new paths, tab-separated (`git diff --name-status
+-M --diff-filter=R | cut -f2-`). An old path is attributed like any changed file, with one difference:
+one that nothing owns, covers or ignores is skipped rather than failing closed when its new path is
+itself attributed (owned by a target, or under a group's `paths`), since that new path is already in
+the changed list and selects its group. So moving a target's files to a new directory selects what the
+new paths select, not every group. When the new path is ignored or unknown too (an unknown file moved
+into `scripts/` or `.github/`, say), the old path fails closed, as its deletion would. A plain deletion
+is in the changed list and still fails closed.
 
 Documentation (`.md`) is ignored everywhere, except a file an Xcode project in the checkout copies into
 a bundle (a host app's README in a test target's Copy Bundle Resources): deleting or renaming that one
@@ -67,7 +70,7 @@ silently never selecting that group.
 
 Usage:
     python3 scripts/python/affected_targets.py \
-        --package package.json --changed changed.txt [--renamed-from renamed_from.txt] \
+        --package package.json --changed changed.txt [--renames renames.txt] \
         --groups scripts/python/<groups>.json
 
 Writes to stdout (append to "$GITHUB_OUTPUT"):
@@ -338,13 +341,26 @@ def read_paths(path):
         return [line.strip() for line in f if line.strip()]
 
 
+def read_renames(path):
+    """The (old path, new path) pairs of a rename list: one rename per line, the two paths tab-separated."""
+    pairs = []
+    for line in read_paths(path):
+        fields = line.split("\t")
+        if len(fields) != 2 or not all(fields):
+            sys.stderr.write("%s: expected an old path, a tab and a new path, found %r\n" % (path, line))
+            sys.exit(1)
+        pairs.append((fields[0], fields[1]))
+    return pairs
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--package", required=True, help="swift package dump-package JSON")
     ap.add_argument("--changed", required=True,
                     help="file with one changed path per line, from a rename-detecting diff (a rename's new path)")
-    ap.add_argument("--renamed-from",
-                    help="file with one rename source (old path) per line; attributed, but never failing closed")
+    ap.add_argument("--renames",
+                    help="file with one rename per line, the old and new paths tab-separated; an old path is "
+                         "attributed, and an unknown one fails closed unless the new path is attributed")
     ap.add_argument("--groups", required=True, help="group definition JSON")
     ap.add_argument("--repo-root", default=SCRIPT_CHECKOUT,
                     help="checkout whose Xcode projects are read for bundled docs (default: the one holding "
@@ -354,7 +370,8 @@ def main():
     pkg = json.load(open(args.package))
     groups = json.load(open(args.groups))
     changed = read_paths(args.changed)
-    renamed_from = read_paths(args.renamed_from) if args.renamed_from else []
+    renames = read_renames(args.renames) if args.renames else []
+    renamed_from = [old for old, _ in renames]
 
     path_of, deps_of, is_test = build_graph(pkg)
 
@@ -391,36 +408,40 @@ def main():
     # target, matching no group path, and not ignorable is unknown -> fail closed to all groups.
     changed_targets = set()
 
-    def attribute(f):
-        """Record f's owning target; False when nothing owns, covers or ignores f."""
+    def classify(f):
+        """"attributed" (recording f's owning target, if any), "ignored", or "unknown"."""
         if ignored(f):
-            return True
+            return "ignored"
         owner = max((n for n, p in path_of.items() if f.startswith(p)),
                     key=lambda n: len(path_of[n]), default=None)
         if owner:
             changed_targets.add(owner)
-            return True
+            return "attributed"
         if f.startswith(XCSCHEME_DIR) and f.endswith(XCSCHEME_SUFFIX):
             # A per-target scheme -> attribute to that target and let dependency logic narrow it.
             # An umbrella/aggregate scheme names no target -> unknown (whole-package impact).
             scheme = f[len(XCSCHEME_DIR):-len(XCSCHEME_SUFFIX)]
             if scheme in path_of:
                 changed_targets.add(scheme)
-                return True
-            return False
+                return "attributed"
+            return "unknown"
         if any(f.startswith(p) for p in group_paths):
-            return True  # attributed to a group by its path rule below
-        return (f.endswith(IGNORE_SUFFIXES) or f.startswith(IGNORE_PREFIXES)
+            return "attributed"  # to a group, by its path rule below
+        if (f.endswith(IGNORE_SUFFIXES) or f.startswith(IGNORE_PREFIXES)
                 or f.rsplit("/", 1)[-1] in IGNORE_NAMES
-                or any(s in f for s in IGNORE_PATH_SUBSTRINGS))
+                or any(s in f for s in IGNORE_PATH_SUBSTRINGS)):
+            return "ignored"
+        return "unknown"
 
     for f in changed:
-        if not attribute(f):
+        if classify(f) == "unknown":
             emit(groups.keys())
-    # A rename's old path: attributed the same way, but an unknown one is skipped rather than failing
-    # closed, since the rename's new path is in `changed` (see the module docstring).
-    for f in renamed_from:
-        attribute(f)
+    # A rename's old path: attributed the same way. An unknown one is skipped only when the rename's
+    # new path (also in `changed`) is itself attributed; otherwise it fails closed, as its deletion
+    # would (see the module docstring).
+    for old, new in renames:
+        if classify(old) == "unknown" and classify(new) != "attributed":
+            emit(groups.keys())
 
     # Each group's source target(s) -> group name.
     source_to_group = {t: name for name, g in groups.items() for t in g.get("targets", [])}
