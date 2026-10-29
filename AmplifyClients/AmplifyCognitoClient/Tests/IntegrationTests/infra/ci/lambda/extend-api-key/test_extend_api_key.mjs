@@ -21,7 +21,8 @@ const EXTENDED = extendedExpiry(NOW, LIMITS);
 
 const key = (id, expires, extra = {}) => ({ id, description: DESCRIPTION, expires, ...extra });
 
-// A fake AppSync over `keys`: update() sets a key's expiry, or throws `refusal` (an error name) when it is given.
+// A fake AppSync over `keys`: update() sets a key's expiry, or throws `refusal` (an error name) when it is given,
+// with a message that names the key, as an SDK error's message might.
 function fakeAppSync(keys, refusal) {
     const updates = [];
     return {
@@ -30,7 +31,7 @@ function fakeAppSync(keys, refusal) {
         update: async (id, expires) => {
             updates.push({ id, expires });
             if (refusal) {
-                throw Object.assign(new Error("refused"), { name: refusal });
+                throw Object.assign(new Error(`refused to update ${id}`), { name: refusal });
             }
         },
     };
@@ -108,10 +109,17 @@ test("run extends an expired key when AppSync takes it, and fails with the rerun
     });
 });
 
-test("run fails when no key is left, and passes on any refusal of a key that has not expired", async () => {
+test("run fails when no key is left, and with a fixed text on any refusal of a key that has not expired", async () => {
     await assert.rejects(run(fakeAppSync([]), NOW, LIMITS), /No "ccit-ci tests" API key is left to extend/);
-    await assert.rejects(run(fakeAppSync([key("a", NOW + DAY)], "AccessDeniedException"), NOW, LIMITS),
-        (error) => error.name === "AccessDeniedException");
+    const refused = fakeAppSync([key("da2-secret", NOW + DAY)], "AccessDeniedException");
+    await assert.rejects(run(refused, NOW, LIMITS), (error) => {
+        assert.match(error.message, /refused to extend the tests' API key, which expires on .* \(AccessDeniedException\)\. The key is unchanged/);
+        assert.equal(error.name, "Error");
+        assert.equal(error.cause, undefined);
+        assert.ok(!error.message.includes("da2-secret"));
+        assert.ok(!String(error.stack).includes("da2-secret"));
+        return true;
+    });
 });
 
 test("settings need the API, default the limits as provision-ci.sh sets them, and refuse others", () => {

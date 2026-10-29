@@ -75,7 +75,10 @@ export async function run(appsync, now, limits) {
                 throw new Error(`AppSync refused to extend the tests' API key, which expired on ${day(step.from)} `
                     + `(${(error && error.name) || "error"}). ${RERUN}`);
             }
-            throw error;
+            // A fixed text with the error's name only, never the SDK's message, which Lambda would log with its stack.
+            throw new Error(`AppSync refused to extend the tests' API key, which expires on ${day(step.from)} `
+                + `(${(error && error.name) || "error"}). The key is unchanged: a rerun of infra/ci/provision-ci.sh `
+                + "--apply --scope all extends it in place.");
         }
         console.log(`Extended the tests' API key${step.action === "extend-expired" ? ", which had expired," : ""} `
             + `from ${day(step.from)} to ${day(step.expires)}.`);
