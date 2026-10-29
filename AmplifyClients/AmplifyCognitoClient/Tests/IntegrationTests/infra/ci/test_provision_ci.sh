@@ -41,7 +41,9 @@
 # --apply; that teardown is a dry run by default, deletes only the ccit-ci- resources with
 # --apply, refuses an untagged one, and schedules the key's deletion before removing its alias; that a run in another
 # region is refused (lambda-drift too, which there would find nothing to compare); that a pool made again gets its
-# Lambdas' invoke permissions replaced; and that the library's
+# Lambdas' invoke permissions replaced; that replace takes only the script's pools, is a dry run by default, refuses
+# an untagged pool and, through a fake gh, a CI run that reads the pools, and with --apply deletes the pool and what
+# names it, then reruns --scope all (phase 1 where phase 2 does not exist); and that the library's
 # guards refuse a name that is not ccit-ci- and a mutating call in a dry run.
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -70,6 +72,29 @@ else
 fi
 EOF
 chmod +x "$BIN/date"
+# A fake gh, for replace's check that no CI run is going: FAKE_GH unset, no run is going; "dispatched", a run of
+# integ_test_auth_client.yml is; "called", a queued run of integ_test.yml has a Cognito client job queued; "other",
+# a running run of integ_test.yml has only other jobs going; "broken", gh cannot list the runs.
+cat > "$BIN/gh" <<'EOF'
+#!/usr/bin/env bash
+[[ "${FAKE_GH:-}" != broken ]] || { echo "To get started with GitHub CLI, please run:  gh auth login" >&2; exit 4; }
+if [[ "$1 $2" == "run list" ]]; then
+    case "${FAKE_GH:-}:$*" in
+        dispatched:*"-w integ_test_auth_client.yml -s in_progress"*) echo '[{"databaseId": 11}]' ;;
+        called:*"-w integ_test.yml -s queued"*) echo '[{"databaseId": 12}]' ;;
+        other:*"-w integ_test.yml -s in_progress"*) echo '[{"databaseId": 13}]' ;;
+        *) echo '[]' ;;
+    esac
+elif [[ "$1 $2 $3" == "run view 12" ]]; then
+    echo '{"jobs": [{"name": "Auth Cognito Client Integration Tests / iOS Tests | CognitoClientIntegrationTests", "status": "queued"}]}'
+elif [[ "$1 $2 $3" == "run view 13" ]]; then
+    echo '{"jobs": [{"name": "Auth Integration Tests / iOS Tests | AuthIntegrationTests", "status": "in_progress"},
+        {"name": "Auth Cognito Client Integration Tests / iOS Tests | CognitoClientIntegrationTests", "status": "completed"}]}'
+else
+    exit 1
+fi
+EOF
+chmod +x "$BIN/gh"
 export PATH="$BIN:$PATH" FAKE_STATE="$WORK/state.json" FAKE_LOG="$WORK/calls.log" TMPDIR="$WORK/tmp"
 export AWS_CONFIG_FILE=/dev/null AWS_SHARED_CREDENTIALS_FILE=/dev/null CCIT_CI_DISCOVERY_DIR="$WORK/disc"
 export COGNITO_CLIENT_INTEG_CI_CONFIG_URL="s3://fake-ci-bucket.example/v2/testconfiguration"
@@ -614,10 +639,14 @@ an_expired_key_needs_the_uploads_that_name_it_replaced() {
     done
 }
 
+# An uploaded key with other contents refuses the whole upload. The file is put back after, so later uploads find
+# every file the same.
 a_key_with_other_contents_refuses_the_upload() {
-    jq '.s3["v2/testconfiguration/auth/cognito-client-ci/ccit-ci-default-credentials.json"].body = "{}"' "$FAKE_STATE" \
-        > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    local key="v2/testconfiguration/auth/cognito-client-ci/ccit-ci-default-credentials.json" body
+    body=$(jq -c --arg k "$key" '.s3[$k].body' "$FAKE_STATE")
+    jq --arg k "$key" '.s3[$k].body = "{}"' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
     run --apply --scope all --upload
+    jq --arg k "$key" --argjson b "$body" '.s3[$k].body = $b' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
     (( STATUS == 1 )) && [[ "$OUT" == *"nothing is ever overwritten"* ]] && ! calls | grep -q 'put-object' \
         && only_reads && no_identifiers
 }
@@ -912,6 +941,138 @@ snapshot_ignores_the_runtime_version() {
     out=$(python3 "$CI_DIR/snapshot.py" verify "$dir/old.json" "$dir/c.json") || status=$?
     (( status == 1 )) && [[ "$out" == *"CHANGED  lambda plugin-fn: Timeout"* && "$out" == *"CHANGED  trigger-lambda plugin-fn: Timeout"* ]] \
         && [[ "$out" != *RuntimeVersionConfig* ]] || { echo "$out"; return 1; }
+}
+
+# replace takes one of the script's pools, by key or name, and nothing else: any other name is refused before any AWS
+# call, and so are no pool, two, --upload and --scope.
+replace_takes_only_the_scripts_pools() {
+    local args
+    for args in "replace amplify-plugin-default" "replace ccit-ci-rotation" "replace ccit-ci-default-x"; do
+        # shellcheck disable=SC2086 # split on purpose: each case is a list of arguments
+        run $args
+        (( STATUS == 1 )) && [[ -z "$(calls)" ]] \
+            && [[ "$OUT" == *"replace takes one of the script's pools: ccit-ci-email-alias ccit-ci-default ccit-ci-email-alias-codes ccit-ci-mfa-req-totp-sms"* ]] \
+            || { echo "$args: $OUT"; return 1; }
+    done
+    for args in "replace" "replace default email-alias" "replace default --upload" "replace default --scope all"; do
+        # shellcheck disable=SC2086
+        run $args
+        (( STATUS == 2 )) && [[ -z "$(calls)" ]] || { echo "$args: $OUT"; return 1; }
+    done
+}
+
+# What replace plans for the default pool: its two uploaded files, the identity pool and the reset Lambda, then the
+# pool.
+REPLACE_DEFAULT_PLAN="delete auth/cognito-client-ci/ccit-ci-default-amplify_outputs.json
+delete auth/cognito-client-ci/ccit-ci-rotation-amplify_outputs.json
+delete identity pool ccit_ci_default
+delete Lambda ccit-ci-new-password-reset
+delete user pool ccit-ci-default (its clients and users with it)"
+
+# replace is a dry run by default: read calls only, nothing changed, the deletions planned and the rerun's dry run
+# checked. It refuses, before any change, while a CI run that reads the pools is going (a dispatched run, or a
+# Cognito client job of integ_test.yml's), but not for other jobs; when gh cannot tell, it warns and goes on.
+replace_is_a_dry_run_and_refuses_while_ci_runs() {
+    local before
+    before=$(jq -S . "$FAKE_STATE")
+    run replace default
+    (( STATUS == 0 )) && only_reads && no_identifiers && plus_lines_are_ours && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] \
+        && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "$REPLACE_DEFAULT_PLAN" ]] \
+        && [[ "$OUT" == *"The rerun (--apply --scope all --upload), checked with its dry run:"$'\n'"  it refuses nothing."* ]] \
+        && [[ "$OUT" == *"Planned: 5 deletions, then the rerun. Nothing was changed."* && "$OUT" != *Warning* ]] \
+        || { echo "$OUT"; return 1; }
+    FAKE_GH=dispatched run replace default --apply
+    (( STATUS == 1 )) && only_reads && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] \
+        && [[ "$OUT" == *"Refusing: a CI run of integ_test_auth_client.yml is going, and it reads the ccit-ci- pools"* ]] \
+        || { echo "$OUT" | tail -5; return 1; }
+    FAKE_GH=called run replace email-alias --apply
+    (( STATUS == 1 )) && only_reads && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] \
+        && [[ "$OUT" == *"Refusing: a CI run of integ_test.yml's Cognito client jobs is going"* ]] || { echo "$OUT" | tail -5; return 1; }
+    FAKE_GH=other run replace default
+    (( STATUS == 0 )) && [[ "$OUT" != *Warning* && "$OUT" != *Refusing* ]] || { echo "$OUT" | tail -5; return 1; }
+    FAKE_GH=broken run replace default
+    (( STATUS == 0 )) && only_reads \
+        && [[ "$OUT" == *"Warning: could not tell whether a CI run is going, which the deletions would break"* ]] \
+        || { echo "$OUT" | tail -5; return 1; }
+}
+
+# replace --apply refuses a pool without the purpose tag before any change.
+replace_refuses_an_untagged_pool() {
+    local before
+    jq '(.pools[] | select(.UserPool.Name == "ccit-ci-email-alias-codes") | .UserPool.UserPoolTags) = {}' "$FAKE_STATE" \
+        > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    before=$(jq -S . "$FAKE_STATE")
+    run replace ccit-ci-email-alias-codes --apply
+    local status=$STATUS out=$OUT after
+    after=$(jq -S . "$FAKE_STATE")
+    jq '(.pools[] | select(.UserPool.Name == "ccit-ci-email-alias-codes") | .UserPool.UserPoolTags) = {purpose: "amplify-cognito-client-integ"}' \
+        "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    OUT=$out
+    (( status == 1 )) && only_reads && [[ "$after" == "$before" ]] \
+        && [[ "$out" == *"user-pool ccit-ci-email-alias-codes exists without purpose=amplify-cognito-client-integ"* ]] \
+        && [[ "$out" == *"the dry run refused"* ]] && no_identifiers || { echo "$out" | tail -5; return 1; }
+}
+
+# The uploaded file $1 (under auth/cognito-client-ci/), as the fake holds it.
+uploaded() {
+    jq -r --arg k "v2/testconfiguration/auth/cognito-client-ci/$1" '.s3[$k].body' "$FAKE_STATE"
+}
+
+# replace default --apply: deletes the pool, its two files, the identity pool and the reset Lambda, then the rerun
+# makes them again, with the new pool in the reset Lambda, the identity pool, the invoke permissions and the SMS
+# role's trust, uploads the two new files, and leaves the other uploaded files and the plugin's resources as they
+# were. A second rerun makes no call.
+replace_default_makes_it_again() {
+    local old_pool old_identity other before new_pool new_identity
+    old_pool=$(jq -r '.pools[] | select(.UserPool.Name == "ccit-ci-default") | .UserPool.Id' "$FAKE_STATE")
+    old_identity=$(jq -r '.identity_pools[] | select(.IdentityPoolName == "ccit_ci_default") | .IdentityPoolId' "$FAKE_STATE")
+    other=$(jq -c '.s3 | with_entries(select(.key | test("ccit-ci-(default|rotation)-amplify") | not))' "$FAKE_STATE")
+    before=$(plugin_part)
+    run replace default --apply
+    (( STATUS == 0 )) && no_identifiers && [[ "$(plugin_part)" == "$before" ]] \
+        && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT" | head -5)" == "$REPLACE_DEFAULT_PLAN" ]] \
+        && [[ "$OUT" == *"Deleted: 5 calls made. The rerun, --apply --scope all --upload:"* ]] \
+        && [[ "$OUT" == *"+ create user pool ccit-ci-default"* && "$OUT" == *"new-password users: created 12"* ]] \
+        && [[ "$(calls | grep -c 's3api put-object')" == 2 ]] || { echo "$OUT" | tail -12; return 1; }
+    new_pool=$(jq -r '.pools[] | select(.UserPool.Name == "ccit-ci-default") | .UserPool.Id' "$FAKE_STATE")
+    new_identity=$(jq -r '.identity_pools[] | select(.IdentityPoolName == "ccit_ci_default") | .IdentityPoolId' "$FAKE_STATE")
+    [[ -n "$new_pool" && "$new_pool" != "$old_pool" && -n "$new_identity" && "$new_identity" != "$old_identity" ]] \
+        || { echo "not made again"; return 1; }
+    [[ "$(uploaded ccit-ci-default-amplify_outputs.json | jq -r '.auth.user_pool_id + " " + .auth.identity_pool_id')" == "$new_pool $new_identity" ]] \
+        && [[ "$(uploaded ccit-ci-rotation-amplify_outputs.json | jq -r .auth.user_pool_id)" == "$new_pool" ]] \
+        && [[ "$(jq -c '.s3 | with_entries(select(.key | test("ccit-ci-(default|rotation)-amplify") | not))' "$FAKE_STATE")" == "$other" ]] \
+        || { echo "the uploaded files"; return 1; }
+    jq -e --arg p "$new_pool" '(.pools[$p].UserPool.Arn) as $a
+        | (.lambdas["ccit-ci-new-password-reset"].config.Environment.Variables.POOL_ID == $p)
+        and ([.lambdas[] | .policy[] | select(.Sid == "cognito-default") | .Condition.ArnLike["AWS:SourceArn"]]
+             | length > 0 and all(. == $a))
+        and ([.identity_pools[] | select(.IdentityPoolName == "ccit_ci_default") | .CognitoIdentityProviders[0].ProviderName
+              | endswith($p)] == [true])
+        and (.roles["ccit-ci-cognito-sms"].Role.AssumeRolePolicyDocument.Statement[0].Condition.ArnEquals["aws:SourceArn"]
+             | index($a) != null)' "$FAKE_STATE" >/dev/null || { echo "what names the pool"; return 1; }
+    run --apply --scope all --upload
+    (( STATUS == 0 )) && [[ "$OUT" == *"Done: 0 calls made."* ]] || { echo "$OUT" | sed -nE 's/^  \+ //p'; return 1; }
+}
+
+# replace of the device-alias pool where only phase 1 exists reruns phase 1, so it never adds phase 2. The state is
+# put back after.
+replace_over_phase_1_reruns_phase_1() {
+    local saved="$WORK/replace-phase-1-state.json" old status out made=0
+    cp "$FAKE_STATE" "$saved"
+    fresh_state
+    run --apply --upload
+    (( STATUS == 0 )) || { echo "$OUT" | tail -5; cp "$saved" "$FAKE_STATE"; return 1; }
+    old=$(jq -r '.pools[] | select(.UserPool.Name == "ccit-ci-email-alias") | .UserPool.Id' "$FAKE_STATE")
+    run replace email-alias --apply
+    status=$STATUS out=$OUT
+    jq -e --arg o "$old" '([.pools[] | .UserPool.Name] | sort == ["amplify-plugin-default", "ccit-ci-email-alias"])
+        and ([.pools[] | select(.UserPool.Name == "ccit-ci-email-alias") | .UserPool.Id] != [$o])
+        and ((.apis // {}) == {}) and ([.roles | keys[]] | sort == ["ccit-ci-trigger-exec", "plugin-role"])' \
+        "$FAKE_STATE" >/dev/null && [[ "$(uploaded ccit-ci-email-alias-amplify_outputs.json | jq -r .auth.user_pool_id)" != "$old" ]] \
+        || made=1
+    cp "$saved" "$FAKE_STATE"
+    (( status == 0 && made == 0 )) && [[ "$out" == *"The rerun, --apply --scope email-alias --upload:"* ]] \
+        || { echo "$out" | tail -8; return 1; }
 }
 
 teardown_is_a_dry_run_by_default() {
@@ -1269,6 +1430,15 @@ check "snapshot: a Lambda's RuntimeVersionConfig, which Lambda moves by itself, 
     snapshot_ignores_the_runtime_version
 check "the Cognito lists are read to their last page: a ccit-ci- pool on page 2 is found, snapshotted, torn down" \
     lists_are_read_to_their_last_page
+check "replace takes only the script's pools, refusing any other name before any AWS call" \
+    replace_takes_only_the_scripts_pools
+check "replace is a dry run by default, and refuses while a CI run that reads the pools is going" \
+    replace_is_a_dry_run_and_refuses_while_ci_runs
+check "replace --apply refuses a pool without the tag, before any change" replace_refuses_an_untagged_pool
+check "replace default --apply deletes the pool and what names it, then the rerun makes them again" \
+    replace_default_makes_it_again
+check "replace of the device-alias pool over phase 1 alone reruns phase 1, adding nothing of phase 2" \
+    replace_over_phase_1_reruns_phase_1
 check "teardown is a dry run by default and names only ccit-ci- resources" teardown_is_a_dry_run_by_default
 check "teardown --apply deletes only the ccit-ci- resources it made" teardown_deletes_only_ours
 if frozen_script; then

@@ -61,8 +61,9 @@
 #     (ccit-ci-extend-api-key names the API it was made for): check that it carries
 #     purpose=amplify-cognito-client-integ, delete it, and run --apply --scope all, which makes it again with every
 #     pool's invoke permissions.
-#   - A pool, after a change to its template: --upload never overwrites a file, so the uploaded files that name the
-#     pool go too, or CI goes on reading the deleted pool. Check that the pool and each of those files carries
+#   - A pool, after a change to its template (infra/ci/provision-ci.sh replace <pool> does all of this, below):
+#     --upload never overwrites a file, so the uploaded files that name the pool go too, or CI goes on reading the
+#     deleted pool. Check that the pool and each of those files carries
 #     purpose=amplify-cognito-client-integ (the files: aws s3api get-object-tagging), then delete the pool and its
 #     auth/cognito-client-ci/ccit-ci-<pool>-amplify_outputs.json. For ccit-ci-default, also delete
 #     ccit-ci-rotation-amplify_outputs.json, the identity pool ccit_ci_default (it federates the old pool's client,
@@ -95,6 +96,12 @@
 #   infra/ci/provision-ci.sh teardown [--dry-run | --apply]
 #       deletes only the resources above, each after its tag check (the KMS key is scheduled for deletion in
 #       7 days); a dry run by default
+#   infra/ci/provision-ci.sh replace <pool> [--dry-run | --apply]
+#       replaces one of the pools above (by its name, or the part after ccit-ci-) as the recipe above does: after the
+#       tag check of each, deletes the pool and its uploaded file, for ccit-ci-default also the rotation file, the
+#       identity pool and ccit-ci-new-password-reset, then reruns --apply --scope all --upload. A dry run by default,
+#       which checks the rerun's dry run too. It refuses any other name, and refuses while gh shows a CI run that
+#       reads the pools (it warns when gh cannot tell)
 #   infra/ci/provision-ci.sh lambda-drift [--record [--accept-deployed]]
 #       read-only: downloads each ccit-ci- Lambda's deployed zip (GetFunction's presigned URL) and compares its
 #       files, by path and content hash, with the zip built from this checkout, or with the files
@@ -126,6 +133,10 @@ POSITIONAL=()
 RECORD=0
 ACCEPT_DEPLOYED=""
 APPLY_GIVEN=0
+SCOPE_GIVEN=0
+REPLACE_KEY=""
+# Every pool the script makes, by its key (the pool is ccit-ci-<key>).
+ALL_POOL_KEYS=(email-alias default email-alias-codes mfa-req-totp-sms)
 
 usage() {
     sed -n '/^#   infra\/ci\/provision-ci.sh/,/^# Environment/p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//' >&2
@@ -137,11 +148,11 @@ while (( $# > 0 )); do
         --dry-run) CI_MODE="plan" ;;
         --apply) CI_MODE="apply"; APPLY_GIVEN=1 ;;
         --upload) UPLOAD=1 ;;
-        --scope) [[ $# -ge 2 ]] || usage; SCOPE="$2"; shift ;;
+        --scope) [[ $# -ge 2 ]] || usage; SCOPE="$2"; SCOPE_GIVEN=1; shift ;;
         --allow-foreign-additions) ALLOW_FOREIGN=1 ;;
         --record) RECORD=1 ;;
         --accept-deployed) ACCEPT_DEPLOYED=1 ;;
-        snapshot|verify-unchanged|teardown|lambda-drift) COMMAND="$1" ;;
+        snapshot|verify-unchanged|teardown|lambda-drift|replace) COMMAND="$1" ;;
         -h|--help) usage ;;
         -*) usage ;;
         *) POSITIONAL+=("$1") ;;
@@ -156,6 +167,19 @@ if [[ "$COMMAND" == "verify-unchanged" ]]; then
     args=(verify "${POSITIONAL[0]}" "${POSITIONAL[1]}")
     (( ALLOW_FOREIGN )) && args+=(--allow-foreign-additions)
     exec python3 "$CI_DIR/snapshot.py" "${args[@]}"
+fi
+# replace takes one pool, by its key or its name, and only one of the script's: any other name is refused before any
+# AWS call. It always reruns with --upload, and picks the rerun's scope itself.
+if [[ "$COMMAND" == "replace" ]]; then
+    (( ${#POSITIONAL[@]} == 1 && SCOPE_GIVEN == 0 )) || usage
+    for key in "${ALL_POOL_KEYS[@]}"; do
+        if [[ "${POSITIONAL[0]}" == "$key" || "${POSITIONAL[0]}" == "ccit-ci-$key" ]]; then
+            REPLACE_KEY="$key"
+        fi
+    done
+    [[ -n "$REPLACE_KEY" ]] \
+        || die "replace takes one of the script's pools: $(printf 'ccit-ci-%s\n' "${ALL_POOL_KEYS[@]}" | paste -sd' ' -)"
+    POSITIONAL=()
 fi
 (( ${#POSITIONAL[@]} == 0 )) || usage
 if [[ "$COMMAND" != "provision" && "$UPLOAD" == 1 ]]; then
@@ -189,9 +213,15 @@ require_caller
 
 # --- Names ------------------------------------------------------------------------------------------------
 
-POOL_KEYS=(email-alias)
-[[ "$SCOPE" == "all" ]] && POOL_KEYS=(email-alias default email-alias-codes mfa-req-totp-sms)
-ALL_POOL_KEYS=(email-alias default email-alias-codes mfa-req-totp-sms)
+# Sets SCOPE, and POOL_KEYS, the pools in it.
+set_scope() {
+    SCOPE="$1"
+    POOL_KEYS=(email-alias)
+    if [[ "$SCOPE" == "all" ]]; then
+        POOL_KEYS=("${ALL_POOL_KEYS[@]}")
+    fi
+}
+set_scope "$SCOPE"
 # The pools whose SmsConfiguration names the SNS caller role (the templates with SMS MFA), which its trust names.
 SMS_POOL_KEYS=(default mfa-req-totp-sms)
 # The pools whose codes the custom sender decrypts: the ones it is the sender of.
@@ -1508,6 +1538,132 @@ note_key_expiry() {
     fi
 }
 
+# --- replace <pool> -----------------------------------------------------------------------------------------
+
+# Refuses while a CI run that reads the ccit-ci- pools is going, as far as gh can tell cheaply (GitHub's API, reads
+# only): a queued or running run of integ_test_auth_client.yml, or a job of integ_test.yml's, queued or running, that
+# runs the Cognito client's tests (its name holds "Cognito Client" or "CognitoClient"). Without gh, or when gh cannot
+# list the runs (not logged in, say), it warns and goes on. CCIT_CI_GITHUB_REPO names another repository.
+CI_GITHUB_REPO="${CCIT_CI_GITHUB_REPO:-aws-amplify/amplify-swift}"
+require_no_ci_run() {
+    local status out id running="" unknown="Warning: could not tell whether a CI run is going, which the deletions would break: check that none is before --apply."
+    if ! command -v gh >/dev/null; then
+        say "$unknown (gh is not on PATH.)"
+        return 0
+    fi
+    for status in in_progress queued; do
+        if ! out=$(gh run list -R "$CI_GITHUB_REPO" -w integ_test_auth_client.yml -s "$status" -L 20 --json databaseId \
+            2>/dev/null) || ! jq -e 'type == "array"' <<<"$out" >/dev/null 2>&1; then
+            say "$unknown"
+            return 0
+        fi
+        [[ "$(jq length <<<"$out")" == 0 ]] || running="integ_test_auth_client.yml"
+        if ! out=$(gh run list -R "$CI_GITHUB_REPO" -w integ_test.yml -s "$status" -L 50 --json databaseId 2>/dev/null) \
+            || ! jq -e 'type == "array"' <<<"$out" >/dev/null 2>&1; then
+            say "$unknown"
+            return 0
+        fi
+        for id in $(jq -r '.[].databaseId' <<<"$out"); do
+            if ! out=$(gh run view "$id" -R "$CI_GITHUB_REPO" --json jobs 2>/dev/null) \
+                || ! jq -e '.jobs | type == "array"' <<<"$out" >/dev/null 2>&1; then
+                say "$unknown"
+                return 0
+            fi
+            if jq -e 'any(.jobs[]; (.name | test("Cognito ?Client")) and .status != "completed")' <<<"$out" >/dev/null; then
+                running="integ_test.yml's Cognito client jobs"
+            fi
+        done
+    done
+    [[ -z "$running" ]] || die "a CI run of $running is going, and it reads the ccit-ci- pools: replace one once it is done."
+}
+
+# replace <pool> [--apply]: replaces pool ccit-ci-<REPLACE_KEY>, as after a change to its template (a rerun never
+# updates a pool). After the tag check of each, it deletes, through `mutate`: the pool's uploaded
+# auth/cognito-client-ci/ccit-ci-<pool>-amplify_outputs.json (--upload never overwrites a file); for the default
+# pool also ccit-ci-rotation-amplify_outputs.json, the identity pool (it federates the old pool's client, so a rerun
+# would refuse) and the Lambda ccit-ci-new-password-reset (it names the old pool, and makes the users only when it is
+# made); and the pool itself, with its clients and users. Then it reruns --apply --scope all --upload, which makes
+# them again and uploads the new files; the other uploaded files stay as they are. Whatever is already gone is
+# skipped, so a replace that stopped part-way can be run again. The rerun's scope is phase 1 instead when the pool is
+# the device-alias pool and no phase-2 resource exists, so that a replace never adds phase 2.
+# A dry run (the default) plans the deletions, and checks the rerun with its dry run, which must refuse nothing:
+# --apply runs both first, so nothing is deleted when either would refuse.
+replace() {
+    local key="$REPLACE_KEY" name file object out id ids rerun_scope=all files=()
+    name=$(pool_name "$key")
+    if [[ "$CI_MODE" == "apply" ]]; then
+        say "Replacing $name: deleting it and what names it, each after its tag check, then rerunning."
+    else
+        say "Replace dry run ($name): nothing is deleted. '+' is a call replace --apply would make, '=' one it skips."
+    fi
+    require_no_ci_run
+    if [[ "$key" == "email-alias" ]]; then
+        find_phase_2
+        [[ -n "$PHASE_2_FOUND" ]] || rerun_scope=email-alias
+    fi
+    if [[ "$CI_MODE" != "apply" ]]; then
+        say "The rerun (--apply --scope $rerun_scope --upload), checked with its dry run:"
+        rerun_provision "$rerun_scope" plan >/dev/null \
+            || die "the rerun's dry run refused (above); nothing was deleted."
+        say "  it refuses nothing."
+    fi
+    say "Deleting:"
+    files=("$name-amplify_outputs.json")
+    [[ "$key" != "default" ]] || files+=("$(pool_name rotation)-amplify_outputs.json")
+    for file in "${files[@]}"; do
+        object="$S3_FOLDER_KEY/$file"
+        if read_aws_or_missing out "404 NoSuchKey NotFound" s3api head-object --bucket "$CI_BUCKET" --key "$object"; then
+            require_ours s3-object "$object" "$object"
+            mutate "$object" "delete auth/$CI_S3_FOLDER/$file" -- s3api delete-object --bucket "$CI_BUCKET" --key "$object"
+        else
+            say "  = auth/$CI_S3_FOLDER/$file is not uploaded"
+        fi
+    done
+    if [[ "$key" == "default" ]]; then
+        read_all_pages out IdentityPools cognito-identity list-identity-pools
+        ids=$(jq -r --arg n "$CI_IDENTITY_POOL" '.IdentityPools[] | select(.IdentityPoolName == $n) | .IdentityPoolId' <<<"$out")
+        [[ -n "$ids" ]] || say "  = identity pool $CI_IDENTITY_POOL does not exist"
+        for id in $ids; do
+            require_ours identity-pool "$id" "$CI_IDENTITY_POOL"
+            mutate "$CI_IDENTITY_POOL" "delete identity pool $CI_IDENTITY_POOL" -- cognito-identity delete-identity-pool \
+                --identity-pool-id "$id"
+        done
+        if read_aws_or_missing out ResourceNotFoundException lambda get-function-configuration \
+            --function-name "$(fn_name new-password-reset)"; then
+            require_ours lambda "$(fn_name new-password-reset)" "$(fn_name new-password-reset)"
+            mutate "$(fn_name new-password-reset)" "delete Lambda $(fn_name new-password-reset)" -- lambda delete-function \
+                --function-name "$(fn_name new-password-reset)"
+        else
+            say "  = Lambda $(fn_name new-password-reset) does not exist"
+        fi
+    fi
+    read_all_pages out UserPools cognito-idp list-user-pools
+    ids=$(jq -r --arg n "$name" '.UserPools[] | select(.Name == $n) | .Id' <<<"$out")
+    (( $(printf '%s' "$ids" | grep -c .) <= 1 )) || die "more than one user pool is named $name."
+    if [[ -n "$ids" ]]; then
+        require_ours user-pool "$ids" "$name"
+        mutate "$name" "delete user pool $name (its clients and users with it)" -- cognito-idp delete-user-pool \
+            --user-pool-id "$ids"
+    else
+        say "  = user pool $name does not exist"
+    fi
+    if [[ "$CI_MODE" != "apply" ]]; then
+        say "Planned: $CI_MUTATIONS deletions, then the rerun. Nothing was changed."
+        return 0
+    fi
+    say "Deleted: $CI_MUTATIONS calls made. The rerun, --apply --scope $rerun_scope --upload:"
+    rerun_provision "$rerun_scope" plan >/dev/null \
+        || die "the rerun's dry run refused (above), after the deletions: fix that, then run infra/ci/provision-ci.sh --apply --scope $rerun_scope --upload."
+    rerun_provision "$rerun_scope" apply
+}
+
+# replace's rerun: provision, with --upload, in scope $1 and mode $2 (plan or apply), its calls counted from 0, in a
+# subshell, so that nothing it reads or sets reaches replace's own state. Its status is the subshell's.
+rerun_provision() {
+    local CI_MODE="$2" CI_MUTATIONS=0
+    ( set_scope "$1"; UPLOAD=1; provision )
+}
+
 # --- Lambda drift (lambda_code.py) ------------------------------------------------------------------------
 
 # lambda-drift [--record [--accept-deployed]]: read-only. Reads each ccit-ci- Lambda (its name and purpose tag checked
@@ -1795,7 +1951,7 @@ teardown() {
 }
 
 case "$COMMAND" in
-    provision|teardown)
+    provision|teardown|replace)
         require_recorded_region
         [[ "$COMMAND" != "provision" ]] || refuse_phase_1_over_phase_2
         # --apply runs the whole dry run first, quietly, so a refusal anywhere (a ccit-ci- name without the tag, too
