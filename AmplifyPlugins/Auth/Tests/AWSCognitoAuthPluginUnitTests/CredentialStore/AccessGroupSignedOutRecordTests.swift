@@ -453,15 +453,20 @@ final class AccessGroupSignedOutRecordTests: XCTestCase, @unchecked Sendable {
     }
 
     /// The plugin's credential store over the shared keychain, as `makeCredentialStore` builds it, without migration:
-    /// the app's configuration's, unless `configuration` is given.
-    func makeStore(accessGroup: String?, configuration: AuthConfiguration? = nil) -> AWSCognitoAuthCredentialStore {
+    /// the app's configuration's, unless `configuration` is given; over the item stores `makeKeychainStore` builds, if
+    /// it is given.
+    func makeStore(
+        accessGroup: String?,
+        configuration: AuthConfiguration? = nil,
+        makeKeychainStore: AWSCognitoAuthCredentialStore.KeychainStoreFactory? = nil
+    ) -> AWSCognitoAuthCredentialStore {
         let keychain = keychain!
         return AWSCognitoAuthCredentialStore(
             authConfiguration: configuration ?? authConfiguration,
             accessGroup: accessGroup,
             migrateKeychainItemsOfUserSession: false,
             userDefaults: userDefaults,
-            makeKeychainStore: { service, accessGroup in
+            makeKeychainStore: makeKeychainStore ?? { service, accessGroup in
                 keychain.store(service: service, accessGroup: accessGroup)
             },
             logger: AmplifyEngineLogRouter()
@@ -476,14 +481,15 @@ final class AccessGroupSignedOutRecordTests: XCTestCase, @unchecked Sendable {
         )
     }
 
-    /// A plugin as `configure(using:)` builds it, with its credential store from `makeStore(accessGroup:)` and only
-    /// the Cognito service calls mocked. Its credential store machine starts idle, so its first load skips the
+    /// A plugin as `configure(using:)` builds it, with its credential store from
+    /// `makeStore(accessGroup:makeKeychainStore:)` and only the Cognito service calls mocked. Its credential store machine starts idle, so its first load skips the
     /// AWSMobileClient migration, unless `legacyStore` is given: it then starts as at a launch, and the migration
     /// runs over those stores first.
     func makePlugin(
         accessGroup: String?,
         userPool: CognitoUserPoolBehavior,
-        legacyStore: (@Sendable (String) -> any KeychainItemStoreBehavior)? = nil
+        legacyStore: (@Sendable (String) -> any KeychainItemStoreBehavior)? = nil,
+        makeKeychainStore: AWSCognitoAuthCredentialStore.KeychainStoreFactory? = nil
     ) -> AWSCognitoAuthPlugin {
         let identity = MockIdentity(
             mockGetIdResponse: { _ in .init(identityId: "client-identity-id") },
@@ -503,7 +509,7 @@ final class AccessGroupSignedOutRecordTests: XCTestCase, @unchecked Sendable {
             authConfiguration: authConfiguration,
             makeUserPool: { userPool },
             makeIdentityClient: { identity },
-            credentialStoreFactory: { [self] in makeStore(accessGroup: accessGroup) },
+            credentialStoreFactory: { [self] in makeStore(accessGroup: accessGroup, makeKeychainStore: makeKeychainStore) },
             legacyKeychainStoreFactory: legacyStore ?? Defaults.makeLegacyStore(service:),
             logger: AmplifyEngineLogRouter(scope: .category("awsCognitoAuthPluginTest")),
             userPoolAnalytics: { MockAnalyticsHandler() },
