@@ -52,8 +52,9 @@ client no longer writes a `$default` session record. No plugin release reads a c
 back in from one. A user signed out through the client stays signed out on every plugin release, because the shared
 record holds `{"noCredentials":{}}` (`testMatrix_signedOutUserIsNeverSignedBackIn`,
 `testMatrix_clientSignOut_readByEveryPluginAsSignedOut`), unless an AWSMobileClient login left on the device migrates
-over it (releases up to 2.63.0 migrate over a signed-out record; design §4.8). One caveat remains, from the plugin's own
-rule: after a configuration change that copied the login, a purge (or the plugin's own sign-out without an access group,
+over it (releases up to 2.63.0 migrate over a signed-out record; later ones keep the user signed out until a guest
+replaces it, the client's own `fetchAuthSession()`'s, the plugin's or an app extension's; design §4.8). One caveat remains, from the
+plugin's own rule: after a configuration change that copied the login, a purge (or the plugin's own sign-out without an access group,
 or on plugin releases up to 2.63.0, which deletes) leaves the earlier configuration's copy, which a rollback to the
 build with that configuration reads (`testMatrix_purgeAfterACarry_leavesTheEarlierConfigurationsCopy_caveat`). A second
 caveat, also the plugin's own rule: a later configuration change that the rule does not carry deletes the signed-out

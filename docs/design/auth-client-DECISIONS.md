@@ -392,7 +392,7 @@ because the plugin behaves the same way; the third is the client's own:
 - **A rollback to a plugin release before 2.63.0 while AWSMobileClient logins are still on the device** replaces
   whatever `.default` holds with the old AWSMobileClient user: those releases migrate that data at configure with no
   check. 2.63.0 keeps a user signed in through the client, but migrates over a guest and over a signed-out
-  `.default`; later releases also keep a signed-out `.default` (#36). The plugin's own migration deletes those logins at its first configure, so a plugin-only app has none
+  `.default`; later releases also keep a signed-out `.default` (#36), until a guest replaces it. The plugin's own migration deletes those logins at its first configure, so a plugin-only app has none
   left; a client-only app keeps them until `.default` signs out or is purged. An app moving from AWSMobileClient
   ships a plugin release that migrated them first.
 
