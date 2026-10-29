@@ -65,6 +65,9 @@ jobs:
             echo "build=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          # A file an Xcode project copies into a bundle (a host app's README, say) that is missing from the
+          # checkout breaks the copying target's build, which a skipped job can't show: fail here, naming the project.
+          python3 scripts/python/affected_targets.py --check-bundled
           base="$BASE_REF"
           git fetch --no-tags origin "$base" || true
           # With rename detection a rename lists only its new path. --renames gets each rename's old and new paths;

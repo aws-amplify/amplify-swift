@@ -47,22 +47,15 @@ new paths select, not every group. When the new path is ignored or unknown too (
 into `scripts/` or `.github/`, say), the old path fails closed, as its deletion would. A plain deletion
 is in the changed list and still fails closed.
 
-Documentation (`.md`) is ignored everywhere, except a file an Xcode project in the checkout copies into
-a bundle (a host app's README in a test target's Copy Bundle Resources): deleting or renaming that one
-breaks the build of the target that copies it, so it is attributed like any other host-app file, in
-every group file (a rename through its old path, which the project still lists). With the integration
-groups that selects the host app's own group. That catches the break only where the group's PR jobs
-build the copying target: six of the bundled READMEs are copied only by stress-test targets
-(GraphQLAPIStressTests, AnalyticsStressTests, AuthStressTests, DatastoreStressTests, GeoStressTests,
-StorageStressTests), which no PR job builds, so for those the selected jobs pass and the break shows
-only in stress_test.yml after the merge. With unit_test_groups.json it selects AWSPluginsCore, whose
-`paths` hold `AmplifyPlugins/` and so cover every plugin host app, as any other host-app file already
-does there: unit_test.yml then runs AWSPluginsCore's unit tests, and the three build workflows, which
-only check that something is selected, build the whole package on all their platforms. None of those
-builds a host app.
-The projects are read from `--repo-root` (default: the checkout that holds this script, wherever it is
-run from). A root with no Xcode project at all is treated as unread, so its docs count as bundled
-rather than none of them.
+Documentation (`.md`) is ignored everywhere, including a file an Xcode project copies into a bundle (a
+host app's README in a test target's Copy Bundle Resources): editing one changes nothing a build or test
+checks. Deleting or renaming one breaks the build of the target that copies it, which no selection can
+promise to catch (six of the bundled READMEs are copied only by stress-test targets, which no PR job
+builds), so the detect steps run `--check-bundled` before selecting: it fails, naming the project, when a
+file any Xcode project in the checkout lists in Copy Bundle Resources is missing from the checkout, other
+than one git ignores (an integration-test configuration CI writes before building). A project it can't
+read, or a root with no project at all, fails the check too. The projects are read from `--repo-root`
+(default: the checkout that holds this script, wherever it is run from).
 
 It also validates the group config: if any group references a target that is absent from the
 SwiftPM graph (a rename, a typo, or a not-yet-wired target), it exits non-zero rather than
@@ -72,29 +65,30 @@ Usage:
     python3 scripts/python/affected_targets.py \
         --package package.json --changed changed.txt [--renames renames.txt] \
         --groups scripts/python/<groups>.json
+    python3 scripts/python/affected_targets.py --check-bundled [--repo-root <checkout>]
 
-Writes to stdout (append to "$GITHUB_OUTPUT"):
+The selection writes to stdout (append to "$GITHUB_OUTPUT"):
     selected=<json array of affected group names>
     <group>=true|false        # one line per group, for use in job-level `if:`
+The check writes one `::error` workflow command per problem to stdout and exits 1, or a summary and 0.
 """
 import argparse
 import json
 import os
 import re
+import subprocess
 import sys
 
 # Paths that can never affect tests. Kept deliberately small — anything not listed here and not
 # owned by a target falls through to the fail-closed "run everything" branch.
-# Repo/editor metadata and documentation, ignored even inside a target directory (checked before
+# Repo/editor metadata and documentation, ignored even inside a target dir (checked before
 # target ownership). `.md` is here rather than in the unowned-only list below because a README/AGENTS
 # doc inside a target dir is usually just prose: it is never compiled, so editing it should not
-# trigger that target's 5-platform matrix. The exception is a file an Xcode project lists in a
-# target's Copy Bundle Resources phase (several integration host apps bundle their READMEs): deleting
-# or renaming it breaks that target's build, so such a file is NOT ignored and is attributed like
-# any other host-app file (see bundled_files). That runs a job that sees the break only where the
-# selected group's PR jobs build the copying target, which the stress-test targets' READMEs miss (see
-# the module docstring). (`.yml`/`.yaml` are deliberately NOT promoted — an
-# in-target YAML fixture is real test input and must stay owned; see the unowned-only list.)
+# trigger that target's 5-platform matrix. A README a host app copies into a bundle is ignored too:
+# editing it changes no test, and the deletion or rename that would break the copying target's build
+# is caught by `--check-bundled` instead (see the module docstring). (`.yml`/`.yaml` are deliberately
+# NOT promoted — an in-target YAML fixture is real test input and must stay owned; see the
+# unowned-only list.)
 ALWAYS_IGNORE_SUFFIXES = (".gitignore", ".gitattributes", ".swiftformat", ".editorconfig", ".md")
 ALWAYS_IGNORE_NAMES = ("LICENSE", "NOTICE", ".git-blame-ignore-revs", ".gitallowed",
                        # Xcode file-header template macros: an IDE authoring convenience only
@@ -157,7 +151,7 @@ def is_always_ignored(path):
     return path.endswith(ALWAYS_IGNORE_SUFFIXES) or path.rsplit("/", 1)[-1] in ALWAYS_IGNORE_NAMES
 
 
-# Directories bundled_files never descends into: VCS metadata and local build output.
+# Directories read_projects never descends into: VCS metadata and local build output.
 SCAN_SKIP_DIRS = {".git", ".build", "DerivedData", "node_modules"}
 
 # One token of an Xcode project file (an old-style ASCII property list): whitespace or a comment
@@ -274,19 +268,16 @@ def bundle_resources(project_dir, text):
     return copied
 
 
-def bundled_files(root):
-    """Return (bundled, unread) for the Xcode projects under the checkout at `root`.
+def read_projects(root):
+    """Return (bundles, unread) for the Xcode projects under the checkout at `root`.
 
-    `bundled` holds the repo-relative paths of every file a project copies into a bundle. `unread`
-    holds the repo-relative directories (with a trailing `/`) of projects that could not be parsed;
-    every ignorable file under one of them is treated as bundled, so a project this parser cannot read
-    makes its docs run their group rather than silently skipping a possible build break. A root with no
-    `project.pbxproj` at all (a wrong `--repo-root`, say) is unread as a whole, for the same reason.
+    `bundles` maps each readable project's repo-relative `.xcodeproj` path to the repo-relative paths of the files
+    it copies into a bundle. `unread` holds (project, error) for each project this parser could not read.
     """
     def rel(path):
         return os.path.relpath(os.path.normpath(path), root).replace(os.sep, "/")
 
-    bundled, unread, found = set(), [], False
+    bundles, unread = {}, []
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = sorted(d for d in dirnames if d not in SCAN_SKIP_DIRS)
         if not dirpath.endswith(".xcodeproj"):
@@ -294,20 +285,76 @@ def bundled_files(root):
         dirnames[:] = []
         if "project.pbxproj" not in filenames:
             continue
-        found = True
-        project_dir = os.path.dirname(dirpath)
         try:
             with open(os.path.join(dirpath, "project.pbxproj"), encoding="utf-8") as f:
-                bundled.update(rel(p) for p in bundle_resources(project_dir, f.read()))
-        except Exception as error:  # noqa: BLE001 -- any unreadable project fails safe, see above
-            sys.stderr.write("could not read the bundle resources of %s (%s); treating the files under "
-                             "its directory as bundled\n" % (rel(dirpath), error))
-            directory = rel(project_dir)
-            unread.append("" if directory == "." else directory + "/")
-    if not found:
-        sys.stderr.write("found no Xcode project under %s; treating every file under it as bundled\n" % root)
-        unread.append("")
-    return bundled, unread
+                bundles[rel(dirpath)] = {rel(p) for p in bundle_resources(os.path.dirname(dirpath), f.read())}
+        except Exception as error:  # noqa: BLE001 -- any unreadable project fails the check, see check_bundled
+            unread.append((rel(dirpath), error))
+    return bundles, unread
+
+
+def _escape(text, prop=False):
+    """`text` escaped for a GitHub workflow command's message (or, with `prop`, a property value)."""
+    text = text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+    return text.replace(":", "%3A").replace(",", "%2C") if prop else text
+
+
+def _error(message, project=None):
+    """An `::error` workflow command (annotating `project`'s project file, if given) on stdout."""
+    where = "" if project is None else " file=" + _escape(project + "/project.pbxproj", prop=True)
+    print("::error%s::%s" % (where, _escape(message)))
+
+
+def git_ignored(root, paths):
+    """The subset of the repo-relative `paths` that git ignores in the checkout at `root`. Raises OSError or
+    subprocess.CalledProcessError when git can't answer."""
+    if not paths:
+        return set()
+    result = subprocess.run(["git", "-C", root, "check-ignore", "-z", "--stdin"], input="\0".join(paths) + "\0",
+                            capture_output=True, text=True)
+    if result.returncode not in (0, 1):  # 1: none of them is ignored
+        raise subprocess.CalledProcessError(result.returncode, result.args, result.stdout, result.stderr)
+    return {p for p in result.stdout.split("\0") if p}
+
+
+def check_bundled(root):
+    """`--check-bundled`: 1 when a file an Xcode project under `root` copies into a bundle is missing from the
+    checkout, a project can't be read, or there is no project at all; otherwise 0.
+
+    A missing file git ignores is left out: the integration-test configurations (amplifyconfiguration.json,
+    amplify_outputs.json) are written by CI before a build and are absent from a fresh checkout. So is a reference
+    that resolves outside the checkout.
+    """
+    bundles, unread = read_projects(root)
+    if not bundles and not unread:
+        _error("found no Xcode project under %s, so no bundled file was checked; pass the checkout's root as "
+               "--repo-root" % root)
+        return 1
+    failed = False
+    for project, error in unread:
+        _error("could not read the bundle resources of %s (%s), so a file it copies into a bundle may be missing "
+               "unnoticed" % (project, error), project)
+        failed = True
+    missing = {project: sorted(f for f in files if not f.startswith("../") and
+                               not os.path.exists(os.path.join(root, f)))
+               for project, files in bundles.items()}
+    try:
+        ignored = git_ignored(root, sorted({f for files in missing.values() for f in files}))
+    except (OSError, subprocess.CalledProcessError) as error:
+        _error("could not ask git which of the missing bundled files it ignores (%s)"
+               % (getattr(error, "stderr", None) or error).strip())
+        return 1
+    for project, files in sorted(missing.items()):
+        for f in files:
+            if f not in ignored:
+                _error("%s copies %s into a bundle (Copy Bundle Resources), but the file is not in the checkout. "
+                       "Restore it, or update the project: remove the reference, or point it at the file's new path."
+                       % (project, f), project)
+                failed = True
+    if not failed:
+        print("checked the %d files %d Xcode projects copy into bundles: none is missing"
+              % (sum(len(files) for files in bundles.values()), len(bundles)))
+    return 1 if failed else 0
 
 
 def build_graph(pkg):
@@ -355,17 +402,23 @@ def read_renames(path):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--package", required=True, help="swift package dump-package JSON")
-    ap.add_argument("--changed", required=True,
+    ap.add_argument("--check-bundled", action="store_true",
+                    help="instead of selecting, fail when a file an Xcode project copies into a bundle is missing")
+    ap.add_argument("--package", help="swift package dump-package JSON")
+    ap.add_argument("--changed",
                     help="file with one changed path per line, from a rename-detecting diff (a rename's new path)")
     ap.add_argument("--renames",
                     help="file with one rename per line, the old and new paths tab-separated; an old path is "
                          "attributed, and an unknown one fails closed unless the new path is attributed")
-    ap.add_argument("--groups", required=True, help="group definition JSON")
+    ap.add_argument("--groups", help="group definition JSON")
     ap.add_argument("--repo-root", default=SCRIPT_CHECKOUT,
-                    help="checkout whose Xcode projects are read for bundled docs (default: the one holding "
-                         "this script)")
+                    help="checkout whose Xcode projects --check-bundled reads (default: the one holding this "
+                         "script)")
     args = ap.parse_args()
+    if args.check_bundled:
+        sys.exit(check_bundled(args.repo_root))
+    if not (args.package and args.changed and args.groups):
+        ap.error("--package, --changed and --groups are required unless --check-bundled is given")
 
     pkg = json.load(open(args.package))
     groups = json.load(open(args.groups))
@@ -374,14 +427,7 @@ def main():
     renamed_from = [old for old, _ in renames]
 
     path_of, deps_of, is_test = build_graph(pkg)
-
-    # An always-ignored file is ignored unless an Xcode project copies it into a bundle (see
-    # ALWAYS_IGNORE_SUFFIXES). The projects are read only when some changed file needs the answer.
-    bundled, unread = (bundled_files(args.repo_root)
-                       if any(is_always_ignored(f) for f in changed + renamed_from) else (set(), []))
-
-    def ignored(f):
-        return is_always_ignored(f) and f not in bundled and not f.startswith(tuple(unread))
+    ignored = is_always_ignored
 
     # Guard: every target a group references must exist in the SwiftPM graph. Otherwise a group
     # naming a renamed, mistyped, or not-yet-wired target would silently never be selected and its
@@ -477,9 +523,8 @@ def main():
         # else: owned by a non-group source target -> selects nothing (see comment above).
 
     # Groups selected by a path rule (dirs that are not SwiftPM targets). An ignored file (a README
-    # under a group's path that no Xcode project bundles, say) selects nothing here either, as in the
-    # file loop above; a README a host app bundles selects every group whose path covers it (with the unit
-    # groups, AWSPluginsCore's `AmplifyPlugins/`). A rename's old path counts here too.
+    # under a group's path, bundled or not) selects nothing here either, as in the file loop above.
+    # A rename's old path counts here too.
     relevant = [f for f in changed + renamed_from if not ignored(f)]
     for name, group in groups.items():
         if any(f.startswith(p) for p in group.get("paths", []) for f in relevant):
