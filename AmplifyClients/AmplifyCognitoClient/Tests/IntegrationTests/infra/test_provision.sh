@@ -16,8 +16,12 @@
 # AWS call, and so is one with it while AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY or AWS_SESSION_TOKEN is exported (the
 # CLI would take the keys over the profile), or AWS_ROLE_ARN, AWS_WEB_IDENTITY_TOKEN_FILE or an
 # AWS_CONTAINER_CREDENTIALS_* variable (its web identity provider, and its container provider, which the CLI uses only
-# when the profile holds no credentials, refused anyway), and one with it and none of them goes on; that once state.json
-# records the account, exported keys go on to the caller's identity, which the account check compares; that the region
+# when the profile holds no credentials, refused anyway), and one with it and none of them goes on only when `aws
+# configure list` reports credentials the profile holds itself (keys, sso, login, credential_process, an assumed role),
+# in the CLI's current table and its older one, and is refused before any AWS call when it reports an instance role,
+# container or environment credentials, a legacy credentials file, none, or fails; that once state.json
+# records the account, exported keys and an instance role go on to the caller's identity, which the account check
+# compares, without `configure list`; that the region
 # refusal points at a teardown, and a sandbox in another region (its global role's identity pool) is refused before any
 # change, with no region recorded and with one recorded (another state directory's sandbox); that find_by_name follows
 # NextToken to the page that has the name, and stops at the last page without it; and that record_state merges into
@@ -32,7 +36,22 @@ cat > "$WORK/bin/aws" <<'EOF'
 #!/usr/bin/env bash
 echo "$*" >> "$FAKE_LOG"
 # FAKE_ACCOUNT and FAKE_ROLE_AUDIENCE answer the caller's identity and the authenticated role's audience (the only
-# reads the region guard needs); every other call is refused.
+# reads the region guard needs). `configure list` prints the CLI's table for a profile set by AWS_PROFILE whose
+# credentials have type FAKE_CREDENTIAL_TYPE (none when it is empty), in the older layout when FAKE_LIST_LAYOUT is
+# spaces, and fails when FAKE_LIST_FAILS is not empty. Every other call is refused.
+if [[ "$*" == "configure list" ]]; then
+    [[ -z "${FAKE_LIST_FAILS:-}" ]] || { echo "The config profile (sandbox) could not be found" >&2; exit 255; }
+    type="${FAKE_CREDENTIAL_TYPE:-None}" key="****************WXYZ" location=""
+    [[ "$type" != None ]] || { key="<not set>"; location=None; }
+    rows=(profile sandbox env "['AWS_PROFILE', 'AWS_DEFAULT_PROFILE']" access_key "$key" "$type" "$location"
+        secret_key "$key" "$type" "$location" region us-west-2 config-file "~/.aws/config")
+    if [[ "${FAKE_LIST_LAYOUT:-}" == spaces ]]; then
+        printf '%10s %24s %16s    %s\n' Name Value Type Location ---- ----- ---- -------- "${rows[@]}"
+    else
+        printf '%-10s : %-24s : %-16s : %s\n' NAME VALUE TYPE LOCATION "${rows[@]}"
+    fi
+    exit 0
+fi
 case "$*" in
     *"sts get-caller-identity"*) [[ -z "${FAKE_ACCOUNT:-}" ]] || { echo "$FAKE_ACCOUNT"; exit 0; } ;;
     *"iam get-role"*) [[ -z "${FAKE_ROLE_AUDIENCE:-}" ]] || { echo "$FAKE_ROLE_AUDIENCE"; exit 0; } ;;
@@ -43,6 +62,8 @@ EOF
 chmod +x "$WORK/bin/aws"
 export PATH="$WORK/bin:$PATH" FAKE_LOG="$WORK/calls.log" COGNITO_CLIENT_INTEG_DIR="$WORK/state"
 export COGNITO_CLIENT_INTEG_MIN_FREE_GIB=0 AWS_CONFIG_FILE=/dev/null AWS_SHARED_CREDENTIALS_FILE=/dev/null
+export AWS_EC2_METADATA_DISABLED=true FAKE_CREDENTIAL_TYPE=shared-credentials-file
+unset FAKE_LIST_LAYOUT FAKE_LIST_FAILS
 unset AWS_PROFILE AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_ROLE_ARN AWS_WEB_IDENTITY_TOKEN_FILE
 for variable in $(compgen -e | grep '^AWS_CONTAINER_CREDENTIALS_' || true); do
     unset "$variable"
@@ -125,10 +146,59 @@ a_first_run_with_web_identity_or_container_credentials_is_refused_before_any_aws
     done
 }
 
-# Once state.json records the account, the caller's identity is compared with it, so exported keys may be used.
+# A profile that holds no credentials of its own leaves the CLI to fall back to an EC2 instance role, container
+# credentials, the environment or a legacy credentials file, each in an account the profile does not choose. So with no
+# account recorded, a run with AWS_PROFILE goes on to the caller's identity only when `aws configure list` reports
+# credentials the profile itself holds, in the CLI's current table and its older one.
+a_first_run_with_the_profiles_own_credentials_goes_on_to_the_callers_identity() {
+    local type layout
+    for layout in colons spaces; do
+        for type in shared-credentials-file config-file sso login custom-process assume-role \
+            assume-role-with-web-identity; do
+            : > "$FAKE_LOG"
+            STATUS=0
+            OUT=$(FAKE_CREDENTIAL_TYPE="$type" FAKE_LIST_LAYOUT="$layout" AWS_PROFILE=sandbox \
+                COGNITO_CLIENT_INTEG_DIR="$WORK/fresh" "$SCRIPT" us-west-2 2>&1) || STATUS=$?
+            (( STATUS != 0 )) && [[ "$OUT" != *"no account is recorded"* ]] \
+                && grep -q '^configure list$' "$FAKE_LOG" && grep -q -- 'sts get-caller-identity' "$FAKE_LOG" \
+                || { echo "$type ($layout): $OUT"; return 1; }
+        done
+    done
+}
+
+# ...and any other type, none, or a `configure list` that fails is refused before any AWS call, naming the type.
+a_first_run_without_the_profiles_own_credentials_is_refused_before_any_aws_call() {
+    local type layout expected fails
+    for layout in colons spaces; do
+        for type in iam-role container-role env ec2-credentials-file boto-config None failed; do
+            : > "$FAKE_LOG"
+            STATUS=0
+            fails=""
+            [[ "$type" != failed ]] || fails=1
+            case "$type" in
+                None) expected="the profile AWS_PROFILE names resolves no credentials" ;;
+                failed) expected="the CLI cannot resolve the profile's credentials" ;;
+                *) expected="the profile AWS_PROFILE names takes its credentials from $type (" ;;
+            esac
+            OUT=$(FAKE_CREDENTIAL_TYPE="$type" FAKE_LIST_LAYOUT="$layout" FAKE_LIST_FAILS="$fails" \
+                AWS_PROFILE=sandbox COGNITO_CLIENT_INTEG_DIR="$WORK/fresh" "$SCRIPT" us-west-2 2>&1) || STATUS=$?
+            (( STATUS == 1 )) && [[ "$OUT" == *"no account is recorded"*"$expected"* ]] \
+                && [[ "$OUT" == *"falls back to an EC2 instance role"* ]] && [[ "$OUT" != *WXYZ* ]] \
+                && grep -q '^configure list$' "$FAKE_LOG" && ! grep -v '^configure ' "$FAKE_LOG" | grep -q . \
+                || { echo "$type ($layout): $OUT"; return 1; }
+        done
+    done
+}
+
+# Once state.json records the account, the caller's identity is compared with it, so exported keys may be used, and so
+# may credentials the profile does not hold (an instance role), without asking `configure list`.
 a_recorded_account_lets_exported_keys_go_on_to_the_callers_identity() {
     AWS_ACCESS_KEY_ID=placeholder-key-value run
-    (( STATUS != 0 )) && [[ "$OUT" != *"exports AWS_ACCESS_KEY_ID"* ]] && grep -q -- 'sts get-caller-identity' "$FAKE_LOG"
+    (( STATUS != 0 )) && [[ "$OUT" != *"exports AWS_ACCESS_KEY_ID"* ]] \
+        && grep -q -- 'sts get-caller-identity' "$FAKE_LOG" || return 1
+    FAKE_CREDENTIAL_TYPE=iam-role run
+    (( STATUS != 0 )) && [[ "$OUT" != *"takes its credentials from"* ]] && ! grep -q '^configure list' "$FAKE_LOG" \
+        && grep -q -- 'sts get-caller-identity' "$FAKE_LOG"
 }
 
 # The region refusal points at a teardown, not at another state directory, which would build the second sandbox.
@@ -235,7 +305,11 @@ check "with no account recorded, a run with AWS_PROFILE and exported access keys
     a_first_run_with_exported_keys_is_refused_before_any_aws_call
 check "with no account recorded, a run with AWS_PROFILE and web identity or container credentials is refused" \
     a_first_run_with_web_identity_or_container_credentials_is_refused_before_any_aws_call
-check "with an account recorded, a run with exported access keys goes on to the caller's identity" \
+check "with no account recorded, a run with AWS_PROFILE and the profile's own credentials goes on" \
+    a_first_run_with_the_profiles_own_credentials_goes_on_to_the_callers_identity
+check "with no account recorded, a run with AWS_PROFILE and an instance role or other fallback is refused" \
+    a_first_run_without_the_profiles_own_credentials_is_refused_before_any_aws_call
+check "with an account recorded, a run with exported access keys or an instance role goes on to the caller's identity" \
     a_recorded_account_lets_exported_keys_go_on_to_the_callers_identity
 check "the region refusal points at a teardown, not at another state directory" \
     the_region_refusal_does_not_advise_another_state_directory
