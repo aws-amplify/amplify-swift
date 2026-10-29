@@ -20738,13 +20738,153 @@
             "usr": "s:7Amplify14AuthSignUpStepO4doneyA2CmF",
             "mangledName": "$s7Amplify14AuthSignUpStepO4doneyA2CmF",
             "moduleName": "Amplify"
+          },
+          {
+            "kind": "Var",
+            "name": "description",
+            "printedName": "description",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:7Amplify14AuthSignUpStepO11descriptionSSvp",
+            "mangledName": "$s7Amplify14AuthSignUpStepO11descriptionSSvp",
+            "moduleName": "Amplify",
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:7Amplify14AuthSignUpStepO11descriptionSSvg",
+                "mangledName": "$s7Amplify14AuthSignUpStepO11descriptionSSvg",
+                "moduleName": "Amplify",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "debugDescription",
+            "printedName": "debugDescription",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:7Amplify14AuthSignUpStepO16debugDescriptionSSvp",
+            "mangledName": "$s7Amplify14AuthSignUpStepO16debugDescriptionSSvp",
+            "moduleName": "Amplify",
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:7Amplify14AuthSignUpStepO16debugDescriptionSSvg",
+                "mangledName": "$s7Amplify14AuthSignUpStepO16debugDescriptionSSvg",
+                "moduleName": "Amplify",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "customMirror",
+            "printedName": "customMirror",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Mirror",
+                "printedName": "Swift.Mirror",
+                "usr": "s:s6MirrorV"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:7Amplify14AuthSignUpStepO12customMirrors0G0Vvp",
+            "mangledName": "$s7Amplify14AuthSignUpStepO12customMirrors0G0Vvp",
+            "moduleName": "Amplify",
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Mirror",
+                    "printedName": "Swift.Mirror",
+                    "usr": "s:s6MirrorV"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:7Amplify14AuthSignUpStepO12customMirrors0G0Vvg",
+                "mangledName": "$s7Amplify14AuthSignUpStepO12customMirrors0G0Vvg",
+                "moduleName": "Amplify",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
           }
         ],
         "declKind": "Enum",
         "usr": "s:7Amplify14AuthSignUpStepO",
         "mangledName": "$s7Amplify14AuthSignUpStepO",
         "moduleName": "Amplify",
-        "isEnumExhaustive": true
+        "isEnumExhaustive": true,
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomReflectable",
+            "printedName": "CustomReflectable",
+            "usr": "s:s17CustomReflectableP",
+            "mangledName": "$ss17CustomReflectableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          }
+        ]
       },
       {
         "kind": "TypeDecl",

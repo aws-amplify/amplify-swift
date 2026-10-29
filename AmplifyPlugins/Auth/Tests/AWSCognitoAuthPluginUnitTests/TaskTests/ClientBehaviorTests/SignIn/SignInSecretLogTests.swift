@@ -12,13 +12,15 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import InternalAWSCognitoAuth
 
-/// The plugin logs none of a sign-in's secrets, at any level: the user's answer to `confirmSignIn`, and the session
-/// `VerifySoftwareToken` returns while a TOTP setup finishes, reach the verbose "Checking next step for:" and
-/// "Sending event" lines inside the states and events that carry them.
+/// The plugin logs none of a sign-in's or sign-up's secrets, at any level: the user's answer to `confirmSignIn`,
+/// the session `VerifySoftwareToken` returns while a TOTP setup finishes, and the auto sign-in session a sign-up
+/// result carries. The answer and the TOTP session reach the verbose "Checking next step for:" and "Sending event"
+/// lines inside the states and events that carry them; the sign-up session reaches the task's result line at info.
 final class SignInSecretLogTests: BasePluginTest, @unchecked Sendable {
 
     private static let answer = "S3cret-4821"
     private static let totpSession = "totp-verify-session-value"
+    private static let signUpSession = "auto-sign-in-session-value"
 
     private var capture: CapturingLoggingPlugin!
     private var savedPlugins: [PluginKey: LoggingCategoryPlugin] = [:]
@@ -154,5 +156,52 @@ final class SignInSecretLogTests: BasePluginTest, @unchecked Sendable {
         XCTAssertEqual(sent.count, 1, "\(capture.lines.map(\.message))")
         XCTAssertTrue(sent.first?.contains(#"respondToAuthChallenge("<REDACTED>")"#) == true, sent.first ?? "-")
         assertNoLineHolds([Self.totpSession], answers: [code])
+    }
+
+    /// Test that the sign-up results that carry the auto sign-in session log it redacted
+    ///
+    /// - Given: a signed-out plugin whose user pool answers a passwordless sign-up as confirmed with a session, and a
+    ///   confirmation with another session, and a capturing logging plugin at verbose
+    /// - When:
+    ///    - I sign up, then confirm the sign-up
+    /// - Then:
+    ///    - each result is `.completeAutoSignIn` with its session in full
+    ///    - each task's result line, at info, shows `completeAutoSignIn("<REDACTED>")`, and no log line holds either
+    ///      session in full (the sign-up state's line masks it, as before)
+    ///
+    func testTheSignUpResultsLogTheAutoSignInSessionRedacted() async throws {
+        let confirmSession = "confirm-sign-up-session-value"
+        let userPool = MockIdentityProvider(
+            mockSignUpResponse: { _ in
+                .init(codeDeliveryDetails: nil, session: Self.signUpSession, userConfirmed: true, userSub: "sub")
+            },
+            mockConfirmSignUpResponse: { _ in .init(session: confirmSession) }
+        )
+        let plugin = configureCustomPluginWith(
+            userPool: { userPool },
+            initialState: .configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)
+        )
+
+        let signUp = try await plugin.signUp(username: "jeffb", options: .init())
+        let confirmed = try await plugin.confirmSignUp(for: "jeffb", confirmationCode: "123456", options: .init())
+
+        guard case .completeAutoSignIn(let signUpSession) = signUp.nextStep,
+              case .completeAutoSignIn(let confirmedSession) = confirmed.nextStep else {
+            return XCTFail("expected .completeAutoSignIn, got \(signUp.nextStep) and \(confirmed.nextStep)")
+        }
+        XCTAssertEqual(signUpSession, Self.signUpSession)
+        XCTAssertEqual(confirmedSession, confirmSession)
+        for eventName in [HubPayload.EventName.Auth.signUpAPI, HubPayload.EventName.Auth.confirmSignUpAPI] {
+            let resultLines = capture.lines.filter {
+                $0.message.hasPrefix("Successfully completed execution for \(eventName) with result:")
+            }
+            XCTAssertEqual(resultLines.count, 1, eventName)
+            XCTAssertEqual(resultLines.first?.level, "info", eventName)
+            XCTAssertTrue(
+                resultLines.first?.message.contains(#"completeAutoSignIn("<REDACTED>")"#) == true,
+                resultLines.first?.message ?? "-"
+            )
+        }
+        assertNoLineHolds([Self.signUpSession, confirmSession])
     }
 }

@@ -62,6 +62,39 @@ package enum EngineSignUpStep {
 
 extension EngineSignUpStep: Sendable { }
 
+// Printed as `Amplify.AuthSignUpStep` prints, with the auto sign-in session redacted, so the engine's text still
+// normalises to the public one.
+extension EngineSignUpStep: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+
+    package var description: String {
+        switch self {
+        case .confirmUser(let details, let additionalInfo, let userId):
+            return "confirmUser(\(String(reflecting: details)), \(String(reflecting: additionalInfo)), "
+                + "\(String(reflecting: userId)))"
+        case .completeAutoSignIn(let session):
+            return "completeAutoSignIn(\(String(reflecting: session.redactedForLog())))"
+        case .done:
+            return "done"
+        }
+    }
+
+    package var debugDescription: String {
+        "\(String(reflecting: Self.self)).\(description)"
+    }
+
+    /// For `dump` and debuggers: the auto sign-in session redacted.
+    package var customMirror: Mirror {
+        switch self {
+        case .confirmUser(let details, let additionalInfo, let userId):
+            return Mirror(self, children: ["confirmUser": (details, additionalInfo, userId)], displayStyle: .enum)
+        case .completeAutoSignIn(let session):
+            return Mirror(self, children: ["completeAutoSignIn": session.redactedForLog()], displayStyle: .enum)
+        case .done:
+            return Mirror(self, children: [:], displayStyle: .enum)
+        }
+    }
+}
+
 /// A user attribute on its way to Cognito: the wire name and the value.
 ///
 /// The engine's copy of `Amplify.AuthUserAttribute`, with the key as the Cognito name
