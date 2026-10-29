@@ -33,7 +33,7 @@ hands over its CodeSha256 and the presigned URL of its deployed zip, which this 
         nothing either (exit 1) while a deployed function could not be read or was not compared (no zip from this
         checkout: the custom sender's needs npm), or any function of SOURCES (every one this script zips) is not
         deployed: a baseline holds all of them, so a record never leaves one out, nor drops one.
-    lambda_code.py check-baseline [--baseline FILE] [--github]
+    lambda_code.py check-baseline [--baseline FILE]
         Offline: whether the sources each recorded function was accepted for are still this checkout's. Exit 0
         when they are, 1 when one changed (redeploy it, then lambda-drift), 3 when no baseline is recorded (or it
         records no function).
@@ -422,23 +422,21 @@ def record(argv):
 
 
 def check_baseline(argv):
-    github = "--github" in argv
     baseline = load_baseline(baseline_path(argv))
     if not baseline:  # None, or a baseline of no function (one recorded against another region or account)
-        say("No CI Lambda deployment is recorded (infra/ci/lambda-baseline.json, or it records no function): run "
-            "infra/ci/provision-ci.sh lambda-drift (read-only), then lambda-drift --record --accept-deployed once "
-            "you accept what it shows, and commit the file.", github, "warning")
+        print("No CI Lambda deployment is recorded (infra/ci/lambda-baseline.json, or it records no function): run "
+              "infra/ci/provision-ci.sh lambda-drift (read-only), then lambda-drift --record --accept-deployed once "
+              "you accept what it shows, and commit the file.")
         return 3
     changed = [suffix for suffix, entry in sorted(baseline.items())
                if suffix in SOURCES and (not isinstance(entry, dict) or entry.get("sources") != source_digest(suffix))]
     for suffix in changed:
-        say(f"CHANGED {PREFIX}{suffix}: its sources are not the ones its recorded deployment was accepted for. "
-            f"Redeploy it: first check that it carries purpose=amplify-cognito-client-integ (aws lambda list-tags), "
-            f"and only then delete the function and rerun infra/ci/{ALL_SCOPES} {PHASE_1}. Then record it again: "
-            f"lambda-drift --record --accept-deployed.", github, "error")
+        print(f"CHANGED {PREFIX}{suffix}: its sources are not the ones its recorded deployment was accepted for. "
+              f"Redeploy it: first check that it carries purpose=amplify-cognito-client-integ (aws lambda list-tags), "
+              f"and only then delete the function and rerun infra/ci/{ALL_SCOPES} {PHASE_1}. Then record it again: "
+              f"lambda-drift --record --accept-deployed.")
     if not changed:
-        say(f"The sources of the {len(baseline)} recorded CI Lambdas are the ones their deployment was accepted for.",
-            github)
+        print(f"The sources of the {len(baseline)} recorded CI Lambdas are the ones their deployment was accepted for.")
     return 1 if changed else 0
 
 

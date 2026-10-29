@@ -408,8 +408,8 @@ an_accepted_deployment_is_in_sync_until_its_sources_change() {
     (( STATUS == 0 )) || { echo "check-baseline: $OUT"; return 1; }
     # triggers.mjs changes: the accepted deployment of pre-sign-up is no longer this checkout's.
     echo '// changed' >> "$COPY/lambda/triggers/triggers.mjs"
-    run check-baseline --baseline "$BASELINE" --github
-    (( STATUS == 1 )) && [[ "$OUT" == *"::error::CHANGED ccit-ci-pre-sign-up"* && "$OUT" != *discard-sender* ]] \
+    run check-baseline --baseline "$BASELINE"
+    (( STATUS == 1 )) && [[ "$OUT" == *"CHANGED ccit-ci-pre-sign-up:"* && "$OUT" != *discard-sender* && "$OUT" != *"::"* ]] \
         && [[ "$OUT" == *"purpose=amplify-cognito-client-integ"* ]] || { echo "check-baseline after the change: $OUT"; return 1; }
     build_all "$WORK/r2"
     run compare "$WORK/deployed.json" "$WORK/r2" --baseline "$BASELINE"
@@ -527,8 +527,8 @@ nothing_deployed_is_refused() {
     (( STATUS == 1 )) && [[ "$OUT" == *"Nothing recorded. No ccit-ci- function is deployed"* && ! -e "$baseline" ]] \
         || { echo "record: $OUT"; return 1; }
     echo '{"functions": {}}' > "$baseline"
-    run check-baseline --baseline "$baseline" --github
-    (( STATUS == 3 )) && [[ "$OUT" == "::warning::No CI Lambda deployment is recorded"*"or it records no function"* ]] \
+    run check-baseline --baseline "$baseline"
+    (( STATUS == 3 )) && [[ "$OUT" == "No CI Lambda deployment is recorded"*"or it records no function"* ]] \
         || { echo "check-baseline: $OUT"; return 1; }
 }
 
@@ -609,8 +609,8 @@ PY
 }
 
 no_baseline_is_its_own_status() {
-    run check-baseline --baseline "$WORK/none.json" --github
-    (( STATUS == 3 )) && [[ "$OUT" == "::warning::No CI Lambda deployment is recorded"* ]]
+    run check-baseline --baseline "$WORK/none.json"
+    (( STATUS == 3 )) && [[ "$OUT" == "No CI Lambda deployment is recorded"* ]]
 }
 
 # deployed.json holds presigned URLs: compare and record refuse it (status 4, before any download) unless only its
@@ -687,7 +687,7 @@ check "a function not compared (no zip from this checkout) is never recorded" an
 check "a corrupt or encrypted member is unreadable, exit 1, not a traceback" a_corrupt_or_encrypted_member_is_unreadable
 check "a record, the first one too, refuses while any function is not deployed; the complete set records" \
     a_record_holds_every_function
-check "no baseline is status 3 with a warning" no_baseline_is_its_own_status
+check "no baseline is status 3" no_baseline_is_its_own_status
 check "a deployed.json anyone but its owner can read is refused, status 4" a_deployed_json_others_can_read_is_refused
 check "no download directory is left behind" no_download_directory_is_left_behind
 check "an unexpected error is status 4, never 1" an_unexpected_error_is_status_4

@@ -41,9 +41,7 @@
 # no user pool, the sandbox's mark, a credentials file that is not all strings, a rotation client on another
 # pool, an alias-codes pool without email as the username or a code API, capabilities that are not the known
 # ones, an MFA-required file whose MFA is not required, or whose mfa_methods is not an array of exactly TOTP and
-# SMS) refuses the whole overlay: exit 1, no <dest-dir>. With the extended role, it also prints the code sink key's
-# reminder (code_sink_key.py) as a GitHub annotation, within the key's last 30 days or once it has expired. Prints
-# file names and roles, never their contents.
+# SMS) refuses the whole overlay: exit 1, no <dest-dir>. Prints file names and roles, never their contents.
 set -euo pipefail
 
 usage() {
@@ -200,13 +198,4 @@ if [[ -n "$CAPABILITIES" ]]; then
             "$DEST/AmplifyCognitoClientIntegrationTests-capabilities.json"))"
 fi
 find "$DEST" -type f -exec chmod 600 {} +
-# The extended role's files name the code sink's API key: within its last 30 days, or once it has expired, every
-# client CI run says so, as a GitHub annotation (code_sink_key.py, over the committed record; no AWS call).
-for entry in "${PLAN[@]}"; do
-    if [[ "${entry%% *}" == ccit-ci-default-amplify_outputs.json ]]; then
-        key_status=0
-        key_note=$(python3 "$(dirname "${BASH_SOURCE[0]}")/code_sink_key.py" check --github 2>/dev/null) || key_status=$?
-        (( key_status != 1 )) || printf '%s\n' "$key_note"
-    fi
-done
 echo "ci-overlay: wrote $(find "$DEST" -type f | wc -l | tr -d ' ') files into $DEST"
