@@ -14,7 +14,7 @@ import XCTest
 /// session, so no test touches process-wide state or the real keychain.
 final class ClientHarness: @unchecked Sendable {
 
-    let keychain = TestKeychain()
+    let keychain: TestKeychain
     let registry: SessionCoreDependencies.Registry
     let gates = SessionRecordGates()
     let revoker = FakeRevoker()
@@ -45,11 +45,15 @@ final class ClientHarness: @unchecked Sendable {
     ///   - restoreBound: Generous by default, so a slow machine never trips it by accident.
     ///   - restoresOnConstruction: Whether construction schedules a warm restore, as `live` does. Off by
     ///     default, so a test controls exactly when storage is read.
+    ///   - keychain: Another harness's, to model a relaunch, or a second process sharing the access group: a new
+    ///     registry, gate table and record memory over the same saved records.
     init(
         registry: SessionCoreDependencies.Registry = .init(),
         restoreBound: UInt64 = 60_000_000_000,
-        restoresOnConstruction: Bool = false
+        restoresOnConstruction: Bool = false,
+        keychain: TestKeychain = TestKeychain()
     ) {
+        self.keychain = keychain
         self.registry = registry
         self.restoreBound = restoreBound
         self.restoresOnConstruction = restoresOnConstruction

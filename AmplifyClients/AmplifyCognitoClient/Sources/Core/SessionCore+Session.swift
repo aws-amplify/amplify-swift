@@ -61,10 +61,10 @@ extension SessionCore {
                 return try await fetchSession(forceRefresh: forceRefresh && acquisition == .adopted, adopted: true)
             }
         case .guest, .federated, .signedIn:
-            if let dead = expired {
-                // The dead credentials, not the snapshot's: the same login saved again since (other bytes, or the
+            if let expired {
+                // The expiry's cause, not the snapshot's: the same login saved again since (other bytes, or the
                 // plugin's expired flag) answers as the proof did.
-                return Self.session(failingWith: expiredError(holding: dead))
+                return Self.session(failingWith: expiredError(expired))
             }
             guard let payload = snapshot.credentials else {
                 return Self.session(failingWith: Self.notSignedIn(sessionId))

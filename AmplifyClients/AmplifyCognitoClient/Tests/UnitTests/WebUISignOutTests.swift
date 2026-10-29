@@ -988,6 +988,47 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(again, .complete)
     }
 
+    /// The #3956 exception holds after a relaunch: the expiry is saved with the record.
+    ///
+    /// - Given: a shared-cookie session whose refresh token a refresh proved dead, then a relaunch (a new harness over
+    ///   the same keychain)
+    /// - When: the user closes the relaunched session's logout page
+    /// - Then:
+    ///    - the sign-out reruns with the hosted UI skipped and signs out: `.partial`, with the expired session's
+    ///      `.userCancelled` as `hostedUIError`
+    ///    - nothing was refreshed after the relaunch
+    func testClosingTheLogoutPageOfASessionExpiredBeforeARelaunchStillSignsOut() async throws {
+        var payload = HostedUIFixtures.hostedUIPayload()
+        payload.stale = true
+        try harness.signIn(work, payload)
+        var expiring: AmplifyCognitoClient? = try client(work)
+        harness.engine(for: work)?.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
+        _ = try await XCTUnwrap(expiring).fetchAuthSession()
+        expiring = nil
+        await harness.waitForBaseline()
+
+        let relaunched = ClientHarness(keychain: harness.keychain)
+        var client: AmplifyCognitoClient? = try relaunched.client(work, configuration: HostedUIFixtures.configuration)
+        let engine = try XCTUnwrap(relaunched.engine(for: work))
+        engine.scriptHostedUIRevoke { _, _, plan in
+            if case .present = plan {
+                throw AuthClientError.userCancelled("closed", "Sign out again.")
+            }
+            return .complete
+        }
+        let result = try await signOut(XCTUnwrap(client))
+        client = nil
+
+        XCTAssertEqual(plans(engine), ["present", "skip"])
+        XCTAssertEqual(hostedUIError(result)?.kind, .userCancelled)
+        XCTAssertEqual(hostedUIError(result)?.errorDescription, SessionCore.expiredLogoutClosedDescription)
+        XCTAssertEqual(try relaunched.storedRecord(work)?.isSignedOut, true)
+        XCTAssertEqual(engine.refreshCalls, [])
+        let holder = await relaunched.sheetLock.currentHolder
+        XCTAssertNil(holder, "the relaunched session left the sheet held")
+        await relaunched.waitForBaseline()
+    }
+
     /// The #3956 exception covers only the login proved dead
     ///
     /// - Given: a shared-cookie session whose refresh token a refresh proved dead, then a new login with another refresh

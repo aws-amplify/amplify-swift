@@ -277,6 +277,24 @@ struct SessionRecordStore: Sendable {
         return committed ? .committed(VersionedSessionRecord(envelope)) : .discarded
     }
 
+    /// Saves `deadToken` with the session's record (`SessionRecord.deadToken`), while it still is the record the caller
+    /// read (`expected`) and holds credentials; otherwise `.discarded`, and nothing is written. The credentials are kept
+    /// as they are. A named session's envelope is written one generation on, through the commit guard; `.default`'s
+    /// marker goes in its sidecar, and the Auth plugin's record is left alone (`saveDefaultDeadToken`).
+    ///
+    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written.
+    func saveDeadToken(_ deadToken: DeadToken, for sessionId: SessionID, expecting expected: RecordVersion?) throws -> CommitOutcome {
+        if sessionId == .default {
+            return try saveDefaultDeadToken(deadToken, expecting: expected)
+        }
+        guard case .record(let stored) = try read(sessionId), stored.version == expected, stored.record.credentials != nil else {
+            return .discarded
+        }
+        var record = stored.record
+        record.deadToken = deadToken
+        return try write(record, for: sessionId, expecting: expected, recordingMarker: false)
+    }
+
     // MARK: Sign-out and purge
 
     /// What a sign-out did.

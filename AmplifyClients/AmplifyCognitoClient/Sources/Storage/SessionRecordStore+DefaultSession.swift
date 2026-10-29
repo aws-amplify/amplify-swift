@@ -208,7 +208,10 @@ extension SessionRecordStore {
             kind: kind,
             credentials: bytes,
             // Derived: `.default` has no envelope to hold the flag.
-            identityPending: summary.kind == .userPoolOnly && namespace.pools.hasIdentityPool
+            identityPending: summary.kind == .userPoolOnly && namespace.pools.hasIdentityPool,
+            // The sidecar's, whatever user it names: it applies only while these bytes hold the token it names, which
+            // the core checks (`SessionCore.savedExpiry(in:)`).
+            deadToken: sidecar?.deadToken
         )
     }
 
@@ -311,10 +314,46 @@ extension SessionRecordStore {
             }
             (username, userId) = Self.isUserKind(record.kind) ? (record.username, record.userId) : (nil, nil)
         }
-        guard previous != nil || label != nil || username != nil || userId != nil else {
+        // Only what `record` itself says: a write of other credentials (a refresh, a new login) or a sign-out ends it.
+        let deadToken = record.credentials == nil ? nil : record.deadToken
+        guard previous != nil || label != nil || username != nil || userId != nil || deadToken != nil else {
             return nil
         }
-        return DefaultSessionMeta(lastWriteTimestamp: now(), label: label, username: username, userId: userId)
+        return DefaultSessionMeta(lastWriteTimestamp: now(), label: label, username: username, userId: userId, deadToken: deadToken)
+    }
+
+    // MARK: Dead token
+
+    /// `saveDeadToken(_:for:expecting:)` for `.default`: the sidecar only, guarded on its bytes, while the shared
+    /// record still holds the bytes `expected` names. The shared record is never rewritten for it. A lost sidecar race
+    /// re-reads and tries once more; a newer schema's sidecar is never overwritten (`.discarded`).
+    ///
+    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written.
+    func saveDefaultDeadToken(_ deadToken: DeadToken, expecting expected: RecordVersion?) throws -> CommitOutcome {
+        guard let bytes = try fetchSharedRecord(operation: "read the default session's saved login"),
+              expected == .storedBytes(bytes) else {
+            return .discarded
+        }
+        for _ in 1 ... 2 {
+            let stored = try readSidecar()
+            if case .unsupportedSchema = stored {
+                return .discarded
+            }
+            guard var record = defaultRecord(holding: bytes, sidecar: stored.meta), record.credentials != nil else {
+                return .discarded
+            }
+            record.deadToken = deadToken
+            guard let wanted = sidecar(after: record, replacing: stored.meta) else {
+                return .discarded
+            }
+            let committed = try perform("write the default session's sidecar") {
+                try keychain.setIfUnchanged(wanted.encoded(), key: sidecarAccount, expecting: stored.stored)
+            }
+            if committed {
+                return .committed(VersionedSessionRecord(record: defaultRecord(holding: bytes, sidecar: wanted) ?? record, version: expected))
+            }
+        }
+        return .discarded
     }
 
     // MARK: Label
@@ -356,7 +395,13 @@ extension SessionRecordStore {
         } else {
             (username, userId) = (stored.meta?.username, stored.meta?.userId)
         }
-        let next = DefaultSessionMeta(lastWriteTimestamp: now(), label: label, username: username, userId: userId)
+        let next = DefaultSessionMeta(
+            lastWriteTimestamp: now(),
+            label: label,
+            username: username,
+            userId: userId,
+            deadToken: stored.meta?.deadToken
+        )
         if stored.meta.map({ Self.describesTheSame(next, $0) }) ?? (label == nil && username == nil && userId == nil) {
             return try .written(readDefault())
         }
@@ -546,6 +591,6 @@ extension SessionRecordStore {
         guard let rhs else {
             return false
         }
-        return lhs.label == rhs.label && lhs.username == rhs.username && lhs.userId == rhs.userId
+        return lhs.label == rhs.label && lhs.username == rhs.username && lhs.userId == rhs.userId && lhs.deadToken == rhs.deadToken
     }
 }
