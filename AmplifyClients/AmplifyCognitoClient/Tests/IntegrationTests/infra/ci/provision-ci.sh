@@ -79,18 +79,13 @@
 #       lists them; AppSync schemas, resolvers and keys, and S3 objects' contents, are not read) into
 #       $CCIT_CI_DISCOVERY_DIR/snapshot-<time>.json (default /tmp/ci-disc), mode 600, beside the documents
 #       themselves, with their secrets hashed, in snapshot-<time>.docs.json, mode 600
-#   (snapshot, key-expiry and lambda-drift refuse --apply: every call they make is a read, and the read-only guard
-#   stays on for them)
+#   (snapshot and lambda-drift refuse --apply: every call they make is a read, and the read-only guard stays on for
+#   them)
 #   infra/ci/provision-ci.sh verify-unchanged <before.json> <after.json> [--allow-foreign-additions]
 #       no AWS call: fails on any changed or removed resource, and on any added one that is not ccit-ci-
 #   infra/ci/provision-ci.sh teardown [--dry-run | --apply]
 #       deletes only the resources above, each after its tag check (the KMS key is scheduled for deletion in
 #       7 days); a dry run by default
-#   infra/ci/provision-ci.sh key-expiry [--record]
-#       read-only: prints the code sink's API key's expiry and what the reminder (code_sink_key.py check) says of
-#       it; --record writes the date to code-sink-key-expiry.json beside this script, to commit. --apply --scope all
-#       records it too, as soon as it has read, created or extended the key. Neither records it while an uploaded
-#       file names another key (a key made after the last one expired: those files must be replaced first)
 #   infra/ci/provision-ci.sh lambda-drift [--record [--accept-deployed]]
 #       read-only: downloads each ccit-ci- Lambda's deployed zip (GetFunction's presigned URL) and compares its
 #       files, by path and content hash, with the zip built from this checkout, or with the files
@@ -137,7 +132,7 @@ while (( $# > 0 )); do
         --allow-foreign-additions) ALLOW_FOREIGN=1 ;;
         --record) RECORD=1 ;;
         --accept-deployed) ACCEPT_DEPLOYED=1 ;;
-        snapshot|verify-unchanged|teardown|key-expiry|lambda-drift) COMMAND="$1" ;;
+        snapshot|verify-unchanged|teardown|lambda-drift) COMMAND="$1" ;;
         -h|--help) usage ;;
         -*) usage ;;
         *) POSITIONAL+=("$1") ;;
@@ -157,14 +152,14 @@ fi
 if [[ "$COMMAND" != "provision" && "$UPLOAD" == 1 ]]; then
     usage
 fi
-if [[ "$RECORD" == 1 && "$COMMAND" != "key-expiry" && "$COMMAND" != "lambda-drift" ]]; then
+if [[ "$RECORD" == 1 && "$COMMAND" != "lambda-drift" ]]; then
     usage
 fi
 if [[ -n "$ACCEPT_DEPLOYED" && ( "$COMMAND" != "lambda-drift" || "$RECORD" != 1 ) ]]; then
     usage
 fi
 # The read-only commands take no --apply, which would switch aws_into's read-only guard off for them.
-if [[ "$APPLY_GIVEN" == 1 && ( "$COMMAND" == "snapshot" || "$COMMAND" == "key-expiry" || "$COMMAND" == "lambda-drift" ) ]]; then
+if [[ "$APPLY_GIVEN" == 1 && ( "$COMMAND" == "snapshot" || "$COMMAND" == "lambda-drift" ) ]]; then
     echo "$COMMAND is read-only: it takes no --apply." >&2
     usage
 fi
@@ -647,14 +642,13 @@ ensure_api_resolvers() {
     done
 }
 
-# The tests' read-only API key: one that lives more than code_sink_key.py's REUSE_DAYS (31) more days is reused, so
-# a rerun extends every key the reminder warns about (it counts whole UTC days, 30 of them); one that lives fewer but
+# The tests' read-only API key: one that lives more than KEY_REUSE_DAYS more days is reused; one that lives fewer but
 # has not expired is extended to 364 days from now, keeping its id, so the two uploaded files that name it (the
 # default and alias-codes pools' outputs, which --upload never rewrites) stay valid; else a new one, for 364 days.
-# Its expiry is noted (recorded, with --apply) right there, before any later step can stop the run (note_key_expiry).
+# Its expiry is said right there (note_key_expiry).
+KEY_REUSE_DAYS=31
 ensure_api_key() {
-    local out now expires input reuse_days
-    reuse_days=$(python3 "$CI_DIR/code_sink_key.py" reuse-days)
+    local out now expires input reuse_days="$KEY_REUSE_DAYS"
     now=$(date +%s)
     expires=$((now + 364 * 86400))
     API_KEY_EXPIRES="$expires"
@@ -665,7 +659,7 @@ ensure_api_key() {
         if [[ -n "$API_KEY" ]]; then
             API_KEY_EXPIRES=$(CCIT_SECRET_K="$API_KEY" jq -r '[.apiKeys[] | select(.id == $ENV.CCIT_SECRET_K)][0].expires' <<<"$out")
             say "  = the code sink API key (lives more than $reuse_days more days)"
-            note_key_expiry "$CI_MODE" || true
+            note_key_expiry
             return
         fi
         API_KEY=$(jq -r --argjson now "$now" \
@@ -677,7 +671,7 @@ ensure_api_key() {
                 '{apiId: $id, id: $ENV.CCIT_SECRET_K, expires: $e}')
             mutate "$API_NAME" "extend the tests' read-only API key to 364 days from now (the same key)" -- \
                 appsync update-api-key --cli-input-json "file://$(input_file "$input")"
-            note_key_expiry "$CI_MODE" || true
+            note_key_expiry
             return
         fi
     fi
@@ -688,7 +682,7 @@ ensure_api_key() {
     else
         API_KEY=$(new_id "api key")
     fi
-    note_key_expiry "$CI_MODE" || true
+    note_key_expiry
 }
 
 # --- IAM roles --------------------------------------------------------------------------------------------
@@ -1348,11 +1342,7 @@ provision() {
     [[ -z "$STALE_UPLOADS" || "$CI_MODE" != "apply" ]] || die "$(stale_uploads_message)"
 }
 
-# --- The code sink key's expiry (the reminder: code_sink_key.py) --------------------------------------------
-
-# The record is a date only (no identifier, no secret), committed beside this script, so a scheduled job, or any
-# CI run, can tell the key's last 30 days without AWS credentials. CCIT_CI_KEY_RECORD names another file.
-KEY_RECORD="${CCIT_CI_KEY_RECORD:-$CI_DIR/code-sink-key-expiry.json}"
+# --- The code sink key's uploaded files --------------------------------------------------------------------
 
 # The uploaded files that name the code sink's key (with_code_sink): --upload never rewrites them.
 KEY_FILES=(ccit-ci-default-amplify_outputs.json ccit-ci-email-alias-codes-amplify_outputs.json)
@@ -1378,69 +1368,25 @@ find_stale_uploads() {
 
 stale_uploads_message() {
     printf '%s' "the uploaded auth/$CI_S3_FOLDER/ files $STALE_UPLOADS name another code sink key than the one " \
-        "that expires on $(expiry_date), and --upload never overwrites them, so the expiry is not recorded and the " \
-        "reminder keeps failing. Check that each carries $CI_TAG_KEY=$CI_TAG_VALUE (aws s3api get-object-tagging), " \
-        "delete them by hand, then run infra/ci/provision-ci.sh --apply --scope all --upload: it uploads them again " \
-        "with the current key and records its expiry. Commit $(basename "$KEY_RECORD") after it."
+        "that expires on $(expiry_date), and --upload never overwrites them, so CI's code-reading tests go on using " \
+        "the other key. Check that each carries $CI_TAG_KEY=$CI_TAG_VALUE (aws s3api get-object-tagging), delete " \
+        "them by hand, then run infra/ci/provision-ci.sh --apply --scope all --upload: it uploads them again with " \
+        "the current key."
 }
 
 expiry_date() {
     date -u -r "$API_KEY_EXPIRES" +%Y-%m-%d 2>/dev/null || date -u -d "@$API_KEY_EXPIRES" +%Y-%m-%d
 }
 
-# Once the key is read, created or extended: $1 "apply" records its expiry (and says to commit the record when it
-# changed), anything else says what --apply would record. Either way only while no uploaded file names another key
-# (find_stale_uploads): a key made after the last one expired is not what CI reads until those files are replaced,
-# so its expiry is not recorded, and the reminder goes on failing, until then. Returns 1 when it does not record.
+# Once the key is read, created or extended: says when it expires after this run, and, while an uploaded file names
+# another key (find_stale_uploads: a key made after the last one expired, which CI does not read until those files
+# are replaced), how to replace them. --apply then refuses at the end of the run.
 note_key_expiry() {
-    local mode="$1" date before
-    date=$(expiry_date)
     find_stale_uploads
     if [[ -n "$STALE_UPLOADS" ]]; then
-        if [[ "$mode" == "apply" ]]; then
-            say "Not recorded: $(stale_uploads_message)"
-        else
-            say "--apply would not record the code sink's API key's expiry, $date: $(stale_uploads_message)"
-        fi
-        return 1
-    fi
-    if [[ "$mode" != "apply" ]]; then
-        say "The code sink's API key expires on $date after this run; --apply records it in $(basename "$KEY_RECORD")."
-        return 0
-    fi
-    before=$(jq -r '.expires // ""' "$KEY_RECORD" 2>/dev/null || true)
-    # Checked here: this function runs on the left of || only, where set -e is off.
-    python3 "$CI_DIR/code_sink_key.py" record "$API_KEY_EXPIRES" --record "$KEY_RECORD" >/dev/null || {
-        say "Not recorded: the code sink's API key's expiry, $date, could not be written to $KEY_RECORD (above)."
-        return 1
-    }
-    if [[ "$before" == "$date" ]]; then
-        say "The code sink's API key expires on $date, as $(basename "$KEY_RECORD") records."
+        say "The code sink's API key expires on $(expiry_date) after this run, but $(stale_uploads_message)"
     else
-        say "Recorded the code sink's API key's expiry, $date, in $KEY_RECORD: commit it, so the reminder" \
-            "(code_sink_key.py check) sees it."
-    fi
-}
-
-# key-expiry [--record]: read-only (the key's API, and the uploaded files that name the key). Prints the expiry of the
-# newest "ccit-ci tests" key, and with --record writes it to the record, or refuses while an uploaded file names
-# another key.
-key_expiry() {
-    local out api
-    read_aws out appsync list-graphql-apis
-    api=$(jq -r --arg n "$API_NAME" '[.graphqlApis[] | select(.name == $n) | .apiId][0] // empty' <<<"$out")
-    [[ -n "$api" ]] || die "there is no AppSync API $API_NAME, so no code sink key."
-    read_aws out appsync list-api-keys --api-id "$api"
-    API_KEY=$(jq -r '[.apiKeys[] | select(.description == "ccit-ci tests")] | sort_by(.expires) | last | .id // empty' <<<"$out")
-    [[ -n "$API_KEY" ]] || die "the code sink API has no \"ccit-ci tests\" key."
-    API_KEY_EXPIRES=$(CCIT_SECRET_K="$API_KEY" jq -r '[.apiKeys[] | select(.id == $ENV.CCIT_SECRET_K)][0].expires' <<<"$out")
-    if (( RECORD )); then
-        note_key_expiry apply || exit 1
-    else
-        say "The code sink's API key expires on $(expiry_date)."
-        find_stale_uploads
-        [[ -z "$STALE_UPLOADS" ]] || say "But $(stale_uploads_message)"
-        python3 "$CI_DIR/code_sink_key.py" check --record "$KEY_RECORD" || true
+        say "The code sink's API key expires on $(expiry_date) after this run."
     fi
 }
 
@@ -1741,7 +1687,6 @@ case "$COMMAND" in
         "$COMMAND"
         ;;
     snapshot) snapshot ;;
-    key-expiry) key_expiry ;;
     lambda-drift)
         # Read-only too: in another region (or account) every function is missing, which is no DRIFT, and
         # --record --accept-deployed would record an empty baseline.
