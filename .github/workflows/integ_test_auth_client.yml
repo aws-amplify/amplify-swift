@@ -59,8 +59,10 @@ jobs:
       # The client's own CI resources (infra/ci/provision-ci.sh), uploaded to auth/cognito-client-ci/: the
       # device-alias role (DV-10…19 and its parity check), and `extended`, the client's own roles beside the plugin's
       # default and device-alias ones (custom auth, the new-password users and the code API; the alias-codes pool)
-      # with the capabilities file that lets the three sandbox checks run there. Every other role stays the plugin's.
-      cognito_client_ci_overlay: 'email-alias extended'
+      # with the capabilities file that lets the three sandbox checks run there. And `mfa-req-totp-sms`, the client's
+      # own MFA-required pool, whose app client allows choice-based sign-in (the two USER_AUTH MFA-setup checks), in
+      # place of the plugin's MFA-required backend. Every other role stays the plugin's.
+      cognito_client_ci_overlay: 'email-alias extended mfa-req-totp-sms'
       # Nothing skips: every resource the suite needs is provided above, so the CI-only skips
       # (cognito_client_integ_ci_skips, kept for local runs on the plugin's own files) are off, and a resource
       # that goes missing fails its tests, naming it, instead of skipping them. The gate fails the job on any skip.

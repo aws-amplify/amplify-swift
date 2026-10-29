@@ -841,7 +841,8 @@ def ensure_api_resolvers(api_id, api_arn, data_source_role_arn):
 def rotate_api_key(api_id, api_arn):
     """The read-only API key: a secret, kept only in users.json. It lives 7 days; a new one is made
     when the recorded one has under 4 days left (so a bundle built from it keeps working for at least
-    3 more days), and keys that have already expired are deleted."""
+    3 more days), and keys that have already expired are deleted. A key an overlapping prepare-run.sh deleted
+    after this run listed it is tolerated (NotFound); any other error still stops it."""
     keys = {k["id"]: k for k in aws("appsync", "list-api-keys", "--api-id", api_id)["apiKeys"]}
     recorded = users().get("codeSinkApiKey")
     now = time.time()
@@ -858,8 +859,10 @@ def rotate_api_key(api_id, api_arn):
     for key_id, key in keys.items():
         if key_id != recorded and (key["expires"] < now or key["expires"] > longest):
             require_appsync_tag(api_arn)
-            aws("appsync", "delete-api-key", "--api-id", api_id, "--id", key_id)
-            say("Deleted an expired or over-long code sink API key")
+            if aws_or_none("appsync", "delete-api-key", "--api-id", api_id, "--id", key_id) is None:
+                say("An expired or over-long code sink API key: already deleted by another run")
+            else:
+                say("Deleted an expired or over-long code sink API key")
 
 
 def run_with_iam_retry(call, attempts=15):
@@ -898,29 +901,43 @@ def build_triggers():
     return deterministic_zip(root, ["triggers.mjs"])
 
 
+# Written into a custom sender build once its `npm ci` has finished; never part of the zip.
+BUILD_COMPLETE = ".ccit-build-complete"
+
+
 def build_custom_sender():
+    """The custom sender's zip, from a build cached under BUILD_DIR by the hash of its sources. The build runs in a
+    staging directory of its own and becomes the cache only once `npm ci` has finished (BUILD_COMPLETE, then a
+    rename), so an interrupted `npm ci` (Ctrl-C, a closed terminal, a kill) never leaves a half-built cache that a
+    later provision would deploy. A cached directory without the mark, as an older run left it, is built again."""
     source = os.path.join(INFRA, "lambda", "custom-sender")
     inputs = hashlib.sha256()
     for name in ("index.mjs", "package.json", "package-lock.json"):
         with open(os.path.join(source, name), "rb") as f:
             inputs.update(name.encode() + b"\0" + f.read())
     root = os.path.join(BUILD_DIR, "custom-sender-" + inputs.hexdigest()[:16])
-    if not os.path.isdir(os.path.join(root, "node_modules")):
-        shutil.rmtree(root, ignore_errors=True)
-        os.makedirs(root)
-        for name in ("index.mjs", "package.json", "package-lock.json"):
-            shutil.copy(os.path.join(source, name), root)
-        result = subprocess.run(["npm", "ci", "--omit=dev", "--ignore-scripts", "--no-audit", "--no-fund"],
-                                cwd=root, capture_output=True, text=True)
-        if result.returncode != 0:
+    if not os.path.isfile(os.path.join(root, BUILD_COMPLETE)):
+        os.makedirs(BUILD_DIR, exist_ok=True)
+        staging = tempfile.mkdtemp(prefix=os.path.basename(root) + ".partial.", dir=BUILD_DIR)
+        try:
+            for name in ("index.mjs", "package.json", "package-lock.json"):
+                shutil.copy(os.path.join(source, name), staging)
+            result = subprocess.run(["npm", "ci", "--omit=dev", "--ignore-scripts", "--no-audit", "--no-fund"],
+                                    cwd=staging, capture_output=True, text=True)
+            if result.returncode != 0:
+                sys.exit("npm ci for the custom sender failed: " + redact(result.stderr.strip()[-400:]))
+            with open(os.path.join(staging, BUILD_COMPLETE), "w"):
+                pass
             shutil.rmtree(root, ignore_errors=True)
-            sys.exit("npm ci for the custom sender failed: " + redact(result.stderr.strip()[-400:]))
+            os.rename(staging, root)
+        finally:
+            shutil.rmtree(staging, ignore_errors=True)
         say("Built the custom sender (npm ci)")
     files = []
     for directory, _, names in os.walk(root):
         for name in names:
             path = os.path.join(directory, name)
-            if not os.path.islink(path) and name != ".package-lock.json":
+            if not os.path.islink(path) and name not in (".package-lock.json", BUILD_COMPLETE):
                 files.append(os.path.relpath(path, root))
     return deterministic_zip(root, files)
 
@@ -1223,11 +1240,11 @@ def wildcard_gaps():
 # shape the templates keep. The account's security tooling flags a pool that allows it, and an automated
 # mitigation may then turn it off with its own UpdateUserPool call. So it is OFF at rest: provision always
 # creates and updates the pools with it off, and only `self-sign-up on` turns it on, for the length of one local
-# run wrapped by infra/self-sign-up.sh, whose trap turns it off again however the run ends. The wrapper exports
-# SELF_SIGN_UP_RUN=on to the run (and TEST_RUNNER_<it> to xcodebuild's test runner), so preflight inside the run
-# accepts it on, and the tests that sign a user up fail fast while it is unset. Never on CI: the plugin's CI
+# run wrapped by infra/self-sign-up.sh, whose trap turns it off again however the run ends. Preflight accepts it on
+# only while a live self-sign-up.sh lease holds it (SELF_SIGN_UP_LEASES), whatever the environment says. The wrapper
+# also exports COGNITO_CLIENT_INTEG_SELF_SIGN_UP=on to the run (and TEST_RUNNER_<it> to xcodebuild's test runner),
+# which only the tests read: those that sign a user up fail fast while it is unset. Never on CI: the plugin's CI
 # backends are not this sandbox, and CI never changes it.
-SELF_SIGN_UP_RUN = "COGNITO_CLIENT_INTEG_SELF_SIGN_UP"
 CI_VARIABLES = ("CI", "GITHUB_ACTIONS")
 SELF_SIGN_UP_LEFT_ON = "self sign-up was left on; run infra/self-sign-up.sh off"
 # The token infra/self-sign-up.sh hands `self-sign-up on|release`: its own PID, which must be this process's
@@ -1825,8 +1842,13 @@ def ensure_client(pool_id, pool_name, client_key, desired):
 
 def ensure_domain(pool_id, pool_name, parity, managed_login_version):
     # Domain prefixes are global and may not contain "aws", "amazon" or "cognito": a random suffix,
-    # generated once and recorded, instead of anything account-derived.
-    prefix = parity.get("domainPrefix") or f"amplify-client-integ-{secrets.token_hex(4)}"
+    # generated once and recorded, instead of anything account-derived. A pool has one prefix domain, so the one the
+    # pool already has wins over the recorded one and over a new one: a pool adopted by name, after the state
+    # directory was lost, keeps its domain (a new prefix could not be created on it).
+    current = aws("cognito-idp", "describe-user-pool", "--user-pool-id", pool_id)["UserPool"].get("Domain")
+    prefix = current or parity.get("domainPrefix") or f"amplify-client-integ-{secrets.token_hex(4)}"
+    if current and parity.get("domainPrefix") not in (None, current):
+        say(f"  The recorded hosted-UI domain is not {pool_name}'s; recording the pool's own")
     parity["domainPrefix"] = prefix
     domain = aws("cognito-idp", "describe-user-pool-domain", "--domain", prefix)["DomainDescription"]
     if not domain.get("UserPoolId"):
@@ -1902,6 +1924,8 @@ def ensure_identity_only_pool(parity):
         else:
             say(f"Reusing identity pool {IDENTITY_ONLY_POOL}")
     parity["identityOnlyPoolId"] = pool_id
+    # Recorded before the roles and their retries, so a teardown after any later failure finds the pool.
+    save_parity(parity)
     auth_role = ensure_permissionless_role("identity-only-authenticated", identity_trust(pool_id, "authenticated"))
     unauth_role = ensure_permissionless_role("identity-only-unauthenticated", identity_trust(pool_id, "unauthenticated"))
     require_identity_pool_tag(pool_id, IDENTITY_ONLY_POOL)
@@ -1976,6 +2000,8 @@ def ensure_plugin_identity_pool(parity):
         else:
             say(f"Reusing identity pool {PLUGIN_IDENTITY_POOL}")
     parity["pluginIdentityPoolId"] = pool_id
+    # Recorded before the roles and their retries, so a teardown after any later failure finds the pool.
+    save_parity(parity)
     auth_role = ensure_permissionless_role("plugin-authenticated", identity_trust(pool_id, "authenticated"))
     unauth_role = ensure_permissionless_role("plugin-unauthenticated", identity_trust(pool_id, "unauthenticated"))
     require_identity_pool_tag(pool_id, PLUGIN_IDENTITY_POOL)
@@ -2204,7 +2230,8 @@ def plugin_users():
     """P-14: the plugin's DeviceAliasTokenRefreshIntegrationTests signs in as a pre-created user on a
     pool with email as the username. Creates it on email-alias when missing (no message is sent) and
     sets its permanent password to users.json pluginDeviceAliasPassword, and forgets its devices. Runs after cleanup, which
-    deletes it once it is a day old (its email starts ccit-), so a run always finds it."""
+    deletes it once it is a day old (its email starts ccit-), so a run always finds it. An overlapping prepare-run.sh
+    that creates the user, or forgets a device, first is tolerated."""
     state = load_state()
     require_cli_history_off()
     require_recorded_account(state)
@@ -2220,11 +2247,18 @@ def plugin_users():
                 "--filter", f'email = "{PLUGIN_DEVICE_ALIAS_EMAIL}"')["Users"]
     if not found:
         require_user_pool_tag(pool_id, pool_name)
-        aws("cognito-idp", "admin-create-user", stdin={
-            "UserPoolId": pool_id, "Username": PLUGIN_DEVICE_ALIAS_EMAIL, "MessageAction": "SUPPRESS",
-            "UserAttributes": [{"Name": "email", "Value": PLUGIN_DEVICE_ALIAS_EMAIL},
-                               {"Name": "email_verified", "Value": "true"}]})
-        say("Created the plugin's device-alias user on email-alias")
+        try:
+            aws("cognito-idp", "admin-create-user", stdin={
+                "UserPoolId": pool_id, "Username": PLUGIN_DEVICE_ALIAS_EMAIL, "MessageAction": "SUPPRESS",
+                "UserAttributes": [{"Name": "email", "Value": PLUGIN_DEVICE_ALIAS_EMAIL},
+                                   {"Name": "email_verified", "Value": "true"}]})
+            say("Created the plugin's device-alias user on email-alias")
+        except AwsError as error:
+            # An overlapping prepare-run.sh created it between the lookup and this call: the password set below
+            # makes it the user this run needs either way.
+            if error.code != "UsernameExistsException":
+                raise
+            say("plugin device-alias user: already created by another run")
     require_user_pool_tag(pool_id, pool_name)
     aws("cognito-idp", "admin-set-user-password", stdin={
         "UserPoolId": pool_id, "Username": PLUGIN_DEVICE_ALIAS_EMAIL,
@@ -2242,8 +2276,13 @@ def plugin_users():
             break
     for device in devices:
         require_user_pool_tag(pool_id, pool_name)
-        aws("cognito-idp", "admin-forget-device", "--user-pool-id", pool_id, "--username", PLUGIN_DEVICE_ALIAS_EMAIL,
-            "--device-key", device["DeviceKey"])
+        try:
+            aws("cognito-idp", "admin-forget-device", "--user-pool-id", pool_id, "--username",
+                PLUGIN_DEVICE_ALIAS_EMAIL, "--device-key", device["DeviceKey"])
+        except AwsError as error:
+            # An overlapping prepare-run.sh forgot it first: already gone, which is the goal.
+            if error.code != "ResourceNotFoundException":
+                raise
     say(f"plugin device-alias user: forgot {len(devices)} devices")
 
     # testNewPasswordRequired: each run needs users still in FORCE_CHANGE_PASSWORD, with no email or phone

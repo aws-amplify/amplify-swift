@@ -17,19 +17,28 @@
 # ccit-ci- resources and prints no identifier; that --scope email-alias plans only the device-alias pool and what it
 # needs; that a ccit-ci- name without the purpose tag is refused before any change, by a dry run and by --apply;
 # that --apply creates everything, tagged, leaves the plugin's resources exactly as they were, narrows the key to the
-# three pools, the sender's decrypt to the two it sends for and the SMS role to the default pool, and writes the six
-# files (mode 600, in a mode-700 directory) with what the client reads; that a second --apply makes no call; that
+# four pools, the sender's decrypt to the two it sends for and the SMS role to the default and MFA-required pools,
+# and writes the seven files (mode 600, in a mode-700 directory) with what the client reads; that a second --apply makes no call; that
 # --upload puts only new keys under auth/cognito-client-ci/ and refuses, with no upload, once one exists; that a
 # rerun over phase 2 as it was first applied (the script at 80712afe4 when git has it, else skipped) plans and makes
-# only the alias-codes pool and what it needs, updates only the script's own resources, and uploads only the two new
-# files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after phase 2 makes no call, and
-# a code sink key near its expiry is extended in place; that snapshot and verify-unchanged ignore a user count, and
-# fail on a changed, removed or foreign added resource (a foreign role's inline policy, key policy, parameter or log
-# group included), but not on a ccit-ci- addition or change, and that the snapshot's documents hold no secret; that
-# teardown is a dry run by default, deletes only the ccit-ci- resources with --apply, refuses an untagged one, and
-# schedules the key's deletion before removing its alias; that a run in another region is refused; that a pool made
-# again gets its Lambdas' invoke permissions replaced; and that the library's guards refuse a name that is not
-# ccit-ci- and a mutating call in a dry run.
+# only the alias-codes and MFA-required pools and what they need, updates only the script's own resources, and
+# uploads only the three new files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after
+# phase 2 makes no call; that the code sink key is made and extended for 365 days, to the hour, within AppSync's
+# bounds (which the fake checks) though AppSync's clock is behind; that a rerun reuses a key that lives more than
+# KEY_REUSE_DAYS (120), the one the frozen script made too, extends one that lives fewer in place, and makes a new
+# one once it has expired, and that then the uploaded files that name the old key are named, and --apply refuses at
+# the end, until they are replaced; that the AppSync headroom is checked only by a run that creates the API, against
+# CCIT_CI_APPSYNC_API_QUOTA; that a dry run refuses a custom sender to build without npm, and a failed npm ci stops
+# --apply before the sender; that lambda-drift downloads each deployed zip and tells a
+# Lambda whose files are not this checkout's, which --record --accept-deployed alone accepts; that snapshot and
+# verify-unchanged ignore a user count, and fail on a changed, removed or foreign added resource (a foreign role's
+# inline policy, key policy, parameter or log group included), but not on a ccit-ci- addition or change, nor on a
+# Lambda's runtime version, and that the snapshot's documents hold no secret; that snapshot and lambda-drift refuse
+# --apply; that teardown is a dry run by default, deletes only the ccit-ci- resources with
+# --apply, refuses an untagged one, and schedules the key's deletion before removing its alias; that a run in another
+# region is refused (lambda-drift too, which there would find nothing to compare); that a pool made again gets its
+# Lambdas' invoke permissions replaced; and that the library's
+# guards refuse a name that is not ccit-ci- and a mutating call in a dry run.
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT="$CI_DIR/provision-ci.sh"
@@ -47,9 +56,26 @@ cat > "$BIN/npm" <<'EOF'
 mkdir -p node_modules/fake && echo 'export {};' > node_modules/fake/index.js
 EOF
 chmod +x "$BIN/npm"
+# A `date` whose epoch seconds (`date +%s`, the script's clock) run FAKE_DATE_OFFSET seconds ahead, when set.
+cat > "$BIN/date" <<'EOF'
+#!/usr/bin/env bash
+if [[ -n "${FAKE_DATE_OFFSET:-}" && "$*" == "+%s" ]]; then
+    echo $(( $(/bin/date +%s) + FAKE_DATE_OFFSET ))
+else
+    exec /bin/date "$@"
+fi
+EOF
+chmod +x "$BIN/date"
 export PATH="$BIN:$PATH" FAKE_STATE="$WORK/state.json" FAKE_LOG="$WORK/calls.log" TMPDIR="$WORK/tmp"
 export AWS_CONFIG_FILE=/dev/null AWS_SHARED_CREDENTIALS_FILE=/dev/null CCIT_CI_DISCOVERY_DIR="$WORK/disc"
 export COGNITO_CLIENT_INTEG_CI_CONFIG_URL="s3://fake-ci-bucket.example/v2/testconfiguration"
+# The Lambdas' deployment baseline, never the committed one.
+export CCIT_CI_LAMBDA_BASELINE="$WORK/lambda-baseline.json"
+# The fake's Code.Location is a file:// URL to the zip it keeps, which lambda_code.py takes only with this set.
+export CCIT_CI_TEST_FILE_CODE_URLS=1
+# A umask that leaves new files readable by all, so a file the script leaves open to others is one, and is caught
+# (lambda_code.py refuses a deployed.json anyone but its owner can read).
+umask 022
 unset AWS_PROFILE AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN CCIT_CI_REGION
 [[ "$(command -v aws)" == "$BIN/aws" ]] || { echo "FAIL: the fake aws is not first on PATH"; exit 1; }
 ACCOUNT=123456789012
@@ -134,8 +160,25 @@ plus_lines_are_ours() {
 }
 
 usage_is_refused() {
-    run --scope bogus
-    (( STATUS == 2 )) && { [[ ! -s "$FAKE_LOG" ]] || [[ -z "$(calls)" ]]; }
+    local args
+    for args in "--scope bogus" "--record" "--apply --record" "snapshot --record"; do
+        # shellcheck disable=SC2086 # split on purpose: each case is a list of arguments
+        run $args
+        (( STATUS == 2 )) && { [[ ! -s "$FAKE_LOG" ]] || [[ -z "$(calls)" ]]; } || { echo "$args: $OUT"; return 1; }
+    done
+}
+
+# snapshot and lambda-drift only read: --apply, which would switch the read-only guard off for them, is a usage error,
+# before any AWS call.
+read_only_commands_refuse_apply() {
+    local command
+    for command in snapshot lambda-drift; do
+        run --apply "$command"
+        (( STATUS == 2 )) && [[ "$OUT" == *"$command is read-only: it takes no --apply."* ]] && [[ -z "$(calls)" ]] \
+            || { echo "$command: $OUT"; return 1; }
+    done
+    run lambda-drift --apply --record --accept-deployed
+    (( STATUS == 2 )) && [[ -z "$(calls)" ]]
 }
 
 a_missing_config_url_is_refused() {
@@ -254,6 +297,29 @@ alias_codes_files_are_right() {
         "email-alias-codes": ["email_alias_codes"]}}' "$CONFIG/ccit-ci-capabilities.json" >/dev/null
 }
 
+# The MFA-required pool as made: its template's Essentials and MFA (required, TOTP and SMS), the device-alias pool's
+# trigger and the discard sender, the template's `ci` app client only, and the SMS role named; its outputs file names
+# that client, MFA required with SMS and TOTP, and no code API or mark.
+mfa_required_pool_is_right() {
+    local template="$CI_DIR/../pools/mfa-req-totp-sms.json" file="$CONFIG/ccit-ci-mfa-req-totp-sms-amplify_outputs.json"
+    jq -e --slurpfile t "$template" '[.pools[] | select(.UserPool.Name == "ccit-ci-mfa-req-totp-sms")] as $p
+        | ($p | length == 1) and ($p[0].UserPool | .UserPoolTier == "ESSENTIALS"
+            and (.LambdaConfig.PreSignUp | endswith(":function:ccit-ci-pre-sign-up"))
+            and (.LambdaConfig.CustomEmailSender.LambdaArn | endswith(":function:ccit-ci-discard-sender"))
+            and (.LambdaConfig.CustomSMSSender.LambdaArn | endswith(":function:ccit-ci-discard-sender"))
+            and (.SmsConfiguration.SnsCallerArn | endswith(":role/ccit-ci-cognito-sms"))
+            and (.UserPoolTags.purpose == "amplify-cognito-client-integ"))
+        and ($p[0].mfa.MfaConfiguration == "ON") and ($p[0].mfa.SoftwareTokenMfaConfiguration.Enabled == true)
+        and ([$p[0].clients[] | .ClientName] == ["ccit-ci-mfa-req-totp-sms-ci"])
+        and ([$p[0].clients[] | .ExplicitAuthFlows] == [$t[0].appClients.ci.ExplicitAuthFlows])
+        and ([.lambdas["ccit-ci-discard-sender", "ccit-ci-pre-sign-up"].policy[].Sid] | index("cognito-mfa-req-totp-sms") != null)' \
+        "$FAKE_STATE" >/dev/null || return 1
+    jq -e '(.auth.mfa_configuration == "REQUIRED") and (.auth.mfa_methods == ["SMS", "TOTP"]) and (.data == null)
+        and (.custom == null) and (.auth.identity_pool_id == null)' "$file" >/dev/null || return 1
+    [[ "$(jq -r .auth.user_pool_client_id "$file")" == "$(jq -r '.pools[] | select(.UserPool.Name == "ccit-ci-mfa-req-totp-sms")
+        | .clients | keys[0]' "$FAKE_STATE")" ]]
+}
+
 # The alias-codes pool as made: Lite, the confirmable trigger (no refusal of ccit-confirm- users), the custom
 # sender; the key narrowed to the three pools, the sender's decrypt to the two it sends for, the triggers' role
 # writing the new trigger's logs.
@@ -270,7 +336,7 @@ alias_codes_pool_is_right() {
         and (.lambdas["ccit-ci-pre-sign-up-confirmable"].config.Environment.Variables == {})
         and (.lambdas["ccit-ci-pre-sign-up-confirmable"].config.Handler == "triggers.preSignUp")
         and ([.lambdas["ccit-ci-custom-sender"].policy[].Sid] | sort == ["cognito-default", "cognito-email-alias-codes"])
-        and ($arns | length == 3)
+        and ($arns | length == 4)
         and ([.kms.keys[] | .policy.Statement[1].Condition.ArnEquals["aws:SourceArn"]] == [$arns])
         and (.roles["ccit-ci-sender-exec"].inline["ccit-ci-sender-exec-policy"].Statement[1].Condition.StringEquals["kms:EncryptionContext:userpool-id"] == $senders)
         and (.roles["ccit-ci-trigger-exec"].inline["ccit-ci-trigger-exec-policy"].Statement[0].Resource
@@ -297,12 +363,12 @@ phase_2_adds_the_default_pool_and_keeps_phase_1() {
     (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
     no_identifiers && plus_lines_are_ours && [[ "$(plugin_part)" == "$before" ]] || return 1
     [[ "$OUT" == *"= user pool ccit-ci-email-alias"* && "$OUT" == *"= auth/cognito-client-ci/ccit-ci-email-alias-amplify_outputs.json (uploaded already, the same bytes)"* ]] || return 1
-    [[ "$(calls | grep -c 's3api put-object')" == 5 ]] || return 1
+    [[ "$(calls | grep -c 's3api put-object')" == 6 ]] || return 1
     CONFIG=$(config_dir_of "$OUT")
     [[ -d "$CONFIG" && "$(stat -f '%Lp' "$CONFIG")" == 700 ]] || return 1
     modes=$(find "$CONFIG" -type f -exec stat -f '%Lp' {} + | sort -u)
-    [[ "$modes" == 600 && "$(find "$CONFIG" -type f | wc -l | tr -d ' ')" == 6 ]] || return 1
-    alias_codes_files_are_right && alias_codes_pool_is_right || return 1
+    [[ "$modes" == 600 && "$(find "$CONFIG" -type f | wc -l | tr -d ' ')" == 7 ]] || return 1
+    alias_codes_files_are_right && alias_codes_pool_is_right && mfa_required_pool_is_right || return 1
     default="$CONFIG/ccit-ci-default-amplify_outputs.json"
     rotation="$CONFIG/ccit-ci-rotation-amplify_outputs.json"
     jq -e '.auth.identity_pool_id and .auth.unauthenticated_identities_enabled and .data.url and .data.api_key
@@ -313,8 +379,8 @@ phase_2_adds_the_default_pool_and_keeps_phase_1() {
         and all(.[]; type == "string" and length > 0)
         and (.new_password_required_usernames | split(",") | length == 12)' "$CONFIG/ccit-ci-default-credentials.json" >/dev/null || return 1
     # Everything created is ccit-ci- and tagged.
-    jq -e '([.pools[] | select(.UserPool.Name | startswith("ccit-ci-")) | .UserPool.UserPoolTags.purpose] | length == 3 and (unique == ["amplify-cognito-client-integ"]))
-        and ([.pools[] | .UserPool.Name] | sort == ["amplify-plugin-default", "ccit-ci-default", "ccit-ci-email-alias", "ccit-ci-email-alias-codes"])
+    jq -e '([.pools[] | select(.UserPool.Name | startswith("ccit-ci-")) | .UserPool.UserPoolTags.purpose] | length == 4 and (unique == ["amplify-cognito-client-integ"]))
+        and ([.pools[] | .UserPool.Name] | sort == ["amplify-plugin-default", "ccit-ci-default", "ccit-ci-email-alias", "ccit-ci-email-alias-codes", "ccit-ci-mfa-req-totp-sms"])
         and ([.pools[] | select(.UserPool.Name == "ccit-ci-default") | .UserPool.UserPoolTier] == ["ESSENTIALS"])
         and ([.roles | keys[] | select(startswith("ccit-ci-"))] | length == 7)
         and ([.roles[] | select(.Role.RoleName | startswith("ccit-ci-")) | .tags[0].Value] | unique == ["amplify-cognito-client-integ"])
@@ -322,8 +388,11 @@ phase_2_adds_the_default_pool_and_keeps_phase_1() {
         and ([.lambdas[] | .config.FunctionName] | all(startswith("ccit-ci-") or . == "plugin-pre-sign-up"))
         and ([.ssm | keys[]] == ["/ccit-ci/custom-challenge-answer", "/ccit-ci/new-password-temporary"])
         and ([.identity_pools[] | .IdentityPoolName] | sort == ["ccit_ci_default", "plugin_identity"])' "$FAKE_STATE" >/dev/null || return 1
-    # The SMS role is narrowed to the default pool, the only one that names it (the key and the decrypt: above).
-    jq -e '.roles["ccit-ci-cognito-sms"].Role.AssumeRolePolicyDocument.Statement[0].Condition.ArnEquals["aws:SourceArn"] | length == 1' \
+    # The SMS role is narrowed to the default and MFA-required pools, the two that name it (the key and the decrypt:
+    # above).
+    jq -e '([.pools[] | select(.UserPool.Name == "ccit-ci-default" or .UserPool.Name == "ccit-ci-mfa-req-totp-sms")
+            | .UserPool.Arn] | sort) as $sms
+        | .roles["ccit-ci-cognito-sms"].Role.AssumeRolePolicyDocument.Statement[0].Condition.ArnEquals["aws:SourceArn"] == $sms' \
         "$FAKE_STATE" >/dev/null || return 1
     secrets_use_the_ccit_ci_key || return 1
     [[ "$OUT" == *"new-password users: created 12"* ]]
@@ -346,22 +415,135 @@ a_phase_1_rerun_after_phase_2_makes_no_call() {
 }
 
 # The code sink's key, 10 days from its expiry, is extended in place: the same id, so the uploaded files that name it
-# stay as they are, and nothing is uploaded.
+# stay as they are, and nothing is uploaded. Both runs say the new expiry.
 an_api_key_near_its_expiry_is_extended_in_place() {
-    local key soon
+    local key soon after
     key=$(jq -r '[.apis[] | .keys[]] | .[0].id' "$FAKE_STATE")
     soon=$(( $(date +%s) + 10 * 86400 ))
     jq --argjson e "$soon" '(.apis[] | .keys[]).expires = $e' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
     run --scope all --upload
     (( STATUS == 0 )) && only_reads && no_identifiers \
-        && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "extend the tests' read-only API key to 364 days from now (the same key)" ]] \
+        && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "extend the tests' read-only API key to 365 days from now (the same key)" ]] \
+        && [[ "$OUT" == *"The code sink's API key expires on $(new_key_date) after this run."* ]] \
         || { echo "$OUT" | sed -nE 's/^  \+ //p'; return 1; }
     run --apply --scope all --upload
     (( STATUS == 0 )) && [[ "$OUT" == *"Done: 1 calls made."* ]] && ! calls | grep -qE 'put-object|create-api-key' \
-        && no_identifiers && [[ "$(grep -c 'uploaded already, the same bytes' <<<"$OUT")" == 6 ]] \
+        && no_identifiers && [[ "$(grep -c 'uploaded already, the same bytes' <<<"$OUT")" == 7 ]] \
         || { echo "$OUT" | tail -8; return 1; }
     jq -e --arg k "$key" --argjson e "$(( $(date +%s) + 300 * 86400 ))" \
-        '[.apis[] | .keys[]] | length == 1 and .[0].id == $k and .[0].expires > $e' "$FAKE_STATE" >/dev/null
+        '[.apis[] | .keys[]] | length == 1 and .[0].id == $k and .[0].expires > $e' "$FAKE_STATE" >/dev/null || return 1
+    after=$(jq -r '[.apis[] | .keys[]] | .[0].expires' "$FAKE_STATE")
+    after=$(date -u -r "$after" +%Y-%m-%d 2>/dev/null || date -u -d "@$after" +%Y-%m-%d)
+    [[ "$OUT" == *"The code sink's API key expires on $after after this run."* ]] \
+        || { echo "$OUT" | grep 'expires on'; return 1; }
+}
+
+# A rerun at the edges of the reuse threshold (dry runs only; the key's expiry is put back after): a key that lives
+# KEY_REUSE_DAYS (120) more days and 10 minutes is reused, one 10 minutes short of them is extended, so is one an hour
+# from its expiry, and an expired one is replaced by a new key.
+a_rerun_reuses_or_extends_the_key_at_the_threshold() {
+    local before now case expires plan
+    before=$(jq -c '[.apis[] | .keys[] | .expires]' "$FAKE_STATE")
+    [[ "$(jq length <<<"$before")" == 1 ]] || { echo "not one key: $before"; return 1; }
+    now=$(date +%s)
+    # <expiry, from now>:<what the rerun plans>
+    for case in $((120 * 86400 + 600)):reuse $((120 * 86400 - 600)):extend 3600:extend -1:create; do
+        expires=$(( now + ${case%%:*} ))
+        jq --argjson e "$expires" '(.apis[] | .keys[]).expires = $e' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+        run --scope all
+        plan=$(sed -nE 's/^  \+ //p' <<<"$OUT")
+        (( STATUS == 0 )) && only_reads || { echo "$case: $OUT" | tail -5; return 1; }
+        case "${case##*:}" in
+            extend) [[ "$plan" == "extend the tests' read-only API key to 365 days from now (the same key)" ]] ;;
+            reuse) [[ -z "$plan" && "$OUT" == *"= the code sink API key (lives more than 120 more days)"* ]] ;;
+            create) [[ "$plan" == "create the tests' read-only API key, for 365 days" ]] ;;
+        esac || { echo "$case: $plan"; return 1; }
+    done
+    jq --argjson e "$before" '(.apis[] | .keys[]).expires = $e[0]' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    [[ "$(jq -c '[.apis[] | .keys[] | .expires]' "$FAKE_STATE")" == "$before" ]]
+}
+
+days_from_now() { python3 -c 'import datetime,sys;print(datetime.datetime.now(datetime.timezone.utc).date() + datetime.timedelta(days=int(sys.argv[1])))' "$1"; }
+
+# The UTC date a key made or extended now expires on: 365 days from now, less the 10-minute clock allowance, rounded
+# down to the hour.
+new_key_date() { python3 -c 'import datetime,time;e=(int(time.time())+365*86400-600)//3600*3600;print(datetime.datetime.fromtimestamp(e,datetime.timezone.utc).date())'; }
+
+# The key is made and extended for 365 days, AppSync's maximum, to the hour, and within AppSync's bounds (which the
+# fake checks, as AppSync does) though AppSync's clock is 5 minutes behind the script's. The script's clock is set
+# (through the fake `date`) to 1 minute past an hour, where rounding down alone would leave no room for that. The
+# state is put back after.
+the_key_lives_365_days_within_appsyncs_bounds() {
+    local saved="$WORK/key-bounds-state.json" offset now case expires
+    cp "$FAKE_STATE" "$saved"
+    for case in extend create; do
+        if [[ "$case" == extend ]]; then
+            jq --argjson e "$(( $(date +%s) + 10 * 86400 ))" '(.apis[] | .keys[]).expires = $e' "$FAKE_STATE" > "$WORK/s"
+        else
+            jq '(.apis[] | .keys) = []' "$FAKE_STATE" > "$WORK/s"
+        fi
+        mv "$WORK/s" "$FAKE_STATE"
+        now=$(date +%s)
+        # The script's clock: 60 s past the next hour; AppSync's: 300 s behind it.
+        offset=$(( 3600 - now % 3600 + 60 ))
+        : > "$FAKE_LOG"
+        STATUS=0
+        OUT=$(FAKE_DATE_OFFSET="$offset" FAKE_APPSYNC_CLOCK_BEHIND=$(( 300 - offset )) "$SCRIPT" --apply --scope all 2>&1) \
+            || STATUS=$?
+        expires=$(jq '[.apis[] | .keys[]] | sort_by(.expires) | last | .expires' "$FAKE_STATE")
+        # Made or extended (a new key's run then refuses at the end, over the uploaded files that name the old one).
+        [[ "$OUT" == *"+ "*"read-only API key"*"365 days"* && "$OUT" != *ApiKeyValidityOutOfBounds* ]] \
+            && (( expires % 3600 == 0 )) \
+            && (( expires > now + offset + 365 * 86400 - 3600 - 600 && expires <= now + offset + 365 * 86400 - 600 )) \
+            || { echo "$case: $expires"; echo "$OUT" | tail -5; return 1; }
+        if [[ "$case" == extend ]]; then (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }; fi
+    done
+    # And the fake refuses what AppSync refuses: more than 365 days from its own clock.
+    jq '(.apis[] | .keys) = []' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    : > "$FAKE_LOG"
+    STATUS=0
+    OUT=$(FAKE_APPSYNC_CLOCK_BEHIND=4500 "$SCRIPT" --apply --scope all 2>&1) || STATUS=$?
+    cp "$saved" "$FAKE_STATE"
+    (( STATUS == 1 )) && [[ "$OUT" == *ApiKeyValidityOutOfBoundsException* ]] || { echo "$OUT" | tail -5; return 1; }
+}
+
+# An expired key cannot be extended: --apply makes a new one, but the two uploaded files that name the old key are
+# never overwritten: the dry run names them, --apply says how to replace them and refuses at the end, its upload
+# refused, all with read calls only to tell. Once both are deleted (by hand, after their tag check), a rerun with
+# --upload uploads them with the new key.
+an_expired_key_needs_the_uploads_that_name_it_replaced() {
+    local prefix="v2/testconfiguration/auth/cognito-client-ci" file newest
+    local stale="ccit-ci-default-amplify_outputs.json ccit-ci-email-alias-codes-amplify_outputs.json name another code sink key"
+    jq --argjson e "$(( $(date +%s) - 86400 ))" '(.apis[] | .keys[]).expires = $e' "$FAKE_STATE" > "$WORK/s" \
+        && mv "$WORK/s" "$FAKE_STATE"
+    run --scope all
+    (( STATUS == 0 )) && only_reads && no_identifiers \
+        && [[ "$OUT" == *"The code sink's API key expires on $(new_key_date) after this run, but the uploaded auth/cognito-client-ci/ files $stale"* ]] \
+        || { echo "$OUT" | tail -8; return 1; }
+    run --apply --scope all --upload
+    (( STATUS == 1 )) && [[ "$OUT" == *"+ create the tests' read-only API key, for 365 days"* ]] \
+        && [[ "$OUT" == *"after this run, but the uploaded auth/cognito-client-ci/ files $stale"* ]] \
+        && [[ "$OUT" == *"purpose=amplify-cognito-client-integ"*"--apply --scope all --upload"* ]] \
+        && [[ "$OUT" == *"than the one that expires on"*"go on using the other key"* ]] \
+        && [[ "$OUT" == *"get-object-tagging), delete them"*"uploads them again with the current key"* ]] \
+        && [[ "$OUT" == *"nothing is ever overwritten"* ]] && ! calls | grep -q 'put-object' \
+        && no_identifiers || { echo "$OUT" | tail -8; return 1; }
+    # Without --upload, the run finishes, then refuses with the steps.
+    run --apply --scope all
+    (( STATUS == 1 )) && [[ "$OUT" == *"Done: 0 calls made."*"Refusing: the uploaded auth/cognito-client-ci/ files $stale"* ]] \
+        || { echo "$OUT" | tail -5; return 1; }
+    # Both deleted by hand: the rerun uploads them with the new key.
+    jq --arg a "$prefix/ccit-ci-default-amplify_outputs.json" --arg b "$prefix/ccit-ci-email-alias-codes-amplify_outputs.json" \
+        'del(.s3[$a], .s3[$b])' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    run --apply --scope all --upload
+    (( STATUS == 0 )) && [[ "$(calls | grep -c 's3api put-object')" == 2 ]] && no_identifiers \
+        && [[ "$OUT" == *"The code sink's API key expires on "*" after this run."* && "$OUT" != *"but the uploaded"* ]] \
+        || { echo "$OUT" | tail -8; return 1; }
+    newest=$(jq -r '[.apis[] | .keys[]] | sort_by(.expires) | last | .id' "$FAKE_STATE")
+    for file in ccit-ci-default-amplify_outputs.json ccit-ci-email-alias-codes-amplify_outputs.json; do
+        [[ "$(jq -r --arg k "$prefix/$file" '.s3[$k].body | fromjson | .data.api_key' "$FAKE_STATE")" == "$newest" ]] \
+            || { echo "$file does not name the new key"; return 1; }
+    done
 }
 
 a_key_with_other_contents_refuses_the_upload() {
@@ -372,12 +554,15 @@ a_key_with_other_contents_refuses_the_upload() {
         && only_reads && no_identifiers
 }
 
-# What a rerun over phase 2 as first applied (80712afe4) plans: the alias-codes pool and what it needs, the updates
-# to the script's own resources that name it, and the two new files.
+# What a rerun over phase 2 as first applied (80712afe4) plans: the alias-codes and MFA-required pools and what they
+# need, the updates to the script's own resources that name them (the SMS role's trust opened while the MFA-required
+# pool is made, then narrowed), and the three new files. The code sink key that script made (for 364 days) is reused,
+# as the live one is: it lives more than KEY_REUSE_DAYS.
 RERUN_PLAN="create log group /aws/lambda/ccit-ci-pre-sign-up-confirmable
 keep /aws/lambda/ccit-ci-pre-sign-up-confirmable for 7 days
 open the key policy of alias/ccit-ci-senders to the account's pools while a ccit-ci- pool is made
 set the one inline policy of ccit-ci-trigger-exec
+open the trust of ccit-ci-cognito-sms to the account's pools while a ccit-ci- SMS pool is made
 store /ccit-ci/custom-challenge-answer again, the same value, encrypted with alias/ccit-ci-senders
 store /ccit-ci/new-password-temporary again, the same value, encrypted with alias/ccit-ci-senders
 create Lambda ccit-ci-pre-sign-up-confirmable (Node.js 22, no reserved concurrency)
@@ -385,11 +570,18 @@ create user pool ccit-ci-email-alias-codes (pools/email-alias.json, self sign-up
 let cognito-idp.amazonaws.com invoke ccit-ci-custom-sender (cognito-email-alias-codes)
 let cognito-idp.amazonaws.com invoke ccit-ci-pre-sign-up-confirmable (cognito-email-alias-codes)
 create app client ccit-ci-email-alias-codes-client (public, pools/email-alias.json \`client\`)
+create user pool ccit-ci-mfa-req-totp-sms (pools/mfa-req-totp-sms.json, self sign-up on, custom senders)
+let cognito-idp.amazonaws.com invoke ccit-ci-discard-sender (cognito-mfa-req-totp-sms)
+let cognito-idp.amazonaws.com invoke ccit-ci-pre-sign-up (cognito-mfa-req-totp-sms)
+set the MFA configuration of ccit-ci-mfa-req-totp-sms
+create app client ccit-ci-mfa-req-totp-sms-ci (public, pools/mfa-req-totp-sms.json \`ci\`)
 set the key policy of alias/ccit-ci-senders to the ccit-ci- pools
 set the one inline policy of ccit-ci-sender-exec
+set the trust of ccit-ci-cognito-sms to the ccit-ci- SMS pools
 set the one inline policy of ccit-ci-reset-exec
 upload auth/cognito-client-ci/ccit-ci-email-alias-codes-amplify_outputs.json (new key only)
-upload auth/cognito-client-ci/ccit-ci-capabilities.json (new key only)"
+upload auth/cognito-client-ci/ccit-ci-capabilities.json (new key only)
+upload auth/cognito-client-ci/ccit-ci-mfa-req-totp-sms-amplify_outputs.json (new key only)"
 
 # The script as phase 1 and phase 2 were applied with, from git; the whole infra/ directory it reads.
 FROZEN_COMMIT=80712afe4
@@ -425,19 +617,22 @@ a_rerun_over_phase_2_as_applied_adds_only_the_alias_codes_pool() {
     (( STATUS == 0 )) && only_reads && no_identifiers && plus_lines_are_ours \
         && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] \
         && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "$RERUN_PLAN" ]] \
-        && [[ "$OUT" == *"Planned: 16 calls. Nothing was changed."* ]] \
+        && [[ "$OUT" == *"Planned: 24 calls. Nothing was changed."* ]] \
+        && [[ "$OUT" == *"= the code sink API key (lives more than 120 more days)"* ]] \
         || { echo "$OUT" | sed -nE 's/^  \+ //p'; return 1; }
     before=$(plugin_part)
     run --apply --scope all --upload
     (( STATUS == 0 )) && no_identifiers && [[ "$(plugin_part)" == "$before" ]] \
         && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "$RERUN_PLAN" ]] \
         && [[ "$(grep -c 'uploaded already, the same bytes' <<<"$OUT")" == 4 ]] \
-        && [[ "$(calls | grep -c 's3api put-object')" == 2 ]] || { echo "$OUT" | tail -8; return 1; }
+        && [[ "$(calls | grep -c 's3api put-object')" == 3 ]] || { echo "$OUT" | tail -8; return 1; }
     CONFIG=$(config_dir_of "$OUT")
-    alias_codes_files_are_right && alias_codes_pool_is_right && secrets_use_the_ccit_ci_key || return 1
+    alias_codes_files_are_right && alias_codes_pool_is_right && mfa_required_pool_is_right && secrets_use_the_ccit_ci_key \
+        || return 1
     # Only the script's own resources changed, every update the plan shows: the custom sender, given the new pool's
-    # invoke permission (its revision, and its policy, as a function and as a trigger), the three role policies, the
-    # key policy and the two parameters' key.
+    # invoke permission (its revision, and its policy, as a function and as a trigger), the trigger and discard
+    # sender likewise for the MFA-required pool, the three role policies, the SMS role's trust, the key policy and the
+    # two parameters' key.
     run snapshot
     second=$(find "$WORK/disc" -name 'snapshot-*.json' ! -name '*.docs.json' | sort | tail -1)
     status=0
@@ -448,7 +643,10 @@ a_rerun_over_phase_2_as_applied_adds_only_the_alias_codes_pool() {
         && [[ "$out" == *"changed  kms-key-policy alias/ccit-ci-senders: Statement (ccit-ci-, this script's own)"* ]] \
         && [[ "$out" == *"changed  ssm-parameter /ccit-ci/new-password-temporary: KeyId (ccit-ci-, this script's own)"* ]] \
         && [[ "$out" == *"added    user-pool ccit-ci-email-alias-codes (ccit-ci-, expected)"* ]] \
-        && [[ "$out" == *" 0 changed, 10 ccit-ci- changed, 0 removed"* ]] || { echo "$out"; return 1; }
+        && [[ "$out" == *"added    user-pool ccit-ci-mfa-req-totp-sms (ccit-ci-, expected)"* ]] \
+        && [[ "$out" == *"changed  iam-role ccit-ci-cognito-sms: AssumeRolePolicyDocument.Statement (ccit-ci-, this script's own)"* ]] \
+        && [[ "$out" == *"changed  lambda ccit-ci-discard-sender: RevisionId (ccit-ci-, this script's own)"* ]] \
+        && [[ "$out" == *" 0 changed, 19 ccit-ci- changed, 0 removed"* ]] || { echo "$out"; return 1; }
     run --apply --scope all --upload
     (( STATUS == 0 )) && [[ "$OUT" == *"Done: 0 calls made."* ]]
 }
@@ -555,7 +753,7 @@ lists_are_read_to_their_last_page() {
         || return 1
     rm -rf "$WORK/disc"
     OUT=$(FAKE_PAGE_SIZE=1 "$SCRIPT" teardown 2>&1) || return 1
-    [[ "$(grep -c '+ delete user pool ccit-ci-' <<<"$OUT")" == 3 && "$OUT" == *"+ delete identity pool ccit_ci_default"* ]]
+    [[ "$(grep -c '+ delete user pool ccit-ci-' <<<"$OUT")" == 4 && "$OUT" == *"+ delete identity pool ccit_ci_default"* ]]
 }
 
 # snapshot.py's normalization: the same documents with their unordered lists in another order (trust principals,
@@ -602,6 +800,35 @@ snapshot_normalizes_unordered_lists() {
     cat "$dir/a.ndjson" "$dir/alias.ndjson" > "$dir/e.ndjson"
     python3 "$CI_DIR/snapshot.py" build "$dir/e.ndjson" "$dir/e.json" t >/dev/null || return 1
     python3 "$CI_DIR/snapshot.py" verify "$dir/a.json" "$dir/e.json" >/dev/null
+}
+
+# A Lambda's RuntimeVersionConfig, which Lambda moves by itself with the runtime's automatic updates, is no change,
+# as a function and as a trigger, and in a "before" snapshot taken while the documents still kept it; a real change
+# beside it still is.
+snapshot_ignores_the_runtime_version() {
+    local dir="$WORK/runtime" out status
+    mkdir -p "$dir"
+    printf '%s\n' \
+        '{"kind": "lambda", "id": "arn:fn", "name": "plugin-fn", "doc": {"Timeout": 3, "RuntimeVersionConfig": {"RuntimeVersionArn": "arn:runtime:v1"}}}' \
+        '{"kind": "trigger-lambda", "id": "arn:fn", "name": "plugin-fn", "doc": {"Timeout": 3, "RuntimeVersionConfig": {"RuntimeVersionArn": "arn:runtime:v1"}}}' \
+        > "$dir/a.ndjson"
+    sed 's/arn:runtime:v1/arn:runtime:v2/' "$dir/a.ndjson" > "$dir/b.ndjson"
+    python3 "$CI_DIR/snapshot.py" build "$dir/a.ndjson" "$dir/a.json" t >/dev/null \
+        && python3 "$CI_DIR/snapshot.py" build "$dir/b.ndjson" "$dir/b.json" t >/dev/null || return 1
+    ! grep -q RuntimeVersionConfig "$dir/a.docs.json" || return 1
+    out=$(python3 "$CI_DIR/snapshot.py" verify "$dir/a.json" "$dir/b.json") || { echo "$out"; return 1; }
+    [[ "$out" == *" 0 changed, 0 ccit-ci- changed"* ]] || { echo "$out"; return 1; }
+    # A "before" whose documents kept the field (as snapshots did): still no change.
+    jq 'map_values(. + {RuntimeVersionConfig: {RuntimeVersionArn: "arn:runtime:v0"}})' "$dir/a.docs.json" > "$dir/old.docs.json"
+    jq '.entries |= map_values(.sha256 = "old")' "$dir/a.json" > "$dir/old.json"
+    out=$(python3 "$CI_DIR/snapshot.py" verify "$dir/old.json" "$dir/b.json") || { echo "$out"; return 1; }
+    [[ "$out" == *" 0 changed, 0 ccit-ci- changed"* ]] || { echo "$out"; return 1; }
+    sed 's/"Timeout": 3/"Timeout": 30/' "$dir/b.ndjson" > "$dir/c.ndjson"
+    python3 "$CI_DIR/snapshot.py" build "$dir/c.ndjson" "$dir/c.json" t >/dev/null || return 1
+    status=0
+    out=$(python3 "$CI_DIR/snapshot.py" verify "$dir/old.json" "$dir/c.json") || status=$?
+    (( status == 1 )) && [[ "$out" == *"CHANGED  lambda plugin-fn: Timeout"* && "$out" == *"CHANGED  trigger-lambda plugin-fn: Timeout"* ]] \
+        && [[ "$out" != *RuntimeVersionConfig* ]] || { echo "$out"; return 1; }
 }
 
 teardown_is_a_dry_run_by_default() {
@@ -662,16 +889,32 @@ a_remade_pool_gets_its_lambdas_invoke_permissions() {
 }
 
 # Once the ccit-ci- resources exist in one region, a run in another (whose global roles it would re-point, or
-# delete) is refused before any change, provision and teardown alike.
+# delete) is refused before any change, provision and teardown alike; and lambda-drift, which there would find no
+# function (the fake's Lambdas are regional), pass, and with --record --accept-deployed record an empty baseline, is
+# refused before it reads a function, the baseline left as it was.
 another_region_is_refused() {
+    local baseline args
     fresh_state
-    run --apply
+    rm -f "$CCIT_CI_LAMBDA_BASELINE"
+    # Phase 2, so that the record below has every CI Lambda to record.
+    run --apply --scope all
     (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
     CCIT_CI_REGION=us-west-2 run --apply
     (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"ccit-ci- resources are in us-east-1, not CCIT_CI_REGION's us-west-2"* ]] \
         || { echo "$OUT" | tail -5; return 1; }
     CCIT_CI_REGION=us-west-2 run teardown --apply
-    (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"Set CCIT_CI_REGION to theirs."* ]]
+    (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"Set CCIT_CI_REGION to theirs."* ]] || { echo "$OUT" | tail -5; return 1; }
+    run lambda-drift --record --accept-deployed
+    (( STATUS == 0 )) && [[ "$OUT" == *"Recorded the deployed files of 8 functions"* ]] || { echo "$OUT" | tail -5; return 1; }
+    baseline=$(cat "$CCIT_CI_LAMBDA_BASELINE")
+    for args in "" "--record --accept-deployed"; do
+        # shellcheck disable=SC2086
+        CCIT_CI_REGION=us-west-2 run lambda-drift $args
+        (( STATUS == 1 )) && only_reads && ! calls | grep -q '^lambda get-function$' \
+            && [[ "$OUT" == *"ccit-ci- resources are in us-east-1, not CCIT_CI_REGION's us-west-2"* ]] \
+            && [[ "$(cat "$CCIT_CI_LAMBDA_BASELINE")" == "$baseline" ]] || { echo "$OUT" | tail -5; return 1; }
+    done
+    rm -f "$CCIT_CI_LAMBDA_BASELINE"
 }
 
 # A teardown whose key deletion fails (denied, or throttled) keeps the alias, so a rerun finds the key and finishes;
@@ -720,6 +963,174 @@ another_error_stops_the_apply_and_a_rerun_finishes_it() {
         && jq -e '[.pools[] | .UserPool.Name] | sort == ["amplify-plugin-default", "ccit-ci-email-alias"]' "$FAKE_STATE" >/dev/null
 }
 
+# The custom sender needs npm. With no npm on PATH, a dry run that would create it refuses, and so does --apply,
+# before any change; a phase-1 run, which builds no custom sender, does not need it. An `npm ci` that fails stops
+# --apply there: the custom sender is never created, and the run does not go on to the pools.
+npm_is_checked_by_the_dry_run_and_a_failed_build_stops_the_apply() {
+    local nonpm="$WORK/bin-nonpm" path="" dir tool before
+    rm -rf "$nonpm"
+    mkdir -p "$nonpm"
+    ln -s "$BIN/aws" "$nonpm/aws"
+    for tool in jq python3 shasum zip openssl git; do
+        ln -s "$(command -v "$tool")" "$nonpm/$tool"
+    done
+    # Every PATH directory without an npm, after the fakes' own.
+    local IFS=:
+    for dir in $PATH; do
+        [[ "$dir" == "$BIN" || -x "$dir/npm" ]] || path+=":$dir"
+    done
+    unset IFS
+    fresh_state
+    before=$(jq -S . "$FAKE_STATE")
+    : > "$FAKE_LOG"
+    STATUS=0
+    OUT=$(PATH="$nonpm$path" "$SCRIPT" --scope all 2>&1) || STATUS=$?
+    (( STATUS == 1 )) && [[ "$OUT" == *"npm is not on PATH"* ]] && only_reads \
+        && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] || { echo "$OUT" | tail -5; return 1; }
+    STATUS=0
+    OUT=$(PATH="$nonpm$path" "$SCRIPT" --apply --scope all 2>&1) || STATUS=$?
+    (( STATUS == 1 )) && [[ "$OUT" == *"npm is not on PATH"* && "$OUT" == *"the dry run refused"* ]] && only_reads \
+        && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] || { echo "$OUT" | tail -5; return 1; }
+    STATUS=0
+    OUT=$(PATH="$nonpm$path" "$SCRIPT" --scope email-alias 2>&1) || STATUS=$?
+    (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
+    # npm is there, but its `npm ci` fails.
+    mkdir -p "$WORK/bin-failing-npm"
+    printf '#!/usr/bin/env bash\nexit 1\n' > "$WORK/bin-failing-npm/npm"
+    chmod +x "$WORK/bin-failing-npm/npm"
+    STATUS=0
+    OUT=$(PATH="$WORK/bin-failing-npm:$PATH" "$SCRIPT" --apply --scope all 2>&1) || STATUS=$?
+    (( STATUS == 1 )) && [[ "$OUT" == *"npm ci for the custom sender failed"* && "$OUT" != *"Done:"* ]] \
+        && [[ "$OUT" != *"create Lambda ccit-ci-custom-sender"* && "$OUT" != *"User pools:"* ]] \
+        && jq -e '(.lambdas | has("ccit-ci-custom-sender") | not)
+            and ([.pools[] | .UserPool.Name] == ["amplify-plugin-default"])' "$FAKE_STATE" >/dev/null \
+        || { echo "$OUT" | tail -5; return 1; }
+}
+
+# Redeploys function $1 in the fake by hand: "rezipped" puts the same files in another zip (stored, not deflated,
+# and dated 2024, as an older `zip -X` build made them), so its CodeSha256 changes and its files do not; "edited"
+# also changes triggers.mjs and adds a file. The fake's CodeSha256 follows the new zip, as Lambda's does.
+hand_deploy() {
+    python3 - "$FAKE_STATE" "$1" "$2" <<'PY'
+import base64, hashlib, io, json, sys, zipfile
+state_path, name, how = sys.argv[1:]
+with open(state_path) as f:
+    state = json.load(f)
+function = state["lambdas"][name]
+with zipfile.ZipFile(function["code"]) as z:
+    files = {n: z.read(n) for n in z.namelist()}
+if how == "edited":
+    files["triggers.mjs"] += b"\n// edited by hand\n"
+    files["notes.txt"] = b"not from the checkout\n"
+buffer = io.BytesIO()
+with zipfile.ZipFile(buffer, "w", zipfile.ZIP_STORED) as z:
+    for n, data in sorted(files.items()):
+        z.writestr(zipfile.ZipInfo(n, date_time=(2024, 5, 6, 7, 8, 10)), data)
+with open(function["code"], "wb") as f:
+    f.write(buffer.getvalue())
+function["config"]["CodeSha256"] = base64.b64encode(hashlib.sha256(buffer.getvalue()).digest()).decode()
+with open(state_path, "w") as f:
+    json.dump(state, f, indent=1, sort_keys=True)
+PY
+}
+
+# lambda-drift, with read calls only (GetFunction and the tag check, each function): it downloads every deployed zip
+# (the fake's Code.Location, a file:// URL to the zip create-function was given) and compares its files with the
+# checkout's zip's. Every Lambda --apply made is in sync, CodeSha256 the same; the same files in another zip are in
+# sync too, CodeSha256 only noted as different; a function edited by hand is DRIFT, by name, with which files differ
+# and how to redeploy it after its tag check, and exit 1, never a URL or a hash printed. --record shows the same and
+# records nothing without --accept-deployed; with it, the deployed files are the baseline, and the function is then
+# the accepted deployment. A changed runtime version is not compared, and an untagged ccit-ci- function is refused.
+# deployed.json is the owner's only (lambda_code.py refuses it otherwise), and no download directory is left behind.
+lambda_drift_compares_the_deployed_files() {
+    local summary
+    fresh_state
+    rm -f "$CCIT_CI_LAMBDA_BASELINE"
+    run --apply --scope all
+    (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
+    jq '.lambdas["ccit-ci-pre-sign-up"].config.RuntimeVersionConfig = {RuntimeVersionArn: "arn:placeholder:runtime:v2"}' \
+        "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    run lambda-drift
+    (( STATUS == 0 )) && only_reads && no_identifiers \
+        && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 8 ]] \
+        && [[ "$(grep -c "CodeSha256, a note only: the same as this checkout's zip's" <<<"$OUT")" == 8 ]] \
+        && [[ "$(calls | grep -c '^lambda get-function$')" == 8 && "$(calls | grep -c '^lambda list-tags$')" == 8 ]] \
+        && [[ -z "$(find "$TMPDIR" -name 'ccit-ci-lambda-code.*')" ]] || { echo "$OUT"; return 1; }
+    hand_deploy ccit-ci-discard-sender rezipped
+    run lambda-drift
+    (( STATUS == 0 )) && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 8 ]] \
+        && [[ "$(grep -A1 '= ccit-ci-discard-sender' <<<"$OUT")" == *"not this checkout's zip's (the files decide)"* ]] \
+        || { echo "$OUT"; return 1; }
+    hand_deploy ccit-ci-pre-sign-up edited
+    run lambda-drift
+    summary="      changed (1): triggers.mjs
+      only deployed (1): notes.txt"
+    (( STATUS == 1 )) && only_reads && no_identifiers \
+        && [[ "$OUT" == *"DRIFT ccit-ci-pre-sign-up: the deployed files are neither this checkout's"*"$summary"* ]] \
+        && [[ "$OUT" == *"check that the function carries purpose=amplify-cognito-client-integ"* ]] \
+        && [[ "$(grep -c DRIFT <<<"$OUT")" == 1 && "$OUT" != *file:* && "$OUT" != *"$FAKE_STATE"* ]] \
+        || { echo "$OUT"; return 1; }
+    run lambda-drift --record
+    (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"$summary"*"Nothing recorded."*"--accept-deployed"* ]] \
+        && [[ ! -e "$CCIT_CI_LAMBDA_BASELINE" ]] || { echo "$OUT"; return 1; }
+    run lambda-drift --accept-deployed
+    (( STATUS == 2 )) || return 1
+    run lambda-drift --record --accept-deployed
+    (( STATUS == 0 )) && only_reads && [[ "$OUT" == *"$summary"*"Recorded the deployed files of 8 functions"* ]] \
+        && jq -e '.functions | length == 8 and (.["pre-sign-up"].files | keys == ["notes.txt", "triggers.mjs"])
+            and all(.[]; (.sources | test("^[0-9a-f]{64}$")) and (.files | all(.[]; test("^[0-9a-f]{64}$"))))' \
+            "$CCIT_CI_LAMBDA_BASELINE" >/dev/null || { echo "$OUT"; return 1; }
+    run lambda-drift
+    (( STATUS == 0 )) && [[ "$OUT" == *"= ccit-ci-pre-sign-up: the deployed files are the ones the baseline accepted"*"$summary"* ]] \
+        || { echo "$OUT"; return 1; }
+    jq '.lambdas["ccit-ci-discard-sender"].tags = {}' "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    run lambda-drift
+    (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"exists without purpose=amplify-cognito-client-integ"* ]] \
+        || { echo "$OUT"; return 1; }
+    rm -f "$CCIT_CI_LAMBDA_BASELINE"
+}
+
+# Foreign AppSync APIs, $1 of them, as other teams' backends in the CI account.
+add_foreign_apis() {
+    jq --argjson n "$1" 'reduce range($n) as $i (.; .apis["foreignapi\($i)"] = {api: {apiId: "foreignapi\($i)",
+        name: "plugin-api-\($i)", arn: "arn:aws:appsync:us-east-1:\(.account):apis/foreignapi\($i)",
+        uris: {GRAPHQL: "https://foreignapi\($i).appsync-api.us-east-1.amazonaws.com/graphql"}}, tags: {}, keys: []})' \
+        "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+}
+
+# The AppSync headroom is checked only by a run that creates the code sink's API: with 23 APIs in the account (22
+# foreign and the sink's), a rerun that only extends the key goes on; a first phase 2 there is refused, before any
+# change, unless CCIT_CI_APPSYNC_API_QUOTA gives a raised quota; and phase 1, which creates no API, goes on whatever
+# the count.
+appsync_headroom_is_checked_only_when_the_api_is_created() {
+    fresh_state
+    run --apply --scope all
+    (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
+    add_foreign_apis 22
+    jq --argjson e "$(( $(date +%s) + 10 * 86400 ))" '(.apis[] | .keys[]).expires = $e' "$FAKE_STATE" > "$WORK/s" \
+        && mv "$WORK/s" "$FAKE_STATE"
+    run --apply --scope all
+    (( STATUS == 0 )) && [[ "$OUT" == *"AppSync APIs 23 of 25"* && "$OUT" == *"Done: 1 calls made."* ]] \
+        && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "extend the tests' read-only API key to 365 days from now (the same key)" ]] \
+        || { echo "$OUT" | tail -8; return 1; }
+    fresh_state
+    add_foreign_apis 23
+    local before
+    before=$(jq -S . "$FAKE_STATE")
+    run --apply --scope all
+    (( STATUS == 1 )) && only_reads && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] \
+        && [[ "$OUT" == *"23 AppSync APIs exist, this run creates one, and the quota is 25"*"CCIT_CI_APPSYNC_API_QUOTA"* ]] \
+        || { echo "$OUT" | tail -5; return 1; }
+    CCIT_CI_APPSYNC_API_QUOTA=30 run --scope all
+    (( STATUS == 0 )) && [[ "$OUT" == *"AppSync APIs 23 of 30"* && "$OUT" == *"+ create AppSync API ccit-ci-codes"* ]] \
+        || { echo "$OUT" | tail -5; return 1; }
+    CCIT_CI_APPSYNC_API_QUOTA=lots run --scope all
+    (( STATUS == 1 )) && [[ "$OUT" == *"CCIT_CI_APPSYNC_API_QUOTA must be a whole number"* ]] || return 1
+    add_foreign_apis 30
+    run --apply
+    (( STATUS == 0 )) && [[ "$OUT" == *"+ create user pool ccit-ci-email-alias"* ]] || { echo "$OUT" | tail -5; return 1; }
+}
+
 library_guards() {
     local out status=0
     out=$(bash -c '
@@ -738,6 +1149,7 @@ library_guards() {
 }
 
 check "bad usage is refused" usage_is_refused
+check "snapshot and lambda-drift refuse --apply, before any AWS call" read_only_commands_refuse_apply
 check "a missing config URL is refused before any AWS call" a_missing_config_url_is_refused
 check "a config URL without a path is refused, unprinted" a_config_url_without_a_path_is_refused
 check "the default dry run (phase 1) plans exactly the device-alias pool and what it needs" \
@@ -748,24 +1160,32 @@ check "a dry run refuses a ccit-ci- name without the tag" untagged_name_is_refus
 check "--apply refuses a ccit-ci- name without the tag before any change" untagged_name_is_refused --apply
 check "phase 1 --apply --upload makes only the Lite device-alias pool, its trigger and discard sender, and one file" \
     phase_1_creates_only_the_device_alias_pool
-check "phase 2 adds the default and alias-codes pools, narrowed, keeps phase 1, and uploads only the five new files" \
+check "phase 2 adds the default, alias-codes and MFA-required pools, narrowed, keeps phase 1, and uploads only the six new files" \
     phase_2_adds_the_default_pool_and_keeps_phase_1
 check "a second --apply --upload makes no call and uploads nothing" a_second_apply_makes_no_call_and_uploads_nothing
 check "a phase-1 --apply --upload after phase 2 makes no call: the triggers' role keeps every trigger's logs" \
     a_phase_1_rerun_after_phase_2_makes_no_call
 check "the code sink's API key near its expiry is extended in place, and the uploaded files stay valid" \
     an_api_key_near_its_expiry_is_extended_in_place
+check "a rerun reuses the key beyond the reuse threshold, extends it within it, and replaces an expired one" \
+    a_rerun_reuses_or_extends_the_key_at_the_threshold
+check "the key is made and extended for 365 days, to the hour, within AppSync's bounds with its clock behind" \
+    the_key_lives_365_days_within_appsyncs_bounds
+check "an expired key's replacement refuses --apply until the uploaded files that name the old key are replaced" \
+    an_expired_key_needs_the_uploads_that_name_it_replaced
 check "a key with other contents refuses the whole upload" a_key_with_other_contents_refuses_the_upload
 check "snapshot and verify-unchanged: a user count is no change; a change, a removal, a foreign addition fail" \
     snapshot_and_verify
 check "snapshot: unordered lists in another order are no change; Layers reordered or a real change are" \
     snapshot_normalizes_unordered_lists
+check "snapshot: a Lambda's RuntimeVersionConfig, which Lambda moves by itself, is no change" \
+    snapshot_ignores_the_runtime_version
 check "the Cognito lists are read to their last page: a ccit-ci- pool on page 2 is found, snapshotted, torn down" \
     lists_are_read_to_their_last_page
 check "teardown is a dry run by default and names only ccit-ci- resources" teardown_is_a_dry_run_by_default
 check "teardown --apply deletes only the ccit-ci- resources it made" teardown_deletes_only_ours
 if frozen_script; then
-    check "a rerun over phase 2 as applied ($FROZEN_COMMIT) adds only the alias-codes pool and two new files" \
+    check "a rerun over phase 2 as applied ($FROZEN_COMMIT) adds only the alias-codes and MFA-required pools and three new files" \
         a_rerun_over_phase_2_as_applied_adds_only_the_alias_codes_pool
     check "teardown --apply then deletes every ccit-ci- resource, the alias-codes pool's too" \
         teardown_deletes_only_ours '["plugin-role"]'
@@ -784,6 +1204,12 @@ check "a pool made again under a new ARN gets its Lambdas' invoke permissions re
 check "a role-propagation error is retried" a_propagation_error_is_retried
 check "any other error stops --apply, and a second --apply makes only what is missing" \
     another_error_stops_the_apply_and_a_rerun_finishes_it
+check "a dry run refuses a custom sender without npm, and a failed npm ci stops --apply before the sender" \
+    npm_is_checked_by_the_dry_run_and_a_failed_build_stops_the_apply
+check "lambda-drift compares the deployed files, not the zips' hashes, and records them only with --accept-deployed" \
+    lambda_drift_compares_the_deployed_files
+check "the AppSync headroom is checked only by a run that creates the API, against CCIT_CI_APPSYNC_API_QUOTA" \
+    appsync_headroom_is_checked_only_when_the_api_is_created
 check "the library refuses a name that is not ccit-ci-, and a mutating call in a dry run" library_guards
 
 if (( failures > 0 )); then

@@ -20,8 +20,8 @@ CI's setup, described once here and referred to from the rest of this README:
 
 - CI downloads the plugin's `auth` test configuration: the plugin's files at the top level, and the client's own CI
   resources' files in a `cognito-client-ci/` subfolder ("CI's additive resources", below);
-- `infra/ci/ci-overlay.sh` overlays the client's roles onto a copy of the plugin's files (`email-alias extended` for
-  the client suite, `extended` for the interop suite), and the build phases copy from that copy;
+- `infra/ci/ci-overlay.sh` overlays the client's roles onto a copy of the plugin's files (`email-alias extended
+  mfa-req-totp-sms` for the client suite, `extended` for the interop suite), and the build phases copy from that copy;
 - no skip variable is set, and the jobs allow no skip (`enforce_no_skips: true`, `allowed_skips: 0`): every test
   runs, and a missing resource fails its tests.
 
@@ -42,7 +42,7 @@ COGNITO_CLIENT_INTEG_CI_BUCKET=s3://<bucket>/<path> COGNITO_CLIENT_INTEG_CI_PROF
 # The client's roles, as the client suite's job overlays them. The new directory must not exist yet, and must not
 # be inside $DOWNLOAD. For the interop suite alone, CI overlays "extended"; the client suite's set serves both.
 DIR=$(mktemp -d /tmp/ccit-ci-set.XXXXXX) && rmdir "$DIR"
-infra/ci/ci-overlay.sh "$DOWNLOAD" "$DIR" "email-alias extended"
+infra/ci/ci-overlay.sh "$DOWNLOAD" "$DIR" "email-alias extended mfa-req-totp-sms"
 ```
 
 `bash infra/test_fetch_ci_config.sh` and `bash infra/ci/test_ci_overlay.sh` test the two helpers offline, with no
@@ -62,8 +62,10 @@ cd CognitoClientHostApp
 DD=/tmp/ccit-ci-dd
 UDID=<simulator-udid>    # an iOS 26 simulator, e.g. from `xcrun simctl create`
 build() {                # the scheme
+  # -skipPackagePluginValidation, as CI passes it: on a fresh DerivedData the build otherwise stops at validating
+  # smithy-swift's SmithyCodeGeneratorPlugin.
   env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild build-for-testing -project CognitoClientHostApp.xcodeproj \
-    -scheme "$1" -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD"
+    -scheme "$1" -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD" -skipPackagePluginValidation
 }
 run() {                  # the scheme, then any further xcodebuild arguments
   local scheme="$1"; shift
@@ -112,9 +114,9 @@ must provide", below), so those tests fail, each naming its resource, and RT-1 a
 client. To turn those failures into skips that name the resource, run the tests with
 `TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS=1` in `xcodebuild`'s environment, which passes it to the test process as
 `COGNITO_CLIENT_INTEG_CI_SKIPS=1` ("Skips on the plugin's own files", below). A green run that way says
-nothing about custom auth, new-password users, the code API on the default backend, the device-alias tests, the
-sandbox checks or rotation, all of which CI runs. Never add a test "behind a CI-only skip": CI sets no skip variable
-and fails the job on any skip.
+nothing about custom auth, new-password users, the code API on the default backend, the device-alias tests, a
+`USER_AUTH` sign-in that must set MFA up, the sandbox checks or rotation, all of which CI runs. Never add a test
+"behind a CI-only skip": CI sets no skip variable and fails the job on any skip.
 
 ### Only the files in your home directory
 
@@ -271,7 +273,7 @@ code-capturing backend has the setting it asserts on; those are listed below as 
 | PL-6…23, SU-8…15, AS-1…3 | OTP and sign-up codes | passwordless | passwordless | unchanged |
 | sandbox checks: sign-up and resent codes, attribute codes, the confirm-then-delete cleanup, the sign-up code check | sign-up and attribute codes | passwordless | (none) | leaves sign-ups to confirm (no pre-sign-up trigger in the plugin's; the sandbox's leaves `ccit-confirm-` users) |
 | sandbox checks: SMS MFA code, the raw sign-in's SMS answer | an SMS MFA code | all-MFA-required | (none) | as MF-14 |
-| AT-2's second half, `testUpdatedEmailIsVerifiedWithTheCodeSentToIt` (not counted; AT-2 itself, as the plugin's test, reads no code) | an attribute verification code | default | (none: the plugin's test stops at the update) | asserts the email is updated before it is verified: only the default backend's README empties `AttributesRequireVerificationBeforeUpdate` |
+| AT-2's second half, `testUpdatedEmailIsVerifiedWithTheCodeSentToIt` (not counted; AT-2 itself, as the plugin's test, reads no code) | an attribute verification code | default (on CI the client's own `extended`) | (none: the plugin's test stops at the update) | asserts the email is updated before it is verified: only the default backend's README empties `AttributesRequireVerificationBeforeUpdate` |
 | RP-3 `testSuccessfulResetPasswordEndToEnd`, the reset-code check (a sandbox check) | a password-reset code | default (on CI the client's own `extended`) | (none; not counted) | needs account recovery by verified email; the code-capturing backends' READMEs set account recovery to `NONE` |
 | the `email-alias` code check (a sandbox check) | a sign-up code, by the generated username | device alias (on CI the client's own `email-alias-codes`) | (none) | only that backend signs in by email |
 
@@ -296,7 +298,8 @@ own CI resources existed:
 | default | The credentials file itself, `AWSCognitoAuthPluginIntegrationTests-credentials.json`, with the three keys above | the fixture check (`CognitoBackendSmokeTests.testProvisionedUsersAreAvailable`) | **missing**: CI downloads no `-credentials.json` |
 | default | A pre-sign-up trigger that auto-verifies email (not only auto-confirms) | RP-3 (a verified email) | **missing**: `ForgotPassword` answered "no registered/verified email or phone_number"; the README's handler only sets `autoConfirmUser` |
 | device alias (`AWSCognitoAuthPluginDeviceAliasTests-*`) | A way to confirm a fresh sign-up: a pre-sign-up trigger that confirms it, or custom senders and a `data` block to confirm it with its sign-up code; and 5-minute access and id tokens | DV-10…19, the parity check of the pool, and that pool in the every-pool cleanup check | **missing**: a fresh sign-up came back unconfirmed and the file names no `data` block. No user is signed up there at all (the file is not the sandbox's, names no code API, and promises no confirming trigger): each sign-up there had sent a confirmation email, and repeated runs reached the account's daily email limit (`LimitExceededException`). The plugin's `DeviceAliasTokenRefreshIntegrationTests` read no code (they sign in a user pre-created for them, from `AWSCognitoAuthPluginDeviceAliasTests-credentials.json`, which CI does not download) and run on no CI workflow (only the `AuthGen2IntegrationTests` target has them) |
-| default | `ALLOW_USER_PASSWORD_AUTH` and `ALLOW_CUSTOM_AUTH` on the app client; token revocation on; refresh-token rotation off; device tracking always remembered; attribute updates without verification; MFA optional with TOTP and SMS; an identity pool with guest access | SI-2; SO-1, SO-2; MS-6; DV-1…9, CA-2; AT-2; MF-*; CR-*, GU-*, SE-*, ST-* | provided: all passed |
+| MFA required, TOTP and SMS (`AWSCognitoAuthPluginMFARequiredIntegrationTests-*`) | `ALLOW_USER_AUTH` on the app client, with `PASSWORD` among the pool's allowed first factors | the two `USER_AUTH` MFA-setup tests in `RequiredMFATests` | **not known**: the app client's flows were not read; without them both tests fail, naming the remedies, or skip with `TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS=1` (`mfaRequiredUserAuth`) |
+| default | `ALLOW_USER_PASSWORD_AUTH` and `ALLOW_CUSTOM_AUTH` on the app client; token revocation on; refresh-token rotation off; device tracking always remembered; attribute updates without verification; MFA optional with TOTP and SMS; an identity pool with guest access | SI-2; SO-1, SO-2; MS-6; DV-1…9, CA-2; MF-*; CR-*, GU-*, SE-*, ST-* | provided: all passed |
 | passwordless | Every code captured and a `data` block; SMS codes to phone numbers set at sign-up | PL-*, SU-8…15, AS-*, MF-4, MF-6, MF-10, MF-12, AT-5, AT-6 | provided: all passed (the backend confirms no sign-up, so each user is confirmed with its sign-up code) |
 | both email-MFA backends | Email MFA on, every code captured and a `data` block | MF-18…23, CR-2 | provided: the plugin's `EmailMFARequiredTests` and `EmailMFAWithAllMFATypesRequiredTests` passed; the outputs list no `EMAIL` in `mfa_methods`, which the harness no longer reads |
 | passwordless or WebAuthn | An identity pool that federates the backend's user pool, with guest access, named in its outputs: CS-2 and CS-3 refresh a session carried to a new pool namespace, which leaves its device record behind, so they need a pool that tracks no devices (the default backend tracks them) | CS-2, CS-3 | provided: both passed |
@@ -311,7 +314,9 @@ harness's raw sign-ins fall back to SRP there, so no test needs it on them.
 of them: the `extended` role gives the default backend's rows (custom auth and its answer, the new-password users, the
 credentials file, a code API and a verified email at sign-up), and `ccit-ci-email-alias` replaces the device-alias
 file with a pool whose pre-sign-up trigger confirms every test sign-up and whose outputs carry the
-`confirming_trigger` mark, which the harness reads, so nothing in the code names the role. The jobs set no skip
+`confirming_trigger` mark, which the harness reads, so nothing in the code names the role. The client suite's
+`mfa-req-totp-sms` role replaces the MFA-required file with the client's own `ccit-ci-mfa-req-totp-sms` (phase 2),
+whose `ci` app client allows `USER_AUTH`, so it provides that row whatever the plugin's backend allows. The jobs set no skip
 variable and allow no skip ("Run as CI does (recommended)", above). On the plugin's own files alone, the tests these
 rows name fail, each naming its resource, or skip with `TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS=1` ("Skips on the
 plugin's own files", below).
@@ -346,7 +351,8 @@ cd AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/CognitoClientHostA
 # $DIR: CI's file set, overlaid ("Run as CI does (recommended)"). The copy happens at build time.
 DD=/tmp/ccit-webauthn-dd
 env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild build-for-testing -project CognitoClientHostApp.xcodeproj \
-  -scheme CognitoClientWebAuthnUITests -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD"
+  -scheme CognitoClientWebAuthnUITests -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD" \
+  -skipPackagePluginValidation
 xcodebuild test-without-building -project CognitoClientHostApp.xcodeproj \
   -scheme CognitoClientWebAuthnUITests -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' \
   -derivedDataPath "$DD" -collect-test-diagnostics never \
@@ -417,7 +423,7 @@ cd AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests
 cd CognitoClientHostApp
 DD=/tmp/cognito-client-ui-dd
 COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild build-for-testing -project CognitoClientHostApp.xcodeproj -scheme CognitoClientUITests \
-  -destination 'generic/platform=iOS Simulator' -derivedDataPath $DD > /tmp/hu-build.log 2>&1
+  -destination 'generic/platform=iOS Simulator' -derivedDataPath $DD -skipPackagePluginValidation > /tmp/hu-build.log 2>&1
 # As CI: no hardware keyboard. No pasteboard sync with the Mac while the tests paste. Saved, restored below
 # (`defaults read` prints a boolean as 1 or 0, which `defaults write -bool` refuses, hence the mapping).
 KB=$(defaults read com.apple.iphonesimulator ConnectHardwareKeyboard 2>/dev/null)
@@ -466,14 +472,14 @@ env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
   -project CognitoClientHostApp.xcodeproj \
   -scheme CognitoClientIntegrationTests \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5' \
-  -parallel-testing-enabled NO
+  -parallel-testing-enabled NO -skipPackagePluginValidation
 
 # The plugin-interop suite, in its own process: it links Amplify and AWSCognitoAuthPlugin as well.
 env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
   -project CognitoClientHostApp.xcodeproj \
   -scheme CognitoClientPluginInteropTests \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5' \
-  -parallel-testing-enabled NO
+  -parallel-testing-enabled NO -skipPackagePluginValidation
 ```
 
 `xcodebuild test` builds and tests in one step, so the variable goes on it.
@@ -559,7 +565,7 @@ Simulator builds are signed ad hoc with these entitlements, so no team or provis
 | `SandboxProvisioningTests` | The users the suites need are in the state they need, checked through the SDK directly: a fresh user with no MFA preference is not challenged; a fresh user who enrolled TOTP through the client is challenged for TOTP and a fresh code completes it; the first of the new-password users still in `FORCE_CHANGE_PASSWORD` must set a new password (or, once `ChallengeTests` has set one in this run, that user's new password signs in: only an administrator call can reset one, so CH-1 cannot use a fresh user); a fresh user signs in with its password |
 | `HarnessHelperTests` | The shared helpers, including the recorder installed through the real client's escape hatch, and, offline, which `listMfaInfo` forms the code reader retires (`ListMfaInfoForms`) |
 | `PluginTestConfigurationTests` | The Gen1 translation, offline, over made-up documents: every mapped key reaches the client's configuration, absent keys get the plugin's Gen1 values, values the plugin tolerates are read as it reads them (an identity pool without a region, a non-string scope, an incomplete hosted UI, each MFA mode, a string minimum length, a REST API), what Gen2 cannot carry is refused with the file's name, and the Gen2 file wins over the Gen1 one |
-| `SandboxHelperTests` | The multi-pool helpers against every role's backend: every pool confirms a fresh user and cleanup deletes it (answering each pool's MFA); sign-up, resent, reset-password, attribute-verification, MFA and OTP codes reach the sink; `email-alias` codes are found by the generated username; TOTP-enrolled and unconfirmed users are cleaned up; sessions on several pools are cleaned up with their own pool. On the plugin's CI backends they check what those backends promise (SRP sign-ins, users confirmed with their code, the first code sent after a request); what only the sandbox provisions is a sandbox check ("Sandbox checks", above), which skips elsewhere |
+| `SandboxHelperTests` | The multi-pool helpers against every role's backend: every pool confirms a fresh user and cleanup deletes it (answering each pool's MFA); sign-up, resent, reset-password, attribute-verification, MFA and OTP codes reach the sink; `email-alias` codes are found by the generated username; TOTP-enrolled and unconfirmed users are cleaned up, the latter with their sign-up code and, when that is skipped, with a resent one; sessions on several pools, each signed in, are cleaned up with their own pool (each row purged, each refresh token revoked at its own pool's app client). On the plugin's CI backends they check what those backends promise (SRP sign-ins, users confirmed with their code, the first code sent after a request); what only the sandbox provisions is a sandbox check ("Sandbox checks", above), which skips elsewhere |
 | `WebAuthnCredentialsIntegrationTests` | WebAuthn credential listing and deletion, headless, on the WebAuthn pool (U-WA): a fresh user with no passkey lists an empty page (default size and size 1); deleting a credential Cognito never issued is `.service(.resourceNotFound)` and leaves the session signed in; page sizes 0 and 21 are refused with `.validation(field: "pageSize")` and send nothing; a signed-out session is `.notSignedIn` with no request. Requests are checked with `RecordingHTTPClient`. No passkey is registered, so no simulator sheet is needed |
 | `PasswordlessSignInTests` | PL-1 … PL-23, the plugin's `PasswordlessSignInTests` with its method names: choice-based sign-in (`USER_AUTH`) on `passwordless` (U-PL: `PASSWORD`, `PASSWORD_SRP`, `EMAIL_OTP`, `SMS_OTP`). Each preferred first factor signs in (PL-1, PL-2, PL-6, PL-7) or reaches its one-time-code step with the code in the sink (PL-12, PL-13); with no preference, the first-factor selection and each choice (PL-3, PL-5, PL-8 … PL-10); wrong passwords (PL-4, PL-14 … PL-17; in `USER_AUTH` a wrong password ends the attempt); right and wrong email and SMS codes, a wrong code keeping the step pending (PL-18 … PL-23). PL-11, `testSignInWithUnsupportedPreference_givenValidUser_expectSelectChallenge`: `userAuth(preferredFirstFactor: .webAuthn)` through the anchored overload gets `.continueSignInWithFirstFactorSelection` without `.webAuthn` after one `InitiateAuth` `USER_AUTH` and no challenge answer, since U-PL offers no `WEB_AUTHN`; no sheet is shown, so no simulator server is needed. Each test signs up its own user with a password, an `@example.com` email and a fictional `+1555` number; codes come from the sink. Requests are checked with `RecordingHTTPClient.answered` |
 | `MultiSessionFlowTests` | The multi-session flows over the live engine with `alice` and `bob`, two fresh users per test: MS-1 two users signed in at once, MS-3 a sign-out (`.complete`) keeps the stored row, MS-4 `storedSessions` lists every session, `.default` from the plugin's record, MS-5 a credentials provider per session; MS-2 (signing one session out leaves the other signed in, and the event goes to the signed-out session only) is in `MultiSessionFlowTests+SignOut`, and MS-6 (the same user in two independent sessions) in `MultiSessionFlowTests+SameUser` |
@@ -582,12 +588,12 @@ Simulator builds are signed ad hoc with these entitlements, so no team or provis
 | `SignUpTests` (`ClientSignUpTestCase`) | SU-1 … SU-15, the plugin's `AuthSignUpTests`, `AuthConfirmSignUpTests`, `AuthResendSignUpCodeTests`, `PasswordlessSignUpTests` and `PasswordlessConfirmSignUpTests`, with their names. On `default` (SU-1 … SU-7): a sign-up auto-confirms and returns the user's `sub`; two concurrent sign-ups; an empty username or code is `.validation` with no request; an existing username is `usernameExists`; confirming an unknown user is `codeMismatch` or `codeExpired` where the app client prevents existence errors, `userNotFound` where it does not; resending to an unknown user answers a simulated email delivery, or `userNotFound` or `limitExceeded`, as the plugin accepts. On `passwordless` (SU-8 … SU-15): a sign-up without a password waits in `.confirmUser`; the concurrent, validation and `usernameExists` cases; SU-15 confirms with the sink's code and reaches `.completeAutoSignIn`. Every user is a fresh `ccit-` (or `ccit-confirm-`) user, deleted at teardown |
 | `AutoSignInTests` (`ClientSignUpTestCase`) | AS-1 … AS-3, the plugin's `PasswordlessAutoSignInTests`, on `passwordless`: `autoSignIn()` with no sign-up is `invalidState` and sends nothing; a sign-up confirmed with the sink's code, then `autoSignIn()`, signs the session in and its stream delivers `.signedIn`, and only the signing-up session is signed in and stored; a second `autoSignIn()` after a global sign-out reaches Cognito and is `notAuthorized`. Fresh `ccit-confirm-` users |
 | `PasswordResetTests` | RP-1, RP-2, the plugin's `AuthResetPasswordTests` and `AuthConfirmResetPasswordTests`, on `default`: resetting an unknown user gets Cognito's simulated `.confirmResetPasswordWithCode` (or, with existence errors on, `userNotFound` or `limitExceeded`), and confirming a reset for one fails with a service error the plugin accepts; plus RP-3 (not counted), a whole reset of a fresh user with the sink's code, then a sign-in with the new password |
-| `UserAttributesTests` | AT-1 … AT-7, the plugin's `AuthUserAttributesTests`, with their names, on `default` (no verification needed before an update; AT-5 and AT-6 on `passwordless`, whose outputs name a code API): fetch; update the email (a code to the new address; as the plugin's test, no code is read; `testUpdatedEmailIsVerifiedWithTheCodeSentToIt`, not counted, then verifies it with the code, which needs a code API on `default`); update two attributes; a wrong confirmation code is `codeMismatch`; resend and confirm a verification code; send one for the signed-up email; change the password and sign in with the new one. A fresh user signed in through the client each; checks on usernames, emails and codes are booleans |
+| `UserAttributesTests` | AT-1 … AT-7, the plugin's `AuthUserAttributesTests`, with their names, on the default backend's settings (no verification needed before an update): AT-1, AT-3 and AT-7 on `default`; AT-2, its second half and AT-4, whose email update sends a code, on the role with the default backend's extras (`extrasRole`: on CI the client's `extended`, whose custom senders send no email); AT-5 and AT-6 on `passwordless`, whose outputs name a code API: fetch; update the email (a code to the new address; as the plugin's test, no code is read; `testUpdatedEmailIsVerifiedWithTheCodeSentToIt`, not counted, then verifies it with the code, which needs that role's code API); update two attributes; a wrong confirmation code is `codeMismatch`; resend and confirm a verification code; send one for the signed-up email; change the password and sign in with the new one. A fresh user signed in through the client each; checks on usernames, emails and codes are booleans |
 | `UserAttributesStressTests` | ST-1, the plugin's `AuthStressTests.testMultipleFetchUserAttributes`: 50 concurrent `fetchUserAttributes()` for a fresh `default` user all finish within the plugin's 30 seconds and return the signed-up email |
 | `TOTPSetupTests` (`ClientMFATestCase`) | MF-1, MF-2, on `default`: `setUpTOTP()` then `verifyTOTPSetup(code:)` while signed in, the details naming the user and giving an `otpauth` URI; a wrong code first is `.service(.softwareTokenMFANotEnabled)`, then the right one succeeds with a device name |
 | `MFASignInTests` (`ClientMFATestCase`) | MF-3 … MF-6, the plugin's `MFASignInTests`, on `default` (MF-4 and MF-6, which read SMS codes, on `passwordless`): the user sets MFA up through the client, signs out, and signs in with TOTP, with SMS (confirmed with the code the custom SMS sender captured, where the plugin stops at the step), and choosing TOTP or SMS when both are enabled (`[.sms, .totp]` offered). SMS users get a fictional `+1555` number |
 | `MFAPreferenceTests` (`ClientMFATestCase`) | MF-7 … MF-12, the plugin's `MFAPreferenceTests`, with their names and steps, on `default` (MF-10 and MF-12, whose cleanup reads an SMS code, on `passwordless`): a new user has no preference; TOTP and SMS each enabled, preferred, not preferred and disabled; both together; two preferred types are `.service(.invalidParameter)`; `.enabled` keeps the preferred type preferred |
-| `RequiredMFATests` (`RequiredMFATests.swift`, `RequiredMFATests+Email.swift`) | MF-13 … MF-23, through `signIn` and `confirmSignIn` only, with the plugin's method names. On `mfa-req-totp-sms` (U-REQ-TS), the plugin's `TOTPSetupWhenUnauthenticatedTests` (MF-13 … MF-17): a user without a phone number must set up TOTP; one with a number (MF-14, on `mfa-req-all` with no email, which reads the SMS code there) gets an SMS code, confirmed from the sink; TOTP set up during sign-in, also after a wrong (`softwareTokenMFANotEnabled`) or non-numeric (`invalidParameter`) code, which keeps the setup. On `mfa-req-email` (U-REQ-E, the plugin's `EmailMFAOnlyTests`, MF-18, MF-19): email MFA set up during sign-in; a wrong email code (`codeMismatch`), then the right one. On `mfa-req-all` (U-REQ-ALL, `EmailMFAWithAllMFATypesRequiredTests`, MF-20 … MF-23): the setup selection offers TOTP and email, not SMS; an emailed code; choosing email, then TOTP, at the selection. Email codes come from the sink, in place of the plugin's AppSync subscription. Each user is deleted, by the client once signed in or by `tearDown`'s raw sign-in, which answers the pool's MFA |
+| `RequiredMFATests` (`RequiredMFATests.swift`, `RequiredMFATests+Email.swift`) | MF-13 … MF-23, through `signIn` and `confirmSignIn` only (the `USER_AUTH` checks first make one raw call), with the plugin's method names. On `mfa-req-totp-sms` (U-REQ-TS), the plugin's `TOTPSetupWhenUnauthenticatedTests` (MF-13 … MF-17): a user without a phone number must set up TOTP; one with a number (MF-14, on `mfa-req-all` with no email, which reads the SMS code there) gets an SMS code, confirmed from the sink; TOTP set up during sign-in, also after a wrong (`softwareTokenMFANotEnabled`) or non-numeric (`invalidParameter`) code, which keeps the setup. The same TOTP setup through choice-based sign-in (not counted): a `USER_AUTH` sign-in with the `PASSWORD` or `PASSWORD_SRP` first factor is answered `MFA_SETUP`, gets `.continueSignInWithTOTPSetup`, and the TOTP code completes it; the recorder checks, from the requests the client sent, that the sign-in was one `InitiateAuth` `USER_AUTH` preferring that factor, and that the challenges answered were `MFA_SETUP` (`PASSWORD`) or `PASSWORD_VERIFIER` then `MFA_SETUP` (`PASSWORD_SRP`); each first checks, with a raw `InitiateAuth`, that the app client allows `USER_AUTH`, and where it does not fails, naming the sandbox's and CI's remedies, or skips under the CI-only skip rule (`mfaRequiredUserAuth`); `infra/pools/mfa-req-totp-sms.json` allows it, on the sandbox and on CI's `ccit-ci-mfa-req-totp-sms`. On `mfa-req-email` (U-REQ-E, the plugin's `EmailMFAOnlyTests`, MF-18, MF-19): email MFA set up during sign-in; a wrong email code (`codeMismatch`), then the right one. On `mfa-req-all` (U-REQ-ALL, `EmailMFAWithAllMFATypesRequiredTests`, MF-20 … MF-23): the setup selection offers TOTP and email, not SMS; an emailed code; choosing email, then TOTP, at the selection. Email codes come from the sink, in place of the plugin's AppSync subscription. Each user is deleted, by the client once signed in or by `tearDown`'s raw sign-in, which answers the pool's MFA |
 | `DeviceTests` (`DeviceTestCase`) | DV-1 … DV-3, the plugin's `AuthFetchDeviceTests`, `AuthRememberDeviceTests` and `AuthForgetDeviceTests`, on `default` (device tracking "always remember") with a fresh user each: after sign-in `fetchDevices()` lists this session's device with its details; after `rememberDevice()` it is listed; after `forgetDevice()` none is |
 | `DeviceKeyPersistenceTests` (`DeviceTestCase`) | DV-4 … DV-9, the plugin's `DeviceKeyPersistenceIntegrationTests`, on `default`: the device key survives a sign-out and an SRP sign-in, is presented by a second session of the same user and never by another user's session; it survives SRP → password, password → SRP and four alternating cycles (one device listed each time); one and two forced refreshes succeed with a remembered device |
 | `DeviceAliasTests` (`DeviceTestCase`) | DV-10 … DV-19, the plugin's `DeviceAliasTokenRefreshIntegrationTests` (#4207), on `email-alias` (email as the username, device tracking "always remember", 5-minute tokens): the user signs in by email, so the typed name differs from the tokens' username, and every refresh (one, two, after a re-sign-in, after the device persisted), remember, forget (also after a refresh), fetch with details, the same device across a sign-out and sign-in, and the whole lifecycle must find the device record under the typed name. This session's device is identified by its access token's `device_key` |
@@ -595,7 +601,8 @@ Simulator builds are signed ad hoc with these entitlements, so no team or provis
 | `ChallengeResumeTests` (`ClientMFATestCase`) | Design §4.11, its own CR-1 … CR-3 (not the credentials rows): a sign-in interrupted on an MFA challenge survives the app being closed (the client released, the registry holding no live session for it, a new client with the same session ID over the same keychain). CR-1: a TOTP challenge (a fresh `default` user with TOTP enrolled and enabled) is answered in a new client, the challenge record stored while it waits and gone after; CR-2: an emailed code on `mfa-req-email`; CR-3: the new client signs in again instead, superseding the saved challenge |
 | `PluginRecordLocationTests` (interop target) | The plugin, in the same app, writes its record under its own key, `amplify.<ns>.session`, which is also the client's `.default` session record, writes no v1 record, and deletes its record on sign-out (no signed-out marker). Removes `.default`'s three items (the plugin's record, `$default.meta` and `$default.challenge`) before and after, and the user's device records and the plugin's `authConfiguration` at teardown. The record is checked straight after the sign-out: the signed-out fetch then saves the plugin's guest record (`identityPoolOnly`) under the same key when it returns guest credentials, and none when it does not, which the test pins from the fetch's result (the plugin's CI's Gen1 translation states no guest flag) |
 | `CredentialStoreTransitionRealKeychainTests` (interop target) | Parity IO-1 … IO-3: the plugin's access-group transition clear and migration (Q7), with their names; a named row the client wrote is still listed afterwards. `.default`'s `$default.meta` and `$default.challenge` belong to the plugin's session: the clear removes them, the migration moves them, a label the client set on `.default` included, which the client then lists under the shared group. IO-5: the migration's clear of a non-empty destination removes them there and keeps named records, which do not block the migration. IO-6: the plugin, started under another user pool, applies the configuration change to the `authConfiguration` the client recorded, and deletes that configuration's login with `.default`'s sidecar and challenge item, keeping named records. Offline: no request. Wipes the plugin's (and client's) real services |
-| `PluginSharedLoginTests` (interop target, formerly `PluginAdoptionTests`) | AD-1 … AD-8, the shared saved login: `.default` restores in place, with no request, the user the plugin signed in, and reads the plugin's later writes (AD-1); a named session never reads the plugin's record (AD-2); the plugin's `fetchAuthSession`, configured again as at a relaunch, sees the user the client signed in, with the client's tokens (AD-3); a plugin sign-out deletes the record, and the next `.default` is signed out (AD-4); a client sign-out (`.complete`) leaves `{"noCredentials":{}}` and the sidecar, a signed-out `.default` row naming the user, and the relaunched plugin signed out (AD-5); a client refresh is what the relaunched plugin holds (AD-6); the plugin signing out the client's login leaves `.default` signed out with a signed-out row naming the user, from the sidecar (AD-7); the client signing out the plugin's login leaves the relaunched plugin signed out (AD-8). The two never run side by side over `.default`. Signs `alice`, a fresh user of the test's own (signed up and deleted through the client), in through the plugin or the client; removes her device records and the plugin's `authConfiguration` at teardown |
+| `PluginSharedLoginTests` (interop target, formerly `PluginAdoptionTests`) | AD-1 … AD-8 (AD-9 and AD-10 are in `PluginCarriedAndSharedGroupLoginTests`), the shared saved login: `.default` restores in place, with no request, the user the plugin signed in, and reads the plugin's later writes (AD-1); a named session never reads the plugin's record (AD-2); the plugin's `fetchAuthSession`, configured again as at a relaunch, sees the user the client signed in, with the client's tokens (AD-3); a plugin sign-out deletes the record, and the next `.default` is signed out (AD-4); a client sign-out (`.complete`) leaves `{"noCredentials":{}}` and the sidecar, a signed-out `.default` row naming the user, and the relaunched plugin signed out (AD-5); a client refresh is what the relaunched plugin holds (AD-6); the plugin signing out the client's login leaves `.default` signed out with a signed-out row naming the user, from the sidecar (AD-7); the client signing out the plugin's login leaves the relaunched plugin signed out (AD-8). The two never run side by side over `.default`. Signs `alice`, a fresh user of the test's own (signed up and deleted through the client), in through the plugin or the client; removes her device records and the plugin's `authConfiguration` at teardown |
+| `PluginCarriedAndSharedGroupLoginTests` (interop target) | AD-9: the client signs a fresh user in on `.default` over the default backend's user pool alone; the plugin, configured with the full outputs (the same user pool plus its identity pool), carries that login to the new namespace as its bytes were, keeps the old one, and is signed in from it with the client's access token; a `.default` client then restores it with no request and labels it (writing its sidecar), and a plugin under another user pool deletes the carried login, its sidecar and a `$default.challenge` item, keeping the user-pool-only namespace's record and sidecar. AD-10: AD-3 and AD-5 with the plugin on the host app's shared access group S and a `.default` client with `accessGroup: S`: the client's sign-in writes the plugin's record and sidecar into (the shared service, S), a relaunched plugin on S holds the client's tokens, and a group-less `.default` reads `.signedOut` with no request; the client's sign-out leaves `{"noCredentials":{}}` and the sidecar on S, and a relaunched plugin on S is signed out. Wipes the plugin's (and client's) real services and its access-group record before and after |
 | `PluginRotationTests` (interop target) | RT-1, RT-2: refresh-token rotation across the plugin and `.default` on live Cognito, the shared login's rollback claim. The client rotates and a relaunched plugin refreshes with the rotated token (no `RefreshTokenReuseException`); the plugin rotates and `.default` restores and refreshes with it (no `sessionExpired`), and a plugin relaunched after that reads the client's newest token. Needs the default pool's `rotation` app client (rotation on, no grace period, `infra/pools/default.json`) and `AmplifyCognitoClientRotationIntegrationTests-amplify_outputs.json`, which `infra/plugin-configs.py` writes once `provision.sh` has made the client; the build phase copies it when present. On CI the overlaid `extended` role brings it (`infra/ci`). Without it, it **skips** on any backend that is not the sandbox (the outputs' sandbox marker), such as the plugin's own files, and **fails** on the sandbox, asking for `provision.sh`. Wipes the plugin's unshared service before and after |
 | `AccessGroupRemovalRealKeychainTests` (interop target) | IO-4: after the plugin's access group is removed, the moved session keeps its group and a group-less read (plugin, client listing, and a group-less `.default` restoring it as `.signedIn`) still finds it. Signs a fresh user of the test's own in through the plugin |
 
@@ -660,9 +667,10 @@ Each reason is a case of `CISkipReason`, whose message is the skip's and names t
 | `customAuthAnswer` | `PluginCredentials.requireCustomChallengeAnswer()` | CA-1…3 (`CustomAuthTests`, in its `setUp`), `SandboxParityProvisioningTests.testCustomAuthCompletesWithTheStoredAnswer` |
 | `newPasswordUsers` | `PluginCredentials.requireNewPasswordUsers()` | CH-1 `ChallengeTests.testNewPasswordRequiredChallenge`, P-3 `SandboxProvisioningTests.testForceChangePasswordUserIsAskedForANewPassword` |
 | `credentialsFile` | `CognitoBackendSmokeTests.testProvisionedUsersAreAvailable`, after its outputs checks | that test |
-| `defaultCodeAPI` | `IntegrationTestEnvironment.codeSinkAPI(.standard, ciSkip:)` | AT-2's second half `UserAttributesTests.testUpdatedEmailIsVerifiedWithTheCodeSentToIt` |
-| `defaultCodeAPIAndVerifiedEmail` | `IntegrationTestEnvironment.codeSinkAPI(.standard, ciSkip:)` | RP-3 `PasswordResetTests.testSuccessfulResetPasswordEndToEnd` |
+| `defaultCodeAPI` | `IntegrationTestEnvironment.codeSinkAPI(extrasRole, ciSkip:)` | AT-2's second half `UserAttributesTests.testUpdatedEmailIsVerifiedWithTheCodeSentToIt` |
+| `defaultCodeAPIAndVerifiedEmail` | `IntegrationTestEnvironment.codeSinkAPI(extrasRole, ciSkip:)` | RP-3 `PasswordResetTests.testSuccessfulResetPasswordEndToEnd` |
 | `deviceAliasConfirmation` | `SandboxSignUp.requireNotKnownUnconfirmable(_:)` (`SandboxSignUp.ciSkip(for:)`), before any sign-up | DV-10…19 (`DeviceAliasTests`), `SandboxParityProvisioningTests.testEmailAliasPoolSignsInByEmailWithShortTokens`; and in `SandboxHelperTests.testEveryPoolAutoConfirmsAFreshUserAndCleanupDeletesIt` the device-alias pool is left out of the loop, the reason recorded as an `XCTContext` activity, so the test still checks every other pool and passes |
+| `mfaRequiredUserAuth` | `RequiredMFATests.requireUserAuth(on:)`, when the raw `USER_AUTH` probe is refused with `InvalidParameterException`, before any sign-up | `RequiredMFATests.testUserAuthPasswordSignInSetsUpTOTPWhenMFASetupIsRequired`, `RequiredMFATests.testUserAuthPasswordSRPSignInSetsUpTOTPWhenMFASetupIsRequired` |
 
 On the plugin's own files, `PluginRotationTests` (RT-1, RT-2) skip without the rotation client's outputs, which the
 plugin's backends lack. CI's interop job overlays `extended`, whose rotation client they run on, and runs every
@@ -700,7 +708,7 @@ in the client's CI job only.
 | New resource | Why |
 |---|---|
 | Pool `ccit-ci-email-alias` (`pools/email-alias.json`) and its `client` app client, on the **Lite** plan | DV-10…19 and the short-token parity check need email as the username, devices always remembered, 5-minute tokens and a confirming pre-sign-up trigger, all of which Lite has |
-| Lambda `ccit-ci-pre-sign-up` (`lambda/triggers/triggers.mjs` with `REFUSE_CONFIRMATION_USERS=1`) | Confirms and verifies every `ccit-` sign-up; refuses others, and refuses `ccit-confirm-` users, which no code API could confirm, so no sign-up code is ever sent |
+| Lambda `ccit-ci-pre-sign-up` (`lambda/triggers/triggers.mjs` with `REFUSE_CONFIRMATION_USERS=1`) | Confirms and verifies every `ccit-` sign-up; refuses others, and refuses `ccit-confirm-` users, which no code API on this pool could confirm, so no sign-up code is ever sent. Phase 2's `ccit-ci-default` uses the same trigger, so it refuses them too |
 | Lambda `ccit-ci-discard-sender` (`infra/ci/lambda/discard-sender`), the pool's custom email and SMS sender, and the KMS key `alias/ccit-ci-senders` that Cognito encrypts codes with | Cognito sends nothing for the pool, so its runs can never reach the account's daily email limit. No test there reads a code, so there is no code sink |
 | Role `ccit-ci-trigger-exec` (its own log streams only) and the two log groups (7 days) | |
 
@@ -712,7 +720,7 @@ The mark is not the sandbox's, so it opens no sandbox check: those run on CI onl
 **Phase 2, the extended role** (`--scope all`, which keeps phase 1). The plugin's default role is not replaced:
 the client gains a role of its own, `SandboxPool.extended`, backed by `ccit-ci-default` (`pools/default.json`, on
 Essentials). Only the tests that need the default backend's extras use it, through `IntegrationTestEnvironment.extrasRole`:
-CA-1…3 and the stored-answer check, CH-1, P-3, the fixture check, AT-2's second half and RP-3. RT-1 and RT-2 sign
+CA-1…3 and the stored-answer check, CH-1, P-3, the fixture check, AT-2, its second half, AT-4 and RP-3. RT-1 and RT-2 sign
 their user up through it too (`InteropEnvironment.rotationBaseResource`), and still require the rotation client to
 be on that user's pool. Every other test on the default role keeps the plugin's pool. When the extended file is
 absent, `extrasRole` is the default role, so on the plugin's own files those tests fail naming the resource (or skip
@@ -721,65 +729,22 @@ but in `SandboxPool.optionalRoles`, and the build phases copy its files as optio
 
 | New resource | Gives |
 |---|---|
-| Pool `ccit-ci-default`, its `plugin` and `rotation` app clients, and identity pool `ccit_ci_default` with two permissionless roles | The extended role, and the rotation client (RT-1, RT-2) |
+| Pool `ccit-ci-default`, its `plugin` and `rotation` app clients, and identity pool `ccit_ci_default` with two permissionless roles. Its pre-sign-up trigger is `ccit-ci-pre-sign-up`, so it refuses `ccit-confirm-` sign-ups, although its codes reach the code sink | The extended role, and the rotation client (RT-1, RT-2) |
 | The define, create and verify custom-auth triggers, and the answer in SSM `/ccit-ci/custom-challenge-answer` (a SecureString under the key `alias/ccit-ci-senders`, as the temporary password is; the Lambda holds only its SHA-256) | CA-1…3 and the stored-answer check |
 | `ccit-ci-new-password-1` … `-12`, kept in `FORCE_CHANGE_PASSWORD` every 10 minutes by `ccit-ci-new-password-reset` (`infra/ci/lambda/new-password-reset`) and an EventBridge rule; the temporary password in SSM | CH-1, P-3, and the fixture check with the credentials file |
-| The custom sender (`lambda/custom-sender`), the code sink (AppSync API and table `ccit-ci-codes`, `codesink/`), their roles, and the SNS caller role for SMS MFA | AT-2's second half, RP-3; Cognito sends nothing |
+| The custom sender (`lambda/custom-sender`), the code sink (AppSync API and table `ccit-ci-codes`, `codesink/`), their roles, and the SNS caller role for SMS MFA | AT-2, its second half, AT-4, RP-3; Cognito sends nothing |
 | Pool `ccit-ci-email-alias-codes` (`pools/email-alias.json`, on **Lite**) and its `client` app client, with Lambda `ccit-ci-pre-sign-up-confirmable` (`triggers.mjs` without `REFUSE_CONFIRMATION_USERS`, so it leaves `ccit-confirm-` users to confirm) and the custom sender into the code sink | The client's own role `SandboxPool.emailAliasCodes` (optional, not in `allCases`): the email-alias code check; Cognito sends nothing |
+| Pool `ccit-ci-mfa-req-totp-sms` (`pools/mfa-req-totp-sms.json`, on Essentials) and its `ci` app client (SRP and `USER_AUTH`, no `USER_PASSWORD_AUTH`), MFA required with TOTP and SMS, with `ccit-ci-pre-sign-up` and the discard sender as both custom senders; the SNS caller role's trust names it beside `ccit-ci-default`. A run that makes either of the two opens that trust to the account's pools while the pool is made (still held to the external ID and `aws:SourceAccount`), as it opens the key policy, and narrows it again after (the plan says both). A run that stops in between leaves it open until a rerun narrows it | The client's overlay role `mfa-req-totp-sms`, in place of the plugin's MFA-required backend: MF-13, MF-15…17 and the two `USER_AUTH` MFA-setup checks, and that role in the every-pool checks; Cognito sends nothing |
 | `ccit-ci-capabilities.json`: `refuses_non_test_users` and `reset_password_codes` on `extended`, `email_alias_codes` on `email-alias-codes` | The three sandbox checks, on those roles ("Sandbox checks", above) |
 
-The alias-codes pool and the capabilities came after the first phase-2 run uploaded its four files, so they are new
-files beside them: `--upload` never rewrites a key, and a rerun of `--apply --scope all --upload` finds the four
-unchanged (`=`, byte for byte) and puts only the two new keys. That rerun creates the pool, its trigger, the
-trigger's log group and its app client, and updates, each after its tag check, only these of its own: the key
-`alias/ccit-ci-senders`'s policy (opened to the account's pools while the pool is made, as on a first run, then
-narrowed to the three pools), the inline policies of `ccit-ci-trigger-exec` (the new trigger's log group),
-`ccit-ci-sender-exec` (the decrypt, narrowed to `ccit-ci-default` and the new pool; never widened on a rerun) and
-`ccit-ci-reset-exec` (`kms:Decrypt` on that key, through SSM, for the temporary password's parameter only),
-`ccit-ci-custom-sender`'s resource policy (Cognito may invoke it for the new pool), and the two SSM parameters: the
-first phase 2 stored them under the account's AWS-managed `alias/aws/ssm`, so each is stored again
-(`put-parameter --overwrite`), with the same value, under `alias/ccit-ci-senders`. `verify-unchanged` lists a change
-to a `ccit-ci-` resource as the script's own, and an AWS-managed KMS alias (`alias/aws/*`) that appears as
-AWS-managed (AWS makes `alias/aws/ssm` the first time a SecureString uses SSM's default key, as that first phase 2
-did), and fails on any other change, removal or addition.
+`infra/ci/provision-ci.sh` makes these resources, and is run by maintainers with access to the CI account. It
+finds each resource by name, creates only what is missing, refuses any resource with one of its names that lacks the
+tag, and never changes or deletes anything else. CI account maintenance is in the team's internal runbook.
 
-`provision-ci.sh` finds each resource by name, creates only what is missing, and refuses any resource with one of
-its names that lacks the tag. Every change it makes goes through one guard that refuses a name that is not
-`ccit-ci-`, and outside `--apply` only get, list, describe and head calls can be made at all. A dry run is the default
-and prints each call, masked; `--apply` runs that dry run first and stops before its first change if it refuses.
-`--upload` puts new keys only. A key that exists is left alone when it holds the same bytes (so phase 2 leaves phase 1's
-file as it is), and any other existing key refuses the whole upload. `snapshot` and `verify-unchanged` detect changes
-to the metadata they read of the rest of the account: every user pool, its MFA settings and app clients, the Lambdas
-they name and those Lambdas' resource policies; every identity pool and its roles; every role, with its trust and its
-inline and attached policies; every function, with its configuration and resource policy; every KMS alias and key
-policy; every AppSync API as listed; every table, with its key schema, billing mode and TTL; every rule, with its
-targets; every SSM parameter's metadata (never its value); every log group, with its retention; and the `auth/`
-objects with their ETags. Not read: AppSync schemas, resolvers, data sources and keys, and S3 objects' contents. The
-Cognito lists are read page by page to the last (`read_all_pages`: `--max-results` turns the CLI's own pagination
-off), and every other list is one the CLI pages itself. A snapshot (version 3) hashes each document normalized: lists
-AWS keeps in no order (a policy's principals, actions, resources and condition values, `"x"` read as `["x"]`, its
-statements; tags; Cognito's auth flows, attributes, URLs, OAuth settings, schema and identity providers) are sorted
-first, and a Lambda's `Layers` keep their order. Its `.docs.json` beside it keeps the documents, so a diff can name
-the fields that changed, with every secret in them hashed first (the Lambdas' environment values, app client
-secrets and the SMS external ids). Given both `.docs.json` files, `verify-unchanged` hashes both sides again that
-way, so an earlier version's snapshot compares with a version-3 one, over the kinds both read. `teardown` removes
-only these resources, and is a dry run by default.
-
-```bash
-cd AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests
-export COGNITO_CLIENT_INTEG_CI_CONFIG_URL=s3://<bucket>/<path>   # CI's AWS_S3_BUCKET_INTEG_V2, the folder above auth/
-infra/ci/provision-ci.sh snapshot                       # read-only; /tmp/ci-disc/snapshot-<time>.json
-infra/ci/provision-ci.sh                                # phase 1 dry run: every call it would make, masked
-infra/ci/provision-ci.sh --apply --upload               # phase 1; then CI's client job overlays email-alias
-infra/ci/provision-ci.sh snapshot
-infra/ci/provision-ci.sh verify-unchanged /tmp/ci-disc/snapshot-<before>.json /tmp/ci-disc/snapshot-<after>.json
-infra/ci/provision-ci.sh --scope all [--apply --upload] # phase 2, later
-infra/ci/provision-ci.sh teardown [--apply]             # later, if ever
-```
-
-`bash infra/ci/test_provision_ci.sh` (over a fake `aws`), `bash infra/ci/test_ci_overlay.sh`, and `node --test` on
-`infra/ci/lambda/test_pre_sign_up_refusal.mjs` and each `infra/ci/lambda/*/test_*.mjs` test these offline. CI runs
-them, with every other `infra/` self-test, on each change to `infra/` (`auth_client_infra_self_tests.yml`).
+`bash infra/ci/test_provision_ci.sh` (over a fake `aws`), `bash infra/ci/test_ci_overlay.sh`,
+`bash infra/ci/test_lambda_code.sh`, and `node --test` on `infra/ci/lambda/test_pre_sign_up_refusal.mjs` and each
+`infra/ci/lambda/*/test_*.mjs` test these offline: no AWS call, no credentials. CI runs them, with every other
+`infra/` self-test, on each change to `infra/` (`auth_client_infra_self_tests.yml`).
 
 **How CI uses them.** CI downloads `auth/` recursively for every auth job, so the files land in
 `testconfiguration/cognito-client-ci/` on the plugin's runners too. They do not affect the plugin's tests: none has a
@@ -794,11 +759,14 @@ The `extended` role adds `AmplifyCognitoClientExtendedIntegrationTests-amplify_o
 and `AmplifyCognitoClientRotationIntegrationTests-amplify_outputs.json`, and, when present,
 `AmplifyCognitoClientEmailAliasCodesIntegrationTests-amplify_outputs.json` and
 `AmplifyCognitoClientIntegrationTests-capabilities.json` (kept only for the roles the overlay gives), and replaces
-nothing. The client suite passes `email-alias extended`, and the interop suite `extended`. The plugin's jobs pass
+nothing. The `mfa-req-totp-sms` role puts in `AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs.json`
+from `ccit-ci-mfa-req-totp-sms-amplify_outputs.json`, which the harness reads before the plugin's Gen1 file for that
+role; without the file, that role stays the plugin's. The client suite passes `email-alias extended
+mfa-req-totp-sms`, and the interop suite `extended`. The plugin's jobs pass
 nothing and read the plugin's files only. Without the subfolder, or when a file there does not check out (no user
 pool, the sandbox's mark, a credentials file that is not all strings, a rotation client on another pool, an
-alias-codes file without email as the username or a code API, a capability the harness does not know), nothing is
-set, and the tests that need those files fail, or skip as sandbox checks, which the skip gate fails.
+alias-codes file without email as the username or a code API, a capability the harness does not know, an
+MFA-required file whose MFA is not required with TOTP and SMS), nothing is set, and the tests that need those files fail, or skip as sandbox checks, which the skip gate fails.
 
 **No skips on CI.** Both client jobs pass `enforce_no_skips: true` and `allowed_skips: 0` to
 `run_integration_tests.yml`. The test runs then write their result bundles to the runner's temporary directory
@@ -807,15 +775,12 @@ one) with `xcrun xcresulttool get test-results summary`, lists the skipped tests
 `allowed_skips` skipped. The plugin's jobs leave it off. On CI: 0 skipped in `CognitoClientIntegrationTests` and 0 in
 `CognitoClientPluginInteropTests`. To reproduce it locally, see "Run as CI does (recommended)", above.
 
-The code sink's API key (phase 2) lives 364 days. A rerun of `--apply --scope all` in its last 30 days extends it to
-364 days from then, keeping its id, so the two uploaded files that name it (`ccit-ci-default-amplify_outputs.json` and
-`ccit-ci-email-alias-codes-amplify_outputs.json`) stay valid. Rerun before it expires: once it has, the rerun makes a
-new key, and both files must be replaced, which `--upload` never does (it never overwrites), so replacing this
-script's own objects is then a separate step.
-
-A rerun never updates a user pool or a Lambda's code. After a change to a pool template, to
-`infra/lambda/triggers/triggers.mjs`, `infra/lambda/custom-sender` or `infra/ci/lambda/*`, delete that pool or function
-by hand and rerun: the rerun makes it again, and replaces the invoke permissions that name a pool's old ARN.
+**Editing the CI Lambdas' sources.** The CI Lambdas run `infra/lambda/triggers/triggers.mjs`,
+`infra/lambda/custom-sender` and `infra/ci/lambda/*`, and a rerun of the provisioner never updates a deployed
+function's code. Once a deployment baseline (`infra/ci/lambda-baseline.json`) is committed, `test_lambda_code.sh`
+fails on a change to those sources until the changed functions are redeployed and the baseline is recorded again,
+which needs access to the CI account. The sandbox shares those sources, so a sandbox-only edit needs that too. Ship
+such a change together with the redeploy and the new baseline.
 
 ## Optional: the sandbox
 
@@ -832,8 +797,9 @@ account can raise a security finding, which is why it isn't the default.
 
 Write the plugin file set from the sandbox into a directory of its own, and point the build at it. Never at
 `~/.aws-amplify/amplify-ios/testconfiguration`, which holds your own plugin configuration: `--dir` writes only
-the directory it is given (mode 600 files in a 700 directory, no manifest, no backups), and refuses one inside
-that directory.
+the directory it is given (mode 600 files in a 700 directory, no manifest, no backups), and refuses that
+directory and one inside it, however the path is spelt (another case of a name on a case-insensitive volume, a
+symlink).
 
 ```bash
 cd AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests
@@ -842,7 +808,8 @@ infra/plugin-configs.py --dir "$DIR"                  # reads the sandbox's stat
 AWS_PROFILE=<sandbox-profile> infra/prepare-run.sh    # optional: resets the new-password users, as a fresh CI backend
 cd CognitoClientHostApp
 COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild build-for-testing -project CognitoClientHostApp.xcodeproj \
-  -scheme CognitoClientIntegrationTests -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD"
+  -scheme CognitoClientIntegrationTests -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD" \
+  -skipPackagePluginValidation
 # Self sign-up on for the run, off again after ("Self sign-up is off at rest"); it reads no COGNITO_CLIENT_INTEG_DIR.
 AWS_PROFILE=<sandbox-profile> ../infra/self-sign-up.sh on -- \
   xcodebuild test-without-building -project CognitoClientHostApp.xcodeproj -scheme CognitoClientIntegrationTests \
@@ -900,9 +867,24 @@ R-IP (and the identity-only pool below R-IP2).
 The scripts use whatever credentials the AWS CLI resolves, and the first `provision.sh` records that account in
 `state.json`. From then on `provision.sh`, `prepare-run.sh`, `self-sign-up.sh`, `teardown.sh` and `parity.py`
 refuse any other account (`require_recorded_account` in `lib.sh` and `parity.py`). While no account is recorded
-yet, `lib.sh`'s check exits before any AWS call unless `AWS_PROFILE` is set, so a first provision can't land in the
-CLI's default account by accident. Set `AWS_PROFILE` to the sandbox account's profile and check
-`aws sts get-caller-identity` before that first run.
+yet, `lib.sh`'s check exits before any AWS call unless `AWS_PROFILE` is set and none of `AWS_ACCESS_KEY_ID`,
+`AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`, `AWS_ROLE_ARN`, `AWS_WEB_IDENTITY_TOKEN_FILE` and the
+`AWS_CONTAINER_CREDENTIALS_*` variables is exported. The CLI takes exported keys over any profile, and a web identity
+role before the profile's own credentials (CI runners and EKS often export the web identity variables). Container
+credentials come later: the CLI uses them only when the profile holds no credentials of its own, as it does an EC2
+instance role, `AWS_CREDENTIAL_FILE` and the boto files. The check refuses them anyway, to be safe. That is all it
+checks. It doesn't know which account the profile belongs to, or whether the profile holds credentials at all: with
+a profile that holds only a region, on an EC2 host the CLI uses the instance role, and the first run then builds the
+sandbox in that role's account and records it. Set `AWS_PROFILE` to the sandbox account's profile, make sure that
+profile has credentials of its own, and check `aws sts get-caller-identity` before that first run.
+
+The sandbox lives in one region, because its IAM roles are global. `provision.sh` refuses a region other than the one
+`state.json` records, and, on every run, a region recorded or not, one other than the region of the identity pool
+that `amplify-cognito-client-integ-authenticated` already trusts. Another `COGNITO_CLIENT_INTEG_DIR` is no way round
+it: it would build a second sandbox and re-point the roles at it. A pair of state directories made that way before
+this check (each records its own region) is refused too, from whichever directory's sandbox the roles don't point
+at. To keep one of them, run `teardown.sh` with the other (it deletes the shared roles too), then `provision.sh` with
+the one you keep. To move the sandbox, run `teardown.sh` first.
 
 | User | State | Set up by |
 |---|---|---|
@@ -915,7 +897,12 @@ CLI's default account by accident. Set `AWS_PROFILE` to the sandbox account's pr
 users, and take CH-1's user from the sandbox's new-password users (`ccit-plugin-new-password-`, on `default`). The users, R-UP and R-IP stay for the
 scripts' checks. `provision.sh` runs `prepare-run.sh` once at the end; after that, `prepare-run.sh` is optional
 before a run (it resets the new-password users and rotates the code sink's key). It never touches `alice`, `bob` or
-`carol`, and it keeps every password stable. No script prints a secret or passes one to the AWS CLI as an argument.
+`carol`, and it keeps every password stable. Two `prepare-run.sh` runs may overlap (two runners): a user the other
+run created or deleted first, a device it forgot first, or an expired code sink API key it deleted first
+(`parity.py rotate-key`), is tolerated; `erin`'s reset is tried again (up to five times) when the other run deletes
+her before her password is set; the report says `erin: not found (another run is resetting her)` when the other run
+has just deleted her (any other error reading `dave` or `erin` stops the run); and `plugin-configs.py --refresh`
+waits for the other run's (up to two minutes). No script prints a secret or passes one to the AWS CLI as an argument.
 
 **AWS CLI history must be off.** Passwords, tokens and carol's TOTP secret reach the CLI through
 `--cli-input-json`. With `cli_history = enabled` in `~/.aws/config`, the CLI would record them in
@@ -953,6 +940,8 @@ re-runs (by recorded id, then by name), and changed only after a tag check:
 | P-8 | Email for the pools with email factors (`passwordless`, `mfa-req-email`, `mfa-req-all`): `EmailConfiguration` `DEVELOPER` from a **domain identity the account has already verified**, in an SES region Cognito accepts (`us-west-2`, `us-east-1`, `eu-west-1`) whose SES account is still in the sandbox. It is used read-only (never tagged, changed or deleted; teardown leaves it alone), Cognito sends through its email service-linked role, and the custom email sender means nothing is sent. `COGNITO_CLIENT_INTEG_SES_DOMAIN` picks the domain. Setting `COGNITO_CLIENT_INTEG_SES_EMAIL` uses an address identity the script creates and tags instead, which needs a human to click the link SES mails |
 | P-10 | **WebAuthn**: a seventh pool, `webauthn` (`pools/webauthn.json`, U-WA, the plugin's WebAuthn backend): as `passwordless`, plus `WEB_AUTHN` as a first factor and `WebAuthnConfiguration` with user verification `preferred`. Its relying party is **the plugin's**, the domain in `CognitoClientHostApp/CognitoClientWebAuthnApp.entitlements` (committed, the same entry as the plugin's `AuthWebAuthnApp.entitlements`): the only app ID its apple-app-site-association lists is the plugin's `AuthWebAuthnApp` (team `94KV3E626L`), which is why the client's WebAuthn host app signs with that team and bundle identifier. The domain is not this sandbox's and is **used read-only**: provisioning makes one HTTPS GET of its apple-app-site-association to check it still lists that app ID (else `web-authn` stays pending; if the pool is already live, provisioning stops instead), and nothing on it is ever changed. The KMS key, the sender's decrypt condition and the SMS role cover this pool with the other six |
 | P-9 | SNS caller role `…-cognito-sms`, as the plugin's Gen2 backends get from `multifactor: { sms: true }` (CDK's `smsRole`: `sns:Publish` on `*`, trusted by `cognito-idp` with an external id). Ours is narrower: the trust also requires `aws:SourceAccount` and `aws:SourceArn` = the seven parity pools, and the one inline policy limits `aws:RequestedRegion` to the sandbox region (`require_role_policy_exact`). Cognito refuses anything narrower than `*` (checked). The pools with SMS (`default`, `passwordless`, the three MFA-required pools) name it in `SmsConfiguration`, and provisioning refuses to enable SMS on a pool without the custom SMS sender, so nothing is ever sent; the account's SNS is in the SMS sandbox too. Tests use fictional `+1 555` numbers |
+| P-13 | Identity pool `amplify_cognito_client_integ_plugin`, the plugin suites' (guest access on), with two permissionless roles. It federates `default`'s `plugin` and `hostedui-plugin` clients, as the plugin's default backend has an identity pool (`AuthIntegrationTests`, `AuthStressTests`) that R-IP is not, and `passwordless`'s `client` and `ci` clients, which `passwordless-amplify_outputs.json` names it beside, as the plugin's Gen2 passwordless backend names its own: CS-2 and CS-3 need a pool that tracks no devices, with a guest identity pool that federates it. The identity-only role is this pool, read from the default file without its user pool |
+| P-14 | Users the plugin's suites expect pre-created, made and reset by `parity.py plugin-users` (`prepare-run.sh`): `ccit-plugin-device-alias@example.com` on `email-alias` (`DeviceAliasTokenRefreshIntegrationTests`), its password `users.json` `pluginDeviceAliasPassword`, its devices forgotten each run; and the single-use `ccit-plugin-new-password-1` … `-8` on `default` (`AuthSRPSignInTests.testNewPasswordRequired`, and the client's CH-1), admin-created with no message and put back in `FORCE_CHANGE_PASSWORD` with `pluginNewPasswordTemporary` each run |
 | P-15 | **Refresh-token rotation** on `default`: the app client `…-rotation` (`client`'s flows without `ALLOW_CUSTOM_AUTH`, and no `ALLOW_REFRESH_TOKEN_AUTH`, which Cognito refuses with rotation on; `RefreshTokenRotation` enabled with a 0-second grace period, so a replaced token is refused at once), named only in `rotation-amplify_outputs.json` (no identity pool), which `plugin-configs.py` writes as `AmplifyCognitoClientRotationIntegrationTests-amplify_outputs.json` (not in the CI shape). For `PluginRotationTests`. **Not provisioned yet**: the next `provision.sh` makes it (an `ensure_client` on the existing, tagged pool). It needs **AWS CLI 2.26.7 or later**, the first release whose Cognito model has `RefreshTokenRotation` (the CLI's `CHANGELOG.rst`: "cognito-idp: This release adds refresh token rotation"); an older CLI rejects the client's template. Until then those tests skip on CI and off the sandbox, and fail on the sandbox, asking for this client |
 
 The tests label each parity pool's users by pool: U-DEF (`default`), U-PL (`passwordless`), U-WA
@@ -1027,10 +1016,10 @@ directory, so the script itself must not see the file set's directory: write
   template's), runs the command with `COGNITO_CLIENT_INTEG_SELF_SIGN_UP=on` and
   `TEST_RUNNER_COGNITO_CLIENT_INTEG_SELF_SIGN_UP=on` (which `xcodebuild` passes to the test runner), and exits with
   the command's status, or 128 plus the signal that stopped it.
-- A `trap` on `EXIT`, `INT`, `TERM` and `HUP` releases the run's lease however the command ends: success,
-  failure, Ctrl-C, `kill`, or a closed terminal (only a `kill -9` of the script itself skips it). Self sign-up is
-  turned off when no other run's lease remains. The trap is set before self sign-up is turned on, so an `on` that
-  fails part-way (later pools are not tried) is undone too. If the release itself does not finish (its
+- A `trap` on `EXIT`, `INT`, `TERM`, `HUP` and `QUIT` releases the run's lease however the command ends: success,
+  failure, Ctrl-C, `Ctrl-\`, `kill`, or a closed terminal (only a `kill -9` of the script itself skips it). Self
+  sign-up is turned off when no other run's lease remains. The trap is set before self sign-up is turned on, so an
+  `on` that fails part-way (later pools are not tried) is undone too. If the release itself does not finish (its
   `parity.py` killed, say), the script reads the pools again (`parity.py self-sign-up status`, read-only) and says
   which are still on or have lost their MFA configuration, that self sign-up is on only for other runs that
   still hold leases (their end turns it off), or that every pool is at rest, and exits non-zero.
@@ -1038,8 +1027,8 @@ directory, so the script itself must not see the file set's directory: write
   nor stderr: it ignores `SIGPIPE`, writes nothing to stdout, and drops any write that fails, and `parity.py`
   writes to a log in `$STATE_DIR` that is copied to stderr once it has finished (and kept if the release fails).
   So a Ctrl-C that also stops the pipe's reader, or a terminal that closes, still releases.
-- The command runs in its own process group, and `INT`, `TERM` and `HUP` are forwarded to it at once. It cannot
-  read the terminal.
+- The command runs in its own process group, and `INT`, `TERM` and `HUP` are forwarded to it at once (`QUIT` as
+  `INT`; the run then exits 131). It cannot read the terminal.
 - **Overlapping runs share self sign-up.** Each run holds a lease (its PID and start time, in
   `$STATE_DIR/self-sign-up-leases.json`), and the last run to end turns it off. A lease whose process has gone,
   or whose PID now belongs to another process, is dropped. The start time is read with `LC_ALL=C TZ=UTC`, so a
@@ -1095,20 +1084,20 @@ DIR=$(mktemp -d /tmp/ccit-plugin-set.XXXXXX)
 AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/plugin-configs.py --dir "$DIR"
 cd AmplifyPlugins/Auth/Tests/AuthHostApp
 AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
-  -project AuthHostApp.xcodeproj -scheme AuthIntegrationTests -destination "$DEST"          # Gen1
+  -project AuthHostApp.xcodeproj -scheme AuthIntegrationTests -destination "$DEST" -skipPackagePluginValidation  # Gen1
 AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
-  -project AuthHostApp.xcodeproj -scheme AuthGen2IntegrationTests -destination "$DEST"      # Gen2
+  -project AuthHostApp.xcodeproj -scheme AuthGen2IntegrationTests -destination "$DEST" -skipPackagePluginValidation  # Gen2
 AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
-  -project AuthHostApp.xcodeproj -scheme AuthStressTests -destination "$DEST"
+  -project AuthHostApp.xcodeproj -scheme AuthStressTests -destination "$DEST" -skipPackagePluginValidation
 cd ../AuthHostedUIApp
 AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
-  -project AuthHostedUIApp.xcodeproj -scheme AuthHostedUIAppUITests -destination "$DEST"    # Gen1
+  -project AuthHostedUIApp.xcodeproj -scheme AuthHostedUIAppUITests -destination "$DEST" -skipPackagePluginValidation  # Gen1
 AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
-  -project AuthHostedUIApp.xcodeproj -scheme AuthHostedUIAppGen2UITests -destination "$DEST" # Gen2
+  -project AuthHostedUIApp.xcodeproj -scheme AuthHostedUIAppGen2UITests -destination "$DEST" -skipPackagePluginValidation  # Gen2
 cd ../AuthWebAuthnApp
 (cd LocalServer && npm install && npm start) &                          # the simulator server
 AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
-  -project AuthWebAuthnApp.xcodeproj -scheme AuthWebAuthnAppUITests -destination "$DEST"
+  -project AuthWebAuthnApp.xcodeproj -scheme AuthWebAuthnAppUITests -destination "$DEST" -skipPackagePluginValidation
 rm -rf "$DIR"
 ```
 

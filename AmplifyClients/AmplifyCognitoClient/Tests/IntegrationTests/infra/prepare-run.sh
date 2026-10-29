@@ -28,6 +28,11 @@
 # printed or passed to the AWS CLI as an argument. It refuses to start with under 2 GiB free on the volume holding
 # $STATE_DIR (COGNITO_CLIENT_INTEG_MIN_FREE_GIB sets another minimum, 0 none).
 #
+# Overlapping runs (two runners' prepare-run.sh) are tolerated: a user another run created or deleted first, a password
+# set on erin after another run deleted her (the reset is tried again, a few times), erin missing from the report while
+# another run resets her, an expired code sink API key another run deleted first (parity.py rotate-key), and
+# plugin-configs.py --refresh, which waits for the other run's.
+#
 # Usage: AWS_PROFILE=<sandbox-profile> ./prepare-run.sh
 set -euo pipefail
 
@@ -77,28 +82,72 @@ if ! user_exists "$USER_POOL_ID" dave; then
 fi
 set_user_password "$USER_POOL_ID" dave daveTemporary temporary
 
-# --- erin: recreated with the stored permanent password ---------------------------------------------
-if user_exists "$USER_POOL_ID" erin; then
-    require_user_pool_tag "$USER_POOL_ID"
-    # Another runner's prepare-run (or DU-1) may delete erin between the check and this call: she is
-    # then already gone, which is the goal. Any other error still stops the script.
-    if ! delete_error=$(command aws --region "$REGION" --output json cognito-idp admin-delete-user \
-        --user-pool-id "$USER_POOL_ID" --username erin 2>&1 >/dev/null); then
-        case "$delete_error" in
-            *UserNotFoundException*) echo "erin: already deleted by another run" ;;
-            *) printf '%s\n' "$delete_error" | redact >&2; exit 1 ;;
+# Sets user $1's password to users.json field $2 ($3: permanent or temporary). Returns 1, printing nothing, when the
+# user is gone (UserNotFoundException: an overlapping run deleted her between this run's create and this call); any
+# other error stops the script. Guarded.
+set_password_unless_gone() {
+    local set_error
+    if ! set_error=$(set_user_password "$USER_POOL_ID" "$1" "$2" "$3" 2>&1 >/dev/null); then
+        case "$set_error" in
+            *UserNotFoundException*) return 1 ;;
+            *) printf '%s\n' "$set_error" >&2; exit 1 ;;
         esac
     fi
-fi
-create_user_unless_created erin
-set_user_password "$USER_POOL_ID" erin erin permanent
+}
+
+# --- erin: recreated with the stored permanent password ---------------------------------------------
+# Deleted, created and given her password. An overlapping run (another runner's prepare-run.sh) may delete her at any
+# point of that: a delete or create it got to first is tolerated, and a password set on a user it has since deleted
+# starts the reset again, up to ERIN_ATTEMPTS times, a second apart.
+ERIN_ATTEMPTS=5
+reset_erin() {
+    local delete_error
+    if user_exists "$USER_POOL_ID" erin; then
+        require_user_pool_tag "$USER_POOL_ID"
+        # Already gone, by another run's delete, is the goal. Any other error still stops the script.
+        if ! delete_error=$(command aws --region "$REGION" --output json cognito-idp admin-delete-user \
+            --user-pool-id "$USER_POOL_ID" --username erin 2>&1 >/dev/null); then
+            case "$delete_error" in
+                *UserNotFoundException*) echo "erin: already deleted by another run" ;;
+                *) printf '%s\n' "$delete_error" | redact >&2; exit 1 ;;
+            esac
+        fi
+    fi
+    create_user_unless_created erin
+    set_password_unless_gone erin erin permanent
+}
+reset_erin_until_set() {
+    local attempt
+    for (( attempt = 1; ; attempt++ )); do
+        reset_erin && return 0
+        if (( attempt >= ERIN_ATTEMPTS )); then
+            echo "erin was deleted by another run each of $ERIN_ATTEMPTS times her password was set; run this" \
+                "again once the other run has finished." >&2
+            exit 1
+        fi
+        echo "erin: deleted by another run before her password was set; resetting her again"
+        sleep 1
+    done
+}
+reset_erin_until_set
 
 # --- Report (read-only) -----------------------------------------------------------------------------
-for user in dave erin; do
-    status=$(aws cognito-idp admin-get-user --user-pool-id "$USER_POOL_ID" --username "$user" \
-        --query UserStatus --output text)
-    echo "$user: $status"
-done
+# Prints user $1's status. Only erin may be missing, and only while an overlapping run resets her (nothing else
+# deletes her): UserNotFoundException for erin is reported, not fatal. Any other error, for either user, prints the
+# redacted error and stops the script.
+report_user() {
+    local status
+    if ! status=$(command aws --region "$REGION" --output json cognito-idp admin-get-user \
+        --user-pool-id "$USER_POOL_ID" --username "$1" --query UserStatus --output text 2>&1); then
+        case "$1:$status" in
+            erin:*UserNotFoundException*) status="not found (another run is resetting her)" ;;
+            *) printf '%s\n' "$status" | redact >&2; exit 1 ;;
+        esac
+    fi
+    printf '%s: %s\n' "$1" "$status" | redact
+}
+report_user dave
+report_user erin
 
 # --- P-12: test-created users in the parity pools, older than 24 hours ------------------------------
 if python3 -c "import json,sys;sys.exit(0 if json.load(open(sys.argv[1])).get('parity') else 1)" "$STATE"; then

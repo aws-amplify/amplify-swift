@@ -18,15 +18,15 @@ import XCTest
 /// Deletes fresh users without admin calls: each user deletes itself (`DeleteUser`) with tokens from its
 /// own raw sign-in, as the plugin's tests do with `deleteUser()`.
 ///
-/// The sign-in answers every challenge a fresh user can meet (`SandboxPoolClient.signIn(_:sink:)`),
-/// so it works on the MFA-required pools and for users who enrolled TOTP. It is a password sign-in, with
-/// SRP where the app client offers no `USER_PASSWORD_AUTH` (the plugin's Gen2 MFA-required and device-alias
-/// backends, and the hosted-UI clients). A user still unconfirmed is confirmed first with a resent code
-/// from the code API; on a backend with none, the cleanup fails naming the file, since the user cannot
-/// sign in. On an app client that offers neither flow, the user signs in through another role's app
-/// client on the same user pool, or else with SRP through the client, on a session of its own, and
-/// deletes itself with `deleteUser()`. Deleting a user also invalidates every token it holds. The
-/// sandbox's `prepare-run.sh` removes whatever a crashed run leaves behind (P-12).
+/// The sign-in answers every challenge a fresh user can meet (`SandboxPoolClient.signIn(_:sink:)`), so it works on the
+/// MFA-required pools and for users who enrolled TOTP. It is a password sign-in, with SRP where the app client offers
+/// no `USER_PASSWORD_AUTH` (the plugin's Gen2 MFA-required and device-alias backends, and the hosted-UI clients). A
+/// user still unconfirmed is confirmed first with its sign-up code from the code API, and, should that fail, with a
+/// resent code once its sign-in is refused as unconfirmed; on a backend with no code API, the cleanup fails naming the
+/// file, since the user cannot sign in. On an app client that offers neither flow, the user signs in through another
+/// role's app client on the same user pool, or else with SRP through the client, on a session of its own, and deletes
+/// itself with `deleteUser()`. Deleting a user also invalidates every token it holds. The sandbox's `prepare-run.sh`
+/// removes whatever a crashed run leaves behind (P-12).
 enum SandboxUserCleanup {
 
     enum Outcome: Equatable, Sendable {
@@ -45,8 +45,11 @@ enum SandboxUserCleanup {
     }
 
     /// Deletes `user` through its own session. Calling it again is a no-op.
+    ///
+    /// `confirmingFirst: false` skips the confirmation with the sign-up code, so an unconfirmed user is confirmed
+    /// only by the sign-in's resent-code fallback: for the check of that fallback alone.
     @discardableResult
-    static func delete(_ user: FreshUser, sink: CodeSink? = nil) async throws -> Outcome {
+    static func delete(_ user: FreshUser, sink: CodeSink? = nil, confirmingFirst: Bool = true) async throws -> Outcome {
         guard !user.isDeleted else {
             return .alreadyGone
         }
@@ -60,7 +63,9 @@ enum SandboxUserCleanup {
                 cannot sign in to delete itself: it is left on the backend.
                 """)
             }
-            await confirmFirst(user, on: pool, sink: sink)
+            if confirmingFirst {
+                await confirmFirst(user, on: pool, sink: sink)
+            }
         }
         var attempt = 0
         while true {

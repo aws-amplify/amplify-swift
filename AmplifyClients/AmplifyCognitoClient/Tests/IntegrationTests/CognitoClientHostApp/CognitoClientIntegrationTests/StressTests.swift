@@ -16,9 +16,12 @@ import XCTest
 /// for all of them with `fulfillment(of:timeout:)` and the plugin's `networkTimeout` (5 s,
 /// `AuthStressBaseTest`), so a hung or slow batch fails rather than hangs; then it asserts on what every call
 /// returned and on the requests the recorder counted.
-/// The recorder sees only user pool requests (the identity client has no configure hook); a
-/// single identity ID and access key ID across the 50 results is the evidence of a single `GetId` and
-/// `GetCredentialsForIdentity`, since each of those calls would mint new ones.
+/// The recorder sees only user pool requests (the identity client has no configure hook), so the identity
+/// pool calls are counted by what they return. A single access key ID across the 50 results is the evidence of a
+/// single `GetCredentialsForIdentity`, which mints new credentials on every call. A single identity ID is the
+/// evidence of a single `GetId` for a guest only (ST-4), whose every unauthenticated `GetId` would mint a new
+/// identity; for a signed-in user `GetId` returns the same identity ID every time, so there one identity ID only
+/// shows the results agree.
 final class StressTests: ClientIntegrationTestCase {
 
     private static let concurrencyLimit = 50

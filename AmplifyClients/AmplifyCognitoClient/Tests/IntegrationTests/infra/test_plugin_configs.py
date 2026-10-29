@@ -284,26 +284,53 @@ class PluginConfigsTests(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join(self.target, OWNER_FILE)))
 
     def test_a_failed_write_leaves_no_tmp_file(self):
+        # The manifest (in the state directory) is written first and succeeds; the first write into the
+        # testconfiguration directory, the one the host apps' build phase copies whole, fails.
         original = os.replace
+        failed = []
 
         def failing_replace(src, dst):
-            raise OSError("disk full")
+            if os.path.dirname(os.path.realpath(dst)) == os.path.realpath(self.target):
+                failed.append(os.path.basename(dst))
+                self.assertTrue(os.path.exists(src), "the .tmp file exists when the write fails")
+                raise OSError("disk full")
+            return original(src, dst)
         os.replace = failing_replace
         try:
             with self.assertRaises(OSError):
                 self.quiet(self.pc.write_all)
         finally:
             os.replace = original
-        self.assertEqual([n for n in os.listdir(self.target) if n.endswith(".tmp")], [])
+        self.assertEqual(len(failed), 1, "one write into the testconfiguration directory failed")
+        self.assertEqual(os.listdir(self.target), [])
+        self.assertEqual([n for n in os.listdir(self.state) if n.endswith(".tmp")], [])
 
     def test_a_second_run_waits_for_the_lock(self):
+        # Another run holds the lock and finishes 0.5 s later: this one waits, then goes on.
         import fcntl
-        os.makedirs(self.state, exist_ok=True)
+        import threading
+        import time
+        self.pc.LOCK_WAIT_SECONDS = 30
+        holder = open(os.path.join(self.state, "plugin-configs.lock"), "w")
+        fcntl.flock(holder, fcntl.LOCK_EX)
+        threading.Timer(0.5, holder.close).start()
+        started = time.monotonic()
+        entered = False
+        with self.pc.exclusive():
+            entered = True
+        self.assertTrue(entered)
+        self.assertGreaterEqual(time.monotonic() - started, 0.4)
+
+    def test_a_second_run_stops_once_the_wait_is_over(self):
+        # Another run holds the lock for longer than the wait: this one stops, without entering.
+        import fcntl
+        self.pc.LOCK_WAIT_SECONDS = 0.5
         with open(os.path.join(self.state, "plugin-configs.lock"), "w") as f:
             fcntl.flock(f, fcntl.LOCK_EX)
-            with self.assertRaises(SystemExit):
+            with self.assertRaises(SystemExit) as stopped:
                 with self.pc.exclusive():
-                    pass
+                    self.fail("entered while another run held the lock")
+        self.assertIn("Another plugin-configs.py", str(stopped.exception))
 
     def test_dir_writes_every_file_there_and_nothing_else(self):
         other = os.path.join(self.root, "client-harness")
@@ -368,6 +395,116 @@ class PluginConfigsTests(unittest.TestCase):
                 self.quiet(lambda: self.pc.write_into(directory, ci=True))
         self.assertFalse(os.path.exists(nested))
         self.assertEqual(os.listdir(self.target), [])
+
+    def other_case(self, path):
+        """`path` with its last name in another case, when the volume ignores case (macOS's default); else skips."""
+        variant = os.path.join(os.path.dirname(path), os.path.basename(path).swapcase())
+        if not (os.path.exists(variant) and os.path.samefile(variant, path)):
+            self.skipTest("the temporary directory's volume is case-sensitive")
+        return variant
+
+    def data_volume_alias(self, path):
+        """`path` under macOS's /System/Volumes/Data firmlink: the same directory, in a spelling realpath keeps and
+        case-folding does not match, so only relation()'s samefile walk recognizes it. Skips where there is none."""
+        real = os.path.realpath(path)
+        alias = "/System/Volumes/Data" + real
+        if not (os.path.exists(alias) and os.path.samefile(alias, real)):
+            self.skipTest("no /System/Volumes/Data alias of the temporary directory")
+        self.assertEqual(os.path.realpath(alias), alias, "realpath keeps the alias's spelling")
+        self.assertNotEqual(alias.casefold(), real.casefold())
+        return alias
+
+    def test_relation_recognizes_the_data_volume_alias(self):
+        """Given: a directory, and its /System/Volumes/Data alias, which realpath keeps.
+        When: relation() compares the alias, a path under it that does not exist yet, and the alias's parent with it.
+        Then: they are the same directory, inside it, and neither."""
+        owner = os.path.join(self.root, "owner", "testconfiguration")
+        os.makedirs(owner)
+        alias = self.data_volume_alias(owner)
+        self.assertEqual(self.pc.relation(alias, owner), "same")
+        self.assertEqual(self.pc.relation(alias + "/", owner), "same")
+        self.assertEqual(self.pc.relation(os.path.join(alias, "nested", "deeper"), owner), "inside")
+        self.assertIsNone(self.pc.relation(os.path.dirname(alias), owner))
+        self.assertIsNone(self.pc.relation(os.path.join(os.path.dirname(alias), "other"), owner))
+
+    def test_dir_refuses_the_owner_directory_under_its_data_volume_alias(self):
+        """Given: the owner's directory (here a temporary one) holding the developer's file.
+        When: --dir names it, or a directory inside it, through its /System/Volumes/Data alias, with and without
+            --ci-shape.
+        Then: each is refused as the owner's, and the developer's file is untouched."""
+        owner = os.path.join(self.root, "owner", "testconfiguration")
+        os.makedirs(owner)
+        with open(os.path.join(owner, OWNER_FILE), "w") as f:
+            f.write("the developer's own file")
+        self.pc.OWNER_TESTCONFIGURATION_DIR = owner
+        alias = self.data_volume_alias(owner)
+        for directory in (alias, os.path.join(alias, "nested")):
+            for ci in (False, True):
+                with self.assertRaises(SystemExit):
+                    self.quiet(lambda: self.pc.write_into(directory, ci=ci))
+        self.assertEqual(os.listdir(owner), [OWNER_FILE])
+        with open(os.path.join(owner, OWNER_FILE)) as f:
+            self.assertEqual(f.read(), "the developer's own file")
+
+    def test_dir_naming_the_configured_directory_under_its_data_volume_alias_keeps_the_manifest_and_backups(self):
+        """Given: the configured directory holding the developer's file.
+        When: --dir names it through its /System/Volumes/Data alias: with --ci-shape, or a directory inside it, and
+            then plainly, followed by --remove.
+        Then: the first are refused; the plain one writes as without --dir, with the manifest and a backup, so
+            --remove puts the developer's file back."""
+        self.put(OWNER_FILE, "owner April file")
+        alias = self.data_volume_alias(self.target)
+        for directory, ci in ((alias, True), (os.path.join(alias, "nested"), False),
+                              (os.path.join(alias, "nested"), True)):
+            with self.assertRaises(SystemExit):
+                self.quiet(lambda: self.pc.write_into(directory, ci=ci))
+        self.assertEqual(os.listdir(self.target), [OWNER_FILE])
+        self.quiet(lambda: self.pc.write_into(alias))
+        self.assertIn(OWNER_FILE, self.manifest()["backups"])
+        self.quiet(self.pc.remove_all)
+        self.assertEqual(self.read(OWNER_FILE), "owner April file")
+        self.assertEqual(os.listdir(self.target), [OWNER_FILE])
+
+    def test_dir_refuses_the_owner_directory_in_another_case(self):
+        # The owner's directory, here a temporary one, spelt in another case: on a case-insensitive volume it is the
+        # same directory, and must be refused as the owner's, with and without --ci-shape, nested or not, and before
+        # it exists.
+        owner = os.path.join(self.root, "owner", "testconfiguration")
+        os.makedirs(owner)
+        with open(os.path.join(owner, OWNER_FILE), "w") as f:
+            f.write("the developer's own file")
+        self.pc.OWNER_TESTCONFIGURATION_DIR = owner
+        variant = self.other_case(owner)
+        for directory in (variant, os.path.join(variant, "nested"), os.path.join(self.other_case(
+                os.path.dirname(owner)), "testconfiguration")):
+            for ci in (False, True):
+                with self.assertRaises(SystemExit):
+                    self.quiet(lambda: self.pc.write_into(directory, ci=ci))
+        self.assertEqual(os.listdir(owner), [OWNER_FILE])
+        with open(os.path.join(owner, OWNER_FILE)) as f:
+            self.assertEqual(f.read(), "the developer's own file")
+        self.pc.OWNER_TESTCONFIGURATION_DIR = os.path.join(self.root, "missing", "testconfiguration")
+        with self.assertRaises(SystemExit):
+            self.quiet(lambda: self.pc.write_into(os.path.join(self.root, "MISSING", "TestConfiguration")))
+        self.assertFalse(os.path.exists(os.path.join(self.root, "missing")))
+        self.assertFalse(os.path.exists(os.path.join(self.root, "MISSING")))
+
+    def test_dir_naming_the_configured_directory_in_another_case_keeps_the_manifest_and_backups(self):
+        # The configured directory in another case is that directory: --dir there writes as without --dir (with the
+        # manifest and backups), and --ci-shape, or a directory inside it, is refused, so the developer's file is
+        # never overwritten unbacked or deleted.
+        self.put(OWNER_FILE, "owner April file")
+        variant = self.other_case(self.target)
+        for directory, ci in ((variant, True), (os.path.join(variant, "nested"), False),
+                              (os.path.join(variant, "nested"), True)):
+            with self.assertRaises(SystemExit):
+                self.quiet(lambda: self.pc.write_into(directory, ci=ci))
+        self.assertEqual(os.listdir(self.target), [OWNER_FILE])
+        self.quiet(lambda: self.pc.write_into(variant))
+        self.assertIn(OWNER_FILE, self.manifest()["backups"])
+        self.quiet(self.pc.remove_all)
+        self.assertEqual(self.read(OWNER_FILE), "owner April file")
+        self.assertEqual(os.listdir(self.target), [OWNER_FILE])
 
     def test_ci_shape_is_refused_for_the_configured_directory(self):
         with self.assertRaises(SystemExit):

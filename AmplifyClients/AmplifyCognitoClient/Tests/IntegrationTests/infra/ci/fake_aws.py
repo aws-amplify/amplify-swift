@@ -10,14 +10,18 @@
 prints them (`An error occurred (<Code>) when calling the <Op> operation: …`) with its exit status 254. Every
 identifier is a placeholder. Installed by the test as `aws`, first on PATH; it never calls AWS."""
 
+import base64
 import fcntl
 import hashlib
 import json
 import os
 import sys
+import time
 import uuid
 
 STATE = os.environ["FAKE_STATE"]
+# Each Lambda's deployed zip, as create-function was given it.
+CODE_DIR = STATE + ".code"
 WORDS = []
 LOG = os.environ["FAKE_LOG"]
 
@@ -286,15 +290,24 @@ def handle(state, service, verb, o, data):
             return {"resolver": data}
         if verb == "list-api-keys":
             return {"apiKeys": api["keys"]}
+        if verb in ("create-api-key", "update-api-key"):
+            # As AppSync: 1 to 365 days from the call, stored rounded down to the hour. FAKE_APPSYNC_CLOCK_BEHIND
+            # (seconds) sets AppSync's clock behind the caller's.
+            expires = int(one(o, "expires") if verb == "create-api-key" else data["expires"])
+            now = time.time() - int(os.environ.get("FAKE_APPSYNC_CLOCK_BEHIND", "0"))
+            if not now + 86400 <= expires <= now + 365 * 86400:
+                raise Fail("ApiKeyValidityOutOfBoundsException", "API key must be valid for a minimum of 1 day and a "
+                           "maximum of 365 days.")
+            expires -= expires % 3600
         if verb == "create-api-key":
-            key = {"id": "da2-" + new_id(s, "apikey"), "description": one(o, "description"), "expires": int(one(o, "expires"))}
+            key = {"id": "da2-" + new_id(s, "apikey"), "description": one(o, "description"), "expires": expires}
             api["keys"].append(key)
             return {"apiKey": key}
         if verb == "update-api-key":
             key = next((k for k in api["keys"] if k["id"] == data["id"]), None)
             if key is None:
                 raise Fail("NotFoundException", "API key not found")
-            key["expires"] = int(data["expires"])
+            key["expires"] = expires
             return {"apiKey": key}
         if verb == "delete-graphql-api":
             del apis[api_id]
@@ -342,17 +355,35 @@ def handle(state, service, verb, o, data):
             if not data["Role"].split("/")[-1] in s.get("roles", {}):
                 raise Fail("InvalidParameterValueException", "The role defined for the function cannot be assumed by Lambda.")
             config = {k: v for k, v in data.items() if k != "Tags"}
+            # As Lambda reports it: the base64 SHA-256 of the zip, which it keeps (here beside the state file, where
+            # get-function's Code.Location, a file:// URL, serves it).
+            with open(one(o, "zip-file")[len("fileb://"):], "rb") as f:
+                code = f.read()
+            code_sha = base64.b64encode(hashlib.sha256(code).digest()).decode()
+            code_path = os.path.join(CODE_DIR, f"{name}.zip")
+            os.makedirs(CODE_DIR, exist_ok=True)
+            with open(code_path, "wb") as f:
+                f.write(code)
             config.update({"FunctionArn": f"arn:aws:lambda:{region}:{acct}:function:{name}", "State": "Active",
-                           "CodeSha256": "fake", "RevisionId": new_id(s, "rev", 8)})
-            functions[name] = {"config": config, "tags": data.get("Tags", {}), "policy": [], "zip": one(o, "zip-file")}
+                           "CodeSha256": code_sha, "RevisionId": new_id(s, "rev", 8)})
+            functions[name] = {"config": config, "tags": data.get("Tags", {}), "policy": [], "code": code_path}
             return config
         name = one(o, "function-name") or (one(o, "resource") or "").rsplit(":", 1)[-1]
         name = name.rsplit(":function:", 1)[-1]
         if name not in functions:
             raise Fail("ResourceNotFoundException", "Function not found")
         function = functions[name]
+        # Lambda is regional: a call in another region than the function's finds none.
+        if one(o, "region", region) != function["config"]["FunctionArn"].split(":")[3]:
+            raise Fail("ResourceNotFoundException", "Function not found")
         if verb == "get-function-configuration":
             return function["config"]
+        if verb == "get-function":
+            # Lambda's Code.Location is a presigned https:// URL to the deployed zip; the fake's is the zip's file.
+            code = {"RepositoryType": "S3"}
+            if function.get("code"):
+                code["Location"] = "file://" + function["code"]
+            return {"Configuration": function["config"], "Code": code, "Tags": function["tags"]}
         if verb == "wait":
             return None
         if verb == "list-tags":
