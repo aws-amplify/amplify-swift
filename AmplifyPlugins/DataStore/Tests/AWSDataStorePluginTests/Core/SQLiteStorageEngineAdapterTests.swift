@@ -694,6 +694,30 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests, @unchecked Sendable {
         _ = UserDefaults.removeObject(userDefaults)
     }
 
+    /// A database file that can't be removed fails `clear` once, without also reporting success.
+    ///
+    /// - Given: an adapter whose database file path does not exist, so removing the file throws
+    /// - When:
+    ///    - `clear` is called
+    /// - Then:
+    ///    - its completion is called exactly once, with an `invalidDatabase` failure
+    ///
+    func testClear_whenTheDatabaseFileCannotBeRemoved_completesOnce() throws {
+        let missingFile = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).db")
+        let adapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory), dbFilePath: missingFile)
+        // `clear` completes synchronously, so every completion is recorded by the time it returns.
+        let results = AtomicValue<[DataStoreResult<Void>]>(initialValue: [])
+
+        adapter.clear { results.append($0) }
+
+        let completions = results.get()
+        XCTAssertEqual(completions.count, 1)
+        guard case .failure(.invalidDatabase)? = completions.first else {
+            XCTFail("Expected an invalidDatabase failure, got \(completions)")
+            return
+        }
+    }
+
     func testQueryMutationSyncMetadata_EmptyResult() {
         let modelIds = [UUID().uuidString, UUID().uuidString]
         do {
