@@ -1007,21 +1007,25 @@ replace_is_a_dry_run_and_refuses_while_ci_runs() {
         || { echo "$OUT" | tail -5; return 1; }
 }
 
-# replace --apply refuses a pool without the purpose tag before any change.
+# replace --apply refuses, before any change, a pool without the purpose tag, and an uploaded file that names the pool
+# without it (which only replace reads the tag of: the rerun never deletes a file).
 replace_refuses_an_untagged_pool() {
-    local before
-    jq '(.pools[] | select(.UserPool.Name == "ccit-ci-email-alias-codes") | .UserPool.UserPoolTags) = {}' "$FAKE_STATE" \
-        > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
-    before=$(jq -S . "$FAKE_STATE")
-    run replace ccit-ci-email-alias-codes --apply
-    local status=$STATUS out=$OUT after
-    after=$(jq -S . "$FAKE_STATE")
-    jq '(.pools[] | select(.UserPool.Name == "ccit-ci-email-alias-codes") | .UserPool.UserPoolTags) = {purpose: "amplify-cognito-client-integ"}' \
-        "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
-    OUT=$out
-    (( status == 1 )) && only_reads && [[ "$after" == "$before" ]] \
-        && [[ "$out" == *"user-pool ccit-ci-email-alias-codes exists without purpose=amplify-cognito-client-integ"* ]] \
-        && [[ "$out" == *"the dry run refused"* ]] && no_identifiers || { echo "$out" | tail -5; return 1; }
+    local before status out after case filter
+    local file='.s3["v2/testconfiguration/auth/cognito-client-ci/ccit-ci-email-alias-codes-amplify_outputs.json"].tags'
+    local pool='(.pools[] | select(.UserPool.Name == "ccit-ci-email-alias-codes") | .UserPool.UserPoolTags)'
+    for case in "$pool:user-pool ccit-ci-email-alias-codes" \
+        "$file:s3-object <path>/auth/cognito-client-ci/ccit-ci-email-alias-codes-amplify_outputs.json"; do
+        filter="${case%%:*}"
+        jq "$filter = {}" "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+        before=$(jq -S . "$FAKE_STATE")
+        run replace ccit-ci-email-alias-codes --apply
+        status=$STATUS out=$OUT
+        after=$(jq -S . "$FAKE_STATE")
+        jq "$filter = {purpose: \"amplify-cognito-client-integ\"}" "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+        (( status == 1 )) && only_reads && [[ "$after" == "$before" ]] \
+            && [[ "$out" == *"${case#*:} exists without purpose=amplify-cognito-client-integ"* ]] \
+            && [[ "$out" == *"the dry run refused"* ]] && no_identifiers || { echo "$out" | tail -5; return 1; }
+    done
 }
 
 # The uploaded file $1 (under auth/cognito-client-ci/), as the fake holds it.
@@ -1508,7 +1512,8 @@ check "replace takes only the script's pools, refusing any other name before any
     replace_takes_only_the_scripts_pools
 check "replace is a dry run by default, and refuses while a CI run that reads the pools is going" \
     replace_is_a_dry_run_and_refuses_while_ci_runs
-check "replace --apply refuses a pool without the tag, before any change" replace_refuses_an_untagged_pool
+check "replace --apply refuses a pool or an uploaded file without the tag, before any change" \
+    replace_refuses_an_untagged_pool
 check "replace default --apply deletes the pool and what names it, then the rerun makes them again" \
     replace_default_makes_it_again
 check "replace of the device-alias pool over phase 1 alone reruns phase 1, adding nothing of phase 2" \
