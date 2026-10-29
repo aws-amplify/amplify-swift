@@ -605,8 +605,9 @@ final class DefaultSessionLegacyLoginTests: XCTestCase {
     }
 }
 
-/// What the saved login held each time an AWSMobileClient service was cleared.
-private final class ClearOrder: @unchecked Sendable {
+/// What the saved login held each time an AWSMobileClient service was cleared. Shared with
+/// `DefaultSessionGuestLegacyLoginTests`.
+final class ClearOrder: @unchecked Sendable {
     // `@unchecked Sendable`: `seen` is only touched while holding `lock`.
     private let lock = NSLock()
     private var seen: [Data?] = []
@@ -624,8 +625,9 @@ private final class ClearOrder: @unchecked Sendable {
     }
 }
 
-/// An item store that calls `onRemoveAll` before it clears `base`, and otherwise is `base`.
-private struct ObservedItemStore: KeychainItemStoreBehavior {
+/// An item store that calls `onRemoveAll` before it clears `base`, and otherwise is `base`. Shared with
+/// `DefaultSessionGuestLegacyLoginTests`.
+struct ObservedItemStore: KeychainItemStoreBehavior {
     let base: any KeychainItemStoreBehavior
     let onRemoveAll: @Sendable () -> Void
 
