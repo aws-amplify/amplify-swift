@@ -523,9 +523,10 @@ sessions never block it. A guest session signs in on the same session, but its i
 the Auth plugin, the signed-in identity ID is the one the identity pool maps the login to. A session waiting on a
 challenge starts over.
 
-A session that reported `sessionExpired` in this process may sign in again without signing out. That is held in
-memory only: after a relaunch, or once every handle and provider for the session is released, `signIn` is refused
-with `.invalidState` again until a token request finds the dead token again, so sign out first, as with the plugin.
+A session that reported `sessionExpired` may sign in again without signing out, in that launch or a later one: the
+expiry is saved with the session while its saved login keeps the refresh token found dead. A session whose refresh
+token was revoked elsewhere, and that no refresh has found dead yet, is still signed in as its user, so `signIn` is
+refused with `.invalidState` until a token request reports `sessionExpired`; sign out first, as with the plugin.
 
 The result's `nextStep` is `.done` when the user is signed in. Otherwise it is the step to present; see
 [Sign-in steps and confirmSignIn](#sign-in-steps-and-confirmsignin). In an SRP, `.userPassword` or custom-auth
@@ -1003,12 +1004,12 @@ let accessToken = try await client.userPoolTokenProvider.accessToken()
   retryable `unknown` an unforced refresh gets there (unless another writer saved a refresh meanwhile, with a new
   refresh token, which it adopts). It counts toward the dead-token rule (see
   [Known limitations](#known-limitations)): a second refusal at least 30 seconds later, with nothing saved meanwhile,
-  reports `sessionExpired` and expires the session even though its saved tokens are still valid. From then on, while
-  the session is in memory (until every handle and provider for it is released, or a relaunch), an unforced fetch and
-  both providers fail with `sessionExpired` too, until the session signs in again or signs out. Another writer saving
-  the same login again doesn't end that, before or after the expiry: the same credentials in other bytes, or the Auth
-  plugin's save of them marked expired, still hold the refresh token found dead. A login with another refresh token
-  does.
+  reports `sessionExpired` and expires the session even though its saved tokens are still valid. From then on, an
+  unforced fetch and both providers fail with `sessionExpired` too, until the session signs in again or signs out. The
+  expiry is saved with the session, so a new client of it, and the app after a relaunch, answer the same without
+  refreshing the dead token again. Another writer saving the same login again doesn't end that, before or after the
+  expiry: the same credentials in other bytes, or the Auth plugin's save of them marked expired, still hold the
+  refresh token found dead. A login with another refresh token does.
 - There is no `isSignedIn` field. Use `currentSessionState()`.
 - Tokens and AWS credentials print redacted.
 
@@ -1317,7 +1318,7 @@ await client.signOut(options: .init(purgeStoredSession: true))
 | Result | Meaning |
 |---|---|
 | `.complete` | Tokens revoked and cleared from this device, or there were none |
-| `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` | Signed out on this device, but part of the work failed. `revokeTokenError`: the refresh token stays valid until it expires, unless a global sign-out succeeded (`globalSignOutError` is `nil`), which already invalidated it. After a failed global sign-out the token isn't revoked and this holds a placeholder `.service` error with empty texts, as in the plugin. `globalSignOutError`: other devices stay signed in. Neither is retried, and signing out again doesn't retry it: the session is signed out on this device, so a second sign-out is `.complete` and sends nothing. `hostedUIError`: the browser keeps its hosted-UI cookie; only for a sign-out without a window (`signOut(options:)` or `signOutStoredSession`, as `.validation`), or a closed page on a session a refresh found expired while the session was in memory (until every handle and provider for it is released, or a relaunch), when the login signed out still has that refresh token. `storageError`: with `purgeStoredSession`, the row couldn't be removed; purge it again |
+| `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` | Signed out on this device, but part of the work failed. `revokeTokenError`: the refresh token stays valid until it expires, unless a global sign-out succeeded (`globalSignOutError` is `nil`), which already invalidated it. After a failed global sign-out the token isn't revoked and this holds a placeholder `.service` error with empty texts, as in the plugin. `globalSignOutError`: other devices stay signed in. Neither is retried, and signing out again doesn't retry it: the session is signed out on this device, so a second sign-out is `.complete` and sends nothing. `hostedUIError`: the browser keeps its hosted-UI cookie; only for a sign-out without a window (`signOut(options:)` or `signOutStoredSession`, as `.validation`), or a closed page on a session a refresh found expired, in this launch or an earlier one, when the login signed out still has that refresh token. `storageError`: with `purgeStoredSession`, the row couldn't be removed; purge it again |
 | `.failed(AuthClientError)` | Not signed out: the session is still signed in on this device. See below |
 
 `.failed` carries:
@@ -1397,10 +1398,10 @@ func hostedUISignOut(client: AmplifyCognitoClient, window: AuthClientPresentatio
   signs out in the browser. Until then, sign in to the hosted UI with `prompt: [.login]` or
   `prefersEphemeralSession: true`.
 - If the user closes the sign-out page, the result is `.failed(.userCancelled)` and the session stays signed in, as
-  with the plugin, unless a refresh has already found the session expired while it was in memory (the client keeps
-  that on the session until every handle and provider for it is released, or a relaunch; the plugin saves it with the
-  session), and the login being signed out still has the refresh token found dead. A new login another app in the
-  access group saved since then stays signed in: `.failed(.userCancelled)`. Otherwise it signs out anyway and returns `.partial` with `hostedUIError`
+  with the plugin, unless a refresh has already found the session expired, in this launch or an earlier one (the
+  client saves that beside the session; it doesn't read the plugin's own saved flag), and the login being signed out
+  still has the refresh token found dead. A new login another app in the access group saved since then stays signed
+  in: `.failed(.userCancelled)`. Otherwise it signs out anyway and returns `.partial` with `hostedUIError`
   `.userCancelled`, which says the session was signed out on this device but not from the hosted UI: as without a
   window, signing out again won't clear the cookie. The same goes when `cancelWebUISignIn()` closes this session's
   sign-out page, or `resetSystemSheet()` closes it before it finished.
@@ -1926,28 +1927,28 @@ The client keeps the plugin's semantics except where listed here and in the sect
 - **Rollback to an older plugin release**: plugin releases before 2.51.0 can't refresh at all on an app client with
   rotation on. Releases before 2.53.3 can wipe the plugin's keychain service, every saved session included, the
   first time they configure on an install that never ran one of them. Roll back to 2.53.3 or later.
-- **After a relaunch, a session whose refresh token was revoked elsewhere refuses `signIn`.** Its expiry is known in
-  memory only, so it restores signed in as its user, and `signIn` throws `.invalidState` ("There is already a user
-  in signedIn state") until the session signs out, or a refresh in that launch reports `sessionExpired`. What to do:
-  on `sessionExpired`, or on that refusal, sign the session out before showing sign-in.
-- **A second refresh-token reuse counts as a dead token after 30 seconds, within one launch.** Until then the
-  failure, forced or not, is retryable. The rule is kept in memory: after an app terminated in the middle of a
-  refresh with refresh-token rotation on (Cognito rotated the token, and the new one was never saved), the saved,
-  retired refresh token gives the retryable `unknown` at the first refusal of each launch, and `sessionExpired` at a
-  second one at least 30 seconds later in the same launch. Forced refreshes count too, even while the saved tokens
-  are still valid. This `sessionExpired` says the refresh token was already used and no refreshed tokens were saved,
-  with `refreshTokenReused` underneath, not the "expired or been revoked" of a refused refresh token. That repeats in
-  every launch until the session is signed out, or signs in again after a `sessionExpired`. Before that
-  `sessionExpired`, the session is signed in as its user, so `signIn` refuses it with `.invalidState`. What to do:
-  after repeated refresh failures, sign the session out, then show sign-in.
+- **A session whose refresh token was revoked elsewhere refuses `signIn` until a refresh finds it.** It is signed in
+  as its user, and `signIn` throws `.invalidState` ("There is already a user in signedIn state") until the session
+  signs out, or a refresh reports `sessionExpired`. From then on the expiry is saved with the session, so a later
+  launch lets it sign in again too. What to do: on `sessionExpired`, or on that refusal, sign the session out before
+  showing sign-in.
+- **A second refresh-token reuse counts as a dead token after 30 seconds, in one launch.** Until then the failure,
+  forced or not, is retryable. The count is kept in memory: after an app terminated in the middle of a refresh with
+  refresh-token rotation on (Cognito rotated the token, and the new one was never saved), the saved, retired refresh
+  token gives the retryable `unknown` at its first refusal, and `sessionExpired` at a second one at least 30 seconds
+  later in the same launch; a relaunch in between starts the count again. Forced refreshes count too, even while the
+  saved tokens are still valid. This `sessionExpired` says the refresh token was already used and no refreshed tokens
+  were saved, with `refreshTokenReused` underneath, not the "expired or been revoked" of a refused refresh token. Once
+  it is reported, the expiry is saved with the session: later launches, and new clients of the session, answer it at
+  once without refreshing, until the session signs in again or signs out. Before that `sessionExpired`, the session is
+  signed in as its user, so `signIn` refuses it with `.invalidState`. What to do: after repeated refresh failures,
+  sign the session out, then show sign-in.
 - **A sign-in after an expired session can't be resumed after a relaunch.** This affects a session whose refresh
   token expired (it reported `sessionExpired`) when its user signs in again, that sign-in stops on a challenge
-  (an MFA code, say), and the app is closed before the user answers. The saved login still holds the expired user,
-  so on relaunch the saved challenge is discarded. The session's expiry is known in memory only: after the relaunch
-  it is signed in as that user again, its cached tokens and AWS credentials are handed out while they are still
-  valid (when the expiry was found early, by a forced refresh or after a revoke elsewhere), and only its next
-  refresh reports `sessionExpired` again. What to do: on `sessionExpired`, sign the session out, then show sign-in
-  and start it over. A first sign-in, or one after a sign-out, resumes as usual.
+  (an MFA code, say), and the app is closed before the user answers. The saved login still holds the expired user, so
+  on relaunch the saved challenge is discarded. The session restores expired (its expiry is saved with it): it hands
+  out no tokens, answers `sessionExpired`, and lets its user sign in again from the start. What to do: on
+  `sessionExpired`, show sign-in and start it over. A first sign-in, or one after a sign-out, resumes as usual.
 - **The side-by-side warning is temporary.** This affects apps that run the Auth plugin and the client over
   `.default` in one process, which is not supported. When `.default` finds a different user or guest in the saved
   login, it logs once under `AmplifyCognitoClient.DefaultSession` and changes nothing else. What to do: use one or
