@@ -147,7 +147,7 @@ class AWSAuthFetchSessionTokenRotationTests: XCTestCase, @unchecked Sendable {
     /// Valid user-pool-only tokens left by a failed identity step are returned without a request
     ///
     /// - Given: A session error holding valid user-pool-only tokens, as a `confirmSignIn` whose identity-pool
-    ///   step failed leaves it, with an identity pool configured
+    ///   step failed left it in 2.63.0 and earlier, with an identity pool configured
     /// - When:
     ///    - fetchAuthSession is called without force refresh
     /// - Then:

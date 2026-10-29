@@ -1850,7 +1850,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | Saved login | One record | `.default` uses the plugin's own record; named sessions keep their own, which the plugin never reads |
 | Session label and signed-out row | None | Kept beside the plugin's record for `.default`, bound to its user |
 | Second sign-in | Refused while signed in | Refused only on the same session, and allowed there once the session reported `sessionExpired` in this process |
-| Identity pool step fails after the user pool signed the user in | `signIn` throws and signs the user out. `confirmSignIn` doesn't return, and the Auth calls queued behind it (`fetchAuthSession` and `signOut` included) wait | `signIn` and `confirmSignIn` both throw the identity pool's error, revoke the tokens just issued and leave the session signed out |
+| Identity pool step fails after the user pool signed the user in | `signIn` and `confirmSignIn` both throw the identity pool's error, revoke the tokens just issued and sign the user out; under a keychain access group that sign-out writes the signed-out record over a login another app saved meanwhile. In 2.63.0 and earlier, `confirmSignIn` didn't return, and the Auth calls queued behind it (`fetchAuthSession` and `signOut` included) waited | `signIn` and `confirmSignIn` both throw the identity pool's error, revoke the tokens just issued and leave the session signed out, and the saved record as it is |
 | Events | Hub | Per-session `AsyncStream`s |
 | Events for `autoSignIn()` and `clearFederationToIdentityPool()` | No Hub event | `.signedIn` and `.signedOut` |
 | Storage failure | Reported as signed out | `.unavailable(reason)` / `storageUnavailable`, never signed out |

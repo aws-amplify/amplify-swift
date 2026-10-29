@@ -536,7 +536,8 @@ one, and a copy an extension rewrote are never carried over it.
 
 **#32.** The user pool issued tokens, but the sign-in can't finish what its configuration asks for, so the client
 revokes them and leaves the session signed out, for `signIn` and `confirmSignIn` alike. The plugin's `confirmSignIn`
-doesn't return in that case. The README's differences table and the release notes record it.
+didn't return in that case in 2.63.0 and earlier; later releases throw and sign the user out, as its `signIn` does.
+The README's differences table and the release notes record it.
 
 **#33.** A session signed out in this process adopts the login an app extension, the Auth plugin or another call has
 saved since. An unforced fetch handed it out as it was, so it could return tokens and AWS credentials that had
