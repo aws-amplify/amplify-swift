@@ -33,6 +33,11 @@
 #                           place of the plugin's MFA-required backend (ci-overlay.sh's `mfa-req-totp-sms` role):
 #                           MF-13, MF-15…17 and the two USER_AUTH MFA-setup checks. Its pre-sign-up trigger is the
 #                           device-alias pool's, and its custom senders the discard sender, so nothing is sent
+#     ccit-ci-extend-api-key
+#                           a Lambda, run weekly by the rule ccit-ci-extend-api-key, that extends the code sink's
+#                           read-only API key in place to 365 days from now once 120 or fewer are left (its role
+#                           ccit-ci-key-exec may only list and update the code sink API's keys), so the key never
+#                           expires between reruns
 #
 #   A rerun over resources an earlier run made adds what is missing and updates, after their tag checks, only
 #   these of its own: the KMS key's policy and the sender's and triggers' role policies (each to name the new pool
@@ -41,9 +46,10 @@
 #   stops in between leaves it open, still held to the external ID and the account, until a rerun narrows it), the
 #   invoke permissions of the Lambdas the new pool names (one that names another pool's ARN, as after a pool is
 #   deleted and made again, is replaced), the reset Lambda's role policy (to decrypt its parameter with the key, or
-#   to name a default pool made again), the identity pool roles' trust (to name an identity pool made again), and
-#   an SSM parameter stored under another key than the script's own, which it stores again, with the same value,
-#   under that key.
+#   to name a default pool made again), the identity pool roles' trust (to name an identity pool made again), an
+#   SSM parameter stored under another key than the script's own, which it stores again, with the same value,
+#   under that key, and the code sink's API key, extended in place once 120 or fewer days are left, as the weekly
+#   ccit-ci-extend-api-key does.
 #
 #   It never updates a pool or a Lambda's code, so either is replaced: deleted by hand, after its tag check, then
 #   made again by infra/ci/provision-ci.sh --apply --scope all. Never a plain --apply: that is phase 1, which makes
@@ -51,7 +57,8 @@
 #   lambda-drift and the baseline check still pass. Do it while no CI run is going: until the rerun, the pools
 #   cannot use what was deleted.
 #   - A Lambda, after a change to lambda/triggers/triggers.mjs, lambda/custom-sender or ci/lambda/* (lambda-drift
-#     tells a function whose deployed files are not this checkout's): check that it carries
+#     tells a function whose deployed files are not this checkout's), or after the code sink's API is made again
+#     (ccit-ci-extend-api-key names the API it was made for): check that it carries
 #     purpose=amplify-cognito-client-integ, delete it, and run --apply --scope all, which makes it again with every
 #     pool's invoke permissions.
 #   - A pool, after a change to its template: --upload never overwrites a file, so the uploaded files that name the
@@ -185,7 +192,6 @@ POOL_KEYS=(email-alias)
 ALL_POOL_KEYS=(email-alias default email-alias-codes mfa-req-totp-sms)
 # The pools whose SmsConfiguration names the SNS caller role (the templates with SMS MFA), which its trust names.
 SMS_POOL_KEYS=(default mfa-req-totp-sms)
-TRIGGERS_ALL=(pre-sign-up pre-sign-up-confirmable define-auth-challenge create-auth-challenge verify-auth-challenge)
 # The pools whose codes the custom sender decrypts: the ones it is the sender of.
 SENDER_POOL_KEYS=(default email-alias-codes)
 
@@ -205,14 +211,18 @@ SMS_ROLE_CODES="InvalidSmsRoleTrustRelationshipException InvalidSmsRoleAccessPol
 TABLE="$(fn_name codes)"
 API_NAME="$(fn_name codes)"
 RULE="$(fn_name new-password-reset)"
+KEY_RULE="$(fn_name extend-api-key)"
 S3_FOLDER_KEY="$CI_PREFIX_PATH/auth/$CI_S3_FOLDER"
 
-# The functions in scope, with each one's handler, role and code.
+# The functions of each phase (lambda_code.py's SOURCES zips every one), with each one's handler, role and code.
+PHASE_1_FUNCTIONS=(pre-sign-up discard-sender)
+PHASE_2_FUNCTIONS=(pre-sign-up-confirmable custom-sender define-auth-challenge create-auth-challenge
+    verify-auth-challenge new-password-reset extend-api-key)
+ALL_FUNCTIONS=("${PHASE_1_FUNCTIONS[@]}" "${PHASE_2_FUNCTIONS[@]}")
 functions_in_scope() {
-    printf '%s\n' pre-sign-up discard-sender
+    printf '%s\n' "${PHASE_1_FUNCTIONS[@]}"
     if [[ "$SCOPE" == "all" ]]; then
-        printf '%s\n' pre-sign-up-confirmable custom-sender define-auth-challenge create-auth-challenge \
-            verify-auth-challenge new-password-reset
+        printf '%s\n' "${PHASE_2_FUNCTIONS[@]}"
     fi
 }
 fn_handler() {
@@ -221,13 +231,14 @@ fn_handler() {
         define-auth-challenge) echo triggers.defineAuthChallenge ;;
         create-auth-challenge) echo triggers.createAuthChallenge ;;
         verify-auth-challenge) echo triggers.verifyAuthChallenge ;;
-        custom-sender|discard-sender|new-password-reset) echo index.handler ;;
+        custom-sender|discard-sender|new-password-reset|extend-api-key) echo index.handler ;;
     esac
 }
 fn_role() {
     case "$1" in
         custom-sender) echo sender-exec ;;
         new-password-reset) echo reset-exec ;;
+        extend-api-key) echo key-exec ;;
         *) echo trigger-exec ;;
     esac
 }
@@ -293,7 +304,7 @@ preflight() {
 }
 
 # Dies unless the account has room for the $1 (role, api or rule) this run is about to create, as preflight read it.
-# Each keeps a margin: 50 roles left (the script makes 7 at most), 2 APIs left after this one, 250 rules at most.
+# Each keeps a margin: 50 roles left (the script makes 8 at most), 2 APIs left after this one, 250 rules at most.
 require_headroom() {
     case "$1" in
         role)
@@ -455,6 +466,14 @@ reset_policy() {
         {Sid: "DecryptTemporaryPassword", Effect: "Allow", Action: "kms:Decrypt", Resource: $key,
          Condition: {StringEquals: {"kms:ViaService": "ssm.\($r).amazonaws.com",
                                     "kms:EncryptionContext:PARAMETER_ARN": $p}}}]}'
+}
+
+# The weekly key extension's (ccit-ci-extend-api-key): its logs, and listing and updating the code sink API's keys
+# only. AppSync's ListApiKeys and UpdateApiKey take the API's ARN as their resource.
+key_policy() {
+    jq -n -c --arg api "$API_ARN" --argjson logs "$(logs_statement extend-api-key)" '{Version: "2012-10-17",
+        Statement: [$logs, {Sid: "ExtendTestsKey", Effect: "Allow", Action: ["appsync:ListApiKeys", "appsync:UpdateApiKey"],
+            Resource: $api}]}'
 }
 
 identity_trust() {
@@ -824,7 +843,7 @@ generate_temporary() {
 # --- Lambdas ----------------------------------------------------------------------------------------------
 
 # Sets ZIP to the zip for function $1 in $CI_WORK, built once per code: the sandbox's triggers.mjs, the sandbox's
-# custom sender (npm ci), or this directory's discard sender or new-password reset. The zip is deterministic
+# custom sender (npm ci), or this directory's discard sender, new-password reset or key extension. The zip is deterministic
 # (lambda_code.py), and lambda-drift compares a deployed function's files with it. Built in --apply, and for
 # lambda-drift (BUILD_ZIPS=1). It sets a variable rather than printing the path, so
 # that it runs in this shell, never in a $(…), where a refusal would end only the subshell and the run would go on.
@@ -836,6 +855,7 @@ zip_for() {
         custom-sender) zip="$CI_WORK/custom-sender.zip" ;;
         discard-sender) zip="$CI_WORK/discard-sender.zip" ;;
         new-password-reset) zip="$CI_WORK/new-password-reset.zip" ;;
+        extend-api-key) zip="$CI_WORK/extend-api-key.zip" ;;
         *) zip="$CI_WORK/triggers.zip" ;;
     esac
     if [[ "$suffix" == custom-sender ]]; then
@@ -871,6 +891,10 @@ fn_environment() {
             jq -n -c --arg p "$(kv_get POOL_ID "default")" --arg u "$(new_password_users | paste -sd, -)" \
                 --arg t "$CI_SSM_TEMPORARY" '{POOL_ID: $p, USERNAMES: $u, TEMP_PASSWORD_PARAMETER: $t,
                     USED_AFTER_MINUTES: "60", REFRESH_AFTER_DAYS: "10"}' ;;
+        # The same lifetime, allowance and threshold as ensure_api_key's.
+        extend-api-key)
+            jq -n -c --arg a "$API_ID" --arg d "$KEY_DAYS" --arg c "$KEY_CLOCK_ALLOWANCE" --arg w "$KEY_REUSE_DAYS" \
+                '{API_ID: $a, KEY_DAYS: $d, CLOCK_ALLOWANCE_SECONDS: $c, EXTEND_WITHIN_DAYS: $w}' ;;
         *) printf '{}' ;;
     esac
 }
@@ -890,6 +914,7 @@ ensure_function() {
     fi
     [[ "$suffix" == "custom-sender" ]] && memory=256
     [[ "$suffix" == "new-password-reset" ]] && timeout=60
+    [[ "$suffix" == "extend-api-key" ]] && timeout=30
     input=$(jq -n -c --arg n "$name" --arg role "$(role_arn "$(fn_role "$suffix")")" --arg h "$(fn_handler "$suffix")" \
         --argjson t "$timeout" --argjson m "$memory" --argjson e "$environment" --argjson tags "$(tags_json)" \
         '{FunctionName: $n, Role: $role, Handler: $h, Runtime: "nodejs22.x", Timeout: $t, MemorySize: $m,
@@ -1100,27 +1125,29 @@ ensure_identity_pool() {
 
 # --- New-password users (default) -------------------------------------------------------------------------
 
-ensure_reset_schedule() {
-    local out rule_arn target fn
-    fn=$(fn_name new-password-reset)
-    rule_arn="arn:aws:events:$CI_REGION:$CI_ACCOUNT:rule/$RULE"
-    if read_aws_or_missing out ResourceNotFoundException events describe-rule --name "$RULE"; then
-        require_ours rule "$RULE" "$RULE"
-        say "  = schedule $RULE"
+# Schedules function $2 by rule $1 at rate $3 (as "10 minutes", "7 days"), described by $4: the rule, the function's
+# invoke permission for it, and the rule's target.
+ensure_schedule() {
+    local rule="$1" suffix="$2" rate="$3" description="$4" out rule_arn target fn
+    fn=$(fn_name "$suffix")
+    rule_arn="arn:aws:events:$CI_REGION:$CI_ACCOUNT:rule/$rule"
+    if read_aws_or_missing out ResourceNotFoundException events describe-rule --name "$rule"; then
+        require_ours rule "$rule" "$rule"
+        say "  = schedule $rule"
     else
         require_headroom rule
-        mutate "$RULE" "schedule $fn every 10 minutes" -- events put-rule --name "$RULE" \
-            --schedule-expression "rate(10 minutes)" --state ENABLED \
-            --description "ccit-ci: keeps the new-password users fresh" --tags "Key=$CI_TAG_KEY,Value=$CI_TAG_VALUE"
+        mutate "$rule" "schedule $fn every $rate" -- events put-rule --name "$rule" \
+            --schedule-expression "rate($rate)" --state ENABLED \
+            --description "$description" --tags "Key=$CI_TAG_KEY,Value=$CI_TAG_VALUE"
     fi
-    ensure_invoke_permission new-password-reset events-schedule events.amazonaws.com "$rule_arn"
+    ensure_invoke_permission "$suffix" events-schedule events.amazonaws.com "$rule_arn"
     target=""
-    if read_aws_or_missing out ResourceNotFoundException events list-targets-by-rule --rule "$RULE"; then
-        target=$(jq -r --arg a "$(fn_arn new-password-reset)" '[.Targets[] | select(.Arn == $a)][0].Id // empty' <<<"$out")
+    if read_aws_or_missing out ResourceNotFoundException events list-targets-by-rule --rule "$rule"; then
+        target=$(jq -r --arg a "$(fn_arn "$suffix")" '[.Targets[] | select(.Arn == $a)][0].Id // empty' <<<"$out")
     fi
     if [[ -z "$target" ]]; then
-        mutate "$RULE" "point the schedule at Lambda $fn" -- events put-targets --rule "$RULE" \
-            --targets "Id=new-password-reset,Arn=$(fn_arn new-password-reset)"
+        mutate "$rule" "point the schedule at Lambda $fn" -- events put-targets --rule "$rule" \
+            --targets "Id=$suffix,Arn=$(fn_arn "$suffix")"
     fi
 }
 
@@ -1305,7 +1332,7 @@ provision() {
 
     say "Lambdas:"
     while read -r suffix; do
-        [[ "$suffix" == "new-password-reset" ]] || ensure_function "$suffix"
+        [[ "$suffix" == "new-password-reset" || "$suffix" == "extend-api-key" ]] || ensure_function "$suffix"
     done < <(functions_in_scope)
 
     say "User pools:"
@@ -1327,8 +1354,12 @@ provision() {
         say "New-password users:"
         ensure_role reset-exec "$(lambda_trust)" "$(reset_policy)"
         ensure_function new-password-reset
-        ensure_reset_schedule
+        ensure_schedule "$RULE" new-password-reset "10 minutes" "ccit-ci: keeps the new-password users fresh"
         run_reset_once
+        say "The code sink key's weekly extension:"
+        ensure_role key-exec "$(lambda_trust)" "$(key_policy)"
+        ensure_function extend-api-key
+        ensure_schedule "$KEY_RULE" extend-api-key "7 days" "ccit-ci: keeps the code sink's API key from expiring"
     fi
 
     if [[ "$CI_MODE" == "apply" ]]; then
@@ -1414,7 +1445,7 @@ lambda_drift() {
     mkdir -p "$zips"
     deployed="{}"
     BUILD_ZIPS=1
-    for suffix in "${TRIGGERS_ALL[@]}" discard-sender custom-sender new-password-reset; do
+    for suffix in "${ALL_FUNCTIONS[@]}"; do
         name=$(fn_name "$suffix")
         entry="null"
         if read_aws_or_missing out ResourceNotFoundException lambda get-function --function-name "$name"; then
@@ -1583,7 +1614,7 @@ snapshot() {
 # --- teardown ---------------------------------------------------------------------------------------------
 
 teardown() {
-    local out key file id suffix role fn
+    local out key file id suffix role fn spec rule
     if [[ "$CI_MODE" == "apply" ]]; then
         say "Teardown: deleting the ccit-ci- resources, each after its tag check."
     else
@@ -1596,11 +1627,14 @@ teardown() {
             mutate "$key" "delete auth/$CI_S3_FOLDER/$file" -- s3api delete-object --bucket "$CI_BUCKET" --key "$key"
         fi
     done
-    if read_aws_or_missing out ResourceNotFoundException events describe-rule --name "$RULE"; then
-        require_ours rule "$RULE" "$RULE"
-        mutate "$RULE" "remove $RULE's target" -- events remove-targets --rule "$RULE" --ids new-password-reset
-        mutate "$RULE" "delete schedule $RULE" -- events delete-rule --name "$RULE"
-    fi
+    for spec in "$RULE new-password-reset" "$KEY_RULE extend-api-key"; do
+        read -r rule suffix <<<"$spec"
+        if read_aws_or_missing out ResourceNotFoundException events describe-rule --name "$rule"; then
+            require_ours rule "$rule" "$rule"
+            mutate "$rule" "remove $rule's target" -- events remove-targets --rule "$rule" --ids "$suffix"
+            mutate "$rule" "delete schedule $rule" -- events delete-rule --name "$rule"
+        fi
+    done
     read_all_pages out IdentityPools cognito-identity list-identity-pools
     for id in $(jq -r --arg n "$CI_IDENTITY_POOL" '.IdentityPools[] | select(.IdentityPoolName == $n) | .IdentityPoolId' <<<"$out"); do
         require_ours identity-pool "$id" "$CI_IDENTITY_POOL"
@@ -1615,7 +1649,7 @@ teardown() {
                 cognito-idp delete-user-pool --user-pool-id "$id"
         done
     done
-    for suffix in "${TRIGGERS_ALL[@]}" discard-sender custom-sender new-password-reset; do
+    for suffix in "${ALL_FUNCTIONS[@]}"; do
         fn=$(fn_name "$suffix")
         if read_aws_or_missing out ResourceNotFoundException lambda get-function-configuration --function-name "$fn"; then
             require_ours lambda "$fn" "$fn"
@@ -1631,7 +1665,7 @@ teardown() {
         require_ours table "$TABLE" "$TABLE"
         mutate "$TABLE" "delete table $TABLE" -- dynamodb delete-table --table-name "$TABLE"
     fi
-    for suffix in trigger-exec sender-exec appsync-codes cognito-sms reset-exec identity-authenticated \
+    for suffix in trigger-exec sender-exec appsync-codes cognito-sms reset-exec key-exec identity-authenticated \
         identity-unauthenticated; do
         role=$(role_name "$suffix")
         if read_aws_or_missing out NoSuchEntity iam get-role --role-name "$role"; then
@@ -1666,7 +1700,7 @@ teardown() {
         fi
         mutate "$CI_KMS_ALIAS" "delete alias $CI_KMS_ALIAS" -- kms delete-alias --alias-name "$CI_KMS_ALIAS"
     fi
-    for suffix in "${TRIGGERS_ALL[@]}" discard-sender custom-sender new-password-reset; do
+    for suffix in "${ALL_FUNCTIONS[@]}"; do
         file=$(log_group "$suffix")
         read_aws out logs describe-log-groups --log-group-name-prefix "$file"
         if jq -e --arg n "$file" '.logGroups[] | select(.logGroupName == $n)' <<<"$out" >/dev/null; then

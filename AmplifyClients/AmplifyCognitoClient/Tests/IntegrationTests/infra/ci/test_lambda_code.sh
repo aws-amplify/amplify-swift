@@ -49,14 +49,15 @@ umask 077
 COPY="$WORK/infra"
 mkdir -p "$COPY/lambda" "$COPY/ci/lambda"
 cp -R "$INFRA/lambda/triggers" "$INFRA/lambda/custom-sender" "$COPY/lambda/"
-cp -R "$INFRA/ci/lambda/discard-sender" "$INFRA/ci/lambda/new-password-reset" "$COPY/ci/lambda/"
+cp -R "$INFRA/ci/lambda/discard-sender" "$INFRA/ci/lambda/new-password-reset" "$INFRA/ci/lambda/extend-api-key" \
+    "$COPY/ci/lambda/"
 rm -rf "$COPY/lambda/custom-sender/node_modules"
 export CCIT_CI_INFRA_DIR="$COPY" CCIT_CI_TEST_FILE_CODE_URLS=1
 # The local server is never reached through a proxy.
 export no_proxy="127.0.0.1${no_proxy:+,$no_proxy}"
 BASELINE="$WORK/baseline.json"
-SUFFIXES=(create-auth-challenge custom-sender define-auth-challenge discard-sender new-password-reset pre-sign-up
-          pre-sign-up-confirmable verify-auth-challenge)
+SUFFIXES=(create-auth-challenge custom-sender define-auth-challenge discard-sender extend-api-key new-password-reset
+          pre-sign-up pre-sign-up-confirmable verify-auth-challenge)
 
 failures=0
 check() {
@@ -153,6 +154,8 @@ with zipfile.ZipFile(os.path.join(root, "pre-sign-up.zip")) as z:
     assert info.date_time == (1980, 1, 1, 0, 0, 0) and info.external_attr >> 16 == 0o644, info
 with zipfile.ZipFile(os.path.join(root, "discard-sender.zip")) as z:
     assert z.namelist() == ["index.mjs"], z.namelist()
+with zipfile.ZipFile(os.path.join(root, "extend-api-key.zip")) as z:
+    assert z.namelist() == ["index.mjs"], z.namelist()
 with zipfile.ZipFile(os.path.join(root, "custom-sender.zip")) as z:
     assert z.namelist() == ["index.mjs", "node_modules/dependency/index.js", "package.json"], z.namelist()
 PY
@@ -162,13 +165,13 @@ compare_reads_the_deployed_files() {
     build_all "$WORK/z"
     deploy_all "$WORK/z"
     run compare "$WORK/deployed.json" "$WORK/z" --baseline "$BASELINE"
-    (( STATUS == 0 )) && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 8 ]] \
-        && [[ "$(grep -c "CodeSha256, a note only: the same as this checkout's zip's" <<<"$OUT")" == 8 ]] \
+    (( STATUS == 0 )) && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 9 ]] \
+        && [[ "$(grep -c "CodeSha256, a note only: the same as this checkout's zip's" <<<"$OUT")" == 9 ]] \
         || { echo "$OUT"; return 1; }
     # The same files in another zip: in sync; only the note tells the CodeSha256 apart.
     redeploy discard-sender rezipped
     run compare "$WORK/deployed.json" "$WORK/z" --baseline "$BASELINE"
-    (( STATUS == 0 )) && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 8 ]] \
+    (( STATUS == 0 )) && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 9 ]] \
         && [[ "$(grep -A1 '= ccit-ci-discard-sender' <<<"$OUT")" == *"not this checkout's zip's (the files decide)"* ]] \
         || { echo "$OUT"; return 1; }
     # Other files: DRIFT, by name, with what differs.
@@ -273,7 +276,7 @@ only_an_aws_https_url_is_downloaded() {
     STATUS=0
     OUT=$(env -u CCIT_CI_TEST_FILE_CODE_URLS python3 "$SCRIPT" compare "$WORK/deployed.json" "$WORK/u" --baseline "$BASELINE" 2>&1) \
         || STATUS=$?
-    (( STATUS == 1 )) && [[ "$(grep -c 'could not be read' <<<"$OUT")" == 8 ]] || { echo "$OUT"; return 1; }
+    (( STATUS == 1 )) && [[ "$(grep -c 'could not be read' <<<"$OUT")" == 9 ]] || { echo "$OUT"; return 1; }
     # A download that is no zip, or none at all.
     echo 'not a zip' > "$WORK/deployed/pre-sign-up.zip"
     relocate discard-sender "file://$WORK/deployed/missing.zip"
@@ -398,12 +401,12 @@ an_accepted_deployment_is_in_sync_until_its_sources_change() {
     (( STATUS == 1 )) && [[ "$OUT" == *"DRIFT ccit-ci-pre-sign-up"*"changed (1): triggers.mjs"*"Nothing recorded."* ]] \
         && [[ ! -e "$BASELINE" ]] || { echo "record without --accept-deployed: $OUT"; return 1; }
     run record "$WORK/deployed.json" "$WORK/r" --baseline "$BASELINE" --accept-deployed
-    (( STATUS == 0 )) && jq -e '.functions | (keys | length == 8) and (.["pre-sign-up"].files | keys == ["notes.txt", "triggers.mjs"])
+    (( STATUS == 0 )) && jq -e '.functions | (keys | length == 9) and (.["pre-sign-up"].files | keys == ["notes.txt", "triggers.mjs"])
         and all(.[]; (.sources | test("^[0-9a-f]{64}$")) and (.files | all(.[]; test("^[0-9a-f]{64}$"))))' "$BASELINE" >/dev/null \
         || { echo "record: $OUT"; return 1; }
     run compare "$WORK/deployed.json" "$WORK/r" --baseline "$BASELINE"
     (( STATUS == 0 )) && [[ "$OUT" == *"= ccit-ci-pre-sign-up: the deployed files are the ones the baseline accepted"* ]] \
-        && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 7 ]] || { echo "after the record: $OUT"; return 1; }
+        && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 8 ]] || { echo "after the record: $OUT"; return 1; }
     run check-baseline --baseline "$BASELINE"
     (( STATUS == 0 )) || { echo "check-baseline: $OUT"; return 1; }
     # triggers.mjs changes: the accepted deployment of pre-sign-up is no longer this checkout's.
@@ -488,7 +491,7 @@ a_baselined_function_that_is_not_deployed_is_drift() {
         || { echo "the advice: $OUT"; return 1; }
     deploy_all "$WORK/m"
     run record "$WORK/deployed.json" "$WORK/m" --baseline "$baseline" --accept-deployed
-    (( STATUS == 0 )) && [[ "$(jq '.functions | length' "$baseline")" == 8 ]] || { echo "record: $OUT"; return 1; }
+    (( STATUS == 0 )) && [[ "$(jq '.functions | length' "$baseline")" == 9 ]] || { echo "record: $OUT"; return 1; }
     cp "$baseline" "$WORK/m-recorded.json"
     # The five triggers deleted, then a plain --apply, which makes pre-sign-up again but not the other four.
     for suffix in create-auth-challenge define-auth-challenge pre-sign-up-confirmable verify-auth-challenge; do
@@ -496,7 +499,7 @@ a_baselined_function_that_is_not_deployed_is_drift() {
     done
     run compare "$WORK/deployed.json" "$WORK/m" --baseline "$baseline" --github
     (( STATUS == 1 )) && [[ "$(grep -c '^::error::DRIFT ccit-ci-.*: not deployed, though the baseline records its deployment. Make it again: rerun provision-ci.sh --apply --scope all (not a plain --apply' <<<"$OUT")" == 4 ]] \
-        && [[ "$OUT" == *"::error::DRIFT ccit-ci-verify-auth-challenge: not deployed"* && "$(grep -c "are this checkout's" <<<"$OUT")" == 4 ]] \
+        && [[ "$OUT" == *"::error::DRIFT ccit-ci-verify-auth-challenge: not deployed"* && "$(grep -c "are this checkout's" <<<"$OUT")" == 5 ]] \
         || { echo "compare: $OUT"; return 1; }
     run record "$WORK/deployed.json" "$WORK/m" --baseline "$baseline" --accept-deployed
     (( STATUS == 1 )) && [[ "$OUT" == *"Nothing recorded: not deployed: ccit-ci-create-auth-challenge, ccit-ci-define-auth-challenge, ccit-ci-pre-sign-up-confirmable, ccit-ci-verify-auth-challenge. A baseline holds every CI Lambda"*"first check that the deployed ccit-ci- functions carry purpose=amplify-cognito-client-integ (aws lambda list-tags), then rerun provision-ci.sh --apply --scope all"* ]] \
@@ -576,7 +579,7 @@ PY
     run compare "$WORK/deployed.json" "$WORK/k" --baseline "$baseline"
     (( STATUS == 1 )) && [[ "$OUT" == *"! ccit-ci-discard-sender: the deployed code could not be read: it is not a zip this script can read (error)."* ]] \
         && [[ "$OUT" == *"! ccit-ci-pre-sign-up: the deployed code could not be read: it is not a zip this script can read (RuntimeError)."* ]] \
-        && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 6 && "$OUT" != *Traceback* ]] \
+        && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 7 && "$OUT" != *Traceback* ]] \
         || { echo "compare: $STATUS $OUT"; return 1; }
     run record "$WORK/deployed.json" "$WORK/k" --baseline "$baseline" --accept-deployed
     (( STATUS == 1 )) && [[ "$OUT" == *"Nothing recorded: a deployed function's code could not be read."* && ! -e "$baseline" ]] \
@@ -596,7 +599,7 @@ a_record_holds_every_function() {
         && [[ ! -e "$baseline" ]] || { echo "one missing: $OUT"; return 1; }
     deploy_all "$WORK/a8"
     run record "$WORK/deployed.json" "$WORK/a8" --baseline "$baseline" --accept-deployed
-    (( STATUS == 0 )) && [[ "$OUT" == *"Recorded the deployed files of 8 functions"* ]] \
+    (( STATUS == 0 )) && [[ "$OUT" == *"Recorded the deployed files of 9 functions"* ]] \
         && python3 - "$SCRIPT" "$baseline" <<'PY' || { echo "the complete set: $OUT"; return 1; }
 import importlib.util, json, sys
 spec = importlib.util.spec_from_file_location("lambda_code", sys.argv[1])

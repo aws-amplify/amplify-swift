@@ -18,10 +18,13 @@
 # needs; that a ccit-ci- name without the purpose tag is refused before any change, by a dry run and by --apply;
 # that --apply creates everything, tagged, leaves the plugin's resources exactly as they were, narrows the key to the
 # four pools, the sender's decrypt to the two it sends for and the SMS role to the default and MFA-required pools,
-# and writes the seven files (mode 600, in a mode-700 directory) with what the client reads; that a second --apply makes no call; that
+# makes the code sink key's weekly extension (its function, a role allowed only its logs and the two AppSync key
+# calls on the API's ARN, and a weekly rule), and writes the seven files (mode 600, in a mode-700 directory) with
+# what the client reads; that a second --apply makes no call; that
 # --upload puts only new keys under auth/cognito-client-ci/ and refuses, with no upload, once one exists; that a
 # rerun over phase 2 as it was first applied (the script at 80712afe4 when git has it, else skipped) plans and makes
-# only the alias-codes and MFA-required pools and what they need, updates only the script's own resources, and
+# only the alias-codes and MFA-required pools and what they need, and the key's weekly extension, updates only the
+# script's own resources, and
 # uploads only the three new files, finding the four uploaded ones byte for byte the same; that a phase-1 rerun after
 # phase 2 makes no call; that the code sink key is made and extended for 365 days, to the hour, within AppSync's
 # bounds (which the fake checks) though AppSync's clock is behind; that a rerun reuses a key that lives more than
@@ -356,6 +359,34 @@ secrets_use_the_ccit_ci_key() {
                      | endswith(":parameter/ccit-ci/new-password-temporary"))] == [true])' "$FAKE_STATE" >/dev/null
 }
 
+# The code sink key's weekly extension as made: the function, from ci/lambda/extend-api-key, told the code sink's API
+# and the script's own lifetime, allowance and threshold; its role, allowed only its logs and the two AppSync calls
+# on that API's ARN; and the weekly rule, the function its one target and allowed to invoke it from that rule only;
+# each tagged.
+key_extension_is_right() {
+    jq -e '(.apis | to_entries[] | select(.value.api.name == "ccit-ci-codes") | .value.api) as $api
+        | .lambdas["ccit-ci-extend-api-key"] as $f | .roles["ccit-ci-key-exec"] as $r | .rules["ccit-ci-extend-api-key"] as $e
+        | ($f.config | .Handler == "index.handler" and (.Role | endswith(":role/ccit-ci-key-exec")) and .Timeout == 30
+            and .Environment.Variables == {API_ID: $api.apiId, KEY_DAYS: "365", CLOCK_ALLOWANCE_SECONDS: "600",
+                                           EXTEND_WITHIN_DAYS: "120"})
+        and ($f.tags.purpose == "amplify-cognito-client-integ")
+        and ($r.Role.AssumeRolePolicyDocument.Statement == [{Effect: "Allow", Principal: {Service: "lambda.amazonaws.com"},
+             Action: "sts:AssumeRole", Condition: {StringEquals: {"aws:SourceAccount": .account}}}])
+        and ($r.tags == [{Key: "purpose", Value: "amplify-cognito-client-integ"}]) and ($r.attached == [])
+        and ($r.inline | keys == ["ccit-ci-key-exec-policy"])
+        and ($r.inline["ccit-ci-key-exec-policy"].Statement == [
+             {Sid: "WriteOwnLogs", Effect: "Allow", Action: ["logs:CreateLogStream", "logs:PutLogEvents"],
+              Resource: ["arn:aws:logs:us-east-1:\(.account):log-group:/aws/lambda/ccit-ci-extend-api-key:*"]},
+             {Sid: "ExtendTestsKey", Effect: "Allow", Action: ["appsync:ListApiKeys", "appsync:UpdateApiKey"],
+              Resource: $api.arn}])
+        and ($e.rule.ScheduleExpression == "rate(7 days)") and ($e.tags == [{Key: "purpose", Value: "amplify-cognito-client-integ"}])
+        and ($e.targets == [{Id: "extend-api-key", Arn: $f.config.FunctionArn}])
+        and ($f.policy == [{Sid: "events-schedule", Principal: {Service: "events.amazonaws.com"},
+             Condition: {ArnLike: {"AWS:SourceArn": $e.rule.Arn}}}])
+        and (.log_groups["/aws/lambda/ccit-ci-extend-api-key"] == {tags: {purpose: "amplify-cognito-client-integ"}, retention: 7})' \
+        "$FAKE_STATE" >/dev/null
+}
+
 phase_2_adds_the_default_pool_and_keeps_phase_1() {
     local before modes default rotation
     before=$(plugin_part)
@@ -382,9 +413,9 @@ phase_2_adds_the_default_pool_and_keeps_phase_1() {
     jq -e '([.pools[] | select(.UserPool.Name | startswith("ccit-ci-")) | .UserPool.UserPoolTags.purpose] | length == 4 and (unique == ["amplify-cognito-client-integ"]))
         and ([.pools[] | .UserPool.Name] | sort == ["amplify-plugin-default", "ccit-ci-default", "ccit-ci-email-alias", "ccit-ci-email-alias-codes", "ccit-ci-mfa-req-totp-sms"])
         and ([.pools[] | select(.UserPool.Name == "ccit-ci-default") | .UserPool.UserPoolTier] == ["ESSENTIALS"])
-        and ([.roles | keys[] | select(startswith("ccit-ci-"))] | length == 7)
+        and ([.roles | keys[] | select(startswith("ccit-ci-"))] | length == 8)
         and ([.roles[] | select(.Role.RoleName | startswith("ccit-ci-")) | .tags[0].Value] | unique == ["amplify-cognito-client-integ"])
-        and ([.lambdas[] | select(.config.FunctionName | startswith("ccit-ci-")) | .tags.purpose] | length == 8 and (unique == ["amplify-cognito-client-integ"]))
+        and ([.lambdas[] | select(.config.FunctionName | startswith("ccit-ci-")) | .tags.purpose] | length == 9 and (unique == ["amplify-cognito-client-integ"]))
         and ([.lambdas[] | .config.FunctionName] | all(startswith("ccit-ci-") or . == "plugin-pre-sign-up"))
         and ([.ssm | keys[]] == ["/ccit-ci/custom-challenge-answer", "/ccit-ci/new-password-temporary"])
         and ([.identity_pools[] | .IdentityPoolName] | sort == ["ccit_ci_default", "plugin_identity"])' "$FAKE_STATE" >/dev/null || return 1
@@ -394,7 +425,7 @@ phase_2_adds_the_default_pool_and_keeps_phase_1() {
             | .UserPool.Arn] | sort) as $sms
         | .roles["ccit-ci-cognito-sms"].Role.AssumeRolePolicyDocument.Statement[0].Condition.ArnEquals["aws:SourceArn"] == $sms' \
         "$FAKE_STATE" >/dev/null || return 1
-    secrets_use_the_ccit_ci_key || return 1
+    secrets_use_the_ccit_ci_key && key_extension_is_right || return 1
     [[ "$OUT" == *"new-password users: created 12"* ]]
 }
 
@@ -556,10 +587,13 @@ a_key_with_other_contents_refuses_the_upload() {
 
 # What a rerun over phase 2 as first applied (80712afe4) plans: the alias-codes and MFA-required pools and what they
 # need, the updates to the script's own resources that name them (the SMS role's trust opened while the MFA-required
-# pool is made, then narrowed), and the three new files. The code sink key that script made (for 364 days) is reused,
+# pool is made, then narrowed), the code sink key's weekly extension (its log group, role, function and rule), and
+# the three new files. The code sink key that script made (for 364 days) is reused,
 # as the live one is: it lives more than KEY_REUSE_DAYS.
 RERUN_PLAN="create log group /aws/lambda/ccit-ci-pre-sign-up-confirmable
 keep /aws/lambda/ccit-ci-pre-sign-up-confirmable for 7 days
+create log group /aws/lambda/ccit-ci-extend-api-key
+keep /aws/lambda/ccit-ci-extend-api-key for 7 days
 open the key policy of alias/ccit-ci-senders to the account's pools while a ccit-ci- pool is made
 set the one inline policy of ccit-ci-trigger-exec
 open the trust of ccit-ci-cognito-sms to the account's pools while a ccit-ci- SMS pool is made
@@ -579,6 +613,12 @@ set the key policy of alias/ccit-ci-senders to the ccit-ci- pools
 set the one inline policy of ccit-ci-sender-exec
 set the trust of ccit-ci-cognito-sms to the ccit-ci- SMS pools
 set the one inline policy of ccit-ci-reset-exec
+create role ccit-ci-key-exec
+set the one inline policy of ccit-ci-key-exec
+create Lambda ccit-ci-extend-api-key (Node.js 22, no reserved concurrency)
+schedule ccit-ci-extend-api-key every 7 days
+let events.amazonaws.com invoke ccit-ci-extend-api-key (events-schedule)
+point the schedule at Lambda ccit-ci-extend-api-key
 upload auth/cognito-client-ci/ccit-ci-email-alias-codes-amplify_outputs.json (new key only)
 upload auth/cognito-client-ci/ccit-ci-capabilities.json (new key only)
 upload auth/cognito-client-ci/ccit-ci-mfa-req-totp-sms-amplify_outputs.json (new key only)"
@@ -617,7 +657,7 @@ a_rerun_over_phase_2_as_applied_adds_only_the_alias_codes_pool() {
     (( STATUS == 0 )) && only_reads && no_identifiers && plus_lines_are_ours \
         && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] \
         && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "$RERUN_PLAN" ]] \
-        && [[ "$OUT" == *"Planned: 24 calls. Nothing was changed."* ]] \
+        && [[ "$OUT" == *"Planned: 32 calls. Nothing was changed."* ]] \
         && [[ "$OUT" == *"= the code sink API key (lives more than 120 more days)"* ]] \
         || { echo "$OUT" | sed -nE 's/^  \+ //p'; return 1; }
     before=$(plugin_part)
@@ -644,6 +684,8 @@ a_rerun_over_phase_2_as_applied_adds_only_the_alias_codes_pool() {
         && [[ "$out" == *"changed  ssm-parameter /ccit-ci/new-password-temporary: KeyId (ccit-ci-, this script's own)"* ]] \
         && [[ "$out" == *"added    user-pool ccit-ci-email-alias-codes (ccit-ci-, expected)"* ]] \
         && [[ "$out" == *"added    user-pool ccit-ci-mfa-req-totp-sms (ccit-ci-, expected)"* ]] \
+        && [[ "$out" == *"added    lambda ccit-ci-extend-api-key (ccit-ci-, expected)"* ]] \
+        && [[ "$out" == *"added    events-rule ccit-ci-extend-api-key (ccit-ci-, expected)"* ]] \
         && [[ "$out" == *"changed  iam-role ccit-ci-cognito-sms: AssumeRolePolicyDocument.Statement (ccit-ci-, this script's own)"* ]] \
         && [[ "$out" == *"changed  lambda ccit-ci-discard-sender: RevisionId (ccit-ci-, this script's own)"* ]] \
         && [[ "$out" == *" 0 changed, 19 ccit-ci- changed, 0 removed"* ]] || { echo "$out"; return 1; }
@@ -686,6 +728,10 @@ snapshot_and_verify() {
     first=$(find "$WORK/disc" -name 'snapshot-*.json' ! -name '*.docs.json' | sort | tail -1)
     [[ -f "$first" && "$(stat -f '%Lp' "$first")" == 600 && "$(stat -f '%Lp' "${first%.json}.docs.json")" == 600 ]] || return 1
     snapshot_documents_hold_no_secret "${first%.json}.docs.json" || { echo "a secret is in the documents"; return 1; }
+    # The key extension's function, rule, role and log group are read like every other.
+    jq -e '[.entries[] | select(.label | test("ccit-ci-(extend-api-key|key-exec)$")) | .kind] | sort
+        == ["events-rule", "events-rule-targets", "iam-role", "iam-role-policies", "lambda", "lambda-policy", "log-group"]' \
+        "$first" >/dev/null || { jq -c '[.entries[] | select(.label | contains("extend") or contains("key-exec"))]' "$first"; return 1; }
     mv "$first" "$WORK/disc/before.json"
     mv "${first%.json}.docs.json" "$WORK/disc/before.docs.json"
     # A user count moving is not a change.
@@ -837,6 +883,8 @@ teardown_is_a_dry_run_by_default() {
     run teardown
     (( STATUS == 0 )) && only_reads && no_identifiers && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] \
         && [[ "$OUT" == *"+ delete user pool ccit-ci-default"* && "$OUT" == *"+ schedule the key's deletion in 7 days"* ]] \
+        && [[ "$OUT" == *"+ delete schedule ccit-ci-extend-api-key"* && "$OUT" == *"+ delete Lambda ccit-ci-extend-api-key"* ]] \
+        && [[ "$OUT" == *"+ delete role ccit-ci-key-exec"* && "$OUT" == *"+ delete log group /aws/lambda/ccit-ci-extend-api-key"* ]] \
         && [[ "$OUT" != *"amplify-plugin-default"* && "$OUT" != *"plugin-role"* && "$OUT" != *"someone-else"* ]]
 }
 
@@ -853,7 +901,7 @@ teardown_deletes_only_ours() { # the roles left after it, as a sorted JSON list
         and ([.kms.keys[] | .state] | unique == ["PendingDeletion"])
         and ([.identity_pools[] | .IdentityPoolName] == ["plugin_identity"]) and (.apis == {}) and (.tables == {})
         and ([.s3 | keys[] | select(contains("cognito-client-ci"))] == [])
-        and ([.log_groups | keys[]] == [])' --argjson roles "$roles" "$FAKE_STATE" >/dev/null
+        and ((.rules // {}) == {}) and ([.log_groups | keys[]] == [])' --argjson roles "$roles" "$FAKE_STATE" >/dev/null
 }
 
 teardown_refuses_an_untagged_ccit_ci_resource() {
@@ -905,7 +953,7 @@ another_region_is_refused() {
     CCIT_CI_REGION=us-west-2 run teardown --apply
     (( STATUS == 1 )) && only_reads && [[ "$OUT" == *"Set CCIT_CI_REGION to theirs."* ]] || { echo "$OUT" | tail -5; return 1; }
     run lambda-drift --record --accept-deployed
-    (( STATUS == 0 )) && [[ "$OUT" == *"Recorded the deployed files of 8 functions"* ]] || { echo "$OUT" | tail -5; return 1; }
+    (( STATUS == 0 )) && [[ "$OUT" == *"Recorded the deployed files of 9 functions"* ]] || { echo "$OUT" | tail -5; return 1; }
     baseline=$(cat "$CCIT_CI_LAMBDA_BASELINE")
     for args in "" "--record --accept-deployed"; do
         # shellcheck disable=SC2086
@@ -1052,13 +1100,13 @@ lambda_drift_compares_the_deployed_files() {
         "$FAKE_STATE" > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
     run lambda-drift
     (( STATUS == 0 )) && only_reads && no_identifiers \
-        && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 8 ]] \
-        && [[ "$(grep -c "CodeSha256, a note only: the same as this checkout's zip's" <<<"$OUT")" == 8 ]] \
-        && [[ "$(calls | grep -c '^lambda get-function$')" == 8 && "$(calls | grep -c '^lambda list-tags$')" == 8 ]] \
+        && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 9 ]] \
+        && [[ "$(grep -c "CodeSha256, a note only: the same as this checkout's zip's" <<<"$OUT")" == 9 ]] \
+        && [[ "$(calls | grep -c '^lambda get-function$')" == 9 && "$(calls | grep -c '^lambda list-tags$')" == 9 ]] \
         && [[ -z "$(find "$TMPDIR" -name 'ccit-ci-lambda-code.*')" ]] || { echo "$OUT"; return 1; }
     hand_deploy ccit-ci-discard-sender rezipped
     run lambda-drift
-    (( STATUS == 0 )) && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 8 ]] \
+    (( STATUS == 0 )) && [[ "$(grep -c "the deployed files are this checkout's" <<<"$OUT")" == 9 ]] \
         && [[ "$(grep -A1 '= ccit-ci-discard-sender' <<<"$OUT")" == *"not this checkout's zip's (the files decide)"* ]] \
         || { echo "$OUT"; return 1; }
     hand_deploy ccit-ci-pre-sign-up edited
@@ -1076,8 +1124,8 @@ lambda_drift_compares_the_deployed_files() {
     run lambda-drift --accept-deployed
     (( STATUS == 2 )) || return 1
     run lambda-drift --record --accept-deployed
-    (( STATUS == 0 )) && only_reads && [[ "$OUT" == *"$summary"*"Recorded the deployed files of 8 functions"* ]] \
-        && jq -e '.functions | length == 8 and (.["pre-sign-up"].files | keys == ["notes.txt", "triggers.mjs"])
+    (( STATUS == 0 )) && only_reads && [[ "$OUT" == *"$summary"*"Recorded the deployed files of 9 functions"* ]] \
+        && jq -e '.functions | length == 9 and (.["pre-sign-up"].files | keys == ["notes.txt", "triggers.mjs"])
             and all(.[]; (.sources | test("^[0-9a-f]{64}$")) and (.files | all(.[]; test("^[0-9a-f]{64}$"))))' \
             "$CCIT_CI_LAMBDA_BASELINE" >/dev/null || { echo "$OUT"; return 1; }
     run lambda-drift
@@ -1185,7 +1233,7 @@ check "the Cognito lists are read to their last page: a ccit-ci- pool on page 2 
 check "teardown is a dry run by default and names only ccit-ci- resources" teardown_is_a_dry_run_by_default
 check "teardown --apply deletes only the ccit-ci- resources it made" teardown_deletes_only_ours
 if frozen_script; then
-    check "a rerun over phase 2 as applied ($FROZEN_COMMIT) adds only the alias-codes and MFA-required pools and three new files" \
+    check "a rerun over phase 2 as applied ($FROZEN_COMMIT) adds only the alias-codes and MFA-required pools, the key's extension and three new files" \
         a_rerun_over_phase_2_as_applied_adds_only_the_alias_codes_pool
     check "teardown --apply then deletes every ccit-ci- resource, the alias-codes pool's too" \
         teardown_deletes_only_ours '["plugin-role"]'
