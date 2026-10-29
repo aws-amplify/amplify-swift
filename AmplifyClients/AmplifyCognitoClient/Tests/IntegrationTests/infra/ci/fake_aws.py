@@ -289,10 +289,11 @@ def handle(state, service, verb, o, data):
             api["resolvers"][f"{data['typeName']}.{data['fieldName']}"] = data
             return {"resolver": data}
         if verb == "list-api-keys":
+            # As AppSync, which may still list a key for a while after it deleted it (60 days after it expired).
             return {"apiKeys": api["keys"]}
         if verb in ("create-api-key", "update-api-key"):
-            # As AppSync: 1 to 365 days from the call, stored rounded down to the hour. FAKE_APPSYNC_CLOCK_BEHIND
-            # (seconds) sets AppSync's clock behind the caller's.
+            # As AppSync: 1 to 365 days from the call, stored rounded down to the hour, and deleted 60 days after it
+            # expires. FAKE_APPSYNC_CLOCK_BEHIND (seconds) sets AppSync's clock behind the caller's.
             expires = int(one(o, "expires") if verb == "create-api-key" else data["expires"])
             now = time.time() - int(os.environ.get("FAKE_APPSYNC_CLOCK_BEHIND", "0"))
             if not now + 86400 <= expires <= now + 365 * 86400:
@@ -300,14 +301,20 @@ def handle(state, service, verb, o, data):
                            "maximum of 365 days.")
             expires -= expires % 3600
         if verb == "create-api-key":
-            key = {"id": "da2-" + new_id(s, "apikey"), "description": one(o, "description"), "expires": expires}
+            key = {"id": "da2-" + new_id(s, "apikey"), "description": one(o, "description"), "expires": expires,
+                   "deletes": expires + 60 * 86400}
             api["keys"].append(key)
             return {"apiKey": key}
         if verb == "update-api-key":
             key = next((k for k in api["keys"] if k["id"] == data["id"]), None)
-            if key is None:
+            if key is None or key.get("deletes", key["expires"] + 60 * 86400) <= now:
                 raise Fail("NotFoundException", "API key not found")
-            key["expires"] = expires
+            # AppSync's API reference has an expired key updated until it is deleted; FAKE_APPSYNC_EXPIRED_KEYS, an
+            # error code, has the fake refuse that instead, with that code.
+            refusal = os.environ.get("FAKE_APPSYNC_EXPIRED_KEYS")
+            if refusal and key["expires"] <= now:
+                raise Fail(refusal, "API key has expired")
+            key.update({"expires": expires, "deletes": expires + 60 * 86400})
             return {"apiKey": key}
         if verb == "delete-graphql-api":
             del apis[api_id]

@@ -661,46 +661,70 @@ ensure_api_resolvers() {
     done
 }
 
-# The tests' read-only API key: one that lives more than KEY_REUSE_DAYS more days is reused; one that lives fewer but
-# has not expired is extended to KEY_DAYS days from now, keeping its id, so the two uploaded files that name it (the
-# default and alias-codes pools' outputs, which --upload never rewrites) stay valid; else a new one, for KEY_DAYS days.
-# Its expiry is said right there (note_key_expiry).
+# The tests' read-only API key, the "ccit-ci tests" key that expires last: one that lives more than KEY_REUSE_DAYS
+# more days is reused; one that lives fewer is extended to KEY_DAYS days from now, keeping its id, so the two
+# uploaded files that name it (the default and alias-codes pools' outputs, which --upload never rewrites) stay valid;
+# else a new one, for KEY_DAYS days. Its expiry is said right there (note_key_expiry).
+# An expired key is extended in place too: AppSync keeps one for 60 days after it expires (its `deletes`; one past
+# that, which ListApiKeys may still name until it is gone, is not counted) and documents that it can still be
+# updated until then. When AppSync refuses that (EXPIRED_KEY_REFUSALS), a new key is made instead, and the uploaded
+# files that name the old one must be replaced (note_key_expiry says how, and --apply refuses at the end until they
+# are). A dry run cannot tell which, and says both.
 # KEY_DAYS is AppSync's maximum: CreateApiKey and UpdateApiKey take 1 to 365 days from the call, and store the expiry
 # rounded down to the hour. The expiry asked for is that hour, taken after KEY_CLOCK_ALLOWANCE seconds off, so a
 # local clock up to 10 minutes ahead of AppSync's never asks for more than 365 days.
 # KEY_REUSE_DAYS is one quarter (90 days, the CI account's routine check) and 30 days of slack: any rerun leaves the
 # key with more than that, so it outlives the next quarterly rerun even when that is a month late, and a key is
-# extended about every 245 days, so most reruns plan no key call.
+# extended about every 245 days, so most reruns plan no key call. The weekly ccit-ci-extend-api-key extends it on the
+# same terms between reruns.
 KEY_DAYS=365
 KEY_CLOCK_ALLOWANCE=600
 KEY_REUSE_DAYS=120
+KEY_KEPT_AFTER_EXPIRY=$((60 * 86400))
+EXPIRED_KEY_REFUSALS="BadRequestException NotFoundException ApiKeyValidityOutOfBoundsException"
 ensure_api_key() {
-    local out now expires input reuse_days="$KEY_REUSE_DAYS"
+    local out now expires input key_expires="" reuse_days="$KEY_REUSE_DAYS" description
     now=$(date +%s)
     expires=$(( (now + KEY_DAYS * 86400 - KEY_CLOCK_ALLOWANCE) / 3600 * 3600 ))
     API_KEY_EXPIRES="$expires"
+    API_KEY=""
     if ! is_new "$API_ID"; then
         read_aws out appsync list-api-keys --api-id "$API_ID"
-        API_KEY=$(jq -r --argjson soon "$((now + reuse_days * 86400))" \
-            '[.apiKeys[] | select(.description == "ccit-ci tests" and .expires > $soon)] | sort_by(.expires) | last | .id // empty' <<<"$out")
-        if [[ -n "$API_KEY" ]]; then
-            API_KEY_EXPIRES=$(CCIT_SECRET_K="$API_KEY" jq -r '[.apiKeys[] | select(.id == $ENV.CCIT_SECRET_K)][0].expires' <<<"$out")
-            say "  = the code sink API key (lives more than $reuse_days more days)"
+        API_KEY=$(jq -r --argjson now "$now" --argjson kept "$KEY_KEPT_AFTER_EXPIRY" '[.apiKeys[]
+            | select(.description == "ccit-ci tests" and ((.deletes // (.expires + $kept)) > $now))]
+            | sort_by(.expires) | last | .id // empty' <<<"$out")
+        [[ -z "$API_KEY" ]] \
+            || key_expires=$(CCIT_SECRET_K="$API_KEY" jq -r '[.apiKeys[] | select(.id == $ENV.CCIT_SECRET_K)][0].expires' <<<"$out")
+    fi
+    if [[ -n "$API_KEY" ]] && (( key_expires > now + reuse_days * 86400 )); then
+        API_KEY_EXPIRES="$key_expires"
+        say "  = the code sink API key (lives more than $reuse_days more days)"
+        note_key_expiry
+        return
+    fi
+    if [[ -n "$API_KEY" ]]; then
+        require_ours appsync "$API_ARN" "$API_NAME"
+        description="extend the tests' read-only API key to $KEY_DAYS days from now (the same key)"
+        (( key_expires > now )) \
+            || description="extend the tests' read-only API key, which has expired, to $KEY_DAYS days from now (the same key, if AppSync takes it)"
+        # The key's id is its secret: in the input file, never on the command line.
+        input=$(CCIT_SECRET_K="$API_KEY" jq -n -c --arg id "$API_ID" --argjson e "$expires" \
+            '{apiId: $id, id: $ENV.CCIT_SECRET_K, expires: $e}')
+        if (( key_expires > now )); then
+            mutate "$API_NAME" "$description" -- appsync update-api-key --cli-input-json "file://$(input_file "$input")"
             note_key_expiry
             return
         fi
-        API_KEY=$(jq -r --argjson now "$now" \
-            '[.apiKeys[] | select(.description == "ccit-ci tests" and .expires > $now)] | sort_by(.expires) | last | .id // empty' <<<"$out")
-        if [[ -n "$API_KEY" ]]; then
-            require_ours appsync "$API_ARN" "$API_NAME"
-            # The key's id is its secret: in the input file, never on the command line.
-            input=$(CCIT_SECRET_K="$API_KEY" jq -n -c --arg id "$API_ID" --argjson e "$expires" \
-                '{apiId: $id, id: $ENV.CCIT_SECRET_K, expires: $e}')
-            mutate "$API_NAME" "extend the tests' read-only API key to $KEY_DAYS days from now (the same key)" -- \
-                appsync update-api-key --cli-input-json "file://$(input_file "$input")"
+        if MUTATE_TOLERATE="$EXPIRED_KEY_REFUSALS" mutate "$API_NAME" "$description" -- \
+            appsync update-api-key --cli-input-json "file://$(input_file "$input")"; then
+            if [[ "$CI_MODE" != "apply" ]]; then
+                say "    If AppSync refuses to extend the expired key, --apply makes a new one instead, and then the" \
+                    "uploaded files that name the old key must be replaced: the run says how."
+            fi
             note_key_expiry
             return
         fi
+        say "    AppSync refused to extend the expired key (${AWS_ERR_CODE}): a new key instead."
     fi
     mutate "$API_NAME" "create the tests' read-only API key, for $KEY_DAYS days" -- appsync create-api-key \
         --api-id "$API_ID" --description "ccit-ci tests" --expires "$expires"
