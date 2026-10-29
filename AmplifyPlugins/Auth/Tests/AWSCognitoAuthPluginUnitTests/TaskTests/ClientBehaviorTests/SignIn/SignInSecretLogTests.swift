@@ -12,11 +12,13 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import InternalAWSCognitoAuth
 
-/// The plugin logs none of a sign-in's secrets, at any level: the user's answer to `confirmSignIn` reaches the
-/// verbose "Checking next step for:" and "Sending event" lines inside the states and events that carry it.
+/// The plugin logs none of a sign-in's secrets, at any level: the user's answer to `confirmSignIn`, and the session
+/// `VerifySoftwareToken` returns while a TOTP setup finishes, reach the verbose "Checking next step for:" and
+/// "Sending event" lines inside the states and events that carry them.
 final class SignInSecretLogTests: BasePluginTest, @unchecked Sendable {
 
     private static let answer = "S3cret-4821"
+    private static let totpSession = "totp-verify-session-value"
 
     private var capture: CapturingLoggingPlugin!
     private var savedPlugins: [PluginKey: LoggingCategoryPlugin] = [:]
@@ -108,5 +110,49 @@ final class SignInSecretLogTests: BasePluginTest, @unchecked Sendable {
             .filter { $0.contains("SignInChallengeState.verifying(") }
         XCTAssertFalse(verifying.isEmpty, "\(capture.lines.map(\.message))")
         assertNoLineHolds([], answers: [Self.answer])
+    }
+
+    /// Test that confirming a TOTP setup logs no line with the TOTP code or the verified session
+    ///
+    /// - Given: a plugin waiting for the code of a TOTP setup, whose user pool verifies the code with a new session and
+    ///   accepts that session, and a capturing logging plugin at verbose
+    /// - When:
+    ///    - I confirm sign-in with the code
+    /// - Then:
+    ///    - the user pool receives the verified session, and the sign-in completes
+    ///    - `VerifyTOTPSetup`'s "Sending event" line shows the session `<REDACTED>`, and no log line holds the session,
+    ///      nor the code in full or masked
+    ///
+    func testConfirmingATOTPSetupLogsNoLineWithTheCodeOrTheSession() async throws {
+        let code = "482913"
+        let userPool = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { input in
+                XCTAssertEqual(input.session, Self.totpSession)
+                return .testData()
+            },
+            mockVerifySoftwareTokenResponse: { input in
+                XCTAssertEqual(input.userCode, code)
+                return .init(session: Self.totpSession, status: .success)
+            }
+        )
+        let plugin = configureCustomPluginWith(
+            userPool: { userPool },
+            initialState: .configured(
+                .signingIn(.resolvingTOTPSetup(
+                    .waitingForAnswer(.init(secretCode: "sharedSecret", session: "session", username: "username")),
+                    .testData
+                )),
+                .configured,
+                .notStarted
+            )
+        )
+
+        let result = try await plugin.confirmSignIn(challengeResponse: code)
+
+        XCTAssertTrue(result.isSignedIn)
+        let sent = capture.lines.map(\.message).filter { $0.contains("VerifyTOTPSetup.swift Sending event") }
+        XCTAssertEqual(sent.count, 1, "\(capture.lines.map(\.message))")
+        XCTAssertTrue(sent.first?.contains(#"respondToAuthChallenge("<REDACTED>")"#) == true, sent.first ?? "-")
+        assertNoLineHolds([Self.totpSession], answers: [code])
     }
 }
