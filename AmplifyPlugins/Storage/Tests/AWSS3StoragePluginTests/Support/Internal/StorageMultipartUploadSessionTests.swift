@@ -154,6 +154,11 @@ class StorageMultipartUploadSessionTests: XCTestCase, @unchecked Sendable {
         let failedExp = expectation(description: "Failed exactly once")
         let notAbortedExp = expectation(description: "Never aborted")
         notAbortedExp.isInverted = true
+        // Counted rather than fulfilled twice: without the state guard the abort reports a second
+        // `.failed` from the stall-timer queue, and an over-fulfilled expectation raises an uncaught
+        // `NSInternalInconsistencyException` there, which aborts the process during a later test.
+        // Counting keeps the regression a failure of this test and still pins "exactly once".
+        let failedCount = AtomicValue(initialValue: 0)
 
         let client = MockMultipartUploadClient()
         client.eTagForPart = { _ in "" }
@@ -164,7 +169,9 @@ class StorageMultipartUploadSessionTests: XCTestCase, @unchecked Sendable {
             case .initiated, .inProcess:
                 break
             case .failed:
-                failedExp.fulfill()
+                if failedCount.increment() == 1 {
+                    failedExp.fulfill()
+                }
             case .completed:
                 XCTFail("Must not complete when the parts fail validation")
             }
@@ -181,6 +188,7 @@ class StorageMultipartUploadSessionTests: XCTestCase, @unchecked Sendable {
 
         wait(for: [failedExp], timeout: stallInterval + 0.5)
         wait(for: [notAbortedExp], timeout: stallInterval * 4)
+        XCTAssertEqual(failedCount.get(), 1)
         XCTAssertEqual(client.abortMultipartUploadCount, 0)
         XCTAssertEqual(client.completeMultipartUploadCount, 0)
     }
