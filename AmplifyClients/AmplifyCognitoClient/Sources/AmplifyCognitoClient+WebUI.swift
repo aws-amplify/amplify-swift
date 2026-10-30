@@ -116,8 +116,7 @@ public extension AmplifyCognitoClient {
     ///
     /// It also closes this session's hosted-UI sign-out page, if one is showing: that sign-out is then
     /// `.failed(.userCancelled)` and the session stays signed in, as when the user closes the page (a session a
-    /// refresh found expired while it was in memory signs out anyway, when the login signed out still has the
-    /// refresh token found dead).
+    /// refresh found expired signs out anyway, when the login signed out still has the refresh token found dead).
     ///
     /// A call still waiting behind another of this session's sign-ins (its sign-in lock) is not reached yet, and
     /// goes on; cancel its task to stop it there.

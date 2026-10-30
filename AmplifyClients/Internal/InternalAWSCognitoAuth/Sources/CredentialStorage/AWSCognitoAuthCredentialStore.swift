@@ -244,8 +244,41 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
         return amplifyCredential
     }
 
+    /// Ends the saved session. Every plugin path that ends one clears it through here: sign-out, local and global
+    /// (a guest's and one with nothing saved included), the local sign-out after a deleted user, and clearing the
+    /// federation to the identity pool.
+    ///
+    /// Without an access group the session record is deleted. With one, a record that holds a login (user pool
+    /// tokens or a federated identity) is replaced by the signed-out record, `{"noCredentials":{}}`, the bytes the
+    /// Cognito client's default session saves when it signs a session out, which every plugin release reads as signed
+    /// out; a record already signed out is left as it is. In the shared service ending a login then counts as
+    /// migrated: an app extension's first access-group migration stops at the record
+    /// (`sharedKeychainHasMigratedItems(accessGroup:source:)`) and never moves its own stale login in over it. The
+    /// next sign-in replaces the record. Any other record is deleted, as without an access group: a guest's, so a
+    /// guest alone still never stops a login's migration, and one this store cannot read. With nothing saved,
+    /// nothing is written, as the client writes nothing when there is nothing to sign out.
+    ///
+    /// The login is replaced in one update, which writes only if the record is still there: another process in the
+    /// group that deletes it after the read (an older plugin's or a guest's sign-out, the client's purge) leaves the
+    /// session signed out, and this sign-out succeeds, as a delete of an absent record does.
     package func deleteCredential() throws {
-        try removeSession(for: authConfiguration)
+        guard let accessGroup else {
+            try removeSession(for: authConfiguration)
+            return
+        }
+        // Read as the migration's checks read the shared service, quietly: a read failure is logged at verbose only.
+        // The read still logs the keychain store's verbose lines for opening the service and retrieving an item.
+        let sessionKey = generateSessionKey(for: authConfiguration)
+        let shared = EngineKeychainStore.quiet(makeKeychainStore(sharedService, accessGroup), logger: logger)
+        switch Self.savedSession(at: sessionKey, in: shared) {
+        case .login:
+            // `false`: the record is gone, so the session is already signed out.
+            _ = try keychain._replaceIfPresent(encode(object: AmplifyCredentials.noCredentials), key: sessionKey)
+        case .signedOut:
+            return
+        case .guest, .unknown:
+            try removeSession(for: authConfiguration)
+        }
     }
 
     package func saveDevice(_ deviceMetadata: DeviceMetadata, for username: String) throws {
@@ -324,7 +357,8 @@ private extension AWSCognitoAuthCredentialStore {
 }
 
 package extension AWSCognitoAuthCredentialStore {
-    /// This store's lines, at their pre-M2 category, through the caller's logger.
+    /// This store's lines, at the plugin's category for them from before the engine was extracted, through the
+    /// caller's logger.
     var log: EngineLogger {
         logger.scoped(.category("AWSCognitoAuthCredentialStore"))
     }

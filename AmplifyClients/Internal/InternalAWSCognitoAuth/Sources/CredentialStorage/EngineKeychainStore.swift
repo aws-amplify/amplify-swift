@@ -69,6 +69,12 @@ package struct EngineKeychainStore: Sendable {
         try EngineCredentialStoreError.mapping { try itemStore.set(value, key: key) }
     }
 
+    /// Replaces the value stored under `key` only if an item is stored there, in one update.
+    /// - Returns: `true` if the item was replaced, `false` if no item existed (nothing is written).
+    package func _replaceIfPresent(_ value: Data, key: String) throws -> Bool {
+        try EngineCredentialStoreError.mapping { try itemStore.replaceIfPresent(value, key: key) }
+    }
+
     /// Remove key-value pair from Keychain based on the provided key.
     package func _remove(_ key: String) throws {
         try EngineCredentialStoreError.mapping { try itemStore.remove(key) }

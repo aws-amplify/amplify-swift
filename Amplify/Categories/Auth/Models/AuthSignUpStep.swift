@@ -27,3 +27,39 @@ public enum AuthSignUpStep {
 }
 
 extension AuthSignUpStep: Sendable { }
+
+extension AuthSignUpStep: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+
+    /// The default enum printing, with the auto sign-in session redacted: the step is logged as part of a sign-up
+    /// result, and the session, with the username, signs the user in. Match `.completeAutoSignIn(let session)` for the
+    /// value.
+    public var description: String {
+        switch self {
+        case .confirmUser(let details, let additionalInfo, let userId):
+            return "confirmUser(\(String(reflecting: details)), \(String(reflecting: additionalInfo)), "
+                + "\(String(reflecting: userId)))"
+        case .completeAutoSignIn:
+            return "completeAutoSignIn(\(String(reflecting: Self.redactedSession)))"
+        case .done:
+            return "done"
+        }
+    }
+
+    public var debugDescription: String {
+        "\(String(reflecting: Self.self)).\(description)"
+    }
+
+    /// For `dump` and debuggers: the auto sign-in session redacted.
+    public var customMirror: Mirror {
+        switch self {
+        case .confirmUser(let details, let additionalInfo, let userId):
+            return Mirror(self, children: ["confirmUser": (details, additionalInfo, userId)], displayStyle: .enum)
+        case .completeAutoSignIn:
+            return Mirror(self, children: ["completeAutoSignIn": Self.redactedSession], displayStyle: .enum)
+        case .done:
+            return Mirror(self, children: [:], displayStyle: .enum)
+        }
+    }
+
+    private static let redactedSession = "<REDACTED>"
+}

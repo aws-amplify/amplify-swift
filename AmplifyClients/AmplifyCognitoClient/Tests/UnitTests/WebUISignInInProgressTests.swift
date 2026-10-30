@@ -26,6 +26,7 @@ final class WebUISignInInProgressTests: XCTestCase {
     }
     private let work = ClientFixtures.id("work")
     private let home = ClientFixtures.id("home")
+    private let carol = ClientFixtures.id("carol")
     /// Holds "work"'s calls just before they ask for the sheet, until opened.
     private let beforeAsking = Gate()
 
@@ -93,12 +94,12 @@ final class WebUISignInInProgressTests: XCTestCase {
         XCTAssertEqual(engine.webUISignInCalls.count, 1)
     }
 
-    /// - Given: "home" showing its hosted-UI sign-in, and "work"'s in progress before it asks for the sheet (with
-    ///   `.fail`, so it never queues)
+    /// - Given: "home" showing its hosted-UI sign-in, "carol"'s queued behind it with `.wait(timeout:)`, and "work"'s in
+    ///   progress before it asks for the sheet (with `.fail`, so it never queues)
     /// - When: "work" asks again
     /// - Then:
     ///    - the second call is refused at once with `browserBusy` naming "home", which holds the sheet, and says "work"'s
-    ///      hosted-UI sign-in is in progress, not that "work" is waiting for the sheet
+    ///      hosted-UI sign-in is in progress, not that "work" is waiting for the sheet: only "carol" is queued
     ///    - the first is then refused by the lock, as "home" still holds the sheet; nothing of "work"'s is shown
     func testADoubleTapWhileAnotherSessionHoldsTheSheetDoesNotSayItIsQueued() async throws {
         let homeClient = try client(home)
@@ -106,12 +107,16 @@ final class WebUISignInInProgressTests: XCTestCase {
         try XCTUnwrap(harness.engine(for: home)).showWebUISignIns(in: homeBrowser)
         let homeSignIn = await startSignIn(homeClient)
         try await homeBrowser.shown.arrivals(1, within: 10)
+        let carolClient = try client(carol)
+        let carolSignIn = await startSignIn(carolClient, options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let lock = harness.sheetLock
+        await waitUntil("carol is queued for the sheet") { await lock.waiterCount == 1 }
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let first = await startSignIn(client)
         try await beforeAsking.arrivals(1, within: 10)
-        let waiters = await harness.sheetLock.waiterCount
-        XCTAssertEqual(waiters, 0)
+        let waiters = await lock.waiterCount
+        XCTAssertEqual(waiters, 1, "only carol is queued")
 
         let error = await authClientError { try await startSignIn(client).value(within: 10) }
 
@@ -124,6 +129,8 @@ final class WebUISignInInProgressTests: XCTestCase {
         let refused = await authClientError { try await first.value(within: 10) }
         XCTAssertEqual(refused?.kind, .browserBusy(holder: home))
         XCTAssertEqual(engine.webUISignInCalls.count, 0)
+        await carolClient.cancelWebUISignIn()
+        _ = await authClientError { try await carolSignIn.value(within: 10) }
         homeBrowser.finishWithDefault()
         _ = try await homeSignIn.value(within: 10)
     }

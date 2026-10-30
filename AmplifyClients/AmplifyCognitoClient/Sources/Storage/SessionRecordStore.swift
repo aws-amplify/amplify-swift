@@ -81,8 +81,10 @@ struct SessionRecordStore: Sendable {
     /// keychain service: the plugin's own services for this store's pools (`legacyLoginServices(for:)`), then every
     /// other identity pool's `AWSCognitoCredentialsProvider` service of this app the keychain lists
     /// (`legacyLoginStores(for:bundleIdentifier:listServices:makeStore:)`). What `.default`'s sign-out and purge clear,
-    /// as the plugin's own sign-out does (`clearLegacyLogins()`). None unless given, so a store a test builds never
-    /// reaches them; `init(namespace:)` gives the real keychain's.
+    /// as the plugin's own sign-out does, and what the first guest the client fetches over `.default`'s signed-out
+    /// record clears again, with whatever AWSMobileClient or the AWS SDK for iOS saved there since the sign-out
+    /// (`clearLegacyLogins()`). None unless given, so a store a test builds never reaches them; `init(namespace:)` gives
+    /// the real keychain's.
     let legacyLoginStores: @Sendable () -> [any KeychainItemStoreBehavior]
 
     init(
@@ -273,6 +275,24 @@ struct SessionRecordStore: Sendable {
             recordUserChangedHere(sessionId, record: record)
         }
         return committed ? .committed(VersionedSessionRecord(envelope)) : .discarded
+    }
+
+    /// Saves `deadToken` with the session's record (`SessionRecord.deadToken`), while it still is the record the caller
+    /// read (`expected`) and holds credentials; otherwise `.discarded`, and nothing is written. The credentials are kept
+    /// as they are. A named session's envelope is written one generation on, through the commit guard; `.default`'s
+    /// marker goes in its sidecar, and the Auth plugin's record is left alone (`saveDefaultDeadToken`).
+    ///
+    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written.
+    func saveDeadToken(_ deadToken: DeadToken, for sessionId: SessionID, expecting expected: RecordVersion?) throws -> CommitOutcome {
+        if sessionId == .default {
+            return try saveDefaultDeadToken(deadToken, expecting: expected)
+        }
+        guard case .record(let stored) = try read(sessionId), stored.version == expected, stored.record.credentials != nil else {
+            return .discarded
+        }
+        var record = stored.record
+        record.deadToken = deadToken
+        return try write(record, for: sessionId, expecting: expected, recordingMarker: false)
     }
 
     // MARK: Sign-out and purge

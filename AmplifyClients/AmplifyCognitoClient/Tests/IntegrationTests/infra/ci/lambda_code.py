@@ -87,6 +87,7 @@ SOURCES = {
     "verify-auth-challenge": TRIGGERS,
     "discard-sender": ("ci/lambda/discard-sender", ("index.mjs",)),
     "new-password-reset": ("ci/lambda/new-password-reset", ("index.mjs",)),
+    "extend-api-key": ("ci/lambda/extend-api-key", ("index.mjs",)),
     "custom-sender": ("lambda/custom-sender", ("index.mjs", "package.json", "package-lock.json")),
 }
 # Lambda takes a zip of up to 50 MB directly (provision-ci.sh's --zip-file) and 250 MB unzipped; anything past the

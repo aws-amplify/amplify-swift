@@ -59,8 +59,9 @@ final class DefaultSessionGuestLegacyLoginTests: XCTestCase {
         assertLegacyLogins(present: false, "after the guest")
     }
 
-    /// - Given: `.default`'s record holding `{"noCredentials":{}}`, as a sign-out stopped between its signed-out write
-    ///   and its clear left it, and AWSMobileClient logins
+    /// - Given: `.default`'s record holding `{"noCredentials":{}}`, as a sign-out whose clear failed left it (or
+    ///   2.63.0's sign-out, which cleared after its signed-out write, stopped in between), or a plugin sign-out under an
+    ///   access group whose clear failed, and AWSMobileClient logins
     /// - When: `.default`'s session is fetched, which fetches a guest
     /// - Then:
     ///    - the record holds a guest, and the logins are gone
@@ -71,6 +72,32 @@ final class DefaultSessionGuestLegacyLoginTests: XCTestCase {
 
         _ = try await client.fetchAuthSession()
 
+        XCTAssertEqual(try harness.storedRecord(.default)?.kind, .guest)
+        assertLegacyLogins(present: false)
+    }
+
+    /// The clear comes before the guest's write, so an app stopped between the two never leaves a guest, which a plugin
+    /// build reads as no session, beside a login the sign-out failed to clear.
+    ///
+    /// - Given: `.default`'s record holding `{"noCredentials":{}}`, AWSMobileClient logins, and AWSMobileClient stores
+    ///   that record what `.default`'s saved login holds whenever they are cleared
+    /// - When: `.default`'s session is fetched, which fetches a guest
+    /// - Then:
+    ///    - every store was cleared once, each time with the saved login still `{"noCredentials":{}}`, and the record
+    ///      then holds a guest
+    func testAGuestClearsThemBeforeItIsWritten() async throws {
+        harness.keychain.put(PluginRecordFixtures.noCredentials, pluginAccount)
+        seedLegacyLogins()
+        let order = ClearOrder()
+        let client = try defaultClient(observing: order)
+
+        _ = try await client.fetchAuthSession()
+
+        XCTAssertEqual(order.savedLoginsSeen.count, services.count)
+        XCTAssertTrue(
+            order.savedLoginsSeen.allSatisfy { $0 == PluginRecordFixtures.noCredentials },
+            "the guest was written before the AWSMobileClient logins were cleared"
+        )
         XCTAssertEqual(try harness.storedRecord(.default)?.kind, .guest)
         assertLegacyLogins(present: false)
     }
@@ -149,24 +176,33 @@ final class DefaultSessionGuestLegacyLoginTests: XCTestCase {
         }
     }
 
-    private func defaultClient(failingWhile failing: FailingSwitch? = nil) throws -> AmplifyCognitoClient {
-        try client(.default, failingWhile: failing)
+    private func defaultClient(
+        failingWhile failing: FailingSwitch? = nil,
+        observing order: ClearOrder? = nil
+    ) throws -> AmplifyCognitoClient {
+        try client(.default, failingWhile: failing, observing: order)
     }
 
-    private func client(_ sessionId: SessionID, failingWhile failing: FailingSwitch? = nil) throws -> AmplifyCognitoClient {
+    private func client(
+        _ sessionId: SessionID,
+        failingWhile failing: FailingSwitch? = nil,
+        observing order: ClearOrder? = nil
+    ) throws -> AmplifyCognitoClient {
         try AmplifyCognitoClient(
             configuration: ClientFixtures.configuration,
             options: .init(sessionId: sessionId),
-            dependencies: dependencies(failingWhile: failing)
+            dependencies: dependencies(failingWhile: failing, observing: order)
         )
     }
 
     /// A store over the harness's keychain, as `TestKeychain.recordStore(for:)` builds it, that clears the harness's
-    /// AWSMobileClient services, or fails to while `failing` is on.
+    /// AWSMobileClient services, or fails to while `failing` is on. With `order`, each service's clear first records
+    /// what `.default`'s saved login holds.
     private static func store(
         over keychain: TestKeychain,
         for namespace: SessionStorageNamespace,
-        failing: FailingSwitch?
+        failing: FailingSwitch?,
+        observing order: ClearOrder?
     ) -> SessionRecordStore {
         let services = SessionRecordStore.legacyLoginServices(for: namespace.pools)
         let clock = TestClock()
@@ -188,18 +224,27 @@ final class DefaultSessionGuestLegacyLoginTests: XCTestCase {
                 if failing?.isOn == true {
                     return services.map { _ in UnclearableItemStore() }
                 }
-                return services.map { keychain.itemStore(service: $0) }
+                let pluginAccount = SessionRecordKey.pluginSessionAccount(in: namespace.pools)
+                return services.map { service in
+                    let store = keychain.itemStore(service: service)
+                    guard let order else {
+                        return store
+                    }
+                    return ObservedItemStore(store) { order.record(cleared: keychain.value(pluginAccount)) }
+                }
             }
         )
     }
 
     /// The harness's dependencies, with stores that clear the harness's AWSMobileClient services.
-    private func dependencies(failingWhile failing: FailingSwitch?) -> SessionCoreDependencies {
+    private func dependencies(failingWhile failing: FailingSwitch?, observing order: ClearOrder?) -> SessionCoreDependencies {
         let base = harness.dependencies
         var dependencies = SessionCoreDependencies(
             registry: base.registry,
             gates: base.gates,
-            makeStore: { [keychain = harness.keychain] in Self.store(over: keychain, for: $0, failing: failing) },
+            makeStore: { [keychain = harness.keychain] in
+                Self.store(over: keychain, for: $0, failing: failing, observing: order)
+            },
             makeClients: base.makeClients,
             makeEngine: base.makeEngine,
             makeRevoker: base.makeRevoker,

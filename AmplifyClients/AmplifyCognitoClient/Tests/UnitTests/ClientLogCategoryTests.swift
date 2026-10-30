@@ -268,7 +268,8 @@ final class ClientLogCategoryTests: XCTestCase {
     /// - When:
     ///    - each is logged as the engine's actions log the events they send
     /// - Then:
-    ///    - each line is the engine's, with every username, labelled or not, replaced by `<redacted>`
+    ///    - each line is the engine's, with every username, labelled or not, replaced by `<redacted>`, and the challenge
+    ///      session `<REDACTED>`
     func testTheEngineLoggerRedactsTheUsernameOfTheSignInEventsThatCarryItUnlabelled() throws {
         let scope = EngineLogScope.categoryNamespace("Authentication", "UnlabelledProbe-\(UUID().uuidString)")
         let logger = ClientEngineLogger().scoped(scope)
@@ -306,7 +307,7 @@ final class ClientLogCategoryTests: XCTestCase {
             prefix + #"respondDeviceSRPChallenge("<redacted>", "# + device,
             prefix + #"initiateTOTPSetup("<redacted>", InternalAWSCognitoAuth.RespondToAuthChallenge(challenge: "#
                 + "AWSCognitoIdentityProvider.CognitoIdentityProviderClientTypes.ChallengeNameType.mfaSetup, "
-                + #"availableChallenges: [], username: "<redacted>", session: Optional("setup-session"), "#
+                + #"availableChallenges: [], username: "<redacted>", session: Optional("<REDACTED>"), "#
                 + #"parameters: nil, inputUsername: Optional("<redacted>"))), time: nil)"#
         ])
     }

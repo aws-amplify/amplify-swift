@@ -168,21 +168,20 @@ extension AWSCognitoAuthCredentialStore {
     /// login another process has already migrated or saved there, so the migration must not clear it.
     ///
     /// A guest's session record does not count when `source` holds a login this store goes on to use
-    /// (`holdsALoginToMigrate(_:)`). An app extension, or the
-    /// Cognito client's default session, that fetches a session before the app's first launch after the
-    /// update finds the shared service empty, gets a guest identity and saves it there. Counting that
-    /// record aborted the migration, and left the app's login in the old service. The destination clear
-    /// removes it, and the login moves. A guest's record is an identity pool identity without user pool tokens
-    /// or a federated identity (an identity-pool-only configuration's included). A signed-out record
-    /// (`{"noCredentials":{}}`, which a sign-out through the Cognito client's default session saves) is not a
-    /// guest's: it counts, as a login does, so a user who signed out that way is never signed back in by the
-    /// migration. A plugin sign-out deletes the session record instead, so after one, only a device record stops an
-    /// extension's first migration from moving its login in: the device metadata a user-pool sign-in saves for a
-    /// tracked device, or the advanced-security device ID that any user-pool sign-in, hosted-UI sign-in, sign-up or
-    /// password-reset attempt saves when no device metadata is held. With no login to move, a guest's record still
-    /// counts, so a launch with nothing to migrate never clears another process's guest identity. Any other item
-    /// counts as before; a device record without reading it, since only such a user's attempt writes one. A session
-    /// record that cannot be read or decoded counts as a login.
+    /// (`holdsALoginToMigrate(_:)`). An app extension, or the Cognito client's default session, that fetches a session
+    /// before the app's first launch after the update finds the shared service empty, gets a guest identity and saves
+    /// it there. Counting that record aborted the migration, and left the app's login in the old service. The
+    /// destination clear removes it, and the login moves. A guest's record is an identity pool identity without user
+    /// pool tokens or a federated identity (an identity-pool-only configuration's included). A signed-out record
+    /// (`{"noCredentials":{}}`, which a sign-out through the Cognito client's default session, or through the plugin,
+    /// saves) is not a guest's: it counts, as a login does, so a user who signed out that way is never signed back in
+    /// by the migration. A plugin sign-out of a login saves the same record here (`deleteCredential()`), so it stops
+    /// the migration too (a guest's sign-out deletes the guest's record instead). So does a device record: the device
+    /// metadata a user-pool sign-in saves for a tracked device, or the advanced-security device ID that any user-pool
+    /// sign-in, hosted-UI sign-in, sign-up or password-reset attempt saves when no device metadata is held. With no
+    /// login to move, a guest's record still counts, so a launch with nothing to migrate never clears another process's
+    /// guest identity. Any other item counts as before; a device record without reading it, since only such a user's
+    /// attempt writes one. A session record that cannot be read or decoded counts as a login.
     ///
     /// - Parameter source: the migration's source store, built only when the shared service holds nothing but
     ///   guests' session records.

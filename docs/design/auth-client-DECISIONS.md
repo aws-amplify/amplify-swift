@@ -8,7 +8,7 @@ says where its decisions are written.
 Decisions 1–8 were taken in review on 2026-09-22. Decisions 9–19 were taken while the client was built, up to
 the beta (2026-09-23 to 2026-10-05); they are summarised [below](#later-decisions-2026-09-23-to-2026-10-05).
 Decisions 20–28 were taken on 2026-10-19, after end-to-end testing of the beta, decisions 29–34 on 2026-10-22, on
-the review of its last round, and decisions 35–39 on 2026-10-23, on the review that followed; they are summarised
+the review of its last round, and decisions 35–40 on 2026-10-23, on the review that followed; they are summarised
 [below](#decisions-of-2026-10-19), [below](#decisions-of-2026-10-22) and [below](#decisions-of-2026-10-23). Where
 a later decision changes an earlier one, the earlier entry says so and is kept as the record.
 
@@ -382,15 +382,17 @@ shipped in 2.63.0, so the releases that wipe the whole service are those before 
 Documented in the design's rollback matrix (§4.8). The first two were accepted for the beta on 2026-10-05,
 because the plugin behaves the same way; the third is the client's own:
 
-- **A purge, or the plugin's own sign-out, after a configuration carry** leaves the earlier configuration's copy,
-  because a carry keeps its source. A rollback to the build with that configuration then reads the user signed in.
-  A sign-out through the client does not do this: it writes the signed-out value, which every build carries.
+- **A purge, or the plugin's own sign-out without an access group, after a configuration carry** leaves the earlier
+  configuration's copy, because a carry keeps its source. A rollback to the build with that configuration then reads
+  the user signed in. A sign-out through the client does not do this: it writes the signed-out value, which every
+  build carries. Nor does the plugin's sign-out under an access group from the release after 2.63.0, which writes the
+  same value (#40); releases up to 2.63.0 delete the record there too.
 - **A later change that the rule does not carry, onto an earlier configuration's key,** deletes the signed-out
   login and can find the user's old copy there, which then restores signed in.
 - **A rollback to a plugin release before 2.63.0 while AWSMobileClient logins are still on the device** replaces
   whatever `.default` holds with the old AWSMobileClient user: those releases migrate that data at configure with no
   check. 2.63.0 keeps a user signed in through the client, but migrates over a guest and over a signed-out
-  `.default`; later releases also keep a signed-out `.default` (#36). The plugin's own migration deletes those logins at its first configure, so a plugin-only app has none
+  `.default`; later releases also keep a signed-out `.default` (#36), until a guest replaces it. The plugin's own migration deletes those logins at its first configure, so a plugin-only app has none
   left; a client-only app keeps them until `.default` signs out or is purged. An app moving from AWSMobileClient
   ships a plugin release that migrated them first.
 
@@ -424,14 +426,14 @@ design.
 | # | Decision | Answer |
 |---|---|---|
 | 20 | A guest's session record in the shared service at the access-group migration | **It doesn't stop the migration of a login.** An app extension, or the client's `.default`, that fetched a session before the app's first launch after the update saved it; the app's login replaces it, on a fresh or a resumed migration. A login in the shared service is never replaced, and only a login replaces a guest: one under the app's current configuration, or the one the configuration change at the same launch carries to it, not a stale copy under another configuration's key. |
-| 21 | A signed-out record in the shared service at the access-group migration | **It still stops the migration**, as a login does, so a user who signed out through the client's `.default` (which saves that record) is never signed back in by another process's old login. A plugin sign-out deletes the record instead: after one, only a device record stops an extension's first migration. |
+| 21 | A signed-out record in the shared service at the access-group migration | **It still stops the migration**, as a login does, so a user who signed out through the client's `.default` (which saves that record) is never signed back in by another process's old login. A plugin sign-out deleted the record instead, so after one only a device record stopped an extension's first migration. *Changed 2026-10-23 (#40):* a plugin sign-out of a login under an access group saves the same record, so it stops the migration too. |
 | 22 | A known refusal of a carried session's identity step | **The AWS credentials provider fails loudly**: `CredentialsError.notConfigured` (`.failLoudly`), with the refusal underneath. `fetchAuthSession`'s identity fields keep the refusal itself, and the token provider still vends the access token. |
 | 23 | Which AWSMobileClient credentials a `.default` sign-out clears | **Every identity pool's** credentials service the app's keychain holds, not only the configured one's. The plugin is unchanged. |
 | 24 | A network failure (the request may not have reached Cognito) | **A retryable `.service` with no code**, in every call, with the client's network texts. The plugin keeps its mapping. |
 | 25 | When a hosted-UI sign-in cancelled with `cancelWebUISignIn()` answers | **Once it has released the system sheet**: `systemSheetHolder` no longer names the session. If the sheet isn't released within a second, the call throws anyway, and the sheet stays held until the sign-in's remaining calls, or the passkey ceremony, finish. A passkey call too. |
 | 26 | A forgotten device key on a sign-in that isn't SRP | **Dropped and retried once**, in the shared engine: the password (`USER_PASSWORD_AUTH`), `USER_AUTH`, custom and auto sign-in flows remove the device record and resend without a device key. Plugin and client alike. |
 | 27 | The user ID of a `signUp` that completes with auto sign-in | **Carried**: Cognito's sub, as `.done` and `.confirmUser` already carried it. Plugin and client alike. `confirmSignUp`'s `.completeAutoSignIn` and `.done` still carry none, since Cognito's answer there has no sub. |
-| 28 | A refresh refused as a reused refresh token | **The 30-second dead-token rule holds within one launch**, and is not persisted; a refused forced refresh fails with the retryable error instead of returning the tokens it sent, and counts toward the rule: a second one at least 30 seconds later expires the session, with its own `sessionExpired` text (`refreshTokenReused` underneath; #35). |
+| 28 | A refresh refused as a reused refresh token | **The 30-second dead-token rule holds within one launch**, and is not persisted; a refused forced refresh fails with the retryable error instead of returning the tokens it sent, and counts toward the rule: a second one at least 30 seconds later expires the session, with its own `sessionExpired` text (`refreshTokenReused` underneath; #35). Refined: the count stays in memory, per launch; the expiry it leads to is saved with the record (#41). |
 
 **#20 and #21.** An extension that fetches a session first finds the shared service empty and saves a guest identity
 there. Counting that record as a migrated login aborted the app's migration and stranded its login in the old
@@ -441,7 +443,8 @@ replaced; with nothing but a guest or nothing to move, the shared guest is kept,
 nothing to move never discards a guest identity the app already migrated. An extension's first migration whose own
 old service holds a login does move it over that guest. A signed-out record is not a guest's: it keeps blocking, so
 a stale login in another process's old service cannot undo a sign-out through the client's `.default`, which saves
-that record. A plugin sign-out deletes the record instead, so after one only a device record stops an extension's
+that record. A plugin sign-out under an access group saves the same record from the release after 2.63.0 (#40), so it
+blocks too. Releases up to 2.63.0 delete the record instead, so after one only a device record stops an extension's
 first migration: the device metadata a user-pool sign-in saves for a tracked device, or the advanced-security device
 ID that any user-pool sign-in, hosted-UI sign-in, sign-up or password-reset attempt saves when no device metadata is
 held. Without one, an extension whose old service holds a login moves it in.
@@ -533,7 +536,8 @@ one, and a copy an extension rewrote are never carried over it.
 
 **#32.** The user pool issued tokens, but the sign-in can't finish what its configuration asks for, so the client
 revokes them and leaves the session signed out, for `signIn` and `confirmSignIn` alike. The plugin's `confirmSignIn`
-doesn't return in that case. The README's differences table and the release notes record it.
+didn't return in that case in 2.63.0 and earlier; later releases throw and sign the user out, as its `signIn` does.
+The README's differences table and the release notes record it.
 
 **#33.** A session signed out in this process adopts the login an app extension, the Auth plugin or another call has
 saved since. An unforced fetch handed it out as it was, so it could return tokens and AWS credentials that had
@@ -546,17 +550,19 @@ property and the setup URI are unchanged.
 
 ## Decisions of 2026-10-23
 
-Taken on the review that followed the beta's last round. #35, #36 and #37 are written into the design, the client's
-README and the release notes. #38 and #39 keep limitations that the client's README documents; #39's is also in
+Taken on the review that followed the beta's last round. #35, #36, #37 and #40 are written into the design, the
+client's README and the release notes. #38 and #39 keep limitations that the client's README documents; #39's is also in
 `signOutStoredSession`'s API documentation and the release notes.
 
 | # | Decision | Answer |
 |---|---|---|
-| 35 | A second refusal of a reused refresh token, at least 30 seconds after the first, with nothing saved meanwhile | **The session still expires, forced or not**, even while its saved tokens are valid, and from then on, while the session is in memory (until every handle and provider for it is released, or a relaunch), its fields and providers answer `sessionExpired` until its credentials change to ones with another refresh token, or none; the same login saved again, before or after the expiry, in other bytes or with the plugin's expired flag set, is not a change. Its text says the refresh token was already used and no refreshed tokens were saved, so the session cannot be renewed, and to sign in again, with `refreshTokenReused` underneath, not the "expired or been revoked" text of a refused refresh token. Refines #28. |
+| 35 | A second refusal of a reused refresh token, at least 30 seconds after the first, with nothing saved meanwhile | **The session still expires, forced or not**, even while its saved tokens are valid, and from then on, in this launch and later ones (the expiry is saved with the record, #41), its fields and providers answer `sessionExpired` until its credentials change to ones with another refresh token, or none; the same login saved again, before or after the expiry, in other bytes or with the plugin's expired flag set, is not a change. Its text says the refresh token was already used and no refreshed tokens were saved, so the session cannot be renewed, and to sign in again, with `refreshTokenReused` underneath, not the "expired or been revoked" text of a refused refresh token. Refines #28. |
 | 36 | AWSMobileClient (Amplify v1) logins against a signed-out `.default` | **The signed-out record stops the plugin's migration**, as a login does: nothing migrates over it, and the old logins are cleared. A `.default` sign-out or purge through the client clears those logins before it writes the signed-out record or deletes the record. |
 | 37 | A Cognito internal error (`InternalErrorException`, from either pool) and an error status the SDK does not model, in the client | **`.service` with no code**, in every call, `USER_AUTH`, auto, device SRP and passkey sign-ins, `deleteUser`, a sign-out's revoke or global sign-out, and the passkey credential calls included, with a recovery suggestion to retry (a 5xx, an internal error) or naming the refusal (a 4xx). In a `.partial` sign-out, the revoke's or global sign-out's suggestion says instead that it will not be retried; a sign-out that could not finish (`.failed`) carries the failure as any other call maps it. The plugin keeps `AuthError.unknown`. |
 | 38 | A named session's configuration marker left naming an earlier configuration, by a purge stopped before its last step | **Not changed.** The next restore under the purge's configuration carries the session from the earlier one again, and the README says to purge the session again before building a client for it. |
 | 39 | `signOutStoredSession` with no client for the session live in the process, and `configureUserPoolClient` | **Not given one.** Its revoke uses SDK clients built from the configuration alone, so an app's `configureUserPoolClient` (a custom endpoint, a proxy, certificate pinning) is not applied; hold a client for the session to sign out through it. A purge revokes nothing. |
+| 40 | The plugin's own sign-out under a keychain access group | **It saves the signed-out record**, `{"noCredentials":{}}`, in the shared service instead of deleting the session record, on every path that ends a login: `signOut` (local or global), `clearFederationToIdentityPool` and the local sign-out after `deleteUser`, when the record holds a login (user pool tokens or a federated identity); a record already signed out is left as it is. A guest's sign-out still deletes the guest's record, as does one over a record the plugin cannot read, and a sign-out with nothing saved writes nothing, as the client's `.default` writes nothing when there is nothing to sign out. A plugin sign-out of a login then counts as migrated, as a sign-out through the client's `.default` does. The migration rule is unchanged: a login or a signed-out record stops it; a guest or a configuration record alone doesn't stop a login. Not limited to `migrateKeychainItems`. Without an access group the record is still deleted. Changes #21. |
+| 41 | A session core made after the dead-token expiry (every handle and provider released, or a relaunch) | **It starts expired, with no event, while the saved login keeps the refresh token found dead.** The proof saves a marker beside the record (`deadToken`: the cause and a SHA-256 of the dead refresh token, or of the credentials when they hold none), in a named session's envelope or `.default`'s sidecar, never in the plugin's record. Bound to the token, so any new login or federation, by any writer, ends it, and it can never lock out a user: `signIn` is allowed on an expired session. The plugin's `isRefreshTokenExpired` is not used: the plugin sets it on whatever record is stored after its own refusal. Best effort; the 30-second count stays per launch (#28). Refines #35. |
 
 **#35.** The rule exists because a second writer may still save the refresh that used the token, and a forced
 refresh refused this way is evidence of the same dead token as an unforced one, so it counts too. Keeping the
@@ -564,8 +570,13 @@ session retryable while its saved tokens last would only postpone the expiry, an
 is known to be dead. The text had said the refresh token expired or was revoked, which is not what happened: the
 token was used, and no one saved the refresh that used it.
 
-**#36.** Only a sign-out through the client's `.default` saves that record; the plugin's own sign-out deletes the
-record, so an app that uses only the plugin is not affected. Before, the plugin read the record as no session, so an
+**#36.** A sign-out through the client's `.default` saves that record, and so, under an access group, does the
+plugin's own sign-out from the release after 2.63.0 (#40). Without an access group the plugin's sign-out deletes the
+record, so an app that uses only the plugin without one is not affected, unless it later leaves an access group with
+`.none(migrateKeychainItemsOfUserSession: true)`, which carries a signed-out record into the unshared service, where it
+stops the migration too. With one, the plugin's sign-out has already cleared the old logins of the app that signs out
+(their services are named after its bundle ID), so only a login that survived that clear, or was saved there since, or
+that another app sharing the group holds in its own services, is dropped instead of migrated. Before, the plugin read the record as no session, so an
 AWSMobileClient login that the client's sign-out failed to clear, or that an app stopped part-way kept, was migrated
 over it and signed the user back in. The clear comes first so that a failed write or delete, or a process stopped
 after it, leaves no login behind. A purge leaves no record, so after one only the clear protects the user. The record
@@ -578,8 +589,8 @@ reads the signed-out record as no session.
 Where the client saw the failure's cause, the description and recovery suggestion are the ones it gave before, and
 only the case changes. The engine kept nothing under an internal error, so it now carries the service's exception
 beside the engine error for `deleteUser`, a sign-out's revoke and global sign-out, and the passkey credential calls,
-which lose the engine's "report a bug" suggestion. Under a sign-out, the revoke and the global sign-out keep the
-sign-out's not-retried suggestion, as a transport failure does: the sign-out has already finished on this device, so
+which lose the engine's "report a bug" suggestion. In a `.partial` sign-out, the revoke and the global sign-out keep
+the sign-out's not-retried suggestion, as a transport failure does: the sign-out has already finished on this device, so
 "retry" does not fit. The plugin reads only the engine error, so its errors are unchanged.
 
 **#38.** Rewriting the marker to the purge's own configuration before deleting it would close the window, but
@@ -588,3 +599,20 @@ stays documented instead.
 
 **#39.** The stored-session calls take a configuration, not a client's options. With a client for the session live
 in the process, the sign-out goes through it, and so through its SDK clients.
+
+**#40.** After a plugin sign-out under an access group, only a device record stopped an extension's first migration,
+so an extension whose own old service still held a login moved it in over the user who signed out. Only ending a login
+writes the record: a sign-out with nothing saved, or a guest's, writing it would let an extension that signed out
+that way before the app's first launch with the group stop the app's migration and strand its login. The record is
+the bytes the client's `.default` saves on sign-out, which every plugin release reads as signed out: releases back to
+2.10.0 decode it as `AmplifyCredentials.noCredentials`, the value for no saved session. The next sign-in replaces it.
+It ships in the plugin release after 2.63.0; releases up to 2.63.0 delete the record. With #36 it also stops the
+AWSMobileClient migration, until a guest replaces the record: the plugin's own guest, or an app extension's, clears
+nothing, and a guest the client's `.default` fetches over it clears the old logins first, as over the client's own
+signed-out record. The client's `storedSessions(…, includingSignedOut: true)` in that access group lists `.default`
+as a signed-out row after such a sign-out, with no label or username unless the client saved them beside the record.
+After a configuration carry, such a sign-out survives a rollback to the build with the earlier configuration, since
+that build's rule carries the signed-out record over the earlier copy (the caveat in §18 remains without an access
+group). Under an access group, the transition without migration also counts the record, as it counts a login, so an
+app extension configured with the group for the first time keeps its own old service's items instead of clearing
+them.

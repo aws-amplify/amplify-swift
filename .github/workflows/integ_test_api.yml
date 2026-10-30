@@ -50,16 +50,19 @@ jobs:
             echo "api=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          # A file an Xcode project copies into a bundle (a host app's README, say) that is missing from the
+          # checkout breaks the copying target's build, which a skipped job can't show: fail here, naming the project.
+          python3 scripts/python/affected_targets.py --check-bundled
           base="$BASE_REF"
           git fetch --no-tags origin "$base" || true
-          # With rename detection a rename lists only its new path; its old path goes to --renamed-from, which
-          # the selector attributes (a bundled file's old path still selects its group) but never fails closed on.
+          # With rename detection a rename lists only its new path. --renames gets each rename's old and new paths;
+          # the selector attributes the old path too, and fails closed on an unknown one unless the new one is attributed.
           mb="$(git merge-base HEAD "origin/$base")"
           git diff --name-only -M "$mb" HEAD > /tmp/changed.txt
-          git diff --name-status -M --diff-filter=R "$mb" HEAD | cut -f2 > /tmp/renamed_from.txt
+          git diff --name-status -M --diff-filter=R "$mb" HEAD | cut -f2- > /tmp/renames.txt
           swift package dump-package > /tmp/package.json
           python3 scripts/python/affected_targets.py \
-            --package /tmp/package.json --changed /tmp/changed.txt --renamed-from /tmp/renamed_from.txt \
+            --package /tmp/package.json --changed /tmp/changed.txt --renames /tmp/renames.txt \
             --groups scripts/python/integ_test_groups.json | tee -a "$GITHUB_OUTPUT"
 
   functional-test:

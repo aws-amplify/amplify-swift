@@ -46,13 +46,17 @@ import InternalAWSCognitoAuth
 // **Sign-out and purge clear the AWSMobileClient logins**, as the plugin's sign-out does (`clearLegacyLogins()`): the
 // plugin migrates them into this record at configure whenever it holds no session, or only a guest, so they must not
 // outlive a sign-out. They are cleared before the signed-out write or the purge's delete, so a failure there leaves
-// none. A signed-out record (`{"noCredentials":{}}`) stops that migration too, and the migration then clears them,
-// but only until a guest replaces it: the migration reads a guest as no session. So a guest the client fetches over a
-// signed-out record (`acquireGuestOnce`) clears them again first, best effort; over no record it leaves them, as a
+// none. A signed-out record (`{"noCredentials":{}}`) stops that migration too, and the migration then clears them, but
+// only until a guest replaces it: the migration reads a guest as no session. So a guest the client fetches over a
+// signed-out record (`acquireGuestOnce`) clears them again first, best effort, with whatever AWSMobileClient or the AWS
+// SDK for iOS, used beside the client, saved in those services since the sign-out; over no record it leaves them, as a
 // client-only app that never signed in keeps them for a plugin build to migrate. A sidecar alone (a label set before
-// anyone signed in) is no record. A guest the plugin, or an app
-// extension on it, saves over the signed-out record clears nothing, so after it only an earlier clear protects the
-// user. A purge leaves no record. The client never migrates them.
+// anyone signed in) is no record. The signed-out record may be the plugin's: under an access group, the plugin's own
+// sign-out of a login saves the same bytes (plugin releases after 2.63.0; earlier ones delete the record), so a guest
+// the client fetches after one clears them too. Without an access group the plugin's sign-out deletes the record, and
+// the client's guest then leaves them, as over no record. A guest the plugin, or an app extension on it, saves over the
+// signed-out record clears nothing, so after it only an earlier clear protects the user. A purge leaves no record. The
+// client never migrates them.
 extension SessionRecordStore {
 
     /// Whether a store re-reads an absent shared record by default: on macOS only, where the keychain's `set`
@@ -204,7 +208,10 @@ extension SessionRecordStore {
             kind: kind,
             credentials: bytes,
             // Derived: `.default` has no envelope to hold the flag.
-            identityPending: summary.kind == .userPoolOnly && namespace.pools.hasIdentityPool
+            identityPending: summary.kind == .userPoolOnly && namespace.pools.hasIdentityPool,
+            // The sidecar's, whatever user it names: it applies only while these bytes hold the token it names, which
+            // the core checks (`SessionCore.savedExpiry(in:)`).
+            deadToken: sidecar?.deadToken
         )
     }
 
@@ -307,10 +314,46 @@ extension SessionRecordStore {
             }
             (username, userId) = Self.isUserKind(record.kind) ? (record.username, record.userId) : (nil, nil)
         }
-        guard previous != nil || label != nil || username != nil || userId != nil else {
+        // Only what `record` itself says: a write of other credentials (a refresh, a new login) or a sign-out ends it.
+        let deadToken = record.credentials == nil ? nil : record.deadToken
+        guard previous != nil || label != nil || username != nil || userId != nil || deadToken != nil else {
             return nil
         }
-        return DefaultSessionMeta(lastWriteTimestamp: now(), label: label, username: username, userId: userId)
+        return DefaultSessionMeta(lastWriteTimestamp: now(), label: label, username: username, userId: userId, deadToken: deadToken)
+    }
+
+    // MARK: Dead token
+
+    /// `saveDeadToken(_:for:expecting:)` for `.default`: the sidecar only, guarded on its bytes, while the shared
+    /// record still holds the bytes `expected` names. The shared record is never rewritten for it. A lost sidecar race
+    /// re-reads and tries once more; a newer schema's sidecar is never overwritten (`.discarded`).
+    ///
+    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written.
+    func saveDefaultDeadToken(_ deadToken: DeadToken, expecting expected: RecordVersion?) throws -> CommitOutcome {
+        guard let bytes = try fetchSharedRecord(operation: "read the default session's saved login"),
+              expected == .storedBytes(bytes) else {
+            return .discarded
+        }
+        for _ in 1 ... 2 {
+            let stored = try readSidecar()
+            if case .unsupportedSchema = stored {
+                return .discarded
+            }
+            guard var record = defaultRecord(holding: bytes, sidecar: stored.meta), record.credentials != nil else {
+                return .discarded
+            }
+            record.deadToken = deadToken
+            guard let wanted = sidecar(after: record, replacing: stored.meta) else {
+                return .discarded
+            }
+            let committed = try perform("write the default session's sidecar") {
+                try keychain.setIfUnchanged(wanted.encoded(), key: sidecarAccount, expecting: stored.stored)
+            }
+            if committed {
+                return .committed(VersionedSessionRecord(record: defaultRecord(holding: bytes, sidecar: wanted) ?? record, version: expected))
+            }
+        }
+        return .discarded
     }
 
     // MARK: Label
@@ -352,7 +395,13 @@ extension SessionRecordStore {
         } else {
             (username, userId) = (stored.meta?.username, stored.meta?.userId)
         }
-        let next = DefaultSessionMeta(lastWriteTimestamp: now(), label: label, username: username, userId: userId)
+        let next = DefaultSessionMeta(
+            lastWriteTimestamp: now(),
+            label: label,
+            username: username,
+            userId: userId,
+            deadToken: stored.meta?.deadToken
+        )
         if stored.meta.map({ Self.describesTheSame(next, $0) }) ?? (label == nil && username == nil && userId == nil) {
             return try .written(readDefault())
         }
@@ -402,11 +451,12 @@ extension SessionRecordStore {
     /// configuration names would otherwise be migrated by a plugin build as a guest holding that user's identity and AWS
     /// credentials. Those services are the AWS SDK for iOS's `AWSCognitoCredentialsProvider` caches, whatever code
     /// wrote them, so an app still using that provider loses its cached identity ID and AWS credentials, and a guest
-    /// its identity. The user pool service is cleared whole, as the plugin's `ClearCredentialStore` clears it, only
+    /// its identity, at each clear: a sign-out, a purge, and the guest the client fetches over the signed-out record
+    /// after one. The user pool service is cleared whole, as the plugin's `ClearCredentialStore` clears it, only
     /// with a user pool configured: `<bundle>.AWSCognitoIdentityUserPool` holds every app client's logins
     /// (`<clientId>.*`).
     /// The AWSMobileClient service is cleared whole on any `.default` sign-out or purge, a static one under another
-    /// configuration than the app's included.
+    /// configuration than the app's included, and at that guest fetch.
     func clearLegacyLogins() {
         for store in legacyLoginStores() {
             do {
@@ -541,6 +591,6 @@ extension SessionRecordStore {
         guard let rhs else {
             return false
         }
-        return lhs.label == rhs.label && lhs.username == rhs.username && lhs.userId == rhs.userId
+        return lhs.label == rhs.label && lhs.username == rhs.username && lhs.userId == rhs.userId && lhs.deadToken == rhs.deadToken
     }
 }

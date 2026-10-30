@@ -769,46 +769,47 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(second?.isSessionExpired, true, "\(String(describing: second))")
     }
 
-    /// The reuse proof outlives the client that made it, but the expiry does not (it is the core's): a new client of the
-    /// session restores the dead token unexpired and refreshes it again. If Cognito now refuses it as invalid, that
-    /// refusal answers, not the earlier proof.
+    /// A refusal of the refresh token as invalid ends a count of reuses in a row. The reuse memory is the record's, for
+    /// the process, and outlives the client; the expiry is saved with the record, but when that save fails, a new client
+    /// refreshes the token again, and a reuse it is told of then is a first one.
     ///
-    /// - Given: a session needing a refresh, whose refreshes are refused as reused twice, `RefreshTokenReuse.minimumGap`
-    ///   apart, which proves its token dead; the client is then released
-    /// - When: a new client of the session, whose refresh is refused as `refreshTokenInvalid`, requests credentials,
-    ///   then again
+    /// - Given: a session needing a refresh, refused once as reused, then as `refreshTokenInvalid` while its record
+    ///   cannot be written, so the expiry is not saved; the client is then released
+    /// - When: a new client, `RefreshTokenReuse.minimumGap` after the reuse, is refused as reused
     /// - Then:
-    ///    - the first client's second call says the token was already used
-    ///    - the new client's calls throw `sessionExpired` saying the refresh token has expired or been revoked, with
-    ///      `refreshTokenInvalid` underneath, after one refresh
-    func testAnInvalidRefreshTokenAfterAReuseProofOfAReleasedClientAnswersWithItsOwnText() async throws {
+    ///    - the refusal as invalid says the refresh token has expired or been revoked, with `refreshTokenInvalid`
+    ///      underneath
+    ///    - the new client's refusal is the retryable `unknown` of a first reuse, not "already used"
+    func testARefusalAsInvalidEndsTheReuseCount() async throws {
         let stale = FakePayload.signedIn("alice", stale: true)
         try harness.signIn(work, stale)
         var client: AmplifyCognitoClient? = try harness.client(work)
-        harness.engine(for: work)?.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
-        _ = await credentialsError { try await XCTUnwrap(client).credentialsProvider.resolve() }
-        harness.advanceClock(by: RefreshTokenReuse.minimumGap)
-        let proof = await credentialsError { try await XCTUnwrap(client).credentialsProvider.resolve() }
-        assertRefreshTokenAlreadyUsed(proof?.underlyingError as? AuthClientError, "the proof")
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
+        let reuse = await credentialsError { try await XCTUnwrap(client).credentialsProvider.resolve() }
+        XCTAssertEqual(reuse?.isUnknown, true, "\(String(describing: reuse))")
+        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
+        harness.keychain.failingWrites(of: harness.store().sessionAccount(for: work), with: errSecInteractionNotAllowed)
+        let invalid = await credentialsError { try await XCTUnwrap(client).credentialsProvider.resolve() }
+        harness.keychain.clearFailures()
         client = nil
         await harness.waitForBaseline()
+        XCTAssertNil(try harness.storedRecord(work)?.deadToken)
 
+        harness.advanceClock(by: RefreshTokenReuse.minimumGap)
         let next = try harness.client(work)
-        let engine = try XCTUnwrap(harness.engine(for: work))
-        engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
-        let first = await credentialsError { try await next.credentialsProvider.resolve() }
-        let second = await credentialsError { try await next.credentialsProvider.resolve() }
+        let nextEngine = try XCTUnwrap(harness.engine(for: work))
+        nextEngine.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
+        let afterwards = await credentialsError { try await next.credentialsProvider.resolve() }
 
-        for (name, error) in [("the first", first), ("the second", second)] {
-            XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
-            let underlying = error?.underlyingError as? AuthClientError
-            XCTAssertEqual(underlying?.errorDescription, "Session \"work\"'s refresh token has expired or been revoked.", name)
-            guard case SessionEngineError.refreshTokenInvalid? = underlying?.underlyingError as? SessionEngineError else {
-                XCTFail("\(name): expected refreshTokenInvalid underneath, got \(String(describing: underlying?.underlyingError))")
-                continue
-            }
+        XCTAssertEqual(invalid?.isSessionExpired, true, "\(String(describing: invalid))")
+        let underlying = invalid?.underlyingError as? AuthClientError
+        XCTAssertEqual(underlying?.errorDescription, "Session \"work\"'s refresh token has expired or been revoked.")
+        guard case SessionEngineError.refreshTokenInvalid? = underlying?.underlyingError as? SessionEngineError else {
+            return XCTFail("expected refreshTokenInvalid underneath, got \(String(describing: underlying?.underlyingError))")
         }
-        XCTAssertEqual(engine.refreshCalls.count, 1)
+        XCTAssertEqual(afterwards?.isUnknown, true, "\(String(describing: afterwards))")
+        XCTAssertEqual(nextEngine.refreshCalls.count, 1)
     }
 
     /// The dead-token proof installs the record it proved dead: another writer that saved the record after this client

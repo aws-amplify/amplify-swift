@@ -71,3 +71,48 @@ extension SetUpTOTPEvent.EventType: Equatable {
     }
 
 }
+
+// Every printed form redacts the session `VerifySoftwareToken` returns, which `CompleteTOTPSetup` answers the MFA
+// setup challenge with: `VerifyTOTPSetup` logs the event that carries it at verbose. The other cases read as default
+// printing does; their payloads redact their own secrets.
+extension SetUpTOTPEvent.EventType: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+
+    package var description: String {
+        switch self {
+        case .setUpTOTP(let challenge):
+            return "setUpTOTP(\(String(reflecting: challenge)))"
+        case .waitForAnswer(let setupData):
+            return "waitForAnswer(\(String(reflecting: setupData)))"
+        case .verifyChallengeAnswer(let answer):
+            return "verifyChallengeAnswer(\(String(reflecting: answer)))"
+        case .respondToAuthChallenge(let session):
+            return "respondToAuthChallenge(\(String(reflecting: session.redactedForLog())))"
+        case .verified:
+            return "verified"
+        case .throwError(let error):
+            return "throwError(\(String(reflecting: error)))"
+        }
+    }
+
+    package var debugDescription: String {
+        "\(String(reflecting: Self.self)).\(description)"
+    }
+
+    /// For `dump` and debuggers: the session redacted.
+    package var customMirror: Mirror {
+        switch self {
+        case .setUpTOTP(let challenge):
+            return Mirror(self, children: ["setUpTOTP": challenge], displayStyle: .enum)
+        case .waitForAnswer(let setupData):
+            return Mirror(self, children: ["waitForAnswer": setupData], displayStyle: .enum)
+        case .verifyChallengeAnswer(let answer):
+            return Mirror(self, children: ["verifyChallengeAnswer": answer], displayStyle: .enum)
+        case .respondToAuthChallenge(let session):
+            return Mirror(self, children: ["respondToAuthChallenge": session.redactedForLog()], displayStyle: .enum)
+        case .verified:
+            return Mirror(self, children: [:], displayStyle: .enum)
+        case .throwError(let error):
+            return Mirror(self, children: ["throwError": error], displayStyle: .enum)
+        }
+    }
+}

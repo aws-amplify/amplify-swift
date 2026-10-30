@@ -297,10 +297,12 @@ if let picked = rows.first {
 - Signed-out rows are listed only with `includingSignedOut: true`.
 - A session whose first sign-in stopped on a challenge is not listed until that sign-in completes.
 - `.default`'s row comes from the Auth plugin's saved login, with its label while the label belongs to the user the
-  plugin's record holds. After the plugin signs out (or deletes its record), `.default` is a signed-out row naming
-  the last user *the client* saved it for: the client keeps that name beside the plugin's record and updates it only
-  when it writes the session itself. So if the plugin signs bob in over alice's session and then signs out, without
-  the client running in between, the row still names alice, with alice's label.
+  plugin's record holds. After the plugin signs out (or deletes its record), `.default` is a signed-out row naming the
+  last user *the client* saved it for: the client keeps that name beside the plugin's record and updates it only when it
+  writes the session itself. So if the plugin signs bob in over alice's session and then signs out, without the client
+  running in between, the row still names alice, with alice's label. With an access group, the plugin's sign-out of a
+  login saves the signed-out record (plugin releases after 2.63.0; earlier ones delete it), so with no such name beside
+  it `.default` is still listed with `includingSignedOut: true`, as a signed-out row without a label or username.
 - A row's kind follows the current configuration: after a change that removes the identity pool, `.default`'s copied
   login is listed as `.userPoolOnly`, and a copied guest or federated identity as signed out, as a named session is,
   although its saved bytes are the plugin's as they were.
@@ -521,9 +523,10 @@ sessions never block it. A guest session signs in on the same session, but its i
 the Auth plugin, the signed-in identity ID is the one the identity pool maps the login to. A session waiting on a
 challenge starts over.
 
-A session that reported `sessionExpired` in this process may sign in again without signing out. That is held in
-memory only: after a relaunch, or once every handle and provider for the session is released, `signIn` is refused
-with `.invalidState` again until a token request finds the dead token again, so sign out first, as with the plugin.
+A session that reported `sessionExpired` may sign in again without signing out, in that launch or a later one: the
+expiry is saved with the session while its saved login keeps the refresh token found dead. A session whose refresh
+token was revoked elsewhere, and that no refresh has found dead yet, is still signed in as its user, so `signIn` is
+refused with `.invalidState` until a token request reports `sessionExpired`; sign out first, as with the plugin.
 
 The result's `nextStep` is `.done` when the user is signed in. Otherwise it is the step to present; see
 [Sign-in steps and confirmSignIn](#sign-in-steps-and-confirmsignin). In an SRP, `.userPassword` or custom-auth
@@ -720,8 +723,8 @@ or `.done`.
 | `.confirmSignInWithPassword` | The password (after choosing `.password` or `.passwordSRP`). A wrong password ends the sign-in: call `signIn` again |
 | `.continueSignInWithFirstFactorSelection(factors)` | `AuthClientFactorType.<type>.challengeResponse`. Anything else is `.validation`, and so is `"WEB_AUTHN"` when `factors` does not offer it |
 | `.confirmSignInWithCustomChallenge(info)` | Your custom answer |
-| `.resetPassword(info)` | Not answered here: reset the password, then sign in again. After a TOTP setup, `confirmSignIn` refuses an answer with `.invalidState` |
-| `.confirmSignUp(info)` | Not answered here: confirm the sign-up, then sign in again. After a TOTP setup, `confirmSignIn` refuses an answer with `.invalidState` |
+| `.resetPassword(info)` | Not answered here: reset the password, then sign in again. `confirmSignIn` throws `.invalidState` for this step and ends the attempt, except after Cognito refused a challenge answer, or a TOTP code at `VerifySoftwareToken`, with it, where the answer is sent again |
+| `.confirmSignUp(info)` | Not answered here: confirm the sign-up, then sign in again. `confirmSignIn` throws `.invalidState` for this step and ends the attempt, except after Cognito refused a challenge answer, or a TOTP code at `VerifySoftwareToken`, with it, where the answer is sent again |
 | `.done` | Nothing: signed in |
 
 `AuthClientMFAType.rawValue` (`"sms"`, `"totp"`, `"email"`) is not a valid answer. Use `challengeResponse`.
@@ -1001,12 +1004,12 @@ let accessToken = try await client.userPoolTokenProvider.accessToken()
   retryable `unknown` an unforced refresh gets there (unless another writer saved a refresh meanwhile, with a new
   refresh token, which it adopts). It counts toward the dead-token rule (see
   [Known limitations](#known-limitations)): a second refusal at least 30 seconds later, with nothing saved meanwhile,
-  reports `sessionExpired` and expires the session even though its saved tokens are still valid. From then on, while
-  the session is in memory (until every handle and provider for it is released, or a relaunch), an unforced fetch and
-  both providers fail with `sessionExpired` too, until the session signs in again or signs out. Another writer saving
-  the same login again doesn't end that, before or after the expiry: the same credentials in other bytes, or the Auth
-  plugin's save of them marked expired, still hold the refresh token found dead. A login with another refresh token
-  does.
+  reports `sessionExpired` and expires the session even though its saved tokens are still valid. From then on, an
+  unforced fetch and both providers fail with `sessionExpired` too, until the session signs in again or signs out. The
+  expiry is saved with the session, so a new client of it, and the app after a relaunch, answer the same without
+  refreshing the dead token again. Another writer saving the same login again doesn't end that, before or after the
+  expiry: the same credentials in other bytes, or the Auth plugin's save of them marked expired, still hold the
+  refresh token found dead. A login with another refresh token does.
 - There is no `isSignedIn` field. Use `currentSessionState()`.
 - Tokens and AWS credentials print redacted.
 
@@ -1315,7 +1318,7 @@ await client.signOut(options: .init(purgeStoredSession: true))
 | Result | Meaning |
 |---|---|
 | `.complete` | Tokens revoked and cleared from this device, or there were none |
-| `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` | Signed out on this device, but part of the work failed. `revokeTokenError`: the refresh token stays valid until it expires, unless a global sign-out succeeded (`globalSignOutError` is `nil`), which already invalidated it. After a failed global sign-out the token isn't revoked and this holds a placeholder `.service` error with empty texts, as in the plugin. `globalSignOutError`: other devices stay signed in. Neither is retried, and signing out again doesn't retry it: the session is signed out on this device, so a second sign-out is `.complete` and sends nothing. `hostedUIError`: the browser keeps its hosted-UI cookie; only for a sign-out without a window (`signOut(options:)` or `signOutStoredSession`, as `.validation`), or a closed page on a session a refresh found expired while the session was in memory (until every handle and provider for it is released, or a relaunch), when the login signed out still has that refresh token. `storageError`: with `purgeStoredSession`, the row couldn't be removed; purge it again |
+| `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` | Signed out on this device, but part of the work failed. `revokeTokenError`: the refresh token stays valid until it expires, unless a global sign-out succeeded (`globalSignOutError` is `nil`), which already invalidated it. After a failed global sign-out the token isn't revoked and this holds a placeholder `.service` error with empty texts, as in the plugin. `globalSignOutError`: other devices stay signed in. Neither is retried, and signing out again doesn't retry it: the session is signed out on this device, so a second sign-out is `.complete` and sends nothing. `hostedUIError`: the browser keeps its hosted-UI cookie; only for a sign-out without a window (`signOut(options:)` or `signOutStoredSession`, as `.validation`), or a closed page on a session a refresh found expired, in this launch or an earlier one, when the login signed out still has that refresh token. `storageError`: with `purgeStoredSession`, the row couldn't be removed; purge it again |
 | `.failed(AuthClientError)` | Not signed out: the session is still signed in on this device. See below |
 
 `.failed` carries:
@@ -1348,26 +1351,33 @@ Signing `.default` out or purging it (so also `deleteUser` and `clearFederationT
 clears the AWSMobileClient (Amplify v1) logins, as the Auth plugin's sign-out does, so a plugin build's migration
 can't bring an old login back over the signed-out one. Like the plugin's, it runs even when there was nothing to sign
 out. It runs before the signed-out login is written, or before a purge deletes it, so a write or delete that fails
-leaves no login behind. It is best effort: each service that fails to clear logs one warning under
-`AmplifyCognitoClient.SessionRecordStore`, and it never fails the sign-out or the purge. The services cleared follow
-the client's pools: the user pool's with a user pool, every identity pool's, and AWSMobileClient's own. The identity
-pools' services (`<bundle>.AWSCognitoCredentialsProvider.<identity pool ID>`) are the AWS SDK for iOS's
-`AWSCognitoCredentialsProvider` caches, which AWSMobileClient uses, whatever code wrote them. They are cleared for
-every identity pool the app's keychain holds one for, whatever the client is configured with: the client lists the
-app's keychain services to find them, and the plugin's sign-out clears only the configured one's. Left behind, such a
-login would come back under a plugin build as a guest holding the old user's identity and AWS credentials. If the
-listing fails, a warning says so and only the configured identity pool's is cleared. An app that still uses the AWS
-SDK for iOS's `AWSCognitoCredentialsProvider` loses its cached identity ID and AWS credentials for every identity
-pool on any `.default` sign-out or purge, and a guest there gets a new identity ID. The other two are cleared whole,
-as the plugin's sign-out clears them: the user pool service (`<bundle>.AWSCognitoIdentityUserPool`) holds the logins
-of every app client, and the AWSMobileClient service everything AWSMobileClient saved. The user pool service is
-cleared only when the client's configuration has a user pool: an identity-pool-only configuration leaves it, and any
-user pool login in it, which a plugin build with a user pool then migrates without AWS credentials, unless it is a
-plugin release later than 2.63.0 and finds the signed-out login under its own configuration, as when its
-rule copies the login on adding that user pool (see
-[The default session uses the plugin's saved login](#the-default-session-uses-the-plugins-saved-login)). The
-AWSMobileClient service is cleared on every `.default` sign-out or purge, a static one under another configuration
-than the app's included. Named sessions never touch those logins.
+leaves no login behind. The first `fetchAuthSession()` that saves a guest over `.default`'s signed-out login runs the
+same clear again, before it writes the guest: a plugin build reads a guest as no session, so a login the sign-out
+failed to clear would otherwise migrate over it. That second clear also removes whatever AWSMobileClient, or the AWS
+SDK for iOS used beside the client, saved in those services since the sign-out. It is best effort: each service that
+fails to clear logs one warning under `AmplifyCognitoClient.SessionRecordStore`, and it never fails the sign-out, the
+purge or the fetch. The services cleared follow the client's pools: the user pool's with a user pool, every identity
+pool's, and AWSMobileClient's own. The identity pools' services
+(`<bundle>.AWSCognitoCredentialsProvider.<identity pool ID>`) are the AWS SDK for iOS's `AWSCognitoCredentialsProvider`
+caches, which AWSMobileClient uses, whatever code wrote them. They are cleared for every identity pool the app's
+keychain holds one for, whatever the client is configured with: the client lists the app's keychain services to find
+them, and the plugin's sign-out clears only the configured one's. Left behind, such a login would come back under a
+plugin build as a guest holding the old user's identity and AWS credentials. If the listing fails, a warning says so
+and only the configured identity pool's is cleared. An app that still uses the AWS SDK for iOS's
+`AWSCognitoCredentialsProvider` loses its cached identity ID and AWS credentials for every identity pool on any
+`.default` sign-out or purge, and on the first `fetchAuthSession()` that saves a guest after one, and a guest there
+gets a new identity ID. So an identity ID the provider cached between the sign-out and that fetch, with an IoT policy
+attached to it, say, is gone after the fetch. The other two are cleared whole, as the plugin's sign-out clears them:
+the user pool service (`<bundle>.AWSCognitoIdentityUserPool`) holds the logins of every app client, and the
+AWSMobileClient service everything AWSMobileClient saved. The user pool service is cleared only when the client's
+configuration has a user pool: an identity-pool-only configuration leaves it, and any user pool login in it, which a
+plugin build with a user pool then migrates without AWS credentials, unless it is a plugin release later than 2.63.0
+and finds the signed-out login under its own configuration, as when its rule copies the login on adding that user pool
+(see [The default session uses the plugin's saved login](#the-default-session-uses-the-plugins-saved-login)), and only
+until a guest replaces that signed-out login. The guest's clear leaves the user pool service too, so with an identity
+pool that allows guests, the next `fetchAuthSession()` on `.default` leaves that login for such a plugin build to
+migrate over the guest. The AWSMobileClient service is cleared on every `.default` sign-out or purge, and at that guest
+fetch, a static one under another configuration than the app's included. Named sessions never touch those logins.
 
 ### Hosted-UI sign-out
 
@@ -1388,10 +1398,10 @@ func hostedUISignOut(client: AmplifyCognitoClient, window: AuthClientPresentatio
   signs out in the browser. Until then, sign in to the hosted UI with `prompt: [.login]` or
   `prefersEphemeralSession: true`.
 - If the user closes the sign-out page, the result is `.failed(.userCancelled)` and the session stays signed in, as
-  with the plugin, unless a refresh has already found the session expired while it was in memory (the client keeps
-  that on the session until every handle and provider for it is released, or a relaunch; the plugin saves it with the
-  session), and the login being signed out still has the refresh token found dead. A new login another app in the
-  access group saved since then stays signed in: `.failed(.userCancelled)`. Otherwise it signs out anyway and returns `.partial` with `hostedUIError`
+  with the plugin, unless a refresh has already found the session expired, in this launch or an earlier one (the
+  client saves that beside the session; it doesn't read the plugin's own saved flag), and the login being signed out
+  still has the refresh token found dead. A new login another app in the access group saved since then stays signed
+  in: `.failed(.userCancelled)`. Otherwise it signs out anyway and returns `.partial` with `hostedUIError`
   `.userCancelled`, which says the session was signed out on this device but not from the hosted UI: as without a
   window, signing out again won't clear the cookie. The same goes when `cancelWebUISignIn()` closes this session's
   sign-out page, or `resetSystemSheet()` closes it before it finished.
@@ -1429,7 +1439,7 @@ optional `underlyingError`.
 | `notSignedIn` | No user pool user: signed out, guest, federated, or waiting on a challenge | Sign in; on a federated session, clear the federation or sign out first |
 | `invalidSessionID` | Empty, too long, or a character outside `A-Z a-z 0-9 _ -` | Use a valid ID |
 | `challengeExpired` | Cognito no longer accepts the challenge | Call `signIn` again |
-| `browserBusy(holder:)` | The one system sheet is held, or a `.wait(timeout:)` expired | Finish or cancel the holder's sheet |
+| `browserBusy(holder:)` | The one system sheet is held, or a `.wait(timeout:)` expired, or this session already has a hosted-UI sign-in in progress | Finish or cancel the holder's sheet. When `holder` is this session and no session holds the sheet (`systemSheetHolder` is `nil`), there is no sheet to finish: wait for the earlier call, or cancel its task |
 | `sessionConfigurationMismatch(SessionID)` | The session is live under a different configuration | Release its handles and providers, or use the same configuration |
 | `validation(field:)` | An argument was invalid; `field` names it | Fix the argument |
 | `service(AuthClientServiceErrorCode?)` | Cognito rejected the request, with the code if the client recognises it; with no code, a Cognito internal error (`InternalErrorException`) or an error status the SDK doesn't model (the description has the status and message), in every call, or a network problem stopped the request, which may or may not have reached Cognito (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), or its answer couldn't be read | Depends on the code; with no code, read the suggestion: retry later, or check the request against the service's message (a 4xx status). In a `.partial` sign-out, the revoke's or global sign-out's failure is not retried |
@@ -1526,7 +1536,8 @@ Before you switch:
   take it too.
 - **Ship the plugin's migrations first.** The client does not migrate AWSMobileClient (Amplify v1) logins or move
   items between access groups: ship a plugin release first if your users may still need those migrations. It only
-  clears the AWSMobileClient logins when `.default` signs out or is purged, as the plugin's sign-out does.
+  clears the AWSMobileClient logins when `.default` signs out or is purged, as the plugin's sign-out does, and again
+  when `fetchAuthSession()` first saves a guest over `.default`'s signed-out login (see [Sign-out](#sign-out)).
 - **A migrated AWSMobileClient login without AWS credentials** fails the plugin's AWS credentials for a while. When
   the Auth plugin migrates an AWSMobileClient login that has user pool tokens but no saved AWS credentials (its user
   never fetched any, or an identity-pool-only client configuration's `.default` sign-out cleared them and kept the
@@ -1553,24 +1564,25 @@ let rows = try await AmplifyCognitoClient.storedSessions(
 )
 ```
 
-One rollback caveat: a purge, or the plugin's own sign-out, after a configuration change that copied the login, then
-a rollback to the build with the earlier configuration: that build finds the earlier copy and signs the user back in.
-A sign-out through the client doesn't do this: it keeps the user signed out under the same configuration, and across
-rollbacks, and clears the AWSMobileClient logins any plugin release would migrate over it (best effort; see
-[Sign-out](#sign-out)). The exception, as with the plugin, is a later configuration change onto an earlier
-configuration's copy. An AWSMobileClient login that failed to clear (a warning says so) can still undo it on a
-plugin release up to 2.63.0, which migrates it over the signed-out login. Later plugin releases don't: the signed-out
-login stops their migration, which then clears the old logins, until a guest replaces the signed-out login. See
-[Rolling back and forward](#rolling-back-and-forward).
+One rollback caveat: a purge, or the plugin's own sign-out without an access group, after a configuration change that
+copied the login, then a rollback to the build with the earlier configuration: that build finds the earlier copy and
+signs the user back in. A sign-out through the client doesn't do this, nor does a plugin sign-out under an access group
+on plugin releases after 2.63.0, which saves the same signed-out login. A sign-out through the client keeps the user
+signed out under the same configuration, and across rollbacks, and clears the AWSMobileClient logins any plugin release
+would migrate over it (best effort; see [Sign-out](#sign-out)). The exception, as with the plugin, is a later
+configuration change onto an earlier configuration's copy. An AWSMobileClient login that failed to clear (a warning says
+so) can still undo it on a plugin release up to 2.63.0, which migrates it over the signed-out login. Later plugin
+releases don't: the signed-out login stops their migration, which then clears the old logins, until a guest replaces the
+signed-out login. See [Rolling back and forward](#rolling-back-and-forward).
 
 ### Labels and the signed-out row after a plugin action
 
-For example: alice signs in through the client, and the app labels the session "Personal". Later the plugin
-deletes alice (`deleteUser`). The plugin deletes its own record, but it doesn't know the client's note beside it,
-so a picker that lists signed-out rows (`storedSessions(…includingSignedOut: true)`) still shows a row naming alice,
-labelled "Personal". The row lasts until the client writes the session again, for example a sign-in through the
-client, a client refresh of another user the plugin signed in, a guest fetch or a purge. A sign-in through the
-plugin doesn't replace it.
+For example: alice signs in through the client, and the app labels the session "Personal". Later the plugin deletes
+alice (`deleteUser`). The plugin deletes its own record (with an access group, plugin releases after 2.63.0 save the
+signed-out record in its place), but it doesn't know the client's note beside it, so a picker that lists signed-out rows
+(`storedSessions(…includingSignedOut: true)`) still shows a row naming alice, labelled "Personal". The row lasts until
+the client writes the session again, for example a sign-in through the client, a client refresh of another user the
+plugin signed in, a guest fetch or a purge. A sign-in through the plugin doesn't replace it.
 
 The rule behind it: what the plugin's format has no room for, the label and the user a signed-out row names, is
 kept beside the plugin's record and bound to the last user the client wrote the session for. The plugin never
@@ -1605,12 +1617,12 @@ never log it. The warning is temporary: it goes when the plugin uses the client 
 |---|---|
 | Back to a plugin-only release | The plugin reads `.default`'s latest login, signed in or signed out. Named sessions are not seen, and come back on roll-forward, unless a plugin release before 2.63.0 wiped its keychain service on an access-group transition, or a release before 2.53.3 at its first configuration (the next row) |
 | Back to a plugin release before 2.53.3, on an install where no such release has run (a fresh install of the client build, say) | **That release wipes the plugin's keychain service the first time it configures** (2.51.3 to 2.53.2 only without an access group): `.default`'s login, its label and interrupted sign-in, the named sessions and the device records. The plugin starts signed out, and nothing comes back on roll-forward. Plugin-only apps rolled back across 2.53.3 have the same hazard. Roll back to 2.53.3 or later |
-| A purge, or the plugin's own sign-out, after a configuration change that copied the login, then a rollback to the build with the earlier configuration | **That build finds the earlier copy and signs the user back in.** The copy keeps its source, as the plugin's does, and a purge or the plugin's sign-out deletes only the current configuration's login. A sign-out through the client doesn't do this: it saves a signed-out login, which that build reads as signed out |
+| A purge, or the plugin's own sign-out without an access group, after a configuration change that copied the login, then a rollback to the build with the earlier configuration | **That build finds the earlier copy and signs the user back in.** The copy keeps its source, as the plugin's does, and a purge or the plugin's sign-out deletes only the current configuration's login. A sign-out through the client doesn't do this: it saves a signed-out login, which that build reads as signed out. Nor does the plugin's sign-out under an access group on releases after 2.63.0, which saves the same signed-out login; on releases up to 2.63.0 it deletes the login, as without one |
 | A sign-out through the client, then a later configuration change that the rule doesn't copy across, onto a configuration whose key still holds an earlier copy of the user | **That copy is restored signed in**, as with the plugin: the change deletes the signed-out login and lands on the old copy. For example: alice signs in under A; B adds an identity pool and copies her, keeping A's copy; she signs out under B; D (the same user pool with a new app client, and A's identity pool) deletes B's signed-out login, and its key is A's, which still holds her |
 | Back to a plugin release before 2.51.0, with refresh-token rotation on | That plugin can't refresh on the app client at all, whatever the client did |
 | Forward from the plugin to the client, with refresh-token rotation on, after the plugin rotated the token | **The user stays signed in**: `.default` reads the plugin's record in place, so the client refreshes with the newest token the plugin saved |
 | Back to a plugin release before 2.63.0 while AWSMobileClient (Amplify v1) logins are still on the device | **The plugin migrates the old login over whatever `.default` holds**: releases before 2.63.0 write it with no check, so a user signed in through the client is replaced by the old AWSMobileClient user. A sign-out or purge of `.default` through the client clears those logins, so after one there is nothing to migrate, except a user pool login after one under an identity-pool-only configuration, which leaves the user pool's service (see [Sign-out](#sign-out)). They are cleared before the signed-out login is written or the purge deletes it, so a failed write or delete leaves none. Ship a plugin release that has migrated them before you move to the client. A migrated login with no AWS credentials saved fails the plugin's unforced AWS credentials until a forced refresh, or until its tokens next need refreshing |
-| To 2.63.0 or a later plugin release, while AWSMobileClient (Amplify v1) logins are still on the device | **A user signed in through the client is kept**: the plugin clears the old logins without migrating them. **A guest the client saved is replaced**: an old user-pool or federated login, or an old guest, migrates over it, as over a guest the plugin saved, and the guest identity is lost. After a sign-out or purge of `.default` through the client there is nothing to migrate, except a user pool login left after one under an identity-pool-only configuration, which a plugin build with a user pool migrates unless it is later than 2.63.0 and finds the signed-out login under its own configuration (see [Sign-out](#sign-out)). A sign-out through the client also leaves a signed-out login. On plugin releases later than 2.63.0 it stops the migration as a signed-in user does: the plugin clears the old logins without migrating them, so the user stays signed out even if clearing them at sign-out failed, until a guest replaces the signed-out login. A guest counts as no session there. The client's own `fetchAuthSession()` clears the old logins again, best effort, before it saves a guest over `.default`'s signed-out login, so after that only a second failed clear, or a guest the plugin or an app extension saved, leaves one to migrate. 2.63.0 reads a signed-out login as no session and migrates over it, so there an old login that failed to clear signs the old user back in; so does one 2.63.0's client left, since it cleared them only after writing the signed-out login, and an app stopped in between kept them. A purge, `deleteUser` included, leaves no login, so after one only the clear protects the user. A migrated login with no AWS credentials saved fails the plugin's unforced AWS credentials until a forced refresh (`fetchAuthSession` with `forceRefresh: true`), or until its tokens next need refreshing |
+| To 2.63.0 or a later plugin release, while AWSMobileClient (Amplify v1) logins are still on the device | **A user signed in through the client is kept**: the plugin clears the old logins without migrating them. **A guest the client saved is replaced**: an old user-pool or federated login, or an old guest, migrates over it, as over a guest the plugin saved, and the guest identity is lost. After a sign-out or purge of `.default` through the client there is nothing to migrate, except a user pool login left after one under an identity-pool-only configuration, which a plugin build with a user pool migrates unless it is later than 2.63.0 and finds the signed-out login under its own configuration, until a guest replaces it (see [Sign-out](#sign-out)). A sign-out through the client also leaves a signed-out login. On plugin releases later than 2.63.0 it stops the migration as a signed-in user does: the plugin clears the old logins without migrating them, so the user stays signed out even if clearing them at sign-out failed, until a guest replaces the signed-out login. A guest counts as no session there. The client's own `fetchAuthSession()` clears the old logins again, best effort, before it saves a guest over `.default`'s signed-out login, so after that only a second failed clear, a guest the plugin or an app extension saved, or, under an identity-pool-only configuration, the user pool login neither clear touches leaves one to migrate: a plugin build with a user pool carries the guest to its configuration, reads it as no session and migrates that login over it. 2.63.0 reads a signed-out login as no session and migrates over it, so there an old login that failed to clear signs the old user back in; so does one 2.63.0's client left, since it cleared them only after writing the signed-out login, and an app stopped in between kept them. A purge, `deleteUser` included, leaves no login, so after one only the clear protects the user. A migrated login with no AWS credentials saved fails the plugin's unforced AWS credentials until a forced refresh (`fetchAuthSession` with `forceRefresh: true`), or until its tokens next need refreshing |
 
 ## Changing the configuration
 
@@ -1838,12 +1850,12 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | Saved login | One record | `.default` uses the plugin's own record; named sessions keep their own, which the plugin never reads |
 | Session label and signed-out row | None | Kept beside the plugin's record for `.default`, bound to its user |
 | Second sign-in | Refused while signed in | Refused only on the same session, and allowed there once the session reported `sessionExpired` in this process |
-| Identity pool step fails after the user pool signed the user in | `signIn` throws and signs the user out. `confirmSignIn` doesn't return, and the Auth calls queued behind it (`fetchAuthSession` and `signOut` included) wait | `signIn` and `confirmSignIn` both throw the identity pool's error, revoke the tokens just issued and leave the session signed out |
+| Identity pool step fails after the user pool signed the user in | `signIn` and `confirmSignIn` both throw the identity pool's error, revoke the tokens just issued and sign the user out; under a keychain access group that sign-out writes the signed-out record over a login another app saved meanwhile. In 2.63.0 and earlier, `confirmSignIn` didn't return, and the Auth calls queued behind it (`fetchAuthSession` and `signOut` included) waited | `signIn` and `confirmSignIn` both throw the identity pool's error, revoke the tokens just issued and leave the session signed out, and the saved record as it is |
 | Events | Hub | Per-session `AsyncStream`s |
 | Events for `autoSignIn()` and `clearFederationToIdentityPool()` | No Hub event | `.signedIn` and `.signedOut` |
 | Storage failure | Reported as signed out | `.unavailable(reason)` / `storageUnavailable`, never signed out |
 | Another process's sign-in or sign-out in a shared access group | Seen at the next `fetchAuthSession` | Seen at the session's next refresh (`forceRefresh: true` forces one), or, by a signed-out session with an identity pool configured, at its next `fetchAuthSession` |
-| AWSMobileClient (Amplify v1) and access-group keychain migrations | Run when the plugin configures | Not run: ship a plugin release that migrates first. `.default`'s sign-out and purge clear the AWSMobileClient logins |
+| AWSMobileClient (Amplify v1) and access-group keychain migrations | Run when the plugin configures | Not run: ship a plugin release that migrates first. `.default`'s sign-out and purge clear the AWSMobileClient logins, and so does the first guest `fetchAuthSession()` saves after a sign-out |
 | Interrupted sign-in | Lost when the app closes | Saved, resumable for up to 15 minutes |
 | Hosted UI private session | `preferPrivateSession` defaults to `false` | `prefersEphemeralSession` defaults to `true` |
 | Hosted UI while another is up | Queues silently | `.browserBusy` by default; `.wait(timeout:)` to queue |
@@ -1915,28 +1927,28 @@ The client keeps the plugin's semantics except where listed here and in the sect
 - **Rollback to an older plugin release**: plugin releases before 2.51.0 can't refresh at all on an app client with
   rotation on. Releases before 2.53.3 can wipe the plugin's keychain service, every saved session included, the
   first time they configure on an install that never ran one of them. Roll back to 2.53.3 or later.
-- **After a relaunch, a session whose refresh token was revoked elsewhere refuses `signIn`.** Its expiry is known in
-  memory only, so it restores signed in as its user, and `signIn` throws `.invalidState` ("There is already a user
-  in signedIn state") until the session signs out, or a refresh in that launch reports `sessionExpired`. What to do:
-  on `sessionExpired`, or on that refusal, sign the session out before showing sign-in.
-- **A second refresh-token reuse counts as a dead token after 30 seconds, within one launch.** Until then the
-  failure, forced or not, is retryable. The rule is kept in memory: after an app terminated in the middle of a
-  refresh with refresh-token rotation on (Cognito rotated the token, and the new one was never saved), the saved,
-  retired refresh token gives the retryable `unknown` at the first refusal of each launch, and `sessionExpired` at a
-  second one at least 30 seconds later in the same launch. Forced refreshes count too, even while the saved tokens
-  are still valid. This `sessionExpired` says the refresh token was already used and no refreshed tokens were saved,
-  with `refreshTokenReused` underneath, not the "expired or been revoked" of a refused refresh token. That repeats in
-  every launch until the session is signed out, or signs in again after a `sessionExpired`. Before that
-  `sessionExpired`, the session is signed in as its user, so `signIn` refuses it with `.invalidState`. What to do:
-  after repeated refresh failures, sign the session out, then show sign-in.
+- **A session whose refresh token was revoked elsewhere refuses `signIn` until a refresh finds it.** It is signed in
+  as its user, and `signIn` throws `.invalidState` ("There is already a user in signedIn state") until the session
+  signs out, or a refresh reports `sessionExpired`. From then on the expiry is saved with the session, so a later
+  launch lets it sign in again too. What to do: on `sessionExpired`, or on that refusal, sign the session out before
+  showing sign-in.
+- **A second refresh-token reuse counts as a dead token after 30 seconds, in one launch.** Until then the failure,
+  forced or not, is retryable. The count is kept in memory: after an app terminated in the middle of a refresh with
+  refresh-token rotation on (Cognito rotated the token, and the new one was never saved), the saved, retired refresh
+  token gives the retryable `unknown` at its first refusal, and `sessionExpired` at a second one at least 30 seconds
+  later in the same launch; a relaunch in between starts the count again. Forced refreshes count too, even while the
+  saved tokens are still valid. This `sessionExpired` says the refresh token was already used and no refreshed tokens
+  were saved, with `refreshTokenReused` underneath, not the "expired or been revoked" of a refused refresh token. Once
+  it is reported, the expiry is saved with the session: later launches, and new clients of the session, answer it at
+  once without refreshing, until the session signs in again or signs out. Before that `sessionExpired`, the session is
+  signed in as its user, so `signIn` refuses it with `.invalidState`. What to do: after repeated refresh failures,
+  sign the session out, then show sign-in.
 - **A sign-in after an expired session can't be resumed after a relaunch.** This affects a session whose refresh
   token expired (it reported `sessionExpired`) when its user signs in again, that sign-in stops on a challenge
-  (an MFA code, say), and the app is closed before the user answers. The saved login still holds the expired user,
-  so on relaunch the saved challenge is discarded. The session's expiry is known in memory only: after the relaunch
-  it is signed in as that user again, its cached tokens and AWS credentials are handed out while they are still
-  valid (when the expiry was found early, by a forced refresh or after a revoke elsewhere), and only its next
-  refresh reports `sessionExpired` again. What to do: on `sessionExpired`, sign the session out, then show sign-in
-  and start it over. A first sign-in, or one after a sign-out, resumes as usual.
+  (an MFA code, say), and the app is closed before the user answers. The saved login still holds the expired user, so
+  on relaunch the saved challenge is discarded. The session restores expired (its expiry is saved with it): it hands
+  out no tokens, answers `sessionExpired`, and lets its user sign in again from the start. What to do: on
+  `sessionExpired`, show sign-in and start it over. A first sign-in, or one after a sign-out, resumes as usual.
 - **The side-by-side warning is temporary.** This affects apps that run the Auth plugin and the client over
   `.default` in one process, which is not supported. When `.default` finds a different user or guest in the saved
   login, it logs once under `AmplifyCognitoClient.DefaultSession` and changes nothing else. What to do: use one or

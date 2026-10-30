@@ -20,11 +20,15 @@ enum BrowserBusyReason: Equatable {
     /// The asking session already holds the sheet.
     case alreadyInFlight
 
-    /// The asking session is already queued for the sheet.
+    /// The asking session is already queued for the sheet, which another session holds.
     case alreadyQueued
 
     /// The asking session's previous flow was cancelled and its sheet is still closing.
     case stillClosing
+
+    /// As `stillClosing`, with the session's earlier call already queued behind that sheet: the earlier call starts
+    /// by itself once the sheet has closed, so the suggestion is to wait for it, not to retry.
+    case stillClosingWithCallQueued
 
     /// The asking session's previous hosted-UI sign-in call is still in progress, and is neither holding the sheet
     /// nor queued for it: before its lease (waiting for the sign-in lock, or listing the other sessions), or after it,
@@ -69,6 +73,13 @@ extension AuthClientError {
                 holder: holder,
                 "Session \"\(holder)\"'s previous system sheet is still closing.",
                 "Retry once it has closed, or pass `whenBrowserBusy: .wait(timeout:)` to start as soon as it has."
+            )
+        case .stillClosingWithCallQueued:
+            return .browserBusy(
+                holder: holder,
+                "Session \"\(holder)\"'s previous system sheet is still closing.",
+                "The earlier call is queued and starts by itself once the sheet has closed: wait for it to finish, "
+                    + "or cancel it. One session queues for the sheet at most once."
             )
         case .heldByAnotherSession:
             return .browserBusy(

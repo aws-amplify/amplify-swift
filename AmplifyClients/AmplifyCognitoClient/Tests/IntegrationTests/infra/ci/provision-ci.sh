@@ -33,6 +33,11 @@
 #                           place of the plugin's MFA-required backend (ci-overlay.sh's `mfa-req-totp-sms` role):
 #                           MF-13, MF-15…17 and the two USER_AUTH MFA-setup checks. Its pre-sign-up trigger is the
 #                           device-alias pool's, and its custom senders the discard sender, so nothing is sent
+#     ccit-ci-extend-api-key
+#                           a Lambda, run weekly by the rule ccit-ci-extend-api-key, that extends the code sink's
+#                           read-only API key in place to 365 days from now once 120 or fewer are left (its role
+#                           ccit-ci-key-exec may only list and update the code sink API's keys), so the key never
+#                           expires between reruns
 #
 #   A rerun over resources an earlier run made adds what is missing and updates, after their tag checks, only
 #   these of its own: the KMS key's policy and the sender's and triggers' role policies (each to name the new pool
@@ -41,21 +46,24 @@
 #   stops in between leaves it open, still held to the external ID and the account, until a rerun narrows it), the
 #   invoke permissions of the Lambdas the new pool names (one that names another pool's ARN, as after a pool is
 #   deleted and made again, is replaced), the reset Lambda's role policy (to decrypt its parameter with the key, or
-#   to name a default pool made again), the identity pool roles' trust (to name an identity pool made again), and
-#   an SSM parameter stored under another key than the script's own, which it stores again, with the same value,
-#   under that key.
+#   to name a default pool made again), the identity pool roles' trust (to name an identity pool made again), an
+#   SSM parameter stored under another key than the script's own, which it stores again, with the same value,
+#   under that key, and the code sink's API key, extended in place once 120 or fewer days are left, as the weekly
+#   ccit-ci-extend-api-key does.
 #
 #   It never updates a pool or a Lambda's code, so either is replaced: deleted by hand, after its tag check, then
 #   made again by infra/ci/provision-ci.sh --apply --scope all. Never a plain --apply: that is phase 1, which makes
 #   only pre-sign-up and the discard sender again, and adds invoke permissions for the device-alias pool only, while
-#   lambda-drift and the baseline check still pass. Do it while no CI run is going: until the rerun, the pools
-#   cannot use what was deleted.
+#   lambda-drift and the baseline check still pass; it refuses once any phase-2 ccit-ci- resource exists. Do it while
+#   no CI run is going: until the rerun, the pools cannot use what was deleted.
 #   - A Lambda, after a change to lambda/triggers/triggers.mjs, lambda/custom-sender or ci/lambda/* (lambda-drift
-#     tells a function whose deployed files are not this checkout's): check that it carries
+#     tells a function whose deployed files are not this checkout's), or after the code sink's API is made again
+#     (ccit-ci-extend-api-key names the API it was made for): check that it carries
 #     purpose=amplify-cognito-client-integ, delete it, and run --apply --scope all, which makes it again with every
 #     pool's invoke permissions.
-#   - A pool, after a change to its template: --upload never overwrites a file, so the uploaded files that name the
-#     pool go too, or CI goes on reading the deleted pool. Check that the pool and each of those files carries
+#   - A pool, after a change to its template (infra/ci/provision-ci.sh replace <pool> does all of this, below):
+#     --upload never overwrites a file, so the uploaded files that name the pool go too, or CI goes on reading the
+#     deleted pool. Check that the pool and each of those files carries
 #     purpose=amplify-cognito-client-integ (the files: aws s3api get-object-tagging), then delete the pool and its
 #     auth/cognito-client-ci/ccit-ci-<pool>-amplify_outputs.json. For ccit-ci-default, also delete
 #     ccit-ci-rotation-amplify_outputs.json, the identity pool ccit_ci_default (it federates the old pool's client,
@@ -73,7 +81,9 @@
 #       --dry-run (the default) reads the account and prints every call it would make, identifiers masked;
 #       --apply makes them, then writes the client's configuration files into a new private directory (mode 600
 #       files); --upload also uploads them to <config>/auth/cognito-client-ci/: a key that exists is left alone when
-#       it holds the same bytes, and any other existing key refuses the whole upload. --scope picks the phase.
+#       it holds the same bytes, and any other existing key refuses the whole upload. --scope picks the phase;
+#       --apply refuses phase 1 (--scope email-alias, the default) once a phase-2 pool, Lambda, role or the code sink's
+#       API exists.
 #   infra/ci/provision-ci.sh snapshot
 #       read-only: hashes the metadata it reads of every existing resource of the kinds the script writes (snapshot.py
 #       lists them; AppSync schemas, resolvers and keys, and S3 objects' contents, are not read) into
@@ -86,6 +96,13 @@
 #   infra/ci/provision-ci.sh teardown [--dry-run | --apply]
 #       deletes only the resources above, each after its tag check (the KMS key is scheduled for deletion in
 #       7 days); a dry run by default
+#   infra/ci/provision-ci.sh replace <pool> [--dry-run | --apply]
+#       replaces one of the pools above (by its name, or the part after ccit-ci-) as the recipe above does: after the
+#       tag check of each, deletes the pool and its uploaded file, for ccit-ci-default also the rotation file, the
+#       identity pool and ccit-ci-new-password-reset, then reruns --apply --scope all --upload. A dry run by default,
+#       which checks the rerun's dry run too. It refuses any other name, and refuses while gh shows a queued or
+#       running CI run that reads the pools. When gh is missing, or cannot list the runs (not logged in, say), it
+#       only warns and goes on: check that no CI run is going first
 #   infra/ci/provision-ci.sh lambda-drift [--record [--accept-deployed]]
 #       read-only: downloads each ccit-ci- Lambda's deployed zip (GetFunction's presigned URL) and compares its
 #       files, by path and content hash, with the zip built from this checkout, or with the files
@@ -117,6 +134,10 @@ POSITIONAL=()
 RECORD=0
 ACCEPT_DEPLOYED=""
 APPLY_GIVEN=0
+SCOPE_GIVEN=0
+REPLACE_KEY=""
+# Every pool the script makes, by its key (the pool is ccit-ci-<key>).
+ALL_POOL_KEYS=(email-alias default email-alias-codes mfa-req-totp-sms)
 
 usage() {
     sed -n '/^#   infra\/ci\/provision-ci.sh/,/^# Environment/p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//' >&2
@@ -128,11 +149,11 @@ while (( $# > 0 )); do
         --dry-run) CI_MODE="plan" ;;
         --apply) CI_MODE="apply"; APPLY_GIVEN=1 ;;
         --upload) UPLOAD=1 ;;
-        --scope) [[ $# -ge 2 ]] || usage; SCOPE="$2"; shift ;;
+        --scope) [[ $# -ge 2 ]] || usage; SCOPE="$2"; SCOPE_GIVEN=1; shift ;;
         --allow-foreign-additions) ALLOW_FOREIGN=1 ;;
         --record) RECORD=1 ;;
         --accept-deployed) ACCEPT_DEPLOYED=1 ;;
-        snapshot|verify-unchanged|teardown|lambda-drift) COMMAND="$1" ;;
+        snapshot|verify-unchanged|teardown|lambda-drift|replace) COMMAND="$1" ;;
         -h|--help) usage ;;
         -*) usage ;;
         *) POSITIONAL+=("$1") ;;
@@ -147,6 +168,19 @@ if [[ "$COMMAND" == "verify-unchanged" ]]; then
     args=(verify "${POSITIONAL[0]}" "${POSITIONAL[1]}")
     (( ALLOW_FOREIGN )) && args+=(--allow-foreign-additions)
     exec python3 "$CI_DIR/snapshot.py" "${args[@]}"
+fi
+# replace takes one pool, by its key or its name, and only one of the script's: any other name is refused before any
+# AWS call. It always reruns with --upload, and picks the rerun's scope itself.
+if [[ "$COMMAND" == "replace" ]]; then
+    (( ${#POSITIONAL[@]} == 1 && SCOPE_GIVEN == 0 )) || usage
+    for key in "${ALL_POOL_KEYS[@]}"; do
+        if [[ "${POSITIONAL[0]}" == "$key" || "${POSITIONAL[0]}" == "ccit-ci-$key" ]]; then
+            REPLACE_KEY="$key"
+        fi
+    done
+    [[ -n "$REPLACE_KEY" ]] \
+        || die "replace takes one of the script's pools: $(printf 'ccit-ci-%s\n' "${ALL_POOL_KEYS[@]}" | paste -sd' ' -)"
+    POSITIONAL=()
 fi
 (( ${#POSITIONAL[@]} == 0 )) || usage
 if [[ "$COMMAND" != "provision" && "$UPLOAD" == 1 ]]; then
@@ -180,12 +214,17 @@ require_caller
 
 # --- Names ------------------------------------------------------------------------------------------------
 
-POOL_KEYS=(email-alias)
-[[ "$SCOPE" == "all" ]] && POOL_KEYS=(email-alias default email-alias-codes mfa-req-totp-sms)
-ALL_POOL_KEYS=(email-alias default email-alias-codes mfa-req-totp-sms)
+# Sets SCOPE, and POOL_KEYS, the pools in it.
+set_scope() {
+    SCOPE="$1"
+    POOL_KEYS=(email-alias)
+    if [[ "$SCOPE" == "all" ]]; then
+        POOL_KEYS=("${ALL_POOL_KEYS[@]}")
+    fi
+}
+set_scope "$SCOPE"
 # The pools whose SmsConfiguration names the SNS caller role (the templates with SMS MFA), which its trust names.
 SMS_POOL_KEYS=(default mfa-req-totp-sms)
-TRIGGERS_ALL=(pre-sign-up pre-sign-up-confirmable define-auth-challenge create-auth-challenge verify-auth-challenge)
 # The pools whose codes the custom sender decrypts: the ones it is the sender of.
 SENDER_POOL_KEYS=(default email-alias-codes)
 
@@ -205,14 +244,18 @@ SMS_ROLE_CODES="InvalidSmsRoleTrustRelationshipException InvalidSmsRoleAccessPol
 TABLE="$(fn_name codes)"
 API_NAME="$(fn_name codes)"
 RULE="$(fn_name new-password-reset)"
+KEY_RULE="$(fn_name extend-api-key)"
 S3_FOLDER_KEY="$CI_PREFIX_PATH/auth/$CI_S3_FOLDER"
 
-# The functions in scope, with each one's handler, role and code.
+# The functions of each phase (lambda_code.py's SOURCES zips every one), with each one's handler, role and code.
+PHASE_1_FUNCTIONS=(pre-sign-up discard-sender)
+PHASE_2_FUNCTIONS=(pre-sign-up-confirmable custom-sender define-auth-challenge create-auth-challenge
+    verify-auth-challenge new-password-reset extend-api-key)
+ALL_FUNCTIONS=("${PHASE_1_FUNCTIONS[@]}" "${PHASE_2_FUNCTIONS[@]}")
 functions_in_scope() {
-    printf '%s\n' pre-sign-up discard-sender
+    printf '%s\n' "${PHASE_1_FUNCTIONS[@]}"
     if [[ "$SCOPE" == "all" ]]; then
-        printf '%s\n' pre-sign-up-confirmable custom-sender define-auth-challenge create-auth-challenge \
-            verify-auth-challenge new-password-reset
+        printf '%s\n' "${PHASE_2_FUNCTIONS[@]}"
     fi
 }
 fn_handler() {
@@ -221,13 +264,14 @@ fn_handler() {
         define-auth-challenge) echo triggers.defineAuthChallenge ;;
         create-auth-challenge) echo triggers.createAuthChallenge ;;
         verify-auth-challenge) echo triggers.verifyAuthChallenge ;;
-        custom-sender|discard-sender|new-password-reset) echo index.handler ;;
+        custom-sender|discard-sender|new-password-reset|extend-api-key) echo index.handler ;;
     esac
 }
 fn_role() {
     case "$1" in
         custom-sender) echo sender-exec ;;
         new-password-reset) echo reset-exec ;;
+        extend-api-key) echo key-exec ;;
         *) echo trigger-exec ;;
     esac
 }
@@ -264,6 +308,59 @@ require_recorded_region() {
         || die "the ccit-ci- resources are in $regions, not CCIT_CI_REGION's $CI_REGION. Set CCIT_CI_REGION to theirs."
 }
 
+# The phase-2 ccit-ci- resources that exist (PHASE_2_FOUND, their names, space-separated; "" when none): the pools,
+# functions and roles only --scope all makes, and the code sink's API. Read-only. It sets a variable rather than
+# printing, so that a refusal in a read ends the script (as zip_for).
+PHASE_2_POOL_KEYS=(default email-alias-codes mfa-req-totp-sms)
+PHASE_2_ROLES=(sender-exec appsync-codes cognito-sms reset-exec key-exec identity-authenticated identity-unauthenticated)
+PHASE_2_FOUND=""
+find_phase_2() {
+    local out key suffix
+    PHASE_2_FOUND=""
+    read_all_pages out UserPools cognito-idp list-user-pools
+    for key in "${PHASE_2_POOL_KEYS[@]}"; do
+        if jq -e --arg n "$(pool_name "$key")" 'any(.UserPools[]; .Name == $n)' <<<"$out" >/dev/null; then
+            PHASE_2_FOUND+=" $(pool_name "$key")"
+        fi
+    done
+    for suffix in "${PHASE_2_FUNCTIONS[@]}"; do
+        if read_aws_or_missing out ResourceNotFoundException lambda get-function-configuration \
+            --function-name "$(fn_name "$suffix")"; then
+            PHASE_2_FOUND+=" $(fn_name "$suffix")"
+        fi
+    done
+    for suffix in "${PHASE_2_ROLES[@]}"; do
+        if read_aws_or_missing out NoSuchEntity iam get-role --role-name "$(role_name "$suffix")"; then
+            PHASE_2_FOUND+=" $(role_name "$suffix")"
+        fi
+    done
+    read_aws out appsync list-graphql-apis
+    if jq -e --arg n "$API_NAME" 'any(.graphqlApis[]; .name == $n)' <<<"$out" >/dev/null; then
+        PHASE_2_FOUND+=" $API_NAME"
+    fi
+    PHASE_2_FOUND="${PHASE_2_FOUND# }"
+}
+
+# Phase 1 (--scope email-alias, the default) once phase 2 exists: --apply refuses, and a dry run says it would. Phase 1
+# makes only pre-sign-up and the discard sender again, and gives only the device-alias pool its invoke permissions,
+# so after a phase-2 resource was deleted by hand it would leave the other pools without what they name.
+refuse_phase_1_over_phase_2() {
+    local names count found why
+    [[ "$SCOPE" == "email-alias" ]] || return 0
+    find_phase_2
+    [[ -n "$PHASE_2_FOUND" ]] || return 0
+    read -r -a names <<<"$PHASE_2_FOUND"
+    count=${#names[@]}
+    names=("${names[@]:0:3}")
+    found="${names[*]}"
+    (( count <= 3 )) || found+=" and $((count - 3)) more"
+    why="phase 2 exists here ($found), and --scope email-alias, the default, is phase 1: it would make only \
+$(fn_name pre-sign-up) and $(fn_name discard-sender) again, and give only $(pool_name email-alias) its invoke \
+permissions. Run infra/ci/provision-ci.sh --apply --scope all instead."
+    [[ "$CI_MODE" != "apply" ]] || die "$why"
+    say "Note: --apply would refuse: $why"
+}
+
 # The account's headroom, read once; each create that needs it checks it (require_headroom), so a rerun that creates
 # nothing (extending the code sink's key, say) is never refused for a quota it does not use. The AppSync quota is not
 # readable with the CI role's permissions: CCIT_CI_APPSYNC_API_QUOTA gives a raised one (default 25, AWS's default).
@@ -293,7 +390,7 @@ preflight() {
 }
 
 # Dies unless the account has room for the $1 (role, api or rule) this run is about to create, as preflight read it.
-# Each keeps a margin: 50 roles left (the script makes 7 at most), 2 APIs left after this one, 250 rules at most.
+# Each keeps a margin: 50 roles left (the script makes 8 at most), 2 APIs left after this one, 250 rules at most.
 require_headroom() {
     case "$1" in
         role)
@@ -455,6 +552,14 @@ reset_policy() {
         {Sid: "DecryptTemporaryPassword", Effect: "Allow", Action: "kms:Decrypt", Resource: $key,
          Condition: {StringEquals: {"kms:ViaService": "ssm.\($r).amazonaws.com",
                                     "kms:EncryptionContext:PARAMETER_ARN": $p}}}]}'
+}
+
+# The weekly key extension's (ccit-ci-extend-api-key): its logs, and listing and updating the code sink API's keys
+# only. AppSync's ListApiKeys and UpdateApiKey take the API's ARN as their resource.
+key_policy() {
+    jq -n -c --arg api "$API_ARN" --argjson logs "$(logs_statement extend-api-key)" '{Version: "2012-10-17",
+        Statement: [$logs, {Sid: "ExtendTestsKey", Effect: "Allow", Action: ["appsync:ListApiKeys", "appsync:UpdateApiKey"],
+            Resource: $api}]}'
 }
 
 identity_trust() {
@@ -642,46 +747,70 @@ ensure_api_resolvers() {
     done
 }
 
-# The tests' read-only API key: one that lives more than KEY_REUSE_DAYS more days is reused; one that lives fewer but
-# has not expired is extended to KEY_DAYS days from now, keeping its id, so the two uploaded files that name it (the
-# default and alias-codes pools' outputs, which --upload never rewrites) stay valid; else a new one, for KEY_DAYS days.
-# Its expiry is said right there (note_key_expiry).
+# The tests' read-only API key, the "ccit-ci tests" key that expires last: one that lives more than KEY_REUSE_DAYS
+# more days is reused; one that lives fewer is extended to KEY_DAYS days from now, keeping its id, so the two
+# uploaded files that name it (the default and alias-codes pools' outputs, which --upload never rewrites) stay valid;
+# else a new one, for KEY_DAYS days. Its expiry is said right there (note_key_expiry).
+# An expired key is extended in place too: AppSync keeps one for 60 days after it expires (its `deletes`; one past
+# that, which ListApiKeys may still name until it is gone, is not counted) and documents that it can still be
+# updated until then. When AppSync refuses that (EXPIRED_KEY_REFUSALS), a new key is made instead, and the uploaded
+# files that name the old one must be replaced (note_key_expiry says how, and --apply refuses at the end until they
+# are). A dry run cannot tell which, and says both.
 # KEY_DAYS is AppSync's maximum: CreateApiKey and UpdateApiKey take 1 to 365 days from the call, and store the expiry
 # rounded down to the hour. The expiry asked for is that hour, taken after KEY_CLOCK_ALLOWANCE seconds off, so a
 # local clock up to 10 minutes ahead of AppSync's never asks for more than 365 days.
 # KEY_REUSE_DAYS is one quarter (90 days, the CI account's routine check) and 30 days of slack: any rerun leaves the
 # key with more than that, so it outlives the next quarterly rerun even when that is a month late, and a key is
-# extended about every 245 days, so most reruns plan no key call.
+# extended about every 245 days, so most reruns plan no key call. The weekly ccit-ci-extend-api-key extends it on the
+# same terms between reruns.
 KEY_DAYS=365
 KEY_CLOCK_ALLOWANCE=600
 KEY_REUSE_DAYS=120
+KEY_KEPT_AFTER_EXPIRY=$((60 * 86400))
+EXPIRED_KEY_REFUSALS="BadRequestException NotFoundException ApiKeyValidityOutOfBoundsException"
 ensure_api_key() {
-    local out now expires input reuse_days="$KEY_REUSE_DAYS"
+    local out now expires input key_expires="" reuse_days="$KEY_REUSE_DAYS" description
     now=$(date +%s)
     expires=$(( (now + KEY_DAYS * 86400 - KEY_CLOCK_ALLOWANCE) / 3600 * 3600 ))
     API_KEY_EXPIRES="$expires"
+    API_KEY=""
     if ! is_new "$API_ID"; then
         read_aws out appsync list-api-keys --api-id "$API_ID"
-        API_KEY=$(jq -r --argjson soon "$((now + reuse_days * 86400))" \
-            '[.apiKeys[] | select(.description == "ccit-ci tests" and .expires > $soon)] | sort_by(.expires) | last | .id // empty' <<<"$out")
-        if [[ -n "$API_KEY" ]]; then
-            API_KEY_EXPIRES=$(CCIT_SECRET_K="$API_KEY" jq -r '[.apiKeys[] | select(.id == $ENV.CCIT_SECRET_K)][0].expires' <<<"$out")
-            say "  = the code sink API key (lives more than $reuse_days more days)"
+        API_KEY=$(jq -r --argjson now "$now" --argjson kept "$KEY_KEPT_AFTER_EXPIRY" '[.apiKeys[]
+            | select(.description == "ccit-ci tests" and ((.deletes // (.expires + $kept)) > $now))]
+            | sort_by(.expires) | last | .id // empty' <<<"$out")
+        [[ -z "$API_KEY" ]] \
+            || key_expires=$(CCIT_SECRET_K="$API_KEY" jq -r '[.apiKeys[] | select(.id == $ENV.CCIT_SECRET_K)][0].expires' <<<"$out")
+    fi
+    if [[ -n "$API_KEY" ]] && (( key_expires > now + reuse_days * 86400 )); then
+        API_KEY_EXPIRES="$key_expires"
+        say "  = the code sink API key (lives more than $reuse_days more days)"
+        note_key_expiry
+        return
+    fi
+    if [[ -n "$API_KEY" ]]; then
+        require_ours appsync "$API_ARN" "$API_NAME"
+        description="extend the tests' read-only API key to $KEY_DAYS days from now (the same key)"
+        (( key_expires > now )) \
+            || description="extend the tests' read-only API key, which has expired, to $KEY_DAYS days from now (the same key, if AppSync takes it)"
+        # The key's id is its secret: in the input file, never on the command line.
+        input=$(CCIT_SECRET_K="$API_KEY" jq -n -c --arg id "$API_ID" --argjson e "$expires" \
+            '{apiId: $id, id: $ENV.CCIT_SECRET_K, expires: $e}')
+        if (( key_expires > now )); then
+            mutate "$API_NAME" "$description" -- appsync update-api-key --cli-input-json "file://$(input_file "$input")"
             note_key_expiry
             return
         fi
-        API_KEY=$(jq -r --argjson now "$now" \
-            '[.apiKeys[] | select(.description == "ccit-ci tests" and .expires > $now)] | sort_by(.expires) | last | .id // empty' <<<"$out")
-        if [[ -n "$API_KEY" ]]; then
-            require_ours appsync "$API_ARN" "$API_NAME"
-            # The key's id is its secret: in the input file, never on the command line.
-            input=$(CCIT_SECRET_K="$API_KEY" jq -n -c --arg id "$API_ID" --argjson e "$expires" \
-                '{apiId: $id, id: $ENV.CCIT_SECRET_K, expires: $e}')
-            mutate "$API_NAME" "extend the tests' read-only API key to $KEY_DAYS days from now (the same key)" -- \
-                appsync update-api-key --cli-input-json "file://$(input_file "$input")"
+        if MUTATE_TOLERATE="$EXPIRED_KEY_REFUSALS" mutate "$API_NAME" "$description" -- \
+            appsync update-api-key --cli-input-json "file://$(input_file "$input")"; then
+            if [[ "$CI_MODE" != "apply" ]]; then
+                say "    If AppSync refuses to extend the expired key, --apply makes a new one instead, and then the" \
+                    "uploaded files that name the old key must be replaced: the run says how."
+            fi
             note_key_expiry
             return
         fi
+        say "    AppSync refused to extend the expired key (${AWS_ERR_CODE}): a new key instead."
     fi
     mutate "$API_NAME" "create the tests' read-only API key, for $KEY_DAYS days" -- appsync create-api-key \
         --api-id "$API_ID" --description "ccit-ci tests" --expires "$expires"
@@ -824,7 +953,7 @@ generate_temporary() {
 # --- Lambdas ----------------------------------------------------------------------------------------------
 
 # Sets ZIP to the zip for function $1 in $CI_WORK, built once per code: the sandbox's triggers.mjs, the sandbox's
-# custom sender (npm ci), or this directory's discard sender or new-password reset. The zip is deterministic
+# custom sender (npm ci), or this directory's discard sender, new-password reset or key extension. The zip is deterministic
 # (lambda_code.py), and lambda-drift compares a deployed function's files with it. Built in --apply, and for
 # lambda-drift (BUILD_ZIPS=1). It sets a variable rather than printing the path, so
 # that it runs in this shell, never in a $(…), where a refusal would end only the subshell and the run would go on.
@@ -836,6 +965,7 @@ zip_for() {
         custom-sender) zip="$CI_WORK/custom-sender.zip" ;;
         discard-sender) zip="$CI_WORK/discard-sender.zip" ;;
         new-password-reset) zip="$CI_WORK/new-password-reset.zip" ;;
+        extend-api-key) zip="$CI_WORK/extend-api-key.zip" ;;
         *) zip="$CI_WORK/triggers.zip" ;;
     esac
     if [[ "$suffix" == custom-sender ]]; then
@@ -871,6 +1001,10 @@ fn_environment() {
             jq -n -c --arg p "$(kv_get POOL_ID "default")" --arg u "$(new_password_users | paste -sd, -)" \
                 --arg t "$CI_SSM_TEMPORARY" '{POOL_ID: $p, USERNAMES: $u, TEMP_PASSWORD_PARAMETER: $t,
                     USED_AFTER_MINUTES: "60", REFRESH_AFTER_DAYS: "10"}' ;;
+        # The same lifetime, allowance and threshold as ensure_api_key's.
+        extend-api-key)
+            jq -n -c --arg a "$API_ID" --arg d "$KEY_DAYS" --arg c "$KEY_CLOCK_ALLOWANCE" --arg w "$KEY_REUSE_DAYS" \
+                '{API_ID: $a, KEY_DAYS: $d, CLOCK_ALLOWANCE_SECONDS: $c, EXTEND_WITHIN_DAYS: $w}' ;;
         *) printf '{}' ;;
     esac
 }
@@ -890,6 +1024,7 @@ ensure_function() {
     fi
     [[ "$suffix" == "custom-sender" ]] && memory=256
     [[ "$suffix" == "new-password-reset" ]] && timeout=60
+    [[ "$suffix" == "extend-api-key" ]] && timeout=30
     input=$(jq -n -c --arg n "$name" --arg role "$(role_arn "$(fn_role "$suffix")")" --arg h "$(fn_handler "$suffix")" \
         --argjson t "$timeout" --argjson m "$memory" --argjson e "$environment" --argjson tags "$(tags_json)" \
         '{FunctionName: $n, Role: $role, Handler: $h, Runtime: "nodejs22.x", Timeout: $t, MemorySize: $m,
@@ -1100,27 +1235,29 @@ ensure_identity_pool() {
 
 # --- New-password users (default) -------------------------------------------------------------------------
 
-ensure_reset_schedule() {
-    local out rule_arn target fn
-    fn=$(fn_name new-password-reset)
-    rule_arn="arn:aws:events:$CI_REGION:$CI_ACCOUNT:rule/$RULE"
-    if read_aws_or_missing out ResourceNotFoundException events describe-rule --name "$RULE"; then
-        require_ours rule "$RULE" "$RULE"
-        say "  = schedule $RULE"
+# Schedules function $2 by rule $1 at rate $3 (as "10 minutes", "7 days"), described by $4: the rule, the function's
+# invoke permission for it, and the rule's target.
+ensure_schedule() {
+    local rule="$1" suffix="$2" rate="$3" description="$4" out rule_arn target fn
+    fn=$(fn_name "$suffix")
+    rule_arn="arn:aws:events:$CI_REGION:$CI_ACCOUNT:rule/$rule"
+    if read_aws_or_missing out ResourceNotFoundException events describe-rule --name "$rule"; then
+        require_ours rule "$rule" "$rule"
+        say "  = schedule $rule"
     else
         require_headroom rule
-        mutate "$RULE" "schedule $fn every 10 minutes" -- events put-rule --name "$RULE" \
-            --schedule-expression "rate(10 minutes)" --state ENABLED \
-            --description "ccit-ci: keeps the new-password users fresh" --tags "Key=$CI_TAG_KEY,Value=$CI_TAG_VALUE"
+        mutate "$rule" "schedule $fn every $rate" -- events put-rule --name "$rule" \
+            --schedule-expression "rate($rate)" --state ENABLED \
+            --description "$description" --tags "Key=$CI_TAG_KEY,Value=$CI_TAG_VALUE"
     fi
-    ensure_invoke_permission new-password-reset events-schedule events.amazonaws.com "$rule_arn"
+    ensure_invoke_permission "$suffix" events-schedule events.amazonaws.com "$rule_arn"
     target=""
-    if read_aws_or_missing out ResourceNotFoundException events list-targets-by-rule --rule "$RULE"; then
-        target=$(jq -r --arg a "$(fn_arn new-password-reset)" '[.Targets[] | select(.Arn == $a)][0].Id // empty' <<<"$out")
+    if read_aws_or_missing out ResourceNotFoundException events list-targets-by-rule --rule "$rule"; then
+        target=$(jq -r --arg a "$(fn_arn "$suffix")" '[.Targets[] | select(.Arn == $a)][0].Id // empty' <<<"$out")
     fi
     if [[ -z "$target" ]]; then
-        mutate "$RULE" "point the schedule at Lambda $fn" -- events put-targets --rule "$RULE" \
-            --targets "Id=new-password-reset,Arn=$(fn_arn new-password-reset)"
+        mutate "$rule" "point the schedule at Lambda $fn" -- events put-targets --rule "$rule" \
+            --targets "Id=$suffix,Arn=$(fn_arn "$suffix")"
     fi
 }
 
@@ -1305,7 +1442,7 @@ provision() {
 
     say "Lambdas:"
     while read -r suffix; do
-        [[ "$suffix" == "new-password-reset" ]] || ensure_function "$suffix"
+        [[ "$suffix" == "new-password-reset" || "$suffix" == "extend-api-key" ]] || ensure_function "$suffix"
     done < <(functions_in_scope)
 
     say "User pools:"
@@ -1327,8 +1464,12 @@ provision() {
         say "New-password users:"
         ensure_role reset-exec "$(lambda_trust)" "$(reset_policy)"
         ensure_function new-password-reset
-        ensure_reset_schedule
+        ensure_schedule "$RULE" new-password-reset "10 minutes" "ccit-ci: keeps the new-password users fresh"
         run_reset_once
+        say "The code sink key's weekly extension:"
+        ensure_role key-exec "$(lambda_trust)" "$(key_policy)"
+        ensure_function extend-api-key
+        ensure_schedule "$KEY_RULE" extend-api-key "7 days" "ccit-ci: keeps the code sink's API key from expiring"
     fi
 
     if [[ "$CI_MODE" == "apply" ]]; then
@@ -1398,6 +1539,132 @@ note_key_expiry() {
     fi
 }
 
+# --- replace <pool> -----------------------------------------------------------------------------------------
+
+# Refuses while a CI run that reads the ccit-ci- pools is going, as far as gh can tell cheaply (GitHub's API, reads
+# only): a queued or running run of integ_test_auth_client.yml, or a job of integ_test.yml's, queued or running, that
+# runs the Cognito client's tests (its name holds "Cognito Client" or "CognitoClient"). Without gh, or when gh cannot
+# list the runs (not logged in, say), it warns and goes on. CCIT_CI_GITHUB_REPO names another repository.
+CI_GITHUB_REPO="${CCIT_CI_GITHUB_REPO:-aws-amplify/amplify-swift}"
+require_no_ci_run() {
+    local status out id running="" unknown="Warning: could not tell whether a CI run is going, which the deletions would break: check that none is before --apply."
+    if ! command -v gh >/dev/null; then
+        say "$unknown (gh is not on PATH.)"
+        return 0
+    fi
+    for status in in_progress queued; do
+        if ! out=$(gh run list -R "$CI_GITHUB_REPO" -w integ_test_auth_client.yml -s "$status" -L 20 --json databaseId \
+            2>/dev/null) || ! jq -e 'type == "array"' <<<"$out" >/dev/null 2>&1; then
+            say "$unknown"
+            return 0
+        fi
+        [[ "$(jq length <<<"$out")" == 0 ]] || running="integ_test_auth_client.yml"
+        if ! out=$(gh run list -R "$CI_GITHUB_REPO" -w integ_test.yml -s "$status" -L 50 --json databaseId 2>/dev/null) \
+            || ! jq -e 'type == "array"' <<<"$out" >/dev/null 2>&1; then
+            say "$unknown"
+            return 0
+        fi
+        for id in $(jq -r '.[].databaseId' <<<"$out"); do
+            if ! out=$(gh run view "$id" -R "$CI_GITHUB_REPO" --json jobs 2>/dev/null) \
+                || ! jq -e '.jobs | type == "array"' <<<"$out" >/dev/null 2>&1; then
+                say "$unknown"
+                return 0
+            fi
+            if jq -e 'any(.jobs[]; (.name | test("Cognito ?Client")) and .status != "completed")' <<<"$out" >/dev/null; then
+                running="integ_test.yml's Cognito client jobs"
+            fi
+        done
+    done
+    [[ -z "$running" ]] || die "a CI run of $running is going, and it reads the ccit-ci- pools: replace one once it is done."
+}
+
+# replace <pool> [--apply]: replaces pool ccit-ci-<REPLACE_KEY>, as after a change to its template (a rerun never
+# updates a pool). After the tag check of each, it deletes, through `mutate`: the pool's uploaded
+# auth/cognito-client-ci/ccit-ci-<pool>-amplify_outputs.json (--upload never overwrites a file); for the default
+# pool also ccit-ci-rotation-amplify_outputs.json, the identity pool (it federates the old pool's client, so a rerun
+# would refuse) and the Lambda ccit-ci-new-password-reset (it names the old pool, and makes the users only when it is
+# made); and the pool itself, with its clients and users. Then it reruns --apply --scope all --upload, which makes
+# them again and uploads the new files; the other uploaded files stay as they are. Whatever is already gone is
+# skipped, so a replace that stopped part-way can be run again. The rerun's scope is phase 1 instead when the pool is
+# the device-alias pool and no phase-2 resource exists, so that a replace never adds phase 2.
+# A dry run (the default) plans the deletions, and checks the rerun with its dry run, which must refuse nothing:
+# --apply runs both first, so nothing is deleted when either would refuse.
+replace() {
+    local key="$REPLACE_KEY" name file object out id ids rerun_scope=all files=()
+    name=$(pool_name "$key")
+    if [[ "$CI_MODE" == "apply" ]]; then
+        say "Replacing $name: deleting it and what names it, each after its tag check, then rerunning."
+    else
+        say "Replace dry run ($name): nothing is deleted. '+' is a call replace --apply would make, '=' one it skips."
+    fi
+    require_no_ci_run
+    if [[ "$key" == "email-alias" ]]; then
+        find_phase_2
+        [[ -n "$PHASE_2_FOUND" ]] || rerun_scope=email-alias
+    fi
+    if [[ "$CI_MODE" != "apply" ]]; then
+        say "The rerun (--apply --scope $rerun_scope --upload), checked with its dry run:"
+        rerun_provision "$rerun_scope" plan >/dev/null \
+            || die "the rerun's dry run refused (above); nothing was deleted."
+        say "  it refuses nothing."
+    fi
+    say "Deleting:"
+    files=("$name-amplify_outputs.json")
+    [[ "$key" != "default" ]] || files+=("$(pool_name rotation)-amplify_outputs.json")
+    for file in "${files[@]}"; do
+        object="$S3_FOLDER_KEY/$file"
+        if read_aws_or_missing out "404 NoSuchKey NotFound" s3api head-object --bucket "$CI_BUCKET" --key "$object"; then
+            require_ours s3-object "$object" "$object"
+            mutate "$object" "delete auth/$CI_S3_FOLDER/$file" -- s3api delete-object --bucket "$CI_BUCKET" --key "$object"
+        else
+            say "  = auth/$CI_S3_FOLDER/$file is not uploaded"
+        fi
+    done
+    if [[ "$key" == "default" ]]; then
+        read_all_pages out IdentityPools cognito-identity list-identity-pools
+        ids=$(jq -r --arg n "$CI_IDENTITY_POOL" '.IdentityPools[] | select(.IdentityPoolName == $n) | .IdentityPoolId' <<<"$out")
+        [[ -n "$ids" ]] || say "  = identity pool $CI_IDENTITY_POOL does not exist"
+        for id in $ids; do
+            require_ours identity-pool "$id" "$CI_IDENTITY_POOL"
+            mutate "$CI_IDENTITY_POOL" "delete identity pool $CI_IDENTITY_POOL" -- cognito-identity delete-identity-pool \
+                --identity-pool-id "$id"
+        done
+        if read_aws_or_missing out ResourceNotFoundException lambda get-function-configuration \
+            --function-name "$(fn_name new-password-reset)"; then
+            require_ours lambda "$(fn_name new-password-reset)" "$(fn_name new-password-reset)"
+            mutate "$(fn_name new-password-reset)" "delete Lambda $(fn_name new-password-reset)" -- lambda delete-function \
+                --function-name "$(fn_name new-password-reset)"
+        else
+            say "  = Lambda $(fn_name new-password-reset) does not exist"
+        fi
+    fi
+    read_all_pages out UserPools cognito-idp list-user-pools
+    ids=$(jq -r --arg n "$name" '.UserPools[] | select(.Name == $n) | .Id' <<<"$out")
+    (( $(printf '%s' "$ids" | grep -c .) <= 1 )) || die "more than one user pool is named $name."
+    if [[ -n "$ids" ]]; then
+        require_ours user-pool "$ids" "$name"
+        mutate "$name" "delete user pool $name (its clients and users with it)" -- cognito-idp delete-user-pool \
+            --user-pool-id "$ids"
+    else
+        say "  = user pool $name does not exist"
+    fi
+    if [[ "$CI_MODE" != "apply" ]]; then
+        say "Planned: $CI_MUTATIONS deletions, then the rerun. Nothing was changed."
+        return 0
+    fi
+    say "Deleted: $CI_MUTATIONS calls made. The rerun, --apply --scope $rerun_scope --upload:"
+    rerun_provision "$rerun_scope" plan >/dev/null \
+        || die "the rerun's dry run refused (above), after the deletions: fix that, then run infra/ci/provision-ci.sh --apply --scope $rerun_scope --upload."
+    rerun_provision "$rerun_scope" apply
+}
+
+# replace's rerun: provision, with --upload, in scope $1 and mode $2 (plan or apply), its calls counted from 0, in a
+# subshell, so that nothing it reads or sets reaches replace's own state. Its status is the subshell's.
+rerun_provision() {
+    local CI_MODE="$2" CI_MUTATIONS=0
+    ( set_scope "$1"; UPLOAD=1; provision )
+}
+
 # --- Lambda drift (lambda_code.py) ------------------------------------------------------------------------
 
 # lambda-drift [--record [--accept-deployed]]: read-only. Reads each ccit-ci- Lambda (its name and purpose tag checked
@@ -1414,7 +1681,7 @@ lambda_drift() {
     mkdir -p "$zips"
     deployed="{}"
     BUILD_ZIPS=1
-    for suffix in "${TRIGGERS_ALL[@]}" discard-sender custom-sender new-password-reset; do
+    for suffix in "${ALL_FUNCTIONS[@]}"; do
         name=$(fn_name "$suffix")
         entry="null"
         if read_aws_or_missing out ResourceNotFoundException lambda get-function --function-name "$name"; then
@@ -1583,7 +1850,7 @@ snapshot() {
 # --- teardown ---------------------------------------------------------------------------------------------
 
 teardown() {
-    local out key file id suffix role fn
+    local out key file id suffix role fn spec rule
     if [[ "$CI_MODE" == "apply" ]]; then
         say "Teardown: deleting the ccit-ci- resources, each after its tag check."
     else
@@ -1596,11 +1863,14 @@ teardown() {
             mutate "$key" "delete auth/$CI_S3_FOLDER/$file" -- s3api delete-object --bucket "$CI_BUCKET" --key "$key"
         fi
     done
-    if read_aws_or_missing out ResourceNotFoundException events describe-rule --name "$RULE"; then
-        require_ours rule "$RULE" "$RULE"
-        mutate "$RULE" "remove $RULE's target" -- events remove-targets --rule "$RULE" --ids new-password-reset
-        mutate "$RULE" "delete schedule $RULE" -- events delete-rule --name "$RULE"
-    fi
+    for spec in "$RULE new-password-reset" "$KEY_RULE extend-api-key"; do
+        read -r rule suffix <<<"$spec"
+        if read_aws_or_missing out ResourceNotFoundException events describe-rule --name "$rule"; then
+            require_ours rule "$rule" "$rule"
+            mutate "$rule" "remove $rule's target" -- events remove-targets --rule "$rule" --ids "$suffix"
+            mutate "$rule" "delete schedule $rule" -- events delete-rule --name "$rule"
+        fi
+    done
     read_all_pages out IdentityPools cognito-identity list-identity-pools
     for id in $(jq -r --arg n "$CI_IDENTITY_POOL" '.IdentityPools[] | select(.IdentityPoolName == $n) | .IdentityPoolId' <<<"$out"); do
         require_ours identity-pool "$id" "$CI_IDENTITY_POOL"
@@ -1615,7 +1885,7 @@ teardown() {
                 cognito-idp delete-user-pool --user-pool-id "$id"
         done
     done
-    for suffix in "${TRIGGERS_ALL[@]}" discard-sender custom-sender new-password-reset; do
+    for suffix in "${ALL_FUNCTIONS[@]}"; do
         fn=$(fn_name "$suffix")
         if read_aws_or_missing out ResourceNotFoundException lambda get-function-configuration --function-name "$fn"; then
             require_ours lambda "$fn" "$fn"
@@ -1631,7 +1901,7 @@ teardown() {
         require_ours table "$TABLE" "$TABLE"
         mutate "$TABLE" "delete table $TABLE" -- dynamodb delete-table --table-name "$TABLE"
     fi
-    for suffix in trigger-exec sender-exec appsync-codes cognito-sms reset-exec identity-authenticated \
+    for suffix in trigger-exec sender-exec appsync-codes cognito-sms reset-exec key-exec identity-authenticated \
         identity-unauthenticated; do
         role=$(role_name "$suffix")
         if read_aws_or_missing out NoSuchEntity iam get-role --role-name "$role"; then
@@ -1666,7 +1936,7 @@ teardown() {
         fi
         mutate "$CI_KMS_ALIAS" "delete alias $CI_KMS_ALIAS" -- kms delete-alias --alias-name "$CI_KMS_ALIAS"
     fi
-    for suffix in "${TRIGGERS_ALL[@]}" discard-sender custom-sender new-password-reset; do
+    for suffix in "${ALL_FUNCTIONS[@]}"; do
         file=$(log_group "$suffix")
         read_aws out logs describe-log-groups --log-group-name-prefix "$file"
         if jq -e --arg n "$file" '.logGroups[] | select(.logGroupName == $n)' <<<"$out" >/dev/null; then
@@ -1682,8 +1952,9 @@ teardown() {
 }
 
 case "$COMMAND" in
-    provision|teardown)
+    provision|teardown|replace)
         require_recorded_region
+        [[ "$COMMAND" != "provision" ]] || refuse_phase_1_over_phase_2
         # --apply runs the whole dry run first, quietly, so a refusal anywhere (a ccit-ci- name without the tag, too
         # little quota, another region) stops it before its first change. An uploaded key with other contents is
         # not among them: the dry run has no file to compare it with, so --apply finds it, and refuses the whole

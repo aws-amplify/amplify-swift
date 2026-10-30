@@ -552,7 +552,10 @@ extension MigrateLegacyCredentialStore {
     /// A signed-out record (`{"noCredentials":{}}`) is not absent: a sign-out through the Cognito client's default
     /// session saves it, and migrating over it would sign back in the user who signed out. It counts as a session
     /// does, as the access-group migration weighs it (`AWSCognitoAuthCredentialStore.SavedSession.signedOut`). The
-    /// plugin never saves one (its sign-out deletes the record), so an app on the plugin alone is not affected.
+    /// plugin saves one only under an access group, where its sign-out already cleared the signing-out app's own
+    /// legacy stores (named after its bundle ID), so this rarely changes what a plugin-only app migrates: only legacy
+    /// data that survived or reappeared after a sign-out is dropped, or that another app sharing the group still holds
+    /// in its own legacy stores, as over a login the group holds.
     private func existingSession(
         in amplifyCredentialStore: AmplifyAuthCredentialStoreBehavior
     ) -> ExistingSession {

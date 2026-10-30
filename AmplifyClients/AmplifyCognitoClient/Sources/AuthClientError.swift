@@ -72,7 +72,8 @@ public enum AuthClientError {
     /// internal error (`InternalErrorException`, from either pool), whose suggestion says to retry, and an error
     /// status the SDK does not model, whose suggestion says to retry (a 5xx) or that Cognito refused the request with
     /// an error this client does not recognise. The description has Cognito's message, and the status when there is
-    /// one. Under a sign-out, the revoke's or global sign-out's suggestion says instead that it will not be retried.
+    /// one. In a `.partial` sign-out, the revoke's or global sign-out's suggestion says instead that it will not be
+    /// retried.
     case service(AuthClientServiceErrorCode?, ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// The caller is not allowed to perform the operation: for example, a wrong password, or a
@@ -88,9 +89,9 @@ public enum AuthClientError {
     /// hosted UI's sign-in browser. Also thrown when `cancelWebUISignIn()` or `resetSystemSheet()` closes the
     /// sheet. Nothing was changed; retrying is the user's choice. For the hosted UI's sign-out page it is not
     /// thrown but returned, in `AuthClientSignOutResult.failed`, and the session stays signed in; unless a refresh had
-    /// found the session's refresh token dead while the session was in memory (until every handle and provider for it
-    /// is released, or a relaunch), and the login being signed out still has that token: it is signed out on this
-    /// device anyway, and this is the `.partial` result's `hostedUIError`.
+    /// found the session's refresh token dead (in this launch or an earlier one: the expiry is saved with the session),
+    /// and the login being signed out still has that token: it is signed out on this device anyway, and this is the
+    /// `.partial` result's `hostedUIError`.
     case userCancelled(ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// A local WebAuthn ceremony failed before its result was sent to Cognito. The underlying error is the

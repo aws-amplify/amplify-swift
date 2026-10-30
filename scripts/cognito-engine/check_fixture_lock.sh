@@ -20,7 +20,8 @@
 # release notes (RELEASE-NOTES-PENDING.md):
 #   - GoldenStoredFormat/AWSMobileClient: `locked-keychain` (a failed legacy read keeps the legacy stores and
 #     clears nothing) and `existing-session-present` (legacy data never overwrites a newer saved session);
-#   - GoldenLogs: scenario 4's sign-out line masks the refresh token (re-pinned below);
+#   - GoldenLogs: scenario 4's sign-out line masks the refresh token, and scenario 7's parser line no longer
+#     prints the value it was given (both re-pinned below);
 #   - GoldenKeychainQueries (the released plugin has no keychain seam to record): sign-out and delete user also
 #     clear the three AWSMobileClient services; the legacy migration reads the saved session first, never
 #     writes over a saved login, keeps everything after a failed read, and clears the legacy services only
@@ -63,11 +64,12 @@ BASE_REF="${2:-}"
 #     from the access-group migration's destination; again when the plugin's deleting configuration change
 #     also removed the old configuration's default-session items;
 #   - GoldenConfiguration: the Gen1 and no-sign-in-redirect inputs added, every earlier file unchanged;
-#   - GoldenLogs: the sign-out line's refresh token masked (security review).
+#   - GoldenLogs: the sign-out line's refresh token masked (security review); again when the MFA-type and
+#     auth-factor parsers' error line stopped printing the value it was given (security review).
 LOCKED_TREES=(
     "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenStoredFormat 00adb7ec49b1c25ad64bea2e2e30bbd2d818ad1c"
     "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenErrors bd2e1e15435e04d3153beac98f8370729e8038d6"
-    "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenLogs 14aefeb712286ee38af02d883a50f3bcc774a610"
+    "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenLogs 7ef93ecd4b541aebfd5d32a78a385d62357d3065"
     "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenKeychainQueries 68c9aaedba0002aed68630be394c9fabb1caa03e"
     "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenConfiguration 5f07437e77f8c64dfe7b3a83c598e4be7c2475b7"
 )

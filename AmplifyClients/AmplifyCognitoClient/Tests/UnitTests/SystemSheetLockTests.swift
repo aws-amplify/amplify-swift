@@ -576,6 +576,48 @@ final class SystemSheetLockTests: XCTestCase {
         XCTAssertNil(holder)
     }
 
+    /// A repeat call from a session queued behind its own closing sheet is told the sheet is still closing.
+    ///
+    /// - Given: alice's flow cancelled with `cancel(for:)` and held at a gate, so it is closing, and her retry queued
+    ///   behind it with `.wait`
+    /// - When:
+    ///    - alice asks again, once with `.fail` and once with `.wait`, and the old flow then unwinds
+    /// - Then:
+    ///    - both repeat calls throw `browserBusy(holder: alice)` with the "still closing" message, not the queued one
+    ///      that would say alice waits for a sheet alice holds, and a suggestion to wait for the queued retry rather
+    ///      than to retry; only the first retry is ever queued, and it is served
+    func testARepeatCallQueuedBehindItsOwnClosingSheetIsToldItIsStillClosing() async throws {
+        let lock = SystemSheetLock()
+        let closing = Gate()
+
+        let first = Self.start(lock, Self.alice, .fail, Self.heldBody(closing))
+        await closing.waitForArrivals(1)
+        await lock.cancel(for: Self.alice)
+        await Self.assertCancelled(first)
+        let retry = Self.start(lock, Self.alice, .wait(timeout: 3_600)) { $0.holder }
+        await waitUntil("the retry is queued behind the closing flow") { await lock.waiterCount == 1 }
+
+        let closingError = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice, reason: .stillClosing)
+        for policy in [WebUIOptions.BrowserBusyPolicy.wait(timeout: 3_600), .fail] {
+            let again = Self.start(lock, Self.alice, policy) { $0.holder }
+            do {
+                let value = try await again.value(within: 10)
+                XCTFail("Expected browserBusy, got \(value)")
+            } catch let error as AuthClientError {
+                XCTAssertEqual(error.kind, .browserBusy(holder: Self.alice), "\(policy)")
+                XCTAssertEqual(error.errorDescription, closingError.errorDescription, "\(policy)")
+                XCTAssertNotEqual(error.recoverySuggestion, closingError.recoverySuggestion, "\(policy)")
+                XCTAssertTrue(error.recoverySuggestion.hasPrefix("The earlier call is queued"), error.recoverySuggestion)
+            }
+        }
+        let queued = await lock.waiterCount
+        XCTAssertEqual(queued, 1)
+
+        await closing.open()
+        let retryResult = try await retry.value
+        XCTAssertEqual(retryResult, Self.alice)
+    }
+
     /// A holder whose own caller was cancelled is closing too, so its retry may queue.
     ///
     /// - Given: alice holding the lock with a flow that ignores cancellation, held at a gate

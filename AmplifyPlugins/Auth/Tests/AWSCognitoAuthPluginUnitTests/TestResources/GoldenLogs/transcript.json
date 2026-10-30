@@ -1002,7 +1002,7 @@
       {
         "category" : "AuthFactorType",
         "level" : "error",
-        "message" : "Tried to initialize an unsupported MFA type with value: X",
+        "message" : "Tried to initialize an unsupported MFA type",
         "shape" : "category"
       }
     ]
