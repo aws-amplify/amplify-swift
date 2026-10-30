@@ -36,6 +36,7 @@ plugin uses.
 - [Moving from the Auth plugin](#moving-from-the-auth-plugin)
 - [Changing the configuration](#changing-the-configuration)
 - [Escape hatches and logging](#escape-hatches-and-logging)
+- [User context data for your own requests](#user-context-data-for-your-own-requests)
 - [Differences from the Auth plugin](#differences-from-the-auth-plugin)
 - [Known limitations](#known-limitations)
 
@@ -1838,6 +1839,37 @@ one included, the authorization code), and the value of each user identifier the
 passkey's `userHandle`, and the user's attributes. Debug and verbose lines can still hold Cognito's other challenge
 parameters and responses, a challenge's `session` string among them, so keep a remote sink, such as
 `AmplifyCloudWatchClient`, at `.info` or above. The Auth plugin's own lines are not redacted this way.
+
+## User context data for your own requests
+
+The client adds user context data, which Cognito threat protection uses to assess a request, to the requests it
+sends. If your app also calls the user pool itself through the AWS SDK for Swift, one interceptor adds data in the
+same format, describing the same device and app, to those requests:
+
+```swift
+import AWSCognitoIdentityProvider
+@_spi(AmplifyExperimental) import AmplifyCognitoClient
+
+let contextData = CognitoUserContextData(userPoolId: "us-east-1_EXAMPLE", userPoolClientId: "1example23456789abcdefghij")
+
+var config = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig(region: "us-east-1")
+config.addInterceptorProvider(contextData.interceptorProvider())
+let cognito = CognitoIdentityProviderClient(config: config)
+```
+
+It fills `userContextData` on that app client's `InitiateAuth`, `RespondToAuthChallenge`, `SignUp`, `ConfirmSignUp`,
+`ForgotPassword`, `ConfirmForgotPassword` and `ResendConfirmationCode` requests, for the username each names, unless
+the request already has encoded data. The device ID is the identifier for vendor, or none on macOS, unless you pass a
+`deviceId` closure, such as one that returns a UUID your app keeps in the keychain for the user pool. The device is
+read on the main actor, so don't block the main thread waiting for a call. Your app's aws-sdk-swift resolves to the
+exact version amplify-swift pins.
+
+To add it to your own calls through `getUserPoolClient()`, add the provider in `configureUserPoolClient`; the
+client's own requests already have the data and go out as they are. Your calls' `DeviceId` is then your closure's ID
+or the identifier for vendor, not the remembered device key or per-user ID the client's own requests carry. For a
+request no interceptor sees, such as a hosted UI sign-in URL your app builds itself or an `Admin*` request your
+backend sends, call `contextData.encodedData(username:)` for each request. That method is in the `AmplifyCognitoASF`
+product, which builds neither Amplify nor the AWS SDK.
 
 ## Differences from the Auth plugin
 

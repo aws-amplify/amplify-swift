@@ -11,6 +11,8 @@ included:
   # The engine's SRP and big-integer modules, moved here from AmplifyPlugins/Auth/Sources/. Keep their lint coverage.
   - AmplifyClients/Internal/AmplifySRP/Sources
   - AmplifyClients/Internal/AmplifyBigInteger/Sources
+  # The engine's advanced-security encoder and device readers, moved here from InternalAWSCognitoAuth. Keep their lint coverage.
+  - AmplifyClients/Internal/AmplifyCognitoASF/Sources
 
 excluded:
   - Pods

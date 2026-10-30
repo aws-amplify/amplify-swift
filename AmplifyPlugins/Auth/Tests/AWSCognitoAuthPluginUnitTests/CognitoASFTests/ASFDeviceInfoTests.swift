@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AmplifyCognitoASF
 import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import InternalAWSCognitoAuth
