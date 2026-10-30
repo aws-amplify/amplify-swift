@@ -51,9 +51,19 @@ class AWSDataStoreCompositeSortKeyIdentifierTest: XCTestCase, @unchecked Sendabl
     }
 
     override func tearDown() async throws {
-        try await Amplify.DataStore.clear()
+        var teardownError: Error?
+        do {
+            try await Amplify.DataStore.stop()
+            try await Amplify.DataStore.clear()
+        } catch {
+            teardownError = error
+        }
+        try? await Task.sleep(seconds: 1)
+        // Reset even if stop or clear threw, so the next test can configure Amplify.
         await Amplify.reset()
-        try await Task.sleep(seconds: 1)
+        if let teardownError {
+            throw teardownError
+        }
     }
 
     func waitDataStoreReady() async throws {
@@ -101,6 +111,14 @@ class AWSDataStoreCompositeSortKeyIdentifierTest: XCTestCase, @unchecked Sendabl
         await fulfillment(of: [commentCreated], timeout: 5)
     }
 
+    /// Query a synced model whose sort key is an `ID`.
+    ///
+    /// - Given: a `Post9` and its `Comment9` saved to DataStore, and the comment synced to the cloud
+    /// - When:
+    ///    - the comment is fetched through the API by its `commentId` and `postId`
+    /// - Then:
+    ///    - the API returns the comment with the same identifier
+    ///
     func testQueryCreatedModel_withSortKeyInIdType_success() async throws {
         try await waitDataStoreReady()
         var requests: Set<AnyCancellable> = []
@@ -129,7 +147,8 @@ class AWSDataStoreCompositeSortKeyIdentifierTest: XCTestCase, @unchecked Sendabl
 
         switch queryResult {
         case .success(let queriedComment):
-            XCTAssertEqual(comment.identifier, queriedComment!.identifier)
+            let queriedComment = try XCTUnwrap(queriedComment)
+            XCTAssertEqual(comment.identifier, queriedComment.identifier)
         case .failure(let error):
             XCTFail("Failed to query comment \(error)")
         }

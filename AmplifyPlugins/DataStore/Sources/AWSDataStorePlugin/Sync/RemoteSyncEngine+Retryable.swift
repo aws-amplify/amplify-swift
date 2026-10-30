@@ -56,6 +56,8 @@ extension RemoteSyncEngine {
         log.verbose("\(#function) scheduling retry for restarting remote sync engine")
         remoteSyncTopicPublisher.send(.schedulingRestart)
         resolveReachabilityPublisher()
+        // A replaced notifier keeps itself alive through its timer and would still restart the engine
+        mutationRetryNotifier?.cancel()
         mutationRetryNotifier = MutationRetryNotifier(
             advice: advice,
             networkReachabilityPublisher: networkReachabilityPublisher

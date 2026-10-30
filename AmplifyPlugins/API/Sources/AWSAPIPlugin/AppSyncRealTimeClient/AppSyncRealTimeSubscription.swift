@@ -42,6 +42,16 @@ actor AppSyncRealTimeSubscription {
         stateBox.value
     }
 
+    /// Longer than the 10 s AppSync gives a Lambda authorizer, so a slow but successful start isn't reported as failed
+    static let startTimeout: TimeInterval = 15
+
+    /// Failures no server response reports, such as a start that is never acknowledged. Boxed like `stateBox`.
+    private nonisolated let unreportedFailuresBox = UncheckedSendable(PassthroughSubject<AppSyncSubscriptionEvent, Never>())
+
+    nonisolated var unreportedFailures: AnyPublisher<AppSyncSubscriptionEvent, Never> {
+        unreportedFailuresBox.value.eraseToAnyPublisher()
+    }
+
     /// Set when subscribe() fails with a non-recoverable error (e.g. expired
     /// auth). A terminated subscription is not resubscribed on reconnect.
     private var isTerminated = false
@@ -65,6 +75,7 @@ actor AppSyncRealTimeSubscription {
 
     deinit {
         self.state.send(completion: .finished)
+        unreportedFailuresBox.value.send(completion: .finished)
     }
 
     func subscribe() async throws {
@@ -95,7 +106,8 @@ actor AppSyncRealTimeSubscription {
             }) { [weak self] in
                 guard let self else { return }
                 try await appSyncRealTimeClient?.sendRequest(
-                    .start(.init(id: id, data: query, auth: nil))
+                    .start(.init(id: id, data: query, auth: nil)),
+                    timeout: Self.startTimeout
                 )
             }
         } catch {
@@ -106,6 +118,10 @@ actor AppSyncRealTimeSubscription {
                 isTerminated = true
             }
             state.send(.failure)
+            // On a live connection nothing else reports an unacknowledged start; a dropped one is resumed on reconnect
+            if (error as? AppSyncRealTimeRequest.Error) == .timeout, await appSyncRealTimeClient?.isConnected == true {
+                unreportedFailuresBox.value.send(.error([WebSocketClient.Error.connectionLost]))
+            }
             throw error
         }
 

@@ -17,7 +17,9 @@ extension Statement {
     ) throws -> [Model] {
         var models = [Model]()
 
-        for row in self {
+        // Not for-in: SQLite.swift's `next()` uses `try!`, so a failed step would crash instead of throwing.
+        let iterator = makeIterator()
+        while let row = try iterator.failableNext() {
             let modelValues = try convert(
                 row: row,
                 withSchema: modelSchema,

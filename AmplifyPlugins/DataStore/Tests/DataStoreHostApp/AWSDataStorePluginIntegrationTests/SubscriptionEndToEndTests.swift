@@ -35,7 +35,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Senda
     ///    - I receive subscriptions from other systems for syncable models
     func testSubscribeReceivesCreateMutateDelete() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         // Filter all events to ensure they have this ID. This prevents us from overfulfilling on
         // unrelated subscriptions

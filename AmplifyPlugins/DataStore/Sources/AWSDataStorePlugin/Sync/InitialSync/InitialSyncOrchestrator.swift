@@ -13,6 +13,8 @@ import Foundation
 protocol InitialSyncOrchestrator {
     var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> { get }
     func sync(completion: @escaping @Sendable (Result<Void, DataStoreError>) -> Void)
+    /// Stops syncing before any more results are reconciled or recorded as synced
+    func cancel()
 }
 
 // For testing
@@ -201,6 +203,16 @@ extension AWSInitialSyncOrchestrator: DefaultLogger {
     }
     var log: Logger {
         Self.log
+    }
+}
+
+extension AWSInitialSyncOrchestrator {
+    func cancel() {
+        syncOperationQueue.cancelAllOperations()
+        // Operations cancelled before they start never complete, so their sinks would keep this alive
+        concurrencyQueue.async {
+            self.initialSyncOperationSinks = [:]
+        }
     }
 }
 

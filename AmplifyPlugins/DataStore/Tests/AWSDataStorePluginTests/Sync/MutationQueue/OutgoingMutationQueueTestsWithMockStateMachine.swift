@@ -235,6 +235,149 @@ class OutgoingMutationQueueMockStateTest: XCTestCase, @unchecked Sendable {
 
         await fulfillment(of: [processEvent], timeout: 1)
     }
+
+    /// A processed event is deleted through the queue's own storage adapter.
+    ///
+    /// - Given: A started queue whose API call succeeds
+    /// - When:
+    ///    - The queue sends a mutation event
+    /// - Then:
+    ///    - The event is deleted once, through the queue's storage adapter
+    ///    - `.processedEvent` is notified after the delete
+    ///
+    func testProcessedEvent_isDeletedThroughTheQueueStorageAdapter() async throws {
+        let adapter = try XCTUnwrap(storageAdapter as? MockSQLiteStorageEngineAdapter)
+        let deletedIds = AtomicValue<[String]>(initialValue: [])
+        let deleted = expectation(description: "event deleted through the queue's storage adapter")
+        deleted.assertForOverFulfill = false
+        adapter.responders[.deleteUntypedModel] = DeleteUntypedModelCompletionResponder { modelType, id in
+            XCTAssertEqual(modelType.modelName, MutationEvent.modelName)
+            deletedIds.append(id)
+            deleted.fulfill()
+            return .emptyResult
+        }
+
+        let post = Post(title: "title", content: "content", createdAt: .now())
+        let mutationEvent = try MutationEvent(model: post, modelSchema: post.schema, mutationType: .create)
+        apiBehavior.responders[.mutateRequestResponse] = try successfulMutateResponder(for: post)
+        await startQueue()
+
+        let enqueued = expectation(description: "enqueuedEvent")
+        let processed = expectation(description: "processedEvent")
+        // One criteria per action, each accepting either, since the two can arrive in any order.
+        let criteria: (OutgoingMutationQueue.Action) -> Void = { action in
+            switch action {
+            case .enqueuedEvent:
+                enqueued.fulfill()
+            case .processedEvent:
+                processed.fulfill()
+            default:
+                XCTFail("Unexpected action: \(action.displayName)")
+            }
+        }
+        stateMachine.pushExpectActionCriteria(expectActionCriteria: criteria)
+        stateMachine.pushExpectActionCriteria(expectActionCriteria: criteria)
+        eventSource.pushMutationEvent(futureResult: .success(mutationEvent))
+        stateMachine.state = .requestingEvent
+
+        await fulfillment(of: [enqueued], timeout: 5)
+        await fulfillment(of: [deleted, processed], timeout: 5, enforceOrder: true)
+        XCTAssertEqual(deletedIds.get(), [mutationEvent.id])
+    }
+
+    /// A result still being processed when the queue stops is dropped.
+    ///
+    /// - Given: A started queue whose successful result is held inside reconciliation
+    /// - When:
+    ///    - The queue stops
+    ///    - The held result is then released
+    /// - Then:
+    ///    - No action is notified, so no `.processedEvent`
+    ///    - The event is not deleted
+    ///
+    func testResultAfterStop_isDropped() async throws {
+        let adapter = try XCTUnwrap(storageAdapter as? MockSQLiteStorageEngineAdapter)
+        let deletedAfterStop = expectation(description: "event deleted after the queue stopped")
+        deletedAfterStop.isInverted = true
+        adapter.responders[.deleteUntypedModel] = DeleteUntypedModelCompletionResponder { _, _ in
+            deletedAfterStop.fulfill()
+            return .emptyResult
+        }
+
+        let mockReconciliationQueue = try XCTUnwrap(reconciliationQueue as? MockReconciliationQueue)
+        let offerEntered = expectation(description: "result offered to reconciliation")
+        let offerReturned = expectation(description: "held result released")
+        let releaseOffer = DispatchSemaphore(value: 0)
+        let offers = AtomicValue(initialValue: 0)
+        mockReconciliationQueue.listeners.append { message in
+            guard message.hasPrefix("offer"), offers.increment() == 1 else { return }
+            offerEntered.fulfill()
+            // Holds the result on a GCD thread until the queue has stopped; capped for a failing test.
+            XCTAssertEqual(releaseOffer.wait(timeout: .now() + 5), .success)
+            offerReturned.fulfill()
+        }
+
+        let post = Post(title: "title", content: "content", createdAt: .now())
+        let mutationEvent = try MutationEvent(model: post, modelSchema: post.schema, mutationType: .create)
+        apiBehavior.responders[.mutateRequestResponse] = try successfulMutateResponder(for: post)
+        await startQueue()
+
+        let enqueued = expectation(description: "enqueuedEvent")
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action, OutgoingMutationQueue.Action.enqueuedEvent)
+            enqueued.fulfill()
+        }
+        eventSource.pushMutationEvent(futureResult: .success(mutationEvent))
+        stateMachine.state = .requestingEvent
+        await fulfillment(of: [enqueued, offerEntered], timeout: 5)
+
+        let stopped = expectation(description: "doneStopping")
+        stateMachine.pushExpectActionCriteria { action in
+            guard case .doneStopping = action else {
+                XCTFail("Unexpected action: \(action.displayName)")
+                return
+            }
+            stopped.fulfill()
+        }
+        stateMachine.state = .stopping {}
+        await fulfillment(of: [stopped], timeout: 5)
+
+        let actionAfterStop = expectation(description: "action notified after the queue stopped")
+        actionAfterStop.isInverted = true
+        stateMachine.pushExpectActionCriteria { _ in
+            actionAfterStop.fulfill()
+        }
+        releaseOffer.signal()
+
+        await fulfillment(of: [offerReturned], timeout: 5)
+        await fulfillment(of: [actionAfterStop, deletedAfterStop], timeout: 1)
+    }
+
+    private func startQueue() async {
+        let receivedSubscription = expectation(description: "receivedSubscription")
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedSubscription)
+            receivedSubscription.fulfill()
+        }
+        stateMachine.state = .starting(apiBehavior, publisher, reconciliationQueue)
+        await fulfillment(of: [receivedSubscription], timeout: 5)
+    }
+
+    private func successfulMutateResponder(for post: Post) throws -> MutateRequestResponder<MutationSync<AnyModel>> {
+        let response = try MutationSync(
+            model: post.eraseToAnyModel(),
+            syncMetadata: MutationSyncMetadata(
+                modelId: post.id,
+                modelName: Post.modelName,
+                deleted: false,
+                lastChangedAt: Date().unixSeconds,
+                version: 1
+            )
+        )
+        return MutateRequestResponder<MutationSync<AnyModel>> { _ in
+            .success(response)
+        }
+    }
 }
 
 extension OutgoingMutationQueue.State: Equatable {
