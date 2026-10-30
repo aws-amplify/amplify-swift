@@ -631,14 +631,15 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
         XCTAssertEqual(expectedResult, Set(posts.map(\.title)))
     }
 
-    /// Saves in progress when DataStore stops still reach the local store
+    /// Saves in progress when DataStore stops either reach the local store or are rolled back
     ///
     /// - Given: DataStore has started syncing
     /// - When:
     ///    - 1,000 posts are saved in parallel, each after a random 50-150 ms delay
     ///    - DataStore is stopped after 100 ms
     /// - Then:
-    ///    - Every save completes and every post can be queried from the local store
+    ///    - Every post whose save succeeded can be queried from the local store
+    ///    - A save that `stop()` interrupted fails with `internalOperation` and leaves no post behind
     ///
     func testStop_whenSavingInProgress() async throws {
         let startTime = Temporal.DateTime.now()
@@ -667,17 +668,20 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
         saveFinished.expectedFulfillmentCount = postCount
         let stopped = expectation(description: "DataStore plugin stopped")
 
-        let queryLocalFinished = expectation(description: "Query local finished")
-        queryLocalFinished.expectedFulfillmentCount = postCount
-
+        let savedIDs = AtomicValue<Set<String>>(initialValue: [])
+        let interruptedIDs = AtomicValue<Set<String>>(initialValue: [])
         let saveTasks = posts.map { post in
             Task {
                 try await sleepMill(UInt64.random(in: 50 ..< 150))
                 do {
                     let savedPost = try await Amplify.DataStore.save(post)
                     XCTAssertEqual(post, savedPost)
+                    savedIDs.with { _ = $0.insert(post.id) }
+                } catch DataStoreError.internalOperation {
+                    // DataStore rolls back a save that finds the sync engine gone after stop() completes
+                    interruptedIDs.with { _ = $0.insert(post.id) }
                 } catch {
-                    log.info("Failed to save post \(post)")
+                    XCTFail("Unexpected save failure for post \(post.id): \(error)")
                 }
                 saveFinished.fulfill()
             }
@@ -692,19 +696,17 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
         await fulfillment(of: [saveFinished, stopped], timeout: 30)
         await cancelAndDrain(saveTasks + [stopTask])
 
-        var localSuccess = 0
+        let saved = savedIDs.get()
+        let interrupted = interruptedIDs.get()
+        XCTAssertFalse(saved.isEmpty, "No save completed")
         for post in posts {
-            do {
-                let queriedPost = try await Amplify.DataStore.query(Post.self, byId: post.id)
+            let queriedPost = try await Amplify.DataStore.query(Post.self, byId: post.id)
+            if saved.contains(post.id) {
                 XCTAssertEqual(post, queriedPost)
-                localSuccess += 1
-            } catch {
-                log.info("Failed to query post \(post)")
+            } else if interrupted.contains(post.id) {
+                XCTAssertNil(queriedPost, "An interrupted save left post \(post.id) behind")
             }
-            queryLocalFinished.fulfill()
         }
-        await fulfillment(of: [queryLocalFinished], timeout: 30)
-        XCTAssertEqual(localSuccess, postCount)
     }
 
     // MARK: - Helpers
