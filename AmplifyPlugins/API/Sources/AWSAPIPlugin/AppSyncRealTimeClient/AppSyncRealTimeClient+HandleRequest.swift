@@ -104,9 +104,10 @@ extension AppSyncRealTimeClient {
                 let errors = errorsJson.asArray ?? [errorsJson]
                 let reqeustErrors = errors.compactMap(AppSyncRealTimeRequest.parseResponseError(error:))
                 if reqeustErrors.isEmpty {
-                    return Empty(
+                    // Still a rejection; waiting would end in a timeout, reported as a second failure
+                    return Fail(
                         outputType: AppSyncRealTimeResponse.self,
-                        failureType: AppSyncRealTimeRequest.Error.self
+                        failure: .unknown(message: "Unrecognized error response", causedBy: nil, payload: response.payload?.asObject)
                     ).eraseToAnyPublisher()
                 } else {
                     return Fail(
@@ -122,10 +123,11 @@ extension AppSyncRealTimeClient {
                 ).eraseToAnyPublisher()
             }
 
-        case .failure:
+        case .failure(let error):
+            // Not `.timeout`: subscribers already get this error, and a timeout means no response came
             return Fail(
                 outputType: AppSyncRealTimeResponse.self,
-                failure: .timeout
+                failure: .unknown(message: "Connection failed while waiting for a response", causedBy: error, payload: nil)
             ).eraseToAnyPublisher()
         }
 

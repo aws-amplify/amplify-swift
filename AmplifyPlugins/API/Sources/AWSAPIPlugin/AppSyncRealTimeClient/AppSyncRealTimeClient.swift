@@ -49,6 +49,8 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     /// Guards against overlapping reconnect attempts from the heartbeat-timeout
     /// and connection-drop paths.
     private var isReconnecting = false
+    /// Numbers connection attempts, so a failed attempt can tell whether `.connecting` is still its own
+    private var connectionAttempt = 0
     /// Writable data stream convert WebSocketEvent to AppSyncRealTimeResponse
     /// Backing store for ``subject``. `PassthroughSubject` is not `Sendable` but `send` is safe from
     /// any thread, and this is `nonisolated` so it can be reached without hopping onto the actor.
@@ -60,6 +62,11 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
 
     var isConnected: Bool {
         state.value == .connected
+    }
+
+    /// Every state the client goes through, for tests
+    var statePublisher: AnyPublisher<State, Never> {
+        state.eraseToAnyPublisher()
     }
 
     var numberOfSubscriptions: Int {
@@ -113,6 +120,11 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
             return
         }
 
+        // A cancelled task's attempt would end at once, so it must not claim `.connecting`
+        try Task.checkCancellation()
+
+        connectionAttempt += 1
+        let attempt = connectionAttempt
         state.send(.connecting)
         log.debug("[AppSyncRealTimeClient] client start connecting")
 
@@ -133,6 +145,20 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
                 log.debug("[AppSyncRealTimeClient] Non-recoverable error, stopping reconnect")
                 await webSocketClient.disconnect()
                 state.send(.disconnected)
+            } else if attempt == connectionAttempt, state.value == .connecting {
+                let retriesRanOut = !(error is CancellationError)
+                if retriesRanOut {
+                    // Close the abandoned handshake, so a late ack can't resume subscriptions told it failed
+                    await webSocketClient.disconnect()
+                }
+                // Release `.connecting`, or every later connect() returns early; unless a newer attempt took it meanwhile
+                if attempt == connectionAttempt {
+                    state.send(.disconnected)
+                    if retriesRanOut {
+                        // Subscriptions waiting on this attempt may have heard nothing else
+                        subject.send(.failure(WebSocketClient.Error.connectionLost))
+                    }
+                }
             }
             throw error
         }
@@ -198,7 +224,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         }
 
         return await filterAppSyncSubscriptionEvent(with: id)
-            .merge(with: (subscription.publisher).toAppSyncSubscriptionEventStream())
+            .merge(with: (subscription.publisher).toAppSyncSubscriptionEventStream(), subscription.unreportedFailures)
             .eraseToAnyPublisher()
     }
 
