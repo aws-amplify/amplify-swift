@@ -234,7 +234,6 @@ class StorageMultipartUploadSession: @unchecked Sendable {
         do {
             let reference = StorageTaskReference(transferTask)
             onEvent(.initiated(reference))
-            resetProgressStallTimer()
             logger.debug("Creating Multipart Upload")
             try client.createMultipartUpload()
         } catch {
@@ -266,6 +265,12 @@ class StorageMultipartUploadSession: @unchecked Sendable {
         stallTimerQueue.async { [weak self] in
             self?.stallTimerWorkItem = nil
         }
+        // Only a part transfer can stall; ignore a timer that outlived one.
+        let isUploadingParts = serialQueue.sync {
+            guard case .parts = multipartUpload else { return false }
+            return !multipartUpload.partsCompleted
+        }
+        guard isUploadingParts else { return }
         handle(multipartUploadEvent: .aborting(error: StorageError.unknown("Upload cancelled due to progress stall timeout.", nil)))
         logger.debug("Multipart upload cancelled due to progress stall timeout")
     }
@@ -392,6 +397,8 @@ class StorageMultipartUploadSession: @unchecked Sendable {
                 }
 
                 if let uploadId = snapshot.uploadId {
+                    // Every part is done, so nothing can reset the timer while CompleteMultipartUpload runs.
+                    cancelProgressStallTimer()
                     try client.completeMultipartUpload(uploadId: uploadId)
                 } else {
                     throw Failure.invalidStateTransition

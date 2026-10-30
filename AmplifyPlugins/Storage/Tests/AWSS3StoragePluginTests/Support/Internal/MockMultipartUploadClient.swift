@@ -10,7 +10,8 @@ import XCTest
 @testable import Amplify
 @testable import AWSS3StoragePlugin
 
-class MockMultipartUploadClient: StorageMultipartUploadClient {
+// `@unchecked Sendable`: `completeMultipartUploadDelay` reports completion from a global queue; the counters are lock-guarded.
+class MockMultipartUploadClient: StorageMultipartUploadClient, @unchecked Sendable {
 
     enum Failure: Error {
         case sessionNotIntegrated
@@ -39,6 +40,10 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
     var shouldFailPartUpload: ((StorageMultipartUploadSession, PartNumber) -> Bool)?
     /// When true, uploadPart only reports started but never progress/completed (for stall timeout testing)
     var shouldStallPartUpload = false
+    /// Delays the `.completed` event from `completeMultipartUpload`, simulating a slow request.
+    var completeMultipartUploadDelay: TimeInterval = 0
+    /// Overrides the eTag a completed part reports. An empty eTag fails `validateForCompletion()`.
+    var eTagForPart: ((PartNumber) -> String)?
     var didCompletePartUpload: ((StorageMultipartUploadSession, PartNumber, String, TaskIdentifier) -> Void)?
     var didFailPartUpload: ((StorageMultipartUploadSession, PartNumber, Error) -> Void)?
     var didCompleteMultipartUpload: ((StorageMultipartUploadSession, UploadID) -> Void)?
@@ -93,7 +98,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
 
         if let part = session.part(for: partNumber) {
             if part.inProgress {
-                let eTag = UUID().uuidString
+                let eTag = eTagForPart?(partNumber) ?? UUID().uuidString
                 session.handle(uploadPartEvent: .completed(partNumber: partNumber, eTag: eTag, taskIdentifier: taskIdentifier))
                 didCompletePartUpload?(session, partNumber, eTag, taskIdentifier)
             }
@@ -105,8 +110,16 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
 
         increment(\.completeMultipartUploadCount)
 
-        session.handle(multipartUploadEvent: .completed(uploadId: uploadId))
-        didCompleteMultipartUpload?(session, uploadId)
+        guard completeMultipartUploadDelay > 0 else {
+            session.handle(multipartUploadEvent: .completed(uploadId: uploadId))
+            didCompleteMultipartUpload?(session, uploadId)
+            return
+        }
+
+        DispatchQueue.global().asyncAfter(deadline: .now() + completeMultipartUploadDelay) {
+            session.handle(multipartUploadEvent: .completed(uploadId: uploadId))
+            self.didCompleteMultipartUpload?(session, uploadId)
+        }
     }
 
     func abortMultipartUpload(uploadId: UploadID, error: Error?) throws {
