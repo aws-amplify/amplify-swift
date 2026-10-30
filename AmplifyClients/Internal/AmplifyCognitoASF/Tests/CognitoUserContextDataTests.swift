@@ -156,9 +156,7 @@ final class CognitoUserContextDataTests: XCTestCase {
     ///
     func testAnEmptyPoolOrClientIdGivesNilWithoutReadingTheDevice() async {
         for (pool, client) in [("", clientId), (userPoolId, "")] {
-            let encoded = await CognitoUserContextData.encodedData(
-                userPoolId: pool,
-                userPoolClientId: client,
+            let encoded = await CognitoUserContextData(userPoolId: pool, userPoolClientId: client).encodedData(
                 username: "alice",
                 deviceId: nil,
                 device: UnreadableDevice(),
@@ -178,9 +176,7 @@ final class CognitoUserContextDataTests: XCTestCase {
     ///    - it gives `nil`
     ///
     func testAClientIdThatIsNotASCIIGivesNil() async {
-        let encoded = await CognitoUserContextData.encodedData(
-            userPoolId: userPoolId,
-            userPoolClientId: "🕺🏼",
+        let encoded = await CognitoUserContextData(userPoolId: userPoolId, userPoolClientId: "🕺🏼").encodedData(
             username: "alice",
             deviceId: nil,
             device: FixedDevice(),
@@ -194,23 +190,16 @@ final class CognitoUserContextDataTests: XCTestCase {
     ///
     /// - Given: The system's device and app
     /// - When:
-    ///    - `encodedData(userPoolId:userPoolClientId:username:deviceId:)` is called with an empty user pool ID, and
+    ///    - `encodedData(username:deviceId:)` is called on data made with an empty user pool ID, and on data made
     ///      with an empty app client ID
     /// - Then:
     ///    - both give `nil`
     ///
     func testThePublicMethodGivesNilForAnEmptyId() async {
-        let withoutPool = await CognitoUserContextData.encodedData(
-            userPoolId: "",
-            userPoolClientId: clientId,
-            username: "alice"
-        )
-        let withoutClient = await CognitoUserContextData.encodedData(
-            userPoolId: userPoolId,
-            userPoolClientId: "",
-            username: "alice",
-            deviceId: "device-key"
-        )
+        let withoutPool = await CognitoUserContextData(userPoolId: "", userPoolClientId: clientId)
+            .encodedData(username: "alice")
+        let withoutClient = await CognitoUserContextData(userPoolId: userPoolId, userPoolClientId: "")
+            .encodedData(username: "alice", deviceId: "device-key")
 
         XCTAssertNil(withoutPool)
         XCTAssertNil(withoutClient)
@@ -221,23 +210,16 @@ final class CognitoUserContextDataTests: XCTestCase {
     ///
     /// - Given: The system's device and app, on macOS, where reading them never blocks a simulator
     /// - When:
-    ///    - the data is encoded for a pool, an app client, a username and a device ID, and again without a device ID
+    ///    - one value made for a pool and an app client encodes the data for a username and a device ID, and again
+    ///      without a device ID
     /// - Then:
     ///    - both are signed with the app client ID, name the pool and the user, and carry the main bundle's ID
     ///    - `DeviceId` is the given ID, and without one there is none, as macOS has no identifier for vendor
     ///
     func testThePublicMethodEncodesTheSystemsDeviceAndApp() async throws {
-        let withDeviceId = await CognitoUserContextData.encodedData(
-            userPoolId: userPoolId,
-            userPoolClientId: clientId,
-            username: "alice",
-            deviceId: "device-key"
-        )
-        let withoutDeviceId = await CognitoUserContextData.encodedData(
-            userPoolId: userPoolId,
-            userPoolClientId: clientId,
-            username: "alice"
-        )
+        let contextData = CognitoUserContextData(userPoolId: userPoolId, userPoolClientId: clientId)
+        let withDeviceId = await contextData.encodedData(username: "alice", deviceId: "device-key")
+        let withoutDeviceId = await contextData.encodedData(username: "alice")
 
         for encoded in [withDeviceId, withoutDeviceId] {
             let envelope = try Self.envelope(XCTUnwrap(encoded))
@@ -258,9 +240,7 @@ final class CognitoUserContextDataTests: XCTestCase {
         deviceId: String? = "device-key",
         device: FixedDevice = FixedDevice()
     ) async -> String? {
-        await CognitoUserContextData.encodedData(
-            userPoolId: userPoolId,
-            userPoolClientId: clientId,
+        await CognitoUserContextData(userPoolId: userPoolId, userPoolClientId: clientId).encodedData(
             username: username,
             deviceId: deviceId,
             device: device,

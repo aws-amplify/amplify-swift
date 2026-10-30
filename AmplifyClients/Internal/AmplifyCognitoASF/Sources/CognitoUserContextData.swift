@@ -10,24 +10,39 @@ import Foundation
 /// User context data for Amazon Cognito threat protection (advanced security), for the user pool requests your app
 /// sends itself. It replaces `AWSCognitoIdentityProviderASF` from the AWS SDK for iOS.
 ///
+/// Make one for your user pool and app client. If your app sends its requests with the AWS SDK for Swift, add
+/// `interceptorProvider(deviceId:)`, from `AmplifyCognitoClient`, to the `CognitoIdentityProviderClient`'s
+/// configuration once, and each of that app client's requests that takes the data gets it. Otherwise call
+/// `encodedData(username:deviceId:)` for each request.
+///
 /// `AWSCognitoAuthPlugin` and `AmplifyCognitoClient` already add this data to the requests they send.
 ///
 /// Experimental: add the `AmplifyCognitoASF` product and import it with
 /// `@_spi(AmplifyExperimental) import AmplifyCognitoASF`. Any release may change it.
 @_spi(AmplifyExperimental)
-public enum CognitoUserContextData {
+public struct CognitoUserContextData: Sendable {
 
-    /// Returns the encoded user context data for one request to a user pool.
+    package let userPoolId: String
+
+    package let userPoolClientId: String
+
+    /// - Parameters:
+    ///   - userPoolId: The user pool ID, such as `us-east-1_EXAMPLE`.
+    ///   - userPoolClientId: The ID of the app client that sends the requests.
+    public init(userPoolId: String, userPoolClientId: String) {
+        self.userPoolId = userPoolId
+        self.userPoolClientId = userPoolClientId
+    }
+
+    /// Returns the encoded user context data for one request to the user pool.
     ///
     /// Pass it as the `encodedData` of the request's `UserContextDataType`, for example in an `InitiateAuth` sent
     /// with the AWS SDK for Swift, or send it to your backend for the `ContextDataType` of an `Admin*` request:
     ///
     /// ```swift
-    /// let encodedData = await CognitoUserContextData.encodedData(
-    ///     userPoolId: userPoolId,
-    ///     userPoolClientId: clientId,
-    ///     username: username
-    /// )
+    /// let contextData = CognitoUserContextData(userPoolId: userPoolId, userPoolClientId: clientId)
+    ///
+    /// let encodedData = await contextData.encodedData(username: username)
     /// let input = InitiateAuthInput(
     ///     authFlow: .userPasswordAuth,
     ///     authParameters: ["USERNAME": username, "PASSWORD": password],
@@ -43,22 +58,13 @@ public enum CognitoUserContextData {
     /// device is read on the main actor.
     ///
     /// - Parameters:
-    ///   - userPoolId: The user pool ID, such as `us-east-1_EXAMPLE`.
-    ///   - userPoolClientId: The ID of the app client that sends the request.
     ///   - username: The username the request sends. `nil` sends `"unknown"`.
-    ///   - deviceId: An ID that stays the same for this device, such as the device key of a remembered device.
-    ///     `nil` sends the identifier for vendor, or no device ID where there is none, as on macOS.
-    /// - Returns: The encoded data, or `nil` if `userPoolId` or `userPoolClientId` is empty, or the client ID isn't
+    ///   - deviceId: An ID that stays the same for this device, such as a UUID your app keeps in the keychain for the
+    ///     user pool. `nil` sends the identifier for vendor, or no device ID where there is none, as on macOS.
+    /// - Returns: The encoded data, or `nil` if the user pool ID or the app client ID is empty, or the client ID isn't
     ///   ASCII.
-    public static func encodedData(
-        userPoolId: String,
-        userPoolClientId: String,
-        username: String?,
-        deviceId: String? = nil
-    ) async -> String? {
+    public func encodedData(username: String?, deviceId: String? = nil) async -> String? {
         await encodedData(
-            userPoolId: userPoolId,
-            userPoolClientId: userPoolClientId,
             username: username,
             deviceId: deviceId,
             device: ASFDeviceInfo(id: deviceId ?? ""),
@@ -67,9 +73,7 @@ public enum CognitoUserContextData {
     }
 
     /// The public method over the given device and app, which are read only when both IDs are non-empty.
-    package static func encodedData( // swiftlint:disable:this function_parameter_count
-        userPoolId: String,
-        userPoolClientId: String,
+    package func encodedData(
         username: String?,
         deviceId: String?,
         device: ASFDeviceBehavior,
