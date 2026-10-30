@@ -56,6 +56,9 @@ extension RemoteSyncEngine {
             case (.notifyingSyncStarted, .notifiedSyncStarted):
                 return .syncEngineActive
 
+            case (.notifyingSyncStarted, .errored(let error)):
+                return .cleaningUp(error)
+
             case (.syncEngineActive, .errored(let error)):
                 return .cleaningUp(error)
 

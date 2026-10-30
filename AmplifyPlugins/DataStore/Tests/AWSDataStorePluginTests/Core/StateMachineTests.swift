@@ -212,3 +212,58 @@ extension StateMachineTests {
         case decrement
     }
 }
+
+extension StateMachineTests {
+    /// `currentState` waits for a notify that is still publishing, then returns the new state.
+    ///
+    /// - Given: A state machine whose `$state` subscriber is still running for a new state
+    /// - When:
+    ///    - Another thread reads `currentState` meanwhile
+    /// - Then:
+    ///    - It gets the new state. `@Published` publishes before it stores, so `state` itself is still the old one then
+    ///
+    func testCurrentState_readWhileANotifyIsPublishing_returnsTheNewState() {
+        let stateMachine = StateMachine<Int, Int>(initialState: 0) { state, action in state + action }
+        let readValue = AtomicValue<Int?>(initialValue: nil)
+        let read = expectation(description: "currentState was read")
+        let sink = stateMachine.$state.dropFirst().sink { _ in
+            DispatchQueue.global().async {
+                readValue.set(stateMachine.currentState)
+                read.fulfill()
+            }
+            // Keeps the notify in progress, so the read above happens before the new state is stored
+            Thread.sleep(forTimeInterval: 0.05)
+        }
+
+        stateMachine.notify(action: 1)
+
+        wait(for: [read], timeout: 1)
+        XCTAssertEqual(readValue.get(), 1)
+        sink.cancel()
+    }
+
+    /// `notify(action:if:)` does nothing when its condition fails.
+    ///
+    /// - Given: A state machine
+    /// - When:
+    ///    - An action is notified with a condition that fails for the current state
+    /// - Then:
+    ///    - The state neither changes nor is republished
+    ///
+    func testNotifyIf_whenTheConditionFails_neitherResolvesNorPublishes() {
+        let stateMachine = StateMachine<Int, Int>(initialState: 0) { state, action in state + action }
+        let publications = AtomicValue(initialValue: 0)
+        let sink = stateMachine.$state.dropFirst().sink { _ in _ = publications.increment() }
+
+        stateMachine.notify(action: 1, if: { $0 > 0 })
+
+        XCTAssertEqual(stateMachine.currentState, 0)
+        XCTAssertEqual(publications.get(), 0)
+
+        stateMachine.notify(action: 1, if: { $0 == 0 })
+
+        XCTAssertEqual(stateMachine.currentState, 1)
+        XCTAssertEqual(publications.get(), 1)
+        sink.cancel()
+    }
+}

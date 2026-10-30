@@ -43,6 +43,26 @@ class StateMachine<State, Action> {
         }
     }
 
+    /// The state once any notify in progress has stored it. `@Published` delivers a new state to `$state`
+    /// subscribers before storing it, so reading `state` from work they start can still see the old one.
+    /// Don't read it from a `$state` subscriber itself, which runs inside `notify` and would deadlock.
+    var currentState: State {
+        queue.sync { state }
+    }
+
+    /// Like `notify(action:)`, but only when `condition` holds for the state, checked under the same lock
+    func notify(action: Action, if condition: (State) -> Bool) {
+        queue.sync {
+            guard condition(self.state) else {
+                log.verbose("Not notifying \(action): the condition does not hold for \(self.state)")
+                return
+            }
+            log.verbose("Notifying: \(action)")
+            let newState = self.resolve(currentState: self.state, action: action)
+            self.state = newState
+        }
+    }
+
     /// Resolves `action` via `reducer`, updates `currentState` with the resolved State value.
     private func resolve(currentState: State, action: Action) -> State {
         let newState = reducer(currentState, action)
