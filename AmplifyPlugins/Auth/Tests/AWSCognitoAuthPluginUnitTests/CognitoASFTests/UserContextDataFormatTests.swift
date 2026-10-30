@@ -110,9 +110,7 @@ final class UserContextDataFormatTests: XCTestCase {
             appInfo: FixedAppInfo(),
             configuration: .testData
         )
-        let encoded = await CognitoUserContextData.encodedData(
-            userPoolId: "testPoolId",
-            userPoolClientId: "testClientId",
+        let encoded = await CognitoUserContextData(userPoolId: "testPoolId", userPoolClientId: "testClientId").encodedData(
             username: "alice",
             deviceId: "asf-id",
             device: FixedASFDevice(id: "asf-id"),

@@ -739,11 +739,15 @@ let cognitoClientTargets: [Target] = [
             // The Cognito engine. Amplify-free: it never reaches `Amplify`,
             // `AWSPluginsCore` or a plugin (gate G6, scripts/cognito-engine/check_engine_deps.py --stage final).
             .target(name: "InternalAWSCognitoAuth"),
+            // Re-exported: `CognitoUserContextData`, which the user context data interceptor extends.
+            .target(name: "AmplifyCognitoASF"),
             .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift"),
             // Imported directly (`EngineMapping`: an error status the SDK does not model).
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift"),
-            // Imported directly (`CognitoUnsignedOperationResolver`, `CognitoServiceClients`).
+            // Imported directly (`CognitoUnsignedOperationResolver`, `CognitoServiceClients`, and
+            // `CognitoUserContextData+InterceptorProvider` for ClientRuntime).
+            .product(name: "ClientRuntime", package: "smithy-swift"),
             .product(name: "Smithy", package: "smithy-swift"),
             .product(name: "SmithyIdentity", package: "smithy-swift"),
             .product(name: "SmithyHTTPAPI", package: "smithy-swift"),
