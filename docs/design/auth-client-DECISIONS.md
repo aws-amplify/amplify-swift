@@ -353,8 +353,10 @@ Decided 2026-10-02. **The plugin's shape.** No sign-out throws: `signOut(options
 `signOut(presentationAnchor:options:)` and `signOutStoredSession` return `.complete`,
 `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` or `.failed(AuthClientError)`.
 `signedOutLocally` is false only for `.failed`, and `.failed` leaves the user signed in. Any hosted-UI sign-out page
-that could not be shown or completed is `.failed`, as in the plugin. The differences from the plugin are
-deliberate and documented: `.partial` carries no raw tokens, a client-only `storageError` reports a purge that
+that could not be shown or completed is `.failed`, as in the plugin. A sign-out given no window (`signOut(options:)`,
+`signOutStoredSession`) shows no page: after a sign-in that shared the browser's cookies it is `.partial`, with
+`hostedUIError` `.validation(field: "presentationAnchor")`. The differences from the plugin are deliberate and
+documented: `.partial` carries no raw tokens, a client-only `storageError` reports a purge that
 failed after the local sign-out, a federated session can be signed out, and the hosted-UI sign-out page needs a
 window. `purgeStoredSession` still throws, since the plugin has no such call.
 

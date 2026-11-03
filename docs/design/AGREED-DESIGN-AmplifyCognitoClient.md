@@ -18,6 +18,15 @@ NOTE: Swift is used throughout the design doc showcasing API changes and a per p
 
 ## Changes since the previous revision
 
+**Revision 2026-11-03: record corrections.** What changed in this revision:
+
+- **Limit 6** was restated in an earlier revision with no entry here. It used to record an external dependency
+  accepted rather than resolved: Cognito's planned first-class session concept, whose scope was unconfirmed and which
+  had no owner. It now says only that the session model is client-side and may be revisited. Whether to restore the
+  accepted-risk wording and name an owner is open. → [§11](#11-limits)
+- **A sign-out given no window** shows no hosted-UI sign-out page and is `.partial` with `hostedUIError`, beside
+  the `.failed` cases. → [§14.8](#148-amendments-2026-09-27-public-api-review)
+
 **Revision 2026-10-06: the beta as built.** What changed in this revision:
 
 - **The plugin's own deleting configuration change** now also removes `.default`'s sidecar and challenge record
@@ -1555,8 +1564,9 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
     error before anything was revoked; a closed hosted-UI sign-out page (`.userCancelled`), unless a refresh had
     found the session expired (in this launch or an earlier one: the expiry is saved with the record) and the login
     signed out still has the refresh token found dead; any hosted-UI sign-out page that could not be shown or
-    completed, including no hosted-UI configuration or sign-out redirect URI; task cancellation before anything was
-    revoked, as `.failed(.unknown("The sign-out was cancelled before anything was revoked; the session is still signed
+    completed, including no hosted-UI configuration or sign-out redirect URI (a sign-out given no window,
+    `signOut(options:)` or `signOutStoredSession`, shows no page and is `.partial` with `hostedUIError`); task
+    cancellation before anything was revoked, as `.failed(.unknown("The sign-out was cancelled before anything was revoked; the session is still signed
     in.", "Retry the sign-out.", CancellationError()))`.
   - **A purge that fails after the local sign-out succeeded** returns `.partial` with `storageError` set, and
     `signedOutLocally == true`.
