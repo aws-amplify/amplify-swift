@@ -1019,16 +1019,19 @@ federated session, and `.invalidState` while a sign-in waits on a challenge.
 ### Credentials for other AmplifyClients
 
 `credentialsProvider` vends this session's AWS credentials to any client that takes an `AWSCredentialsProvider`.
-Link that client's product too: `AmplifyKinesisClient` for the example below.
+Link that client's product too: `AmplifyConnectClient` for the example below.
 
 ```swift
-import AmplifyKinesisClient
+import AmplifyConnectClient
 
-let kinesis = try AmplifyKinesisClient(
-    region: "us-east-1",
+let connect = AmplifyConnectClient(
+    configuration: try ConnectClientConfiguration(from: "amplify_outputs"),
     credentialsProvider: work.credentialsProvider
 )
 ```
+
+`AmplifyKinesisClient` and `AmplifyFirehoseClient` take the provider the same way, but don't give two sessions one of
+them for the same region: they share one offline cache per region (see [Known limitations](#known-limitations)).
 
 In Swift 6, calling `AmplifyKinesisClient`'s `record(…)` from a `@MainActor` type (a SwiftUI view model, say) or an
 actor that holds the Kinesis client fails to compile with "sending 'kinesis' risks causing data races": the Kinesis
@@ -1849,10 +1852,10 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | Sessions | One, in `Amplify.Auth` | Many, one per `SessionID`, each with its own state and events |
 | Saved login | One record | `.default` uses the plugin's own record; named sessions keep their own, which the plugin never reads |
 | Session label and signed-out row | None | Kept beside the plugin's record for `.default`, bound to its user |
-| Second sign-in | Refused while signed in | Refused only on the same session, and allowed there once the session reported `sessionExpired` in this process |
+| Second sign-in | Refused while signed in | Refused only on the same session, and allowed there once its refresh token is known dead: the session reported `sessionExpired`, or was restored with that expiry saved by an earlier launch |
 | Identity pool step fails after the user pool signed the user in | `signIn` and `confirmSignIn` both throw the identity pool's error, revoke the tokens just issued and sign the user out; under a keychain access group that sign-out writes the signed-out record over a login another app saved meanwhile. In 2.63.0 and earlier, `confirmSignIn` didn't return, and the Auth calls queued behind it (`fetchAuthSession` and `signOut` included) waited | `signIn` and `confirmSignIn` both throw the identity pool's error, revoke the tokens just issued and leave the session signed out, and the saved record as it is |
 | Events | Hub | Per-session `AsyncStream`s |
-| Events for `autoSignIn()` and `clearFederationToIdentityPool()` | No Hub event | `.signedIn` and `.signedOut` |
+| Events for `autoSignIn()` and `clearFederationToIdentityPool()` | No lifecycle Hub event, only an API event | `.signedIn` and `.signedOut` |
 | Storage failure | Reported as signed out | `.unavailable(reason)` / `storageUnavailable`, never signed out |
 | Another process's sign-in or sign-out in a shared access group | Seen at the next `fetchAuthSession` | Seen at the session's next refresh (`forceRefresh: true` forces one), or, by a signed-out session with an identity pool configured, at its next `fetchAuthSession` |
 | AWSMobileClient (Amplify v1) and access-group keychain migrations | Run when the plugin configures | Not run: ship a plugin release that migrates first. `.default`'s sign-out and purge clear the AWSMobileClient logins, and so does the first guest `fetchAuthSession()` saves after a sign-out |

@@ -34,7 +34,10 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 /// ```swift
 /// let work = try AmplifyCognitoClient(options: .init(sessionId: .named("work")))
 /// let home = try AmplifyCognitoClient(options: .init(sessionId: .named("home")))
-/// let kinesis = try AmplifyKinesisClient(region: "us-east-1", credentialsProvider: work.credentialsProvider)
+/// let connect = AmplifyConnectClient(
+///     configuration: connectConfiguration,
+///     credentialsProvider: work.credentialsProvider
+/// )
 /// ```
 ///
 /// **Amplify's category plugins do not follow these sessions, and nothing warns you.** Storage, Analytics,
