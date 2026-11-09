@@ -96,18 +96,32 @@ final class CognitoUserContextDataTests: XCTestCase {
     ///
     /// - Given: A fixed device with a vendor ID
     /// - When:
-    ///    - the data is encoded with a device key, and with an empty device ID
+    ///    - the data is encoded with a device key
     /// - Then:
-    ///    - each `DeviceId` is the one given, and `ThirdPartyDeviceId` is still the vendor ID
+    ///    - `DeviceId` is the one given, and `ThirdPartyDeviceId` is still the vendor ID
     ///
     func testAGivenDeviceIdIsSentAsGiven() async throws {
-        for deviceId in ["device-key", ""] {
-            let encoded = await encodedData(deviceId: deviceId)
+        let encoded = await encodedData(deviceId: "device-key")
 
-            let contextData = try Self.contextData(XCTUnwrap(encoded))
-            XCTAssertEqual(contextData["DeviceId"], deviceId)
-            XCTAssertEqual(contextData["ThirdPartyDeviceId"], vendorId)
-        }
+        let contextData = try Self.contextData(XCTUnwrap(encoded))
+        XCTAssertEqual(contextData["DeviceId"], "device-key")
+        XCTAssertEqual(contextData["ThirdPartyDeviceId"], vendorId)
+    }
+
+    /// Test that an empty device ID is not sent, and the vendor ID is sent in its place
+    ///
+    /// - Given: A fixed device with a vendor ID, and one without
+    /// - When:
+    ///    - the data is encoded with an empty device ID on each
+    /// - Then:
+    ///    - `DeviceId` is the vendor ID, or there is none without a vendor ID
+    ///
+    func testAnEmptyDeviceIdSendsTheVendorIdInstead() async throws {
+        let withVendorId = await encodedData(deviceId: "")
+        let withoutVendorId = await encodedData(deviceId: "", device: FixedDevice(thirdPartyId: nil))
+
+        XCTAssertEqual(try Self.contextData(XCTUnwrap(withVendorId))["DeviceId"], vendorId)
+        XCTAssertNil(try Self.contextData(XCTUnwrap(withoutVendorId))["DeviceId"])
     }
 
     /// Test that without a device ID the vendor ID is sent in its place

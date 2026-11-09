@@ -402,29 +402,37 @@ final class UserContextDataInterceptorTests: XCTestCase {
         }
     }
 
-    /// Test that without a device ID from the provider the vendor ID is sent in its place
+    /// Test that without a device ID from the provider, or with an empty one, the vendor ID is sent in its place
     ///
-    /// - Given: A client with the interceptor and a device ID provider that answers for one user only
+    /// - Given: A client with the interceptor and a device ID provider that answers with an ID for one user, nothing
+    ///   for another and an empty ID for a third
     /// - When:
-    ///    - `initiateAuth` is called for that user, and `signUp` for another
+    ///    - `initiateAuth` is called for the first user, `signUp` for the second and `confirmSignUp` for the third
     /// - Then:
-    ///    - the first request's `DeviceId` is the provider's answer, and the second's is the vendor ID
+    ///    - the first request's `DeviceId` is the provider's answer, and the other two send the vendor ID
     ///
     func testWithoutADeviceIdFromTheProviderTheVendorIdIsSent() async throws {
         let engine = CapturingEngine()
         let cognito = try Self.client(engine: engine, provider: Self.fixedProvider(deviceId: { username in
-            username == "alice" ? "us-east-1_device-key-of-alice" : nil
+            switch username {
+            case "alice"?: "us-east-1_device-key-of-alice"
+            case "dave"?: ""
+            default: nil
+            }
         }))
 
         try await ContextDataOperation.initiateAuth(cognito, clientId: Self.clientId)
         try await ContextDataOperation.signUp(cognito, clientId: Self.clientId)
+        try await ContextDataOperation.confirmSignUp(cognito, clientId: Self.clientId)
 
         let requests = await engine.requests
         let alice = try Decoded.contextData(Decoded.encodedData(requests[0]))
         let carol = try Decoded.contextData(Decoded.encodedData(requests[1]))
+        let dave = try Decoded.contextData(Decoded.encodedData(requests[2]))
         XCTAssertEqual(alice["DeviceId"], "us-east-1_device-key-of-alice")
         XCTAssertEqual(carol["DeviceId"], Self.vendorId)
         XCTAssertEqual(carol["ThirdPartyDeviceId"], Self.vendorId)
+        XCTAssertEqual(dave["DeviceId"], Self.vendorId)
     }
 
     // MARK: - Retries and concurrency

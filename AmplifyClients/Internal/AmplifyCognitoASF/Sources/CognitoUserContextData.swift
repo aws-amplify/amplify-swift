@@ -60,7 +60,8 @@ public struct CognitoUserContextData: Sendable {
     /// - Parameters:
     ///   - username: The username the request sends. `nil` sends `"unknown"`.
     ///   - deviceId: An ID that stays the same for this device, such as a UUID your app keeps in the keychain for the
-    ///     user pool. `nil` sends the identifier for vendor, or no device ID where there is none, as on macOS.
+    ///     user pool. `nil` or an empty ID sends the identifier for vendor, or no device ID where there is none, as on
+    ///     macOS.
     /// - Returns: The encoded data, or `nil` if the user pool ID or the app client ID is empty, or the client ID isn't
     ///   ASCII.
     public func encodedData(username: String?, deviceId: String? = nil) async -> String? {
@@ -83,7 +84,8 @@ public struct CognitoUserContextData: Sendable {
             return nil
         }
         var contextData = await UserContextDataEncoder.prepareUserContextData(deviceInfo: device, appInfo: appInfo)
-        // As in the AWS SDK for iOS: the given device ID, else the vendor ID, else none.
+        // As in the AWS SDK for iOS: the given device ID, else the vendor ID, else none. Unlike it, an empty ID isn't sent.
+        let deviceId = deviceId?.isEmpty == false ? deviceId : nil
         contextData[UserContextDataEncoder.deviceIdKey] = deviceId ?? contextData[UserContextDataEncoder.thirdPartyDeviceIdKey]
         return try? UserContextDataEncoder.encodedData(
             username: username ?? "unknown",
