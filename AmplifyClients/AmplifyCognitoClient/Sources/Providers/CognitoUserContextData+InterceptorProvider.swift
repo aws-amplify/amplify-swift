@@ -21,7 +21,7 @@ public extension CognitoUserContextData {
     /// ```swift
     /// let contextData = CognitoUserContextData(userPoolId: userPoolId, userPoolClientId: clientId)
     ///
-    /// var config = try await CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig(region: region)
+    /// var config = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig(region: "us-east-1")
     /// config.addInterceptorProvider(contextData.interceptorProvider())
     /// let cognito = CognitoIdentityProviderClient(config: config)
     /// ```
@@ -42,7 +42,8 @@ public extension CognitoUserContextData {
     ///
     /// - Parameter deviceId: Returns an ID that stays the same for this device, such as a UUID your app keeps in the
     ///   keychain for the user pool, given the username the request names (`nil` if it names none). Without it, or
-    ///   when it returns `nil`, the identifier for vendor is sent, or no device ID where there is none, as on macOS.
+    ///   when it returns `nil` or an empty ID, the identifier for vendor is sent, or no device ID where there is none,
+    ///   as on macOS.
     func interceptorProvider(
         deviceId: (@Sendable (_ username: String?) async -> String?)? = nil
     ) -> some HttpInterceptorProvider & Sendable {
