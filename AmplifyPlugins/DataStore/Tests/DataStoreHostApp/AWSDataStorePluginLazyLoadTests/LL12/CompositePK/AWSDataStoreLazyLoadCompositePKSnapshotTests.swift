@@ -14,20 +14,18 @@ import AWSPluginsCore
 
 extension AWSDataStoreLazyLoadCompositePKTests {
 
-    override func setUp() {
-        continueAfterFailure = true
-        setUpModelRegistrationOnly(withModels: CompositePKModels())
-    }
-
-    /*
-     - Given: DataStore is cleared
-     - When:
-        - Configured with `CompositePKModels`
-     - Then:
-        - All mutation GraphQL requests on `CompositePKParent` model have correct selection set
-        - All subscription GraphQL requests on `CompositePKParent` model have correct selection set
-     */
+    /// `CompositePKParent` GraphQL requests have the expected selection sets
+    ///
+    /// - Given: `CompositePKModels` are registered, and DataStore is not configured
+    /// - When:
+    ///    - Mutation and subscription requests are built for `CompositePKParent`
+    /// - Then:
+    ///    - All mutation GraphQL requests on `CompositePKParent` model have correct selection set
+    ///    - All subscription GraphQL requests on `CompositePKParent` model have correct selection set
+    ///
     func testCompositePKParent_withGraphQLOperations_generateCorrectSelectionSets() {
+        setUpModelRegistrationOnly(withModels: CompositePKModels())
+        continueAfterFailure = true
         for operation in Operation.allOperations(on: CompositePKParent.schema, model: CompositePKParent.self) {
             let expectedDocument = operation.expectedDocument
             XCTAssertNotNil(expectedDocument)
@@ -35,15 +33,18 @@ extension AWSDataStoreLazyLoadCompositePKTests {
         }
     }
 
-    /*
-     - Given: DataStore is cleared
-     - When:
-        - Configured with `CompositePKModels`
-     - Then:
-        - All mutation GraphQL requests on `CompositePKChild` model have correct selection set
-        - All subscription GraphQL requests on `CompositePKChild` model have correct selection set
-     */
+    /// `CompositePKChild` GraphQL requests have the expected selection sets
+    ///
+    /// - Given: `CompositePKModels` are registered, and DataStore is not configured
+    /// - When:
+    ///    - Mutation and subscription requests are built for `CompositePKChild`
+    /// - Then:
+    ///    - All mutation GraphQL requests on `CompositePKChild` model have correct selection set
+    ///    - All subscription GraphQL requests on `CompositePKChild` model have correct selection set
+    ///
     func testCompositePKChild_withGraphQLOperations_generateCorrectSelectionSets() {
+        setUpModelRegistrationOnly(withModels: CompositePKModels())
+        continueAfterFailure = true
         for operation in Operation.allOperations(on: CompositePKChild.schema, model: CompositePKChild.self) {
             let expectedDocument = operation.expectedDocument
             XCTAssertNotNil(expectedDocument)
@@ -51,15 +52,18 @@ extension AWSDataStoreLazyLoadCompositePKTests {
         }
     }
 
-    /*
-     - Given: DataStore is cleared
-     - When:
-        - Configured with `CompositePKModels`
-     - Then:
-        - All mutation GraphQL requests on `ChildSansBelongsTo` model have correct selection set
-        - All subscription GraphQL requests on `ChildSansBelongsTo` model have correct selection set
-     */
+    /// `ChildSansBelongsTo` GraphQL requests have the expected selection sets
+    ///
+    /// - Given: `CompositePKModels` are registered, and DataStore is not configured
+    /// - When:
+    ///    - Mutation and subscription requests are built for `ChildSansBelongsTo`
+    /// - Then:
+    ///    - All mutation GraphQL requests on `ChildSansBelongsTo` model have correct selection set
+    ///    - All subscription GraphQL requests on `ChildSansBelongsTo` model have correct selection set
+    ///
     func testChildSansBelongsTo_withGraphQLOperations_generateCorrectSelectionSets() {
+        setUpModelRegistrationOnly(withModels: CompositePKModels())
+        continueAfterFailure = true
         for operation in Operation.allOperations(on: ChildSansBelongsTo.schema, model: ChildSansBelongsTo.self) {
             let expectedDocument = operation.expectedDocument
             XCTAssertNotNil(expectedDocument)
@@ -67,15 +71,18 @@ extension AWSDataStoreLazyLoadCompositePKTests {
         }
     }
 
-    /*
-     - Given: DataStore is cleared
-     - When:
-        - Configured with `CompositePKModels`
-     - Then:
-        - All mutation GraphQL requests on `ImplicitChild` model have correct selection set
-        - All subscription GraphQL requests on `ImplicitChild` model have correct selection set
-     */
+    /// `ImplicitChild` GraphQL requests have the expected selection sets
+    ///
+    /// - Given: `CompositePKModels` are registered, and DataStore is not configured
+    /// - When:
+    ///    - Mutation and subscription requests are built for `ImplicitChild`
+    /// - Then:
+    ///    - All mutation GraphQL requests on `ImplicitChild` model have correct selection set
+    ///    - All subscription GraphQL requests on `ImplicitChild` model have correct selection set
+    ///
     func testImplicitChild_withGraphQLOperations_generateCorrectSelectionSets() {
+        setUpModelRegistrationOnly(withModels: CompositePKModels())
+        continueAfterFailure = true
         for operation in Operation.allOperations(on: ImplicitChild.schema, model: ImplicitChild.self) {
             let expectedDocument = operation.expectedDocument
             XCTAssertNotNil(expectedDocument)
@@ -83,15 +90,18 @@ extension AWSDataStoreLazyLoadCompositePKTests {
         }
     }
 
-    /*
-     - Given: DataStore is cleared
-     - When:
-        - Configured with `CompositePKModels`
-     - Then:
-        - All mutation GraphQL requests on `StrangeExplicitChild` model have correct selection set
-        - All subscription GraphQL requests on `StrangeExplicitChild` model have correct selection set
-     */
+    /// `StrangeExplicitChild` GraphQL requests have the expected selection sets
+    ///
+    /// - Given: `CompositePKModels` are registered, and DataStore is not configured
+    /// - When:
+    ///    - Mutation and subscription requests are built for `StrangeExplicitChild`
+    /// - Then:
+    ///    - All mutation GraphQL requests on `StrangeExplicitChild` model have correct selection set
+    ///    - All subscription GraphQL requests on `StrangeExplicitChild` model have correct selection set
+    ///
     func testStrangeExplicitChild_withGraphQLOperations_generateCorrectSelectionSets() {
+        setUpModelRegistrationOnly(withModels: CompositePKModels())
+        continueAfterFailure = true
         for operation in Operation.allOperations(on: StrangeExplicitChild.schema, model: StrangeExplicitChild.self) {
             let expectedDocument = operation.expectedDocument
             XCTAssertNotNil(expectedDocument)

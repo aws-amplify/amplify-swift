@@ -85,7 +85,9 @@ class ModelSyncMetadataMigration: ModelMigration {
             let existingColumns = try connection.prepare(tableInfoStatement.stringValue).run()
             let columnToFind = field.name
             var columnExists = false
-            for column in existingColumns {
+            // Not for-in: SQLite.swift's `next()` uses `try!`, so a failed step would crash instead of throwing.
+            let columns = existingColumns.makeIterator()
+            while let column = try columns.failableNext() {
                 // The second element is the column name
                 if column.count >= 2,
                     let columnName = column[1],

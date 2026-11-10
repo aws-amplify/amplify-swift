@@ -63,6 +63,13 @@ final class RemoteSyncEngine: RemoteSyncEngineBehavior, @unchecked Sendable {
     let requestRetryablePolicy: RequestRetryablePolicy
     var currentAttemptNumber: Int
 
+    /// How long subscriptions get to connect before startup restarts
+    static let defaultSubscriptionSetupTimeout: TimeInterval = 60
+    let subscriptionSetupTimeout: TimeInterval
+    private var subscriptionSetupTimer: Task<Void, Never>?
+    /// Bumped when a startup begins and on every cleanup, so work left from an earlier startup can tell it is stale
+    private let startupGeneration = AtomicValue(initialValue: 0)
+
     var finishedCompletionBlock: DataStoreCallback<Void>?
 
     /// Initializes the CloudSyncEngine with the specified storageAdapter as the provider for persistence of
@@ -76,7 +83,8 @@ final class RemoteSyncEngine: RemoteSyncEngineBehavior, @unchecked Sendable {
         reconciliationQueueFactory: IncomingEventReconciliationQueueFactory? = nil,
         stateMachine: StateMachine<State, Action>? = nil,
         networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
-        requestRetryablePolicy: RequestRetryablePolicy? = nil
+        requestRetryablePolicy: RequestRetryablePolicy? = nil,
+        subscriptionSetupTimeout: TimeInterval = RemoteSyncEngine.defaultSubscriptionSetupTimeout
     ) throws {
 
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
@@ -117,7 +125,8 @@ final class RemoteSyncEngine: RemoteSyncEngineBehavior, @unchecked Sendable {
             reconciliationQueueFactory: reconciliationQueueFactory,
             stateMachine: stateMachine,
             networkReachabilityPublisher: networkReachabilityPublisher,
-            requestRetryablePolicy: requestRetryablePolicy
+            requestRetryablePolicy: requestRetryablePolicy,
+            subscriptionSetupTimeout: subscriptionSetupTimeout
         )
     }
 
@@ -132,7 +141,8 @@ final class RemoteSyncEngine: RemoteSyncEngineBehavior, @unchecked Sendable {
         reconciliationQueueFactory: @escaping IncomingEventReconciliationQueueFactory,
         stateMachine: StateMachine<State, Action>,
         networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?,
-        requestRetryablePolicy: RequestRetryablePolicy
+        requestRetryablePolicy: RequestRetryablePolicy,
+        subscriptionSetupTimeout: TimeInterval = RemoteSyncEngine.defaultSubscriptionSetupTimeout
     ) {
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
@@ -145,6 +155,7 @@ final class RemoteSyncEngine: RemoteSyncEngineBehavior, @unchecked Sendable {
         self.remoteSyncTopicPublisher = PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>()
         self.networkReachabilityPublisher = networkReachabilityPublisher
         self.requestRetryablePolicy = requestRetryablePolicy
+        self.subscriptionSetupTimeout = subscriptionSetupTimeout
 
         self.currentAttemptNumber = 1
 
@@ -169,10 +180,18 @@ final class RemoteSyncEngine: RemoteSyncEngineBehavior, @unchecked Sendable {
     private func respond(to newState: State) async {
         log.verbose("\(#function): \(newState)")
 
+        // A state an error or a stop has already replaced must not act, or its next action would land in cleanup
+        let currentState = stateMachine.currentState
+        guard newState.displayName == currentState.displayName else {
+            log.verbose("\(#function): skipping \(newState.displayName), now \(currentState.displayName)")
+            return
+        }
+
         switch newState {
         case .notStarted:
             break
         case .pausingSubscriptions:
+            _ = startupGeneration.increment()
             pauseSubscriptions()
         case .pausingMutationQueue:
             pauseMutations()
@@ -294,6 +313,7 @@ final class RemoteSyncEngine: RemoteSyncEngineBehavior, @unchecked Sendable {
         storageAdapter: StorageEngineAdapter
     ) async {
         log.debug("[InitializeSubscription] \(#function)")
+        startSubscriptionSetupTimer()
         let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
         reconciliationQueue = await reconciliationQueueFactory(
             syncableModelSchemas,
@@ -346,9 +366,22 @@ final class RemoteSyncEngine: RemoteSyncEngineBehavior, @unchecked Sendable {
                 receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
             )
 
+        let generation = startupGeneration.get()
         initialSyncOrchestrator.sync { [weak self] result in
             guard let self else {
                 return
+            }
+
+            // Cleanup cancels this sync, but a result already on its way can still arrive after it
+            guard startupGeneration.get() == generation else {
+                log.verbose("Dropping the result of an initial sync from an earlier startup")
+                return
+            }
+            let isCurrent: (State) -> Bool = { state in
+                guard case .performingInitialSync = state else {
+                    return false
+                }
+                return self.startupGeneration.get() == generation
             }
 
             if case .failure(let dataStoreError) = result {
@@ -358,14 +391,38 @@ final class RemoteSyncEngine: RemoteSyncEngineBehavior, @unchecked Sendable {
                     log.error("\(underlyingError)")
                 }
 
-                stateMachine.notify(action: .errored(dataStoreError))
+                stateMachine.notify(action: .errored(dataStoreError), if: isCurrent)
             } else {
                 log.info("Successfully finished sync")
 
                 remoteSyncTopicPublisher.send(.performedInitialSync)
-                stateMachine.notify(action: .performedInitialSync)
+                stateMachine.notify(action: .performedInitialSync, if: isCurrent)
             }
-            self.initialSyncOrchestrator = nil
+        }
+    }
+
+    /// Restarts startup when subscriptions neither connect nor fail in time, which would otherwise hold sync forever
+    private func startSubscriptionSetupTimer() {
+        let generation = startupGeneration.get()
+        let timeout = subscriptionSetupTimeout
+        subscriptionSetupTimer?.cancel()
+        subscriptionSetupTimer = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+            guard !Task.isCancelled, let self else {
+                return
+            }
+            let timedOut = DataStoreError.sync(
+                "Timed out establishing subscriptions",
+                "DataStore restarts sync to try again.",
+                URLError(.timedOut)
+            )
+            stateMachine.notify(action: .errored(timedOut), if: { state in
+                guard self.startupGeneration.get() == generation, case .initializingSubscriptions = state else {
+                    return false
+                }
+                self.log.error("Subscriptions did not connect within \(timeout) seconds, restarting sync")
+                return true
+            })
         }
     }
 
@@ -437,6 +494,12 @@ final class RemoteSyncEngine: RemoteSyncEngineBehavior, @unchecked Sendable {
 
     /// Must be invoked from workQueue (as during a `respond` call)
     func cleanup() {
+        _ = startupGeneration.increment()
+        subscriptionSetupTimer?.cancel()
+        subscriptionSetupTimer = nil
+        // Left running, it would drop its remaining pages and still save lastSync, so they'd never sync
+        initialSyncOrchestrator?.cancel()
+        initialSyncOrchestrator = nil
         reconciliationQueue?.cancel()
         reconciliationQueue = nil
         reconciliationQueueSink = nil

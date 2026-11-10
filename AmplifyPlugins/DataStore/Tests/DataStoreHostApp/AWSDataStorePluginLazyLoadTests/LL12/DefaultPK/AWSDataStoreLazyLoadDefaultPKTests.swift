@@ -255,6 +255,15 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest, @uncheck
         try await assertModelDoesNotExist(savedParent)
     }
 
+    /// A parent received from `observe` lazy loads a child saved after it
+    ///
+    /// - Given: DataStore is ready and observing `Parent`
+    /// - When:
+    ///    - A parent is created through the API, and its version 1 mutation event is received
+    ///    - A child for the parent is then created and synced
+    /// - Then:
+    ///    - The received parent lazy loads the child
+    ///
     func testObserveParent() async throws {
         await setup(withModels: DefaultPKModels())
         try await startAndWaitForReady()
@@ -262,29 +271,17 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest, @uncheck
         let child = Child(parent: parent)
         let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Parent.self)
-        Task {
+        let receivedParentTask = Task { () -> Parent? in
             for try await mutationEvent in mutationEvents {
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedParent = try? mutationEvent.decodeModel(as: Parent.self),
                    receivedParent.id == parent.id {
-
-                    try await createAndWaitForSync(child)
-
-                    guard let children = receivedParent.children else {
-                        XCTFail("Lazy List does not exist")
-                        return
-                    }
-                    do {
-                        try await children.fetch()
-                    } catch {
-                        XCTFail("Failed to lazy load children \(error)")
-                    }
-                    XCTAssertEqual(children.count, 1)
-
                     mutationEventReceived.fulfill()
+                    return receivedParent
                 }
             }
+            return nil
         }
 
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: parent, modelSchema: Parent.schema)
@@ -296,6 +293,23 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest, @uncheck
 
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
+        guard let receivedParent = try await receivedParentTask.value else {
+            return
+        }
+
+        // Follow-up waits run here, not in the task, so the task can't outlive the test.
+        try await createAndWaitForSync(child)
+
+        guard let children = receivedParent.children else {
+            XCTFail("Lazy List does not exist")
+            return
+        }
+        do {
+            try await children.fetch()
+        } catch {
+            XCTFail("Failed to lazy load children \(error)")
+        }
+        XCTAssertEqual(children.count, 1)
     }
 
     func testObserveChild() async throws {
@@ -329,6 +343,15 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest, @uncheck
         mutationEvents.cancel()
     }
 
+    /// A parent received from `observeQuery` lazy loads a child saved after it
+    ///
+    /// - Given: DataStore is ready and observing a query for the parent
+    /// - When:
+    ///    - A parent is created through the API, and a snapshot containing it is received
+    ///    - A child for the parent is then created and synced
+    /// - Then:
+    ///    - The received parent lazy loads the child
+    ///
     func testObserveQueryParent() async throws {
         await setup(withModels: DefaultPKModels())
         try await startAndWaitForReady()
@@ -336,24 +359,14 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest, @uncheck
         let child = Child(parent: parent)
         let snapshotReceived = expectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: Parent.self, where: Parent.keys.id == parent.id)
-        Task {
+        let receivedParentTask = Task { () -> Parent? in
             for try await querySnapshot in querySnapshots {
                 if let receivedParent = querySnapshot.items.first {
-                    try await createAndWaitForSync(child)
-                    guard let children = receivedParent.children else {
-                        XCTFail("Lazy List does not exist")
-                        return
-                    }
-                    do {
-                        try await children.fetch()
-                    } catch {
-                        XCTFail("Failed to lazy load children \(error)")
-                    }
-                    XCTAssertEqual(children.count, 1)
-
                     snapshotReceived.fulfill()
+                    return receivedParent
                 }
             }
+            return nil
         }
 
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: parent, modelSchema: Parent.schema)
@@ -365,6 +378,21 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest, @uncheck
 
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
+        guard let receivedParent = try await receivedParentTask.value else {
+            return
+        }
+
+        try await createAndWaitForSync(child)
+        guard let children = receivedParent.children else {
+            XCTFail("Lazy List does not exist")
+            return
+        }
+        do {
+            try await children.fetch()
+        } catch {
+            XCTFail("Failed to lazy load children \(error)")
+        }
+        XCTAssertEqual(children.count, 1)
     }
 
     func testObserveQueryChild() async throws {

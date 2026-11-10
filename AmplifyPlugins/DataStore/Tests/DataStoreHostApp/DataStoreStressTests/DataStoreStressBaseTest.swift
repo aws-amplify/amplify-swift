@@ -25,7 +25,8 @@ class DataStoreStressBaseTest: XCTestCase, @unchecked Sendable {
 
     func setUp(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .error) async {
 
-        continueAfterFailure = false
+        // With `false`, an async failure runs tearDown alongside the abandoned test body, then exits the process.
+        continueAfterFailure = true
         Amplify.Logging.logLevel = logLevel
 
         do {
@@ -40,7 +41,20 @@ class DataStoreStressBaseTest: XCTestCase, @unchecked Sendable {
     }
 
     override func tearDown() async throws {
+        // Let in-flight sync work unwind before `Amplify.reset()`, as SyncEngineIntegrationTestBase does.
+        var teardownError: Error?
+        do {
+            try await stopDataStore()
+            try await clearDataStore()
+        } catch {
+            teardownError = error
+        }
+        try? await Task.sleep(seconds: 1)
+        // Reset even if stop or clear threw, so the next test can configure Amplify.
         await Amplify.reset()
+        if let teardownError {
+            throw teardownError
+        }
     }
 
     func stopDataStore() async throws {

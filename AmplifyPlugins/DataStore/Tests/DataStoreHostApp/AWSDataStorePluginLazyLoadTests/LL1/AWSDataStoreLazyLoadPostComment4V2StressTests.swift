@@ -36,7 +36,8 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
     ///         - the comment should also have the post reference.
     ///
     func testMultiSaveWithInterruptions() async throws {
-        await setup(withModels: PostComment4V2Models())
+        // Don't wait for ready: the executor starts by waiting for the outbox status DataStore reports while starting.
+        await setup(withModels: PostComment4V2Models(), waitForReady: false)
         let amplify = AmplifyTestExecutor()
 
         Amplify.Logging.info("[\(AWSDataStoreLazyLoadPostComment4V2Tests.loggingContext)] Begin saving data with interruptions")
@@ -79,8 +80,14 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
         /// each detached task is a `save` (implicit `start`) or a `start`.
         func multipleSavesWithInterruptions(_ savesSyncedExpectation: XCTestExpectation) async throws {
             subscribeToOutboxEvent(savesSyncedExpectation)
+            var secondsWaited = 0
             while isOutboxEmpty == false {
+                // Bounded, so an outbox that never reports empty can't hang the job.
+                guard secondsWaited < 120 else {
+                    throw "Outbox never reported empty"
+                }
                 try await Task.sleep(seconds: 1)
+                secondsWaited += 1
             }
             for i in 0 ..< count {
                 let post = Post(title: "title")

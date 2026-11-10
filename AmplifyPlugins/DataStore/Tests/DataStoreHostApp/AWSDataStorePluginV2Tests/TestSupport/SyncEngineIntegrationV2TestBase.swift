@@ -42,10 +42,19 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase, @unchecked Sendable {
         // the API plugin's `session`. Otherwise a late DataStore outgoing mutation reaches the
         // force-unwrapped `session` and crashes with "Unexpectedly found nil while implicitly
         // unwrapping an Optional value". (The prior settle sat after reset, where it did not help.)
-        try? await Amplify.DataStore.stop()
-        try await Amplify.DataStore.clear()
+        var teardownError: Error?
+        do {
+            try await Amplify.DataStore.stop()
+            try await Amplify.DataStore.clear()
+        } catch {
+            teardownError = error
+        }
         try? await Task.sleep(seconds: 1)
+        // Reset even if stop or clear threw, so the next test can configure Amplify.
         await Amplify.reset()
+        if let teardownError {
+            throw teardownError
+        }
     }
 
     // swiftlint:enable force_try
@@ -98,6 +107,8 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase, @unchecked Sendable {
         }
     }
 
+    /// A save made right after `syncStarted` can miss the outbox's first check and never sync;
+    /// tests that wait for a save to sync should use `startAmplifyAndWaitForReady()`.
     func startAmplifyAndWaitForSync() async throws {
         try await startAmplifyAndWait(for: HubPayload.EventName.DataStore.syncStarted)
     }
@@ -108,6 +119,8 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase, @unchecked Sendable {
 
     private func startAmplifyAndWait(for eventName: String) async throws {
         let eventReceived = expectation(description: "DataStore \(eventName) event")
+        // A sync engine restart dispatches the event again, possibly before the listener is removed.
+        eventReceived.assertForOverFulfill = false
 
         var token: UnsubscribeToken!
         token = Amplify.Hub.listen(

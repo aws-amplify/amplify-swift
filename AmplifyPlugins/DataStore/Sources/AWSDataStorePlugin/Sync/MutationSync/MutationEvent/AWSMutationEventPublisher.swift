@@ -13,12 +13,14 @@ import Foundation
 /// its MutationEventSource even after downstream subscribers have issued a `cancel()`,
 /// so that subsequent subscribers will still receive event notifications.
 /// - Note: `@unchecked Sendable` to satisfy `MutationEventPublisher`'s `Sendable` requirement.
-///   `subscription` is assigned once when the publisher is wired up.
+///   `subscription` is an `AtomicValue` replaced on every start; results go only to the subscription that requested them.
 final class AWSMutationEventPublisher: Publisher, @unchecked Sendable {
     typealias Output = MutationEvent
     typealias Failure = DataStoreError
 
-    private var subscription: MutationEventSubscription?
+    private let subscription = AtomicValue<MutationEventSubscription?>(initialValue: nil)
+    /// Bumped for each new subscriber, so a result requested by a replaced one is dropped
+    private let subscriptionGeneration = AtomicValue(initialValue: 0)
     weak var eventSource: MutationEventSource?
 
     init(eventSource: MutationEventSource) {
@@ -29,15 +31,17 @@ final class AWSMutationEventPublisher: Publisher, @unchecked Sendable {
     /// Receives a new subscriber, completing and dropping the old one if present
     func receive<S>(subscriber: S) where S: Subscriber, Failure == S.Failure, Output == S.Input {
         log.verbose(#function)
-        subscription?.subscriber.receive(completion: .finished)
+        // Bumped first, so no late result reaches the subscriber being finished
+        _ = subscriptionGeneration.increment()
+        subscription.get()?.subscriber.receive(completion: .finished)
 
-        let subscription = MutationEventSubscription(subscriber: subscriber, publisher: self)
-        self.subscription = subscription
-        subscriber.receive(subscription: subscription)
+        let newSubscription = MutationEventSubscription(subscriber: subscriber, publisher: self)
+        subscription.set(newSubscription)
+        subscriber.receive(subscription: newSubscription)
     }
 
     func cancel() {
-        subscription = nil
+        subscription.set(nil)
     }
 
     func request(_ demand: Subscribers.Demand) {
@@ -54,8 +58,14 @@ final class AWSMutationEventPublisher: Publisher, @unchecked Sendable {
 
     func requestNextEvent() {
         log.verbose(#function)
+        let requestGeneration = subscriptionGeneration.get()
         let promise: DataStoreCallback<MutationEvent> = { [weak self] result in
-            guard let self, let subscriber = subscription?.subscriber else {
+            guard let self else {
+                return
+            }
+            guard subscriptionGeneration.get() == requestGeneration,
+                  let subscriber = subscription.get()?.subscriber else {
+                log.verbose("Dropping a mutation event result requested by a replaced or cancelled subscription")
                 return
             }
 
@@ -76,8 +86,9 @@ final class AWSMutationEventPublisher: Publisher, @unchecked Sendable {
                 return
             }
 
-            guard self.subscription != nil else {
-                self.log.debug("Subscription is nil, not getting next mutation event")
+            // A stale request would replace the new subscriber's parked one at the source
+            guard self.subscriptionGeneration.get() == requestGeneration, self.subscription.get() != nil else {
+                self.log.debug("Subscription is nil or replaced, not getting next mutation event")
                 return
             }
 

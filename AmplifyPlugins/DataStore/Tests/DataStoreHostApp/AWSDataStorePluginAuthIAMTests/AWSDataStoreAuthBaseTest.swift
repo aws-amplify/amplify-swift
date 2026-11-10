@@ -108,14 +108,26 @@ class AWSDataStoreAuthBaseTest: XCTestCase, @unchecked Sendable {
     var user2: TestUser?
 
     override func setUp() {
-        continueAfterFailure = false
+        // With `false`, an async failure runs tearDown alongside the abandoned test body, then exits the process.
+        continueAfterFailure = true
     }
 
     override func tearDown() async throws {
-        try await clearDataStore()
+        var teardownError: Error?
+        do {
+            try await stopDataStore()
+            try await clearDataStore()
+        } catch {
+            teardownError = error
+        }
         requests = []
         await signOut()
+        try? await Task.sleep(seconds: 1)
+        // Reset even if stop or clear threw, so the next test can configure Amplify.
         await Amplify.reset()
+        if let teardownError {
+            throw teardownError
+        }
     }
 
     // MARK: - Test Helpers
@@ -229,6 +241,10 @@ class AWSDataStoreAuthBaseTest: XCTestCase, @unchecked Sendable {
         } catch {
             XCTFail("Error during setup: \(error)")
         }
+    }
+
+    func stopDataStore() async throws {
+        try await Amplify.DataStore.stop()
     }
 
     func clearDataStore() async throws {
@@ -418,6 +434,9 @@ extension AWSDataStoreAuthBaseTest {
         _ expectations: AuthTestExpectations,
         expectedModelSynced: Int = 1
     ) async {
+        // A sync engine restart dispatches these again, and this sink lives until tearDown.
+        expectations.subscriptionsEstablished.assertForOverFulfill = false
+        expectations.ready.assertForOverFulfill = false
         var modelSyncedCount = 0
         let dataStoreEvents = HubPayload.EventName.DataStore.self
         Amplify

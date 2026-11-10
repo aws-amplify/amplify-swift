@@ -24,17 +24,27 @@ class AWSDataStorePrimaryKeyBaseTest: XCTestCase, @unchecked Sendable {
     var amplifyConfig: AmplifyConfiguration!
 
     override func setUp() {
-        continueAfterFailure = false
+        // With `false`, an async failure runs tearDown alongside the abandoned test body, then exits the process.
+        continueAfterFailure = true
     }
 
     override func tearDown() async throws {
         // Stop and let in-flight sync unwind before reset clears the ModelRegistry; otherwise a
         // late outgoing mutation crashes with "Could not retrieve schema for the model ...".
-        try? await Amplify.DataStore.stop()
-        try await Amplify.DataStore.clear()
+        var teardownError: Error?
+        do {
+            try await Amplify.DataStore.stop()
+            try await Amplify.DataStore.clear()
+        } catch {
+            teardownError = error
+        }
         requests = []
         try? await Task.sleep(seconds: 1)
+        // Reset even if stop or clear threw, so the next test can configure Amplify.
         await Amplify.reset()
+        if let teardownError {
+            throw teardownError
+        }
     }
 
     /// Setup DataStore with given models
@@ -106,8 +116,11 @@ extension AWSDataStorePrimaryKeyBaseTest {
     /// Asserts that DataStore is in a ready state and subscriptions are established
     /// - Parameter events: DataStore Hub events
     func assertDataStoreReady(expectedModelSynced: Int = 1) async throws {
+        // The sink lives until tearDown, and a sync-engine restart sends both events again.
         let ready = expectation(description: "Ready")
+        ready.assertForOverFulfill = false
         let subscriptionsEstablished = expectation(description: "Subscriptions established")
+        subscriptionsEstablished.assertForOverFulfill = false
         let modelsSynced = expectation(description: "Models synced")
 
         var modelSyncedCount = 0
@@ -252,7 +265,9 @@ extension AWSDataStorePrimaryKeyBaseTest {
     }
 
     func assertDeleteMutation(parent: some Model & ModelIdentifiable, child: some Model & ModelIdentifiable) async throws {
+        // Deleting the parent cascades to the child, so both deletes sync and match this sink.
         let mutationDeleteProcessed = expectation(description: "mutation delete processed")
+        mutationDeleteProcessed.assertForOverFulfill = false
         Amplify
             .Hub
             .publisher(for: .dataStore)
