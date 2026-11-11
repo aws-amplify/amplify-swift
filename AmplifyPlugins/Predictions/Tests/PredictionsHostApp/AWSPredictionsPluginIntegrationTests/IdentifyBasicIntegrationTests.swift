@@ -217,22 +217,26 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase, @unchecked Se
     /// Then:
     /// - The operation completes successfully
     /// - fullText from returned data is not empty
-    /// - keyValues from returned data is not empty
+    /// - words from returned data include a sample of the form's field values
+    /// - rawLineText from returned data includes the Zip code value
+    /// - keyValues from returned data pair the Last name field with its value
     func testIdentifyTextForms() async throws {
         let image = try imageURL(for: "testImageTextForms")
         let result = try await Amplify.Predictions
             .identify(.textInDocument(textFormatType: .form), in: image)
 
+        // Textract's model updates change how it splits this form into lines, so check content rather than counts.
         XCTAssertNotNil(result)
         XCTAssertFalse(result.fullText.isEmpty)
-        XCTAssertFalse(result.words.isEmpty)
-        XCTAssertEqual(result.words.count, 28)
-        XCTAssertFalse(result.rawLineText.isEmpty)
-        XCTAssertEqual(result.rawLineText.count, 11)
-        XCTAssertFalse(result.identifiedLines.isEmpty)
-        XCTAssertEqual(result.identifiedLines.count, 11)
-        XCTAssertFalse(result.keyValues.isEmpty)
-        XCTAssertEqual(result.keyValues.count, 7)
+        let foundWords = Set(result.words.map(\.text))
+        let expectedWordsSample = Set(["AWS", "Amazon", "Seattle", "98109"])
+        XCTAssertEqual(expectedWordsSample.subtracting(foundWords), [], "Words: \(foundWords.sorted())")
+        XCTAssertTrue(result.rawLineText.contains(where: { $0.contains("98109") }), "Lines: \(result.rawLineText)")
+        let lastName = try XCTUnwrap(
+            result.keyValues.first(where: { $0.key.contains("Last name") }),
+            "No Last name key in \(result.keyValues.map(\.key))"
+        )
+        XCTAssertEqual(lastName.value, "Amazon")
     }
 
     /// Given:

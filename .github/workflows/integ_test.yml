@@ -81,7 +81,8 @@ jobs:
   analytics-test:
     name: Analytics Integration Tests
     needs: detect
-    if: ${{ needs.detect.outputs.analytics == 'true' }}
+    # Disabled: Amazon Pinpoint ended support for endpoints and analytics on October 30, 2026, so these tests can't pass.
+    if: ${{ false }}
     uses: ./.github/workflows/integ_test_analytics.yml
     secrets: inherit
 
@@ -95,7 +96,8 @@ jobs:
   push-notifications-test:
     name: Push Notifications Integration Tests
     needs: detect
-    if: ${{ needs.detect.outputs.push_notifications == 'true' }}
+    # Disabled: Amazon Pinpoint ended support for endpoints and analytics on October 30, 2026, so these tests can't pass.
+    if: ${{ false }}
     uses: ./.github/workflows/integ_test_push_notifications.yml
     secrets: inherit
 
