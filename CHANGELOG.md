@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.63.1 (2026-11-12)
+
+### Bug Fixes
+
+- **storage**: stop the progress stall timer from aborting a multipart upload with every part done (#4363)
+- **datastore**: close races that could leave saves unsent or stall sync (#4404)
+- **auth**: confirmSignIn identity pool errors, sign-in log redaction and the access-group signed-out record (#4405)
+- **auth**: AmplifyCognitoClient follow-ups from the beta review (#4401)
+
 ## 2.63.0 (2026-10-24)
 
 ### Features
