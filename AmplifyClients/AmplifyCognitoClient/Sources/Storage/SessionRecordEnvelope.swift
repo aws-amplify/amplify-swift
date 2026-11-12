@@ -37,6 +37,11 @@ struct SessionRecord: Equatable, Sendable {
     /// key, written only when `true`, so it needs no schema bump.
     var identityPending: Bool = false
 
+    /// That a refresh proved the credentials' refresh token dead (`DeadToken`), so a new session core starts expired.
+    /// Applies only while the credentials still hold that token. An additive key, written only when set, so it needs no
+    /// schema bump; a record written without it (any new login, a refresh, a sign-out) has none.
+    var deadToken: DeadToken?
+
     /// A row that is kept after sign-out so a picker can still offer it, holding no credentials.
     static func signedOut(label: String?, username: String?, userId: String? = nil) -> SessionRecord {
         SessionRecord(label: label, username: username, userId: userId, kind: .signedOut, credentials: nil)
@@ -57,8 +62,8 @@ struct SessionRecord: Equatable, Sendable {
 ///
 /// **The stored format is frozen.** Every key is spelled in `CodingKeys` and every value is encoded by
 /// hand, so neither renaming a Swift property nor changing an encoder's date or data strategy can change
-/// what is on disk. `label`, `username`, `userId` and `credentials` are omitted when `nil`. `userId`
-/// was added to version 1 as a purely additive key.
+/// what is on disk. `label`, `username`, `userId`, `credentials` and `deadToken` are omitted when `nil`. `userId`
+/// and `deadToken` were added to version 1 as purely additive keys.
 ///
 /// **Any change a version-1 reader cannot interpret bumps `schemaVersion`** — including a new
 /// `SessionKind` value. A reader classifies a higher version as `unsupportedSchema`, which is neither
@@ -112,6 +117,7 @@ extension SessionRecordEnvelope: Codable {
         case kind
         case credentials
         case identityPending
+        case deadToken
     }
 
     init(from decoder: Decoder) throws {
@@ -153,7 +159,8 @@ extension SessionRecordEnvelope: Codable {
                 userId: try container.decodeIfPresent(String.self, forKey: .userId),
                 kind: kind,
                 credentials: credentials,
-                identityPending: try container.decodeIfPresent(Bool.self, forKey: .identityPending) ?? false
+                identityPending: try container.decodeIfPresent(Bool.self, forKey: .identityPending) ?? false,
+                deadToken: container.decodeDeadTokenIfReadable(forKey: .deadToken)
             )
         )
     }
@@ -171,6 +178,7 @@ extension SessionRecordEnvelope: Codable {
         if record.identityPending {
             try container.encode(true, forKey: .identityPending)
         }
+        try container.encodeIfPresent(record.deadToken, forKey: .deadToken)
     }
 }
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
 # Removes exactly the resources provision.sh created, as recorded in $STATE_DIR/state.json: first the
-# plugin-parity resources (parity.py teardown: the six pools and their domain, the identity-only pool,
-# the Lambdas and their log groups, the code sink API and table, the roles, the KMS key, which is
-# scheduled for deletion in 7 days, and the SES identity), then the base user pool, identity pool
-# and roles. Each is checked for the purpose=amplify-cognito-client-integ tag first and skipped if it
+# plugin-parity resources (parity.py teardown: the seven pools and their domain, the identity-only pool and the
+# plugin suites' identity pool (P-13), the Lambdas and their log groups, the code sink API and table, the roles,
+# the KMS key, which is scheduled for deletion in 7 days, and the SES identity), then the base user pool, identity
+# pool and roles. Each is checked for the purpose=amplify-cognito-client-integ tag first and skipped if it
 # lacks it, so this cannot delete anything it did not create. It prints names, never identifiers.
 # Destructive: run it deliberately. Any failed deletion stops the script before state.json is removed
 # (plain commands under `set -e`: a failing command inside `a && b` would not stop it).
@@ -66,7 +66,9 @@ read_tag() {
 }
 
 # Always, even with no parity section: a first provision that failed part-way may have made some of them before
-# recording them, and parity.py finds those by name (each after its tag check).
+# recording them. parity.py finds the Lambdas, log groups, roles, table, code sink API and KMS key by name (each after
+# its tag check); the user pools and identity pools it deletes by their recorded ids only (each is recorded as soon
+# as it exists), so one made by a run that stopped before recording it is left, to delete by hand.
 python3 "$INFRA_DIR/parity.py" teardown
 
 UP=$(get userPoolId); IP=$(get identityPoolId)

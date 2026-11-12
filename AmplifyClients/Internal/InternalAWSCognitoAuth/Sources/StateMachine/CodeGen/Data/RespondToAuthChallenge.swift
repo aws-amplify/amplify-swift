@@ -120,3 +120,38 @@ package extension RespondToAuthChallenge {
 }
 
 extension RespondToAuthChallenge: Codable { }
+
+// Every printed form redacts the challenge session, as `SignInEventData` does, and masks the usernames. The challenge
+// rides in sign-in events whose verbose "Sending event" lines print the event by reflection, and in the sign-in
+// states, so default printing would log the session in full. The rest reads as default printing does.
+extension RespondToAuthChallenge: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+
+    package var description: String {
+        "\(String(reflecting: Self.self))(challenge: \(String(reflecting: challenge)), "
+            + "availableChallenges: \(String(reflecting: availableChallenges)), "
+            + "username: \(String(reflecting: username.maskedForLog())), "
+            + "session: \(String(reflecting: session.map { $0.redactedForLog() })), "
+            + "parameters: \(String(reflecting: parameters)), "
+            + "inputUsername: \(String(reflecting: inputUsername.map { $0.maskedForLog() })))"
+    }
+
+    package var debugDescription: String {
+        description
+    }
+
+    /// For `dump` and debuggers: the session redacted, the usernames masked.
+    package var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "challenge": challenge,
+                "availableChallenges": availableChallenges,
+                "username": username.maskedForLog(),
+                "session": session.map { $0.redactedForLog() } as Any,
+                "parameters": parameters as Any,
+                "inputUsername": inputUsername.map { $0.maskedForLog() } as Any
+            ],
+            displayStyle: .struct
+        )
+    }
+}

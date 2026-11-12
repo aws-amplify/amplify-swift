@@ -58,8 +58,8 @@ extension LiveSessionEngine {
 
     /// The classification of a failed refresh of a federated payload: `refreshResult(for:in:)`'s, except that
     /// the identity pool rejecting the stored login (`NotAuthorizedException`: the provider token expired or
-    /// was revoked) is `refreshTokenInvalid`, so the core marks the session expired (`.sessionExpired`) and the
-    /// app federates again, as a user pool session whose refresh token died signs in again. The plugin instead
+    /// was revoked) is `refreshTokenInvalid`, so the core marks the session expired (`.sessionExpired`, saying the
+    /// provider token is no longer accepted, `SessionCore.providerTokenRefused`) and the app federates again, as a user pool session whose refresh token died signs in again. The plugin instead
     /// reports a session with no guest access and moves its machine to an error state.
     static func federatedRefreshResult(for error: AuthorizationError, in operation: EngineOperation) throws -> Data {
         if rejectsTheLogin(error) {

@@ -203,7 +203,9 @@ final class PluginRotationTests: XCTestCase {
         throw InteropError("""
         \(outputsResource).json is not in the test bundle, on the sandbox. Provision the rotation client: run \
         infra/provision.sh (it adds the default pool's `rotation` client, P-15), then infra/plugin-configs.py --dir \
-        <dir>, and rebuild with COGNITO_CLIENT_INTEG_DIR=<dir>.
+        <dir>, and rebuild with COGNITO_CLIENT_INTEG_DIR=<dir>. To run on CI's set instead, download it with \
+        infra/fetch-ci-config.sh <dir>, overlay the client's roles with infra/ci/ci-overlay.sh <dir> <new-dir> \
+        "extended", which brings the rotation client, then rebuild with COGNITO_CLIENT_INTEG_DIR=<new-dir>.
         """)
     }
 

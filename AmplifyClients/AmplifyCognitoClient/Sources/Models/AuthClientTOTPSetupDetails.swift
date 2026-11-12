@@ -59,8 +59,8 @@ extension AuthClientTOTPSetupDetails: Sendable {}
 extension AuthClientTOTPSetupDetails: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
 
     /// Redacted: the shared secret never reaches a log through string interpolation, `print`, `debugPrint`,
-    /// `dump`, or a sign-in step that carries these details. Stricter than the plugin's `TOTPSetupDetails`,
-    /// which is not redacted.
+    /// `dump`, or a sign-in step that carries these details. The plugin's `TOTPSetupDetails` is redacted the same
+    /// way from 2.63.0 (it prints `<REDACTED>`); releases before 2.63.0 print its secret.
     public var description: String {
         "AuthClientTOTPSetupDetails(sharedSecret: <redacted>, username: \(username))"
     }

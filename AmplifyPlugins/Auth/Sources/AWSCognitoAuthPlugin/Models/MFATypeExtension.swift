@@ -19,7 +19,8 @@ extension MFAType: DefaultLogger {
         } else if rawValue.caseInsensitiveCompare("EMAIL_OTP") == .orderedSame {
             self = .email
         } else {
-            EngineLog.logger(.category("MFAType")).error("Tried to initialize an unsupported MFA type with value: \(rawValue)")
+            // The value is not logged: on the confirmSignIn path it is the user's answer.
+            EngineLog.logger(.category("MFAType")).error("Tried to initialize an unsupported MFA type")
             return nil
         }
     }

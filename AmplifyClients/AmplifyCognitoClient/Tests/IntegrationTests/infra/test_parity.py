@@ -10,7 +10,8 @@ only a missing pool, one left on outside a self-sign-up.sh run, or one on agains
 turns it on; and `self-sign-up on|off` sends each pool's full configuration back with only the flag changed. And
 the reset of the plugin's new-password users tolerates an overlapping run; and the WebAuthn harness's committed
 relying party and app ID are found, and provision never switches a live WebAuthn pool off; and the plugin
-identity pool (P-13) federates the passwordless pool, and the passwordless outputs name it.
+identity pool (P-13) federates the passwordless pool, and the passwordless outputs name it; and the code sink key
+rotation tolerates an overlapping run's delete; and the two parity identity pools are recorded as soon as they exist.
 
     python3 infra/test_parity.py
 
@@ -2208,6 +2209,45 @@ class SandboxRecordsTests(unittest.TestCase):
     def operations(self):
         return [args[1] for args in self.calls]
 
+    def test_a_pool_adopted_with_a_lost_state_directory_keeps_its_own_domain(self):
+        """Given: no recorded domain prefix (the state directory was lost), and the default pool, adopted by name,
+            with the hosted-UI domain an earlier run made.
+        When: ensure_domain runs.
+        Then: it reuses that domain, records its prefix, and creates none."""
+        pool = "us-west-2_Placeholder01"
+        self.answers.update({
+            "describe-user-pool": {"UserPool": {"Id": pool, "Domain": "amplify-client-integ-placeholder",
+                                                "UserPoolTags": {self.parity.TAG_KEY: self.parity.TAG_VALUE}}},
+            "describe-user-pool-domain": lambda args: {"DomainDescription": {"UserPoolId": pool}}
+            if "amplify-client-integ-placeholder" in args else {"DomainDescription": {}}})
+        parity = {}
+        domain = self.parity.ensure_domain(pool, "default", parity, 1)
+        self.assertEqual(domain, "amplify-client-integ-placeholder.auth.us-west-2.amazoncognito.com")
+        self.assertEqual(parity["domainPrefix"], "amplify-client-integ-placeholder")
+        self.assertNotIn("create-user-pool-domain", self.operations())
+        # A prefix recorded for another domain (a second state directory's) gives way to the pool's own.
+        parity = {"domainPrefix": "amplify-client-integ-otherrun"}
+        self.assertEqual(self.parity.ensure_domain(pool, "default", parity, 1), domain)
+        self.assertEqual(parity["domainPrefix"], "amplify-client-integ-placeholder")
+        self.assertNotIn("create-user-pool-domain", self.operations())
+
+    def test_a_pool_without_a_domain_gets_one_new_prefix_recorded(self):
+        """Given: a tagged pool with no domain, and no recorded prefix.
+        When: ensure_domain runs.
+        Then: it creates a domain under a new random prefix, and records that prefix."""
+        pool = "us-west-2_Placeholder01"
+        self.answers.update({
+            "describe-user-pool": {"UserPool": {"Id": pool,
+                                                "UserPoolTags": {self.parity.TAG_KEY: self.parity.TAG_VALUE}}},
+            "describe-user-pool-domain": {"DomainDescription": {}}})
+        parity = {}
+        domain = self.parity.ensure_domain(pool, "default", parity, 1)
+        prefix = parity["domainPrefix"]
+        self.assertRegex(prefix, r"^amplify-client-integ-[0-9a-f]{8}$")
+        self.assertEqual(domain, f"{prefix}.auth.us-west-2.amazoncognito.com")
+        [create] = [c for c in self.calls if c[1] == "create-user-pool-domain"]
+        self.assertIn(prefix, create)
+
     def test_a_user_pool_past_the_first_page_is_found(self):
         """Given: 150 user pools, the sandbox's on the third page of 60.
         When: find_user_pool looks it up by name, with no id recorded.
@@ -2276,6 +2316,288 @@ class SandboxRecordsTests(unittest.TestCase):
         self.assertIn(("appsync", "delete-graphql-api", "--api-id", "placeholder-api"), self.calls)
         self.assertNotIn("placeholder-other", json.dumps([c for c in self.calls if c[1].startswith("delete")]))
         self.assertLess(operations.index("schedule-key-deletion"), operations.index("delete-alias"))
+
+
+class CustomSenderBuildCacheTests(unittest.TestCase):
+    """The custom sender's build is cached only once its `npm ci` has finished: an interrupted or failed one leaves no
+    cache, and nothing half-built, for the next provision to deploy. `npm` is a fake (subprocess.run replaced): it
+    writes node_modules, then fails, is interrupted part-way, or succeeds."""
+
+    def setUp(self):
+        self.state = tempfile.mkdtemp()
+        os.environ["COGNITO_CLIENT_INTEG_DIR"] = self.state
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        self.parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.parity)
+        self.parity.say = lambda *_: None
+        self.npm_runs = 0
+
+    def tearDown(self):
+        shutil.rmtree(self.state)
+        del os.environ["COGNITO_CLIENT_INTEG_DIR"]
+
+    def fake_npm(self, outcome):
+        def run(command, cwd, **_):
+            self.assertEqual(command[:2], ["npm", "ci"])
+            self.npm_runs += 1
+            os.makedirs(os.path.join(cwd, "node_modules", "dependency"))
+            with open(os.path.join(cwd, "node_modules", "dependency", "index.js"), "w") as f:
+                f.write("export {};\n")
+            if outcome == "interrupted":
+                raise KeyboardInterrupt
+            if outcome == "failed":
+                return subprocess.CompletedProcess(command, 1, "", "npm ERR! placeholder")
+            with open(os.path.join(cwd, "node_modules", "dependency", "package.json"), "w") as f:
+                f.write("{}\n")
+            return subprocess.CompletedProcess(command, 0, "", "")
+        return mock.patch.object(self.parity.subprocess, "run", side_effect=run)
+
+    def build_entries(self):
+        return sorted(os.listdir(self.parity.BUILD_DIR)) if os.path.isdir(self.parity.BUILD_DIR) else []
+
+    def zip_names(self, code):
+        import zipfile
+        with zipfile.ZipFile(io.BytesIO(code)) as archive:
+            return sorted(archive.namelist())
+
+    def test_an_interrupted_or_failed_npm_ci_leaves_no_cache_and_the_next_build_runs_it_again(self):
+        """Given: no cached build.
+        When: `npm ci` is interrupted part-way (after writing some of node_modules), then fails, then succeeds,
+            and the build runs once more.
+        Then: neither the interruption nor the failure leaves anything under the build directory; the success
+            caches a build whose zip has every file and no completion mark; and the last build reuses it, with no
+            `npm ci`."""
+        with self.fake_npm("interrupted"), self.assertRaises(KeyboardInterrupt):
+            self.parity.build_custom_sender()
+        self.assertEqual(self.build_entries(), [])
+        with self.fake_npm("failed"), self.assertRaises(SystemExit):
+            self.parity.build_custom_sender()
+        self.assertEqual(self.build_entries(), [])
+        with self.fake_npm("succeeded"):
+            code = self.parity.build_custom_sender()
+        self.assertEqual(self.npm_runs, 3)
+        [cached] = self.build_entries()
+        self.assertTrue(cached.startswith("custom-sender-") and ".partial." not in cached, cached)
+        self.assertEqual(self.zip_names(code), ["index.mjs", "node_modules/dependency/index.js",
+                                                "node_modules/dependency/package.json", "package-lock.json",
+                                                "package.json"])
+        with self.fake_npm("succeeded"):
+            self.assertEqual(self.parity.build_custom_sender(), code)
+        self.assertEqual(self.npm_runs, 3)
+
+    def test_a_cached_build_without_the_completion_mark_is_built_again(self):
+        """Given: a cached build directory with a node_modules but no completion mark, as an interrupted `npm ci`
+            of an older parity.py left it.
+        When: the custom sender is built.
+        Then: `npm ci` runs again, and the zip holds the finished build, not the half-built one."""
+        with self.fake_npm("succeeded"):
+            self.parity.build_custom_sender()
+        [cached] = self.build_entries()
+        root = os.path.join(self.parity.BUILD_DIR, cached)
+        os.unlink(os.path.join(root, self.parity.BUILD_COMPLETE))
+        os.unlink(os.path.join(root, "node_modules", "dependency", "package.json"))
+        with self.fake_npm("succeeded"):
+            code = self.parity.build_custom_sender()
+        self.assertEqual(self.npm_runs, 2)
+        self.assertIn("node_modules/dependency/package.json", self.zip_names(code))
+        self.assertEqual(self.build_entries(), [cached])
+
+
+class PluginDeviceAliasUserOverlapTests(unittest.TestCase):
+    """plugin_users (P-14's device-alias user) beside an overlapping prepare-run.sh: a user the other run created
+    between the lookup and the create, and a device it forgot first, are tolerated; any other error still stops it.
+    Over a scripted Cognito (placeholder ids only)."""
+
+    def setUp(self):
+        self.state = tempfile.mkdtemp()
+        os.environ["COGNITO_CLIENT_INTEG_DIR"] = self.state
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        self.parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.parity)
+        self.parity.say = lambda *_: None
+        self.parity.load_state = lambda: {}
+        self.parity.require_cli_history_off = lambda: None
+        self.parity.require_recorded_account = lambda state: None
+        self.parity.pool_ids = lambda state: {"email-alias": "placeholder-alias", "default": "placeholder-default"}
+        self.parity.users = lambda: {"pluginDeviceAliasPassword": "placeholder-password",
+                                     "pluginNewPasswordTemporary": "placeholder-temporary"}
+        self.parity.require_user_pool_tag = lambda pool_id, label: None
+        self.parity.reset_new_password_user = lambda *args: None
+        self.calls = []
+        self.errors = {}
+        self.parity.aws = self.fake_aws
+
+    def tearDown(self):
+        shutil.rmtree(self.state)
+        del os.environ["COGNITO_CLIENT_INTEG_DIR"]
+
+    def fake_aws(self, *args, stdin=None, **kwargs):
+        operation = args[1]
+        self.calls.append(args + ((stdin or {}).get("Username", ""),))
+        key = (operation, args[args.index("--device-key") + 1]) if "--device-key" in args else operation
+        if key in self.errors:
+            raise self.parity.AwsError(self.errors[key], "scripted")
+        if operation == "list-users":
+            return {"Users": []}
+        if operation == "admin-list-devices":
+            return {"Devices": [{"DeviceKey": "placeholder-device-1"}, {"DeviceKey": "placeholder-device-2"}]}
+        return {}
+
+    def operations(self):
+        return [call[1] for call in self.calls]
+
+    def test_a_user_created_and_a_device_forgotten_by_another_run_are_tolerated(self):
+        """Given: no device-alias user at the lookup, but another run creates it before this run's create; and of
+            its two devices, the other run forgets the first before this run does.
+        When: plugin_users runs.
+        Then: it sets the user's password and forgets the second device, and finishes."""
+        self.errors = {"admin-create-user": "UsernameExistsException",
+                       ("admin-forget-device", "placeholder-device-1"): "ResourceNotFoundException"}
+        self.parity.plugin_users()
+        operations = self.operations()
+        self.assertIn("admin-set-user-password", operations)
+        self.assertLess(operations.index("admin-create-user"), operations.index("admin-set-user-password"))
+        self.assertEqual(operations.count("admin-forget-device"), 2)
+
+    def test_any_other_error_still_stops_it(self):
+        """Given: a create, then (in a second run) a forget, refused for another reason than an overlapping run.
+        When: plugin_users runs.
+        Then: it stops with that error."""
+        self.errors = {"admin-create-user": "AccessDeniedException"}
+        with self.assertRaises(self.parity.AwsError):
+            self.parity.plugin_users()
+        self.assertNotIn("admin-set-user-password", self.operations())
+        self.calls = []
+        self.errors = {("admin-forget-device", "placeholder-device-1"): "TooManyRequestsException"}
+        with self.assertRaises(self.parity.AwsError):
+            self.parity.plugin_users()
+        self.assertEqual(self.operations().count("admin-forget-device"), 1)
+
+
+
+class CodeSinkKeyRotationOverlapTests(unittest.TestCase):
+    """rotate_api_key (parity.py rotate-key, run by every prepare-run.sh) beside an overlapping run: an expired key
+    both runs listed, which the other run deletes first, is tolerated; any other error still stops it. Over a scripted
+    AppSync (placeholder ids only)."""
+
+    def setUp(self):
+        self.state = tempfile.mkdtemp()
+        os.environ["COGNITO_CLIENT_INTEG_DIR"] = self.state
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        self.parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.parity)
+        self.said = []
+        self.parity.say = self.said.append
+        self.parity.require_appsync_tag = lambda api_arn: None
+        self.parity.set_user_secret("codeSinkApiKey", "placeholder-current")
+        now = time.time()
+        self.keys = [{"id": "placeholder-current", "expires": int(now + 6 * 86400)},
+                     {"id": "placeholder-expired", "expires": int(now - 86400)}]
+        self.delete_error = None
+        self.calls = []
+        self.parity.aws = self.fake_aws
+
+    def tearDown(self):
+        shutil.rmtree(self.state)
+        del os.environ["COGNITO_CLIENT_INTEG_DIR"]
+
+    def fake_aws(self, *args, stdin=None, **kwargs):
+        operation = args[1]
+        self.calls.append(operation)
+        if operation == "list-api-keys":
+            return {"apiKeys": self.keys}
+        if operation == "delete-api-key" and self.delete_error:
+            raise self.parity.AwsError(self.delete_error, "scripted")
+        if operation == "create-api-key":
+            self.fail("the recorded key has 6 days left, so none is made")
+        return {}
+
+    def test_an_expired_key_another_run_deleted_first_is_tolerated(self):
+        """Given: the recorded key has 6 days left, and an expired key is listed, which another run deletes before
+            this run does (NotFoundException).
+        When: rotate_api_key runs.
+        Then: it finishes, says the key was already deleted by another run, and keeps the recorded key."""
+        self.delete_error = "NotFoundException"
+        self.parity.rotate_api_key("placeholder-api", "arn:placeholder-api")
+        self.assertEqual(self.calls, ["list-api-keys", "delete-api-key"])
+        self.assertIn("already deleted by another run", " ".join(self.said))
+        self.assertEqual(self.parity.users()["codeSinkApiKey"], "placeholder-current")
+
+    def test_a_deleted_key_is_reported_as_deleted(self):
+        """Given: the same keys, and the delete succeeds.
+        When: rotate_api_key runs.
+        Then: it says it deleted the key."""
+        self.parity.rotate_api_key("placeholder-api", "arn:placeholder-api")
+        self.assertEqual(self.said, ["Deleted an expired or over-long code sink API key"])
+
+    def test_any_other_error_still_stops_it(self):
+        """Given: the delete is refused for another reason than an overlapping run.
+        When: rotate_api_key runs.
+        Then: it stops with that error."""
+        self.delete_error = "AccessDeniedException"
+        with self.assertRaises(self.parity.AwsError):
+            self.parity.rotate_api_key("placeholder-api", "arn:placeholder-api")
+
+
+class IdentityPoolsRecordedAtOnceTests(unittest.TestCase):
+    """The identity-only pool and the plugin identity pool (P-13) are recorded in state.json as soon as they are made,
+    before their roles and the role-setting retries, so a teardown after a failure there still finds them. Over a
+    scripted Cognito Identity and IAM (placeholder ids only)."""
+
+    def setUp(self):
+        self.state = tempfile.mkdtemp()
+        os.environ["COGNITO_CLIENT_INTEG_DIR"] = self.state
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        self.parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.parity)
+        self.parity.REGION = "xx-test-1"
+        self.parity.say = lambda message: None
+        self.parity.save_json(self.parity.STATE_FILE, {"region": "xx-test-1"})
+        self.parity.aws = self.fake_aws
+        self.parity.require_identity_pool_tag = lambda pool_id, label: None
+
+        def role_refused(suffix, trust):
+            raise self.parity.AwsError("AccessDenied", "scripted")
+        self.parity.ensure_permissionless_role = role_refused
+
+    def tearDown(self):
+        shutil.rmtree(self.state)
+        del os.environ["COGNITO_CLIENT_INTEG_DIR"]
+
+    def fake_aws(self, *args, stdin=None, **kwargs):
+        operation = args[1]
+        if operation == "list-identity-pools":
+            return {"IdentityPools": []}
+        if operation == "create-identity-pool":
+            return {"IdentityPoolId": "xx-test-1:placeholder-new"}
+        self.fail(f"unexpected call {operation}")
+
+    def recorded(self):
+        with open(self.parity.STATE_FILE) as f:
+            return json.load(f).get("parity", {})
+
+    def test_the_identity_only_pool_is_recorded_before_its_roles(self):
+        """Given: no identity-only pool, and its first role is refused.
+        When: ensure_identity_only_pool runs.
+        Then: it stops with that error, and state.json already records the new pool."""
+        parity = {}
+        with self.assertRaises(self.parity.AwsError):
+            self.parity.ensure_identity_only_pool(parity)
+        self.assertEqual(self.recorded().get("identityOnlyPoolId"), "xx-test-1:placeholder-new")
+
+    def test_the_plugin_identity_pool_is_recorded_before_its_roles(self):
+        """Given: no plugin identity pool, and its first role is refused.
+        When: ensure_plugin_identity_pool runs.
+        Then: it stops with that error, and state.json already records the new pool."""
+        parity = {"pools": {
+            "default": {"userPoolId": "xx-test-1_default", "clients": {"plugin": "c-plugin",
+                                                                        "hostedui-plugin": "c-hosted-plugin"}},
+            "passwordless": {"userPoolId": "xx-test-1_passwordless", "clients": {"client": "c-passwordless",
+                                                                                  "ci": "c-passwordless-ci"}}}}
+        with self.assertRaises(self.parity.AwsError):
+            self.parity.ensure_plugin_identity_pool(parity)
+        self.assertEqual(self.recorded().get("pluginIdentityPoolId"), "xx-test-1:placeholder-new")
+        self.assertEqual(self.recorded()["pools"]["default"]["userPoolId"], "xx-test-1_default")
 
 
 if __name__ == "__main__":

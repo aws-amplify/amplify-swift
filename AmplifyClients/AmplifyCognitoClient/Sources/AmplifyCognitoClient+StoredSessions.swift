@@ -16,7 +16,8 @@ public extension AmplifyCognitoClient {
 
     /// Sets the display text a picker shows for this session, or clears it with `nil`. The library cannot
     /// invent this. The label survives sign-out, and is cleared when a different user signs in to the
-    /// session.
+    /// session through a client; for `.default`, a different user's sign-in through the Auth plugin only
+    /// hides it (see `StoredSession.label`).
     ///
     /// - Throws: `AuthClientError.storageUnavailable` if storage could not be written;
     ///   `AuthClientError.unknown` if the saved record is one this version cannot read; `CancellationError` if
@@ -104,9 +105,11 @@ public extension AmplifyCognitoClient {
     /// - Returns: `.complete`, or `.partial` with the revoke's failure or the hosted UI's cookie left behind,
     ///   when the session is signed out on this device. `.failed`, and the session is still signed in:
     ///   `storageUnavailable` if storage could not be read or written, or `storageUnavailable(.interrupted)` if
-    ///   the record kept changing under the sign-out (the first revoke failure, if any, is its underlying
-    ///   error); `sessionConfigurationMismatch` if a client for this session is live in this process with a
-    ///   different user pool or identity pool, whose records this call would change (sign it out through that
+    ///   the record kept changing under the sign-out (the revoke's failure, if any, is its underlying error, mapped as
+    ///   any other call maps it; when the revoke succeeded, a session whose sign-in shared the browser's cookies has
+    ///   the no-window hosted-UI error underneath, whose text says the session was signed out on this device, though
+    ///   it is not); `sessionConfigurationMismatch` if a client for this session is live in this process
+    ///   with a different user pool or identity pool, whose records this call would change (sign it out through that
     ///   client); `invalidState` if a different user signed in meanwhile; `unknown` with an underlying
     ///   `CancellationError` if the calling task was cancelled before anything was revoked.
     static func signOutStoredSession(

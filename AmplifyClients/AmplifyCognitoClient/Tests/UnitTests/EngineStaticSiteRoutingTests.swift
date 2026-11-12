@@ -57,7 +57,20 @@ final class EngineStaticSiteRoutingTests: XCTestCase {
     ///    - each line arrived under the client's category: `AmplifyCognitoClient.KeychainStore`,
     ///      `AmplifyCognitoClient.MFAType` and `AmplifyCognitoClient.AuthFactorType`
     ///    - the registrant logs under `AmplifyCognitoClient.PlatformWebAuthnCredentials`
+    ///    - no line holds a value the parsers were given
     func testClientPathsNeverReachTheGlobalRouter() async throws {
+        // The parsers log a fixed text, never the value, so each step's line is told apart by count.
+        let parserLine = "Tried to initialize an unsupported MFA type"
+        let parserCategories = ["AmplifyCognitoClient.MFAType", "AmplifyCognitoClient.AuthFactorType"]
+        var parserLinesSeen: [String: Int] = [:]
+        func newParserLineCategories() -> [String] {
+            parserCategories.filter { category in
+                let count = sink.lines(in: [category]).count(where: { $0.contains(parserLine) })
+                defer { parserLinesSeen[category] = count }
+                return count > parserLinesSeen[category, default: 0]
+            }
+        }
+
         let engine = try harness.engine()
         let payload = try await harness.signedInPayload(on: engine)
         XCTAssertFalse(sink.lines(in: ["AmplifyCognitoClient.KeychainStore"]).isEmpty, "the legacy keychain's lines")
@@ -66,7 +79,7 @@ final class EngineStaticSiteRoutingTests: XCTestCase {
             GetUserOutput(preferredMfaSetting: "X", userAttributes: [], userMFASettingList: ["X"], username: "alice")
         }
         _ = try await engine.fetchMFAPreference(payload)
-        XCTAssertEqual(sink.categories(containing: "unsupported MFA type with value: X"), ["AmplifyCognitoClient.MFAType"])
+        XCTAssertEqual(newParserLineCategories(), ["AmplifyCognitoClient.MFAType"])
 
         // A saved session whose preferred first factor this build does not know, decoded as the client decodes
         // every payload.
@@ -86,7 +99,7 @@ final class EngineStaticSiteRoutingTests: XCTestCase {
         XCTAssertTrue(known.contains(#""EMAIL_OTP""#))
         let unknown = Data(known.replacingOccurrences(of: #""EMAIL_OTP""#, with: #""TELEKINESIS""#).utf8)
         XCTAssertThrowsError(try CredentialSlot.decode(unknown))
-        XCTAssertEqual(sink.categories(containing: "value: TELEKINESIS"), ["AmplifyCognitoClient.AuthFactorType"])
+        XCTAssertEqual(newParserLineCategories(), ["AmplifyCognitoClient.AuthFactorType"])
 
         let factor = try XCTUnwrap(ChallengeRecord.State.fake(
             .confirmSignInWithTOTPCode,
@@ -95,7 +108,7 @@ final class EngineStaticSiteRoutingTests: XCTestCase {
         let factorEngine = try harness.engine()
         let resumedFactor = await factorEngine.resumeSignIn(from: factor, epoch: 0)
         XCTAssertNil(resumedFactor)
-        XCTAssertEqual(sink.categories(containing: "value: TELEPATHY"), ["AmplifyCognitoClient.AuthFactorType"])
+        XCTAssertEqual(newParserLineCategories(), ["AmplifyCognitoClient.AuthFactorType"])
 
         guard case .challenge(var challenge) = ChallengeRecord.State.fake(.continueSignInWithMFASelection([.sms])) else {
             return XCTFail("no saved MFA selection")
@@ -104,7 +117,7 @@ final class EngineStaticSiteRoutingTests: XCTestCase {
         let mfaEngine = try harness.engine()
         let resumedMFA = await mfaEngine.resumeSignIn(from: .challenge(challenge), epoch: 0)
         XCTAssertNil(resumedMFA)
-        XCTAssertEqual(sink.categories(containing: "value: TELEPHONE_MFA"), ["AmplifyCognitoClient.MFAType"])
+        XCTAssertEqual(newParserLineCategories(), ["AmplifyCognitoClient.MFAType"])
 
         #if os(iOS) || os(macOS) || os(visionOS)
         if #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) {
@@ -119,6 +132,10 @@ final class EngineStaticSiteRoutingTests: XCTestCase {
         }
         #endif
 
+        XCTAssertEqual(Set(sink.categories(containing: parserLine)), Set(parserCategories))
+        for value in ["TELEKINESIS", "TELEPATHY", "TELEPHONE_MFA"] {
+            XCTAssertEqual(sink.categories(containing: value), [], "a line holds the parsed value \(value)")
+        }
         XCTAssertEqual(router.scopes, [], "no client line goes through the global router")
         XCTAssertEqual(sink.lines(in: ["MFAType", "AuthFactorType", "KeychainStore", "PlatformWebAuthnCredentials"]), [])
     }

@@ -147,7 +147,7 @@ extension AuthClientSignUpStep: Sendable {}
 extension AuthClientSignUpStep: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
 
     /// Redacted: Cognito's auto sign-in session never reaches a log through string interpolation, as the
-    /// engine masks it in its own log lines. Stricter than core's `AuthSignUpStep`, which is not redacted.
+    /// engine masks it in its own log lines. Core's `AuthSignUpStep` redacts it too, quoted as `"<REDACTED>"`.
     /// `AuthClientSignUpResult` prints its step through this.
     public var description: String {
         switch self {

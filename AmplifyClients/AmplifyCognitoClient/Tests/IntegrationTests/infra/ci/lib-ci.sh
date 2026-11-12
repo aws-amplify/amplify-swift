@@ -56,6 +56,8 @@ kv_get() {
     printf '%s' "${!name:-${3:-}}"
 }
 
+# Exits the shell it runs in: inside a $(…) that is only the subshell, and the script goes on with the output, so a
+# function that may refuse is called in the script's own shell (zip_for sets ZIP rather than printing it).
 die() {
     echo "Refusing: $*" >&2
     exit 1

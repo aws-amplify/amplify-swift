@@ -44,8 +44,10 @@ extension EngineOperation {
         }
     }
 
-    /// Sends an event to the operation's auth machine. The machine resolves it before this returns, so a
-    /// `firstState` that starts afterwards never sees the state from before the event.
+    /// Sends an event to the operation's auth machine. Unless the calling task is cancelled, the machine
+    /// resolves it before this returns, so a `firstState` that starts afterwards never sees the state from
+    /// before the event. A cancelled task's event is dropped unresolved (the machine's `send` checks
+    /// `Task.isCancelled` first): no state follows from it.
     func send(_ event: StateMachineEvent) async {
         await authMachine.send(event)
     }

@@ -8,7 +8,8 @@
 import Foundation
 
 /// What `.default` keeps beside the Auth plugin's record, which has no room for it: the session's display
-/// label, and the last signed-in user, for the signed-out row a picker shows.
+/// label, the last signed-in user, for the signed-out row a picker shows, and that a refresh proved the record's
+/// refresh token dead (`deadToken`).
 ///
 /// Stored under its own account, `SessionRecordKey.metaAccount(in:)`
 /// (`amplify.1.<poolNamespace>.$default.meta`), which no listing reads as a session.
@@ -19,12 +20,14 @@ import Foundation
 ///
 /// **The stored format is frozen.** Every key is spelled in `CodingKeys` and every value is encoded by hand, with
 /// sorted keys, so neither renaming a Swift property nor changing an encoder's strategies can change what is on
-/// disk. `label`, `username` and `userId` are omitted when `nil`. As for `SessionRecordEnvelope`, any change a
+/// disk. `label`, `username`, `userId` and `deadToken` are omitted when `nil`; `deadToken` was added to version 1 as a
+/// purely additive key. As for `SessionRecordEnvelope`, any change a
 /// version-1 reader cannot interpret bumps `schemaVersion`; purely additive keys do not, since readers ignore
 /// keys they do not know.
 ///
 /// **It is bound to a user** (`applies(toRecordUser:recordIsSignedOut:)`), so a label never passes from one
-/// user to another.
+/// user to another. `deadToken` is bound to the token it names instead (`DeadToken`): the plugin saving a new login
+/// leaves the sidecar as it was, and the marker then no longer applies.
 struct DefaultSessionMeta: Equatable, Sendable {
 
     /// The newest schema this build reads and the one it writes.
@@ -45,18 +48,24 @@ struct DefaultSessionMeta: Equatable, Sendable {
     /// user has signed in since the sidecar was written, as for a label set before anyone signed in.
     var userId: String?
 
+    /// That a refresh proved the shared record's refresh token dead, while the record still holds that token
+    /// (`SessionRecord.deadToken`).
+    var deadToken: DeadToken?
+
     init(
         schemaVersion: Int = currentSchemaVersion,
         lastWriteTimestamp: Date,
         label: String?,
         username: String?,
-        userId: String?
+        userId: String?,
+        deadToken: DeadToken? = nil
     ) {
         self.schemaVersion = schemaVersion
         self.lastWriteTimestamp = Self.roundedToMilliseconds(lastWriteTimestamp)
         self.label = label
         self.username = username
         self.userId = userId
+        self.deadToken = deadToken
     }
 
     // MARK: Binding to a user
@@ -109,6 +118,7 @@ extension DefaultSessionMeta: Codable {
         case label
         case username
         case userId
+        case deadToken
     }
 
     init(from decoder: Decoder) throws {
@@ -119,7 +129,8 @@ extension DefaultSessionMeta: Codable {
             lastWriteTimestamp: Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1_000),
             label: container.decodeIfPresent(String.self, forKey: .label),
             username: container.decodeIfPresent(String.self, forKey: .username),
-            userId: container.decodeIfPresent(String.self, forKey: .userId)
+            userId: container.decodeIfPresent(String.self, forKey: .userId),
+            deadToken: container.decodeDeadTokenIfReadable(forKey: .deadToken)
         )
     }
 
@@ -130,6 +141,7 @@ extension DefaultSessionMeta: Codable {
         try container.encodeIfPresent(label, forKey: .label)
         try container.encodeIfPresent(username, forKey: .username)
         try container.encodeIfPresent(userId, forKey: .userId)
+        try container.encodeIfPresent(deadToken, forKey: .deadToken)
     }
 }
 

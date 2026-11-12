@@ -72,6 +72,14 @@ struct SessionRecordIO: Sendable {
         try await perform { try $0.write(record, for: sessionId, expecting: version) }
     }
 
+    func saveDeadToken(
+        _ deadToken: DeadToken,
+        for sessionId: SessionID,
+        expecting version: RecordVersion?
+    ) async throws -> SessionRecordStore.CommitOutcome {
+        try await perform { try $0.saveDeadToken(deadToken, for: sessionId, expecting: version) }
+    }
+
     func signOut(_ sessionId: SessionID) async throws -> SessionRecordStore.SignOutOutcome {
         try await perform { try $0.signOut(sessionId) }
     }

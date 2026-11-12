@@ -63,18 +63,26 @@ jobs:
             done
             exit 0
           fi
+          # A file an Xcode project copies into a bundle (a host app's README, say) that is missing from the
+          # checkout breaks the copying target's build, which a skipped job can't show: fail here, naming the project.
+          python3 scripts/python/affected_targets.py --check-bundled
           base="$BASE_REF"
           git fetch --no-tags origin "$base" || true
-          git diff --name-only "$(git merge-base HEAD "origin/$base")" HEAD > /tmp/changed.txt
+          # With rename detection a rename lists only its new path. --renames gets each rename's old and new paths;
+          # the selector attributes the old path too, and fails closed on an unknown one unless the new one is attributed.
+          mb="$(git merge-base HEAD "origin/$base")"
+          git diff --name-only -M "$mb" HEAD > /tmp/changed.txt
+          git diff --name-status -M --diff-filter=R "$mb" HEAD | cut -f2- > /tmp/renames.txt
           swift package dump-package > /tmp/package.json
           python3 scripts/python/affected_targets.py \
-            --package /tmp/package.json --changed /tmp/changed.txt \
+            --package /tmp/package.json --changed /tmp/changed.txt --renames /tmp/renames.txt \
             --groups scripts/python/integ_test_groups.json | tee -a "$GITHUB_OUTPUT"
 
   analytics-test:
     name: Analytics Integration Tests
     needs: detect
-    if: ${{ needs.detect.outputs.analytics == 'true' }}
+    # Disabled: Amazon Pinpoint ended support for endpoints and analytics on October 30, 2026, so these tests can't pass.
+    if: ${{ false }}
     uses: ./.github/workflows/integ_test_analytics.yml
     secrets: inherit
 
@@ -88,7 +96,8 @@ jobs:
   push-notifications-test:
     name: Push Notifications Integration Tests
     needs: detect
-    if: ${{ needs.detect.outputs.push_notifications == 'true' }}
+    # Disabled: Amazon Pinpoint ended support for endpoints and analytics on October 30, 2026, so these tests can't pass.
+    if: ${{ false }}
     uses: ./.github/workflows/integ_test_push_notifications.yml
     secrets: inherit
 

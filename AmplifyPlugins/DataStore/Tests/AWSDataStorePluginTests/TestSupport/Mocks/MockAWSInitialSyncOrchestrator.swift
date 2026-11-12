@@ -63,4 +63,6 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator, @unchecked Sendab
         let response = MockAWSInitialSyncOrchestrator.mockedResponse.get() ?? .successfulVoid
         completion(response)
     }
+
+    func cancel() {}
 }

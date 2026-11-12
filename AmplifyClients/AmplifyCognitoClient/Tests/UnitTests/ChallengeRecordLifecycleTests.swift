@@ -153,15 +153,20 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
         XCTAssertEqual(try store.readChallenge(work), .absent)
     }
 
-    /// - Given: a sign-in that stops on a step with no saved form (`confirmSignUp`), over an older record
-    /// - When: the step returns
+    /// Through a confirmation, which, unlike a new sign-in, deletes no record before its step: only the save of a
+    /// step with no saved form can delete the previous step's record.
+    ///
+    /// - Given: a sign-in waiting on a saved challenge (a TOTP code)
+    /// - When: the answer leads to a step with no saved form (`confirmSignUp`)
     /// - Then:
-    ///    - the state is `.awaitingChallenge(.confirmSignUp)` in memory, and no record is stored
+    ///    - the state is `.awaitingChallenge(.confirmSignUp)` in memory, and the previous step's record is deleted, so
+    ///      a relaunch cannot resume it
     func testAStepWithNoSavedFormLeavesNoRecord() async throws {
-        try store.putChallenge(ChallengeRecord(createdAt: TestClock.start, state: .fake(.confirmSignInWithTOTPCode)!), for: work)
-        let (client, engine) = try await challenged(.confirmSignUp(nil))
+        let (client, engine) = try await challenged()
+        XCTAssertNotNil(try store.storedChallenge(work), "the first step is saved")
+        engine.scriptConfirmSignIn { _ in .challenge(.confirmSignUp(nil)) }
 
-        XCTAssertEqual(engine.resumeCalls.count, 1, "the restore before the sign-in resumed the older record")
+        _ = try await client.confirmSignIn(challengeResponse: "123456")
 
         XCTAssertEqual(try store.readChallenge(work), .absent)
         let state = await client.currentSessionState()
@@ -499,6 +504,28 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
         let state = await next.currentSessionState()
         XCTAssertEqual(state, .signedIn(alice))
         XCTAssertEqual(try store.readChallenge(work), .absent)
+    }
+
+    /// The delete-failure warning says which restores delete the leftover and which may offer it again.
+    ///
+    /// - Given: a pending, saved challenge, and the keychain failing its delete
+    /// - When: the answer completes the sign-in
+    /// - Then:
+    ///    - the logged warning has this exact text, naming signed-in and federated sessions as the ones whose
+    ///      next restore deletes the leftover, and signed-out and guest sessions as the ones that may offer it again
+    func testTheFailedDeleteWarningNamesTheRestoresThatDeleteTheLeftover() async throws {
+        let (client, engine) = try await challenged()
+        harness.keychain.failingRemovals(of: challengeAccount, with: errSecInteractionNotAllowed)
+        engine.scriptConfirmSignIn { _ in .done(payload: FakePayload.signedIn().data) }
+
+        _ = try await client.confirmSignIn(challengeResponse: "123456")
+
+        let expected = "The interrupted sign-in's saved record could not be deleted after the sign-in ended. "
+            + "A signed-in or federated session's next restore deletes it; a signed-out or guest session's next "
+            + "restore, such as after a relaunch, may offer the challenge again until it is 15 minutes old."
+        XCTAssertEqual(sink.lines(in: SessionRecordStore.ChallengeLog.category), [
+            .init(level: .warn, content: expected)
+        ])
     }
 
     /// - Given: an expired record whose delete fails at restore

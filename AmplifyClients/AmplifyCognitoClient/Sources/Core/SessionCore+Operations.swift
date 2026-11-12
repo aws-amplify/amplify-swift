@@ -73,11 +73,22 @@ extension SessionCore {
     nonisolated func requireUserPoolUser() async throws {
         _ = try await restoredSnapshot()
         switch await currentState {
-        case .federated, .awaitingChallenge:
+        case .federated:
+            throw Self.federatedHasNoUser(sessionId)
+        case .awaitingChallenge:
             throw Self.notSignedIn(sessionId)
         default:
             return
         }
+    }
+
+    /// A federated session has no user pool user, and a sign-in is refused over it (`signInSeed`) until the
+    /// federation is cleared or the session signed out.
+    static func federatedHasNoUser(_ sessionId: SessionID) -> AuthClientError {
+        .notSignedIn(
+            "Session \"\(sessionId)\" has no user pool user: it is federated to the identity pool.",
+            "Call clearFederationToIdentityPool() or sign the session out, then sign in through the user pool."
+        )
     }
 
     /// Maps an operation's engine failure onto the public errors, per the seam's error contract. Such an

@@ -9,10 +9,11 @@
 import Foundation
 import XCTest
 
-/// The base class of the MFA suites (`TOTPSetupTests`, `MFASignInTests`, `MFAPreferenceTests`): a fresh
-/// U-DEF user signed in through the client under test, and TOTP enrolled through the client's own
-/// `setUpTOTP` / `verifyTOTPSetup`, as the plugin's `AuthSignInHelper.registerAndSignInUser` and
-/// `TOTPHelper` do.
+/// The base class of the suites that sign a fresh user in and set MFA up through the client (`TOTPSetupTests`,
+/// `MFASignInTests`, `MFAPreferenceTests`, `ChallengeResumeTests` and `SandboxProvisioningTests`): a fresh
+/// user, on the default backend unless a test names another, signed in through the client under test, and TOTP
+/// enrolled through the client's own `setUpTOTP` / `verifyTOTPSetup`, as the plugin's
+/// `AuthSignInHelper.registerAndSignInUser` and `TOTPHelper` do.
 ///
 /// The MFA suites' assertion and failure messages name only a step's case and an error's case and
 /// description, never a password, a code, a TOTP secret, a token, a username or a step's associated

@@ -24,8 +24,9 @@ import XCTest
 /// `awsCognitoAuthPluginTest` category, so every shape resolves as it does in an app. Each line is
 /// normalised (`LogTranscriptNormaliser`), and the scenario's lines are compared, as a sorted multiset,
 /// with `TestResources/GoldenLogs/transcript.json`, recorded before the engine extraction. It was re-pinned
-/// once since, for a reviewed change: scenario 4's sign-out line masks the refresh token (`tr*****en`), where
-/// the released plugin printed it in full. The file's note keeps its capture-time wording.
+/// twice since, for reviewed changes: scenario 4's sign-out line masks the refresh token (`tr*****en`), where
+/// the released plugin printed it in full; and scenario 7's parser line no longer prints the value it was given
+/// (on the confirmSignIn path, the user's answer). The file's note keeps its capture-time wording.
 ///
 /// Why a sorted multiset: actions run on their own tasks, so the interleaving of lines from different
 /// tasks is not deterministic. Which lines are logged, how often, and at which scope and level is.
@@ -40,7 +41,7 @@ final class LogTranscriptSnapshotTests: XCTestCase, @unchecked Sendable {
 
     /// SHA-256 of `transcript.json`. Regenerating the transcript changes it, so a regeneration also has to edit
     /// this line, in review.
-    static let pinnedTranscriptSHA256 = "6193c4562559fb8602ba4516c11ec533f8ee1e57cf65f851fe19afebed925afa"
+    static let pinnedTranscriptSHA256 = "5daa06cfb709db3ce7b2540a9af5566bdf24de306bd20ca7246b909a3596c796"
 
     static var fileURL: URL {
         GoldenFiles.directory("GoldenLogs").appendingPathComponent("transcript.json")

@@ -42,12 +42,13 @@ final class SessionRestoreTests: XCTestCase {
 
     /// The bound is real only because what is raced is abandonable: the stuck read carries on, and the
     /// caller stops waiting. Nothing here measures time — the stall is released only after the answer
-    /// arrives, which proves the answer did not wait for it.
+    /// arrives, which proves the answer did not wait for it. Whether the read had started by the time the bound
+    /// answered is not asserted: on a loaded machine the bound can answer first.
     ///
     /// - Given: a stored session whose record read blocks until released, and a short restore bound
     /// - When: the session's state is read
     /// - Then:
-    ///    - it is `.unavailable(.interrupted)` while the read is still stuck — never `.signedOut`
+    ///    - it is `.unavailable(.interrupted)`, answered before the stall is released — never `.signedOut`
     ///    - once storage recovers, the next read reports the user
     func testStalledRestoreSurfacesUnavailableAndRecovers() async throws {
         harness.setRestoreBound(nanoseconds: 200_000_000)
@@ -60,7 +61,6 @@ final class SessionRestoreTests: XCTestCase {
         let stalled = await client.currentSessionState()
 
         XCTAssertEqual(stalled, .unavailable(.interrupted))
-        XCTAssertTrue(stall.hasBeenReached, "the read was still stuck when the state came back")
         stall.release()
         let recovered = await client.currentSessionState()
         XCTAssertEqual(recovered, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))

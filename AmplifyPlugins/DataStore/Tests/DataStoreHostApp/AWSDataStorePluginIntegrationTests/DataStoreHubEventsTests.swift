@@ -47,9 +47,13 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase, @unchecked Sendable 
         let networkStatusReceived = expectation(description: "networkStatus received")
         networkStatusReceived.assertForOverFulfill = false
         var networkStatusActive = false
+        // Each of these is dispatched again if the sync engine restarts.
         let subscriptionsEstablishedReceived = expectation(description: "subscriptionsEstablished received")
+        subscriptionsEstablishedReceived.assertForOverFulfill = false
         let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
+        syncQueriesStartedReceived.assertForOverFulfill = false
         let outboxStatusReceived = expectation(description: "outboxStatus received")
+        outboxStatusReceived.assertForOverFulfill = false
 
         let hubListener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
             if payload.eventName == HubPayload.EventName.DataStore.networkStatus {
@@ -114,6 +118,8 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase, @unchecked Sendable 
         let post = Post(title: "title", content: "content", createdAt: .now())
 
         let outboxMutationEnqueuedReceived = expectation(description: "outboxMutationEnqueued received")
+        // A sync engine restart enqueues the pending mutation again.
+        outboxMutationEnqueuedReceived.assertForOverFulfill = false
         let outboxMutationProcessedReceived = expectation(description: "outboxMutationProcessed received")
 
         let hubListener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
@@ -151,10 +157,19 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase, @unchecked Sendable 
         hubListener.cancel()
     }
 
+    /// - Given:
+    ///    - registered two models from `TestModelRegistration`
+    /// - When:
+    ///    - DataStore's remote sync engine runs its initial sync
+    /// - Then:
+    ///    - modelSynced received for `Post` and `Comment`, both full syncs
+    ///    - syncQueriesReady received
     func testModelSyncedAndSyncQueriesReady() async throws {
-        let modelSyncedReceived = expectation(description: "outboxMutationEnqueued received")
+        let modelSyncedReceived = expectation(description: "modelSynced received")
         modelSyncedReceived.assertForOverFulfill = false
-        let syncQueriesReadyReceived = expectation(description: "outboxMutationProcessed received")
+        let syncQueriesReadyReceived = expectation(description: "syncQueriesReady received")
+        // Every initial sync dispatches syncQueriesReady, including after a sync engine restart.
+        syncQueriesReadyReceived.assertForOverFulfill = false
 
         let expectedSyncedModelNames = ["Post", "Comment"]
         var modelSyncedEvents = [ModelSyncedEvent]()

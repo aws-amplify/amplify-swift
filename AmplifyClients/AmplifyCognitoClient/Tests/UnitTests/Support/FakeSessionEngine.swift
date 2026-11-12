@@ -9,6 +9,24 @@ import Foundation
 import InternalAWSCognitoAuth
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
+/// Credentials payloads in the plugin's stored format, for what reads that format (`PluginRecordSummary.peek`), as a
+/// `FakePayload` is not.
+enum PluginFormatPayload {
+
+    /// A guest's credentials: `identityPoolOnly`, naming its identity.
+    static func guest(identityId: String, accessKeyId: String) throws -> Data {
+        try JSONEncoder().encode(AmplifyCredentials.identityPoolOnly(
+            identityID: identityId,
+            credentials: EngineAWSCredentials(
+                accessKeyId: accessKeyId,
+                secretAccessKey: "secret",
+                sessionToken: "session",
+                expiration: Date(timeIntervalSince1970: 4_000_000_000)
+            )
+        ))
+    }
+}
+
 /// The credentials payload the fake engine reads and writes: readable JSON, so a test can build one,
 /// store it, and check what the core committed.
 struct FakePayload: Codable, Equatable {
@@ -157,8 +175,8 @@ struct FakeRetryable: Error {
 /// a refresh or a sign-in open on a `Gate` until the test opens it.
 ///
 /// Its pending sign-in follows the seam's contract: a sign-in that reaches a challenge is retained; a new
-/// sign-in supersedes it; `.done` or a failure clears it, except a `FakeRetryable` failure of
-/// `confirmSignIn`; `confirmSignIn` with nothing pending throws `invalidState`; and a step held by
+/// sign-in supersedes it; `.done` or a failure clears it, except a `FakeRetryable` or `AuthClientError.validation`
+/// failure of `confirmSignIn`; `confirmSignIn` with nothing pending throws `invalidState`; and a step held by
 /// `holdSignIns(on:)` throws `CancellationError` when released if `cancelPendingSignIn` ran meanwhile.
 /// Its epochs follow the live engine's rules: `confirmSignIn` answers only an attempt of its own epoch, and
 /// drops an earlier one with `invalidState`; `autoSignIn` supersedes the pending attempt before it checks
@@ -357,7 +375,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         withLock { revoked.map(\.payload) }
     }
 
-    /// The `global` flag of each revoke, in order.
+    /// The hosted-UI sign-out plan of each revoke, in order.
     var revokeHostedUIPlans: [EngineHostedUISignOut] {
         withLock { revoked.map(\.hostedUI) }
     }
@@ -366,6 +384,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         withLock { webUISignIns }
     }
 
+    /// The `global` flag of each revoke, in order.
     var revokeGlobalFlags: [Bool] {
         withLock { revoked.map(\.global) }
     }

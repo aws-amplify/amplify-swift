@@ -132,9 +132,9 @@ extension AmplifyCognitoClient {
     }
 }
 
-/// The sign-up validation errors: the plugin's for `signUp` and the resend, string for string
-/// (`AuthPluginErrorConstants`), the resend's naming `confirmSignUp` as the plugin's does; the client's own for
-/// `confirmSignUp`, which name that call and its `confirmationCode` parameter.
+/// The sign-up validation errors: the plugin's for `signUp`, string for string (`AuthPluginErrorConstants`); the
+/// client's own for `confirmSignUp`, which name that call and its `confirmationCode` parameter, and for
+/// `resendSignUpCode`, which name that call where the plugin's name `confirmSignUp`.
 struct SignUpValidation: Sendable {
     let field: String
     let description: String
@@ -160,7 +160,7 @@ struct SignUpValidation: Sendable {
 
     static let resendUsername = SignUpValidation(
         field: "username",
-        description: "Username is required to confirmSignUp",
-        suggestion: "Make sure that a valid username is passed for confirmSignUp"
+        description: "Username is required to resendSignUpCode",
+        suggestion: "Make sure that a valid username is passed for resendSignUpCode"
     )
 }

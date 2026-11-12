@@ -111,8 +111,7 @@ final class AuthClientModelTypesTests: XCTestCase {
         XCTAssertNotEqual(details, AuthClientTOTPSetupDetails(sharedSecret: "SECRET", username: "bob"))
     }
 
-    /// The shared secret never reaches text: stricter than the plugin's `TOTPSetupDetails`, which is not
-    /// redacted.
+    /// The shared secret never reaches text, as with the plugin's `TOTPSetupDetails` from 2.63.0.
     ///
     /// - Given: TOTP setup details, alone and inside `continueSignInWithTOTPSetup` and a sign-in result
     /// - When: each is rendered by interpolation, `String(describing:)`, `String(reflecting:)`, `print`,
@@ -299,17 +298,16 @@ final class AuthClientModelTypesTests: XCTestCase {
     }
 
     /// Each MFA type names the Cognito string an MFA selection answers with, as the plugin's
-    /// `MFAType.challengeResponse` does, and that string passes the client's own selection check.
-    /// (An MFA setup selection is not checked before it is sent, as in the plugin, so there is nothing
-    /// to assert there.)
+    /// `MFAType.challengeResponse` does, and that string passes the client's own selection checks: the MFA
+    /// selection's (the plugin's), and the MFA setup selection's (the client's, against the step's choices).
     ///
     /// - Given: every `AuthClientMFAType` case
     /// - When:
     ///    - its `challengeResponse` is read
-    ///    - and checked as the answer to an MFA selection
+    ///    - and checked as the answer to an MFA selection, and to an MFA setup selection that offers it
     /// - Then:
     ///    - it is `SMS_MFA`, `SOFTWARE_TOKEN_MFA` or `EMAIL_OTP`, and `rawValue` is still core's
-    ///    - the check accepts it, and refuses `rawValue`
+    ///    - both checks accept it, and refuse `rawValue`
     ///
     func testChallengeResponseIsTheCognitoMFAName() throws {
         let expected: [(AuthClientMFAType, String)] = [(.sms, "SMS_MFA"), (.totp, "SOFTWARE_TOKEN_MFA"), (.email, "EMAIL_OTP")]
@@ -318,8 +316,10 @@ final class AuthClientModelTypesTests: XCTestCase {
             XCTAssertEqual(type.challengeResponse, response)
             XCTAssertNotEqual(type.rawValue, response)
             XCTAssertNoThrow(try SessionCore.validate(type.challengeResponse, for: .continueSignInWithMFASelection(all)))
+            XCTAssertNoThrow(try SessionCore.validate(type.challengeResponse, for: .continueSignInWithMFASetupSelection([type])))
         }
         XCTAssertThrowsError(try SessionCore.validate(AuthClientMFAType.totp.rawValue, for: .continueSignInWithMFASelection(all)))
+        XCTAssertThrowsError(try SessionCore.validate(AuthClientMFAType.totp.rawValue, for: .continueSignInWithMFASetupSelection(all)))
     }
 
     // MARK: - AuthClientSignInStep equality

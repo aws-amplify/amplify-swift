@@ -52,16 +52,21 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
         let version: String = "1"
     }
 
+    /// Saving a registration syncs it with its attendee and meeting
+    ///
+    /// - Given: DataStore is ready
+    /// - When:
+    ///    - An attendee, a meeting and a registration linking them are saved
+    /// - Then:
+    ///    - A `syncReceived` create with version 1 is received for each of the three models
+    ///    - The attendee and the meeting each have one registration
+    ///
     func testSaveRegistration() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
-        guard let attendee = await saveAttendee(),
-              let meeting = await saveMeeting(),
-              let registration = await saveRegistration(meeting: meeting, attendee: attendee)
-        else {
-                  XCTFail("Could not create attendee, meeting, registration")
-            return
-        }
+        let attendee = Attendee8V2()
+        let meeting = Meeting8V2(title: "title")
+        let registration = Registration8V2(meeting: meeting, attendee: attendee)
         let createReceived = expectation(description: "Create notification received")
         createReceived.expectedFulfillmentCount = 3 // 3 models (1 attendee and 1 meeting and 1 registration)
         let hubListener = Amplify.Hub.listen(
@@ -102,7 +107,16 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
             XCTFail("Listener not registered for hub")
             return
         }
+        // Save only once listening, or a fast sync can arrive before the listener exists
+        guard await saveAttendee(attendee) != nil,
+              await saveMeeting(meeting) != nil,
+              await saveRegistration(registration) != nil
+        else {
+            XCTFail("Could not create attendee, meeting, registration")
+            return
+        }
         await fulfillment(of: [createReceived], timeout: networkTimeout)
+        Amplify.Hub.removeListener(hubListener)
 
         let queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         guard let queriedAttendee = queriedAttendeeOptional else {
@@ -121,16 +135,24 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
         XCTAssertEqual(queriedMeeting.attendees?.count, 1)
     }
 
+    /// Moving a registration to another attendee syncs the update
+    ///
+    /// - Given: DataStore is ready
+    /// - When:
+    ///    - Two attendees, a meeting and a registration for the first attendee are saved
+    ///    - The registration is updated to the second attendee
+    /// - Then:
+    ///    - A `syncReceived` create with version 1 is received for each of the four models
+    ///    - A `syncReceived` update with version 2 is received for the registration
+    ///    - The first attendee has no registrations and the second has one
+    ///
     func testUpdateRegistrationToAnotherAttendee() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
-        guard let attendee = await saveAttendee(),
-              let attendee2 = await saveAttendee(),
-              let meeting = await saveMeeting(),
-              var registration = await saveRegistration(meeting: meeting, attendee: attendee) else {
-                  XCTFail("Could not create attendee, meeting, registration")
-                  return
-              }
+        let attendee = Attendee8V2()
+        let attendee2 = Attendee8V2()
+        let meeting = Meeting8V2(title: "title")
+        let registration = Registration8V2(meeting: meeting, attendee: attendee)
         let createReceived = expectation(description: "Create notification received")
         createReceived.expectedFulfillmentCount = 4 // 4 models (2 attendees and 1 meeting and 1 registration)
         var hubListener = Amplify.Hub.listen(
@@ -173,7 +195,17 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
             XCTFail("Listener not registered for hub")
             return
         }
+        // Save only once listening, or a fast sync can arrive before the listener exists
+        guard await saveAttendee(attendee) != nil,
+              await saveAttendee(attendee2) != nil,
+              await saveMeeting(meeting) != nil,
+              await saveRegistration(registration) != nil
+        else {
+            XCTFail("Could not create attendee, meeting, registration")
+            return
+        }
         await fulfillment(of: [createReceived], timeout: networkTimeout)
+        Amplify.Hub.removeListener(hubListener)
 
         let updateReceived = expectation(description: "Update notification received")
         hubListener = Amplify.Hub.listen(
@@ -200,10 +232,12 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
             return
         }
 
-        registration.attendee = attendee2
-        let updatedRegistration = try await Amplify.DataStore.save(registration)
+        var registrationToUpdate = registration
+        registrationToUpdate.attendee = attendee2
+        let updatedRegistration = try await Amplify.DataStore.save(registrationToUpdate)
         XCTAssertEqual(updatedRegistration.attendee.id, attendee2.id)
         await fulfillment(of: [updateReceived], timeout: networkTimeout)
+        Amplify.Hub.removeListener(hubListener)
 
         var queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         guard let queriedAttendee = queriedAttendeeOptional else {
@@ -222,16 +256,23 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
         XCTAssertEqual(queriedAttendee.meetings?.count, 1)
     }
 
+    /// Deleting a registration syncs the delete
+    ///
+    /// - Given: DataStore is ready
+    /// - When:
+    ///    - An attendee, a meeting and a registration linking them are saved
+    ///    - The registration is deleted
+    /// - Then:
+    ///    - A `syncReceived` create with version 1 is received for each of the three models
+    ///    - A `syncReceived` delete with version 2 is received for the registration
+    ///    - The attendee and the meeting have no registrations
+    ///
     func testDeleteRegistration() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
-        guard let attendee = await saveAttendee(),
-              let meeting = await saveMeeting(),
-              let registration = await saveRegistration(meeting: meeting, attendee: attendee)
-        else {
-                  XCTFail("Could not create attendee, meeting, registration")
-            return
-        }
+        let attendee = Attendee8V2()
+        let meeting = Meeting8V2(title: "title")
+        let registration = Registration8V2(meeting: meeting, attendee: attendee)
         let createReceived = expectation(description: "Create notification received")
         createReceived.expectedFulfillmentCount = 3 // 3 models (1 attendee and 1 meeting and 1 registration)
         var hubListener = Amplify.Hub.listen(
@@ -272,7 +313,16 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
             XCTFail("Listener not registered for hub")
             return
         }
+        // Save only once listening, or a fast sync can arrive before the listener exists
+        guard await saveAttendee(attendee) != nil,
+              await saveMeeting(meeting) != nil,
+              await saveRegistration(registration) != nil
+        else {
+            XCTFail("Could not create attendee, meeting, registration")
+            return
+        }
         await fulfillment(of: [createReceived], timeout: networkTimeout)
+        Amplify.Hub.removeListener(hubListener)
 
         let deleteRegistrationRecieved = expectation(description: "Delete registration received")
         hubListener = Amplify.Hub.listen(
@@ -298,6 +348,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
         }
         _ = try await Amplify.DataStore.delete(registration)
         await fulfillment(of: [deleteRegistrationRecieved], timeout: networkTimeout)
+        Amplify.Hub.removeListener(hubListener)
 
         let queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         guard let queriedAttendee = queriedAttendeeOptional else {
@@ -316,16 +367,23 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
         XCTAssertEqual(queriedMeeting.attendees?.count, 0)
     }
 
+    /// Deleting an attendee cascades to its registration
+    ///
+    /// - Given: DataStore is ready
+    /// - When:
+    ///    - An attendee, a meeting and a registration linking them are saved
+    ///    - The attendee is deleted
+    /// - Then:
+    ///    - A `syncReceived` create with version 1 is received for each of the three models
+    ///    - A `syncReceived` delete with version 2 is received for the attendee and the registration
+    ///    - The attendee is gone and the meeting has no registrations
+    ///
     func testDeleteAttendeeShouldCascadeDeleteRegistration() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
-        guard let attendee = await saveAttendee(),
-              let meeting = await saveMeeting(),
-              let registration = await saveRegistration(meeting: meeting, attendee: attendee)
-        else {
-                  XCTFail("Could not create attendee, meeting, registration")
-            return
-        }
+        let attendee = Attendee8V2()
+        let meeting = Meeting8V2(title: "title")
+        let registration = Registration8V2(meeting: meeting, attendee: attendee)
         let createReceived = expectation(description: "Create notification received")
         createReceived.expectedFulfillmentCount = 3 // 3 models (1 attendee and 1 meeting and 1 registration)
         var hubListener = Amplify.Hub.listen(
@@ -366,7 +424,16 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
             XCTFail("Listener not registered for hub")
             return
         }
+        // Save only once listening, or a fast sync can arrive before the listener exists
+        guard await saveAttendee(attendee) != nil,
+              await saveMeeting(meeting) != nil,
+              await saveRegistration(registration) != nil
+        else {
+            XCTFail("Could not create attendee, meeting, registration")
+            return
+        }
         await fulfillment(of: [createReceived], timeout: networkTimeout)
+        Amplify.Hub.removeListener(hubListener)
 
         let deleteReceived = expectation(description: "Delete received")
         deleteReceived.expectedFulfillmentCount = 2 // attendee and registration
@@ -387,14 +454,6 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
                         return
                     }
                 }
-                if let meetingEvent = try? mutationEvent.decodeModel() as? Meeting8V2, meetingEvent.id == meeting.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(meetingEvent.title, meeting.title)
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
                 if let registrationEvent = try? mutationEvent.decodeModel() as? Registration8V2,
                     registrationEvent.id == registration.id {
                     if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
@@ -403,9 +462,14 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
                     }
                 }
         }
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
 
         _ = try await Amplify.DataStore.delete(attendee)
         await fulfillment(of: [deleteReceived], timeout: networkTimeout)
+        Amplify.Hub.removeListener(hubListener)
 
         let queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         XCTAssertNil(queriedAttendeeOptional)
@@ -419,16 +483,23 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
         XCTAssertEqual(queriedMeeting.attendees?.count, 0)
     }
 
+    /// Deleting a meeting cascades to its registration
+    ///
+    /// - Given: DataStore is ready
+    /// - When:
+    ///    - An attendee, a meeting and a registration linking them are saved
+    ///    - The meeting is deleted
+    /// - Then:
+    ///    - A `syncReceived` create with version 1 is received for each of the three models
+    ///    - A `syncReceived` delete with version 2 is received for the meeting and the registration
+    ///    - The meeting is gone and the attendee has no registrations
+    ///
     func testDeleteMeetingShouldCascadeDeleteRegistration() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
-        guard let attendee = await saveAttendee(),
-              let meeting = await saveMeeting(),
-              let registration = await saveRegistration(meeting: meeting, attendee: attendee)
-        else {
-                  XCTFail("Could not create attendee, meeting, registration")
-            return
-        }
+        let attendee = Attendee8V2()
+        let meeting = Meeting8V2(title: "title")
+        let registration = Registration8V2(meeting: meeting, attendee: attendee)
         let createReceived = expectation(description: "Create notification received")
         createReceived.expectedFulfillmentCount = 3 // 3 models (1 attendee and 1 meeting and 1 registration)
         var hubListener = Amplify.Hub.listen(
@@ -469,7 +540,16 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
             XCTFail("Listener not registered for hub")
             return
         }
+        // Save only once listening, or a fast sync can arrive before the listener exists
+        guard await saveAttendee(attendee) != nil,
+              await saveMeeting(meeting) != nil,
+              await saveRegistration(registration) != nil
+        else {
+            XCTFail("Could not create attendee, meeting, registration")
+            return
+        }
         await fulfillment(of: [createReceived], timeout: networkTimeout)
+        Amplify.Hub.removeListener(hubListener)
 
         let deleteReceived = expectation(description: "Delete received")
         deleteReceived.expectedFulfillmentCount = 2 // meeting and registration
@@ -497,9 +577,14 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
                     }
                 }
         }
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
 
         _ = try await Amplify.DataStore.delete(meeting)
         await fulfillment(of: [deleteReceived], timeout: networkTimeout)
+        Amplify.Hub.removeListener(hubListener)
 
         let queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         guard let queriedAttendee = queriedAttendeeOptional else {
@@ -513,8 +598,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
         XCTAssertNil(queriedMeetingOptional)
     }
 
-    func saveAttendee() async -> Attendee8V2? {
-        let attendee = Attendee8V2()
+    func saveAttendee(_ attendee: Attendee8V2 = Attendee8V2()) async -> Attendee8V2? {
         var result: Attendee8V2?
         do {
             result = try await Amplify.DataStore.save(attendee)
@@ -524,8 +608,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
         return result
     }
 
-    func saveMeeting() async -> Meeting8V2? {
-        let meeting = Meeting8V2(title: "title")
+    func saveMeeting(_ meeting: Meeting8V2 = Meeting8V2(title: "title")) async -> Meeting8V2? {
         var result: Meeting8V2?
         do {
             result = try await Amplify.DataStore.save(meeting)
@@ -535,8 +618,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
         return result
     }
 
-    func saveRegistration(meeting: Meeting8V2, attendee: Attendee8V2) async -> Registration8V2? {
-        let registration = Registration8V2(meeting: meeting, attendee: attendee)
+    func saveRegistration(_ registration: Registration8V2) async -> Registration8V2? {
         var result: Registration8V2?
         do {
             result = try await Amplify.DataStore.save(registration)

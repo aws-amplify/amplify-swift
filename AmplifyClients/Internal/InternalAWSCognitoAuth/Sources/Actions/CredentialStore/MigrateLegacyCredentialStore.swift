@@ -479,6 +479,8 @@ package extension MigrateLegacyCredentialStore {
 /// Whether the new credential store already holds a session.
 private enum ExistingSession {
     case present
+    /// A signed-out record (`noCredentials`): it stops the migration as a session does.
+    case signedOut
     case absent
     case unreadable(EngineCredentialStoreError)
 }
@@ -507,6 +509,12 @@ extension MigrateLegacyCredentialStore {
             // The legacy data is older than the session the new store already holds, so writing it
             // forward would replace a newer session. Drop it instead.
             logInfo("\(#fileID) A newer session already exists, discarding legacy credentials", environment: environment)
+            migration.clearLegacyStores()
+            return false
+        case .signedOut:
+            // The user signed out after the legacy data was written, so writing it forward would sign them back in.
+            // Drop it instead.
+            logInfo("\(#fileID) A signed-out session already exists, discarding legacy credentials", environment: environment)
             migration.clearLegacyStores()
             return false
         case .unreadable(let error):
@@ -540,6 +548,14 @@ extension MigrateLegacyCredentialStore {
     /// over it (or kept for a later launch), as released plugins do. A legacy guest replaces it too: the plugin
     /// saves a guest on its own, for example after a launch before first unlock kept the legacy stores, or in an
     /// app extension that ran first, and keeping it would lose the user's legacy identity.
+    ///
+    /// A signed-out record (`{"noCredentials":{}}`) is not absent: a sign-out through the Cognito client's default
+    /// session saves it, and migrating over it would sign back in the user who signed out. It counts as a session
+    /// does, as the access-group migration weighs it (`AWSCognitoAuthCredentialStore.SavedSession.signedOut`). The
+    /// plugin saves one only under an access group, where its sign-out already cleared the signing-out app's own
+    /// legacy stores (named after its bundle ID), so this rarely changes what a plugin-only app migrates: only legacy
+    /// data that survived or reappeared after a sign-out is dropped, or that another app sharing the group still holds
+    /// in its own legacy stores, as over a login the group holds.
     private func existingSession(
         in amplifyCredentialStore: AmplifyAuthCredentialStoreBehavior
     ) -> ExistingSession {
@@ -547,7 +563,7 @@ extension MigrateLegacyCredentialStore {
             let credentials = try amplifyCredentialStore.retrieveCredential()
             switch credentials {
             case .noCredentials:
-                return .absent
+                return .signedOut
             case .identityPoolOnly:
                 return .absent
             case .userPoolOnly, .userPoolAndIdentityPool, .identityPoolWithFederation:

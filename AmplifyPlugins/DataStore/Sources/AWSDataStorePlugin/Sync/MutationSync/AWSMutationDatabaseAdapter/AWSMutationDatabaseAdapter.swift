@@ -6,10 +6,11 @@
 //
 
 import Amplify
-import Combine
 
 /// Interface for saving and loading MutationEvents from storage
-/// - Note: `@unchecked Sendable`: the adapter is reached from the mutation queue's serialized flow.
+/// - Note: `@unchecked Sendable`: `pendingRequest` and every read-modify-write of the MutationEvent table made here
+///   run on `outboxQueue`; `storageAdapter` is a weak reference written only by init and `reset()`, and each block
+///   copies it once.
 final class AWSMutationDatabaseAdapter: @unchecked Sendable {
     /// Possible outcomes of a "submit" based on inspecting the locally stored MutationEvents
     enum MutationDisposition {
@@ -28,14 +29,15 @@ final class AWSMutationDatabaseAdapter: @unchecked Sendable {
 
     weak var storageAdapter: StorageEngineAdapter?
 
-    /// If a request for 'next event' comes in while the queue is empty, this promise will be set, so that the next
-    /// saved event can fulfill it
-    var nextEventPromise: AtomicValue<Future<MutationEvent, DataStoreError>.Promise?>
+    /// Runs each ingest and each dequeue to completion, one at a time
+    let outboxQueue = TaskQueue<Void>()
 
-    /// Loads saved events from the database and delivers them to `mutationEventSubject`
+    /// The outbox's request, parked when it found the queue empty. Only touched on `outboxQueue`
+    var pendingRequest: DataStoreCallback<MutationEvent>?
+
+    /// Holds a weak reference to the storage adapter the outbox reads and writes
     init(storageAdapter: StorageEngineAdapter) throws {
         self.storageAdapter = storageAdapter
-        self.nextEventPromise = .init(initialValue: nil)
         log.verbose("Initialized")
     }
 
@@ -55,7 +57,8 @@ extension AWSMutationDatabaseAdapter: Resettable {
     func reset() async {
         log.verbose("Resetting AWSMutationDatabaseAdapter")
         storageAdapter = nil
-        nextEventPromise.set(nil)
+        // Enqueued, not awaited, so a stalled block can't hold up reset
+        outboxQueue.async { self.pendingRequest = nil }
         log.verbose("Resetting AWSMutationDatabaseAdapter: finished")
     }
 

@@ -154,8 +154,8 @@ final class LiveEngineSignInTests: XCTestCase {
     /// - When:
     ///    - alice signs in
     /// - Then:
-    ///    - it throws the mapped error, `.unknown` with Cognito's message and the retry suggestion, never a bug
-    ///      report; nothing is pending, and `RevokeToken` was called with the issued refresh token
+    ///    - it throws the mapped error, `.service` with no code, Cognito's message and the retry suggestion, never a
+    ///      bug report; nothing is pending, and `RevokeToken` was called with the issued refresh token
     ///
     func testAFailedIdentityStepRevokesTheIssuedTokens() async throws {
         let engine = try harness.engine()
@@ -166,9 +166,10 @@ final class LiveEngineSignInTests: XCTestCase {
         harness.scriptSignOut()
 
         await assertThrowsAsync({ try await engine.signIn(.srp(), current: nil) }) { error in
-            // The engine's mapping of an identity pool `InternalErrorException`, as the plugin's.
-            guard case .unknown(let description, let suggestion, _) = authError(error) else {
-                return XCTFail("expected the engine's unknown error, got \(error)")
+            // The engine maps an identity pool `InternalErrorException` to the plugin's unknown error; the client
+            // reports it as a code-less service error.
+            guard case .service(nil, let description, let suggestion, _) = authError(error) else {
+                return XCTFail("expected a service error with no code, got \(error)")
             }
             XCTAssertTrue(description.contains("boom"), description)
             XCTAssertEqual(suggestion, AuthClientError.serviceFaultSuggestion)
@@ -864,6 +865,53 @@ final class LiveEngineSignInTests: XCTestCase {
         guard case .done = next else {
             return XCTFail("expected .done, got \(next)")
         }
+    }
+
+    /// A TOTP setup whose last call fails with a step keeps the attempt on that step, with no setup left to answer:
+    /// a further answer is refused, as the plugin's `answerTOTPSetup` refuses it, instead of waiting forever.
+    ///
+    /// - Given: a sign-in stopped on a TOTP setup, `VerifySoftwareToken` accepting the code, and the setup's
+    ///   `RespondToAuthChallenge` failing with `PasswordResetRequiredException`
+    /// - When:
+    ///    - alice confirms the code, then answers again
+    /// - Then:
+    ///    - the confirmation returns `.resetPassword`
+    ///    - the second answer throws `invalidState` within the bound, telling her to sign in again, with no further
+    ///      Cognito call, and nothing is pending
+    ///
+    func testAnAnswerAfterATOTPSetupEndedOnAStepIsRefused() async throws {
+        let engine = try harness.engine()
+        harness.scriptSRP(then: LiveEngineFixtures.challenge(.mfaSetup, parameters: ["MFAS_CAN_SETUP": #"["SOFTWARE_TOKEN_MFA"]"#]))
+        harness.cognito.once("AssociateSoftwareToken") { (_: AssociateSoftwareTokenInput) in
+            AssociateSoftwareTokenOutput(secretCode: "SHARED-SECRET", session: "setup-session")
+        }
+        harness.cognito.once("VerifySoftwareToken") { (_: VerifySoftwareTokenInput) in
+            VerifySoftwareTokenOutput(session: "verified-session", status: .success)
+        }
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) -> RespondToAuthChallengeOutput in
+            throw AWSCognitoIdentityProvider.PasswordResetRequiredException(message: "Password reset required for the user")
+        }
+        _ = try await engine.signIn(.srp(), current: nil)
+
+        let first = try await withinTime(10, "the TOTP setup's confirmation") {
+            try await engine.confirmSignIn(.answer("123456"), current: nil)
+        }
+        guard case .challenge(.resetPassword) = first else {
+            return XCTFail("expected .resetPassword, got \(first)")
+        }
+        let operations = harness.cognito.operations
+
+        let retryError = try await withinTime(10, "the answer after the setup ended") {
+            await thrownError { try await engine.confirmSignIn(.answer("123456"), current: nil) }
+        }
+
+        guard case .invalidState(let description, _, _) = retryError.flatMap(authError) else {
+            return XCTFail("expected invalidState, got \(String(describing: retryError))")
+        }
+        XCTAssertEqual(description, "Cannot use confirmSignIn in the current state. Call signIn to start the sign-in again.")
+        XCTAssertEqual(harness.cognito.operations, operations)
+        let pending = await engine.pendingChallenge
+        XCTAssertNil(pending)
     }
 
     /// A TOTP setup whose `AssociateSoftwareToken` fails, after the user picked TOTP, drops the attempt: a

@@ -50,7 +50,7 @@ package struct DeleteUser: Action {
                 event = DeleteUserEvent(eventType: .signOutDeletedUser(skipHostedUISignOut: skipHostedUISignOut))
                 logVerbose("\(#fileID) Delete User succeeded", environment: environment)
             } catch let error as EngineAuthErrorConvertible {
-                event = DeleteUserEvent(eventType: .throwError(error.engineError))
+                event = DeleteUserEvent(eventType: .throwError(error.engineError, cause: error as? Error))
                 logVerbose("\(#fileID) Delete User failed \(error)", environment: environment)
             } catch {
                 let authError = EngineAuthError.service(
@@ -59,7 +59,7 @@ package struct DeleteUser: Action {
                     EngineErrorMessages.reportBugToAWS(file: "AWSCognitoAuthPlugin/DeleteUser.swift", line: 56),
                     error
                 )
-                event = DeleteUserEvent(eventType: .throwError(authError))
+                event = DeleteUserEvent(eventType: .throwError(authError, cause: error))
                 logVerbose("\(#fileID) Delete user failed \(error)", environment: environment)
             }
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)

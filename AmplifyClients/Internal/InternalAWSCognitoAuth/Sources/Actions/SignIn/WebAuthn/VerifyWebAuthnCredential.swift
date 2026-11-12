@@ -80,8 +80,11 @@ package struct VerifyWebAuthnCredential: Action {
         if let webAuthnError = error as? WebAuthnError {
             return webAuthnError
         }
-        if let authError = error as? EngineAuthErrorConvertible {
-            return .service(error: authError.engineError)
+        if let authError = error as? EngineAuthErrorConvertible & Error {
+            // The service's exception too, not only its engine error, which reads the same: a caller that maps the
+            // failure itself needs it (the engine error keeps nothing under an `InternalErrorException`). Wrapped so
+            // the state prints the engine error, as before.
+            return .service(error: WebAuthnError.ServiceFailure(authError))
         }
         return .unknown(
             message: "Unable to verify WebAuthn credential",

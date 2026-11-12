@@ -76,14 +76,47 @@ require_free_disk() {
     fi
 }
 
+# The credential types `aws configure list` reports for credentials the profile itself configures: keys in the shared
+# credentials or config file, IAM Identity Center (sso), an `aws login` session, a credential_process, a role_arn it
+# assumes (from a source_profile or a credential_source), and a role_arn it assumes with a web_identity_token_file.
+# Each was set up in the profile, so it acts in the account the profile was made for. The rest (env, container-role,
+# iam-role, ec2-credentials-file, boto-config) are what the CLI falls back to when the profile holds none.
+PROFILE_CREDENTIAL_TYPES=(shared-credentials-file config-file sso login custom-process assume-role
+    assume-role-with-web-identity)
+
+# The type `aws configure list` reports for the access key of the profile AWS_PROFILE names: "None" when it resolves
+# no credentials, "" when the command fails (a profile that does not exist, say). Reads the table of the CLI's current
+# releases ("access_key : <value> : <type> : <location>") and of older ones (the same columns, spaces only). Prints a
+# credential type, never a key; the CLI masks the key anyway.
+credential_type() {
+    local list line pattern='^[[:space:]]*access_key[[:space:]:]+[^[:space:]]+[[:space:]:]+([^[:space:]]+)'
+    list=$(command aws configure list 2>/dev/null) || return 0
+    while IFS= read -r line; do
+        line="${line//<not set>/<not-set>}"
+        if [[ "$line" =~ $pattern ]]; then
+            printf '%s' "${BASH_REMATCH[1]}"
+            return 0
+        fi
+    done <<<"$list"
+}
+
 # Exits if $STATE_DIR/state.json records an account other than the caller's, so a profile for
 # another account can never act on this sandbox's recorded resources (or mint a second sandbox under
 # the same state directory). Sets ACCOUNT, which is never printed. Run before any mutating call.
 # With no account recorded yet (the first provision.sh), nothing else checks the account, so it also exits, before
-# any AWS call, unless AWS_PROFILE names the profile to use: the first run never falls back to the CLI's default
-# credentials.
+# any call to an AWS service, unless AWS_PROFILE is set, none of the variables that give the CLI credentials of their
+# own is exported, and the profile holds credentials of its own. The variables are AWS_ACCESS_KEY_ID,
+# AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN (exported keys, which the CLI takes over every profile), AWS_ROLE_ARN and
+# AWS_WEB_IDENTITY_TOKEN_FILE (a web identity role, common on CI runners and EKS, which it takes before the profile's
+# own credentials), and any AWS_CONTAINER_CREDENTIALS_* (container credentials). The profile check reads `aws configure
+# list`, which resolves the profile's credentials the way every other call does and makes no call to an AWS service
+# (fetching an assumed role's, IAM Identity Center's or a login session's credentials aside), and accepts only
+# PROFILE_CREDENTIAL_TYPES.
+# A profile that holds none (only a region, say) would leave the CLI to fall back to an EC2 instance role, container
+# credentials, AWS_CREDENTIAL_FILE or the boto files, and a first run would then build the sandbox in that account and
+# record it. It does not check that the profile is the sandbox account's: the profile named is trusted to be.
 require_recorded_account() {
-    local recorded=""
+    local recorded="" exported=() variable credentials_from reason
     if [[ -f "$STATE_DIR/state.json" ]]; then
         recorded=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('account',''))" "$STATE_DIR/state.json")
     fi
@@ -91,6 +124,34 @@ require_recorded_account() {
         echo "Refusing: no account is recorded in $STATE_DIR/state.json yet. Set AWS_PROFILE to the sandbox" \
             "account's profile (see the integration README); a first run never uses the CLI's default credentials." >&2
         exit 1
+    fi
+    if [[ -z "$recorded" ]]; then
+        # shellcheck disable=SC2046  # the variable names, one a word
+        for variable in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_ROLE_ARN \
+            AWS_WEB_IDENTITY_TOKEN_FILE $(compgen -e | grep '^AWS_CONTAINER_CREDENTIALS_' || true); do
+            [[ -z "${!variable:-}" ]] || exported+=("$variable")
+        done
+        if (( ${#exported[@]} > 0 )); then
+            echo "Refusing: no account is recorded in $STATE_DIR/state.json yet, and the environment exports ${exported[*]}." \
+                "The AWS CLI takes exported keys and a web identity role over the profile AWS_PROFILE names, and" \
+                "container credentials whenever that profile holds no credentials of its own. Unset them for the" \
+                "first run." >&2
+            exit 1
+        fi
+        credentials_from=$(credential_type)
+        if [[ " ${PROFILE_CREDENTIAL_TYPES[*]} " != *" ${credentials_from:-unknown} "* ]]; then
+            case "$credentials_from" in
+                "") reason="the CLI cannot resolve the profile's credentials (a missing profile, an expired sign-in)" ;;
+                None) reason="the profile AWS_PROFILE names resolves no credentials" ;;
+                *) reason="the profile AWS_PROFILE names takes its credentials from $credentials_from" ;;
+            esac
+            echo "Refusing: no account is recorded in $STATE_DIR/state.json yet, and $reason" \
+                "(\`aws configure list\`). A first run uses only credentials the profile holds itself (keys, sso," \
+                "login, credential_process or a role_arn): without them the CLI falls back to an EC2 instance role," \
+                "container credentials or a legacy credentials file, and the run would build the sandbox in that" \
+                "account." >&2
+            exit 1
+        fi
     fi
     ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
     if [[ -n "$recorded" && "$recorded" != "$ACCOUNT" ]]; then

@@ -32,7 +32,7 @@ extension SessionCore {
     /// | this session's passkey registration holds the sheet (or its lease is granted, not yet attached) | refused; the registration is stopped, then the page waits up to `passkeySheetClosingTimeout` for its sheet to close | as below | as below; with no registration to stop, asked for once more with `.fail`, else the busy row |
     /// | the sheet stays busy (this session's passkey sheet did not close in time, or passed to another session as it closed) | none | — | throws `SignOutRefusal(.browserBusy(holder:))`: nothing cleared |
     /// | lease taken | around this attempt | `.present` | first stops this session's passkey registrations still before their sheet, then the engine's outcome; a page that could not be shown or completed (the window gone, the browser failed) is the engine's `SignOutRefusal`: nothing cleared |
-    /// | the user closed the page | released | — | rethrows `.userCancelled`: nothing cleared, unless the session is expired, which reruns `.skip` and reports it |
+    /// | the user closed the page | released | — | rethrows `.userCancelled`: nothing cleared, unless the session is known to be expired (`afterClosedLogout`) and the login signed out still has the refresh token proved dead, which reruns `.skip` and reports it |
     /// | `cancelWebUISignIn()` or `resetSystemSheet()` interrupted the lease | released | — | waits for the sign-out's own result: the row above if that closed the page, else what it did (signed out, or its failure reported as the revoke's) |
     /// | the interrupt came before the body began (between the grant and the start; the body is abandoned, never runs) | released | — | the closed-page row, at once: nothing ran |
     /// | the caller's task was cancelled | released | — | the same decision: `CancellationError` if the body never began or closed the page (nothing cleared), else what it did, and the session is cleared |
@@ -227,11 +227,20 @@ extension SessionCore {
     }
     #endif
 
-    /// The user closed the logout page: they stay signed in, as with the plugin. Unless the session is expired
-    /// (the plugin's #3956 behaviour, keyed there on `isRefreshTokenExpired`): its tokens are dead anyway, so it
-    /// signs out without the page and reports the cookie left behind (`expiredLogoutClosed(_:)`).
+    /// The user closed the logout page: they stay signed in, as with the plugin. Unless the session is known to be
+    /// expired (the plugin's #3956 behaviour): its tokens are dead anyway, so it signs out without the page and
+    /// reports the cookie left behind (`expiredLogoutClosed(_:)`). The plugin keys that on `isRefreshTokenExpired`,
+    /// which it saves with the session; here it is the core's expiry (`expiredCredentials`), set when a refresh found
+    /// the refresh token dead, and saved with the record (`SessionRecord.deadToken`), so it holds across launches too,
+    /// and for a new core once every handle and provider for the session was released.
+    ///
+    /// `payload` is what the sign-out read from the store, which may be a login another writer saved since this core
+    /// marked the session expired (an app sharing the access group signed the session out and in again). Only a
+    /// `payload` with the refresh token proved dead is signed out here: compared by refresh token, not by whole
+    /// credentials, since the plugin saves the same dead tokens again with its expired flag set. A new login keeps
+    /// the closed page's `.userCancelled`, and stays signed in.
     private nonisolated func afterClosedLogout(_ payload: Data, global: Bool, _ error: AuthClientError) async throws -> EngineSignOutOutcome {
-        guard await isExpired else {
+        guard let dead = await expiredCredentials, (try? sameRefreshToken(payload, dead)) == true else {
             throw error
         }
         return try await skippingHostedUI(payload, global: global, reporting: Self.expiredLogoutClosed(error))
@@ -366,7 +375,7 @@ extension SessionCore {
         }
         _ = try await restoredSnapshot()
         guard await beginWebUISignIn() else {
-            throw AuthClientError.browserBusy(heldBy: sessionId, requestedBy: sessionId, reason: .alreadyInFlight)
+            throw await webUISignInInProgress()
         }
         let caller = SystemSheetFlow()
         let outcome: Result<AuthClientSignInResult, Error>
@@ -388,6 +397,11 @@ extension SessionCore {
         case .failure(is CancellationError):
             if Task.isCancelled {
                 throw CancellationError()
+            }
+            if caller.stoppedBy == .sessionEnded {
+                // A sign-out, purge or deletion stopped the flow, including one that landed as its attempt began,
+                // after the ending check and before the epoch moved, which no epoch check can see.
+                throw Self.signInCancelled()
             }
             throw Self.webUISignInCancelled()
         case .failure(let error as AuthClientError):
@@ -469,8 +483,9 @@ extension SessionCore {
         let step: Result<EngineStepResult, Error>
         do {
             step = try await .success(caller.run {
-                // A `cancelWebUISignIn()` answers once the browser has closed (bounded), so the caller told
-                // `.userCancelled` finds the sheet free (`systemSheetHolder` is `nil`).
+                // A `cancelWebUISignIn()` answers once the lease is released (bounded), so the caller told
+                // `.userCancelled` finds that `systemSheetHolder` no longer names this session: it is `nil`, or a
+                // session that was queued behind this one.
                 try await lock.withLease(for: sessionId, policy: options.whenBrowserBusy, waitsForReleaseWhenInterrupted: true) { _ in
                     // An interrupt that landed while this waited for the sheet: begin nothing.
                     guard !Task.isCancelled, !caller.isCancelled, begun.begin() else {
@@ -529,6 +544,11 @@ extension SessionCore {
         }
     }
 
+    /// A test seam in a hosted-UI sign-in's lease body, given the session: runs once the attempt has checked that the
+    /// session has not ended, before it begins. `nil` in the app; a test sets it for its own call with `withValue`, and
+    /// holds the body there to end the session at that moment.
+    @TaskLocal static var webUIAttemptSeam: (@Sendable (SessionID) async -> Void)?
+
     /// A hosted-UI attempt begun under the lease: what its commit expects, its seed, and its epoch.
     private struct WebUIAttempt: Sendable {
         let base: SessionSnapshot
@@ -543,6 +563,7 @@ extension SessionCore {
         guard await sessionEndings == endings else {
             throw CancellationError()
         }
+        await Self.webUIAttemptSeam?(sessionId)
         let (base, guestPayload, epoch) = try await signInBase()
         try await cancelPendingChallenge(before: epoch)
         await deleteChallengeRecord(epoch: epoch)
@@ -694,6 +715,27 @@ extension SessionCore {
             .replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "=", with: "")
+    }
+
+    /// The refusal of a hosted-UI sign-in while this session's previous call is still in progress, from one read of the
+    /// sheet lock:
+    ///
+    /// | The previous call | Reason | `holder` |
+    /// |---|---|---|
+    /// | queued behind another session's sheet | `.alreadyQueued` | the session holding it |
+    /// | queued behind this session's own closing sheet (a retry after a cancel) | `.stillClosingWithCallQueued` | this session |
+    /// | holding the sheet (this session holds it) | `.alreadyInFlight` | this session |
+    /// | neither: before its lease, or committing after it | `.signInInProgress` | the session holding the sheet, else this session |
+    private nonisolated func webUISignInInProgress() async -> AuthClientError {
+        let (holder, queued) = await sheetLock.holderAndQueue(for: sessionId)
+        if let holder, queued, holder != sessionId {
+            return .browserBusy(heldBy: holder, requestedBy: sessionId, reason: .alreadyQueued)
+        }
+        if holder == sessionId {
+            // Queued while holding: the lock queues a session only behind its own sheet once that sheet is closing.
+            return .browserBusy(heldBy: sessionId, requestedBy: sessionId, reason: queued ? .stillClosingWithCallQueued : .alreadyInFlight)
+        }
+        return .browserBusy(heldBy: holder ?? sessionId, requestedBy: sessionId, reason: .signInInProgress)
     }
 
     static func webUISignInCancelled() -> AuthClientError {

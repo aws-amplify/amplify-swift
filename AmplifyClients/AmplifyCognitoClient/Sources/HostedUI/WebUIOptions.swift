@@ -11,8 +11,10 @@ import Foundation
 /// Options for a hosted-UI (browser) sign-in.
 ///
 /// Three things are new with this client: `whenBrowserBusy`, `identityExpectation`, and the ephemeral
-/// default of `prefersEphemeralSession`. The rest carry every option the plugin's hosted-UI sign-in accepts, so
-/// the client is at parity with it:
+/// default of `prefersEphemeralSession`. The rest carry every option the plugin's hosted-UI sign-in accepts, and
+/// two of them send something other than the plugin does: an empty `prompt` list sends no `prompt` item, where
+/// the plugin sends an empty one, and a `nil` or empty `nonce` sends one the client mints, for the token checks
+/// `identityExpectation` describes, where the plugin sends an empty `nonce` as it is:
 ///
 /// | Here | Plugin | Authorize query item |
 /// |---|---|---|
@@ -70,6 +72,8 @@ public struct WebUIOptions {
 
     /// A random value to include in the request. Cognito copies it into the ID token's `nonce`
     /// claim, so the app can compare the two to guard against replay.
+    ///
+    /// `nil` or an empty string sends one the client mints; the plugin sends an empty one as it is.
     public var nonce: String?
 
     /// The language to show the user-interactive pages in. See
@@ -82,7 +86,8 @@ public struct WebUIOptions {
     /// OIDC `prompt` values, controlling what happens to an existing browser session. `[.login]`
     /// forces re-authentication even if a Cognito cookie survived.
     ///
-    /// Sent space-separated, in the order given.
+    /// Sent space-separated, in the order given. An empty list sends no `prompt` item, as `nil` does; the plugin
+    /// sends an empty one.
     public var prompt: [Prompt]?
 
     /// A resource to bind to the access token's `aud` claim. Must begin with `https://`,
@@ -94,7 +99,7 @@ public struct WebUIOptions {
     ///
     /// Whatever it is, the client always checks that the tokens that come back belong to this flow and
     /// this app (the ID token's `token_use`, `aud`, `iss`, and the nonce, which it mints when `nonce` is
-    /// `nil`). When the check fails nobody is signed in and nothing is stored.
+    /// `nil` or empty). When the check fails nobody is signed in and nothing is stored.
     public var identityExpectation: IdentityExpectation
 
     public init(

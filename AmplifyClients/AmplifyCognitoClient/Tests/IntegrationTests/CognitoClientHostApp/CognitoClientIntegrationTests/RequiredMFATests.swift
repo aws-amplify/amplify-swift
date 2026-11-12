@@ -6,15 +6,18 @@
 //
 
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
+import AWSCognitoIdentityProvider
 import XCTest
 
 /// Sign-in on the pools that require MFA, through the client's
-/// `signIn` and `confirmSignIn` only.
+/// `signIn` and `confirmSignIn` only (the `USER_AUTH` tests first check, with a raw call, that the app client
+/// allows the flow).
 ///
-/// This file holds the plugin's `TOTPSetupWhenUnauthenticatedTests` (MF-13 … MF-17, on U-REQ-TS:
-/// MFA required, TOTP and SMS). `RequiredMFATests+Email.swift` holds `EmailMFAOnlyTests` (MF-18, MF-19,
-/// U-REQ-E) and `EmailMFAWithAllMFATypesRequiredTests` (MF-20 … MF-23, U-REQ-ALL). Each test keeps the
-/// plugin's method name.
+/// This file holds the plugin's `TOTPSetupWhenUnauthenticatedTests` (MF-13 … MF-17, on U-REQ-TS: MFA required, TOTP and
+/// SMS), and the same TOTP setup reached through choice-based sign-in (`USER_AUTH` with a password first factor; not
+/// counted, the plugin has no such test). `RequiredMFATests+Email.swift` holds `EmailMFAOnlyTests` (MF-18, MF-19,
+/// U-REQ-E) and `EmailMFAWithAllMFATypesRequiredTests` (MF-20 … MF-23, U-REQ-ALL). Each test keeps the plugin's method
+/// name.
 ///
 /// Every user is fresh and is deleted: through the client once the test has signed it in, otherwise in
 /// `tearDown`, whose raw sign-in answers the pool's MFA (a TOTP secret the test records, a code from the
@@ -171,6 +174,63 @@ final class RequiredMFATests: ClientIntegrationTestCase {
         XCTAssertStep(confirmed.nextStep, .done)
         try await assertSignedInThenDelete(user, on: client)
     }
+
+    // MARK: - USER_AUTH (U-REQ-TS)
+
+    /// A `USER_AUTH` sign-in with the `PASSWORD` first factor, answered with `MFA_SETUP`, sets TOTP up, and the
+    /// setup completes the sign-in (MF-15 through choice-based sign-in; not counted).
+    ///
+    /// It needs U-REQ-TS's app client to allow `ALLOW_USER_AUTH` (`infra/pools/mfa-req-totp-sms.json`). Where
+    /// Cognito refuses the flow it fails, naming the remedies, or skips under the harness's CI-only skip rule
+    /// (`requireUserAuth(on:)`, `CISkipReason.mfaRequiredUserAuth`).
+    ///
+    /// - Given: a fresh user without a phone number on U-REQ-TS (MFA required, TOTP and SMS, no email MFA), whose
+    ///   app client allows `USER_AUTH`, and the recorder installed
+    /// - When:
+    ///    - the user signs in with `userAuth(preferredFirstFactor: .password)` and the password
+    ///    - and confirms with a code from the shared secret
+    /// - Then:
+    ///    - the step is `.continueSignInWithTOTPSetup`, with a shared secret and the user's username, and the
+    ///      session waits on it
+    ///    - it sent one `InitiateAuth` `USER_AUTH` preferring `PASSWORD`
+    ///    - the confirmation returns `.done`, and the session is signed in as the user
+    ///    - the only challenge it answered was `MFA_SETUP`
+    ///
+    func testUserAuthPasswordSignInSetsUpTOTPWhenMFASetupIsRequired() async throws {
+        try await assertUserAuthSignInSetsUpTOTP(
+            .password,
+            tag: "mf-ua-password",
+            preferring: "PASSWORD",
+            answering: ["MFA_SETUP"]
+        )
+    }
+
+    /// A `USER_AUTH` sign-in with the `PASSWORD_SRP` first factor, answered with `MFA_SETUP`, sets TOTP up, and
+    /// the setup completes the sign-in (not counted).
+    ///
+    /// As `testUserAuthPasswordSignInSetsUpTOTPWhenMFASetupIsRequired`, with the SRP proof for the password; it
+    /// fails or skips the same way where the app client refuses `USER_AUTH`.
+    ///
+    /// - Given: a fresh user without a phone number on U-REQ-TS, whose app client allows `USER_AUTH`, and the
+    ///   recorder installed
+    /// - When:
+    ///    - the user signs in with `userAuth(preferredFirstFactor: .passwordSRP)` and the password
+    ///    - and confirms with a code from the shared secret
+    /// - Then:
+    ///    - the step is `.continueSignInWithTOTPSetup`, with a shared secret and the user's username, and the
+    ///      session waits on it
+    ///    - it sent one `InitiateAuth` `USER_AUTH` preferring `PASSWORD_SRP`
+    ///    - the confirmation returns `.done`, and the session is signed in as the user
+    ///    - the challenges it answered were `PASSWORD_VERIFIER`, then `MFA_SETUP`
+    ///
+    func testUserAuthPasswordSRPSignInSetsUpTOTPWhenMFASetupIsRequired() async throws {
+        try await assertUserAuthSignInSetsUpTOTP(
+            .passwordSRP,
+            tag: "mf-ua-srp",
+            preferring: "PASSWORD_SRP",
+            answering: ["PASSWORD_VERIFIER", "MFA_SETUP"]
+        )
+    }
 }
 
 // MARK: - Helpers
@@ -205,6 +265,79 @@ extension RequiredMFATests {
         let secret = try TOTPSecret(totpSetupDetails(step, of: user, file: file, line: line).sharedSecret)
         user.recordTOTPSecret(secret)
         return secret
+    }
+
+    /// Signs a fresh U-REQ-TS user in with `USER_AUTH` and `factor`, expects the TOTP setup, completes it with a
+    /// fresh code, and checks the session is signed in as the user, which is then deleted. From the requests the
+    /// client sent (`RecordingHTTPClient`), it checks the sign-in was one `InitiateAuth` `USER_AUTH` preferring
+    /// `preferredChallenge`, and that the challenges answered were exactly `challenges`, in order: an SRP or other
+    /// sign-in reaches the same steps on this pool (MF-15), so only the requests tell the flows apart.
+    func assertUserAuthSignInSetsUpTOTP(
+        _ factor: AuthClientFactorType,
+        tag: String,
+        preferring preferredChallenge: String,
+        answering challenges: [String]
+    ) async throws {
+        try await requireUserAuth(on: .mfaRequiredTOTPSMS)
+        let user = try await makeFreshUser(on: .mfaRequiredTOTPSMS)
+        let recorder = RecordingHTTPClient()
+        let client = try makeClient(
+            tag,
+            pool: .mfaRequiredTOTPSMS,
+            configureUserPoolClient: recorder.configureUserPoolClient
+        )
+
+        let result = try await client.signIn(
+            username: user.username,
+            password: user.password,
+            options: AuthClientSignInOptions(authFlowType: .userAuth(preferredFirstFactor: factor))
+        )
+
+        assertInitiated(recorder, preferring: preferredChallenge)
+        let details = try totpSetupDetails(result.nextStep, of: user)
+        let secret = TOTPSecret(details.sharedSecret)
+        user.recordTOTPSecret(secret)
+        let pending = await client.currentSessionState()
+        XCTAssertState(pending, .awaitingChallenge(.continueSignInWithTOTPSetup(details)))
+
+        let confirmed = try await client.confirmSignIn(challengeResponse: TOTP.freshCode(secret: secret))
+
+        XCTAssertStep(confirmed.nextStep, .done)
+        XCTAssertEqual(recorder.answered.compactMap(\.challengeName), challenges)
+        try await assertSignedInThenDelete(user, on: client)
+    }
+
+    /// Requires `pool`'s app client to allow choice-based sign-in (`ALLOW_USER_AUTH`), before any user is signed
+    /// up: a raw `InitiateAuth` with `USER_AUTH` and only a username no one has, which starts no factor and sends no
+    /// code, is refused with `InvalidParameterException` when the flow is not allowed (Cognito checks the flow
+    /// before it looks at the user). Cognito's message is not printed.
+    ///
+    /// Where the flow is refused, the test fails, naming the remedies, unless the harness's CI-only skip rule
+    /// applies (`IntegrationTestEnvironment.skipOnCIIfMissing(_:present:)`, `CISkipReason.mfaRequiredUserAuth`):
+    /// a sandbox run never skips, and CI, which asks for no skip, overlays the client's own MFA-required role,
+    /// whose app client allows the flow.
+    func requireUserAuth(on pool: SandboxPool) async throws {
+        let raw = try SandboxPools.pool(pool)
+        do {
+            _ = try await raw.userAuthSignIn(username: SandboxSignUp.identity().username)
+        } catch is UserNotFoundException {
+            // The flow is allowed: Cognito looked the user up and reported it unknown.
+        } catch is NotAuthorizedException {
+            // The flow is allowed: Cognito looked the user up and refused it.
+        } catch is InvalidParameterException {
+            try IntegrationTestEnvironment.skipOnCIIfMissing(.mfaRequiredUserAuth, present: false)
+            throw HarnessError.malformedFixture("""
+            \(pool.sourceName)'s app client refuses USER_AUTH (InvalidParameterException), so a USER_AUTH sign-in \
+            that must set MFA up cannot be checked there. The backend needs ALLOW_USER_AUTH on that app client, with \
+            PASSWORD among the pool's allowed first factors. On the sandbox, run infra/provision.sh (it applies \
+            infra/pools/mfa-req-totp-sms.json), then infra/plugin-configs.py --dir <dir>, and rebuild with \
+            COGNITO_CLIENT_INTEG_DIR=<dir>. On CI's set, overlay the client's MFA-required role, whose app client \
+            allows it: download the set with infra/fetch-ci-config.sh <dir>, run infra/ci/ci-overlay.sh <dir> \
+            <new-dir> "email-alias extended mfa-req-totp-sms", and rebuild with COGNITO_CLIENT_INTEG_DIR=<new-dir>; \
+            if CI's set has no ccit-ci-mfa-req-totp-sms-amplify_outputs.json, upload it with \
+            infra/ci/provision-ci.sh --apply --scope all --upload.
+            """)
+        }
     }
 
     /// Asserts `client` is signed in as `user`, then deletes the user through the client, so the cleanup

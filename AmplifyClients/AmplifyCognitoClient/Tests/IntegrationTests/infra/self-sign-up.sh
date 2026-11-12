@@ -11,11 +11,12 @@
 #   on -- <command…>  takes a lease for this run and turns self sign-up on for every recorded parity pool, runs
 #                     the command with COGNITO_CLIENT_INTEG_SELF_SIGN_UP=on (and
 #                     TEST_RUNNER_COGNITO_CLIENT_INTEG_SELF_SIGN_UP=on, which xcodebuild passes to the test
-#                     runner), then releases the lease through a trap on EXIT, INT, TERM and HUP, however the
-#                     command ends. Self sign-up is turned off when no other run's lease remains. INT, TERM and
+#                     runner), then releases the lease through a trap on EXIT, INT, TERM, HUP and QUIT, however
+#                     the command ends. Self sign-up is turned off when no other run's lease remains. INT, TERM and
 #                     HUP are forwarded to the command (once; once more only if it came as the command was being
-#                     started, when a forward can be lost), and one that arrives while parity.py changes the pools
-#                     stops the run once the change is done. It exits with the command's status, or 128 + the signal.
+#                     started, when a forward can be lost), and QUIT (Ctrl-\) is forwarded as INT; one that arrives
+#                     while parity.py changes the pools stops the run once the change is done. It exits with the
+#                     command's status, or 128 + the signal (131 for QUIT).
 #                     The release needs neither stdout nor stderr: piping the output (`| xcbeautify`) is fine, and
 #                     so is a terminal that closes.
 #   off [--force]     turns it off. For recovery, after a run that could not release (a kill -9). It refuses while
@@ -125,13 +126,14 @@ resend=""
 young=""
 
 # INT, TERM and HUP: remembered for the exit status, and forwarded to the process group of the job that runs (first
-# `parity.py self-sign-up on`, then the command; see launch). One that arrives before the job's PID is known is kept
-# in `pending`, and forwarded once the PID is known.
+# `parity.py self-sign-up on`, then the command; see launch). QUIT (Ctrl-\) is remembered as 131 and forwarded as
+# INT: bash 3.2 runs no EXIT trap for a QUIT it does not trap, so without this one a Ctrl-\ would leave self sign-up
+# on. One that arrives before the job's PID is known is kept in `pending`, and forwarded once the PID is known.
 # A forward can be lost: one that reaches the job's process after its fork but before its exec is dropped there. So a
 # forward made while the job may not have exec'd yet (from `pending`, or in its first second, while the `young` timer
 # runs) is sent once more, half a second later (wait_for_job). A later forward never is: a command that handles the
 # signal and takes time to stop (xcodebuild, whose second SIGINT aborts it hard) gets exactly one.
-# shellcheck disable=SC2329 # invoked by the INT, TERM and HUP traps
+# shellcheck disable=SC2329 # invoked by the INT, TERM, HUP and QUIT traps
 on_signal() {
     signalled=$2
     if [[ -n "$child" ]]; then
@@ -154,14 +156,14 @@ note() {
 
 # From here on, however the script ends, the run's lease is released, and self sign-up is turned off unless
 # another run still holds it. Set before `on`, which records the lease before any change, so that an `on` that
-# fails part-way is undone too. While it releases, INT, TERM and HUP are ignored, and so is SIGPIPE; parity.py, which
-# starts with them ignored, keeps them ignored, so a signal cannot change its status. Nothing in it writes to stdout:
-# parity.py writes to a log in $STATE_DIR, copied to stderr once it has finished, so that no dead stdout or stderr can
-# reach it.
+# fails part-way is undone too. While it releases, INT, TERM, HUP and QUIT are ignored, and so is SIGPIPE; parity.py,
+# which starts with them ignored, keeps them ignored, so a signal cannot change its status. Nothing in it writes to
+# stdout: parity.py writes to a log in $STATE_DIR, copied to stderr once it has finished, so that no dead stdout or
+# stderr can reach it.
 # shellcheck disable=SC2329 # invoked by the EXIT trap
 release() {
     local status=$? log report checked kept=""
-    trap '' INT TERM HUP PIPE
+    trap '' INT TERM HUP QUIT PIPE
     trap - EXIT
     if [[ -n "$child" ]] && kill -0 "$child" 2>/dev/null; then
         kill -TERM -- "-$child" 2>/dev/null || true
@@ -198,6 +200,7 @@ trap release EXIT
 trap 'on_signal INT 130' INT
 trap 'on_signal TERM 143' TERM
 trap 'on_signal HUP 129' HUP
+trap 'on_signal INT 131' QUIT
 
 # launch <hook> <command…>: runs the command in the background, as a job of its own (job control on just for the
 # launch), so that it starts with INT and QUIT at their defaults rather than ignored, in its own process group, and a

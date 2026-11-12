@@ -42,8 +42,8 @@ package struct EngineWebAuthnCredentialPage: Sendable, Equatable {
 }
 
 /// The signed-in user's WebAuthn credential operations: associate, list and delete.
-/// `AWSCognitoAuthPlugin`'s three WebAuthn tasks are thin callers of
-/// these, and `AmplifyCognitoClient` will be too, so both share one implementation.
+/// `AWSCognitoAuthPlugin`'s three WebAuthn tasks and `AmplifyCognitoClient` are thin callers of
+/// these, so both share one implementation.
 ///
 /// Each operation gets its access token and its user-pool client from the caller, through
 /// `accessToken` and `userPool`, and calls them at the points the plugin's tasks did: associate asks for
@@ -53,13 +53,27 @@ package struct EngineWebAuthnCredentialPage: Sendable, Equatable {
 /// - An error thrown by `accessToken`, `userPool` or associate's `ceremony` runner is the caller's own,
 ///   and is rethrown **unchanged** (the plugin's token lookup throws Amplify's `AuthError`, which the
 ///   engine cannot name; the client's runner throws its lease refusal).
-/// - Every other error is an `EngineAuthError`: an `EngineAuthErrorConvertible` error (a Cognito exception,
-///   the ceremony's `WebAuthnError`) as its `engineError`; anything else as the `engineError` of
-///   `WebAuthnError.unknown(message:error:)` with the operation's failure message.
+/// - An error the ceremony body converted is rethrown as that `EngineAuthError`.
+/// - Every other error is a `Failure`, whose `engineError` is an `EngineAuthErrorConvertible` error's own (a
+///   Cognito exception's) or else that of `WebAuthnError.unknown(message:error:)` with the operation's failure
+///   message, and whose `cause` is the error itself: the engine error keeps nothing under some Cognito exceptions
+///   (`InternalErrorException`), so a caller that maps the failure itself reads `cause`.
 ///
 /// That is the plugin's former conversion with its Amplify half left to the caller: `AuthError(converting:)`
-/// of what these throw is the `AuthError` the plugin's tasks threw before.
+/// of what these throw is the `AuthError` the plugin's tasks threw before (it reads a `Failure` through its
+/// `engineError`).
 package enum WebAuthnCredentialOperations {
+
+    /// An operation's failure: the engine error, and the error it was made from.
+    package struct Failure: Error, EngineAuthErrorConvertible {
+        package let engineError: EngineAuthError
+        package let cause: Error
+
+        package init(engineError: EngineAuthError, cause: Error) {
+            self.engineError = engineError
+            self.cause = cause
+        }
+    }
 
     /// Returns the access token to send. Called once per Cognito request.
     package typealias AccessTokenProvider = () async throws -> String
@@ -124,10 +138,10 @@ package enum WebAuthnCredentialOperations {
     /// - no box (`nil`) makes the registrant with no window, whose own fallback applies (the plugin's
     ///   optional anchor; the client always passes a box).
     ///
-    /// **Errors from the runner.** The ceremony body converts its own errors to `EngineAuthError` (as
-    /// every other error here is converted) before they reach `ceremony`. So whatever `ceremony` throws is
-    /// either one of those, already converted, or the runner's own error (the client's lease refusal),
-    /// and both are rethrown unchanged, as the caller's errors are.
+    /// **Errors from the runner.** The ceremony body converts its own errors to a bare `EngineAuthError`
+    /// before they reach `ceremony` (every other error here becomes a `Failure`). So whatever `ceremony`
+    /// throws is either one of those, already converted, or the runner's own error (the client's lease
+    /// refusal), and both are rethrown unchanged, as the caller's errors are.
     ///
     /// - Parameters:
     ///   - anchor: the window the sheet attaches to, boxed on the main actor by the caller.
@@ -318,7 +332,7 @@ package enum WebAuthnCredentialOperations {
         } catch let callerError as CallerError {
             throw callerError.error
         } catch {
-            throw engineError(for: error, failureMessage: failureMessage)
+            throw Failure(engineError: engineError(for: error, failureMessage: failureMessage), cause: error)
         }
     }
 }

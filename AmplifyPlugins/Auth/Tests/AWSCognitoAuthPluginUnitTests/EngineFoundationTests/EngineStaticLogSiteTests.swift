@@ -112,7 +112,7 @@ final class EngineStaticLogSiteTests: XCTestCase, @unchecked Sendable {
 
         XCTAssertNil(preference.enabled)
         assertLines(at: shapeB(MFAType.self), [
-            ("error", "Tried to initialize an unsupported MFA type with value: X")
+            ("error", "Tried to initialize an unsupported MFA type")
         ])
     }
 
@@ -273,7 +273,7 @@ final class EngineStaticLogSiteTests: XCTestCase, @unchecked Sendable {
         )
         _ = UserPoolSignInHelper.parseResponse(response, for: "user", signInMethod: .apiBased(.userSRP), logger: plugin)
         assertLines(at: shapeB(MFAType.self), [
-            ("error", "Tried to initialize an unsupported MFA type with value: X")
+            ("error", "Tried to initialize an unsupported MFA type")
         ])
 
         #if os(iOS) || os(macOS) || os(visionOS)
@@ -298,7 +298,7 @@ final class EngineStaticLogSiteTests: XCTestCase, @unchecked Sendable {
                 byApplying: answer
             )
             assertLines(at: shapeB(AuthFactorType.self), [
-                ("error", "Tried to initialize an unsupported MFA type with value: X")
+                ("error", "Tried to initialize an unsupported MFA type")
             ])
 
             // `PlatformWebAuthnCredentials`: the delegate's logger, as `AssertWebAuthnCredentials` builds it. Its
@@ -349,7 +349,7 @@ final class EngineStaticLogSiteTests: XCTestCase, @unchecked Sendable {
 
         XCTAssertThrowsError(try JSONDecoder().decode(AuthFlowType.self, from: json))
         assertLines(at: shapeB(AuthFactorType.self), [
-            ("error", "Tried to initialize an unsupported MFA type with value: X")
+            ("error", "Tried to initialize an unsupported MFA type")
         ])
     }
 
@@ -386,6 +386,92 @@ final class EngineStaticLogSiteTests: XCTestCase, @unchecked Sendable {
         assertLines(at: shapeB(FetchAuthSessionOperationHelper.self), [
             ("verbose", "Received fetch auth session error - \(error)")
         ])
+    }
+
+    // MARK: The parsers never log the value
+
+    /// Test that the plugin's confirmSignIn never logs the user's answer through the parsers
+    ///
+    /// - Given: A confirmSignIn request whose answer is not an MFA type or an auth factor
+    /// - When:
+    ///    - The confirmSignIn task validates it as an MFA selection and as a factor selection, as it does before
+    ///      sending the answer
+    /// - Then:
+    ///    - Both are refused with a validation error
+    ///    - The `MFAType` and `AuthFactorType` lines are the fixed text, and no captured line holds the answer
+    ///
+    func testThePluginsConfirmSignInNeverLogsTheAnswer() {
+        let answer = "answer-not-a-type-4821"
+        let task = AWSAuthConfirmSignInTask(
+            AuthConfirmSignInRequest(challengeResponse: answer, options: .init()),
+            stateMachine: Defaults.makeDefaultAuthStateMachine(),
+            configuration: Defaults.makeDefaultAuthConfigData()
+        )
+
+        XCTAssertThrowsError(try task.validateRequestForMFASelection()) { error in
+            guard case AuthError.validation = error else {
+                return XCTFail("Should be a validation error, not \(error)")
+            }
+        }
+        XCTAssertThrowsError(try task.validateRequestForFactorSelection()) { error in
+            guard case AuthError.validation = error else {
+                return XCTFail("Should be a validation error, not \(error)")
+            }
+        }
+
+        assertLines(at: shapeB(MFAType.self), [("error", "Tried to initialize an unsupported MFA type")])
+        assertLines(at: shapeB(AuthFactorType.self), [("error", "Tried to initialize an unsupported MFA type")])
+        XCTAssertFalse(capture.lines.contains { $0.message.contains(answer) }, "\(capture.lines.map(\.message))")
+    }
+
+    /// Test that the engine's answer verification never logs the user's answer through the parsers
+    ///
+    /// - Given: A challenge awaiting an MFA setup selection, and one awaiting a first factor selection, with the
+    ///   plugin's logger
+    /// - When:
+    ///    - `VerifySignInChallenge` runs each with an answer that is neither an MFA type nor a factor
+    /// - Then:
+    ///    - The `MFAType` and `AuthFactorType` lines are the fixed text, and no captured line holds the answer
+    ///
+    func testTheEnginesAnswerVerificationNeverLogsTheAnswer() async {
+        let answer = "answer-not-a-type-4821"
+        let environment = Defaults.makeDefaultAuthEnvironment(userPoolFactory: {
+            MockIdentityProvider(mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.InvalidParameterException(message: "rejected")
+            })
+        })
+        let challenge = RespondToAuthChallenge(
+            challenge: .selectChallenge,
+            availableChallenges: [],
+            username: "user",
+            session: "session",
+            parameters: [:]
+        )
+        let answerData = ConfirmSignInEventData(
+            answer: answer,
+            attributes: [:],
+            metadata: nil,
+            friendlyDeviceName: nil,
+            presentationAnchor: nil
+        )
+        let steps: [EngineSignInStep] = [
+            .continueSignInWithMFASetupSelection([.totp, .email]),
+            .continueSignInWithFirstFactorSelection([.password, .emailOTP])
+        ]
+
+        for step in steps {
+            let action = VerifySignInChallenge(
+                challenge: challenge,
+                confirmSignEventData: answerData,
+                signInMethod: .apiBased(.userAuth(preferredFirstFactor: nil)),
+                currentSignInStep: step
+            )
+            await action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
+        }
+
+        assertLines(at: shapeB(MFAType.self), [("error", "Tried to initialize an unsupported MFA type")])
+        assertLines(at: shapeB(AuthFactorType.self), [("error", "Tried to initialize an unsupported MFA type")])
+        XCTAssertFalse(capture.lines.contains { $0.message.contains(answer) }, "\(capture.lines.map(\.message))")
     }
 }
 

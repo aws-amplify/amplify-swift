@@ -332,6 +332,52 @@ final class PluginSharedLoginTests: XCTestCase {
         XCTAssertFalse(session.isSignedIn, "the plugin is still signed in after the client's sign-out")
     }
 
+    /// AD-5, on the real keychain: the client's `.default` sign-out also clears AWSMobileClient credentials of another
+    /// identity pool than the configuration names, which only the real keychain's listing of services finds. A plugin
+    /// build configured with that identity pool would otherwise migrate them as a guest holding the user's identity.
+    ///
+    /// - Given: an item in this app's `AWSCognitoCredentialsProvider` service of another identity pool, seeded as
+    ///   AWSMobileClient leaves it (in the app's default group), an item in an unrelated service of this app, and
+    ///   `alice` signed in through a client on `.default`
+    /// - When:
+    ///    - the client signs out, and is released
+    /// - Then:
+    ///    - the client's sign-out is `.complete`
+    ///    - the other identity pool's service is empty
+    ///    - the unrelated service keeps its item
+    ///
+    func testClientSignOutClearsAnotherIdentityPoolsAWSMobileClientCredentials() async throws {
+        let bundle = try XCTUnwrap(Bundle.main.bundleIdentifier, "the host app has a bundle identifier")
+        // A synthetic identity pool, not the backend's: only the service's prefix is matched.
+        let otherIdentityPool = "\(bundle).\(SessionRecordStore.legacyCredentialsProviderService).us-east-1:ccit-other-pool"
+        let unrelated = "\(bundle).CognitoClientInteropUnrelatedService"
+        for service in [otherIdentityPool, unrelated] {
+            RealKeychain.wipe(service)
+            addTeardownBlock { RealKeychain.wipe(service) }
+            let status = RealKeychain.add("legacy", account: "identityId", service: service)
+            XCTAssertEqual(status, errSecSuccess, "seeding an item: \(RealKeychain.describe(status))")
+        }
+
+        do {
+            let client = try makeDefaultClient(UserPoolRequestRecorder())
+            let signIn = try await client.signIn(username: alice.username, password: alice.password)
+            guard case .done = signIn.nextStep else {
+                return XCTFail("alice did not sign in through the client")
+            }
+
+            let signOut = await client.signOut()
+
+            XCTAssertTrue(signOut == .complete, "the client's sign-out did not complete")
+        }
+        try await InteropEnvironment.waitUntilReleased(.default)
+        XCTAssertEqual(
+            RealKeychain.rows(service: otherIdentityPool).map(\.description),
+            [],
+            "the client's sign-out left another identity pool's AWSMobileClient credentials"
+        )
+        XCTAssertEqual(RealKeychain.rows(service: unrelated).count, 1, "the client's sign-out cleared an unrelated service")
+    }
+
     /// AD-6. A refresh through the client's `.default` is what a relaunched plugin holds.
     ///
     /// - Given: the plugin configured with nothing stored, and `alice` signed in through a client on `.default`

@@ -39,13 +39,18 @@ final class ClientOverKeychain: @unchecked Sendable {
     let keychain: InMemoryKeychain
     let registry = SessionCoreDependencies.Registry()
     let gates = SessionRecordGates()
+    /// Whether `.default`'s store clears the AWSMobileClient logins in `keychain`'s services for its pools
+    /// (`SessionRecordStore.legacyLoginServices(for:)`), as the real keychain's store does. Off by default, so a row
+    /// that doesn't ask for it never reaches them.
+    let clearsLegacyLogins: Bool
 
     private let lock = NSLock()
     private var userPool = MockIdentityProvider()
     private var identity = ClientOverKeychain.identityPool()
 
-    init(keychain: InMemoryKeychain) {
+    init(keychain: InMemoryKeychain, clearsLegacyLogins: Bool = false) {
         self.keychain = keychain
+        self.clearsLegacyLogins = clearsLegacyLogins
     }
 
     /// The Cognito calls of the clients made from now on.
@@ -96,6 +101,7 @@ final class ClientOverKeychain: @unchecked Sendable {
 
     var dependencies: SessionCoreDependencies {
         let keychain = keychain
+        let clearsLegacyLogins = clearsLegacyLogins
         return SessionCoreDependencies(
             registry: registry,
             gates: gates,
@@ -105,7 +111,14 @@ final class ClientOverKeychain: @unchecked Sendable {
                     keychain: keychain.store(
                         service: SessionRecordStore.service(forAccessGroup: namespace.accessGroup),
                         accessGroup: namespace.accessGroup
-                    )
+                    ),
+                    legacyLoginStores: {
+                        guard clearsLegacyLogins else {
+                            return []
+                        }
+                        return SessionRecordStore.legacyLoginServices(for: namespace.pools)
+                            .map { keychain.store(service: $0) }
+                    }
                 )
             },
             makeClients: { try CognitoServiceClients(configuration: $0, configureUserPoolClient: $1) },

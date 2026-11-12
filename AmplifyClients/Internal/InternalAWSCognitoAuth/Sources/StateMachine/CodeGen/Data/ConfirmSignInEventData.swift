@@ -35,14 +35,38 @@ extension ConfirmSignInEventData: Equatable { }
 extension ConfirmSignInEventData: CustomDebugDictionaryConvertible {
     package var debugDictionary: [String: Any] {
         [
-            "answer": answer.maskedForLog(),
+            "answer": answer.redactedForLog(),
             "attributes": attributes,
             "metadata": metadata ?? [:]
         ]
     }
 }
-extension ConfirmSignInEventData: CustomDebugStringConvertible {
-    package var debugDescription: String {
+
+// Every printed form redacts the answer, the user's code, password or custom answer: the answer rides in the
+// challenge and TOTP setup events, which a "Sending event" line prints, and in the TOTP setup state the sign-in's
+// verbose lines print. A masked answer kept four characters of a six-digit code.
+extension ConfirmSignInEventData: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+
+    package var description: String {
         debugDictionary.debugDescription
+    }
+
+    package var debugDescription: String {
+        description
+    }
+
+    /// For `dump` and debuggers: the answer redacted.
+    package var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "answer": answer.redactedForLog(),
+                "attributes": attributes,
+                "metadata": metadata as Any,
+                "friendlyDeviceName": friendlyDeviceName as Any,
+                "presentationAnchor": presentationAnchor as Any
+            ],
+            displayStyle: .struct
+        )
     }
 }

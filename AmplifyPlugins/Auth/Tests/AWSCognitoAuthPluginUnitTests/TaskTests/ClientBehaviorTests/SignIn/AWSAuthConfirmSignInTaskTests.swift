@@ -8,6 +8,7 @@
 import Foundation
 
 import Amplify
+import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import XCTest
 @testable import AWSCognitoAuthPlugin
@@ -861,5 +862,347 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest, @unchecked Senda
         } catch {
             XCTFail("Should not throw when state is already .signedIn; got \(error)")
         }
+    }
+
+    /// Test that confirmSignIn throws the identity pool's error when the user pool accepted the answer, and leaves the
+    /// user signed out, as signIn does
+    ///
+    /// - Given: an auth plugin with mocked service. `RespondToAuthChallenge` accepts the code and answers tokens,
+    ///   the identity pool's `GetId` fails with `InvalidParameterException`, and `RevokeToken` succeeds
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - confirmSignIn throws a `.service` error with `AWSCognitoAuthError.invalidParameter` as underlying error,
+    ///      instead of never returning
+    ///    - the sign-in was cancelled as `signIn` cancels it: the tokens it got are revoked, the state machine is
+    ///      signed out, `fetchAuthSession` reports signed out and `getCurrentUser` throws `signedOut`
+    ///    - a second confirmSignIn throws `invalidState` without sending anything
+    ///
+    func testConfirmSignInThrowsTheIdentityPoolsError() async throws {
+        mockIdentity = MockIdentity(
+            mockGetIdResponse: { _ in
+                throw AWSCognitoIdentity.InvalidParameterException(message: "Invalid parameter passed")
+            },
+            mockGetCredentialsResponse: getCredentials
+        )
+        let answered = TestCounter()
+        let revoked = TestCounter()
+        mockIdentityProvider = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                revoked.increment()
+                return RevokeTokenOutput()
+            },
+            mockRespondToAuthChallengeResponse: { _ in
+                answered.increment()
+                return .testData()
+            })
+        let confirmed = expectation(description: "confirmSignIn returns")
+
+        Task {
+            do {
+                let result = try await self.plugin.confirmSignIn(challengeResponse: "code")
+                XCTFail("Should not succeed, got \(result)")
+            } catch AuthError.service(_, _, let underlyingError) {
+                guard case .invalidParameter = underlyingError as? AWSCognitoAuthError else {
+                    XCTFail("Underlying error should be AWSCognitoAuthError.invalidParameter, got \(String(describing: underlyingError))")
+                    return
+                }
+            } catch {
+                XCTFail("Should produce a service error instead of \(error)")
+            }
+            confirmed.fulfill()
+        }
+        await fulfillment(of: [confirmed], timeout: 5)
+
+        guard case .configured(.signedOut, _, _) = await plugin.authStateMachine.currentState else {
+            return XCTFail("the sign-in was not cancelled: \(await plugin.authStateMachine.currentState)")
+        }
+        XCTAssertEqual(revoked.get(), 1)
+        let session = try await plugin.fetchAuthSession(options: .init())
+        XCTAssertFalse(session.isSignedIn)
+        do {
+            let user = try await plugin.getCurrentUser()
+            XCTFail("getCurrentUser returned \(user.username)")
+        } catch AuthError.signedOut {
+        } catch {
+            XCTFail("getCurrentUser threw \(error), not signedOut")
+        }
+        do {
+            let result = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("a second confirmSignIn returned \(result)")
+        } catch AuthError.invalidState {
+        } catch {
+            XCTFail("a second confirmSignIn threw \(error), not invalidState")
+        }
+        XCTAssertEqual(answered.get(), 1)
+    }
+
+    /// Test that the sign-out cancelling a confirmSignIn whose identity pool step failed revokes the sign-in's own
+    /// refresh token, not a login the credential store holds
+    ///
+    /// - Given: an auth plugin with mocked service whose credential store holds another user pool login, as another
+    ///   app sharing a keychain access group saves one when it signs in during the challenge.
+    ///   `RespondToAuthChallenge` accepts the code and answers tokens with the refresh token `refreshTokenXXX`, the
+    ///   identity pool's `GetId` fails with `InvalidParameterException`, and `RevokeToken` succeeds
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - confirmSignIn throws a `.service` error with `AWSCognitoAuthError.invalidParameter` as underlying error
+    ///    - the one revoke sent is for `refreshTokenXXX`, and the saved login's refresh token is not revoked
+    ///    - the state machine is signed out
+    ///
+    func testConfirmSignInCancelRevokesTheSignInsOwnTokensNotTheSavedLogin() async throws {
+        let identityPool = MockIdentity(
+            mockGetIdResponse: { _ in
+                throw AWSCognitoIdentity.InvalidParameterException(message: "Invalid parameter passed")
+            },
+            mockGetCredentialsResponse: getCredentials
+        )
+        let revokedTokens = TestBox<[String?]>([])
+        let userPool = MockIdentityProvider(
+            mockRevokeTokenResponse: { input in
+                revokedTokens.with { $0.append(input.token) }
+                return RevokeTokenOutput()
+            },
+            mockRespondToAuthChallengeResponse: { _ in
+                return .testData()
+            })
+        let savedLogin = SignedInData(
+            signedInDate: Date(),
+            signInMethod: .apiBased(.userSRP),
+            cognitoUserPoolTokens: EngineUserPoolTokens(
+                idToken: "anotherIdToken",
+                accessToken: "anotherAccessToken",
+                refreshToken: "anotherAppsRefreshToken",
+                expiresIn: 3_600
+            )
+        )
+        let base = Defaults.makeDefaultAuthEnvironment(
+            identityPoolFactory: { identityPool },
+            userPoolFactory: { userPool }
+        )
+        let environment = AuthEnvironment(
+            configuration: base.configuration,
+            userPoolConfigData: base.userPoolConfigData,
+            identityPoolConfigData: base.identityPoolConfigData,
+            authenticationEnvironment: base.authenticationEnvironment,
+            authorizationEnvironment: base.authorizationEnvironment,
+            credentialsClient: CredentialStoreHoldingLogin(base: base.credentialsClient, login: savedLogin),
+            logger: base.logger
+        )
+        let stateMachine = AuthStateMachine(
+            resolver: AuthState.Resolver(logger: AmplifyEngineLogRouter()),
+            environment: environment,
+            initialState: initialState
+        )
+        let holdingPlugin = AWSCognitoAuthPlugin()
+        holdingPlugin.configure(
+            authConfiguration: Defaults.makeDefaultAuthConfigData(),
+            authEnvironment: environment,
+            authStateMachine: stateMachine,
+            credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
+            hubEventHandler: MockAuthHubEventBehavior(),
+            analyticsHandler: MockAnalyticsHandler()
+        )
+        settleConfigureOperationOnTeardown(of: holdingPlugin)
+
+        do {
+            let result = try await holdingPlugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should not succeed, got \(result)")
+        } catch AuthError.service(_, _, let underlyingError) {
+            guard case .invalidParameter = underlyingError as? AWSCognitoAuthError else {
+                return XCTFail("Underlying error should be AWSCognitoAuthError.invalidParameter, got \(String(describing: underlyingError))")
+            }
+        } catch {
+            XCTFail("Should produce a service error instead of \(error)")
+        }
+
+        XCTAssertEqual(revokedTokens.get(), ["refreshTokenXXX"])
+        guard case .configured(.signedOut, _, _) = await holdingPlugin.authStateMachine.currentState else {
+            return XCTFail("the sign-in was not cancelled: \(await holdingPlugin.authStateMachine.currentState)")
+        }
+    }
+
+    /// Test that confirmSignIn still returns the identity pool's error when the sign-out that cancels the sign-in
+    /// cannot clear the credential store
+    ///
+    /// - Given: an auth plugin with mocked service whose credential store refuses to delete the saved credentials.
+    ///   `RespondToAuthChallenge` accepts the code and answers tokens, the identity pool's `GetId` fails with
+    ///   `InvalidParameterException`, and `RevokeToken` succeeds
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - confirmSignIn throws a `.service` error with `AWSCognitoAuthError.invalidParameter` as underlying error
+    ///      within the timeout, instead of waiting for a sign-out that never ends: the failed local clear ends the
+    ///      wait at `.signingOut(.error)`
+    ///    - the tokens were revoked once, the store refused one delete, and the state machine goes back to
+    ///      `.signedIn`, as `signIn`'s cancel would leave it
+    ///
+    func testConfirmSignInThrowsTheIdentityPoolsErrorWhenTheSignOutCannotClearTheStore() async throws {
+        let identityPool = MockIdentity(
+            mockGetIdResponse: { _ in
+                throw AWSCognitoIdentity.InvalidParameterException(message: "Invalid parameter passed")
+            },
+            mockGetCredentialsResponse: getCredentials
+        )
+        let answered = TestCounter()
+        let revoked = TestCounter()
+        let refusedDeletes = TestCounter()
+        let userPool = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                revoked.increment()
+                return RevokeTokenOutput()
+            },
+            mockRespondToAuthChallengeResponse: { _ in
+                answered.increment()
+                return .testData()
+            })
+        let base = Defaults.makeDefaultAuthEnvironment(
+            identityPoolFactory: { identityPool },
+            userPoolFactory: { userPool }
+        )
+        let environment = AuthEnvironment(
+            configuration: base.configuration,
+            userPoolConfigData: base.userPoolConfigData,
+            identityPoolConfigData: base.identityPoolConfigData,
+            authenticationEnvironment: base.authenticationEnvironment,
+            authorizationEnvironment: base.authorizationEnvironment,
+            credentialsClient: CredentialStoreRefusingDelete(base: base.credentialsClient, refusals: refusedDeletes),
+            logger: base.logger
+        )
+        let stateMachine = AuthStateMachine(
+            resolver: AuthState.Resolver(logger: AmplifyEngineLogRouter()),
+            environment: environment,
+            initialState: initialState
+        )
+        let refusingPlugin = AWSCognitoAuthPlugin()
+        refusingPlugin.configure(
+            authConfiguration: Defaults.makeDefaultAuthConfigData(),
+            authEnvironment: environment,
+            authStateMachine: stateMachine,
+            credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
+            hubEventHandler: MockAuthHubEventBehavior(),
+            analyticsHandler: MockAnalyticsHandler()
+        )
+        settleConfigureOperationOnTeardown(of: refusingPlugin)
+        let confirmed = expectation(description: "confirmSignIn returns")
+
+        Task {
+            do {
+                let result = try await refusingPlugin.confirmSignIn(challengeResponse: "code")
+                XCTFail("Should not succeed, got \(result)")
+            } catch AuthError.service(_, _, let underlyingError) {
+                guard case .invalidParameter = underlyingError as? AWSCognitoAuthError else {
+                    XCTFail("Underlying error should be AWSCognitoAuthError.invalidParameter, got \(String(describing: underlyingError))")
+                    return
+                }
+            } catch {
+                XCTFail("Should produce a service error instead of \(error)")
+            }
+            confirmed.fulfill()
+        }
+        await fulfillment(of: [confirmed], timeout: 5)
+
+        XCTAssertEqual(answered.get(), 1)
+        XCTAssertEqual(revoked.get(), 1)
+        XCTAssertEqual(refusedDeletes.get(), 1)
+        let deadline = Date().addingTimeInterval(5)
+        while Date() < deadline {
+            if case .configured(.signedIn, _, _) = await refusingPlugin.authStateMachine.currentState {
+                return
+            }
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTFail("the failed sign-out did not go back to signedIn: \(await refusingPlugin.authStateMachine.currentState)")
+    }
+
+    /// Test that confirmSignIn leaves a sign-in it did not make as it is when its identity pool step has failed
+    ///
+    /// - Given: an auth plugin already signed in (a reconcile adopted a sibling app's sign-in while this flow was
+    ///   waiting for an answer) whose authorization is in an error state
+    /// - When:
+    ///    - I invoke confirmSignIn
+    /// - Then:
+    ///    - it throws that error without sending anything, and the user stays signed in: nothing is revoked
+    ///
+    func testConfirmSignInLeavesAnAdoptedSignInWhoseAuthorizationFailed() async throws {
+        let revoked = TestCounter()
+        let userPool = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                revoked.increment()
+                return RevokeTokenOutput()
+            },
+            mockRespondToAuthChallengeResponse: { _ in
+                XCTFail("Cognito service should not be called when already signed in")
+                return .testData()
+            })
+        let signedInPlugin = configureCustomPluginWith(
+            userPool: { userPool },
+            initialState: .configured(
+                .signedIn(.testData),
+                .error(.sessionError(.notAuthorized, .testData)),
+                .notStarted
+            )
+        )
+
+        do {
+            let result = try await signedInPlugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should not succeed, got \(result)")
+        } catch is AuthError {
+        } catch {
+            XCTFail("Should produce an AuthError instead of \(error)")
+        }
+
+        guard case .configured(.signedIn, _, _) = await signedInPlugin.authStateMachine.currentState else {
+            return XCTFail("the adopted sign-in was cancelled: \(await signedInPlugin.authStateMachine.currentState)")
+        }
+        XCTAssertEqual(revoked.get(), 0)
+    }
+}
+
+/// A credential store that forwards to `base` but reads `login` as the saved credentials, as a keychain access group
+/// does after another app in the group signs in.
+private struct CredentialStoreHoldingLogin: CredentialStoreStateBehavior {
+    let base: CredentialStoreStateBehavior
+    let login: SignedInData
+
+    func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData {
+        if case .amplifyCredentials = type {
+            return .amplifyCredentials(.userPoolOnly(signedInData: login))
+        }
+        return try await base.fetchData(type: type)
+    }
+
+    func storeData(data: CredentialStoreData) async throws {
+        try await base.storeData(data: data)
+    }
+
+    func deleteData(type: CredentialStoreDataType) async throws {
+        try await base.deleteData(type: type)
+    }
+}
+
+/// A credential store that forwards to `base` but refuses to delete the saved credentials, as a keychain that refuses
+/// the clear would.
+private struct CredentialStoreRefusingDelete: CredentialStoreStateBehavior {
+    struct RefusedDelete: Error {}
+
+    let base: CredentialStoreStateBehavior
+    let refusals: TestCounter
+
+    func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData {
+        try await base.fetchData(type: type)
+    }
+
+    func storeData(data: CredentialStoreData) async throws {
+        try await base.storeData(data: data)
+    }
+
+    func deleteData(type: CredentialStoreDataType) async throws {
+        if case .amplifyCredentials = type {
+            refusals.increment()
+            throw RefusedDelete()
+        }
+        try await base.deleteData(type: type)
     }
 }

@@ -1,0 +1,39 @@
+# Offline self-test of scripts/python/affected_targets.py, the test selector and bundled-file check the unit,
+# integration and build workflows' detect steps run (test_affected_targets.py). It runs over the real group files, a
+# stub package dump and this checkout's Xcode projects (the files host apps copy into bundles), so it needs no Swift
+# toolchain. A project change runs it too, since the check reads the projects; the other script self-tests are in
+# ci_script_self_tests.yml, which a project change doesn't start.
+#
+# No AWS call is made, and the job needs no credentials and no secrets.
+
+name: CI | Test Selector Self-Tests
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/python/**'
+      - '**/*.xcodeproj/project.pbxproj'
+      - '.github/workflows/ci_selector_self_tests.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/python/**'
+      - '**/*.xcodeproj/project.pbxproj'
+      - '.github/workflows/ci_selector_self_tests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test-selector:
+    name: Test selector
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Run the self-test
+        run: python3 -m unittest discover -s scripts/python -p 'test_*.py'

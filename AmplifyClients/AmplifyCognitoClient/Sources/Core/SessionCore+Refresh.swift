@@ -88,7 +88,7 @@ extension SessionCore {
     static func federatedHasNoAccessToken() -> CredentialsError {
         .notConfigured(
             "This session cannot provide an access token: it is federated to the identity pool, with no user pool sign-in.",
-            "Sign the session in through the user pool to get an access token, or ask a different provider."
+            "Call clearFederationToIdentityPool() or sign the session out, then sign in through the user pool to get an access token; or ask a different provider."
         )
     }
 
@@ -150,7 +150,10 @@ extension SessionCore {
 
     /// An expired session re-reads its record before failing, so a fresh sign-in stored by another
     /// process — an app extension sharing the access group — is picked up rather than ignored for the
-    /// rest of this session's life. New credentials clear the expiry (see `apply`).
+    /// rest of this session's life. A record whose bytes changed is installed; new credentials clear the expiry, but
+    /// the same login saved again, holding the refresh token proved dead (the same credentials in other bytes, or the
+    /// plugin's save of them with its expired flag set), keeps it (see `apply`), so the dead token is not refreshed
+    /// again.
     nonisolated func rereadIfExpired() async throws {
         guard await isExpired else {
             return
@@ -163,7 +166,7 @@ extension SessionCore {
         }
     }
 
-    /// Whether `payload` must be refreshed before it is used: its credentials need it (the engine's test),
+    /// Whether `payload` must be refreshed before it is used: its credentials need it (`credentialsNeedRefresh`),
     /// or it is `snapshot`'s credentials and the record was carried forward from a previous configuration
     /// without an identity (`SessionRecord.identityPending`, `SessionRecordStore+CopyForward.swift`), and its
     /// identity step may be tried now (`PendingIdentityRetry`). The engine's refresh of user-pool-only
@@ -171,13 +174,25 @@ extension SessionCore {
     /// identity is obtained on first use, never at restore. Pass `nil` for `snapshot` when the caller wants no
     /// identity (an access token).
     nonisolated func needsRefresh(_ payload: Data, of snapshot: SessionSnapshot?) throws -> Bool {
-        if try engine.checkedNeedsRefresh(payload, at: now()) {
+        if try credentialsNeedRefresh(payload) {
             return true
         }
         guard let snapshot, snapshot.credentials == payload else {
             return false
         }
         return isIdentityPending(snapshot) && mayRetryIdentity(for: snapshot)
+    }
+
+    /// The engine's test, except that without an identity pool only a user's user pool tokens count. A login saved
+    /// under a configuration that had one may still hold its AWS credentials (`.default`'s, which the plugin's rule
+    /// copies as it is when the identity pool is removed), and nothing hands those out here: the AWS credentials
+    /// provider refuses, and `fetchAuthSession` reports them as not configured. Counted, once they expired every call
+    /// would refresh, and rewrite the record, until the tokens next need a refresh.
+    private nonisolated func credentialsNeedRefresh(_ payload: Data) throws -> Bool {
+        if configuration.identityPool == nil, try engine.checkedDescribe(payload).kind == .userPoolAndIdentityPool {
+            return try engine.checkedUserPoolTokensNeedRefresh(payload, at: now())
+        }
+        return try engine.checkedNeedsRefresh(payload, at: now())
     }
 
     /// Whether `snapshot` is a record carried forward without an identity, in a configuration that has an
@@ -218,15 +233,15 @@ extension SessionCore {
         if pendingChallenge != nil {
             throw Self.notSignedIn(sessionId)
         }
-        if isExpired {
-            throw Self.sessionExpired(sessionId)
+        if let expiry {
+            throw expiredError(expiry)
         }
         guard let snapshot = restoredSnapshotIfAny else {
             throw Self.notSignedIn(sessionId)
         }
         switch snapshot.state(engine: engine, challenge: nil) {
         case .signedOut, .awaitingChallenge:
-            throw Self.notSignedIn(sessionId)
+            throw purpose == .awsCredentials ? Self.signedOutHasNoGuestCredentials(sessionId) : Self.notSignedIn(sessionId)
         case .failed(let error):
             throw error
         case .unavailable(let reason):
@@ -271,11 +286,23 @@ extension SessionCore {
     ///    as retryable. Never signed out. A second reuse in a row, at least
     ///    `RefreshTokenReuse.minimumGap` after the first, whose re-read record's credentials are still exactly
     ///    the ones sent, means nobody else refreshed: the token is dead (a record rolled forward over a token
-    ///    the plugin rotated away), so, as for step 4, `sessionExpired`.
+    ///    the plugin rotated away), so, as for step 4, the session is marked expired, with its own `sessionExpired`
+    ///    (`refreshTokenAlreadyUsed`, `refreshTokenReused` underneath), which it answers with from then on, until its
+    ///    credentials change to ones without that refresh token: the expiry is saved with the record, so a new core of
+    ///    the session (every handle and provider for it released, or a relaunch) answers the same without refreshing.
+    ///    Forced or not: a forced refresh refused this way counts too, so a second one expires a session whose saved
+    ///    tokens are still valid, and an unforced call then stops handing them out.
     /// 4. `refreshTokenInvalid` means the session needs a fresh sign-in — unless another writer has
     ///    meanwhile stored different credentials (with rotation, a refresh racing another process's can be
     ///    told its token is invalid), so re-read first, as for reuse, and adopt them if so. Otherwise send
     ///    `.sessionExpired` and throw it. The record is kept, and the state stays signed in as its user.
+    ///
+    /// Both expiries install the record they re-read, which holds the credentials proved dead, as they mark the
+    /// session expired (`markExpired(installing:cause:)`), so the next call does not take that record, saved again in
+    /// other bytes by another writer, for a new login and refresh the dead token again. A record saved again after the
+    /// proof with the same refresh token keeps the expiry as well (`apply`); only credentials with another refresh token,
+    /// or none, end it. Both then save the expiry with the record (`saveExpiry`), best effort, and step 1 never refreshes
+    /// a record that says its refresh token is dead (`savedExpiry(in:)`), whichever core or process saved it.
     ///
     /// **A refresh that cannot be saved throws the storage error**; it never hands out tokens storage does
     /// not hold. Known limit: with rotation, the retry then uses a refresh token the server may already
@@ -289,6 +316,12 @@ extension SessionCore {
     nonisolated func refreshOnce(force: Bool) async throws -> RefreshCommit {
         try await withRecord { [self] store in
             let current = try await store.load(sessionId)
+            if let saved = savedExpiry(in: current) {
+                // Another core of this session, or another process, proved this refresh token dead since this core
+                // last read: answered as that proof, never refreshed again.
+                await apply(current, event: nil)
+                throw expiredError(saved)
+            }
             guard let payload = current.credentials, try force || needsRefresh(payload, of: current) else {
                 return await .adopted(apply(current, event: nil))
             }
@@ -320,8 +353,9 @@ extension SessionCore {
                 // a fresh sign-in.
                 if let held = reread.credentials, engine.sameCredentials(held, payload),
                    refreshTokenReuse.repeated(payload, at: now(), same: engine.sameCredentials) {
-                    await markExpired()
-                    throw Self.sessionExpired(sessionId)
+                    await markExpired(installing: reread, cause: .reused)
+                    await saveExpiry(of: reread, cause: .reused, store: store)
+                    throw Self.refreshTokenAlreadyUsed(sessionId)
                 }
                 throw AuthClientError.unknown(
                     "Session \"\(sessionId)\"'s refresh token was used by another writer, and no refreshed credentials were saved.",
@@ -333,8 +367,13 @@ extension SessionCore {
                 if !reread.holdsCredentials(payload, engine: engine) {
                     return await .adopted(apply(reread, event: nil))
                 }
-                await markExpired()
-                throw Self.sessionExpired(sessionId)
+                // Expired by this refusal, which ends any count of reuses in a row: the reuse memory is the record's,
+                // for the process, and outlives this core (`RefreshTokenReuse`), so if this expiry could not be saved, a
+                // new core that refreshes the token again and is told it was reused counts that as a first reuse.
+                refreshTokenReuse.reset()
+                await markExpired(installing: reread, cause: .invalid)
+                await saveExpiry(of: reread, cause: .invalid, store: store)
+                throw expiredError(Expiry(credentials: payload, cause: .invalid))
             } catch {
                 throw Self.engineFailure(error)
             }
@@ -351,9 +390,10 @@ extension SessionCore {
     ///
     /// A carried session waiting for its identity keeps waiting, in the record, so a later launch tries again; in
     /// this process a known refusal stops further attempts until the user pool tokens next need a refresh or a fetch
-    /// forces one, and a transient failure delays the next by `PendingIdentityRetry.interval` (a cancellation does
-    /// neither). Either way no call spends a user pool refresh on it every time. If the commit lost to another writer whose record is complete (not waiting
-    /// for an identity), that record is the answer.
+    /// forces one, and a transient failure delays the next by `PendingIdentityRetry.interval`, except for a refresh
+    /// the user pool tokens need or a forced fetch, which try the identity step again within it (a cancellation does
+    /// neither). Either way no call spends a user pool refresh on it every time. If the commit lost to another writer
+    /// whose record does not wait for an identity (complete, or signed out), that record is the answer.
     private nonisolated func keepRefreshedTokens(
         _ stored: Data,
         failure: Error,
@@ -371,7 +411,10 @@ extension SessionCore {
         let pending = current.ownRecord?.identityPending == true
         refreshTokenReuse.reset()
         let result = try await commitRefresh(stored, over: current, replacing: payload, store: store, keepingIdentityPending: pending)
-        if case .adopted(let adopted) = result, adopted.credentials != nil, adopted.ownRecord?.identityPending != true {
+        // Another writer's record that waits for no identity is the answer, a signed-out one included (another
+        // process signed the session out meanwhile): the session is then signed out, and no identity step failed
+        // for a user it still holds.
+        if case .adopted(let adopted) = result, adopted.credentials == nil || adopted.ownRecord?.identityPending != true {
             return adopted
         }
         guard pending else {
@@ -387,6 +430,28 @@ extension SessionCore {
         }
         throw IdentityStepFailure(error: error, commit: result)
     }
+
+    /// Saves the expiry just marked (`markExpired(installing:cause:)`) with `reread`, the record it proved dead, so a new
+    /// core of the session starts expired (`SessionRecord.deadToken`), and installs the record as saved. Best effort:
+    /// if the record moved since it was read, or storage fails, the expiry stays this core's only, and a new core
+    /// refreshes the token once more before it expires again. A failure is logged.
+    private nonisolated func saveExpiry(of reread: SessionSnapshot, cause: DeadToken.Cause, store: SessionRecordIO) async {
+        guard let credentials = reread.credentials else {
+            return
+        }
+        let deadToken = DeadToken(token: deadTokenDigest(of: credentials), cause: cause)
+        do {
+            if case .committed(let saved) = try await store.saveDeadToken(deadToken, for: sessionId, expecting: reread.version) {
+                await apply(SessionSnapshot(saved), event: nil)
+            }
+        } catch {
+            ClientLog.logger(ClientLog.sessionRecordStore).warn(Self.expirySaveFailedWarning)
+        }
+    }
+
+    /// What a failed save of an expiry logs: no identifiers.
+    static let expirySaveFailedWarning =
+        "A session's expiry could not be saved. After a relaunch the session refreshes its refresh token once more before it expires again."
 
     /// Whether two payloads hold the same user pool refresh token, or neither holds one.
     nonisolated func sameRefreshToken(_ lhs: Data, _ rhs: Data) throws -> Bool {
@@ -497,6 +562,15 @@ extension SessionCore {
     static func notSignedIn(_ sessionId: SessionID) -> AuthClientError {
         .notSignedIn(
             "Session \"\(sessionId)\" is not signed in.",
+            "Sign in to this session first."
+        )
+    }
+
+    /// `notSignedIn(_:)` for the AWS credentials of a signed-out session, which never fall back to guest credentials,
+    /// unlike the plugin's provider.
+    static func signedOutHasNoGuestCredentials(_ sessionId: SessionID) -> AuthClientError {
+        .notSignedIn(
+            "Session \"\(sessionId)\" is not signed in.",
             "Sign in to this session first. A signed-out session never falls back to guest credentials."
         )
     }
@@ -507,6 +581,40 @@ extension SessionCore {
             "Sign in to this session again. Other sessions are unaffected.",
             SessionEngineError.refreshTokenInvalid
         )
+    }
+
+    /// The dead token after a reuse (`refreshOnce`, step 3): Cognito said the refresh token was used, and nobody saved
+    /// the refresh that used it, so the session cannot get new tokens with it.
+    static func refreshTokenAlreadyUsed(_ sessionId: SessionID) -> AuthClientError {
+        .sessionExpired(
+            "Session \"\(sessionId)\"'s refresh token was already used, and no refreshed tokens were saved, so the session cannot be renewed.",
+            "Sign in to this session again. Other sessions are unaffected.",
+            SessionEngineError.refreshTokenReused
+        )
+    }
+
+    /// A federated session whose provider token the identity pool no longer accepts (the engine's
+    /// `refreshTokenInvalid` for a federated payload): it has no refresh token, and a sign-in is refused over it, so
+    /// it federates again.
+    static func providerTokenRefused(_ sessionId: SessionID) -> AuthClientError {
+        .sessionExpired(
+            "Session \"\(sessionId)\"'s provider token is no longer accepted by the identity pool.",
+            "Call federateToIdentityPool with a new provider token for this session. Other sessions are unaffected.",
+            SessionEngineError.refreshTokenInvalid
+        )
+    }
+
+    /// What a session known to be expired (`isExpired`) answers with: the dead token after a reuse if that is what
+    /// expired it; a federated session's refused provider token; else `sessionExpired(_:)`. The cause is the expiry's
+    /// own, saved with it, so a new core answers as the core that proved it did.
+    nonisolated func expiredError(_ expiry: Expiry) -> AuthClientError {
+        if expiry.cause == .reused {
+            return Self.refreshTokenAlreadyUsed(sessionId)
+        }
+        if (try? engine.describe(expiry.credentials))?.kind == .federated {
+            return Self.providerTokenRefused(sessionId)
+        }
+        return Self.sessionExpired(sessionId)
     }
 
     /// `missing` reads after "it has no", so without an article; the recovery suggestion puts `article`, if any,
@@ -631,7 +739,9 @@ final class RefreshTokenReuse: @unchecked Sendable {
     private var first: (payload: Data, at: Date)?
 
     /// Records a reuse of `payload` with the record unchanged at `now`; `true` if an earlier one of the same payload
-    /// was at least `minimumGap` before. A repeat sooner than that is not counted, and keeps the first's time.
+    /// was at least `minimumGap` before, which proves its refresh token dead: the core then marks the session expired
+    /// and saves that with the record (`SessionCore.markExpired(installing:cause:)`). A repeat sooner than that is not
+    /// counted, and keeps the first's time.
     ///
     /// - Parameter same: Whether two payloads hold the same credentials (`SessionEngine.sameCredentials`), so a
     ///   record another writer only re-encoded in between still counts as unchanged.
@@ -650,6 +760,8 @@ final class RefreshTokenReuse: @unchecked Sendable {
     }
 
     func reset() {
-        lock.withLock { first = nil }
+        lock.withLock {
+            first = nil
+        }
     }
 }

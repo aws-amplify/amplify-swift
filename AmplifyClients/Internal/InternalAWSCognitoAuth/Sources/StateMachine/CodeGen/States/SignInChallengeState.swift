@@ -13,7 +13,9 @@ package enum SignInChallengeState: State {
 
     case waitingForAnswer(RespondToAuthChallenge, SignInMethod, EngineSignInStep)
 
-    case verifying(RespondToAuthChallenge, SignInMethod, String, EngineSignInStep)
+    /// The answer being verified is not kept: the sign-in's verbose lines print this state by reflection, and the
+    /// answer is the user's code, password or custom answer. `VerifySignInChallenge` carries it.
+    case verifying(RespondToAuthChallenge, SignInMethod, EngineSignInStep)
 
     case verified
 

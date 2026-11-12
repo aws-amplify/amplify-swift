@@ -189,6 +189,81 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
         }
     }
 
+    /// The passkey credential calls report a network failure as every other call does, not through the engine's
+    /// "This should not happen" fallback.
+    ///
+    /// - Given: alice signed in, and `ListWebAuthnCredentials` and `DeleteWebAuthnCredential` failing with each
+    ///   network failure
+    /// - When: the live engine lists and deletes her passkeys
+    /// - Then:
+    ///    - each throws `.service` with no code, the network description and suggestion, and the network error itself
+    ///      underneath
+    func testAPasskeyCallThatCannotReachCognitoIsARetryableServiceError() async throws {
+        for (name, failure) in networkErrors {
+            harness = LiveEngineHarness()
+            let engine = try harness.engine()
+            let payload = try await harness.signedInPayload(on: engine)
+            harness.cognito.always("ListWebAuthnCredentials") { (_: ListWebAuthnCredentialsInput) -> ListWebAuthnCredentialsOutput in
+                throw failure
+            }
+            harness.cognito.always("DeleteWebAuthnCredential") { (_: DeleteWebAuthnCredentialInput) -> DeleteWebAuthnCredentialOutput in
+                throw failure
+            }
+
+            let operations: [(String, () async throws -> Void)] = [
+                ("listWebAuthnCredentials", { _ = try await engine.listWebAuthnCredentials(payload, pageSize: 10, nextToken: nil) }),
+                ("deleteWebAuthnCredential", { try await engine.deleteWebAuthnCredential(payload, credentialId: "credential") })
+            ]
+            for (operation, body) in operations {
+                let label = "\(operation), \(name)"
+                await assertThrowsAsync(body) { error in
+                    guard let error = error as? AuthClientError else {
+                        return XCTFail("\(label): expected an AuthClientError, got \(error)")
+                    }
+                    self.assertNetworkFailure(error, failure, label)
+                }
+            }
+        }
+    }
+
+    /// A response that is not JSON (an HTML error page from the service's edge) reads the same on a refresh and on a
+    /// sign-out's revoke as on a sign-in.
+    ///
+    /// - Given: alice signed in, and `GetTokensFromRefreshToken` and `RevokeToken` failing with Foundation's error for
+    ///   a body that is not JSON
+    /// - When: her session is refreshed, then revoked as a sign-out does
+    /// - Then:
+    ///    - the refresh throws `.service` with no code, "The service returned a response that could not be read." and
+    ///      the retry suggestion
+    ///    - the revoke error is `.service` with no code, the same description, and the suggestion that the revoke is
+    ///      not retried
+    func testAResponseThatIsNotJSONIsUnreadableOnARefreshAndARevoke() async throws {
+        let notJSON = NSError(domain: NSCocoaErrorDomain, code: NSPropertyListReadCorruptError)
+        let engine = try harness.engine()
+        let payload = try await harness.signedInPayload(on: engine)
+        harness.cognito.always("GetTokensFromRefreshToken") { (_: GetTokensFromRefreshTokenInput) -> GetTokensFromRefreshTokenOutput in
+            throw notJSON
+        }
+        harness.cognito.always("RevokeToken") { (_: RevokeTokenInput) -> RevokeTokenOutput in throw notJSON }
+
+        await assertThrowsAsync({ _ = try await engine.refresh(payload, force: true) }) { error in
+            let mapped: AuthClientError? = if case SessionEngineError.service(let mapped) = error { mapped } else { error as? AuthClientError }
+            guard case .service(nil, let description, let suggestion, _) = mapped else {
+                return XCTFail("expected a service error with no code, got \(error)")
+            }
+            XCTAssertEqual(description, AuthClientError.unreadableResponseDescription)
+            XCTAssertEqual(suggestion, AuthClientError.unreadableServiceResponseSuggestion)
+        }
+
+        let outcome = try await engine.revoke(payload, global: false)
+
+        guard case .service(nil, let description, let suggestion, _) = outcome.revokeError else {
+            return XCTFail("expected a service error with no code, got \(String(describing: outcome.revokeError))")
+        }
+        XCTAssertEqual(description, AuthClientError.unreadableResponseDescription)
+        XCTAssertEqual(suggestion, SignOutTexts.revokeNotRetried)
+    }
+
     private func assertNetworkFailure(
         _ error: AuthClientError,
         _ failure: Error,

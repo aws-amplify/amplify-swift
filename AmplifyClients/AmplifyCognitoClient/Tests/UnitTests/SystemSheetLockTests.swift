@@ -10,10 +10,12 @@ import Foundation
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// Every test here asserts on who holds the lock, who was served, and what each caller received,
-/// never on how long anything took. Flows are held in flight by a `Gate` the test opens, timeouts
-/// fire when the test opens a gate standing in for the clock, and state that changes on another
-/// task is awaited with the bounded `waitUntil`. Each test builds its own lock, so none of them
+/// Every test here asserts on who holds the lock, who was served, and what each caller received.
+/// Flows are held in flight by a `Gate` the test opens, timeouts fire when the test opens a gate
+/// standing in for the clock, and state that changes on another task is awaited with the bounded
+/// `waitUntil`. Only the release-wait tests measure time: that a caller was answered well within a
+/// 30-second bound, by the release or its own cancellation, and that the default bound of one second
+/// answers a caller whose flow never releases. Each test builds its own lock, so none of them
 /// touches `SystemSheetLock.shared`.
 final class SystemSheetLockTests: XCTestCase {
 
@@ -120,6 +122,8 @@ final class SystemSheetLockTests: XCTestCase {
         }
     }
 
+    /// Bounded, as `assertCancelled` is: a task that is never answered fails the test with `WaitTimedOut` rather than
+    /// hanging it.
     private static func assertBrowserBusy(
         _ task: Task<SessionID, Error>,
         holder expected: SessionID,
@@ -127,7 +131,7 @@ final class SystemSheetLockTests: XCTestCase {
         line: UInt = #line
     ) async {
         do {
-            let value = try await task.value
+            let value = try await task.value(within: 10)
             XCTFail("Expected browserBusy, got \(value)", file: file, line: line)
         } catch AuthClientError.browserBusy(let holder, _, _, _) {
             XCTAssertEqual(holder, expected, file: file, line: line)
@@ -136,13 +140,15 @@ final class SystemSheetLockTests: XCTestCase {
         }
     }
 
+    /// Bounded: a task that is never answered, as when a release wait's timer stops answering, fails the test with
+    /// `WaitTimedOut` rather than hanging it.
     private static func assertCancelled(
         _ task: Task<SessionID, Error>,
         file: StaticString = #filePath,
         line: UInt = #line
     ) async {
         do {
-            let value = try await task.value
+            let value = try await task.value(within: 10)
             XCTFail("Expected CancellationError, got \(value)", file: file, line: line)
         } catch {
             XCTAssertTrue(error is CancellationError, "Expected CancellationError, got \(error)", file: file, line: line)
@@ -568,6 +574,48 @@ final class SystemSheetLockTests: XCTestCase {
         XCTAssertEqual(journalEntries, [Self.alice])
         let holder = await lock.currentHolder
         XCTAssertNil(holder)
+    }
+
+    /// A repeat call from a session queued behind its own closing sheet is told the sheet is still closing.
+    ///
+    /// - Given: alice's flow cancelled with `cancel(for:)` and held at a gate, so it is closing, and her retry queued
+    ///   behind it with `.wait`
+    /// - When:
+    ///    - alice asks again, once with `.fail` and once with `.wait`, and the old flow then unwinds
+    /// - Then:
+    ///    - both repeat calls throw `browserBusy(holder: alice)` with the "still closing" message, not the queued one
+    ///      that would say alice waits for a sheet alice holds, and a suggestion to wait for the queued retry rather
+    ///      than to retry; only the first retry is ever queued, and it is served
+    func testARepeatCallQueuedBehindItsOwnClosingSheetIsToldItIsStillClosing() async throws {
+        let lock = SystemSheetLock()
+        let closing = Gate()
+
+        let first = Self.start(lock, Self.alice, .fail, Self.heldBody(closing))
+        await closing.waitForArrivals(1)
+        await lock.cancel(for: Self.alice)
+        await Self.assertCancelled(first)
+        let retry = Self.start(lock, Self.alice, .wait(timeout: 3_600)) { $0.holder }
+        await waitUntil("the retry is queued behind the closing flow") { await lock.waiterCount == 1 }
+
+        let closingError = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice, reason: .stillClosing)
+        for policy in [WebUIOptions.BrowserBusyPolicy.wait(timeout: 3_600), .fail] {
+            let again = Self.start(lock, Self.alice, policy) { $0.holder }
+            do {
+                let value = try await again.value(within: 10)
+                XCTFail("Expected browserBusy, got \(value)")
+            } catch let error as AuthClientError {
+                XCTAssertEqual(error.kind, .browserBusy(holder: Self.alice), "\(policy)")
+                XCTAssertEqual(error.errorDescription, closingError.errorDescription, "\(policy)")
+                XCTAssertNotEqual(error.recoverySuggestion, closingError.recoverySuggestion, "\(policy)")
+                XCTAssertTrue(error.recoverySuggestion.hasPrefix("The earlier call is queued"), error.recoverySuggestion)
+            }
+        }
+        let queued = await lock.waiterCount
+        XCTAssertEqual(queued, 1)
+
+        await closing.open()
+        let retryResult = try await retry.value
+        XCTAssertEqual(retryResult, Self.alice)
     }
 
     /// A holder whose own caller was cancelled is closing too, so its retry may queue.
@@ -1242,6 +1290,37 @@ final class SystemSheetLockTests: XCTestCase {
         await Self.assertCancelled(alice)
 
         XCTAssertLessThan(Date().timeIntervalSince(started), 5)
+        let holder = await lock.currentHolder
+        XCTAssertEqual(holder, Self.alice)
+        let waits = await lock.releaseWaitCount
+        XCTAssertEqual(waits, 0)
+        await gate.open()
+        await waitUntil("the lock is released once the flow finishes") { await lock.currentHolder == nil }
+    }
+
+    /// A caller interrupted by `cancel(for:)` whose flow never releases the lease is answered when the default
+    /// release wait, one second, expires.
+    ///
+    /// - Given: a lock with the default release wait, and alice holding it with a flow that ignores cancellation,
+    ///   held at a gate, under a lease that waits for its release
+    /// - When:
+    ///    - `cancel(for: alice)` is called, and the gate stays closed
+    /// - Then:
+    ///    - alice throws `CancellationError` after about a second, not before, while her flow still holds the lock;
+    ///      no wait is left; the lock is free once the gate opens
+    func testTheDefaultReleaseWaitAnswersAfterASecond() async throws {
+        let lock = SystemSheetLock()
+        let gate = Gate()
+        let alice = Self.start(lock, Self.alice, .fail, waitsForRelease: true, Self.heldBody(gate))
+        await gate.waitForArrivals(1)
+        let started = Date()
+
+        await lock.cancel(for: Self.alice)
+        await Self.assertCancelled(alice)
+
+        let elapsed = Date().timeIntervalSince(started)
+        XCTAssertGreaterThanOrEqual(elapsed, 0.9, "answered before the bound")
+        XCTAssertLessThan(elapsed, 5, "answered long after the bound")
         let holder = await lock.currentHolder
         XCTAssertEqual(holder, Self.alice)
         let waits = await lock.releaseWaitCount

@@ -11,9 +11,11 @@ import XCTest
 
 /// The base class for suites that create client sessions.
 ///
-/// Mint every session ID through `makeSessionID(_:accessGroup:)`. `tearDown` then signs each one out
-/// with `signOutStoredSession`, which revokes its refresh token, purges its row, and waits until the
-/// registry holds no live session for any of them. Each test is therefore independent: its users are its
+/// Mint every session ID through `makeSessionID(_:pool:accessGroup:)`, naming the pool the session signs in
+/// to. `tearDown` then signs each one out with `signOutStoredSession`, over that pool's configuration, which
+/// revokes its refresh token, purges its row, and waits until the registry holds no live session for any of
+/// them. A session minted without its pool is cleaned up against the main configuration's pool: its row and
+/// its refresh token outlive the test. Each test is therefore independent: its users are its
 /// own (`makeFreshUser(on:_:)`, `makeSignInUser()`), deleted after its sessions. Hold clients in locals, not
 /// in properties: a client the test case still holds keeps its session live and makes `tearDown` time out.
 class ClientIntegrationTestCase: XCTestCase {

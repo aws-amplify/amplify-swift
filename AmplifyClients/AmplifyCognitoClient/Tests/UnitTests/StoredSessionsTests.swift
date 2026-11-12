@@ -212,7 +212,8 @@ final class StoredSessionsTests: XCTestCase {
         ])
     }
 
-    /// The plugin deletes its record on its own sign-out (and on `deleteUser`); the sidecar stays.
+    /// Without an access group the plugin deletes its record on its own sign-out (and on `deleteUser`); the sidecar
+    /// stays.
     ///
     /// - Given: no plugin record, and a sidecar naming alice with a label
     /// - When: saved sessions are listed with `includingSignedOut: true`

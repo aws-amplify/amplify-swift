@@ -24,8 +24,8 @@ import Foundation
 
 /// The logger type engine code holds.
 ///
-/// Engine files that are still inside the plugin module name Foundation's logger through this
-/// alias, so they never need `import AmplifyFoundation` next to `import Amplify`, which declares a
+/// The plugin's files that hand a logger to the engine name Foundation's logger through this alias
+/// too, so they never need `import AmplifyFoundation` next to `import Amplify`, which declares a
 /// `Logger` of its own.
 package typealias EngineLogger = any AmplifyFoundation.Logger
 

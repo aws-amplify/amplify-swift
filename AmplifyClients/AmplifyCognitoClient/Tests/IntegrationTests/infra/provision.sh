@@ -6,11 +6,11 @@
 #   alice, bob  confirmed, permanent passwords
 #   carol       confirmed, TOTP enrolled and preferred (her secret is carolTotpSecret)
 #   dave, erin  reset by prepare-run.sh before every run; this script runs it once at the end
-# Then parity.py adds the plugin-parity resources: the trigger and custom-sender
-# Lambdas, the KMS key and the code sink (AppSync + DynamoDB), six more user pools from pools/*.json,
-# the hosted-UI domain, an identity-only identity pool, the SNS caller role for SMS (only while the
-# account's SNS is in the SMS sandbox), and DEVELOPER email from a verified SES domain the account already
-# owns (used read-only; never tagged, changed or deleted).
+# Then parity.py adds the plugin-parity resources: the trigger and custom-sender Lambdas, the KMS key and the code
+# sink (AppSync + DynamoDB), seven more user pools from pools/*.json, the hosted-UI domain, an identity-only
+# identity pool, the plugin suites' identity pool (P-13) with its two permissionless roles, the SNS caller role
+# for SMS (only while the account's SNS is in the SMS sandbox), and DEVELOPER email from a verified SES domain the
+# account already owns (used read-only; never tagged, changed or deleted).
 #
 # Every resource is tagged purpose=amplify-cognito-client-integ and recorded in $STATE_DIR, so
 # teardown.sh can remove exactly these and nothing else. Safe to re-run: it reuses what exists.
@@ -38,14 +38,16 @@ INFRA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$INFRA_DIR/lib.sh"
 # The region state.json records wins over AWS_REGION, and any other is refused: every other script uses the
 # recorded one, and a run in another region would build a second sandbox there, re-pointing the global roles at it.
+# Another state directory would do the same, so the way to another region is a teardown first.
 RECORDED_REGION=""
 if [[ -f "$STATE_DIR/state.json" ]]; then
     RECORDED_REGION=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('region',''))" "$STATE_DIR/state.json")
 fi
 REGION="${1:-${RECORDED_REGION:-${AWS_REGION:-us-west-2}}}"
 if [[ -n "$RECORDED_REGION" && "$REGION" != "$RECORDED_REGION" ]]; then
-    echo "Refusing: $STATE_DIR/state.json records region $RECORDED_REGION. Pass it, or point" \
-        "COGNITO_CLIENT_INTEG_DIR at another directory." >&2
+    echo "Refusing: $STATE_DIR/state.json records region $RECORDED_REGION. Pass it, or no region. The sandbox's" \
+        "IAM roles are global, so a sandbox in a second region (another COGNITO_CLIENT_INTEG_DIR included) would" \
+        "re-point them at it; to move the sandbox, run infra/teardown.sh first." >&2
     exit 1
 fi
 mkdir -p "$STATE_DIR"
@@ -55,8 +57,27 @@ require_free_disk
 # stderr passes through redact (lib.sh), so an error cannot print an account, pool or client id.
 aws() { command aws --region "$REGION" --output json "$@" 2> >(redact >&2); }
 
+# On every run, a region recorded or not: exits if the sandbox's global authenticated role already trusts an identity
+# pool in another region, since this run would re-point it here. A state directory that records its own region does
+# not rule that out: another directory (one made before this check, say) may hold a sandbox in another region, and
+# with a region recorded $REGION is that region, so the same comparison applies. Read-only; a role that cannot be read
+# counts as none.
+require_roles_region() {
+    local audience
+    audience=$(aws iam get-role --role-name "$NAME-authenticated" \
+        --query 'Role.AssumeRolePolicyDocument.Statement[0].Condition.StringEquals."cognito-identity.amazonaws.com:aud"' \
+        --output text 2>/dev/null || true)
+    if [[ "$audience" =~ ^([a-z]{2}-[a-z]+-[0-9]): && "${BASH_REMATCH[1]}" != "$REGION" ]]; then
+        echo "Refusing: the sandbox's role $NAME-authenticated trusts an identity pool in ${BASH_REMATCH[1]}, not" \
+            "$REGION: a sandbox is already there, and this run would re-point the role here. Use that sandbox's" \
+            "state directory and region, or run infra/teardown.sh with it first." >&2
+        exit 1
+    fi
+}
+
 require_cli_history_off
 require_recorded_account
+require_roles_region
 # Never while an infra/self-sign-up.sh run holds self sign-up on: provisioning turns it off (parity.py provision
 # checks again, under the toggle lock).
 python3 "$INFRA_DIR/parity.py" self-sign-up require-idle
@@ -271,7 +292,7 @@ cat > "$STATE_DIR/amplify_outputs.json" <<JSON
 "unauthenticated_identities_enabled":true}}
 JSON
 
-# --- Plugin-parity resources (P-5 … P-8, P-6'): Lambdas, code sink, six pools ----------------------
+# --- Plugin-parity resources (P-5 … P-10, P-6', P-13, P-15): Lambdas, code sink, seven pools ---------
 # Needs node/npm (the custom sender vendors the AWS Encryption SDK). Email (P-8) uses a verified SES domain
 # the account already owns (COGNITO_CLIENT_INTEG_SES_DOMAIN picks one); COGNITO_CLIENT_INTEG_SES_EMAIL
 # creates a tagged address identity instead, whose verification is manual. SMS (P-9) needs the account's

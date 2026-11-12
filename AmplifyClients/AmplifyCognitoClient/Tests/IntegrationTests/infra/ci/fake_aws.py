@@ -10,14 +10,19 @@
 prints them (`An error occurred (<Code>) when calling the <Op> operation: …`) with its exit status 254. Every
 identifier is a placeholder. Installed by the test as `aws`, first on PATH; it never calls AWS."""
 
+import base64
 import fcntl
+import fnmatch
 import hashlib
 import json
 import os
 import sys
+import time
 import uuid
 
 STATE = os.environ["FAKE_STATE"]
+# Each Lambda's deployed zip, as create-function was given it.
+CODE_DIR = STATE + ".code"
 WORDS = []
 LOG = os.environ["FAKE_LOG"]
 
@@ -96,6 +101,41 @@ def page(o, field, items):
     if start + size < len(items):
         result["NextToken"] = str(start + size)
     return result
+
+
+def as_list(value):
+    return value if isinstance(value, list) else [] if value is None else [value]
+
+
+def require_sms_trust(state, sms, pool_arn):
+    """As Cognito, which assumes a pool's SMS role (SmsConfiguration.SnsCallerArn) when the pool is made or its SMS
+    MFA set: refuses unless one of the role's trust statements lets cognito-idp.amazonaws.com assume it for this pool,
+    with the pool's external id. A Condition the fake does not know refuses too."""
+    role = state.get("roles", {}).get(sms["SnsCallerArn"].rsplit("/", 1)[-1])
+    statements = as_list(role["Role"]["AssumeRolePolicyDocument"].get("Statement")) if role else []
+    for statement in statements:
+        if statement.get("Effect") != "Allow" or "sts:AssumeRole" not in as_list(statement.get("Action")):
+            continue
+        if "cognito-idp.amazonaws.com" not in as_list((statement.get("Principal") or {}).get("Service")):
+            continue
+        condition = statement.get("Condition", {})
+        if set(condition) - {"StringEquals", "ArnEquals", "ArnLike"}:
+            continue
+        equals = condition.get("StringEquals", {})
+        if set(equals) - {"sts:ExternalId", "aws:SourceAccount"}:
+            continue
+        if "sts:ExternalId" in equals and sms.get("ExternalId") not in as_list(equals["sts:ExternalId"]):
+            continue
+        if "aws:SourceAccount" in equals and state["account"] not in as_list(equals["aws:SourceAccount"]):
+            continue
+        if "ArnEquals" in condition and pool_arn not in as_list(condition["ArnEquals"].get("aws:SourceArn")):
+            continue
+        if "ArnLike" in condition and not any(fnmatch.fnmatchcase(pool_arn, pattern)
+                                              for pattern in as_list(condition["ArnLike"].get("aws:SourceArn"))):
+            continue
+        return
+    raise Fail("InvalidSmsRoleTrustRelationshipException",
+               "Role does not have a trust relationship allowing Cognito to assume the role.")
 
 
 def handle(state, service, verb, o, data):
@@ -285,16 +325,32 @@ def handle(state, service, verb, o, data):
             api["resolvers"][f"{data['typeName']}.{data['fieldName']}"] = data
             return {"resolver": data}
         if verb == "list-api-keys":
+            # As AppSync, which may still list a key for a while after it deleted it (60 days after it expired).
             return {"apiKeys": api["keys"]}
+        if verb in ("create-api-key", "update-api-key"):
+            # As AppSync: 1 to 365 days from the call, stored rounded down to the hour, and deleted 60 days after it
+            # expires. FAKE_APPSYNC_CLOCK_BEHIND (seconds) sets AppSync's clock behind the caller's.
+            expires = int(one(o, "expires") if verb == "create-api-key" else data["expires"])
+            now = time.time() - int(os.environ.get("FAKE_APPSYNC_CLOCK_BEHIND", "0"))
+            if not now + 86400 <= expires <= now + 365 * 86400:
+                raise Fail("ApiKeyValidityOutOfBoundsException", "API key must be valid for a minimum of 1 day and a "
+                           "maximum of 365 days.")
+            expires -= expires % 3600
         if verb == "create-api-key":
-            key = {"id": "da2-" + new_id(s, "apikey"), "description": one(o, "description"), "expires": int(one(o, "expires"))}
+            key = {"id": "da2-" + new_id(s, "apikey"), "description": one(o, "description"), "expires": expires,
+                   "deletes": expires + 60 * 86400}
             api["keys"].append(key)
             return {"apiKey": key}
         if verb == "update-api-key":
             key = next((k for k in api["keys"] if k["id"] == data["id"]), None)
-            if key is None:
+            if key is None or key.get("deletes", key["expires"] + 60 * 86400) <= now:
                 raise Fail("NotFoundException", "API key not found")
-            key["expires"] = int(data["expires"])
+            # AppSync's API reference has an expired key updated until it is deleted; FAKE_APPSYNC_EXPIRED_KEYS, an
+            # error code, has the fake refuse that instead, with that code.
+            refusal = os.environ.get("FAKE_APPSYNC_EXPIRED_KEYS")
+            if refusal and key["expires"] <= now:
+                raise Fail(refusal, "API key has expired")
+            key.update({"expires": expires, "deletes": expires + 60 * 86400})
             return {"apiKey": key}
         if verb == "delete-graphql-api":
             del apis[api_id]
@@ -342,17 +398,35 @@ def handle(state, service, verb, o, data):
             if not data["Role"].split("/")[-1] in s.get("roles", {}):
                 raise Fail("InvalidParameterValueException", "The role defined for the function cannot be assumed by Lambda.")
             config = {k: v for k, v in data.items() if k != "Tags"}
+            # As Lambda reports it: the base64 SHA-256 of the zip, which it keeps (here beside the state file, where
+            # get-function's Code.Location, a file:// URL, serves it).
+            with open(one(o, "zip-file")[len("fileb://"):], "rb") as f:
+                code = f.read()
+            code_sha = base64.b64encode(hashlib.sha256(code).digest()).decode()
+            code_path = os.path.join(CODE_DIR, f"{name}.zip")
+            os.makedirs(CODE_DIR, exist_ok=True)
+            with open(code_path, "wb") as f:
+                f.write(code)
             config.update({"FunctionArn": f"arn:aws:lambda:{region}:{acct}:function:{name}", "State": "Active",
-                           "CodeSha256": "fake", "RevisionId": new_id(s, "rev", 8)})
-            functions[name] = {"config": config, "tags": data.get("Tags", {}), "policy": [], "zip": one(o, "zip-file")}
+                           "CodeSha256": code_sha, "RevisionId": new_id(s, "rev", 8)})
+            functions[name] = {"config": config, "tags": data.get("Tags", {}), "policy": [], "code": code_path}
             return config
         name = one(o, "function-name") or (one(o, "resource") or "").rsplit(":", 1)[-1]
         name = name.rsplit(":function:", 1)[-1]
         if name not in functions:
             raise Fail("ResourceNotFoundException", "Function not found")
         function = functions[name]
+        # Lambda is regional: a call in another region than the function's finds none.
+        if one(o, "region", region) != function["config"]["FunctionArn"].split(":")[3]:
+            raise Fail("ResourceNotFoundException", "Function not found")
         if verb == "get-function-configuration":
             return function["config"]
+        if verb == "get-function":
+            # Lambda's Code.Location is a presigned https:// URL to the deployed zip; the fake's is the zip's file.
+            code = {"RepositoryType": "S3"}
+            if function.get("code"):
+                code["Location"] = "file://" + function["code"]
+            return {"Configuration": function["config"], "Code": code, "Tags": function["tags"]}
         if verb == "wait":
             return None
         if verb == "list-tags":
@@ -447,6 +521,9 @@ def handle(state, service, verb, o, data):
                                          for p in pools.values()])
         if verb == "create-user-pool":
             pool_id = f"{region}_Fake{new_id(s, 'pool', 6)}"
+            if data.get("SmsConfiguration"):
+                arn = f"arn:aws:cognito-idp:{region}:{acct}:userpool/{pool_id}"
+                require_sms_trust(s, data["SmsConfiguration"], arn)
             pool = {k: v for k, v in data.items() if k != "PoolName"}
             pool.update({"Id": pool_id, "Name": data["PoolName"], "EstimatedNumberOfUsers": 0,
                          "LastModifiedDate": "2026-10-05T00:00:00Z", "CreationDate": "2026-10-05T00:00:00Z",
@@ -462,6 +539,10 @@ def handle(state, service, verb, o, data):
         if verb == "get-user-pool-mfa-config":
             return pool["mfa"]
         if verb == "set-user-pool-mfa-config":
+            sms = (data.get("SmsMfaConfiguration") or {}).get("SmsConfiguration")
+            if sms:
+                arn = pool["UserPool"].get("Arn", f"arn:aws:cognito-idp:{region}:{acct}:userpool/{pool_id}")
+                require_sms_trust(s, sms, arn)
             pool["mfa"] = {k: v for k, v in data.items() if k != "UserPoolId"}
             return pool["mfa"]
         if verb == "list-user-pool-clients":

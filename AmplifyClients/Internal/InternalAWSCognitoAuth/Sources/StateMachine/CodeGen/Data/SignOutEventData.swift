@@ -15,8 +15,9 @@ package struct SignOutEventData {
 
     /// Skips the hosted-UI sign-out (the browser round trip to the logout endpoint) for a hosted-UI
     /// session, and goes straight to the global sign-out or the token revocation. The plugin always
-    /// passes `false`. `AmplifyCognitoClient` passes `true` until it presents web UI itself: it
-    /// has no presentation anchor to give, and must never present a browser from a sign-out.
+    /// passes `false`. `AmplifyCognitoClient` passes `false` only with a presentation anchor, when it
+    /// presents the hosted-UI sign-out page, and `true` for every other sign-out: without an anchor it
+    /// must never present a browser from a sign-out.
     /// Not encoded: an in-flight event is never persisted with it.
     package let skipHostedUISignOut: Bool
 

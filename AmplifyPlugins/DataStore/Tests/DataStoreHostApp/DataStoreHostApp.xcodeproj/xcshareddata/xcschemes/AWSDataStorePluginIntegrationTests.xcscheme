@@ -39,9 +39,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "DataStoreConsecutiveUpdatesTests/testSaveThenMultipleUpdate()">
-               </Test>
-               <Test
                   Identifier = "DataStoreEndToEndTests/testCreateThenMutateWithConditionFailOnSync()">
                </Test>
                <Test

@@ -200,6 +200,11 @@ final class InitialSyncOperation: AsynchronousOperation, @unchecked Sendable {
         case .success(let graphQLResult):
             await handleQueryResults(lastSyncTime: lastSyncTime, graphQLResult: graphQLResult)
         case .failure(let apiError):
+            // A query cut short by cancel() isn't an error for the app
+            guard !isCancelled else {
+                finish(result: .successfulVoid)
+                return
+            }
             if isAuthSignedOutError(apiError: apiError) {
                 log.error("Sync for \(modelSchema.name) failed due to signed out error \(apiError.errorDescription)")
             }
@@ -303,6 +308,8 @@ final class InitialSyncOperation: AsynchronousOperation, @unchecked Sendable {
     }
 
     override func cancel() {
+        // Sets `isCancelled`, so the checks before reconciling a page and saving lastSync stop this sync
+        super.cancel()
         queryTask?.cancel()
     }
 }

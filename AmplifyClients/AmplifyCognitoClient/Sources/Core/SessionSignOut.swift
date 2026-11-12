@@ -137,7 +137,9 @@ struct SessionSignOut: Sendable {
     /// it writes the signed-out row, and this deletes it, once, when the session ended without one (nothing to sign out,
     /// or another writer signed it out first). Best effort, with one warning on failure. For `.default`, the same goes for
     /// the AWSMobileClient logins (`SessionRecordStore.clearLegacyLogins()`): cleared on every sign-out that ends the
-    /// session, nothing to sign out included, as the plugin's sign-out from `.signedOut` clears them.
+    /// session, nothing to sign out included, as the plugin's sign-out from `.signedOut` clears them. The store's
+    /// sign-out clears them before it writes the signed-out row, so a write that fails leaves none; this clears them
+    /// after, when no write was needed.
     func run() async throws -> Outcome {
         var challengeDeleted = false
         let outcome = try await signOut(challengeDeleted: &challengeDeleted)
@@ -196,7 +198,7 @@ struct SessionSignOut: Sendable {
                 // A retry, after an earlier attempt revoked, that the engine did not start because its caller is
                 // cancelled: it sent nothing. Keeping the record would keep revoked tokens: count it as a failed revoke
                 // of the newer credentials, and go on to clear.
-                server.merge(EngineSignOutOutcome(revokeError: Self.revokeFailure(CancellationError())))
+                server.merge(Self.revokeFailureOutcome(CancellationError()))
             } catch is CancellationError {
                 // The caller gave up before this first attempt sent anything, so nothing was revoked; that is not a
                 // failed revoke. Clear nothing and report cancellation. A revoke already sent is not cancelled
@@ -212,7 +214,7 @@ struct SessionSignOut: Sendable {
                 // `.failed`, with the user still signed in. Clear nothing.
                 throw refusal
             } catch {
-                server.merge(EngineSignOutOutcome(revokeError: Self.revokeFailure(error)))
+                server.merge(Self.revokeFailureOutcome(error))
             }
 
             // The revoke took a network round trip: check the record still holds what was revoked.
@@ -374,6 +376,14 @@ struct SessionSignOut: Sendable {
         )
     }
 
+    /// A revoke attempt that threw, with both mappings: the sign-out's (`revokeFailure(_:)`) for a `.partial` result, and
+    /// the plain one (`plainRevokeFailure(_:)`) for a sign-out that could not finish (`EngineSignOutOutcome.firstError`).
+    static func revokeFailureOutcome(_ error: Error) -> EngineSignOutOutcome {
+        EngineSignOutOutcome(revokeError: revokeFailure(error), plainRevokeError: plainRevokeFailure(error))
+    }
+
+    /// A revoke attempt that threw, under a sign-out that cleared the session: the session is signed out on this device,
+    /// and nothing retries the revoke.
     static func revokeFailure(_ error: Error) -> AuthClientError {
         switch error {
         case let error as AuthClientError:
@@ -388,6 +398,30 @@ struct SessionSignOut: Sendable {
                 "The session's tokens could not be revoked, so its refresh token stays valid until it expires, unless a "
                     + "global sign-out succeeded.",
                 AuthClientError.revokeNotRetriedSuggestion,
+                error
+            )
+        }
+    }
+
+    /// `revokeFailure(_:)` without the sign-out's context, for a sign-out that could not finish: the session is still
+    /// signed in on this device, and a retried sign-out revokes again. A transport failure reads as in any other call;
+    /// a retry cancelled before it was sent, after an earlier attempt revoked, says so.
+    static func plainRevokeFailure(_ error: Error) -> AuthClientError {
+        switch error {
+        case let error as AuthClientError:
+            return error
+        case SessionEngineError.service(let error):
+            return error
+        case is CancellationError:
+            return .unknown(
+                "The sign-out was cancelled before it could revoke the session's latest tokens.",
+                "Retry the sign-out.",
+                error
+            )
+        default:
+            return AuthClientError.transportFailure(error) ?? .unknown(
+                "The session's tokens could not be revoked.",
+                "Retry the sign-out.",
                 error
             )
         }

@@ -160,10 +160,9 @@ extension LiveSessionEngine {
             throw AuthClientError(engineFailure: error)
         }
         guard let details = output.codeDeliveryDetails?.toEngineCodeDeliveryDetails() else {
-            throw AuthClientError.unknown(
-                "Unable to get Auth code delivery details",
-                "This is not expected. Retry the operation."
-            )
+            // The plugin's `AuthError.unknown(…, nil)`, so its wording ("Unexpected error occurred with
+            // message: …") and suggestion.
+            throw AuthClientError(engine: .unknown("Unable to get Auth code delivery details"))
         }
         return AuthClientCodeDeliveryDetails(details)
     }

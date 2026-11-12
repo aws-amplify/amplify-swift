@@ -69,8 +69,10 @@ final class CognitoBackendSmokeTests: XCTestCase {
     ///      custom-challenge answer (`custom_challenge_answer`), at least one new-password user
     ///      (`new_password_required_usernames`) and their temporary password
     ///      (`new_password_required_temporary_password`). Other keys, such as the plugin suites', are allowed
-    ///    - On CI (`IntegrationTestEnvironment.skipOnCIIfMissing`), where the plugin downloads no credentials
-    ///      file, it skips after the outputs checks (`CISkipReason.credentialsFile`)
+    ///    - Only in a run on the plugin's own files with `COGNITO_CLIENT_INTEG_CI_SKIPS=1`
+    ///      (`IntegrationTestEnvironment.skipOnCIIfMissing`), where no credentials file is downloaded, it skips after
+    ///      the outputs checks (`CISkipReason.credentialsFile`). CI itself sets no skip variable and overlays the
+    ///      extended role's credentials file, so there it runs
     ///
     func testProvisionedUsersAreAvailable() throws {
         try IntegrationTestEnvironment.requireProvisioned()

@@ -107,7 +107,7 @@ class EngineMFATypeForkTests: XCTestCase {
             .init(
                 scope: .category("MFAType"),
                 level: .error,
-                message: "Tried to initialize an unsupported MFA type with value: X",
+                message: "Tried to initialize an unsupported MFA type",
                 hasError: false
             )
         ])

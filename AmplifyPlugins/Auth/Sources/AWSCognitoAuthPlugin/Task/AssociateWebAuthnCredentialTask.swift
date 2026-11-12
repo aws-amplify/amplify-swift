@@ -39,8 +39,9 @@ final class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCred
     }
 
     /// The engine's `WebAuthnCredentialOperations.associate` does the work. It rethrows the token lookup's
-    /// `AuthError` unchanged and re-expresses every other error as an `EngineAuthError`, which
-    /// `AuthError(converting:)` bridges back to the `AuthError` this task has always thrown.
+    /// `AuthError` unchanged, its ceremony's errors as a bare `EngineAuthError`, and every other error as a
+    /// `WebAuthnCredentialOperations.Failure`, which `AuthError(converting:)` bridges back, through its `engineError`,
+    /// to the `AuthError` this task has always thrown.
     ///
     /// The anchor is strong here (`request` holds it for the whole task), so its weak box never empties,
     /// and the registrant stays the one made at init from that same anchor. The plugin takes no lease:

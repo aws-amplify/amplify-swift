@@ -78,7 +78,8 @@ package extension EngineAuthFactorType {
             return nil
         #endif
         default:
-            log.error("Tried to initialize an unsupported MFA type with value: \(rawValue)")
+            // The value is not logged: on the confirmSignIn path it is the user's answer.
+            log.error("Tried to initialize an unsupported MFA type")
             return nil
         }
     }

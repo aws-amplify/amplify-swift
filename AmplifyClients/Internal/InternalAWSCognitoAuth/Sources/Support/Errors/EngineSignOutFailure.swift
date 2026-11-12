@@ -16,10 +16,15 @@ import Foundation
 package struct EngineRevokeTokenFailure: Sendable {
     package let refreshToken: String
     package let error: EngineAuthError
+    /// The error `error` was made from (the SDK's exception), or `nil` when there was none (the placeholder after a
+    /// failed global sign-out). `error` keeps nothing under some exceptions (Cognito's `InternalErrorException`), so
+    /// a caller that maps the failure itself reads this; the plugin reads only `error`. Not printed.
+    package let cause: Error?
 
-    package init(refreshToken: String, error: EngineAuthError) {
+    package init(refreshToken: String, error: EngineAuthError, cause: Error? = nil) {
         self.refreshToken = refreshToken
         self.error = error
+        self.cause = cause
     }
 }
 
@@ -27,10 +32,13 @@ package struct EngineRevokeTokenFailure: Sendable {
 package struct EngineGlobalSignOutFailure: Sendable {
     package let accessToken: String
     package let error: EngineAuthError
+    /// The error `error` was made from (the SDK's exception), as `EngineRevokeTokenFailure.cause` is. Not printed.
+    package let cause: Error?
 
-    package init(accessToken: String, error: EngineAuthError) {
+    package init(accessToken: String, error: EngineAuthError, cause: Error? = nil) {
         self.accessToken = accessToken
         self.error = error
+        self.cause = cause
     }
 }
 

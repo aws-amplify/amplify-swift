@@ -15,14 +15,16 @@ package struct DeleteUserEvent: StateMachineEvent {
     package enum EventType: Sendable {
 
         /// `skipHostedUISignOut` is carried to the sign-out after the deletion (`SignOutEventData`). The
-        /// plugin leaves it `false`; `AmplifyCognitoClient` sets it until it presents web UI itself.
+        /// plugin leaves it `false`; `AmplifyCognitoClient` sets it, since it never presents web UI from a
+        /// deletion.
         case deleteUser(AccessToken, skipHostedUISignOut: Bool = false)
 
         case signOutDeletedUser(skipHostedUISignOut: Bool = false)
 
         case userSignedOutAndDeleted(SignedOutData)
 
-        case throwError(EngineAuthError)
+        /// `cause` is carried to `DeleteUserState.error`.
+        case throwError(EngineAuthError, cause: Error? = nil)
 
     }
 

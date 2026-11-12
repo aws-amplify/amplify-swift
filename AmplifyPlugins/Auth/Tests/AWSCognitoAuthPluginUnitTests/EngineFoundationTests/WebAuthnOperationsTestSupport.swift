@@ -6,6 +6,7 @@
 //
 
 import enum Amplify.AuthError
+import struct AWSCognitoIdentityProvider.InternalErrorException
 import Foundation
 import XCTest
 @testable import AWSCognitoAuthPlugin
@@ -72,6 +73,8 @@ func authErrorFingerprint(_ error: AuthError) -> [String] {
     ]
 }
 
+/// Asserts `body` throws a Cognito exception's `WebAuthnCredentialOperations.Failure`: its engine error is
+/// `.service` with `code` underneath, and its cause the exception, whose own engine error that is.
 func assertEngineServiceError(
     code: EngineServiceErrorCode,
     file: StaticString = #filePath,
@@ -81,16 +84,20 @@ func assertEngineServiceError(
     do {
         try await body()
         XCTFail("Should have failed", file: file, line: line)
-    } catch let error as EngineAuthError {
+    } catch let failure as WebAuthnCredentialOperations.Failure {
+        let error = failure.engineError
         guard case .service(_, _, let underlyingError) = error else {
             return XCTFail("Expected EngineAuthError.service, got \(error)", file: file, line: line)
         }
         XCTAssertEqual(underlyingError as? EngineServiceErrorCode, code, file: file, line: line)
+        XCTAssertEqual((failure.cause as? EngineAuthErrorConvertible)?.engineError, error, file: file, line: line)
     } catch {
-        XCTFail("Expected EngineAuthError, got \(error)", file: file, line: line)
+        XCTFail("Expected WebAuthnCredentialOperations.Failure, got \(error)", file: file, line: line)
     }
 }
 
+/// Asserts `body` throws `WebAuthnError.unknown`'s engine error with `description` over a `CancellationError`: as
+/// an `EngineAuthError` (the ceremony body's, through the runner) or a `WebAuthnCredentialOperations.Failure`.
 func assertUnknownServiceError(
     _ description: String,
     file: StaticString = #filePath,
@@ -100,7 +107,8 @@ func assertUnknownServiceError(
     do {
         try await body()
         XCTFail("Should have failed", file: file, line: line)
-    } catch let error as EngineAuthError {
+    } catch let thrown as EngineAuthErrorConvertible {
+        let error = thrown.engineError
         guard case .service(let actual, _, let underlyingError) = error else {
             return XCTFail("Expected EngineAuthError.service, got \(error)", file: file, line: line)
         }
@@ -113,6 +121,34 @@ func assertUnknownServiceError(
         )
     } catch {
         XCTFail("Expected EngineAuthError, got \(error)", file: file, line: line)
+    }
+}
+
+/// Asserts `body` throws the `WebAuthnCredentialOperations.Failure` of `exception`, an `InternalErrorException`
+/// with the message "boom": its engine error is the exception's own `.unknown`, with nothing underneath, its cause
+/// the exception, and the plugin bridges it to the `AuthError` it bridges the exception to.
+func assertInternalErrorFailure(
+    _ exception: InternalErrorException,
+    file: StaticString = #filePath,
+    line: UInt = #line,
+    _ body: () async throws -> Void
+) async {
+    do {
+        try await body()
+        XCTFail("Should have failed", file: file, line: line)
+    } catch let failure as WebAuthnCredentialOperations.Failure {
+        guard case .unknown(let message, let underlying) = failure.engineError else {
+            return XCTFail("Expected EngineAuthError.unknown, got \(failure.engineError)", file: file, line: line)
+        }
+        XCTAssertEqual(message, "boom", file: file, line: line)
+        XCTAssertNil(underlying, file: file, line: line)
+        XCTAssertTrue(failure.cause is InternalErrorException, "\(failure.cause)", file: file, line: line)
+        guard let bridged = AuthError(converting: failure), let former = AuthError(converting: exception) else {
+            return XCTFail("The plugin does not bridge \(failure)", file: file, line: line)
+        }
+        XCTAssertEqual(authErrorFingerprint(bridged), authErrorFingerprint(former), file: file, line: line)
+    } catch {
+        XCTFail("Expected WebAuthnCredentialOperations.Failure, got \(error)", file: file, line: line)
     }
 }
 

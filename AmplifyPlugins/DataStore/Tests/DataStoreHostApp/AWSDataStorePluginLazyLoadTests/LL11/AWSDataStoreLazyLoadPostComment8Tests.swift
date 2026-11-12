@@ -185,6 +185,15 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest,
         try await assertModelExists(savedComment)
     }
 
+    /// A post received from `observe` lazy loads a comment saved after it
+    ///
+    /// - Given: DataStore is ready and observing `Post`
+    /// - When:
+    ///    - A post is created through the API, and its version 1 mutation event is received
+    ///    - A comment for the post is then created and synced
+    /// - Then:
+    ///    - The received post lazy loads the comment
+    ///
     func testObservePost() async throws {
         await setup(withModels: PostComment8Models())
         try await startAndWaitForReady()
@@ -197,17 +206,17 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest,
         )
         let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Post.self)
-        Task {
+        let receivedPostTask = Task { () -> Post? in
             for try await mutationEvent in mutationEvents {
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
                    receivedPost.postId == post.postId {
-                    let savedComment = try await createAndWaitForSync(comment)
-                    try await assertPost(receivedPost, canLazyLoad: savedComment)
                     mutationEventReceived.fulfill()
+                    return receivedPost
                 }
             }
+            return nil
         }
 
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
@@ -219,6 +228,13 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest,
 
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
+        guard let receivedPost = try await receivedPostTask.value else {
+            return
+        }
+
+        // Follow-up waits run here, not in the task, so the task can't outlive the test.
+        let savedComment = try await createAndWaitForSync(comment)
+        try await assertPost(receivedPost, canLazyLoad: savedComment)
     }
 
     func testObserveComment() async throws {
@@ -257,6 +273,15 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest,
         mutationEvents.cancel()
     }
 
+    /// A post received from `observeQuery` lazy loads a comment saved after it
+    ///
+    /// - Given: DataStore is ready and observing a query for the post
+    /// - When:
+    ///    - A post is created through the API, and a snapshot containing it is received
+    ///    - A comment for the post is then created and synced
+    /// - Then:
+    ///    - The received post lazy loads the comment
+    ///
     func testObserveQueryPost() async throws {
         await setup(withModels: PostComment8Models())
         try await startAndWaitForReady()
@@ -269,14 +294,14 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest,
         )
         let snapshotReceived = expectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: Post.self, where: Post.keys.postId == post.postId)
-        Task {
+        let receivedPostTask = Task { () -> Post? in
             for try await querySnapshot in querySnapshots {
                 if let receivedPost = querySnapshot.items.first {
-                    let savedComment = try await createAndWaitForSync(comment)
-                    try await assertPost(receivedPost, canLazyLoad: savedComment)
                     snapshotReceived.fulfill()
+                    return receivedPost
                 }
             }
+            return nil
         }
 
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
@@ -288,6 +313,12 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest,
 
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
+        guard let receivedPost = try await receivedPostTask.value else {
+            return
+        }
+
+        let savedComment = try await createAndWaitForSync(comment)
+        try await assertPost(receivedPost, canLazyLoad: savedComment)
     }
 
     func testObserveQueryComment() async throws {

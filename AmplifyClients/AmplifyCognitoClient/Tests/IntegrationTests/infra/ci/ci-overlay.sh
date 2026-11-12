@@ -29,17 +29,24 @@
 #                ccit-ci-capabilities.json                  -> AmplifyCognitoClientIntegrationTests-capabilities.json
 #                    the sandbox checks the client's own roles can run (SandboxCapability), kept only for the roles
 #                    this overlay gives
+#   mfa-req-totp-sms  the MFA-required role (TOTP and SMS), in place of the plugin's backend, whose app client is not
+#                known to allow choice-based sign-in (USER_AUTH):
+#                ccit-ci-mfa-req-totp-sms-amplify_outputs.json
+#                                                           -> AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs.json
+#                    which the harness reads before the plugin's Gen1 file for the role, left as downloaded
 #
 # Exit 0 with <dest-dir> made (mode 700, files 600) when at least one role was overlaid, and exit 0 with no
 # <dest-dir> when there is nothing to overlay (no subfolder, or none of the roles' files): the caller then leaves
 # COGNITO_CLIENT_INTEG_DIR unset, and the tests that need those files fail. A file that does not check out (not JSON,
 # no user pool, the sandbox's mark, a credentials file that is not all strings, a rotation client on another
 # pool, an alias-codes pool without email as the username or a code API, capabilities that are not the known
-# ones) refuses the whole overlay: exit 1, no <dest-dir>. Prints file names and roles, never their contents.
+# ones, an MFA-required file whose MFA is not required, or whose mfa_methods is not an array of exactly TOTP and
+# SMS) refuses the whole overlay: exit 1, no <dest-dir>. Prints file names and roles, never their contents.
 set -euo pipefail
 
 usage() {
     echo "Usage: infra/ci/ci-overlay.sh <testconfiguration-dir> <dest-dir> \"<roles>\"" >&2
+    echo "       <roles>: email-alias, extended and mfa-req-totp-sms, space- or comma-separated" >&2
     exit 2
 }
 
@@ -57,7 +64,7 @@ refuse() {
 
 [[ -d "$SRC" ]] || refuse "$SRC is not a directory."
 for role in $ROLES; do
-    [[ "$role" == "email-alias" || "$role" == "extended" ]] || usage
+    [[ "$role" == "email-alias" || "$role" == "extended" || "$role" == "mfa-req-totp-sms" ]] || usage
 done
 [[ -n "${ROLES// /}" ]] || usage
 if [[ -e "$DEST" ]]; then
@@ -141,6 +148,21 @@ for role in $ROLES; do
                     || refuse "ccit-ci-capabilities.json is not {\"capabilities\": {<role>: [<capability>]}} with the client's known roles and capabilities."
                 CAPABILITIES="$SUB/ccit-ci-capabilities.json"
             fi
+            ;;
+        mfa-req-totp-sms)
+            mfa="$SUB/ccit-ci-mfa-req-totp-sms-amplify_outputs.json"
+            if [[ ! -f "$mfa" ]]; then
+                echo "ci-overlay: mfa-req-totp-sms: no ccit-ci-mfa-req-totp-sms-amplify_outputs.json; that role stays the plugin's."
+                continue
+            fi
+            check_outputs "$mfa"
+            # An array of exactly TOTP and SMS, as provision-ci.sh writes it: not a string (on which index() is a
+            # substring search), and not a superset.
+            jq -e '.auth.mfa_configuration == "REQUIRED"
+                and (.auth.mfa_methods | type == "array" and sort == ["SMS", "TOTP"])' \
+                "$mfa" >/dev/null 2>&1 \
+                || refuse "ccit-ci-mfa-req-totp-sms-amplify_outputs.json does not require MFA with TOTP and SMS."
+            PLAN+=("ccit-ci-mfa-req-totp-sms-amplify_outputs.json AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs.json")
             ;;
     esac
 done

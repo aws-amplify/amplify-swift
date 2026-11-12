@@ -25,7 +25,7 @@ final class LiveEngineLogRedactionTests: XCTestCase {
     /// The rest of a sent `initiateTOTPSetup` line: the challenge, with Cognito's username and the typed one redacted.
     private static let totpChallenge = "InternalAWSCognitoAuth.RespondToAuthChallenge(challenge: "
         + "AWSCognitoIdentityProvider.CognitoIdentityProviderClientTypes.ChallengeNameType.mfaSetup, "
-        + #"availableChallenges: [], username: "<redacted>", session: Optional("challenge-session"), "#
+        + #"availableChallenges: [], username: "<redacted>", session: Optional("<REDACTED>"), "#
         + #"parameters: Optional(["MFAS_CAN_SETUP": "[\"SOFTWARE_TOKEN_MFA\"]"]), inputUsername: Optional("<redacted>"))), "#
         + "time: nil)"
 

@@ -434,7 +434,8 @@ final class LiveEngineConcurrencyTests: XCTestCase {
 
         async let aliceRefresh = alice.refresh(alicePayload)
         async let bobRefresh = bob.refresh(bobPayload)
-        await gate.waitForArrivals(2)
+        // Bounded: were the refreshes serialized, the second would never reach Cognito while the first is held.
+        try await bounded(10, "both refreshes reach Cognito") { await gate.waitForArrivals(2) }
         await gate.open()
         let (aliceRefreshed, bobRefreshed) = try await (aliceRefresh, bobRefresh)
 
@@ -462,7 +463,8 @@ final class LiveEngineConcurrencyTests: XCTestCase {
 
         async let first = engine.refresh(payload)
         async let second = engine.refresh(payload)
-        await gate.waitForArrivals(2)
+        // Bounded: were the refreshes serialized, the second would never reach Cognito while the first is held.
+        try await bounded(10, "both refreshes reach Cognito") { await gate.waitForArrivals(2) }
         await gate.open()
         _ = try await (first, second)
     }

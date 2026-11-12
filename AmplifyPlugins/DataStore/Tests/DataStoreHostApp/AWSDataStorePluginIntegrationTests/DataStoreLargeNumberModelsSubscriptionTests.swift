@@ -67,6 +67,8 @@ class DataStoreLargeNumberModelsSubscriptionTests: SyncEngineIntegrationTestBase
     private func startDataStoreAndWaitForSubscriptionsEstablished(timeout: TimeInterval) async throws {
         var cancellables = Set<AnyCancellable>()
         let expectation = expectation(description: "DataStore with 19 models should establish subscription in 2 seconds")
+        // subscriptionsEstablished can be dispatched again before this sink is released.
+        expectation.assertForOverFulfill = false
         Amplify.Hub.publisher(for: .dataStore)
             .filter { $0.eventName == HubPayload.EventName.DataStore.subscriptionsEstablished }
             .sink { _ in expectation.fulfill() }

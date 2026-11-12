@@ -58,13 +58,15 @@ package struct RevokeToken: Action {
             let internalError = authErrorConvertible.engineError
             revokeTokenError = EngineRevokeTokenFailure(
                 refreshToken: signedInData.cognitoUserPoolTokens.refreshToken,
-                error: internalError
+                error: internalError,
+                cause: error
             )
         } else if let error {
             let internalError = EngineAuthError.service("", "", error)
             revokeTokenError = EngineRevokeTokenFailure(
                 refreshToken: signedInData.cognitoUserPoolTokens.refreshToken,
-                error: internalError
+                error: internalError,
+                cause: error
             )
         }
 

@@ -334,11 +334,11 @@ final class LiveEngineBranchTests: XCTestCase {
     /// one that never reached the sign-out is a failure.
     ///
     /// - Given: the states of a deletion that reached its sign-out and then errored, and of one that errored
-    ///   before
+    ///   before, once with an engine error alone and once with a Cognito internal error and its exception
     /// - When:
     ///    - each is followed with `DeletionProgress`
     /// - Then:
-    ///    - the first ends as deleted; the second throws the mapped error
+    ///    - the first ends as deleted; the second throws the mapped error, mapped with the cause the state carries
     ///
     func testADeletionIsJudgedByReachingItsSignOut() throws {
         let signedIn = SignedInData(
@@ -366,6 +366,13 @@ final class LiveEngineBranchTests: XCTestCase {
         XCTAssertFalse(try beforeDeletion.advance(state(.deletingUser)))
         XCTAssertThrowsError(try beforeDeletion.advance(state(.error(failure)))) { error in
             XCTAssertEqual((error as? AuthClientError)?.kind, .service(nil))
+        }
+
+        let internalError = AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+        var internalFailure = DeletionProgress()
+        XCTAssertThrowsError(try internalFailure.advance(state(.error(internalError.engineError, cause: internalError)))) { error in
+            XCTAssertEqual((error as? AuthClientError)?.kind, .service(nil), "the cause makes it a service error")
+            XCTAssertEqual((error as? AuthClientError)?.recoverySuggestion, AuthClientError.serviceFaultSuggestion)
         }
     }
 

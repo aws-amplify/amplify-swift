@@ -11,22 +11,33 @@ import Foundation
 
 extension RemoteSyncEngine {
     func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
-        switch stateMachine.state {
-        case .initializingSubscriptions:
-            notifyError(receiveCompletion: receiveCompletion)
-        case .syncEngineActive:
-            notifyError(receiveCompletion: receiveCompletion)
-        default:
-            break
-        }
+        notifyError(receiveCompletion: receiveCompletion)
     }
 
     func notifyError(receiveCompletion: Subscribers.Completion<DataStoreError>) {
+        let action: Action
         switch receiveCompletion {
         case .failure(let error):
-            stateMachine.notify(action: .errored(error))
+            action = .errored(error)
         case .finished:
-            stateMachine.notify(action: .finished)
+            action = .finished
+        }
+        // Checked with the state, so a state that has just changed can't get an action it doesn't handle
+        stateMachine.notify(action: action, if: Self.hasSubscriptions)
+    }
+
+    /// The states that have subscriptions, so losing them mid-startup ends that startup instead of stalling it
+    static func hasSubscriptions(_ state: State) -> Bool {
+        switch state {
+        case .initializingSubscriptions,
+             .performingInitialSync,
+             .activatingCloudSubscriptions,
+             .activatingMutationQueue,
+             .notifyingSyncStarted,
+             .syncEngineActive:
+            return true
+        default:
+            return false
         }
     }
 

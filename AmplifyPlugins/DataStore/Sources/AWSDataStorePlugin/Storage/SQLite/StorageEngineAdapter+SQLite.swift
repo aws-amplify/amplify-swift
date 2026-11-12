@@ -606,6 +606,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter, @unchecked Sendabl
         } catch {
             log.error("Failed to delete database file located at: \(dbFilePath), error: \(error)")
             completion(.failure(causedBy: DataStoreError.invalidDatabase(path: dbFilePath.absoluteString, error)))
+            return
         }
         completion(.successfulVoid)
     }

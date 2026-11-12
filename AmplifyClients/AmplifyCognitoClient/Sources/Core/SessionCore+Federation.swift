@@ -134,7 +134,7 @@ extension SessionCore {
                     credentials: payload
                 )
                 if case .committed(let committed) = try await store.write(record, for: sessionId, expecting: current.version) {
-                    await apply(SessionSnapshot(committed), event: nil)
+                    await apply(SessionSnapshot(committed), event: nil, newLogin: true)
                     return
                 }
                 let reread = try await store.load(sessionId)

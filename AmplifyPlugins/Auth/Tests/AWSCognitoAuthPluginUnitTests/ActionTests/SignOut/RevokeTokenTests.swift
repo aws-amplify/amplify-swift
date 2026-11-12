@@ -141,4 +141,46 @@ class RevokeTokenTests: XCTestCase, @unchecked Sendable {
         )
     }
 
+    /// A failed revoke keeps the exception it was made from
+    ///
+    /// - Given: `RevokeToken` failing with the user pool's `InternalErrorException`
+    /// - When:
+    ///    - the action runs
+    /// - Then:
+    ///    - the revoke failure's engine error is the exception's own `.unknown`, with nothing underneath, as before
+    ///    - its `cause` is the exception
+    ///
+    func testFailedRevokeTokenKeepsTheExceptionAsTheCause() async throws {
+        let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
+            MockIdentityProvider(
+                mockRevokeTokenResponse: { _ in
+                    throw AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
+                }
+            )
+        }
+        let environment = BasicUserPoolEnvironment(
+            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
+            cognitoUserPoolFactory: identityProviderFactory,
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
+        )
+        let action = RevokeToken(signedInData: .testData, hostedUIError: nil, globalSignOutError: nil)
+        let failures = TestBox<[EngineRevokeTokenFailure]>([])
+        let dispatcher = MockDispatcher { event in
+            if case .signOutLocally(_, _, _, let revokeTokenError?) = (event as? SignOutEvent)?.eventType {
+                failures.with { $0.append(revokeTokenError) }
+            }
+        }
+
+        await action.execute(withDispatcher: dispatcher, environment: environment)
+
+        let failure = try XCTUnwrap(failures.get().first)
+        guard case .unknown(let message, let underlying) = failure.error else {
+            return XCTFail("expected .unknown, got \(failure.error)")
+        }
+        XCTAssertEqual(message, "boom")
+        XCTAssertNil(underlying)
+        XCTAssertTrue(failure.cause is AWSCognitoIdentityProvider.InternalErrorException, "\(String(describing: failure.cause))")
+    }
+
 }

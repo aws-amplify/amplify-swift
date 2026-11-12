@@ -90,8 +90,9 @@ public extension AmplifyCognitoClient {
     /// - Returns: `.done` once signed in, which sends `.signedIn`; otherwise the next step.
     /// - Throws:
     ///   - `AuthClientError.validation(field: "challengeResponse")` for an empty response, or a selection
-    ///     outside the step's choices (an MFA selection other than `AuthClientMFAType.<type>.challengeResponse`,
-    ///     a first-factor selection other than `AuthClientFactorType.<type>.challengeResponse`);
+    ///     outside the step's choices (an MFA selection other than `AuthClientMFAType.<type>.challengeResponse`, an
+    ///     MFA setup selection other than one of the step's types, a first-factor selection other than
+    ///     `AuthClientFactorType.<type>.challengeResponse`, or `"WEB_AUTHN"` when the step does not offer it);
     ///     `.validation(field: "presentationAnchor")` for a `"WEB_AUTHN"` answer when the sign-in was given no
     ///     window; each before anything is sent, keeping the challenge;
     ///   - `.configuration` without a user pool;
