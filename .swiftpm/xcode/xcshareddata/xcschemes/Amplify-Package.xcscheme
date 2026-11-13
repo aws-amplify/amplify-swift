@@ -126,6 +126,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyCognitoASF"
+               BuildableName = "AmplifyCognitoASF"
+               BlueprintName = "AmplifyCognitoASF"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AmplifySRP"
                BuildableName = "AmplifySRP"
                BlueprintName = "AmplifySRP"
@@ -227,6 +241,20 @@
                BlueprintIdentifier = "AmplifyBigIntegerTests"
                BuildableName = "AmplifyBigIntegerTests"
                BlueprintName = "AmplifyBigIntegerTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyCognitoASFTests"
+               BuildableName = "AmplifyCognitoASFTests"
+               BlueprintName = "AmplifyCognitoASFTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -850,6 +878,16 @@
                BlueprintIdentifier = "AmplifyBigIntegerTests"
                BuildableName = "AmplifyBigIntegerTests"
                BlueprintName = "AmplifyBigIntegerTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyCognitoASFTests"
+               BuildableName = "AmplifyCognitoASFTests"
+               BlueprintName = "AmplifyCognitoASFTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
