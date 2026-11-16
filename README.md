@@ -45,7 +45,7 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 
 ### Swift Version Support
 
-The current minimum supported Swift language version is **Swift 6.2** (6.2.3 or later, included in Xcode 26.2). Earlier 6.2 releases can't compile swift-log 1.17.0, a dependency of the AWS SDK for Swift.
+The current minimum supported Swift language version is **Swift 6.2** (6.2.3 or later, included in Xcode 26.2).
 
 > [!NOTE]
 > The minimum Swift language version supported by Amplify Swift matches the version included in the minimum Xcode version allowed by Apple to upload apps to App Store Connect. Historically, Apple updates the minimum allowed Xcode version in April each year. You can expect Amplify Swift to update the minimum supported Swift version within the following 60 days. This is done to ensure Amplify Swift can provide modern Swift APIs and take advantage of Swift language improvements.
