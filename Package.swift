@@ -11,10 +11,10 @@ let platforms: [SupportedPlatform] = [
     .visionOS(.v1)
 ]
 let dependencies: [Package.Dependency] = [
-    .package(url: "https://github.com/awslabs/aws-sdk-swift", exact: "1.7.60"),
+    .package(url: "https://github.com/awslabs/aws-sdk-swift", exact: "1.8.28"),
     // Declared for the Smithy products AmplifyCognitoClient imports directly. Exactly the version
-    // aws-sdk-swift 1.7.60 requires (its `clientRuntimeVersion`), so resolution does not move: bump the two together.
-    .package(url: "https://github.com/smithy-lang/smithy-swift", exact: "0.242.0"),
+    // aws-sdk-swift 1.8.28 requires (its `clientRuntimeVersion`), so resolution does not move: bump the two together.
+    .package(url: "https://github.com/smithy-lang/smithy-swift", exact: "0.265.0"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.15.4"),
     .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
     .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.1.0")
