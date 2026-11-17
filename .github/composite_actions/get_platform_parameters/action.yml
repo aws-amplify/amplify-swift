@@ -42,7 +42,7 @@ runs:
     - id: get-xcode-version
       run: |
         LATEST_XCODE_VERSION=26.5
-        MINIMUM_XCODE_VERSION=26.0.1
+        MINIMUM_XCODE_VERSION=26.2
 
         INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
 
@@ -66,17 +66,12 @@ runs:
 
         # Map resolved Xcode versions to simulator destinations.
         # Only explicitly supported versions are allowed — unknown versions fail.
-        #
-        # The minimum-Xcode legs (26.0.1) run against the 26.2 simulator runtime:
-        # the macos-26 runner image ships SDKs for 26.0 but only installs runtimes
-        # for 26.2 and later. The Xcode version is what we are validating here, and
-        # the runtime only needs to be at or above our deployment target floors.
         case $INPUT_PLATFORM/$XCODE_VERSION in
           iOS/26.5)
             DEVICE="iPhone 17 Pro Max"
             OS_VERSION="26.5"
             ;;
-          iOS/26.0.1)
+          iOS/26.2)
             DEVICE="iPhone 17 Pro Max"
             OS_VERSION="26.2"
             ;;
@@ -84,7 +79,7 @@ runs:
             DEVICE="Apple TV 4K (3rd generation)"
             OS_VERSION="26.5"
             ;;
-          tvOS/26.0.1)
+          tvOS/26.2)
             DEVICE="Apple TV 4K (3rd generation)"
             OS_VERSION="26.2"
             ;;
@@ -92,7 +87,7 @@ runs:
             DEVICE="Apple Watch Series 11 (46mm)"
             OS_VERSION="26.5"
             ;;
-          watchOS/26.0.1)
+          watchOS/26.2)
             DEVICE="Apple Watch Series 11 (46mm)"
             OS_VERSION="26.2"
             ;;
@@ -100,7 +95,7 @@ runs:
             DEVICE="Apple Vision Pro"
             OS_VERSION="26.5"
             ;;
-          visionOS/26.0.1)
+          visionOS/26.2)
             DEVICE="Apple Vision Pro"
             OS_VERSION="26.2"
             ;;
@@ -108,7 +103,7 @@ runs:
             ;;
           *)
             echo "Unsupported platform/Xcode combination: $INPUT_PLATFORM/$XCODE_VERSION"
-            echo "Supported Xcode versions: 26.5, 26.0.1"
+            echo "Supported Xcode versions: 26.5, 26.2"
             exit 1
             ;;
         esac

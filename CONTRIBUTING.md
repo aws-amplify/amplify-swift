@@ -56,7 +56,7 @@ changes, tags the release and pushes it. Release checklist:
 
 ## Getting Started
 
-To get started with the Amplify Library for Swift, first make sure you have Xcode 26.0 or later installed.
+To get started with the Amplify Library for Swift, first make sure you have Xcode 26.2 or later installed.
 
 Then make sure you fork the project first and then clone it by running:
 
