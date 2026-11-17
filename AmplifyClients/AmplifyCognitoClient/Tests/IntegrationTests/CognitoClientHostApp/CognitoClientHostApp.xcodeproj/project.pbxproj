@@ -1148,7 +1148,7 @@
 			repositoryURL = "https://github.com/awslabs/aws-sdk-swift";
 			requirement = {
 				kind = exactVersion;
-				version = 1.7.60;
+				version = 1.8.28;
 			};
 		};
 		CC00000000000000000000C4 /* XCRemoteSwiftPackageReference "smithy-swift" */ = {
@@ -1156,7 +1156,7 @@
 			repositoryURL = "https://github.com/smithy-lang/smithy-swift";
 			requirement = {
 				kind = exactVersion;
-				version = 0.242.0;
+				version = 0.265.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
