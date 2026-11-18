@@ -261,7 +261,7 @@ GEM
     logger (1.7.0)
     mini_magick (4.13.2)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.7)
+    mini_portile2 (2.8.9)
     minitest (5.27.0)
     molinillo (0.8.0)
     multi_json (1.21.1)
@@ -319,7 +319,7 @@ GEM
     simctl (1.6.10)
       CFPropertyList
       naturally
-    sqlite3 (2.9.6)
+    sqlite3 (2.10.2)
       mini_portile2 (~> 2.8.0)
     terminal-notifier (2.0.0)
     terminal-table (4.0.0)
