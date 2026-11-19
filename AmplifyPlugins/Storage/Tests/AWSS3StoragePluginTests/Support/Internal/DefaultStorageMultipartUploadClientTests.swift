@@ -448,14 +448,71 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
             }
         }
     }
+
+    /// Regression test for #4407 item G: a pause while parts are being prepared (partial file and presign).
+    ///
+    /// - Given: a real StorageMultipartUploadSession and DefaultStorageMultipartUploadClient for a 3-part upload,
+    ///   with the partial-file copies held back so every part stays `.queued`
+    /// - When:
+    ///    - the upload is paused
+    ///    - the partial files become ready while it is paused
+    ///    - the upload is resumed
+    /// - Then:
+    ///    - no part request is sent while paused: each part's task is unregistered and cancelled instead
+    ///    - each part returns to `.pending`
+    ///    - resuming prepares all three parts again
+    ///
+    func testPauseWhilePartsArePrepared_shouldRestartThemOnResume() async throws {
+        let size = UInt64(Bytes.megabytes(15).bytes)
+        let bigFile = UploadFile(fileURL: uploadFile.fileURL, temporaryFileCreated: false, size: size)
+        let proxy = MockStorageServiceProxy(awsS3: MockAWSS3Behavior())
+        let fileSystem = NoOpPartialFileSystem()
+        let client = DefaultStorageMultipartUploadClient(
+            serviceProxy: proxy,
+            fileSystem: fileSystem,
+            bucket: "bucket",
+            key: "key",
+            uploadFile: bigFile
+        )
+        let session = StorageMultipartUploadSession(client: client, bucket: "bucket", key: "key", onEvent: { _ in })
+        session.handle(multipartUploadEvent: .creating)
+        session.handle(multipartUploadEvent: .created(uploadFile: bigFile, uploadId: "uploadId"))
+        XCTAssertEqual(fileSystem.createPartialFileCount.get(), 3)
+
+        session.pause()
+
+        // One at a time: MockAWSS3PreSignedURLBuilder isn't safe for concurrent presigns.
+        for partNumber in 1 ... 3 {
+            let unregistered = expectation(description: "Part \(partNumber) is unregistered instead of sent")
+            proxy.unregisterTaskExpectation = unregistered
+            fileSystem.releaseNextHeldRequest()
+            await fulfillment(of: [unregistered], timeout: 1)
+        }
+        XCTAssertEqual(session.getPendingPartNumbers(), [1, 2, 3])
+
+        session.resume()
+        XCTAssertEqual(fileSystem.createPartialFileCount.get(), 6)
+    }
 }
 
-/// Counts partial-file requests but never produces the file, so started parts touch neither disk nor network.
+/// Counts partial-file requests and holds them until `releaseHeldRequests()`, so parts stay `.queued` and
+/// touch neither disk nor network.
 private final class NoOpPartialFileSystem: FileSystem, @unchecked Sendable {
     let createPartialFileCount = AtomicValue(initialValue: 0)
+    private let heldRequests = AtomicValue<[@Sendable (Result<URL, Error>) -> Void]>(initialValue: [])
 
     override func createPartialFile(fileURL: URL, offset: UInt64, length: UInt64, completionHandler: @escaping @Sendable (Result<URL, Error>) -> Void) {
         _ = createPartialFileCount.increment()
+        heldRequests.append(completionHandler)
+    }
+
+    /// Completes the oldest held request with a file that doesn't exist, as the client deletes it after use.
+    func releaseNextHeldRequest() {
+        var held = heldRequests.get()
+        guard !held.isEmpty else { return }
+        let completion = held.removeFirst()
+        heldRequests.set(held)
+        completion(.success(FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)))
     }
 }
 
@@ -476,7 +533,10 @@ private class MockStorageServiceProxy: StorageServiceProxy, @unchecked Sendable 
 
     func register(task: StorageTransferTask) {}
 
-    func unregister(task: StorageTransferTask) {}
+    var unregisterTaskExpectation: XCTestExpectation?
+    func unregister(task: StorageTransferTask) {
+        unregisterTaskExpectation?.fulfill()
+    }
 
     var unregisterTaskIdentifiersCount = 0
     func unregister(taskIdentifiers: [TaskIdentifier]) {

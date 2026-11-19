@@ -146,6 +146,14 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
             // tell the session the upload part has started
             session?.handle(uploadPartEvent: .started(partNumber: partNumber, taskIdentifier: uploadTask.taskIdentifier))
 
+            // A pause, cancel or failure while this part was being prepared drops `.started` (#4407): don't send it.
+            // Unregister first, so the delegate doesn't report the cancellation as a part failure.
+            guard case .inProgress(_, _, let taskIdentifier)? = session?.part(for: partNumber),
+                  taskIdentifier == uploadTask.taskIdentifier else {
+                self.serviceProxy?.unregister(task: subTask)
+                uploadTask.cancel()
+                return
+            }
             uploadTask.resume()
         }
 

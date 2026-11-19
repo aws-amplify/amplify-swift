@@ -347,7 +347,15 @@ class StorageMultipartUploadSession: @unchecked Sendable {
                     logger.debug("Multipart Upload is failed and event cannot be handled: \(uploadPartEvent)")
                     return nil
                 }
-                if case .paused = multipartUpload {
+                if case .paused(let uploadId, let uploadFile, let partSize, var parts) = multipartUpload {
+                    // A part that finished preparing while paused is not sent (#4407): return it to pending so
+                    // resume() starts it again. Its own uploadParts loop has already passed it.
+                    let index = uploadPartEvent.number - 1
+                    if case .started = uploadPartEvent, parts.indices.contains(index), parts[index].isQueued {
+                        parts[index] = .pending(bytes: parts[index].bytes)
+                        multipartUpload = .paused(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
+                        transferTask.multipartUpload = multipartUpload
+                    }
                     logger.debug("Multipart Upload is paused and event cannot be handled: \(uploadPartEvent)")
                     return nil
                 }
