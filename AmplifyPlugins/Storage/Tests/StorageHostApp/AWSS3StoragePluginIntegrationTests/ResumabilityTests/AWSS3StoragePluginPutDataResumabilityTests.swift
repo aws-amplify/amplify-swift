@@ -157,4 +157,56 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase,
         Self.logger.debug("Cleaning up after upload task")
         try await Amplify.Storage.remove(key: key)
     }
+
+    /// Given: A data object with more parts than the upload runs at once
+    /// When:
+    ///    - the upload is paused right after a part completes, while the session prepares the next part
+    ///      (partial file and presign), and resumed two seconds later
+    ///    - three times over
+    /// Then:
+    ///    - the upload completes (#4407 item G: a part still being prepared at pause was never restarted)
+    ///
+    func testUploadLargeDataAndPauseWhilePartIsPrepared_shouldComplete() async throws {
+        let key = UUID().uuidString
+        // More parts than the session runs at once (2 per core), so each completed part queues the next one.
+        let partCount = ProcessInfo.processInfo.activeProcessorCount * 2 + 8
+        let data = Data(repeating: 0xff, count: 5 * 1_024 * 1_024 * partCount)
+        Self.logger.debug("Uploading \(partCount) parts")
+        let task = Amplify.Storage.uploadData(key: key, data: data)
+
+        var progress = await task.progress.makeAsyncIterator()
+        for cycle in 1 ... 3 {
+            guard await progress.next() != nil else {
+                XCTFail("Upload ended before pause \(cycle)")
+                break
+            }
+            Self.logger.debug("Pausing upload task (\(cycle))")
+            task.pause()
+            // Longer than a part upload, so a part request sent while paused also finishes while paused.
+            try await Task.sleep(seconds: 2)
+            Self.logger.debug("Resuming upload task (\(cycle))")
+            task.resume()
+        }
+
+        let finished = expectation(description: "Upload finished")
+        let outcome = Task { () -> Result<String, Error> in
+            defer { finished.fulfill() }
+            do {
+                return try await .success(task.value)
+            } catch {
+                return .failure(error)
+            }
+        }
+        // A part left `.queued` is never restarted, so the upload can hang rather than fail.
+        guard await XCTWaiter().fulfillment(of: [finished], timeout: 120) == .completed else {
+            XCTFail("Upload did not finish after pause and resume")
+            task.cancel()
+            return
+        }
+        let uploadedKey = try await outcome.value.get()
+        XCTAssertEqual(uploadedKey, key)
+
+        // clean up
+        await remove(key: key)
+    }
 }
