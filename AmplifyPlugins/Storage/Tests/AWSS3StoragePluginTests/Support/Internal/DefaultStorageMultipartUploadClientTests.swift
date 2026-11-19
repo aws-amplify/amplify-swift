@@ -9,6 +9,7 @@ import AWSS3
 import XCTest
 @testable import Amplify
 @testable import func AmplifyTestCommon.XCTAssertThrowFatalError
+@testable import func AmplifyTestCommon.XCTAssertNoThrowFatalError
 @testable import AWSS3StoragePlugin
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
@@ -206,18 +207,38 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
     }
 
     /// Given: a DefaultStorageMultipartUploadClient
-    /// When: uploadPart is invoked without parts
-    /// Then: A fatal error is thrown
-    func testUploadPart_withoutParts_shouldThrowFatalError() throws {
-        try XCTAssertThrowFatalError {
+    /// When: uploadPart is invoked with a snapshot that has no parts (e.g. the session is already aborting)
+    /// Then: No part is started and no fatal error is thrown
+    func testUploadPart_withoutParts_shouldNotStartPart() throws {
+        try XCTAssertNoThrowFatalError {
             try? self.client.uploadPart(
                 partNumber: 1,
-                multipartUpload: .created(
+                multipartUpload: .aborting(uploadId: "uploadId", error: nil),
+                subTask: .init(
+                    transferType: .upload(onEvent: { _ in }),
+                    bucket: "bucket",
+                    key: "key"
+                )
+            )
+        }
+        XCTAssertEqual(session.handleUploadPartCount, 0)
+    }
+
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: uploadPart is invoked with a part number outside the snapshot's parts
+    /// Then: A fatal error is thrown
+    func testUploadPart_withOutOfRangePartNumber_shouldThrowFatalError() throws {
+        try XCTAssertThrowFatalError {
+            try? self.client.uploadPart(
+                partNumber: 3,
+                multipartUpload: .parts(
                     uploadId: "uploadId",
-                    uploadFile: self.uploadFile
+                    uploadFile: self.uploadFile,
+                    partSize: .default,
+                    parts: [.pending(bytes: 10)]
                 ),
                 subTask: .init(
-                    transferType: .upload(onEvent: { event in }),
+                    transferType: .upload(onEvent: { _ in }),
                     bucket: "bucket",
                     key: "key"
                 )
@@ -356,6 +377,67 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
         XCTAssertEqual(filteredHeaders.count, 1)
         XCTAssertEqual(filteredHeaders["validHeader"], "validValue")
     }
+
+    /// Regression test for #4407: cancel() racing the CreateMultipartUpload response. Before the fix this hit
+    /// `fatalError("Part number is required")` about once every 260 iterations.
+    ///
+    /// - Given: a real StorageMultipartUploadSession and DefaultStorageMultipartUploadClient for a 3-part upload,
+    ///   with AbortMultipartUpload left in flight (completion never delivered, as on a real network)
+    /// - When:
+    ///    - this thread handles `.created` (S3's CreateMultipartUpload response)
+    ///    - while another thread calls `cancel()`, like an app watchdog firing on a background wake
+    /// - Then:
+    ///    - `uploadPart` skips parts once the session has left `.parts`, instead of crashing
+    ///
+    func testCancelRacingCreatedResponse_shouldNotHitFatalError() throws {
+        let size = UInt64(Bytes.megabytes(15).bytes)
+        let bigFile = UploadFile(fileURL: uploadFile.fileURL, temporaryFileCreated: false, size: size)
+
+        for iteration in 1 ... 1_000 {
+            let awsS3 = MockAWSS3Behavior()
+            let proxy = MockStorageServiceProxy(awsS3: awsS3)
+            let client = DefaultStorageMultipartUploadClient(
+                serviceProxy: proxy,
+                fileSystem: NoOpPartialFileSystem(),
+                bucket: "bucket",
+                key: "key",
+                uploadFile: bigFile
+            )
+            let session = StorageMultipartUploadSession(client: client, bucket: "bucket", key: "key", onEvent: { _ in })
+            session.handle(multipartUploadEvent: .creating)
+
+            let stop = AtomicValue(initialValue: false)
+            let started = DispatchSemaphore(value: 0)
+            let cancellerDone = DispatchSemaphore(value: 0)
+            DispatchQueue.global(qos: .userInitiated).async {
+                started.signal()
+                while !stop.get() {
+                    session.cancel()
+                }
+                cancellerDone.signal()
+            }
+            started.wait()
+
+            var finished = false
+            try XCTAssertNoThrowFatalError {
+                session.handle(multipartUploadEvent: .created(uploadFile: bigFile, uploadId: "uploadId"))
+                finished = true
+            }
+            stop.set(true)
+            // The client holds the proxy weakly; keep it alive until the canceller's last abort() returns.
+            cancellerDone.wait()
+            withExtendedLifetime(proxy) {}
+            if !finished {
+                XCTFail("fatalError(\"Part number is required\") hit on iteration \(iteration)")
+                return
+            }
+        }
+    }
+}
+
+/// Never produces the partial file, so part uploads stay pending and touch neither disk nor network.
+private final class NoOpPartialFileSystem: FileSystem, @unchecked Sendable {
+    override func createPartialFile(fileURL: URL, offset: UInt64, length: UInt64, completionHandler: @escaping @Sendable (Result<URL, Error>) -> Void) {}
 }
 
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
