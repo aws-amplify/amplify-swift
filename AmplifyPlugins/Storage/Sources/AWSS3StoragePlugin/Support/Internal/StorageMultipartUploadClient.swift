@@ -107,7 +107,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
     func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageTransferTask) throws {
         guard let serviceProxy else { fatalError("Service Proxy is required") }
 
-        // A concurrent cancel() or failure can move the session past `.parts` after the caller took this
+        // A concurrent cancel() or failure can move the session past `.parts` before the caller takes this
         // snapshot (#4407); the new state owns the outcome, so there is no part to start.
         guard let uploadId = multipartUpload.uploadId,
               let uploadFile = multipartUpload.uploadFile,

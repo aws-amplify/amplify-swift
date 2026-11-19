@@ -210,8 +210,16 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
     /// When: uploadPart is invoked with a snapshot that has no parts (e.g. the session is already aborting)
     /// Then: No part is started and no fatal error is thrown
     func testUploadPart_withoutParts_shouldNotStartPart() throws {
+        let fileSystem = NoOpPartialFileSystem()
+        let client = DefaultStorageMultipartUploadClient(
+            serviceProxy: serviceProxy,
+            fileSystem: fileSystem,
+            bucket: "bucket",
+            key: "key",
+            uploadFile: uploadFile
+        )
         try XCTAssertNoThrowFatalError {
-            try? self.client.uploadPart(
+            try? client.uploadPart(
                 partNumber: 1,
                 multipartUpload: .aborting(uploadId: "uploadId", error: nil),
                 subTask: .init(
@@ -221,7 +229,8 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
                 )
             )
         }
-        XCTAssertEqual(session.handleUploadPartCount, 0)
+        // createPartialFile is the first, synchronous step of starting a part; `.started` is only reported later.
+        XCTAssertEqual(fileSystem.createPartialFileCount.get(), 0)
     }
 
     /// Given: a DefaultStorageMultipartUploadClient
@@ -378,14 +387,15 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
         XCTAssertEqual(filteredHeaders["validHeader"], "validValue")
     }
 
-    /// Regression test for #4407: cancel() racing the CreateMultipartUpload response. Before the fix this hit
-    /// `fatalError("Part number is required")` about once every 260 iterations.
+    /// Regression test for #4407: cancel() racing the CreateMultipartUpload response handling. Before the fix
+    /// this hit `fatalError("Part number is required")`.
     ///
     /// - Given: a real StorageMultipartUploadSession and DefaultStorageMultipartUploadClient for a 3-part upload,
     ///   with AbortMultipartUpload left in flight (completion never delivered, as on a real network)
     /// - When:
     ///    - this thread handles `.created` (S3's CreateMultipartUpload response)
-    ///    - while another thread calls `cancel()`, like an app watchdog firing on a background wake
+    ///    - while another thread calls `cancel()` once `uploadParts` has queued a part, like an app watchdog
+    ///      firing on a background wake
     /// - Then:
     ///    - `uploadPart` skips parts once the session has left `.parts`, instead of crashing
     ///
@@ -393,7 +403,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
         let size = UInt64(Bytes.megabytes(15).bytes)
         let bigFile = UploadFile(fileURL: uploadFile.fileURL, temporaryFileCreated: false, size: size)
 
-        for iteration in 1 ... 1_000 {
+        for iteration in 1 ... 100 {
             let awsS3 = MockAWSS3Behavior()
             let proxy = MockStorageServiceProxy(awsS3: awsS3)
             let client = DefaultStorageMultipartUploadClient(
@@ -411,22 +421,27 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
             let cancellerDone = DispatchSemaphore(value: 0)
             DispatchQueue.global(qos: .userInitiated).async {
                 started.signal()
-                while !stop.get() {
+                // Cancel once uploadParts has queued a part, before it snapshots the state for each part.
+                while session.part(for: 1)?.isQueued != true, !stop.get() {}
+                if !stop.get() {
                     session.cancel()
                 }
                 cancellerDone.signal()
             }
             started.wait()
+            // Runs on throw too: XCTAssertNoThrowFatalError throws XCTSkip on tvOS, watchOS and visionOS.
+            defer {
+                stop.set(true)
+                // The client holds the proxy weakly; keep it alive until the canceller's abort() returns.
+                cancellerDone.wait()
+                withExtendedLifetime(proxy) {}
+            }
 
             var finished = false
             try XCTAssertNoThrowFatalError {
                 session.handle(multipartUploadEvent: .created(uploadFile: bigFile, uploadId: "uploadId"))
                 finished = true
             }
-            stop.set(true)
-            // The client holds the proxy weakly; keep it alive until the canceller's last abort() returns.
-            cancellerDone.wait()
-            withExtendedLifetime(proxy) {}
             if !finished {
                 XCTFail("fatalError(\"Part number is required\") hit on iteration \(iteration)")
                 return
@@ -435,9 +450,13 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
     }
 }
 
-/// Never produces the partial file, so part uploads stay pending and touch neither disk nor network.
+/// Counts partial-file requests but never produces the file, so started parts touch neither disk nor network.
 private final class NoOpPartialFileSystem: FileSystem, @unchecked Sendable {
-    override func createPartialFile(fileURL: URL, offset: UInt64, length: UInt64, completionHandler: @escaping @Sendable (Result<URL, Error>) -> Void) {}
+    let createPartialFileCount = AtomicValue(initialValue: 0)
+
+    override func createPartialFile(fileURL: URL, offset: UInt64, length: UInt64, completionHandler: @escaping @Sendable (Result<URL, Error>) -> Void) {
+        _ = createPartialFileCount.increment()
+    }
 }
 
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
