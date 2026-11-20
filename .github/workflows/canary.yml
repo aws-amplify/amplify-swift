@@ -20,10 +20,9 @@ jobs:
             xcode-version: '26.5'
             device: 'iPhone 17 Pro Max'
             version: '26.5'
-          # Minimum supported Xcode. Uses the 26.2 runtime because the macos-26
-          # image does not install a 26.0 simulator runtime.
+          # Minimum supported Xcode.
           - os: macos-26
-            xcode-version: '26.0.1'
+            xcode-version: '26.2'
             device: 'iPhone 17 Pro Max'
             version: '26.2'
     name: Canary Test - Xcode ${{ matrix.xcode-version }}

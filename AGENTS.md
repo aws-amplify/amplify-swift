@@ -2,7 +2,7 @@
 
 ## Project Info
 
-- **Language**: Swift 6.0+ | **Build**: SPM (Xcode 26.0+) | **No CocoaPods**
+- **Language**: Swift 6.0+ | **Build**: SPM (Xcode 26.2+) | **No CocoaPods**
 - **Platforms**: iOS 15+, macOS 12+, tvOS 15+, watchOS 9+, visionOS 1+
 - **Architecture**: Monorepo — core framework (`Amplify/`), category plugins (`AmplifyPlugins/`), standalone clients (`AmplifyClients/`)
 - **Setup**: `open Package.swift` or `swift package resolve`
@@ -19,7 +19,7 @@ Detailed conventions and patterns live closer to the code. Read the relevant gui
 
 **Always run `swiftformat` on changed files before every commit.** The SwiftFormat and SwiftLint workflows run on pushes to non-default branches (not on `pull_request`), so format locally rather than relying on a PR check to catch it. See `.swiftlint.yml` and `.swiftformat` for full rules.
 
-Note that `.swiftlint.yml` lints `Amplify/`, `AmplifyPlugins/` and the `Sources` of four modules under `AmplifyClients/Internal/` (`InternalAmplifyKeychain`, `InternalAWSCognitoAuth`, `AmplifySRP`, `AmplifyBigInteger`), which moved there from `AmplifyPlugins/`. The rest of `AmplifyClients/`, and `AmplifyFoundation/` and `AmplifyFoundationBridge/`, are outside SwiftLint's `included:` scope, though SwiftFormat covers the whole repo.
+Note that `.swiftlint.yml` lints `Amplify/`, `AmplifyPlugins/` and the `Sources` of five modules under `AmplifyClients/Internal/` (`InternalAmplifyKeychain`, `InternalAWSCognitoAuth`, `AmplifySRP`, `AmplifyBigInteger`, `AmplifyCognitoASF`), which moved there from `AmplifyPlugins/` or out of the engine. The rest of `AmplifyClients/`, and `AmplifyFoundation/` and `AmplifyFoundationBridge/`, are outside SwiftLint's `included:` scope, though SwiftFormat covers the whole repo.
 
 ```bash
 swiftformat <changed-files>   # Format changed files before committing
