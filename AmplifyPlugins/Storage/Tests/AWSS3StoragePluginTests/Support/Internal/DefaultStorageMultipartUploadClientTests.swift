@@ -210,7 +210,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
     /// When: uploadPart is invoked with a snapshot that has no parts (e.g. the session is already aborting)
     /// Then: No part is started and no fatal error is thrown
     func testUploadPart_withoutParts_shouldNotStartPart() throws {
-        let fileSystem = NoOpPartialFileSystem()
+        let fileSystem = HoldingPartialFileSystem()
         let client = DefaultStorageMultipartUploadClient(
             serviceProxy: serviceProxy,
             fileSystem: fileSystem,
@@ -408,7 +408,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
             let proxy = MockStorageServiceProxy(awsS3: awsS3)
             let client = DefaultStorageMultipartUploadClient(
                 serviceProxy: proxy,
-                fileSystem: NoOpPartialFileSystem(),
+                fileSystem: HoldingPartialFileSystem(),
                 bucket: "bucket",
                 key: "key",
                 uploadFile: bigFile
@@ -466,7 +466,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
         let size = UInt64(Bytes.megabytes(15).bytes)
         let bigFile = UploadFile(fileURL: uploadFile.fileURL, temporaryFileCreated: false, size: size)
         let proxy = MockStorageServiceProxy(awsS3: MockAWSS3Behavior())
-        let fileSystem = NoOpPartialFileSystem()
+        let fileSystem = HoldingPartialFileSystem()
         let client = DefaultStorageMultipartUploadClient(
             serviceProxy: proxy,
             fileSystem: fileSystem,
@@ -493,11 +493,97 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
         session.resume()
         XCTAssertEqual(fileSystem.createPartialFileCount.get(), 6)
     }
+
+    /// Regression test for #4407 item G's narrower window: a `.started` handled between pause()'s transition and its
+    /// reset of in-progress parts, which rebuilt the parts from the older snapshot and so undid the `.pending`.
+    ///
+    /// - Given: a 3-part upload with every part being prepared
+    /// - When:
+    ///    - another thread reports part 1 as started as soon as the upload is paused
+    ///    - the upload is resumed
+    /// - Then:
+    ///    - part 1 is prepared again
+    ///
+    func testStartedWhilePausing_shouldRestartPartOnResume() throws {
+        for iteration in 1 ... 1_000 {
+            let proxy = MockStorageServiceProxy(awsS3: MockAWSS3Behavior())
+            let fileSystem = HoldingPartialFileSystem()
+            let session = makeThreePartSession(proxy: proxy, fileSystem: fileSystem)
+            let delivered = DispatchSemaphore(value: 0)
+            DispatchQueue.global(qos: .userInitiated).async {
+                while !session.isPaused {}
+                // What startUploadPart reports once part 1's partial file and URL are ready.
+                session.handle(uploadPartEvent: .started(partNumber: 1, taskIdentifier: 1))
+                delivered.signal()
+            }
+            session.pause()
+            delivered.wait()
+            session.resume()
+            withExtendedLifetime(proxy) {}
+            // Parts 2 and 3 are still being prepared, so only part 1 is prepared again.
+            guard fileSystem.createPartialFileCount.get() == 4 else {
+                XCTFail("Part 1 was not restarted after resume on iteration \(iteration)")
+                return
+            }
+        }
+    }
+
+    /// Regression test for a deadlock in pause(): it waited for URLSession's task list while holding the session's
+    /// lock, but URLSession delivers that list on its delegate queue, behind delegate callbacks that wait for the lock.
+    ///
+    /// - Given: a 3-part upload with part 1 in progress, on a URLSession whose delegate queue is about to report
+    ///   part 1's progress
+    /// - When:
+    ///    - the upload is paused before that callback runs
+    /// - Then:
+    ///    - pause() returns
+    ///
+    func testPauseWhileDelegateReportsProgress_shouldNotDeadlock() async throws {
+        let delegateQueue = OperationQueue()
+        delegateQueue.maxConcurrentOperationCount = 1
+        let proxy = MockStorageServiceProxy(awsS3: MockAWSS3Behavior())
+        proxy.urlSession = URLSession(configuration: .ephemeral, delegate: nil, delegateQueue: delegateQueue)
+        let session = makeThreePartSession(proxy: proxy, fileSystem: HoldingPartialFileSystem())
+        session.handle(uploadPartEvent: .started(partNumber: 1, taskIdentifier: 1))
+
+        // A progress callback that runs once pause() has asked URLSession for its tasks.
+        delegateQueue.addOperation {
+            Thread.sleep(forTimeInterval: 0.2)
+            session.handle(uploadPartEvent: .progressUpdated(partNumber: 1, bytesTransferred: 1, taskIdentifier: 1))
+        }
+        let paused = expectation(description: "pause() returned")
+        DispatchQueue.global().async {
+            session.pause()
+            paused.fulfill()
+        }
+        await fulfillment(of: [paused], timeout: 3)
+        withExtendedLifetime(proxy) {}
+    }
+
+    /// A real session and client for a 3-part upload, with every part `.queued` behind `fileSystem`.
+    private func makeThreePartSession(
+        proxy: MockStorageServiceProxy,
+        fileSystem: HoldingPartialFileSystem
+    ) -> StorageMultipartUploadSession {
+        let size = UInt64(Bytes.megabytes(15).bytes)
+        let bigFile = UploadFile(fileURL: uploadFile.fileURL, temporaryFileCreated: false, size: size)
+        let client = DefaultStorageMultipartUploadClient(
+            serviceProxy: proxy,
+            fileSystem: fileSystem,
+            bucket: "bucket",
+            key: "key",
+            uploadFile: bigFile
+        )
+        let session = StorageMultipartUploadSession(client: client, bucket: "bucket", key: "key", onEvent: { _ in })
+        session.handle(multipartUploadEvent: .creating)
+        session.handle(multipartUploadEvent: .created(uploadFile: bigFile, uploadId: "uploadId"))
+        return session
+    }
 }
 
-/// Counts partial-file requests and holds them until `releaseHeldRequests()`, so parts stay `.queued` and
+/// Counts partial-file requests and holds them until `releaseNextHeldRequest()`, so parts stay `.queued` and
 /// touch neither disk nor network.
-private final class NoOpPartialFileSystem: FileSystem, @unchecked Sendable {
+private final class HoldingPartialFileSystem: FileSystem, @unchecked Sendable {
     let createPartialFileCount = AtomicValue(initialValue: 0)
     private let heldRequests = AtomicValue<[@Sendable (Result<URL, Error>) -> Void]>(initialValue: [])
 

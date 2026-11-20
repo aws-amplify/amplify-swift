@@ -310,7 +310,7 @@ class StorageMultipartUploadSession: @unchecked Sendable {
                 uploadParts(uploadFile: uploadFile, uploadId: uploadId, partSize: partSize, parts: parts)
             case .paused(_, _, _, let parts):
                 cancelProgressStallTimer()
-                cancelInProgressParts(parts: parts)
+                cancelInProgressParts()
                 if !wasPaused {
                     transferTask.notify(progress: parts.progress)
                 }
@@ -458,15 +458,14 @@ class StorageMultipartUploadSession: @unchecked Sendable {
         try client.abortMultipartUpload(uploadId: uploadId)
     }
 
-    private func cancelInProgressParts(parts: StorageUploadParts) {
+    private func cancelInProgressParts() {
         dispatchPrecondition(condition: .notOnQueue(serialQueue))
-        serialQueue.sync {
-            guard let uploadId = multipartUpload.uploadId,
-                  let uploadFile = multipartUpload.uploadFile,
-                    let partSize = multipartUpload.partSize
-            else {
+        // Read the parts under the lock rather than from the pause snapshot: a `.started` handled since then may
+        // have returned a part to `.pending` (#4407). Nil when the upload is no longer paused.
+        let taskIdentifiers: [TaskIdentifier]? = serialQueue.sync {
+            guard case .paused(let uploadId, let uploadFile, let partSize, let parts) = multipartUpload else {
                 logger.warn("Unable to get required values to cancel in progress parts: \(multipartUpload)")
-                return
+                return nil
             }
 
             // collect TaskIdentifier from each part that is in progress
@@ -494,18 +493,19 @@ class StorageMultipartUploadSession: @unchecked Sendable {
                 }
             }
             multipartUpload = .paused(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: pausedParts)
-
-            let taskIdentifiers = cancellingParts.compactMap { $0 }
-            logger.debug("Cancelling upload tasks which are in process while paused: \(taskIdentifiers)")
-
-            // block while cancelling upload tasks
-            let group = DispatchGroup()
-            group.enter()
-            client.cancelUploadTasks(taskIdentifiers: taskIdentifiers) {
-                group.leave()
-            }
-            group.wait()
+            return cancellingParts.compactMap { $0 }
         }
+        guard let taskIdentifiers else { return }
+        logger.debug("Cancelling upload tasks which are in process while paused: \(taskIdentifiers)")
+
+        // Block while cancelling upload tasks, but not under the lock: URLSession calls back on its delegate queue,
+        // behind delegate callbacks that themselves wait for the lock.
+        let group = DispatchGroup()
+        group.enter()
+        client.cancelUploadTasks(taskIdentifiers: taskIdentifiers) {
+            group.leave()
+        }
+        group.wait()
     }
 
     private func uploadParts(uploadFile: UploadFile, uploadId: UploadID, partSize: StorageUploadPartSize, parts: StorageUploadParts) {

@@ -174,32 +174,35 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase,
         Self.logger.debug("Uploading \(partCount) parts")
         let task = Amplify.Storage.uploadData(key: key, data: data)
 
-        var progress = await task.progress.makeAsyncIterator()
-        for cycle in 1 ... 3 {
-            guard await progress.next() != nil else {
-                XCTFail("Upload ended before pause \(cycle)")
-                break
-            }
-            Self.logger.debug("Pausing upload task (\(cycle))")
-            task.pause()
-            // Longer than a part upload, so a part request sent while paused also finishes while paused.
-            try await Task.sleep(seconds: 2)
-            Self.logger.debug("Resuming upload task (\(cycle))")
-            task.resume()
-        }
-
+        // One deadline covers the pause cycles and the completion: a stalled upload (a part left `.queued`, or a
+        // pause that never returns) sends no more progress, so an unbounded wait would hang the job.
+        let stage = AtomicValue(initialValue: "waiting for progress before pause 1")
         let finished = expectation(description: "Upload finished")
         let outcome = Task { () -> Result<String, Error> in
             defer { finished.fulfill() }
+            var progress = await task.progress.makeAsyncIterator()
+            for cycle in 1 ... 3 {
+                guard await progress.next() != nil else {
+                    XCTFail("Upload ended before pause \(cycle)")
+                    break
+                }
+                stage.set("pausing (\(cycle))")
+                task.pause()
+                stage.set("paused (\(cycle))")
+                // Longer than a part upload, so a part request sent while paused also finishes while paused.
+                try? await Task.sleep(seconds: 2)
+                task.resume()
+                stage.set(cycle < 3 ? "waiting for progress before pause \(cycle + 1)" : "waiting for the upload to finish")
+            }
             do {
                 return try await .success(task.value)
             } catch {
                 return .failure(error)
             }
         }
-        // A part left `.queued` is never restarted, so the upload can hang rather than fail.
-        guard await XCTWaiter().fulfillment(of: [finished], timeout: 120) == .completed else {
-            XCTFail("Upload did not finish after pause and resume")
+        guard await XCTWaiter().fulfillment(of: [finished], timeout: 180) == .completed else {
+            XCTFail("Upload stalled: \(stage.get())")
+            outcome.cancel()
             task.cancel()
             return
         }
