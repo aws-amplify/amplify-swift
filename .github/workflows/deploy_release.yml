@@ -62,8 +62,11 @@ jobs:
       - name:  Release Package
         run: bundle exec fastlane release
 
-      - name: Release docs
-        working-directory: ${{ github.workspace }}
-        run: |
-          git checkout -B gh-pages
-          bash ./scripts/jazzy_doc_gen.sh
+  release-docs:
+    name: Release documentation
+    needs: [release]
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/release_doc.yml
