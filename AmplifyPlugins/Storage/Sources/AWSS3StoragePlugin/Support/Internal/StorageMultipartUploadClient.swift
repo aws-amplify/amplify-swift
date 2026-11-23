@@ -107,12 +107,16 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
     func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageTransferTask) throws {
         guard let serviceProxy else { fatalError("Service Proxy is required") }
 
+        // A concurrent cancel() or failure can move the session past `.parts` before the caller takes this
+        // snapshot (#4407); the new state owns the outcome, so there is no part to start.
         guard let uploadId = multipartUpload.uploadId,
               let uploadFile = multipartUpload.uploadFile,
-              let partSize = multipartUpload.partSize,
-              let part = multipartUpload.part(for: partNumber) else {
-                  fatalError("Part number is required")
-              }
+              let partSize = multipartUpload.partSize else {
+            return
+        }
+        guard let part = multipartUpload.part(for: partNumber) else {
+            fatalError("Part number is required")
+        }
 
         // `@Sendable` because the result handler below captures this and calls it from a `Task`.
         let startUploadPart: @Sendable (URL, URL) async -> Void = { [weak self] partialFileURL, preSignedURL in
@@ -142,6 +146,14 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
             // tell the session the upload part has started
             session?.handle(uploadPartEvent: .started(partNumber: partNumber, taskIdentifier: uploadTask.taskIdentifier))
 
+            // A pause, cancel or failure while this part was being prepared drops `.started` (#4407): don't send it.
+            // Unregister first, so the delegate doesn't report the cancellation as a part failure.
+            guard case .inProgress(_, _, let taskIdentifier)? = session?.part(for: partNumber),
+                  taskIdentifier == uploadTask.taskIdentifier else {
+                self.serviceProxy?.unregister(task: subTask)
+                uploadTask.cancel()
+                return
+            }
             uploadTask.resume()
         }
 
