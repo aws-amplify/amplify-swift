@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.64.0 (2026-11-20)
+
+### Features
+
+- **auth**: add AmplifyCognitoASF, an experimental public API for user context data (#4403)
+
+### Bug Fixes
+
+- **deps**: bump aws-sdk-swift from 1.7.60 to 1.8.28 (#4416)
+
 ## 2.63.1 (2026-11-12)
 
 ### Bug Fixes
