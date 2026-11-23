@@ -516,3 +516,398 @@ class StorageMultipartUploadSessionTests: XCTestCase, @unchecked Sendable {
     }
 
 }
+
+// MARK: - Progress stall timer: observation window
+
+/// A clock for the stall timer that can jump forward, to make a fire look late without waiting, and
+/// that tells the test about each read.
+///
+/// The session reads the clock once when it arms the timer, and once in each fire, after that fire
+/// checked that no part event was handled since its arm. With an interval longer than the observation
+/// window the reads are: 1 arm (waiting), 2 fire, 3 arm (observing), 4 fire.
+private final class StallTestClock: @unchecked Sendable {
+    private let lock = NSLock()
+    private var offsetNanoseconds: UInt64 = 0
+    private var reads = 0
+    private var readHandler: (@Sendable (Int) -> Void)?
+
+    /// `handler` runs before each read returns, with the number of the read, starting at 1.
+    func onRead(_ handler: @escaping @Sendable (Int) -> Void) {
+        lock.lock()
+        defer { lock.unlock() }
+        readHandler = handler
+    }
+
+    var readCount: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return reads
+    }
+
+    func now() -> DispatchTime {
+        lock.lock()
+        reads += 1
+        let read = reads
+        let handler = readHandler
+        lock.unlock()
+        handler?(read)
+        lock.lock()
+        defer { lock.unlock() }
+        return DispatchTime(uptimeNanoseconds: DispatchTime.now().uptimeNanoseconds + offsetNanoseconds)
+    }
+
+    func advance(seconds: TimeInterval) {
+        lock.lock()
+        defer { lock.unlock() }
+        offsetNanoseconds += UInt64(seconds * 1_000_000_000)
+    }
+}
+
+/// Records what the upload reported, with times, without fulfilling an expectation twice.
+private final class StallEventRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private(set) var stallFailureCount = 0
+    private(set) var otherFailureCount = 0
+    private(set) var completedCount = 0
+    private(set) var firstStallFailureAt: DispatchTime?
+    let stallFailed: XCTestExpectation
+    let completed: XCTestExpectation
+
+    init(stallFailed: XCTestExpectation, completed: XCTestExpectation) {
+        self.stallFailed = stallFailed
+        self.completed = completed
+    }
+
+    var onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler {
+        { [self] event in
+            switch event {
+            case .initiated, .inProcess:
+                break
+            case .failed(let error):
+                lock.lock()
+                let isStall: Bool
+                if case .unknown(_, let underlying) = error,
+                   let stall = underlying as? StorageError,
+                   case .unknown(let message, _) = stall,
+                   message == "Upload cancelled due to progress stall timeout." {
+                    isStall = true
+                } else {
+                    isStall = false
+                }
+                if isStall {
+                    stallFailureCount += 1
+                    if firstStallFailureAt == nil {
+                        firstStallFailureAt = .now()
+                    }
+                } else {
+                    otherFailureCount += 1
+                }
+                let fulfill = isStall && stallFailureCount == 1
+                lock.unlock()
+                if fulfill {
+                    stallFailed.fulfill()
+                }
+            case .completed:
+                lock.lock()
+                completedCount += 1
+                let fulfill = completedCount == 1
+                lock.unlock()
+                if fulfill {
+                    completed.fulfill()
+                }
+            }
+        }
+    }
+}
+
+private func seconds(from start: DispatchTime, to end: DispatchTime?) -> TimeInterval {
+    guard let end else { return -1 }
+    return TimeInterval(Int64(bitPattern: end.uptimeNanoseconds &- start.uptimeNanoseconds)) / 1_000_000_000
+}
+
+extension StorageMultipartUploadSessionTests {
+
+    private func makeRecorder(expectStall: Bool, expectCompletion: Bool) -> StallEventRecorder {
+        let stallFailed = expectation(description: "Failed with stall error")
+        stallFailed.isInverted = !expectStall
+        let completed = expectation(description: "Completed")
+        completed.isInverted = !expectCompletion
+        return StallEventRecorder(stallFailed: stallFailed, completed: completed)
+    }
+
+    private func makeStallSession(
+        client: MockMultipartUploadClient,
+        recorder: StallEventRecorder,
+        stallInterval: TimeInterval,
+        observationWindow: TimeInterval,
+        clock: StallTestClock = StallTestClock()
+    ) -> StorageMultipartUploadSession {
+        StorageMultipartUploadSession(
+            client: client,
+            bucket: "bucket",
+            key: "key",
+            onEvent: recorder.onEvent,
+            progressStallTimeoutSeconds: stallInterval,
+            stallTimerClock: { clock.now() },
+            stallObservationWindowSeconds: observationWindow
+        )
+    }
+
+    /// Given: parts that started and then send no events, in a process that keeps running
+    /// When: the stall interval passes
+    /// Then: the upload aborts once, at the interval: the observation window is the last part of the
+    ///   interval, not an addition to it
+    func testProgressStallTimeout_processKeepsRunning_shouldAbortAtInterval() {
+        let stallInterval: TimeInterval = 0.6
+        let observationWindow: TimeInterval = 0.2
+        let clock = StallTestClock()
+        let client = MockMultipartUploadClient()
+        client.shouldStallPartUpload = true
+        let recorder = makeRecorder(expectStall: true, expectCompletion: false)
+        let session = makeStallSession(
+            client: client,
+            recorder: recorder,
+            stallInterval: stallInterval,
+            observationWindow: observationWindow,
+            clock: clock
+        )
+
+        let start = DispatchTime.now()
+        session.startUpload()
+
+        wait(for: [recorder.stallFailed, recorder.completed], timeout: stallInterval + 1.0)
+        XCTAssertGreaterThanOrEqual(seconds(from: start, to: recorder.firstStallFailureAt), stallInterval * 0.9)
+        // Arm and fire of the waiting part, arm and fire of one observation window.
+        XCTAssertEqual(clock.readCount, 4)
+        XCTAssertEqual(recorder.stallFailureCount, 1)
+        XCTAssertEqual(client.abortMultipartUploadCount, 1)
+    }
+
+    /// Given: parts that send no events until the stall timer's first fire, as while the app is
+    ///   suspended
+    /// When: every in-flight part's `.completed` arrives inside the observation window that the
+    ///   fire opened
+    /// Then: the upload is not aborted and completes
+    func testProgressStallTimeout_partsCompleteInObservationWindow_shouldNotAbort() {
+        let stallInterval: TimeInterval = 1.2
+        let observationWindow: TimeInterval = 1.0
+        let clock = StallTestClock()
+        let client = MockMultipartUploadClient()
+        client.shouldStallPartUpload = true
+        clock.onRead { [unowned client] read in
+            guard read == 2 else { return }
+            DispatchQueue.global().asyncAfter(deadline: .now() + observationWindow / 3) {
+                client.shouldStallPartUpload = false
+                client.completeStalledParts()
+            }
+        }
+        let recorder = makeRecorder(expectStall: false, expectCompletion: true)
+        let session = makeStallSession(
+            client: client,
+            recorder: recorder,
+            stallInterval: stallInterval,
+            observationWindow: observationWindow,
+            clock: clock
+        )
+
+        session.startUpload()
+
+        wait(for: [recorder.completed], timeout: stallInterval + 1.0)
+        wait(for: [recorder.stallFailed], timeout: 0.1)
+        XCTAssertTrue(session.isCompleted)
+        XCTAssertEqual(client.abortMultipartUploadCount, 0)
+        XCTAssertEqual(client.completeMultipartUploadCount, 1)
+    }
+
+    /// Given: parts that send no events
+    /// When: a progress event for every in-flight part is handled while the fire of the waiting part
+    ///   is deciding
+    /// Then: that fire does not replace the full interval the event armed with the shorter
+    ///   observation window; the upload aborts one full interval after the event, exactly once
+    func testProgressStallTimeout_eventDuringWaitingFire_shouldKeepFullInterval() {
+        let stallInterval: TimeInterval = 1.0
+        let observationWindow: TimeInterval = 0.2
+        let clock = StallTestClock()
+        let eventAt = AtomicValue<DispatchTime?>(initialValue: nil)
+        let client = MockMultipartUploadClient()
+        client.shouldStallPartUpload = true
+        clock.onRead { [unowned client] read in
+            guard read == 2 else { return }
+            eventAt.set(.now())
+            client.reportProgressForStalledParts(bytesTransferred: 1_000)
+        }
+        let recorder = makeRecorder(expectStall: true, expectCompletion: false)
+        let session = makeStallSession(
+            client: client,
+            recorder: recorder,
+            stallInterval: stallInterval,
+            observationWindow: observationWindow,
+            clock: clock
+        )
+
+        session.startUpload()
+
+        wait(for: [recorder.stallFailed, recorder.completed], timeout: stallInterval * 2 + 1.0)
+        guard let event = eventAt.get() else {
+            XCTFail("The stall timer never fired")
+            return
+        }
+        XCTAssertGreaterThanOrEqual(seconds(from: event, to: recorder.firstStallFailureAt), stallInterval * 0.9)
+        XCTAssertEqual(recorder.stallFailureCount, 1)
+        XCTAssertEqual(client.abortMultipartUploadCount, 1)
+    }
+
+    /// Given: parts that send no events
+    /// When: a progress event for every in-flight part is handled while the fire of the observation
+    ///   window is deciding
+    /// Then: that fire does not abort, because an event arrived after it was armed; the upload aborts
+    ///   one full interval after the event, exactly once
+    func testProgressStallTimeout_eventDuringObservingFire_shouldNotAbort() {
+        let stallInterval: TimeInterval = 0.6
+        let observationWindow: TimeInterval = 0.2
+        let clock = StallTestClock()
+        let eventAt = AtomicValue<DispatchTime?>(initialValue: nil)
+        let client = MockMultipartUploadClient()
+        client.shouldStallPartUpload = true
+        clock.onRead { [unowned client] read in
+            guard read == 4 else { return }
+            eventAt.set(.now())
+            client.reportProgressForStalledParts(bytesTransferred: 1_000)
+        }
+        let recorder = makeRecorder(expectStall: true, expectCompletion: false)
+        let session = makeStallSession(
+            client: client,
+            recorder: recorder,
+            stallInterval: stallInterval,
+            observationWindow: observationWindow,
+            clock: clock
+        )
+
+        session.startUpload()
+
+        wait(for: [recorder.stallFailed, recorder.completed], timeout: stallInterval * 2 + 1.0)
+        guard let event = eventAt.get() else {
+            XCTFail("The observation window never fired")
+            return
+        }
+        XCTAssertGreaterThanOrEqual(seconds(from: event, to: recorder.firstStallFailureAt), stallInterval * 0.9)
+        XCTAssertEqual(recorder.stallFailureCount, 1)
+        XCTAssertEqual(client.abortMultipartUploadCount, 1)
+    }
+
+    /// Given: parts that send no events, and an observation window that is open
+    /// When: the process stops inside the window, so the window's fire is late
+    /// Then: that fire has seen nothing of the window and opens another one instead of aborting; the
+    ///   next fire is on time and aborts, exactly once
+    func testProgressStallTimeout_lateObservingFire_shouldOpenAnotherWindow() {
+        let stallInterval: TimeInterval = 0.6
+        let observationWindow: TimeInterval = 0.4
+        let clock = StallTestClock()
+        let client = MockMultipartUploadClient()
+        client.shouldStallPartUpload = true
+        clock.onRead { [unowned clock] read in
+            // The first fire of the window finds the clock 300 s past its deadline.
+            guard read == 4 else { return }
+            clock.advance(seconds: 300)
+        }
+        let recorder = makeRecorder(expectStall: true, expectCompletion: false)
+        let session = makeStallSession(
+            client: client,
+            recorder: recorder,
+            stallInterval: stallInterval,
+            observationWindow: observationWindow,
+            clock: clock
+        )
+
+        let start = DispatchTime.now()
+        session.startUpload()
+
+        wait(for: [recorder.stallFailed, recorder.completed], timeout: stallInterval + observationWindow + 1.0)
+        XCTAssertGreaterThanOrEqual(
+            seconds(from: start, to: recorder.firstStallFailureAt),
+            (stallInterval + observationWindow) * 0.9
+        )
+        // Waiting part, the late window, and the second window: an arm and a fire each.
+        XCTAssertEqual(clock.readCount, 6)
+        XCTAssertEqual(recorder.stallFailureCount, 1)
+        XCTAssertEqual(client.abortMultipartUploadCount, 1)
+    }
+
+    /// Given: an observation window that is open
+    /// When: the upload is paused inside the window, and later resumed with parts that complete
+    /// Then: the paused upload is never aborted, and after resume it completes
+    func testProgressStallTimeout_pauseDuringObservationWindow_shouldNotAbort() {
+        let stallInterval: TimeInterval = 1.2
+        let observationWindow: TimeInterval = 1.0
+        let clock = StallTestClock()
+        let client = MockMultipartUploadClient()
+        client.shouldStallPartUpload = true
+        let paused = expectation(description: "Paused")
+        clock.onRead { [unowned client] read in
+            guard read == 2 else { return }
+            DispatchQueue.global().asyncAfter(deadline: .now() + observationWindow / 3) {
+                client.session?.pause()
+                paused.fulfill()
+            }
+        }
+        let recorder = makeRecorder(expectStall: false, expectCompletion: true)
+        let session = makeStallSession(
+            client: client,
+            recorder: recorder,
+            stallInterval: stallInterval,
+            observationWindow: observationWindow,
+            clock: clock
+        )
+
+        session.startUpload()
+        wait(for: [paused], timeout: stallInterval + 1.0)
+        // Hold the pause well past the observation window: nothing may fire.
+        Thread.sleep(forTimeInterval: observationWindow * 1.5)
+        XCTAssertTrue(session.isPaused)
+        XCTAssertEqual(client.abortMultipartUploadCount, 0)
+
+        client.shouldStallPartUpload = false
+        session.resume()
+
+        wait(for: [recorder.completed], timeout: 1.0)
+        wait(for: [recorder.stallFailed], timeout: 0.1)
+        XCTAssertTrue(session.isCompleted)
+        XCTAssertEqual(client.abortMultipartUploadCount, 0)
+    }
+
+    /// Given: an observation window that is open, and a CompleteMultipartUpload that takes longer
+    ///   than the window
+    /// When: every part completes inside the window, so completion is in flight when it ends
+    /// Then: the upload completes and is never aborted
+    func testProgressStallTimeout_completionInFlightWhenWindowEnds_shouldNotAbort() {
+        let stallInterval: TimeInterval = 1.2
+        let observationWindow: TimeInterval = 1.0
+        let clock = StallTestClock()
+        let client = MockMultipartUploadClient()
+        client.shouldStallPartUpload = true
+        client.completeMultipartUploadDelay = observationWindow * 1.5
+        clock.onRead { [unowned client] read in
+            guard read == 2 else { return }
+            DispatchQueue.global().asyncAfter(deadline: .now() + observationWindow / 3) {
+                client.shouldStallPartUpload = false
+                client.completeStalledParts()
+            }
+        }
+        let recorder = makeRecorder(expectStall: false, expectCompletion: true)
+        let session = makeStallSession(
+            client: client,
+            recorder: recorder,
+            stallInterval: stallInterval,
+            observationWindow: observationWindow,
+            clock: clock
+        )
+
+        session.startUpload()
+
+        wait(for: [recorder.completed], timeout: stallInterval + client.completeMultipartUploadDelay + 1.0)
+        wait(for: [recorder.stallFailed], timeout: 0.1)
+        XCTAssertTrue(session.isCompleted)
+        XCTAssertEqual(client.abortMultipartUploadCount, 0)
+        XCTAssertEqual(client.completeMultipartUploadCount, 1)
+    }
+}
