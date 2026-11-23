@@ -8,7 +8,7 @@
 `AmplifyClients/AmplifyCognitoClient/Sources` for its exact surface. This document records the design and the
 decisions behind it ([auth-client-DECISIONS.md](auth-client-DECISIONS.md)).
 
-Review date: 2026-09-03. Last revised: 2026-10-06.
+Review date: 2026-09-03. Last revised: 2026-11-03.
 
 ---
 
@@ -17,6 +17,12 @@ NOTE: Swift is used throughout the design doc showcasing API changes and a per p
 > **The design in one paragraph.** Amplify auth is reachable only as a configured plugin behind a process-global (`Amplify.Auth`). This design proposes **`AmplifyCognitoClient`** - the **Auth Client** - a self-contained client you construct and hold, built the same way as the standalone clients already shipping. Because it is an ordinary object rather than a registry singleton, an app can hold **more than one**, which is what makes concurrent signed-in sessions possible. The Cognito protocol logic (SRP, MFA, device tracking, refresh, OAuth) is **not rewritten**.
 
 ## Changes since the previous revision
+
+**Revision 2026-11-03: record corrections.** What changed in this revision:
+
+- **Sign-out outcomes** now say that a sign-out given no window shows no hosted-UI sign-out page: after a sign-in
+  that shared the browser's cookies it is `.partial` with `hostedUIError`, not `.failed`.
+  → [§14.8](#148-amendments-2026-09-27-public-api-review)
 
 **Revision 2026-10-06: the beta as built.** What changed in this revision:
 
@@ -1211,7 +1217,7 @@ Restated together, because a design is judged partly on what it declines:
 
 1. **One of the client's system sheets at a time, per process, on iOS, macOS and visionOS**: browser sign-in, the browser sign-out page and the passkey sheet. As built, it covers the client's sessions: the Auth plugin's hosted UI and passkey sheets don't take part. This is our library's policy rather than an OS rule, and 9.1 says why we keep it.
 
-2. **No multi-user through the existing categories. Multi-session reaches the standalone clients, not the plugins.** The family's clients that call AWS (Kinesis, Firehose, Connect and CloudWatch) already take a credentials provider at construction, so handing one `client.credentialsProvider` binds it to that session with no further work. The category plugins - Storage, API, Analytics, Predictions, and the rest - resolve auth through the global, so they follow the plugin's session regardless of how many Auth Clients exist. DataStore is out of scope entirely: its local database is a single file shared by every identity.
+2. **No multi-user through the existing categories. Multi-session reaches the standalone clients, not the plugins.** The family's clients that call AWS (Kinesis, Firehose, Connect and CloudWatch) already take a credentials provider at construction, so handing one `client.credentialsProvider` binds it to that session with no further work, except that two same-region Kinesis or Firehose clients share one offline cache ([§13.1](#131-two-same-region-record-caching-clients-can-attribute-one-users-data-to-another)). The category plugins - Storage, API, Analytics, Predictions, and the rest - resolve auth through the global, so they follow the plugin's session regardless of how many Auth Clients exist. DataStore is out of scope entirely: its local database is a single file shared by every identity.
 
     **This one fails silently, so it is worth stating loudly.** With two sessions live, a Storage call does not follow the session the developer was thinking of; it follows the global. Storage derives its `.private` and `.protected` path prefixes from that identity, so the call *succeeds* - against the wrong user's prefix - rather than erroring. Analytics behaves the same way, caching its context by app and region with no notion of an owner. An app using several sessions must route per-user data through the standalone clients, not through the categories. Release notes must say this in so many words.
 
@@ -1558,6 +1564,9 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
     completed, including no hosted-UI configuration or sign-out redirect URI; task cancellation before anything was
     revoked, as `.failed(.unknown("The sign-out was cancelled before anything was revoked; the session is still signed
     in.", "Retry the sign-out.", CancellationError()))`.
+  - **A sign-out given no window** (`signOut(options:)`, `signOutStoredSession`) shows no hosted-UI sign-out page,
+    so none of the hosted-UI `.failed` cases above apply: after a sign-in that shared the browser's cookies it returns
+    `.partial` with `hostedUIError` `.validation(field: "presentationAnchor")`.
   - **A purge that fails after the local sign-out succeeded** returns `.partial` with `storageError` set, and
     `signedOutLocally == true`.
   - **As the plugin does:** a failed global sign-out adds the plugin's placeholder `revokeTokenError`.
