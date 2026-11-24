@@ -559,9 +559,9 @@ struct EngineSignOutOutcome: Sendable, Equatable {
             return .complete
         }
         return .partial(
-            revokeTokenError: revokeError,
-            globalSignOutError: globalSignOutError,
-            hostedUIError: hostedUIError,
+            revokeTokenError: revokeError.map(AuthClientRevokeTokenError.init(error:)),
+            globalSignOutError: globalSignOutError.map(AuthClientGlobalSignOutError.init(error:)),
+            hostedUIError: hostedUIError.map(AuthClientHostedUIError.init(error:)),
             storageError: storageError
         )
     }

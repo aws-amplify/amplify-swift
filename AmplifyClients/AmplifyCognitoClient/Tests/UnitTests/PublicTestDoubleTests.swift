@@ -36,7 +36,7 @@ final class PublicTestDoubleTests: XCTestCase {
         let result = AuthClientSignInResult(nextStep: .confirmSignInWithTOTPCode)
         let partial = AuthClientSignOutResult.partial(
             revokeTokenError: nil,
-            globalSignOutError: .unknown("global", "retry"),
+            globalSignOutError: AuthClientGlobalSignOutError(error: .unknown("global", "retry")),
             hostedUIError: nil,
             storageError: nil
         )
@@ -49,6 +49,8 @@ final class PublicTestDoubleTests: XCTestCase {
             return XCTFail("expected .partial, got \(partial)")
         }
         XCTAssertNil(revokeTokenError)
-        XCTAssertNotNil(globalSignOutError)
+        XCTAssertEqual(globalSignOutError?.error.errorDescription, "global")
+        XCTAssertEqual(AuthClientRevokeTokenError(error: .unknown("revoke", "retry")).error.errorDescription, "revoke")
+        XCTAssertEqual(AuthClientHostedUIError(error: .unknown("page", "retry")).error.errorDescription, "page")
     }
 }

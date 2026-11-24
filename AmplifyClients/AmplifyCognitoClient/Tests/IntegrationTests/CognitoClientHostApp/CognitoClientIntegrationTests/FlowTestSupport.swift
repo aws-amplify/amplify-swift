@@ -224,8 +224,8 @@ extension AuthClientSignOutResult {
         case .complete:
             return "complete"
         case .partial(let revoke, let global, let hostedUI, let storage):
-            return "partial(revokeTokenError: \(kind(revoke)), globalSignOutError: \(kind(global)), "
-                + "hostedUIError: \(kind(hostedUI)), storageError: \(kind(storage)))"
+            return "partial(revokeTokenError: \(kind(revoke?.error)), globalSignOutError: \(kind(global?.error)), "
+                + "hostedUIError: \(kind(hostedUI?.error)), storageError: \(kind(storage)))"
         case .failed(let error):
             return "failed(\(error.kindName))"
         }

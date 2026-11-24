@@ -116,9 +116,9 @@ extension AuthClientSignOutResult {
             return ""
         }
         let parts: [(String, AuthClientError?)] = [
-            ("revokeTokenError", revoke),
-            ("globalSignOutError", global),
-            ("hostedUIError", hostedUI),
+            ("revokeTokenError", revoke?.error),
+            ("globalSignOutError", global?.error),
+            ("hostedUIError", hostedUI?.error),
             ("storageError", storage)
         ]
         return parts.compactMap { name, error in error.map { "\(name): \($0.harnessCaseName)" } }.joined(separator: ", ")

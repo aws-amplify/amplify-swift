@@ -357,7 +357,7 @@ final class SignOutResultShapeTests: XCTestCase {
         if let string = value as? String {
             return [string]
         }
-        guard depth < 8 else {
+        guard depth < 9 else {
             return []
         }
         var found = ["\(value)"]

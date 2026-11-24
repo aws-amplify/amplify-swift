@@ -41,7 +41,7 @@ final class SignOutUnreadableRecordTests: XCTestCase {
 
         let result = await client.signOut()
 
-        XCTAssertEqual(result, .partial(
+        XCTAssertEqual(result, .partialResult(
             revokeTokenError: SessionSignOut.unrevokedNewerRecordError(version: 2),
             globalSignOutError: nil,
             hostedUIError: nil,
@@ -69,7 +69,7 @@ final class SignOutUnreadableRecordTests: XCTestCase {
         let result = await client.signOut(options: AuthClientSignOutOptions(globalSignOut: true))
 
         let unrevoked = SessionSignOut.unrevokedNewerRecordError(version: 2)
-        XCTAssertEqual(result, .partial(
+        XCTAssertEqual(result, .partialResult(
             revokeTokenError: unrevoked,
             globalSignOutError: unrevoked,
             hostedUIError: nil,
@@ -93,7 +93,7 @@ final class SignOutUnreadableRecordTests: XCTestCase {
         let newer = await signOutStored(work)
         let corrupt = await signOutStored(home)
 
-        XCTAssertEqual(newer, .partial(
+        XCTAssertEqual(newer, .partialResult(
             revokeTokenError: SessionSignOut.unrevokedNewerRecordError(version: 2),
             globalSignOutError: nil,
             hostedUIError: nil,

@@ -1295,13 +1295,13 @@ case .complete:
     break
 case .partial(let revokeTokenError, let globalSignOutError, let hostedUIError, let storageError):
     if let revokeTokenError {
-        print("Refresh token not revoked:", revokeTokenError.errorDescription)
+        print("Refresh token not revoked:", revokeTokenError.error.errorDescription)
     }
     if let globalSignOutError {
-        print("Other devices still signed in:", globalSignOutError.errorDescription)
+        print("Other devices still signed in:", globalSignOutError.error.errorDescription)
     }
     if let hostedUIError {
-        print("Browser still signed in:", hostedUIError.errorDescription)
+        print("Browser still signed in:", hostedUIError.error.errorDescription)
     }
     if let storageError {
         print("Signed out, but the saved row was kept:", storageError.errorDescription)
@@ -1319,7 +1319,7 @@ await client.signOut(options: .init(purgeStoredSession: true))
 | Result | Meaning |
 |---|---|
 | `.complete` | Tokens revoked and cleared from this device, or there were none |
-| `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` | Signed out on this device, but part of the work failed. `revokeTokenError`: the refresh token stays valid until it expires, unless a global sign-out succeeded (`globalSignOutError` is `nil`), which already invalidated it. After a failed global sign-out the token isn't revoked and this holds a placeholder `.service` error with empty texts, as in the plugin. `globalSignOutError`: other devices stay signed in. Neither is retried, and signing out again doesn't retry it: the session is signed out on this device, so a second sign-out is `.complete` and sends nothing. `hostedUIError`: the browser keeps its hosted-UI cookie; only for a sign-out without a window (`signOut(options:)` or `signOutStoredSession`, as `.validation`), or a closed page on a session a refresh found expired, in this launch or an earlier one, when the login signed out still has that refresh token. `storageError`: with `purgeStoredSession`, the row couldn't be removed; purge it again |
+| `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` | Signed out on this device, but part of the work failed. The first three are wrappers, as the plugin's are (`AuthClientRevokeTokenError`, `AuthClientGlobalSignOutError`, `AuthClientHostedUIError`): read the failure as `revokeTokenError?.error`; `storageError` is the error itself. `revokeTokenError`: the refresh token stays valid until it expires, unless a global sign-out succeeded (`globalSignOutError` is `nil`), which already invalidated it. After a failed global sign-out the token isn't revoked and this holds a placeholder `.service` error with empty texts, as in the plugin. `globalSignOutError`: other devices stay signed in. Neither is retried, and signing out again doesn't retry it: the session is signed out on this device, so a second sign-out is `.complete` and sends nothing. `hostedUIError`: the browser keeps its hosted-UI cookie; only for a sign-out without a window (`signOut(options:)` or `signOutStoredSession`, as `.validation`), or a closed page on a session a refresh found expired, in this launch or an earlier one, when the login signed out still has that refresh token. `storageError`: with `purgeStoredSession`, the row couldn't be removed; purge it again |
 | `.failed(AuthClientError)` | Not signed out: the session is still signed in on this device. See below |
 
 `.failed` carries:
@@ -1394,7 +1394,7 @@ func hostedUISignOut(client: AmplifyCognitoClient, window: AuthClientPresentatio
 
 - A private (default) hosted-UI sign-in left no cookie, so nothing is shown.
 - `signOut(options:)` and `signOutStoredSession` have no window, so they can't clear the cookie, and report it in
-  `.partial` as `hostedUIError` (`.validation`). The session is signed out on this device by then, so signing out
+  `.partial`, where `hostedUIError?.error` is `.validation`. The session is signed out on this device by then, so signing out
   again, even with a window, is `.complete` and shows no page: the cookie may remain until it expires or the user
   signs out in the browser. Until then, sign in to the hosted UI with `prompt: [.login]` or
   `prefersEphemeralSession: true`.
@@ -1402,8 +1402,8 @@ func hostedUISignOut(client: AmplifyCognitoClient, window: AuthClientPresentatio
   with the plugin, unless a refresh has already found the session expired, in this launch or an earlier one (the
   client saves that beside the session; it doesn't read the plugin's own saved flag), and the login being signed out
   still has the refresh token found dead. A new login another app in the access group saved since then stays signed
-  in: `.failed(.userCancelled)`. Otherwise it signs out anyway and returns `.partial` with `hostedUIError`
-  `.userCancelled`, which says the session was signed out on this device but not from the hosted UI: as without a
+  in: `.failed(.userCancelled)`. Otherwise it signs out anyway and returns `.partial`, where `hostedUIError?.error`
+  is `.userCancelled`, which says the session was signed out on this device but not from the hosted UI: as without a
   window, signing out again won't clear the cookie. The same goes when `cancelWebUISignIn()` closes this session's
   sign-out page, or `resetSystemSheet()` closes it before it finished.
 - If the page can't be shown or completed, the result is `.failed` and the session stays signed in, with nothing
@@ -1492,11 +1492,11 @@ suggestion to retry, and any other URL loading failure (an App Transport Securit
 request failed." with the network-or-service suggestion. That holds in every call, a refresh, a sign-out's revoke and
 the passkey credential calls included. The client doesn't retry any of them itself.
 
-A sign-out's `revokeTokenError` that failed on the network is `.service` with no code too, described as "The refresh
+A sign-out's `revokeTokenError?.error` for a revoke that failed on the network is `.service` with no code too, described as "The refresh
 token may not have been revoked: a network problem stopped the request, which may not have reached the service.
 Unless it did, or a global sign-out succeeded, the refresh token stays valid until it expires.", with the suggestion
 "The session was signed out on this device, and the revoke will not be retried. To end the refresh token on the
-server, sign in again and sign out with globalSignOut: true." A `globalSignOutError` that failed on the network has
+server, sign in again and sign out with globalSignOut: true." A `globalSignOutError?.error` for a global sign-out that failed on the network has
 the network description, with the suggestion "The session was signed out on this device, and the global sign-out will
 not be retried: unless the request reached the service, the user's other sessions stay signed in until their tokens
 expire. To sign them out, sign in again and sign out with globalSignOut: true." A revoke or global sign-out whose
@@ -1899,7 +1899,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | `listWebAuthnCredentials` page size | Sent as is; Cognito rejects bad values | Checked locally, 1 to 20 |
 | MFA setup selection answer | Sent to the engine as is; an unknown type is `.validation` (field "Unknown MFA type", the sign-in username texts; `.unknown` for `SMS_MFA`) | Checked before anything is sent: one of the step's types, else `.validation(field: "challengeResponse")`; the selection stays pending and the answer is not logged |
 | `WEB_AUTHN` first-factor answer the step does not offer | Refused with `.validation` below iOS 17.4 and macOS 13.5 and on tvOS and watchOS; elsewhere sent whether or not the step offers it | Refused before anything is sent with `.validation(field: "challengeResponse")` naming the offered factors, on every platform; the selection stays pending |
-| Sign-out result | `AWSCognitoSignOutResult`; `.partial` carries the tokens | The same shape, never thrown; `.partial` carries errors only, never tokens |
+| Sign-out result | `AWSCognitoSignOutResult`; `.partial` carries the tokens | The same shape, never thrown: `revokeTokenError?.error`, `globalSignOutError?.error`, `hostedUIError?.error`. `.partial` carries errors only, never tokens |
 | Sign-out of a federated session | `.failed`: call `clearFederationToIdentityPool` | Signed out, `.complete` |
 | `deleteUser` after a hosted-UI sign-in that shared the browser's cookies | Shows the hosted-UI sign-out page | Shows nothing: the browser keeps its cookie, and no later sign-out clears it |
 | Sign-out that removes the saved row | Not available | `purgeStoredSession`; a removal that fails after the sign-out is `.partial` with `storageError` |

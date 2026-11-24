@@ -433,21 +433,50 @@ final class AuthClientOperationTypesTests: XCTestCase {
         let global = AuthClientError.notAuthorized("global failed", "sign in again")
         let storage = AuthClientError.storageUnavailable(.interrupted, "row kept", "purge")
         XCTAssertEqual(
-            AuthClientSignOutResult.partial(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: nil, storageError: nil),
-            .partial(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: nil, storageError: nil)
+            AuthClientSignOutResult.partialResult(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: nil, storageError: nil),
+            .partialResult(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: nil, storageError: nil)
         )
         XCTAssertNotEqual(
-            AuthClientSignOutResult.partial(revokeTokenError: nil, globalSignOutError: global, hostedUIError: nil, storageError: nil),
-            .partial(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: nil, storageError: nil)
+            AuthClientSignOutResult.partialResult(revokeTokenError: nil, globalSignOutError: global, hostedUIError: nil, storageError: nil),
+            .partialResult(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: nil, storageError: nil)
         )
         XCTAssertNotEqual(
-            AuthClientSignOutResult.partial(revokeTokenError: revoke, globalSignOutError: nil, hostedUIError: nil, storageError: nil),
-            .partial(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: nil, storageError: nil)
+            AuthClientSignOutResult.partialResult(revokeTokenError: revoke, globalSignOutError: nil, hostedUIError: nil, storageError: nil),
+            .partialResult(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: nil, storageError: nil)
         )
         XCTAssertNotEqual(
-            AuthClientSignOutResult.partial(revokeTokenError: revoke, globalSignOutError: nil, hostedUIError: nil, storageError: storage),
-            .partial(revokeTokenError: revoke, globalSignOutError: nil, hostedUIError: nil, storageError: nil)
+            AuthClientSignOutResult.partialResult(revokeTokenError: revoke, globalSignOutError: nil, hostedUIError: nil, storageError: storage),
+            .partialResult(revokeTokenError: revoke, globalSignOutError: nil, hostedUIError: nil, storageError: nil)
         )
+    }
+
+    /// - Given: an engine sign-out outcome with a revoke, a global sign-out and a hosted-UI failure
+    /// - When: its public result is built
+    /// - Then:
+    ///    - each `.partial` wrapper carries the outcome's own error, one `.error` step down
+    ///    - a wrapper compares as its error does: another error is unequal, and the underlying error takes no part
+    func testEachPartialWrapperCarriesItsError() {
+        let revoke = AuthClientError.service(.network, "revoke failed", "retry")
+        let global = AuthClientError.notAuthorized("global failed", "sign in again")
+        let hostedUI = AuthClientError.userCancelled("closed", "retry")
+        let outcome = EngineSignOutOutcome(revokeError: revoke, globalSignOutError: global, hostedUIError: hostedUI)
+
+        guard case .partial(let revokeTokenError, let globalSignOutError, let hostedUIError, let storageError)
+            = outcome.signedOutResult() else {
+            return XCTFail("expected .partial, got \(outcome.signedOutResult())")
+        }
+        XCTAssertEqual(revokeTokenError, AuthClientRevokeTokenError(error: revoke))
+        XCTAssertEqual(globalSignOutError, AuthClientGlobalSignOutError(error: global))
+        XCTAssertEqual(hostedUIError, AuthClientHostedUIError(error: hostedUI))
+        XCTAssertNil(storageError)
+        XCTAssertNotEqual(revokeTokenError, AuthClientRevokeTokenError(error: global))
+        XCTAssertNotEqual(globalSignOutError, AuthClientGlobalSignOutError(error: revoke))
+        XCTAssertNotEqual(hostedUIError, AuthClientHostedUIError(error: revoke))
+        let first = AuthClientError.service(.network, "revoke failed", "retry", FixtureError(description: "a"))
+        let second = AuthClientError.service(.network, "revoke failed", "retry", FixtureError(description: "b"))
+        XCTAssertEqual(AuthClientRevokeTokenError(error: first), AuthClientRevokeTokenError(error: second))
+        XCTAssertEqual(AuthClientGlobalSignOutError(error: first), AuthClientGlobalSignOutError(error: second))
+        XCTAssertEqual(AuthClientHostedUIError(error: first), AuthClientHostedUIError(error: second))
     }
 
     /// - Given: engine sign-out outcomes across several attempts
@@ -467,7 +496,7 @@ final class AuthClientOperationTypesTests: XCTestCase {
         XCTAssertEqual(outcome, EngineSignOutOutcome(revokeError: first, globalSignOutError: global))
         XCTAssertEqual(
             outcome.signedOutResult(),
-            .partial(revokeTokenError: first, globalSignOutError: global, hostedUIError: nil, storageError: nil)
+            .partialResult(revokeTokenError: first, globalSignOutError: global, hostedUIError: nil, storageError: nil)
         )
     }
 }

@@ -462,7 +462,7 @@ func failedSignOutError(
 
 extension AuthClientSignOutResult {
 
-    /// `.partial`, with each part `nil` unless given.
+    /// `.partial`, with each part `nil` unless given, each error in its wrapper.
     static func partialResult(
         revokeTokenError: AuthClientError? = nil,
         globalSignOutError: AuthClientError? = nil,
@@ -470,14 +470,14 @@ extension AuthClientSignOutResult {
         storageError: AuthClientError? = nil
     ) -> AuthClientSignOutResult {
         .partial(
-            revokeTokenError: revokeTokenError,
-            globalSignOutError: globalSignOutError,
-            hostedUIError: hostedUIError,
+            revokeTokenError: revokeTokenError.map(AuthClientRevokeTokenError.init(error:)),
+            globalSignOutError: globalSignOutError.map(AuthClientGlobalSignOutError.init(error:)),
+            hostedUIError: hostedUIError.map(AuthClientHostedUIError.init(error:)),
             storageError: storageError
         )
     }
 
-    /// The parts of a `.partial` result, by name.
+    /// The parts of a `.partial` result, by name, each error out of its wrapper.
     struct PartialErrors {
         let revokeTokenError: AuthClientError?
         let globalSignOutError: AuthClientError?
@@ -490,7 +490,12 @@ extension AuthClientSignOutResult {
         guard case .partial(let revoke, let global, let hostedUI, let storage) = self else {
             return nil
         }
-        return PartialErrors(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: hostedUI, storageError: storage)
+        return PartialErrors(
+            revokeTokenError: revoke?.error,
+            globalSignOutError: global?.error,
+            hostedUIError: hostedUI?.error,
+            storageError: storage
+        )
     }
 }
 
@@ -506,22 +511,30 @@ extension AmplifyCognitoClient {
 extension CredentialsError {
 
     var isNotSignedIn: Bool {
-        if case .notSignedIn = self { return true }
+        if case .notSignedIn = self {
+            return true
+        }
         return false
     }
 
     var isSessionExpired: Bool {
-        if case .sessionExpired = self { return true }
+        if case .sessionExpired = self {
+            return true
+        }
         return false
     }
 
     var isNotConfigured: Bool {
-        if case .notConfigured = self { return true }
+        if case .notConfigured = self {
+            return true
+        }
         return false
     }
 
     var isUnknown: Bool {
-        if case .unknown = self { return true }
+        if case .unknown = self {
+            return true
+        }
         return false
     }
 

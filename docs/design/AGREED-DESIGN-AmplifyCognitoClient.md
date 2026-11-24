@@ -486,7 +486,7 @@ try await AmplifyCognitoClient.purgeStoredSession(sessionId: workID, configurati
 - **These also return `.failed`**, with the session still signed in on this device:
   - a storage failure before the local sign-out, or a saved record that kept changing (`storageUnavailable(.interrupted)`). A revoke may already have run;
   - `sessionConfigurationMismatch`, and any other error before anything was revoked;
-  - a closed hosted-UI sign-out page, as `.failed(.userCancelled)`. One exception: if the session's refresh token was already dead, it signs out anyway and reports `.partial(hostedUIError: .userCancelled)`;
+  - a closed hosted-UI sign-out page, as `.failed(.userCancelled)`. One exception: if the session's refresh token was already dead, it signs out anyway and reports `.partial`, whose `hostedUIError?.error` is `.userCancelled`;
   - a hosted-UI sign-out with no hosted-UI configuration or no sign-out redirect URI, as the plugin returns it. It is one `configuration` error whether the client or the engine finds it, with the engine's error underneath;
   - any other hosted-UI sign-out page that could not be shown or completed: another sheet holds the browser (`browserBusy`), the window has gone (`validation`), or the browser's own failure. As with the two cases above, nothing is revoked;
   - task cancellation before anything was revoked, as `.failed(.unknown("The sign-out was cancelled before anything was revoked; the session is still signed in.", "Retry the sign-out.", CancellationError()))`.
@@ -494,11 +494,11 @@ try await AmplifyCognitoClient.purgeStoredSession(sessionId: workID, configurati
 - **Once a revoke has completed, cancellation never stops the local clear.**
 - **A failed global sign-out reports the plugin's placeholder `revokeTokenError`**. As in the plugin, `RevokeToken` is then skipped, and `.partial` carries the global sign-out's error and the placeholder revoke error.
 - **Deliberate differences from the plugin, documented:**
-  - `.partial` carries no raw tokens (a security fix);
+  - `.partial` carries no raw tokens (a security fix): its `revokeTokenError`, `globalSignOutError` and `hostedUIError` are the plugin's wrappers without the token fields (`AuthClientRevokeTokenError`, `AuthClientGlobalSignOutError`, `AuthClientHostedUIError`, each with one field, `error`), so callers still write `revokeTokenError?.error`;
   - `.partial` has the client-only `storageError`;
   - a federated session can be signed out (the plugin refuses);
   - `purgeStoredSession`;
-  - the window is required for the hosted-UI sign-out page (the plugin falls back to one of its own). Without one (`signOut(options:)`, `signOutStoredSession`), the session is signed out on this device, the browser keeps its cookie, and `.partial(hostedUIError: .validation(…))` says so.
+  - the window is required for the hosted-UI sign-out page (the plugin falls back to one of its own). Without one (`signOut(options:)`, `signOutStoredSession`), the session is signed out on this device, the browser keeps its cookie, and `.partial`, whose `hostedUIError?.error` is `.validation(…)`, says so.
 
 For example, an app that offers a retry only when the user is still signed in:
 
@@ -1553,8 +1553,10 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
     and `signOutWithWebUI` are `@discardableResult`, as the plugin's `signOut` is. `purgeStoredSession` still throws: the plugin
     has no such call.
   - **Cases.** `.complete`, `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` and
-    `.failed(AuthClientError)`. `signedOutLocally` is false only for `.failed`. `storageError` is client-only.
-    `==` compares errors as `AuthSessionState.failed` does (`isEquivalent(to:)`).
+    `.failed(AuthClientError)`. `signedOutLocally` is false only for `.failed`. `.partial`'s first three values
+    are wrappers in the plugin's shape, `AuthClientRevokeTokenError`, `AuthClientGlobalSignOutError` and
+    `AuthClientHostedUIError`, each holding only `error: AuthClientError`. `storageError` is client-only, and an
+    `AuthClientError` itself. `==` compares errors as `AuthSessionState.failed` does (`isEquivalent(to:)`).
   - **`.failed`, with the session still signed in:** another sign-in replaced the session during the sign-out
     (`.invalidState`); a storage failure before the local sign-out; `sessionConfigurationMismatch` and any other
     error before anything was revoked; a closed hosted-UI sign-out page (`.userCancelled`), unless a refresh had
