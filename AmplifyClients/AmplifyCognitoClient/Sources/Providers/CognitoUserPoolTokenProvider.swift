@@ -15,8 +15,11 @@ import Foundation
 /// the session's one refresh, and keeps its session alive. A federated session has no user pool tokens,
 /// so it throws `notConfigured`. Failures are `CredentialsError`; `CancellationError` passes through
 /// unwrapped.
+///
+/// Conforms to AmplifyFoundation's `AccessTokenProvider`, so a client that needs tokens can take
+/// `any AccessTokenProvider` without importing this module.
 @_spi(AmplifyExperimental)
-public struct CognitoUserPoolTokenProvider: Sendable {
+public struct CognitoUserPoolTokenProvider: AccessTokenProvider {
 
     /// Strong: a provider keeps its session alive.
     let core: SessionCore

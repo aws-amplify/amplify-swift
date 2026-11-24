@@ -111,7 +111,7 @@ Also stated in the doc: one user at a time per session, the same human *can* hol
 
 - **The key format is `amplify.1.<poolNamespace>.<sessionId>.session`**, because apps with only one pool type have one fewer segment. **The default session is stored as `$default`**, which `named(_:)` cannot produce, so it cannot be spoofed. **It is also the session that adopts the plugin's record** - there is no separate adoption session ID, so the plugin, the bridge and the client all read one key. → §6 key *(Superseded 2026-10-02: `.default` is the plugin's own record, `amplify.<ns>.session`, and there is no `$default` session record; `.default`'s challenge record and sidecar stay under `$default`. `named("$default")` now returns `.default` itself, so a persisted `stringValue` round-trips; no other name can produce it (§6, §14.8). The "one key" claim was also not true of the code: the plugin read `$default` only as a fallback.)*
 
-- **The providers are concrete `Sendable` types**, `CognitoCredentialsProvider` and `CognitoUserPoolTokenProvider`, not existentials. AmplifyFoundation's `AWSCredentialsProvider` is not `Sendable` and changing that would break every existing conformer; the token provider is new, since no Foundation protocol exists for it. → 14.4
+- **The providers are concrete `Sendable` types**, `CognitoCredentialsProvider` and `CognitoUserPoolTokenProvider`, not existentials. AmplifyFoundation's `AWSCredentialsProvider` is not `Sendable` and changing that would break every existing conformer; the token provider conforms to AmplifyFoundation's `AccessTokenProvider` (experimental SPI, `Sendable`), added for it so a token consumer needs AmplifyFoundation alone. → 14.4
 
 - **The client does not depend on Amplify core** - only on AmplifyFoundation and AmplifyFoundationBridge, like the CloudWatch and Kinesis clients. So `AuthSessionState` uses client-owned `AuthClientUser`, `AuthClientSignInStep` and `AuthClientError` in place of Amplify core's `AuthUser`, `AuthSignInStep` and `AuthError`, and a plugin bridge would map between them (not built; §4.9). It also means the extracted Cognito engine must itself be Amplify-free before the client can use it. → 14.2 · 14.6
 
@@ -1445,9 +1445,10 @@ extension AmplifyCognitoClient {
     // concrete Sendable type is what lets a Sendable client vend it without an
     // unsafe escape. Failures are AmplifyFoundation's CredentialsError (15.2).
     //
-    // CognitoUserPoolTokenProvider is new here - AmplifyFoundation has no
-    // token-provider protocol - with one operation:
+    // CognitoUserPoolTokenProvider conforms to AmplifyFoundation's
+    // AccessTokenProvider (experimental SPI, Sendable), whose one operation is:
     //   func accessToken() async throws -> String
+    // Its failures are CredentialsError too, with the same disposition.
     //
     // Note: AWSPluginsCore declares a *different* protocol also named
     // AWSCredentialsProvider (method: fetchAWSCredentials()). This client uses

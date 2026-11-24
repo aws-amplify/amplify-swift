@@ -117,6 +117,7 @@ final class CredentialProviderTests: XCTestCase {
     /// - When: both providers are asked
     /// - Then:
     ///    - both vend the session's credentials and token, bound to its session ID
+    ///    - the token provider vends the same token through AmplifyFoundation's `AccessTokenProvider`
     func testSignedInVendsBoth() async throws {
         let alice = FakePayload.signedIn("alice")
         try harness.signIn(work, alice)
@@ -129,6 +130,9 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(token, alice.accessToken)
         XCTAssertEqual(client.credentialsProvider.sessionId, work)
         XCTAssertEqual(client.userPoolTokenProvider.sessionId, work)
+        let foundationProvider: any AccessTokenProvider = client.userPoolTokenProvider
+        let foundationToken = try await foundationProvider.accessToken()
+        XCTAssertEqual(foundationToken, alice.accessToken)
     }
 
     /// The credentials `credentialsProvider` resolves never print their secret or session token, as

@@ -33,7 +33,7 @@ Amplify Clients are **standalone AWS service clients** independent of the core `
 
 Zero-dependency protocol layer providing:
 
-**Credentials** — `AWSCredentials`, `AWSTemporaryCredentials`, `AWSCredentialsProvider` (async resolution)
+**Credentials** — `AWSCredentials`, `AWSTemporaryCredentials`, `AWSCredentialsProvider` (async resolution), and `AccessTokenProvider` (user pool access tokens; experimental SPI, like `CredentialsError`)
 
 **Logging** — `Logger` protocol with `error`/`warn`/`info`/`debug`/`verbose` levels. `BroadcastLogger` routes to multiple `LogSinkBehavior` sinks. `AmplifyOSLogSink` provides os.log integration.
 

@@ -67,7 +67,8 @@ passwords, pool IDs or user identifiers.
 ## Install
 
 Add the package with Swift Package Manager and link the `AmplifyCognitoClient` product. Link `AmplifyFoundation`
-too if you use the credentials-provider protocol, `CredentialsError`, `StorageUnavailableReason` or logging.
+too if you use the credentials-provider or token-provider protocol, `CredentialsError`, `StorageUnavailableReason`
+or logging.
 
 Pin the release exactly: any release may change or remove this beta API. One version applies to the whole package,
 so the pin also sets the version of the Auth plugin and the other Amplify libraries your app uses.
@@ -96,7 +97,7 @@ Import the client with the SPI:
 ```swift
 @_spi(AmplifyExperimental) import AmplifyCognitoClient
 
-// Only where you name CredentialsError or match a StorageUnavailableReason:
+// Only where you name CredentialsError or AccessTokenProvider, or match a StorageUnavailableReason:
 @_spi(AmplifyExperimental) import AmplifyFoundation
 ```
 
@@ -1053,7 +1054,9 @@ The provider:
   here;
 - holds no credentials of its own: each call resolves through the live session, refreshing if needed.
 
-`userPoolTokenProvider` does the same for the user pool access token.
+`userPoolTokenProvider` does the same for the user pool access token. It conforms to AmplifyFoundation's
+`AccessTokenProvider` (`func accessToken() async throws -> String`; needs the SPI import), so a client that needs
+tokens can take `any AccessTokenProvider` and depend on AmplifyFoundation alone, as the credentials consumers do.
 
 Failures are `CredentialsError` from AmplifyFoundation. Read its `disposition` to decide what to do with buffered
 work (needs the SPI import):
