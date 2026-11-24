@@ -87,3 +87,18 @@ public enum AuthClientResetPasswordStep {
 extension AuthClientResetPasswordStep: Equatable {}
 
 extension AuthClientResetPasswordStep: Sendable {}
+
+/// Options for `AmplifyCognitoClient.update(oldPassword:to:options:)`.
+///
+/// Empty: here so the call keeps the plugin's shape. The client's counterpart of Amplify core's
+/// `AuthChangePasswordRequest.Options`, which holds only `pluginOptions`; the client has no plugin
+/// options.
+@_spi(AmplifyExperimental)
+public struct AuthClientChangePasswordOptions {
+
+    public init() {}
+}
+
+extension AuthClientChangePasswordOptions: Equatable {}
+
+extension AuthClientChangePasswordOptions: Sendable {}

@@ -53,4 +53,22 @@ final class PublicTestDoubleTests: XCTestCase {
         XCTAssertEqual(AuthClientRevokeTokenError(error: .unknown("revoke", "retry")).error.errorDescription, "revoke")
         XCTAssertEqual(AuthClientHostedUIError(error: .unknown("page", "retry")).error.errorDescription, "page")
     }
+
+    /// - Given: an app outside the module
+    /// - When: it builds each empty options type with its public initializer
+    /// - Then:
+    ///    - each compiles (the initializers are public), and two values of a type are equal
+    func testTheEmptyOptionsAreBuildableOutsideTheModule() {
+        XCTAssertEqual(AuthClientChangePasswordOptions(), .init())
+        XCTAssertEqual(AuthClientFetchUserAttributesOptions(), .init())
+        XCTAssertEqual(AuthClientConfirmUserAttributeOptions(), .init())
+        XCTAssertEqual(AuthClientFetchDevicesOptions(), .init())
+        XCTAssertEqual(AuthClientRememberDeviceOptions(), .init())
+        XCTAssertEqual(AuthClientForgetDeviceOptions(), .init())
+        XCTAssertEqual(AuthClientDeleteWebAuthnCredentialOptions(), .init())
+        XCTAssertEqual(AuthClientClearFederationToIdentityPoolOptions(), .init())
+        #if os(iOS) || os(macOS) || os(visionOS)
+        XCTAssertEqual(AuthClientAssociateWebAuthnCredentialOptions(), .init())
+        #endif
+    }
 }

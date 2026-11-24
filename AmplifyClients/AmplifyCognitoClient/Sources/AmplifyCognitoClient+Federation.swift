@@ -56,10 +56,13 @@ public extension AmplifyCognitoClient {
     /// Ends this session's federation, clearing its credentials. The session's row is kept, signed out, with
     /// its label, as after `signOut()`.
     ///
+    /// - Parameter options: Nothing yet; here so the call keeps the plugin's shape.
     /// - Throws: `AuthClientError.invalidState` if this session is not federated, or if what is stored is no
     ///   longer the identity it found (a user, or another federation, stored meanwhile: nothing is cleared);
     ///   `.storageUnavailable` if storage could not be read or written.
-    func clearFederationToIdentityPool() async throws {
+    func clearFederationToIdentityPool(
+        options: AuthClientClearFederationToIdentityPoolOptions = AuthClientClearFederationToIdentityPoolOptions()
+    ) async throws {
         let core = core
         try await core.clearFederationToIdentityPool()
     }

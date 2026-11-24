@@ -53,3 +53,48 @@ public struct AuthClientDevice {
 extension AuthClientDevice: Equatable {}
 
 extension AuthClientDevice: Sendable {}
+
+/// Options for `AmplifyCognitoClient.fetchDevices(options:)`.
+///
+/// Empty: here so the call keeps the plugin's shape. The client's counterpart of Amplify core's
+/// `AuthFetchDevicesRequest.Options`, which holds only `pluginOptions`; the client has no plugin
+/// options.
+@_spi(AmplifyExperimental)
+public struct AuthClientFetchDevicesOptions {
+
+    public init() {}
+}
+
+extension AuthClientFetchDevicesOptions: Equatable {}
+
+extension AuthClientFetchDevicesOptions: Sendable {}
+
+/// Options for `AmplifyCognitoClient.rememberDevice(options:)`.
+///
+/// Empty: here so the call keeps the plugin's shape. The client's counterpart of Amplify core's
+/// `AuthRememberDeviceRequest.Options`, which holds only `pluginOptions`; the client has no plugin
+/// options.
+@_spi(AmplifyExperimental)
+public struct AuthClientRememberDeviceOptions {
+
+    public init() {}
+}
+
+extension AuthClientRememberDeviceOptions: Equatable {}
+
+extension AuthClientRememberDeviceOptions: Sendable {}
+
+/// Options for `AmplifyCognitoClient.forgetDevice(_:options:)`.
+///
+/// Empty: here so the call keeps the plugin's shape. The client's counterpart of Amplify core's
+/// `AuthForgetDeviceRequest.Options`, which holds only `pluginOptions`; the client has no plugin
+/// options.
+@_spi(AmplifyExperimental)
+public struct AuthClientForgetDeviceOptions {
+
+    public init() {}
+}
+
+extension AuthClientForgetDeviceOptions: Equatable {}
+
+extension AuthClientForgetDeviceOptions: Sendable {}

@@ -70,3 +70,35 @@ public struct AuthClientListWebAuthnCredentialsResult: Sendable, Equatable {
         self.nextToken = nextToken
     }
 }
+
+#if os(iOS) || os(macOS) || os(visionOS)
+/// Options for `AmplifyCognitoClient.associateWebAuthnCredential(presentationAnchor:options:)`.
+///
+/// Empty: here so the call keeps the plugin's shape. The client's counterpart of Amplify core's
+/// `AuthAssociateWebAuthnCredentialRequest.Options`, which holds only `pluginOptions`; the client has no plugin
+/// options. iOS, macOS and visionOS only, as the call is.
+@_spi(AmplifyExperimental)
+public struct AuthClientAssociateWebAuthnCredentialOptions {
+
+    public init() {}
+}
+
+extension AuthClientAssociateWebAuthnCredentialOptions: Equatable {}
+
+extension AuthClientAssociateWebAuthnCredentialOptions: Sendable {}
+#endif
+
+/// Options for `AmplifyCognitoClient.deleteWebAuthnCredential(credentialId:options:)`.
+///
+/// Empty: here so the call keeps the plugin's shape. The client's counterpart of Amplify core's
+/// `AuthDeleteWebAuthnCredentialRequest.Options`, which holds only `pluginOptions`; the client has no plugin
+/// options.
+@_spi(AmplifyExperimental)
+public struct AuthClientDeleteWebAuthnCredentialOptions {
+
+    public init() {}
+}
+
+extension AuthClientDeleteWebAuthnCredentialOptions: Equatable {}
+
+extension AuthClientDeleteWebAuthnCredentialOptions: Sendable {}

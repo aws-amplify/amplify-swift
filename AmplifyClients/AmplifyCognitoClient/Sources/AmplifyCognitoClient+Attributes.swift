@@ -17,12 +17,15 @@ public extension AmplifyCognitoClient {
 
     /// The signed-in user's attributes.
     ///
+    /// - Parameter options: Nothing yet; here so the call keeps the plugin's shape.
     /// - Throws: `AuthClientError.configuration` without a user pool; `.notSignedIn` for a signed-out, guest
     ///   or federated session, and while a sign-in waits on a challenge; `.sessionExpired` when the tokens
     ///   needed a refresh and the refresh token is no longer valid; `.storageUnavailable` if the session's
     ///   record could not be read; `.notAuthorized` when Cognito refuses the access token (revoked, for
     ///   one); `.service` for Cognito's other answers; `.unknown` if Cognito answers without attributes.
-    func fetchUserAttributes() async throws -> [AuthClientUserAttribute] {
+    func fetchUserAttributes(
+        options: AuthClientFetchUserAttributesOptions = AuthClientFetchUserAttributesOptions()
+    ) async throws -> [AuthClientUserAttribute] {
         let core = core
         return try await core.signedInOperation("fetch the user attributes") { engine, payload in
             try await engine.fetchUserAttributes(payload)
@@ -79,8 +82,13 @@ public extension AmplifyCognitoClient {
 
     /// Confirms one of the signed-in user's attributes with the code Cognito sent.
     ///
+    /// - Parameter options: Nothing yet; here so the call keeps the plugin's shape.
     /// - Throws: as `fetchUserAttributes()`; `.service(.codeMismatch, …)` for a wrong code.
-    func confirm(userAttribute: AuthClientUserAttributeKey, confirmationCode: String) async throws {
+    func confirm(
+        userAttribute: AuthClientUserAttributeKey,
+        confirmationCode: String,
+        options: AuthClientConfirmUserAttributeOptions = AuthClientConfirmUserAttributeOptions()
+    ) async throws {
         let core = core
         try await core.signedInOperation("confirm a user attribute") { engine, payload in
             try await engine.confirmUserAttribute(payload, attributeKey: userAttribute, confirmationCode: confirmationCode)
@@ -89,8 +97,13 @@ public extension AmplifyCognitoClient {
 
     /// Changes the signed-in user's password.
     ///
+    /// - Parameter options: Nothing yet; here so the call keeps the plugin's shape.
     /// - Throws: as `fetchUserAttributes()`; `.notAuthorized` for a wrong old password.
-    func update(oldPassword: String, to newPassword: String) async throws {
+    func update(
+        oldPassword: String,
+        to newPassword: String,
+        options: AuthClientChangePasswordOptions = AuthClientChangePasswordOptions()
+    ) async throws {
         let core = core
         try await core.signedInOperation("change the password") { engine, payload in
             try await engine.changePassword(payload, oldPassword: oldPassword, newPassword: newPassword)

@@ -89,3 +89,33 @@ public enum AuthClientUpdateAttributeStep {
 extension AuthClientUpdateAttributeStep: Equatable {}
 
 extension AuthClientUpdateAttributeStep: Sendable {}
+
+/// Options for `AmplifyCognitoClient.fetchUserAttributes(options:)`.
+///
+/// Empty: here so the call keeps the plugin's shape. The client's counterpart of Amplify core's
+/// `AuthFetchUserAttributesRequest.Options`, which holds only `pluginOptions`; the client has no plugin
+/// options.
+@_spi(AmplifyExperimental)
+public struct AuthClientFetchUserAttributesOptions {
+
+    public init() {}
+}
+
+extension AuthClientFetchUserAttributesOptions: Equatable {}
+
+extension AuthClientFetchUserAttributesOptions: Sendable {}
+
+/// Options for `AmplifyCognitoClient.confirm(userAttribute:confirmationCode:options:)`.
+///
+/// Empty: here so the call keeps the plugin's shape. The client's counterpart of Amplify core's
+/// `AuthConfirmUserAttributeRequest.Options`, which holds only `pluginOptions`; the client has no plugin
+/// options.
+@_spi(AmplifyExperimental)
+public struct AuthClientConfirmUserAttributeOptions {
+
+    public init() {}
+}
+
+extension AuthClientConfirmUserAttributeOptions: Equatable {}
+
+extension AuthClientConfirmUserAttributeOptions: Sendable {}

@@ -35,8 +35,10 @@ public extension AmplifyCognitoClient {
     /// Unlike the plugin, the window is required: without one the plugin shows the sheet over a window of its
     /// own, which with several sessions could be another session's.
     ///
-    /// - Parameter presentationAnchor: The window the passkey sheet attaches to, such as the active scene's
-    ///   key window. It must stay open until the ceremony finishes.
+    /// - Parameters:
+    ///   - presentationAnchor: The window the passkey sheet attaches to, such as the active scene's key window.
+    ///     It must stay open until the ceremony finishes.
+    ///   - options: Nothing yet; here so the call keeps the plugin's shape.
     /// - Throws: `AuthClientError.configuration` without a user pool; `.notSignedIn` for a signed-out, guest
     ///   or federated session, and while a sign-in on this session waits on a challenge; `.sessionExpired`
     ///   when the refresh the session needed first failed for good; `.browserBusy(holder:)` while another
@@ -51,7 +53,10 @@ public extension AmplifyCognitoClient {
     ///   `resetSystemSheet()` closes its sheet; `CancellationError` if the calling task is cancelled.
     @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
     @MainActor
-    func associateWebAuthnCredential(presentationAnchor: AuthClientPresentationAnchor) async throws {
+    func associateWebAuthnCredential(
+        presentationAnchor: AuthClientPresentationAnchor,
+        options: AuthClientAssociateWebAuthnCredentialOptions = AuthClientAssociateWebAuthnCredentialOptions()
+    ) async throws {
         let anchor = EnginePresentationAnchorBox(presentationAnchor)
         let core = core
         try await core.associateWebAuthnCredential(anchor: anchor)
@@ -159,9 +164,14 @@ public extension AmplifyCognitoClient {
     /// This removes the credential from the user pool, so it can no longer sign the user in. The passkey
     /// itself stays in the device's password manager until the user removes it there.
     ///
-    /// - Parameter credentialId: The credential's `credentialId`, from `listWebAuthnCredentials(options:)`.
+    /// - Parameters:
+    ///   - credentialId: The credential's `credentialId`, from `listWebAuthnCredentials(options:)`.
+    ///   - options: Nothing yet; here so the call keeps the plugin's shape.
     /// - Throws: as `listWebAuthnCredentials(options:)`, without the page-size check.
-    func deleteWebAuthnCredential(credentialId: String) async throws {
+    func deleteWebAuthnCredential(
+        credentialId: String,
+        options: AuthClientDeleteWebAuthnCredentialOptions = AuthClientDeleteWebAuthnCredentialOptions()
+    ) async throws {
         let core = core
         try await core.signedInOperation("delete the WebAuthn credential") { engine, payload in
             try await engine.deleteWebAuthnCredential(payload, credentialId: credentialId)

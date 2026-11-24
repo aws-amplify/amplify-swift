@@ -139,8 +139,8 @@ final class WebAuthnCeremonyTests: XCTestCase {
     ///
     /// - Given: `work` signed in as alice, and associate's ceremony held up
     /// - When:
-    ///    - `work` associates a passkey with a window; while the sheet is up, `work` signs in and answers a
-    ///      challenge
+    ///    - `work` associates a passkey with a window, passing the call's empty options; while the sheet is up,
+    ///      `work` signs in and answers a challenge
     /// - Then:
     ///    - the sheet is held by `work` during the ceremony
     ///    - the sign-in and the confirmation are answered at once (`invalidState`: signed in, nothing
@@ -160,7 +160,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
             return Data("credential".utf8)
         }
 
-        let associate = Task { @MainActor in try await client.associateWebAuthnCredential(presentationAnchor: window) }
+        let associate = Task { @MainActor in try await client.associateWebAuthnCredential(presentationAnchor: window, options: .init()) }
         try await held.up()
         let holder = await harness.sheetLock.currentHolder
         XCTAssertEqual(holder, work)

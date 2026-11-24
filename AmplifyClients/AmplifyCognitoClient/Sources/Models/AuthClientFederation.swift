@@ -48,3 +48,17 @@ public struct AuthClientFederateToIdentityPoolResult {
 extension AuthClientFederateToIdentityPoolResult: Equatable {}
 
 extension AuthClientFederateToIdentityPoolResult: Sendable {}
+
+/// Options for `AmplifyCognitoClient.clearFederationToIdentityPool(options:)`.
+///
+/// Empty: here so the call keeps the plugin's shape. The client's counterpart of the plugin's
+/// `AuthClearFederationToIdentityPoolRequest.Options`, which is empty too.
+@_spi(AmplifyExperimental)
+public struct AuthClientClearFederationToIdentityPoolOptions {
+
+    public init() {}
+}
+
+extension AuthClientClearFederationToIdentityPoolOptions: Equatable {}
+
+extension AuthClientClearFederationToIdentityPoolOptions: Sendable {}

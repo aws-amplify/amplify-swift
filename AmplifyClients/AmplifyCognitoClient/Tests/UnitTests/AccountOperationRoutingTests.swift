@@ -138,6 +138,47 @@ final class AccountOperationRoutingTests: XCTestCase {
         XCTAssertEqual(engine.accountOperationCalls, [])
     }
 
+    // MARK: The calls with empty options
+
+    /// The calls that take an empty options type do with it what they do without. (`associateWebAuthnCredential`,
+    /// the ninth, is in `WebAuthnCeremonyTests.testAssociateHoldsTheSheetLeaseButNotTheSignInLock`.)
+    ///
+    /// - Given: `work` signed in as alice, and `home` federated
+    /// - When: each call that takes an empty options type is made on `work` with its options, and `home`'s
+    ///   federation is cleared with its options
+    /// - Then:
+    ///    - `work`'s engine receives each call once, in order, with alice's payload and the call's arguments
+    ///    - `home` is signed out
+    func testTheCallsWithEmptyOptionsRouteAsWithoutThem() async throws {
+        let alice = FakePayload.signedIn("alice")
+        try harness.signIn(work, alice)
+        try harness.signIn(home, .federated())
+        let client = try harness.client(work)
+        let federated = try harness.client(home)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+
+        _ = try await client.fetchUserAttributes(options: AuthClientFetchUserAttributesOptions())
+        try await client.confirm(userAttribute: .email, confirmationCode: "111111", options: AuthClientConfirmUserAttributeOptions())
+        try await client.update(oldPassword: "old", to: "new", options: AuthClientChangePasswordOptions())
+        _ = try await client.fetchDevices(options: AuthClientFetchDevicesOptions())
+        try await client.rememberDevice(options: AuthClientRememberDeviceOptions())
+        try await client.forgetDevice(options: AuthClientForgetDeviceOptions())
+        try await client.deleteWebAuthnCredential(credentialId: "credential", options: AuthClientDeleteWebAuthnCredentialOptions())
+        try await federated.clearFederationToIdentityPool(options: AuthClientClearFederationToIdentityPoolOptions())
+
+        XCTAssertEqual(engine.accountOperationCalls, [
+            .fetchUserAttributes(payload: alice.data),
+            .confirmUserAttribute(payload: alice.data, attributeKey: .email, confirmationCode: "111111"),
+            .changePassword(payload: alice.data, oldPassword: "old", newPassword: "new"),
+            .fetchDevices(payload: alice.data),
+            .rememberDevice(payload: alice.data),
+            .forgetDevice(payload: alice.data, deviceId: nil),
+            .deleteWebAuthnCredential(payload: alice.data, credentialId: "credential")
+        ])
+        let state = await federated.currentSessionState()
+        XCTAssertEqual(state, .signedOut)
+    }
+
     // MARK: Signed-in operations
 
     /// - Given: `work` signed in as alice and `home` as bob
