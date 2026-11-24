@@ -138,6 +138,14 @@ actor MockRecordStorage: RecordStorage {
         deleteRecordsCallCount += 1
     }
 
+    func maxRecordId() throws -> Int64? {
+        nil
+    }
+
+    func deleteRecords(upTo id: Int64) throws {
+        deleteRecordsCallCount += 1
+    }
+
     func incrementRetryCount(ids: [Int64]) throws {
     }
 

@@ -10,8 +10,8 @@ import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
 /// What the providers and the operations on the signed-in user answer while a sign-in waits on a challenge over a
-/// session that holds credentials (they refuse it, whatever the session held), and for a federated session whose
-/// credentials need a refresh.
+/// session that holds credentials (they refuse it; an expired session keeps answering as expired), and for a
+/// federated session whose credentials need a refresh.
 final class ProviderStateAnswerTests: XCTestCase {
 
     private var harness: ClientHarness!
@@ -82,15 +82,17 @@ final class ProviderStateAnswerTests: XCTestCase {
         XCTAssertEqual(engine.refreshCalls.count, 0)
     }
 
-    /// The same rule for an expired session whose user signs in again: the session's answer is `notSignedIn`, not
-    /// `sessionExpired`, until the sign-in ends.
+    /// An expired session whose user signs in again keeps answering `sessionExpired` until the sign-in ends: a
+    /// consumer keeps what it buffered for the session, where `notSignedIn` (`.discard`) would make it drop that
+    /// during the MFA prompt.
     ///
     /// - Given: a signed-in session whose refresh token is dead, and then a sign-in on it waiting on an SMS code
     /// - When: both providers are asked; then the challenge is answered and both are asked again
     /// - Then:
-    ///    - while the challenge waits, both throw `notSignedIn` (`.discard`), with no second refresh
+    ///    - while the challenge waits, both throw `sessionExpired` (`.retryAfterReauthentication`), with no second
+    ///      refresh
     ///    - once it is answered, both vend the new sign-in's credentials
-    func testAnExpiredSessionWaitingOnAChallengeVendsNothing() async throws {
+    func testAnExpiredSessionWaitingOnAChallengeKeepsAnsweringAsExpired() async throws {
         try harness.signIn(work, .signedIn("alice", stale: true))
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
@@ -102,10 +104,10 @@ final class ProviderStateAnswerTests: XCTestCase {
         let aws = await credentialsError { try await client.credentialsProvider.resolve() }
         let token = await credentialsError { try await client.userPoolTokenProvider.accessToken() }
 
-        XCTAssertEqual(aws?.isNotSignedIn, true, "\(String(describing: aws))")
-        XCTAssertEqual(aws?.disposition, .discard)
-        XCTAssertEqual(token?.isNotSignedIn, true, "\(String(describing: token))")
-        XCTAssertEqual(token?.disposition, .discard)
+        XCTAssertEqual(aws?.isSessionExpired, true, "\(String(describing: aws))")
+        XCTAssertEqual(aws?.disposition, .retryAfterReauthentication)
+        XCTAssertEqual(token?.isSessionExpired, true, "\(String(describing: token))")
+        XCTAssertEqual(token?.disposition, .retryAfterReauthentication)
         XCTAssertEqual(engine.refreshCalls.count, 1)
 
         _ = try await client.confirmSignIn(challengeResponse: "123456")

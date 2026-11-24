@@ -10,6 +10,8 @@ import AmplifyRecordCache
 import Foundation
 
 /// Top-level error type for KinesisDataStreams operations.
+///
+/// May gain cases in a minor release: include `@unknown default` when you switch over it.
 public enum KinesisError {
 
   /// A local cache/storage error.
@@ -18,6 +20,10 @@ public enum KinesisError {
   case cacheLimitExceeded(ErrorDescription, RecoverySuggestion, Error? = nil)
   /// Record input validation failed (e.g. oversized record, invalid partition key).
   case validation(ErrorDescription, RecoverySuggestion, Error? = nil)
+  /// The credentials provider threw AmplifyFoundation's `CredentialsError`, which stopped the flush. The
+  /// description and recovery suggestion are the provider's, and the underlying error is that error. No retry
+  /// is counted against the records left in the cache; see `flush()` for what happens to them.
+  case credentials(ErrorDescription, RecoverySuggestion, Error? = nil)
   /// An error that doesn't fall into the known categories above.
   case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
@@ -28,6 +34,7 @@ extension KinesisError: AmplifyError {
     case .cache(let description, _, _),
       .cacheLimitExceeded(let description, _, _),
       .validation(let description, _, _),
+      .credentials(let description, _, _),
       .unknown(let description, _, _):
       return description
     }
@@ -38,6 +45,7 @@ extension KinesisError: AmplifyError {
     case .cache(_, let suggestion, _),
       .cacheLimitExceeded(_, let suggestion, _),
       .validation(_, let suggestion, _),
+      .credentials(_, let suggestion, _),
       .unknown(_, let suggestion, _):
       return suggestion
     }
@@ -48,6 +56,7 @@ extension KinesisError: AmplifyError {
     case .cache(_, _, let error),
       .cacheLimitExceeded(_, _, let error),
       .validation(_, _, let error),
+      .credentials(_, _, let error),
       .unknown(_, _, let error):
       return error
     }
@@ -90,6 +99,8 @@ extension KinesisError: AmplifyError {
       return .cacheLimitExceeded(desc, recovery, underlyingError)
     case .validation(let desc, let recovery, let underlyingError):
       return .validation(desc, recovery, underlyingError)
+    case .credentials(let desc, let recovery, let underlyingError):
+      return .credentials(desc, recovery, underlyingError)
     }
   }
 }

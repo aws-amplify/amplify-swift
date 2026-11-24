@@ -67,6 +67,9 @@ public class AmplifyFirehoseClient {
     /// Configuration options for AmplifyFirehoseClient
     public struct Options {
         public let cacheMaxBytes: Int64
+
+        /// How many failed sends a cached record survives before it is removed. A flush whose credentials
+        /// provider throws AmplifyFoundation's `CredentialsError` counts no retry: see `flush()`.
         public let maxRetries: Int
         public let flushStrategy: FlushStrategy
 
@@ -92,8 +95,11 @@ public class AmplifyFirehoseClient {
         ///   identifier, or with one for the first time: records cached under the old identifier, or in the
         ///   region's shared cache, stay there until a client with that identifier, or with none, flushes or
         ///   clears them.
-        /// - A cache outlives its session's sign-out: its records stay until they are flushed, or a client with
-        ///   that identifier calls `clearCache()`. The emptied file is never removed.
+        /// - A cache outlives its session's sign-out: its records stay until a flush sends them, a flush finds
+        ///   the session signed out and discards them (below), or a client with that identifier calls
+        ///   `clearCache()`. The emptied file is never removed.
+        /// - Only a cache with an identifier is discarded when the credentials provider says so (`flush()`'s
+        ///   `FirehoseError.credentials`): the region's shared cache holds every session's records, so it is kept.
         public let cacheIdentifier: String?
 
         public init(
@@ -174,7 +180,8 @@ public class AmplifyFirehoseClient {
         self.recordClient = AmplifyRecordCache.RecordClient(
             sender: sender,
             storage: storage,
-            maxRetries: options.maxRetries
+            maxRetries: options.maxRetries,
+            ownsCache: options.cacheIdentifier != nil
         )
 
         // Create and setup flush scheduler
@@ -230,6 +237,24 @@ public class AmplifyFirehoseClient {
     /// up in the next flush cycle.
     ///
     /// Records that exceed ``Options/maxRetries`` are removed from the cache.
+    ///
+    /// **When the credentials provider throws AmplifyFoundation's `CredentialsError`** (an `AmplifyCognitoClient`
+    /// session's provider does), the flush stops there and throws ``FirehoseError/credentials(_:_:_:)``, with that
+    /// error underneath, and counts no retry against the records it did not send. They follow the error's
+    /// `disposition`:
+    /// - `.retryAfterReauthentication` (the session expired), `.retryWithBackoff` and `.failLoudly`: the records
+    ///   are kept, and sent by a later flush once the provider vends credentials again. Kept this way they do
+    ///   not expire through ``Options/maxRetries``, so the cache can fill to ``Options/cacheMaxBytes``, after
+    ///   which `record` throws ``FirehoseError/cacheLimitExceeded(_:_:_:)``.
+    /// - `.discard` (the session signed out): with ``Options/cacheIdentifier`` set, the records cached when the
+    ///   flush began are removed, since they were recorded for a user who is gone; records added during the
+    ///   flush are kept. Without an identifier the records are kept: the region's shared cache holds every
+    ///   session's records.
+    ///
+    /// While such failures repeat, the automatic flush backs off, doubling its interval up to 15 minutes, until a
+    /// flush completes. A wait already under way is not shortened, so call `enable()` once the session can vend
+    /// credentials again (after a sign-in, say) to restart the schedule. Any other error from the provider is a
+    /// failed send, as before: ``FirehoseError/unknown(_:_:_:)``, and a retry counted.
     ///
     /// If a flush is already in progress, the call returns immediately with
     /// `FlushData(recordsFlushed: 0, flushInProgress: true)`.

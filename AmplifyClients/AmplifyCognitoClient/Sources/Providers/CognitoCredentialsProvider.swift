@@ -48,15 +48,16 @@ public struct CognitoCredentialsProvider: AWSCredentialsProvider, Sendable {
     ///     process until the user pool tokens next need a refresh or a fetch forces a refresh; the refusal is the
     ///     underlying error). `.default` on a changed identity pool keeps the old identity ID, and the new identity
     ///     pool's refusal is `.unknown`;
-    ///   - `.notSignedIn` for a signed-out session, and while a sign-in on it waits on a challenge, whatever the
-    ///     session held before: a guest's credentials or an expired session's tokens, which answer `.notSignedIn`
-    ///     there, not `.sessionExpired`, until the challenge is answered or the sign-in ends. This `.discard` marks
+    ///   - `.notSignedIn` for a signed-out session, and while a sign-in on it waits on a challenge, a guest's
+    ///     credentials included, until the challenge is answered or the sign-in ends. (An expired session keeps
+    ///     answering `.sessionExpired` there, and what a consumer kept for it is sent as whoever signs in.) This `.discard` marks
     ///     the change of principal only when the sign-in stops on a challenge: the provider is bound to the session,
     ///     not to a user, so a sign-in that completes at once (no challenge, or a hosted-UI sign-in) hands the user's
     ///     credentials to a consumer still holding a guest's buffer. Flush a guest's buffered work before any
     ///     sign-in: without a challenge it is sent as the user, and with one the provider answers `.discard`.
     ///     `AmplifyCognitoClient.fetchAuthSession()` still reports what the session holds;
-    ///   - `.sessionExpired` if the refresh token (or a federated session's provider token) is dead;
+    ///   - `.sessionExpired` if the refresh token (or a federated session's provider token) is dead, and still
+    ///     while that session signs in again and waits on a challenge, so a consumer keeps what it buffered;
     ///   - `.storageUnavailable` if secure storage could not be read or written;
     ///   - `.unknown` for anything else, such as a refresh that failed on the network, or a saved record
     ///     this version cannot read.

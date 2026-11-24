@@ -364,7 +364,8 @@ extension SessionCore {
     /// does, in the same task, its row is purged as for a deletion, and the error is rethrown. The per-user
     /// device records are left as the engine leaves them.
     ///
-    /// - Throws: `notSignedIn`, `sessionExpired` or `storageUnavailable` as the credential providers do;
+    /// - Throws: `notSignedIn`, `sessionExpired` or `storageUnavailable` as the credential providers do (except
+    ///   that it is `notSignedIn` while a sign-in waits on a challenge, an expired session's included);
     ///   `invalidState` if a different user signed in to the session meanwhile; the engine's mapped
     ///   failure. If the user was deleted but the row could not be removed, the session still reports
     ///   the deletion (signed out, `.userDeleted`), then `storageUnavailable` says so. `CancellationError` if

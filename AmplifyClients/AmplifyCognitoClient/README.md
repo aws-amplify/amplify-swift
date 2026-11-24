@@ -1059,8 +1059,26 @@ Without it, two sessions' clients for one region share a cache, and one session'
 with its own credentials. The identifier is fixed when the client is created. Flush before you create a client with
 another identifier, or with one for the first time: records cached under the old identifier, or in the region's
 shared cache, stay there until a client with that identifier, or with none, flushes or clears them. A session's
-cache outlives its sign-out: its records stay until they are flushed, or a client with that identifier calls
-`clearCache()`, and the emptied file is never removed.
+cache outlives its sign-out: its records stay until a flush sends them or discards them (below), or a client with
+that identifier calls `clearCache()`, and the emptied file is never removed.
+
+When the provider can't vend credentials, a flush stops and throws `KinesisError.credentials`
+(`FirehoseError.credentials`), with the provider's `CredentialsError` underneath, and counts no retry against the
+records it did not send. They follow the error's `disposition`:
+
+- `.discard` (the session signed out): a client with a `cacheIdentifier` drops the records cached when the flush
+  began, since their user is gone. A client without one keeps them: the region's cache holds every session's records.
+- `.retryAfterReauthentication` (the session expired), `.retryWithBackoff` and `.failLoudly`: the records are kept,
+  and sent once the session can vend credentials again. Kept this way they don't expire through `maxRetries`, so
+  the cache can fill to `cacheMaxBytes`, after which `record` throws `cacheLimitExceeded`.
+
+While such failures repeat, the automatic flush backs off, doubling its interval up to 15 minutes, until a flush
+completes. A wait already under way isn't shortened, so call `enable()` after the session signs in again to restart
+the schedule.
+
+An expired session keeps answering `sessionExpired` while a sign-in on it waits on a challenge (an MFA code, say),
+so a flush during the prompt keeps the records too. They are then sent as whoever signed in: the provider is bound
+to the session, not to a user. If a different user may sign in to an expired session, call `clearCache()` first.
 
 In Swift 6, calling `record(…)` on an `AmplifyKinesisClient` or `AmplifyFirehoseClient` from a `@MainActor` type (a
 SwiftUI view model, say) or an actor that holds the client fails to compile with "sending '…' risks causing data
@@ -1073,9 +1091,10 @@ The provider:
 - never falls back: a signed-out session throws `notSignedIn` and never quietly returns guest credentials, unlike the
   plugin's provider. Call `fetchAuthSession()` first if you want a signed-out session to become a guest (it throws
   `notSignedIn` when the identity pool allows no guests, so use `try?` or handle the error);
-- vends nothing while a sign-in on the session waits on a challenge, whatever the session held, a guest's credentials
-  included: it throws `notSignedIn` (`.discard`), so a consumer that follows it drops what it has buffered so far;
-  with no identity pool it throws `notConfigured` (`.failLoudly`) instead. `.discard` marks the change of principal
+- vends nothing while a sign-in on the session waits on a challenge, a guest's credentials included: it throws
+  `notSignedIn` (`.discard`), so a consumer that follows it drops what it has buffered so far. An expired session
+  keeps throwing `sessionExpired` (`.retryAfterReauthentication`) there, so the consumer keeps what it buffered,
+  and sends it as whoever signs in. With no identity pool it throws `notConfigured` (`.failLoudly`) instead. `.discard` marks the change of principal
   only when the sign-in stops on a challenge. A sign-in that completes at once (one that needs no challenge, or a
   hosted-UI sign-in) moves the session to the new login with no `notSignedIn` in between, and so hands the user's
   credentials to a consumer still holding a guest's buffer, which is then sent as the user. Flush a guest's buffered
@@ -1115,8 +1134,8 @@ do {
 
 | `CredentialsError` | `disposition` | When |
 |---|---|---|
-| `.notSignedIn` | `.discard` | Signed out, or a sign-in on the session waiting on a challenge, whatever the session held (a guest, or an expired session, included). For the token provider also a guest |
-| `.sessionExpired` | `.retryAfterReauthentication` | The refresh token is dead, or the identity pool no longer accepts a federated session's provider token |
+| `.notSignedIn` | `.discard` | Signed out, or a sign-in on the session waiting on a challenge (a guest's session included; an expired session keeps answering `.sessionExpired`). For the token provider also a guest |
+| `.sessionExpired` | `.retryAfterReauthentication` | The refresh token is dead, or the identity pool no longer accepts a federated session's provider token; and still while that session signs in again and waits on a challenge |
 | `.storageUnavailable(reason)` | `.retryWithBackoff`, or `.failLoudly` for `.denied` | The keychain could not be read or written |
 | `.notConfigured` | `.failLoudly` | No identity pool, or a user-pool-only sign-in, or a named session carried to a new identity pool, or `.default` copied from a user-pool-only configuration, that the new identity pool refuses (`notAuthorized`, `resourceNotFound`, `invalidParameter` or `configuration`; the refusal is the underlying error) (credentials provider); no user pool, or a federated session (token provider). `.default` on a changed identity pool keeps the old identity ID, and the new identity pool's refusal is `.unknown` |
 | `.unknown` | `.retryWithBackoff` | Anything else, such as a network failure during refresh |
@@ -1952,7 +1971,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | Category plugins | Use its session | Don't see client sessions |
 | Federation with an empty token or provider name | Sent; the identity pool's answer is the error | `.validation` before any request |
 | Credentials provider on a signed-out session | Fetches guest credentials | Throws `notSignedIn` (`.discard`); call `fetchAuthSession()` at launch and after each sign-out to become a guest. It throws `notSignedIn` when the identity pool allows no guests, so use `try?` or handle the error |
-| Credentials during a pending sign-in challenge | Keeps vending a guest's credentials | `credentialsProvider` and `userPoolTokenProvider` throw `notSignedIn` (`.discard`), whatever the session held |
+| Credentials during a pending sign-in challenge | Keeps vending a guest's credentials | `credentialsProvider` and `userPoolTokenProvider` throw `notSignedIn` (`.discard`); an expired session signing in again keeps throwing `sessionExpired` |
 
 ## Known limitations
 
@@ -1961,13 +1980,16 @@ The client keeps the plugin's semantics except where listed here and in the sect
 - **Kinesis and Firehose share one local cache per region unless you name one.** Two sessions with a Kinesis (or
   Firehose) client for the same region and no `cacheIdentifier` share the offline record cache, so one session's
   flush can send another session's records with its own credentials. Set `Options.cacheIdentifier` per session
-  (see [Credentials for other AmplifyClients](#credentials-for-other-amplifyclients)).
+  (see [Credentials for other AmplifyClients](#credentials-for-other-amplifyclients)). Without one, a signed-out
+  session's records also stay in the shared cache: a flush that fails with `notSignedIn` deletes nothing there.
 - **A provider is bound to a session ID, not to a user.** After a sign-out and a different user's sign-in on the
   same session ID, a consumer holding buffered data gets the new user's credentials without notice. The same goes for
   a guest's sign-in: one that completes at once (no challenge, or a hosted-UI sign-in) hands the user's credentials to
   a consumer still holding the guest's buffer, which is then sent as the user. `notSignedIn` (`.discard`) marks the
   change of principal only when the sign-in stops on a challenge. Flush a guest's buffered work before any sign-in:
-  without a challenge it is sent as the user, and with one the provider answers `.discard`.
+  without a challenge it is sent as the user, and with one the provider answers `.discard`. An expired session never
+  answers `.discard`, with or without a challenge: what a consumer kept for it is sent as whoever signs in to it
+  next, its own user or another. Clear the consumer's cache first if another user may sign in.
 - **One system sheet at a time** across the client's sessions: no concurrent hosted-UI sign-ins. The Auth plugin's
   sheets are not counted.
 - **No "sign out of every session".** Loop over `storedSessions`.

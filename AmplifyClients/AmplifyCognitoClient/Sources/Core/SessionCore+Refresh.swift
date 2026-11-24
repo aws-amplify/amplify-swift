@@ -220,21 +220,26 @@ extension SessionCore {
 
     /// The in-memory payload, if the session's state allows `purpose`.
     ///
-    /// **A sign-in waiting on a challenge answers `notSignedIn` first**, whatever the record holds: a guest's
-    /// credentials, or an expired user's tokens, which answer `notSignedIn` here, not `sessionExpired`. That is the
-    /// rule: the providers answer from the state the app sees, which is `.awaitingChallenge` until the challenge is
-    /// answered or the sign-in ends. So `notSignedIn` (`.discard`) marks the change of principal only when the sign-in
-    /// stops on a challenge. A provider is bound to a session, not to a user, and a sign-in that completes at once (no
+    /// **An expired session answers `sessionExpired` first**, a sign-in waiting on a challenge included: signing in
+    /// again is how its user recovers, so a consumer keeps what it buffered for the session
+    /// (`.retryAfterReauthentication`). A `notSignedIn` there (`.discard`) would make a record-caching client drop,
+    /// during an MFA prompt, the records it had kept for exactly this sign-in. Nothing checks that the user signing
+    /// in is the one who expired: what was kept is sent as whoever signs in.
+    ///
+    /// **Otherwise a sign-in waiting on a challenge answers `notSignedIn`**, whatever the record holds, a guest's
+    /// credentials included: the providers answer from the state the app sees, which is `.awaitingChallenge` until
+    /// the challenge is answered or the sign-in ends. So `notSignedIn` (`.discard`) marks the change of principal
+    /// only when the sign-in stops on a challenge. A provider is bound to a session, not to a user, and a sign-in that completes at once (no
     /// challenge, or a hosted-UI sign-in) goes straight to the new login's credentials, handing them to a consumer
     /// still holding a guest's buffer. The plugin keeps vending a guest's credentials here. Flush a guest's buffered
     /// work before any sign-in: without a challenge it is sent as the user, and with one the provider answers
     /// `.discard`. `fetchAuthSession()` still reports what the record holds.
     func usableCredentials(for purpose: CredentialPurpose) throws -> Data {
-        if pendingChallenge != nil {
-            throw Self.notSignedIn(sessionId)
-        }
         if let expiry {
             throw expiredError(expiry)
+        }
+        if pendingChallenge != nil {
+            throw Self.notSignedIn(sessionId)
         }
         guard let snapshot = restoredSnapshotIfAny else {
             throw Self.notSignedIn(sessionId)

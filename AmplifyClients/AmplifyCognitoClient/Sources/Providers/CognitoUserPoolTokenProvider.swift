@@ -44,9 +44,9 @@ public struct CognitoUserPoolTokenProvider: AccessTokenProvider {
     ///   - `.notConfigured` if the configuration has no user pool, or the session is federated to the
     ///     identity pool (answered before any refresh);
     ///   - `.notSignedIn` for a signed-out or guest session, and while a sign-in on it waits on a challenge,
-    ///     whatever the session held before, an expired user's tokens included (`.notSignedIn` there, not
-    ///     `.sessionExpired`), until the challenge is answered or the sign-in ends;
-    ///   - `.sessionExpired` if the refresh token is dead;
+    ///     until the challenge is answered or the sign-in ends;
+    ///   - `.sessionExpired` if the refresh token is dead, and still while a sign-in on that session waits on
+    ///     a challenge;
     ///   - `.storageUnavailable` if secure storage could not be read or written;
     ///   - `.unknown` for anything else, such as a refresh that failed on the network, or a saved record
     ///     this version cannot read.
