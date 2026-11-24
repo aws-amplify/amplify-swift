@@ -77,16 +77,37 @@ public class AmplifyFirehoseClient {
         /// take precedence over any `awsCredentialIdentityResolver` set in this closure.
         public let configureClient: AmplifyFirehoseClientConfigurationProvider?
 
+        /// Names this client's offline cache within its region. `nil`, the default, uses the cache every client
+        /// of the region shares, as before this option existed.
+        ///
+        /// A cache holds the records of every client of the region with the same identifier, and a flush sends
+        /// them all with the flushing client's credentials. So when clients are given different sessions'
+        /// credentials, give each session its own identifier (an `AmplifyCognitoClient` session's
+        /// `sessionId.stringValue`, say): otherwise one session's flush sends another's records as itself.
+        ///
+        /// - Any non-empty string. Its UTF-8 bytes are hashed into the cache's file name, so identifiers that
+        ///   differ only in case, or only in Unicode normalization form, are different caches. An empty string
+        ///   throws `FirehoseError.validation` from the initializer.
+        /// - The identifier is fixed for the client's life. Flush before you create a client with another
+        ///   identifier, or with one for the first time: records cached under the old identifier, or in the
+        ///   region's shared cache, stay there until a client with that identifier, or with none, flushes or
+        ///   clears them.
+        /// - A cache outlives its session's sign-out: its records stay until they are flushed, or a client with
+        ///   that identifier calls `clearCache()`. The emptied file is never removed.
+        public let cacheIdentifier: String?
+
         public init(
             cacheMaxBytes: Int64 = 5 * 1_024 * 1_024, // 5MB
             maxRetries: Int = 5,
             flushStrategy: FlushStrategy = .interval(),
+            cacheIdentifier: String? = nil,
             configureClient: AmplifyFirehoseClientConfigurationProvider? = nil
         ) {
             self.cacheMaxBytes = cacheMaxBytes
             self.maxRetries = maxRetries
             self.flushStrategy = flushStrategy
             self.configureClient = configureClient
+            self.cacheIdentifier = cacheIdentifier
         }
     }
 
@@ -95,6 +116,8 @@ public class AmplifyFirehoseClient {
     ///   - region: AWS region
     ///   - credentialsProvider: Foundation credential provider for AWS authentication
     ///   - options: Configuration options
+    /// - Throws: `FirehoseError.validation` for an empty `Options.cacheIdentifier`; `FirehoseError.cache` if the
+    ///   offline cache cannot be opened; the SDK's error if the client configuration cannot be built.
     public init(
         region: String,
         credentialsProvider: any AmplifyFoundation.AWSCredentialsProvider,
@@ -131,15 +154,22 @@ public class AmplifyFirehoseClient {
             maxRetries: options.maxRetries
         )
 
-        let storage = try AmplifyRecordCache.SQLiteRecordStorage(
-            dbPrefix: "firehose_records",
-            identifier: region,
-            maxRecords: maxRecordsPerStream,
-            cacheMaxBytes: options.cacheMaxBytes,
-            maxRecordSizeBytes: maxRecordSizeBytes,
-            maxBytesPerStream: maxBytesPerStream,
-            maxPartitionKeyLength: nil
-        )
+        let storage: AmplifyRecordCache.SQLiteRecordStorage
+        do {
+            storage = try AmplifyRecordCache.SQLiteRecordStorage(
+                dbPrefix: "firehose_records",
+                identifier: region,
+                cacheIdentifier: options.cacheIdentifier,
+                maxRecords: maxRecordsPerStream,
+                cacheMaxBytes: options.cacheMaxBytes,
+                maxRecordSizeBytes: maxRecordSizeBytes,
+                maxBytesPerStream: maxBytesPerStream,
+                maxPartitionKeyLength: nil
+            )
+        } catch {
+            // The cache's own errors are package types: callers get `FirehoseError`.
+            throw FirehoseError.from(error)
+        }
 
         self.recordClient = AmplifyRecordCache.RecordClient(
             sender: sender,

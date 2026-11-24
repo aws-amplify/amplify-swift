@@ -1042,8 +1042,25 @@ let connect = AmplifyConnectClient(
 )
 ```
 
-`AmplifyKinesisClient` and `AmplifyFirehoseClient` take the provider the same way, but give only one session such a
-client per region: they share one offline cache per region (see [Known limitations](#known-limitations)).
+`AmplifyKinesisClient` and `AmplifyFirehoseClient` take the provider the same way. They cache records offline, in
+one cache per region unless you name one, so give each session's client its own with `cacheIdentifier`:
+
+```swift
+import AmplifyKinesisClient
+
+let kinesis = try AmplifyKinesisClient(
+    region: "us-east-1",
+    credentialsProvider: client.credentialsProvider,
+    options: .init(cacheIdentifier: client.sessionId.stringValue)
+)
+```
+
+Without it, two sessions' clients for one region share a cache, and one session's flush sends the other's records
+with its own credentials. The identifier is fixed when the client is created. Flush before you create a client with
+another identifier, or with one for the first time: records cached under the old identifier, or in the region's
+shared cache, stay there until a client with that identifier, or with none, flushes or clears them. A session's
+cache outlives its sign-out: its records stay until they are flushed, or a client with that identifier calls
+`clearCache()`, and the emptied file is never removed.
 
 In Swift 6, calling `record(…)` on an `AmplifyKinesisClient` or `AmplifyFirehoseClient` from a `@MainActor` type (a
 SwiftUI view model, say) or an actor that holds the client fails to compile with "sending '…' risks causing data
@@ -1941,10 +1958,10 @@ The client keeps the plugin's semantics except where listed here and in the sect
 
 - **Category plugins don't follow client sessions**, and nothing warns you. See
   [above](#amplify-category-plugins-do-not-follow-these-sessions).
-- **Kinesis and Firehose share one local cache per region.** Two sessions with a Kinesis (or Firehose) client for
-  the same region share the offline record cache, so one session's flush can send another session's records with
-  its own credentials. Until those clients can scope their cache, don't give two sessions a record-caching client
-  for the same region.
+- **Kinesis and Firehose share one local cache per region unless you name one.** Two sessions with a Kinesis (or
+  Firehose) client for the same region and no `cacheIdentifier` share the offline record cache, so one session's
+  flush can send another session's records with its own credentials. Set `Options.cacheIdentifier` per session
+  (see [Credentials for other AmplifyClients](#credentials-for-other-amplifyclients)).
 - **A provider is bound to a session ID, not to a user.** After a sign-out and a different user's sign-in on the
   same session ID, a consumer holding buffered data gets the new user's credentials without notice. The same goes for
   a guest's sign-in: one that completes at once (no challenge, or a hosted-UI sign-in) hands the user's credentials to

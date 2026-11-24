@@ -6,6 +6,7 @@
 //
 
 import AmplifyFoundation
+import CryptoKit
 import Foundation
 @preconcurrency import SQLite
 
@@ -33,6 +34,8 @@ package actor SQLiteRecordStorage: RecordStorage {
     /// - Parameters:
     ///   - dbPrefix: Prefix for the database file name (e.g. "kinesis_records" or "firehose_records")
     ///   - identifier: Region or unique identifier appended to the database file name
+    ///   - cacheIdentifier: A caller-chosen name for a cache of its own within `identifier`, or `nil` for the
+    ///     file every client of `identifier` shares (see `fileName(dbPrefix:identifier:cacheIdentifier:)`)
     ///   - maxRecords: Maximum number of records per stream per batch
     ///   - cacheMaxBytes: Maximum total cache size in bytes
     ///   - maxRecordSizeBytes: Maximum size of a single record in bytes
@@ -42,6 +45,7 @@ package actor SQLiteRecordStorage: RecordStorage {
     package init(
         dbPrefix: String = "kinesis_records",
         identifier: String,
+        cacheIdentifier: String? = nil,
         maxRecords: Int,
         cacheMaxBytes: Int64,
         maxRecordSizeBytes: Int64,
@@ -57,7 +61,11 @@ package actor SQLiteRecordStorage: RecordStorage {
         self.maxPartitionKeyLength = maxPartitionKeyLength
         self.hasPartitionKey = maxPartitionKeyLength != nil
 
-        let db = try connection ?? Self.createFileConnection(dbPrefix: dbPrefix, identifier: identifier)
+        let db = try connection ?? Self.createFileConnection(
+            dbPrefix: dbPrefix,
+            identifier: identifier,
+            cacheIdentifier: cacheIdentifier
+        )
         self.database = db
 
         try Self.setupSchema(on: db, hasPartitionKey: hasPartitionKey)
@@ -70,7 +78,35 @@ package actor SQLiteRecordStorage: RecordStorage {
     /// Keep backward-compatible convenience init for existing Kinesis usage
     private let identifier: String
 
-    private static func createFileConnection(dbPrefix: String, identifier: String) throws -> Connection {
+    /// The database file's name.
+    ///
+    /// With no cache identifier it is `<prefix>_<identifier>.db`: the file every client of the region shares, as
+    /// before the option existed, so existing caches are kept. With one it is `<prefix>_<identifier>_<hash>.db`,
+    /// where the hash is the cache identifier's SHA-256 in lowercase hex. The caller's string never reaches the
+    /// file system, so any characters are safe, and identifiers that differ only in case name different files
+    /// even on a case-insensitive volume.
+    ///
+    /// - Throws: `RecordCacheError.validation` for an empty cache identifier.
+    package static func fileName(dbPrefix: String, identifier: String, cacheIdentifier: String?) throws -> String {
+        guard let cacheIdentifier else {
+            return "\(dbPrefix)_\(identifier).db"
+        }
+        guard !cacheIdentifier.isEmpty else {
+            throw RecordCacheError.validation(
+                "The cache identifier is empty.",
+                "Pass a non-empty cache identifier, or none to use the cache the region's clients share."
+            )
+        }
+        let hash = SHA256.hash(data: Data(cacheIdentifier.utf8)).map { String(format: "%02x", $0) }.joined()
+        return "\(dbPrefix)_\(identifier)_\(hash).db"
+    }
+
+    private static func createFileConnection(
+        dbPrefix: String,
+        identifier: String,
+        cacheIdentifier: String?
+    ) throws -> Connection {
+        let fileName = try fileName(dbPrefix: dbPrefix, identifier: identifier, cacheIdentifier: cacheIdentifier)
         guard let path = try? FileManager.default.url(
             for: .applicationSupportDirectory,
             in: .userDomainMask,
@@ -83,7 +119,7 @@ package actor SQLiteRecordStorage: RecordStorage {
             )
         }
 
-        let dbPath = path.appendingPathComponent("\(dbPrefix)_\(identifier).db").path
+        let dbPath = path.appendingPathComponent(fileName).path
         return try wrapDatabaseError {
             try Connection(dbPath)
         }
