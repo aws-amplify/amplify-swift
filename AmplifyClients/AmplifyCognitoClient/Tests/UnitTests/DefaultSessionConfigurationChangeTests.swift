@@ -158,7 +158,7 @@ final class DefaultSessionConfigurationChangeTests: XCTestCase {
         scriptRefresh(version: 2)
         scriptIdentityPool(identityId: "us-east-1:identity-new")
         let session = try await client.fetchAuthSession()
-        XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:identity-new")
+        XCTAssertEqual(session.identityId, "us-east-1:identity-new")
         XCTAssertEqual(cognito.operations.filter { $0 != "GetTokensFromRefreshToken" }, ["GetId", "GetCredentialsForIdentity"])
         let carried = try XCTUnwrap(harness.keychain.value(account(ChangeConfigs.both)))
         guard case .userPoolAndIdentityPool(_, let identityId, _) = try AmplifyCredentials.decoded(carried) else {
@@ -189,8 +189,8 @@ final class DefaultSessionConfigurationChangeTests: XCTestCase {
         XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.bothOtherIdentityPool)), old)
         cognito.clearCalls()
         let session = try await client.fetchAuthSession()
-        XCTAssertEqual(try session.identityIdResult.get(), LiveEngineFixtures.identityId)
-        XCTAssertEqual(try session.awsCredentialsResult.get().accessKeyId, "AKID-v1")
+        XCTAssertEqual(session.identityId, LiveEngineFixtures.identityId)
+        XCTAssertEqual(session.awsCredentials?.accessKeyId, "AKID-v1")
         XCTAssertEqual(cognito.operations, [])
 
         scriptRefresh(version: 2)
@@ -236,8 +236,8 @@ final class DefaultSessionConfigurationChangeTests: XCTestCase {
             cognito.inputs("GetCredentialsForIdentity", as: GetCredentialsForIdentityInput.self).map(\.identityId),
             [LiveEngineFixtures.identityId, newIdentity]
         )
-        XCTAssertEqual(try session.identityIdResult.get(), newIdentity)
-        XCTAssertEqual(try session.awsCredentialsResult.get().accessKeyId, "AKID-v3")
+        XCTAssertEqual(session.identityId, newIdentity)
+        XCTAssertEqual(session.awsCredentials?.accessKeyId, "AKID-v3")
         let carried = try XCTUnwrap(harness.keychain.value(account(ChangeConfigs.bothOtherIdentityPool)))
         guard case .userPoolAndIdentityPool(_, let stored, _) = try AmplifyCredentials.decoded(carried) else {
             return XCTFail("the shared record should hold the new identity")
@@ -267,7 +267,7 @@ final class DefaultSessionConfigurationChangeTests: XCTestCase {
 
         let namedSession = try await namedThere.fetchAuthSession()
 
-        XCTAssertEqual(try namedSession.identityIdResult.get(), "us-east-1:identity-work-2")
+        XCTAssertEqual(namedSession.identityId, "us-east-1:identity-work-2")
         XCTAssertEqual(cognito.operations.filter { $0 != "GetTokensFromRefreshToken" }, ["GetId", "GetCredentialsForIdentity"])
     }
 
@@ -455,10 +455,8 @@ final class DefaultSessionConfigurationChangeTests: XCTestCase {
         cognito.once("GetTokensFromRefreshToken") { (_: GetTokensFromRefreshTokenInput) -> GetTokensFromRefreshTokenOutput in
             throw AWSCognitoIdentityProvider.NotAuthorizedException(message: "Invalid Refresh Token")
         }
-        let refreshed = try await client.fetchAuthSession(options: .init(forceRefresh: true))
-        guard case .failure(let error) = refreshed.userPoolTokensResult, case .sessionExpired = error else {
-            return XCTFail("expected sessionExpired, got \(refreshed.userPoolTokensResult)")
-        }
+        let refreshed = await authClientError { try await client.fetchAuthSession(options: .init(forceRefresh: true)) }
+        XCTAssertEqual(refreshed?.kind, .sessionExpired, "\(String(describing: refreshed))")
         try await settleRevokes()
         XCTAssertEqual(revokers.configurations, [])
     }

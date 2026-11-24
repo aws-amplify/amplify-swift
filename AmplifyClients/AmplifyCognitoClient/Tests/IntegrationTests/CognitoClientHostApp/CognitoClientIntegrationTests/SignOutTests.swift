@@ -38,7 +38,7 @@ final class SignOutTests: ClientIntegrationTestCase {
         let sessionId = try makeSessionID("alice")
         let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
         _ = try await client.signIn(username: alice.username, password: alice.password)
-        let tokens = try await client.fetchAuthSession().userPoolTokensResult.get()
+        let tokens = try await client.fetchAuthSession().requireUserPoolTokens()
         let refreshToken = tokens.refreshToken
 
         let result = await client.signOut()
@@ -136,7 +136,7 @@ final class SignOutTests: ClientIntegrationTestCase {
     private func signInAndDrop(_ sessionId: SessionID) async throws -> (refreshToken: String, deviceKey: String?) {
         let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
         _ = try await client.signIn(username: alice.username, password: alice.password)
-        let tokens = try await client.fetchAuthSession().userPoolTokensResult.get()
+        let tokens = try await client.fetchAuthSession().requireUserPoolTokens()
         return (tokens.refreshToken, RawUserPool.deviceKey(of: tokens.accessToken))
     }
 

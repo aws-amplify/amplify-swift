@@ -957,7 +957,7 @@ final class WebUISignOutTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
-        _ = try await client.fetchAuthSession()
+        _ = try? await client.fetchAuthSession()
         let pageError = FixtureError(description: "the page")
         engine.scriptHostedUIRevoke { _, _, plan in
             if case .present = plan {
@@ -1003,7 +1003,7 @@ final class WebUISignOutTests: XCTestCase {
         try harness.signIn(work, payload)
         var expiring: AmplifyCognitoClient? = try client(work)
         harness.engine(for: work)?.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
-        _ = try await XCTUnwrap(expiring).fetchAuthSession()
+        _ = try? await XCTUnwrap(expiring).fetchAuthSession()
         expiring = nil
         await harness.waitForBaseline()
 
@@ -1045,11 +1045,8 @@ final class WebUISignOutTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
-        let expired = try await client.fetchAuthSession()
-        guard case .failure(let expiry) = expired.userPoolTokensResult else {
-            return XCTFail("the fetch should have found the session expired")
-        }
-        XCTAssertEqual(expiry.kind, .sessionExpired)
+        let expiry = await authClientError { try await client.fetchAuthSession() }
+        XCTAssertEqual(expiry?.kind, .sessionExpired, "the fetch should have found the session expired")
         let newLogin = HostedUIFixtures.hostedUIPayload(version: 2)
         guard case .record(let envelope) = try harness.store().read(work) else {
             return XCTFail("the expired record was not kept")
@@ -1193,7 +1190,7 @@ final class WebUISignOutTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
-        _ = try await client.fetchAuthSession()
+        _ = try? await client.fetchAuthSession()
 
         let signOut = await interruptedSignOut(client, engine) { interrupted in
             if interrupted {

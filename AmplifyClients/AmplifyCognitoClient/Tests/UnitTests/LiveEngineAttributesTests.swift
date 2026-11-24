@@ -432,7 +432,8 @@ final class LiveEngineAttributesTests: XCTestCase {
         _ = try await other.signIn(username: "bob", password: "password")
         let workRecord = try clientHarness.storedRecord(work)
         let homeRecord = try clientHarness.storedRecord(home)
-        let aliceToken = try await client.fetchAuthSession().userPoolTokensResult.get().accessToken
+        let aliceSession = try await client.fetchAuthSession()
+        let aliceToken = try XCTUnwrap(aliceSession.userPoolTokens).accessToken
         scriptPlainSuccesses()
         harness.cognito.once("UpdateUserAttributes") { (_: UpdateUserAttributesInput) in
             UpdateUserAttributesOutput(codeDeliveryDetailsList: [

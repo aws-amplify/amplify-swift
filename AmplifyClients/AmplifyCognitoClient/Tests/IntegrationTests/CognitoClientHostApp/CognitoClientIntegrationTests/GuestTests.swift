@@ -30,7 +30,7 @@ final class GuestTests: ClientIntegrationTestCase {
     ///
     func testGuestIdentityIsReplacedAfterSignOut() async throws {
         let client = try makeClient("guest-replaced")
-        let first = try await client.fetchAuthSession().identityIdResult.get()
+        let first = try await client.fetchAuthSession().requireIdentityId()
         let guestState = await client.currentSessionState()
         XCTAssertState(guestState, .guest)
 
@@ -39,7 +39,7 @@ final class GuestTests: ClientIntegrationTestCase {
         XCTAssertSignOutComplete(signOut)
         let signedOut = await client.currentSessionState()
         XCTAssertState(signedOut, .signedOut)
-        let second = try await client.fetchAuthSession().identityIdResult.get()
+        let second = try await client.fetchAuthSession().requireIdentityId()
         XCTAssertFalse(first == second, "a guest signed out gets a new identity on its next fetch")
         let state = await client.currentSessionState()
         XCTAssertState(state, .guest)
@@ -60,13 +60,13 @@ final class GuestTests: ClientIntegrationTestCase {
         let configuration = try IntegrationTestEnvironment.configuration()
         let client = try makeClient("guest-repeated")
         let first = try await client.fetchAuthSession()
-        let identity = try first.identityIdResult.get()
-        let accessKey = try first.awsCredentialsResult.get().accessKeyId
+        let identity = try first.requireIdentityId()
+        let accessKey = try first.requireAWSCredentials().accessKeyId
 
         for fetch in 1 ... 2 {
             let session = try await client.fetchAuthSession()
-            XCTAssertTrue(try session.identityIdResult.get() == identity, "fetch \(fetch) reuses the identity")
-            XCTAssertTrue(try session.awsCredentialsResult.get().accessKeyId == accessKey, "fetch \(fetch) reuses the credentials")
+            XCTAssertTrue(try session.requireIdentityId() == identity, "fetch \(fetch) reuses the identity")
+            XCTAssertTrue(try session.requireAWSCredentials().accessKeyId == accessKey, "fetch \(fetch) reuses the credentials")
         }
 
         let state = await client.currentSessionState()
@@ -82,7 +82,7 @@ final class GuestTests: ClientIntegrationTestCase {
     /// - When:
     ///    - the session's fields are read, and `userPoolTokenProvider.accessToken()` is called
     /// - Then:
-    ///    - the user pool tokens and the sub are `.notSignedIn`, while the identity and AWS credentials succeed
+    ///    - the user pool tokens and the sub are `nil`, while it holds the identity and AWS credentials
     ///    - the token provider throws `CredentialsError.notSignedIn`
     ///
     func testGuestSessionHasNoUserPoolTokens() async throws {
@@ -90,16 +90,10 @@ final class GuestTests: ClientIntegrationTestCase {
 
         let session = try await client.fetchAuthSession()
 
-        guard case .failure(let tokensError) = session.userPoolTokensResult else {
-            return XCTFail("a guest session should hold no user pool tokens")
-        }
-        XCTAssertEqual(tokensError.kind, .notSignedIn)
-        guard case .failure(let subError) = session.userSubResult else {
-            return XCTFail("a guest session should have no user sub")
-        }
-        XCTAssertEqual(subError.kind, .notSignedIn)
-        XCTAssertNoThrow(try session.identityIdResult.get())
-        XCTAssertNoThrow(try session.awsCredentialsResult.get())
+        XCTAssertNil(session.userPoolTokens, "a guest session should hold no user pool tokens")
+        XCTAssertNil(session.userSub, "a guest session should have no user sub")
+        XCTAssertNoThrow(try session.requireIdentityId())
+        XCTAssertNoThrow(try session.requireAWSCredentials())
         let providerError = await Expect.credentialsError("a guest session's token provider") {
             try await client.userPoolTokenProvider.accessToken()
         }

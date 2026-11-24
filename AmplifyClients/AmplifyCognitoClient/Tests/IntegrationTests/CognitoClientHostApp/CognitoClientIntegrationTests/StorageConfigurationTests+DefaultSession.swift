@@ -69,10 +69,10 @@ extension StorageConfigurationTests {
 
             let session = try await client.fetchAuthSession()
 
-            let sub = try IntegrationTestEnvironment.jwtClaims(session.userPoolTokensResult.get().idToken)["sub"] as? String
+            let sub = try IntegrationTestEnvironment.jwtClaims(session.requireUserPoolTokens().idToken)["sub"] as? String
             XCTAssertTrue(sub == alice.userId, "alice's tokens")
-            XCTAssertNoThrow(try session.identityIdResult.get(), "the identity is fetched on first use")
-            XCTAssertNoThrow(try session.awsCredentialsResult.get(), "with its AWS credentials")
+            XCTAssertNoThrow(try session.requireIdentityId(), "the identity is fetched on first use")
+            XCTAssertNoThrow(try session.requireAWSCredentials(), "with its AWS credentials")
         }
         try await SessionCleanup.waitUntilReleased([.default])
 
@@ -191,12 +191,12 @@ extension StorageConfigurationTests {
             XCTAssertTrue(Self.storedValue(newAccount) == oldBytes, "the record, its identity ID included, is carried as its bytes are")
 
             let carried = try await client.fetchAuthSession()
-            XCTAssertTrue(try carried.identityIdResult.get() == identityId, "the carried identity ID is R-IP′'s")
+            XCTAssertTrue(try carried.requireIdentityId() == identityId, "the carried identity ID is R-IP′'s")
 
             let refreshed = try await client.fetchAuthSession(options: .init(forceRefresh: true))
-            XCTAssertTrue(try refreshed.identityIdResult.get() == identityId, "the forced refresh keeps the carried identity ID")
+            XCTAssertTrue(try refreshed.requireIdentityId() == identityId, "the forced refresh keeps the carried identity ID")
             XCTAssertTrue(
-                try refreshed.awsCredentialsResult.get().accessKeyId != accessKeyId,
+                try refreshed.requireAWSCredentials().accessKeyId != accessKeyId,
                 "the forced refresh got no new AWS credentials for the carried identity ID"
             )
         }
@@ -311,7 +311,7 @@ extension StorageConfigurationTests {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: .default))
             let result = try await client.signIn(username: user.username, password: user.password)
             XCTAssertStep(result.nextStep, .done)
-            signedIn = try await (client.getCurrentUser(), client.fetchAuthSession().userPoolTokensResult.get())
+            signedIn = try await (client.getCurrentUser(), client.fetchAuthSession().requireUserPoolTokens())
         }
         try await SessionCleanup.waitUntilReleased([.default])
         return signedIn
@@ -331,8 +331,8 @@ extension StorageConfigurationTests {
             let session = try await client.fetchAuthSession()
             signedIn = try await (
                 client.getCurrentUser(),
-                session.identityIdResult.get(),
-                session.awsCredentialsResult.get().accessKeyId
+                session.requireIdentityId(),
+                session.requireAWSCredentials().accessKeyId
             )
         }
         try await SessionCleanup.waitUntilReleased([.default])

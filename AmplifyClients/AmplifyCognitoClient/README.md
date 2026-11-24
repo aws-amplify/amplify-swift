@@ -969,16 +969,19 @@ if it had not finished).
 
 ### fetchAuthSession
 
-`fetchAuthSession` returns the session's credentials, refreshed if needed. Each field has its own result.
+`fetchAuthSession` returns the session's credentials, refreshed if needed, and throws when it can't.
 
 ```swift
 let session = try await client.fetchAuthSession()
 
-let tokens = try session.userPoolTokensResult.get()
-let credentials = try session.awsCredentialsResult.get()
-let identityId = try session.identityIdResult.get()
-let sub = try session.userSubResult.get()
-print(tokens, credentials, identityId, sub) // tokens and credentials print redacted
+// nil for a guest or a federated session
+if let tokens = session.userPoolTokens, let sub = session.userSub {
+    print(tokens, sub) // tokens print redacted
+}
+// nil without an identity pool
+if let credentials = session.awsCredentials, let identityId = session.identityId {
+    print(credentials, identityId) // credentials print redacted
+}
 
 _ = try await client.fetchAuthSession(options: .init(forceRefresh: true))
 
@@ -988,11 +991,20 @@ print(user.username, user.userId)
 let accessToken = try await client.userPoolTokenProvider.accessToken()
 ```
 
-- A field fails when the session can't provide it (user pool tokens of a guest, AWS credentials without an identity
-  pool) or its refresh failed. A dead refresh token is `sessionExpired` in the fields.
-- `fetchAuthSession` itself throws only for failures that aren't per field: `storageUnavailable`, an unreadable
-  saved record (`unknown`), or cancellation.
-- A signed-out session whose identity pool allows guests becomes `.guest` here, and only here.
+- A field is `nil` only when the session has nothing for it: the user pool tokens and sub of a guest or a federated
+  session, the identity ID and AWS credentials without an identity pool (or after a sign-in to the user pool only).
+- Every failure throws, where the plugin reports one per field. `sessionExpired` for a dead refresh token (the state
+  stays signed in), `notSignedIn` for a signed-out session that can't become a guest, `storageUnavailable`, and
+  `unknown` for a saved record that can't be read or saved credentials missing a field, each carry their own
+  recovery suggestion: follow it. Any other error (the network, Cognito, a cancellation) leaves the user pool
+  sign-in intact, and the call can be retried.
+- With an identity pool, a failed identity pool step fails the call even when the user pool tokens are valid, as the
+  plugin does; `userPoolTokenProvider` still vends the token. For a session carried from a configuration without an
+  identity pool, while the client holds that step back the call rethrows its last failure: for 30 seconds after a
+  transient failure, or until the tokens next need a refresh after a refusal. `forceRefresh: true` retries at once.
+- A signed-out session whose identity pool allows guests becomes `.guest` here, and only here. If the pool allows
+  none, or there is no identity pool, the call throws `notSignedIn`: where you call it to become a guest, use `try?`
+  or handle the error.
 - Concurrent refreshes of the same kind share one call. A forced refresh (`forceRefresh: true`) joins only other
   forced refreshes, and runs after a normal refresh already in flight, so it always calls Cognito. With an identity
   pool configured, that includes a session signed out in this process after an app extension or the Auth plugin saved
@@ -1000,11 +1012,11 @@ let accessToken = try await client.userPoolTokenProvider.accessToken()
   if needed, as for any signed-in session. A forced fetch refreshes it even when an unforced fetch running alongside
   adopted the login first, and never joins that fetch's guest acquisition. Without an identity pool, a signed-out
   session's fetch doesn't read the record, and stays signed out in this process. A forced refresh that Cognito
-  refuses as a reused refresh token never answers with the saved tokens it sent: its fields fail with the same
+  refuses as a reused refresh token never answers with the saved tokens it sent: it throws the same
   retryable `unknown` an unforced refresh gets there (unless another writer saved a refresh meanwhile, with a new
   refresh token, which it adopts). It counts toward the dead-token rule (see
   [Known limitations](#known-limitations)): a second refusal at least 30 seconds later, with nothing saved meanwhile,
-  reports `sessionExpired` and expires the session even though its saved tokens are still valid. From then on, an
+  throws `sessionExpired` and expires the session even though its saved tokens are still valid. From then on, an
   unforced fetch and both providers fail with `sessionExpired` too, until the session signs in again or signs out. The
   expiry is saved with the session, so a new client of it, and the app after a relaunch, answer the same without
   refreshing the dead token again. Another writer saving the same login again doesn't end that, before or after the
@@ -1042,7 +1054,8 @@ The provider:
 
 - is bound to its session for life, and keeps the session alive;
 - never falls back: a signed-out session throws `notSignedIn` and never quietly returns guest credentials, unlike the
-  plugin's provider. Call `fetchAuthSession()` first if you want a signed-out session to become a guest;
+  plugin's provider. Call `fetchAuthSession()` first if you want a signed-out session to become a guest (it throws
+  `notSignedIn` when the identity pool allows no guests, so use `try?` or handle the error);
 - vends nothing while a sign-in on the session waits on a challenge, whatever the session held, a guest's credentials
   included: it throws `notSignedIn` (`.discard`), so a consumer that follows it drops what it has buffered so far;
   with no identity pool it throws `notConfigured` (`.failLoudly`) instead. `.discard` marks the change of principal
@@ -1126,10 +1139,10 @@ try await client.clearFederationToIdentityPool()
 ```
 
 - The session reports `.federated(identityId:)`. It has AWS credentials and no user pool user, so user operations
-  throw `.notSignedIn` (their recovery suggestion: clear the federation or sign out, then sign in), and so do
-  `fetchAuthSession`'s `userSubResult` and `userPoolTokensResult`, and the token provider throws `notConfigured`.
+  throw `.notSignedIn` (their recovery suggestion: clear the federation or sign out, then sign in),
+  `fetchAuthSession`'s `userSub` and `userPoolTokens` are `nil`, and the token provider throws `notConfigured`.
 - The credentials refresh with the saved provider token. When the identity pool stops accepting it, the session
-  sends `.sessionExpired` and its fields and providers fail with `sessionExpired`, saying so. Call
+  sends `.sessionExpired`, and `fetchAuthSession` and the providers fail with `sessionExpired`, saying so. Call
   `federateToIdentityPool` with a new provider token to recover.
 - `signIn` is refused on a federated session. Clear the federation or sign out first. Federating is refused on a
   session signed in to the user pool or waiting on a challenge.
@@ -1646,7 +1659,7 @@ current one:
 | Change | `.default` after the change, as with the plugin except where a row says otherwise |
 |---|---|
 | Identity pool only, then a user pool added (same identity pool) | The guest or federated identity, copied as it was; the old record is kept |
-| An identity pool added, changed or removed, same user pool, app client and region | Signed in, copied as it was; the old record is kept. With an identity pool added, the client fetches the identity on first use, and that first fetch also refreshes the user pool tokens; the plugin instead fails its unforced fetches' AWS credentials (`invalidAccountTypeException`, "…Identity Pool is not configured") until a forced refresh, or until its tokens next need refreshing. With the identity pool removed, the client's `fetchAuthSession` fails the identity ID and AWS credentials with `.configuration`, and `credentialsProvider` throws `notConfigured`, while the plugin still hands out the AWS credentials and identity copied with the login. A guest or federated identity copied with the identity pool removed is signed out in the client, as a named session is, and its saved bytes stay as they were: `signIn` works, and `storedSessions` lists the row only with `includingSignedOut: true` |
+| An identity pool added, changed or removed, same user pool, app client and region | Signed in, copied as it was; the old record is kept. With an identity pool added, the client fetches the identity on first use, and that first fetch also refreshes the user pool tokens; the plugin instead fails its unforced fetches' AWS credentials (`invalidAccountTypeException`, "…Identity Pool is not configured") until a forced refresh, or until its tokens next need refreshing. With the identity pool removed, the client's `fetchAuthSession` returns no identity ID or AWS credentials, and `credentialsProvider` throws `notConfigured`, while the plugin still hands out the AWS credentials and identity copied with the login. A guest or federated identity copied with the identity pool removed is signed out in the client, as a named session is, and its saved bytes stay as they were: `signIn` works, and `storedSessions` lists the row only with `includingSignedOut: true` |
 | Only the app client changed, same pools | Nothing is deleted or revoked: the record stays where it is. Its next refresh fails with `sessionExpired`, as the old app client's refresh token is refused, and the user signs in again |
 | Anything else that changes the pools (another user pool, say) | **The old login is deleted**, and `.default` is signed out |
 
@@ -1749,8 +1762,8 @@ along with one of the changes below, where the plugin's rule would not carry. Th
   fetch forces a refresh). A known refusal isn't retried for that user until the user pool tokens next need a
   refresh, a fetch forces a refresh, the app restarts, or the session is signed out or purged; other failures,
   including a later try after a refusal that fails that way, not within 30 seconds, except by a refresh the user pool
-  tokens need or a forced fetch, which try the identity step again at once. Until then the identity fields report the
-  failure.
+  tokens need or a forced fetch, which try the identity step again at once. Until then `fetchAuthSession` and the AWS
+  credentials provider throw the failure, and the token provider still vends the access token.
 - A session saved by an older build, which recorded no configuration for it, isn't carried if the configuration
   changes before this build first restores it.
 - Device records aren't carried, as the plugin doesn't carry them. On a user pool that tracks devices, a carried
@@ -1903,6 +1916,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | `listWebAuthnCredentials` page size | Sent as is; Cognito rejects bad values | Checked locally, 1 to 20 |
 | MFA setup selection answer | Sent to the engine as is; an unknown type is `.validation` (field "Unknown MFA type", the sign-in username texts; `.unknown` for `SMS_MFA`) | Checked before anything is sent: one of the step's types, else `.validation(field: "challengeResponse")`; the selection stays pending and the answer is not logged |
 | `WEB_AUTHN` first-factor answer the step does not offer | Refused with `.validation` below iOS 17.4 and macOS 13.5 and on tvOS and watchOS; elsewhere sent whether or not the step offers it | Refused before anything is sent with `.validation(field: "challengeResponse")` naming the offered factors, on every platform; the selection stays pending |
+| `fetchAuthSession` failures | Never thrown: each of the four fields is a `Result` with its own error | Thrown, and the fields are plain optionals, `nil` only where nothing applies. A signed-out session that can't become a guest throws `notSignedIn`; a dead refresh token throws `sessionExpired`; a failed identity pool step throws its error even when the user pool tokens are valid |
 | Sign-out result | `AWSCognitoSignOutResult`; `.partial` carries the tokens | The same shape, never thrown: `revokeTokenError?.error`, `globalSignOutError?.error`, `hostedUIError?.error`. `.partial` carries errors only, never tokens |
 | Sign-out of a federated session | `.failed`: call `clearFederationToIdentityPool` | Signed out, `.complete` |
 | `deleteUser` after a hosted-UI sign-in that shared the browser's cookies | Shows the hosted-UI sign-out page | Shows nothing: the browser keeps its cookie, and no later sign-out clears it |
@@ -1920,7 +1934,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | Credential error types | Not applicable | `CredentialsError` and `StorageUnavailableReason` need `@_spi(AmplifyExperimental) import AmplifyFoundation` |
 | Category plugins | Use its session | Don't see client sessions |
 | Federation with an empty token or provider name | Sent; the identity pool's answer is the error | `.validation` before any request |
-| Credentials provider on a signed-out session | Fetches guest credentials | Throws `notSignedIn` (`.discard`); call `fetchAuthSession()` at launch and after each sign-out to become a guest |
+| Credentials provider on a signed-out session | Fetches guest credentials | Throws `notSignedIn` (`.discard`); call `fetchAuthSession()` at launch and after each sign-out to become a guest. It throws `notSignedIn` when the identity pool allows no guests, so use `try?` or handle the error |
 | Credentials during a pending sign-in challenge | Keeps vending a guest's credentials | `credentialsProvider` and `userPoolTokenProvider` throw `notSignedIn` (`.discard`), whatever the session held |
 
 ## Known limitations
@@ -1945,8 +1959,9 @@ The client keeps the plugin's semantics except where listed here and in the sect
   them. With refresh-token rotation, this can leave a record that can't refresh, so expect to handle sign-in again.
   Nor does a running app see the extension's sign-in or sign-out at once: its session keeps what it holds in memory
   until it reads the saved login again. A signed-in or guest session reads it at its next refresh
-  (`fetchAuthSession(options: .init(forceRefresh: true))` forces one; a sign-out elsewhere is then reported as signed
-  out), and, with an identity pool configured, a signed-out session at its next `fetchAuthSession` (without one, a
+  (`fetchAuthSession(options: .init(forceRefresh: true))` forces one; a sign-out elsewhere is then answered as a
+  signed-out session's fetch is, with a guest where the identity pool allows one and `notSignedIn` where it doesn't),
+  and, with an identity pool configured, a signed-out session at its next `fetchAuthSession` (without one, a
   signed-out session doesn't pick up another writer's login in that process). The Auth plugin with an access group
   reads it at every `fetchAuthSession`. An extension on the Auth plugin that holds a guest in memory while the app's
   access-group migration moves its login can write that guest back over it in two cases: from a guest refresh already

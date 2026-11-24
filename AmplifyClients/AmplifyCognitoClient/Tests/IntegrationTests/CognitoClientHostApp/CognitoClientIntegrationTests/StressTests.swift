@@ -48,10 +48,10 @@ final class StressTests: ClientIntegrationTestCase {
         let sessions = try await concurrently(Self.concurrencyLimit, timeout: Self.networkTimeout) { _ in try await client.fetchAuthSession() }
 
         XCTAssertEqual(sessions.count, Self.concurrencyLimit)
-        let tokens = try Set(sessions.map { try fingerprint($0.userPoolTokensResult.get().accessToken) })
+        let tokens = try Set(sessions.map { try fingerprint($0.requireUserPoolTokens().accessToken) })
         XCTAssertEqual(tokens.count, 1, "every fetch returns the same access token")
-        XCTAssertEqual(try Set(sessions.map { try $0.identityIdResult.get() }).count, 1, "one identity")
-        XCTAssertEqual(try Set(sessions.map { try $0.awsCredentialsResult.get().accessKeyId }).count, 1, "one set of credentials")
+        XCTAssertEqual(try Set(sessions.map { try $0.requireIdentityId() }).count, 1, "one identity")
+        XCTAssertEqual(try Set(sessions.map { try $0.requireAWSCredentials().accessKeyId }).count, 1, "one set of credentials")
         XCTAssertEqual(recorder.operations, [], "fetching fresh tokens refreshes nothing")
     }
 
@@ -72,7 +72,7 @@ final class StressTests: ClientIntegrationTestCase {
         let alice = try await makeSignInUser()
         let client = try makeClient("stress-force", configureUserPoolClient: recorder.configureUserPoolClient)
         _ = try await client.signIn(username: alice.username, password: alice.password)
-        let before = try await fingerprint(client.fetchAuthSession().userPoolTokensResult.get().accessToken)
+        let before = try await fingerprint(client.fetchAuthSession().requireUserPoolTokens().accessToken)
         recorder.reset()
         let forced = Self.concurrencyLimit / 2
 
@@ -81,16 +81,16 @@ final class StressTests: ClientIntegrationTestCase {
         }
 
         for (index, session) in sessions.enumerated() {
-            XCTAssertNoThrow(try session.identityIdResult.get(), "fetch \(index) has an identity")
+            XCTAssertNoThrow(try session.requireIdentityId(), "fetch \(index) has an identity")
         }
-        let refreshed = try fingerprint(sessions[forced].userPoolTokensResult.get().accessToken)
+        let refreshed = try fingerprint(sessions[forced].requireUserPoolTokens().accessToken)
         XCTAssertFalse(refreshed == before, "the forced fetch returns a new access token")
         for (index, session) in sessions.enumerated() {
-            let token = try fingerprint(session.userPoolTokensResult.get().accessToken)
+            let token = try fingerprint(session.requireUserPoolTokens().accessToken)
             XCTAssertTrue(token == before || token == refreshed, "fetch \(index) returns the old or the new token")
         }
         XCTAssertEqual(recorder.answeredOperations, ["GetTokensFromRefreshToken"], "one forced refresh, one network refresh")
-        let after = try await fingerprint(client.fetchAuthSession().userPoolTokensResult.get().accessToken)
+        let after = try await fingerprint(client.fetchAuthSession().requireUserPoolTokens().accessToken)
         XCTAssertTrue(after == refreshed, "a fetch afterwards returns the new token")
     }
 
@@ -101,7 +101,7 @@ final class StressTests: ClientIntegrationTestCase {
     /// - When:
     ///    - 50 concurrent `fetchAuthSession()` calls
     /// - Then:
-    ///    - none is signed in (`.notSignedIn` tokens); every one has AWS credentials
+    ///    - none is signed in (no user pool tokens); every one has AWS credentials
     ///    - all 50 share one identity ID and one access key ID: one guest identity
     ///    - the state is `.guest`
     ///
@@ -111,14 +111,10 @@ final class StressTests: ClientIntegrationTestCase {
         let sessions = try await concurrently(Self.concurrencyLimit, timeout: Self.networkTimeout) { _ in try await client.fetchAuthSession() }
 
         for (index, session) in sessions.enumerated() {
-            guard case .failure(let error) = session.userPoolTokensResult else {
-                XCTFail("guest fetch \(index) is signed in")
-                continue
-            }
-            XCTAssertEqual(error.kind, .notSignedIn, "guest fetch \(index)")
+            XCTAssertNil(session.userPoolTokens, "guest fetch \(index) is signed in")
         }
-        XCTAssertEqual(try Set(sessions.map { try $0.identityIdResult.get() }).count, 1, "one guest identity")
-        XCTAssertEqual(try Set(sessions.map { try $0.awsCredentialsResult.get().accessKeyId }).count, 1, "one set of credentials")
+        XCTAssertEqual(try Set(sessions.map { try $0.requireIdentityId() }).count, 1, "one guest identity")
+        XCTAssertEqual(try Set(sessions.map { try $0.requireAWSCredentials().accessKeyId }).count, 1, "one set of credentials")
         let state = await client.currentSessionState()
         XCTAssertState(state, .guest)
     }
@@ -138,7 +134,7 @@ final class StressTests: ClientIntegrationTestCase {
         let alice = try await makeSignInUser()
         let client = try makeClient("stress-user", configureUserPoolClient: recorder.configureUserPoolClient)
         _ = try await client.signIn(username: alice.username, password: alice.password)
-        let idToken = try await client.fetchAuthSession().userPoolTokensResult.get().idToken
+        let idToken = try await client.fetchAuthSession().requireUserPoolTokens().idToken
         let sub = try XCTUnwrap(IntegrationTestEnvironment.jwtClaims(idToken)["sub"] as? String)
         recorder.reset()
 

@@ -78,7 +78,7 @@ final class ProviderStateAnswerTests: XCTestCase {
         XCTAssertEqual(aws?.disposition, .discard)
         XCTAssertEqual(token?.isNotSignedIn, true, "\(String(describing: token))")
         XCTAssertEqual(token?.disposition, .discard)
-        XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(guest.awsCredentials))
+        XCTAssertEqual(session.awsCredentials, AuthClientAWSCredentials(guest.awsCredentials))
         XCTAssertEqual(engine.refreshCalls.count, 0)
     }
 

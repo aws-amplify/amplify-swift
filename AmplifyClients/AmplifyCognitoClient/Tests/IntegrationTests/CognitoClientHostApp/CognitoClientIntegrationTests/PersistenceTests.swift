@@ -73,7 +73,7 @@ final class PersistenceTests: ClientIntegrationTestCase {
 
         let aliceState = await alice.currentSessionState()
         XCTAssertState(aliceState, .signedIn(aliceUser))
-        _ = try await alice.fetchAuthSession().userPoolTokensResult.get()
+        _ = try await alice.fetchAuthSession().requireUserPoolTokens()
     }
 
     /// A session stored in a shared access group is listed, and restored, only through that group
@@ -116,7 +116,7 @@ final class PersistenceTests: ClientIntegrationTestCase {
         let state = await restored.currentSessionState()
         XCTAssertState(state, .signedIn(bob))
         XCTAssertEqual(recorder.operations, [], "restoring makes no request")
-        _ = try await restored.fetchAuthSession(options: .init(forceRefresh: true)).userPoolTokensResult.get()
+        _ = try await restored.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens()
         XCTAssertEqual(recorder.answeredOperations, ["GetTokensFromRefreshToken"])
     }
 }

@@ -232,16 +232,17 @@ final class SharedRecordWarningTests: XCTestCase {
 
     /// - Given: `.default` restored as alice
     /// - When:
-    ///    - the real plugin store signs out, saving `noCredentials`, and the client refreshes; then, on a new core
-    ///      restored as alice, the plugin store deletes its record, and the client refreshes
+    ///    - the real plugin store signs out, saving `noCredentials`, and the client refreshes with a forced fetch;
+    ///      then, on a new core restored as alice, the plugin store deletes its record, and the client refreshes
     /// - Then:
-    ///    - each core is signed out, and nothing is logged under the category
+    ///    - each fetch finds the session signed out and becomes a guest, as a signed-out session's fetch does, and
+    ///      nothing is logged under the category
     func testPluginSignOut_logsNothing() async throws {
         var client: AmplifyCognitoClient? = try await restoredClient(holding: user("alice"))
         try pluginSaves(.noCredentials)
         try await refresh(XCTUnwrap(client))
         let afterNoCredentials = await client?.currentSessionState()
-        XCTAssertEqual(afterNoCredentials, .signedOut)
+        XCTAssertEqual(afterNoCredentials, .guest)
         client = nil
         await harness.waitForBaseline()
 
@@ -249,7 +250,7 @@ final class SharedRecordWarningTests: XCTestCase {
         try pluginStore().deleteCredential()
         try await refresh(XCTUnwrap(client))
         let afterDeletion = await client?.currentSessionState()
-        XCTAssertEqual(afterDeletion, .signedOut)
+        XCTAssertEqual(afterDeletion, .guest)
 
         XCTAssertEqual(sink.lines, [])
     }
@@ -323,10 +324,8 @@ final class SharedRecordWarningTests: XCTestCase {
             throw AWSCognitoIdentityProvider.NotAuthorizedException(message: "Refresh Token has been revoked")
         }
         await refresh(client)
-        let expired = try await client.fetchAuthSession()
-        guard case .failure(.sessionExpired) = expired.userPoolTokensResult else {
-            return XCTFail("alice's refresh token should be dead, got \(expired.userPoolTokensResult)")
-        }
+        let expired = await authClientError { try await client.fetchAuthSession() }
+        XCTAssertEqual(expired?.kind, .sessionExpired, "alice's refresh token should be dead")
 
         live.scriptSRP("bob")
         let signedIn = try await client.signIn(username: "bob", password: "password")

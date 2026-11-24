@@ -467,8 +467,8 @@ final class StoredSessionManagementTests: XCTestCase {
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
 
-    /// Two guest payloads with no identity ID to compare (these fakes name none, and the static call reads only the
-    /// plugin's format) have nothing that shows new guest credentials are the same principal's. Treating them as the
+    /// Two guest payloads with no identity ID to compare (the static call reads only the plugin's format, which
+    /// these fakes are not, so it finds none) have nothing that shows new guest credentials are the same principal's. Treating them as the
     /// same would revoke and clear a session this call never saw.
     ///
     /// - Given: a saved guest session, and another process that stores different guest credentials, with no identity

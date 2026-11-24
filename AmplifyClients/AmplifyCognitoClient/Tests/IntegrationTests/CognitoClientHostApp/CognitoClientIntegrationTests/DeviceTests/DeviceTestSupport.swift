@@ -70,7 +70,7 @@ extension ClientIntegrationTestCase {
     /// The device key Cognito put in the session's current access token (`device_key`): the id
     /// `fetchDevices()` lists this session's device under.
     func thisDeviceKey(_ client: AmplifyCognitoClient) async throws -> String {
-        let tokens = try await client.fetchAuthSession().userPoolTokensResult.get()
+        let tokens = try await client.fetchAuthSession().requireUserPoolTokens()
         return try Self.deviceKey(in: tokens.accessToken)
     }
 
@@ -88,14 +88,13 @@ extension ClientIntegrationTestCase {
         file: StaticString = #filePath,
         line: UInt = #line
     ) async throws -> AuthClientUserPoolTokens {
-        let before = try await client.fetchAuthSession().userPoolTokensResult.get()
-        let session = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+        let before = try await client.fetchAuthSession().requireUserPoolTokens()
         let tokens: AuthClientUserPoolTokens
-        switch session.userPoolTokensResult {
-        case .success(let refreshed):
-            tokens = refreshed
-        case .failure(let error):
-            XCTFail("\(description): the refresh failed (\(error.kind))", file: file, line: line)
+        do {
+            tokens = try await client.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens()
+        } catch {
+            let kind = (error as? AuthClientError).map { "\($0.kind)" } ?? "\(type(of: error))"
+            XCTFail("\(description): the refresh failed (\(kind))", file: file, line: line)
             throw error
         }
         XCTAssertFalse(tokens.idToken.isEmpty, "\(description): no id token", file: file, line: line)

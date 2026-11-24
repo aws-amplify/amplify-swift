@@ -66,15 +66,15 @@ final class SavedExpiryTests: XCTestCase {
         let events = StreamRecorder(next.listenToAuthEvents())
         let aws = await credentialsError { try await next.credentialsProvider.resolve() }
         let token = await credentialsError { try await next.userPoolTokenProvider.accessToken() }
-        let unforced = try await next.fetchAuthSession()
-        let forced = try await next.fetchAuthSession(options: .init(forceRefresh: true))
+        let unforced = await authClientError { try await next.fetchAuthSession() }
+        let forced = await authClientError { try await next.fetchAuthSession(options: .init(forceRefresh: true)) }
 
         for (name, error) in [("the AWS credentials provider", aws), ("the token provider", token)] {
             XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
             assertAlreadyUsed(error?.underlyingError as? AuthClientError, work, name)
         }
-        assertEveryField(of: unforced, isAlreadyUsed: work, "the unforced fetch")
-        assertEveryField(of: forced, isAlreadyUsed: work, "the forced fetch")
+        assertAlreadyUsed(unforced, work, "the unforced fetch")
+        assertAlreadyUsed(forced, work, "the forced fetch")
         XCTAssertEqual(engine.refreshCalls, [])
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, stale.data)
         let state = await next.currentSessionState()
@@ -432,28 +432,6 @@ final class SavedExpiryTests: XCTestCase {
         )
         guard case SessionEngineError.refreshTokenReused? = error.underlyingError as? SessionEngineError else {
             return XCTFail("\(name): expected refreshTokenReused underneath, got \(String(describing: error.underlyingError))", file: file, line: line)
-        }
-    }
-
-    private func assertEveryField(
-        of session: AuthClientSession,
-        isAlreadyUsed sessionId: SessionID,
-        _ name: String,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) {
-        let fields: [(String, Result<Void, AuthClientError>)] = [
-            ("userPoolTokens", session.userPoolTokensResult.map { _ in () }),
-            ("userSub", session.userSubResult.map { _ in () }),
-            ("identityId", session.identityIdResult.map { _ in () }),
-            ("awsCredentials", session.awsCredentialsResult.map { _ in () })
-        ]
-        for (field, result) in fields {
-            guard case .failure(let error) = result else {
-                XCTFail("\(name): \(field) should fail", file: file, line: line)
-                continue
-            }
-            assertAlreadyUsed(error, sessionId, "\(name), \(field)", file: file, line: line)
         }
     }
 }

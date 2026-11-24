@@ -54,7 +54,7 @@ final class FederationTests: ClientIntegrationTestCase {
     ///
     func testUnsuccessfulFederationKeepsTheGuest() async throws {
         let client = try makeClient("fedguest")
-        let before = try await client.fetchAuthSession().identityIdResult.get()
+        let before = try await client.fetchAuthSession().requireIdentityId()
         let guestState = await client.currentSessionState()
         XCTAssertTrue(guestState == .guest, "the session should be a guest")
 
@@ -69,7 +69,7 @@ final class FederationTests: ClientIntegrationTestCase {
 
         let state = await client.currentSessionState()
         XCTAssertTrue(state == .guest, "the session should still be a guest")
-        let after = try await client.fetchAuthSession().identityIdResult.get()
+        let after = try await client.fetchAuthSession().requireIdentityId()
         // Compared without printing: identity IDs stay out of the logs.
         XCTAssertTrue(after == before, "the guest identity changed")
     }

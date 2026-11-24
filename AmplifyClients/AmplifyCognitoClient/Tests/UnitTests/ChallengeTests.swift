@@ -323,15 +323,15 @@ final class ChallengeTests: XCTestCase {
     func testAGuestAcquiredDuringAChallengeIsHandedToTheEngineButTheLoginsIdentityIsKept() async throws {
         let (client, _) = try await challengedClient(work)
         let guest = try await client.fetchAuthSession()
-        XCTAssertEqual(try guest.identityIdResult.get(), "us-east-1:guest")
+        XCTAssertEqual(guest.identityId, "us-east-1:guest")
         let guestPayload = try harness.storedRecord(work)?.credentials
 
         _ = try await client.confirmSignIn(challengeResponse: "123456")
 
         let session = try await client.fetchAuthSession()
-        XCTAssertEqual(try session.identityIdResult.get(), FakeSessionEngine.loginIdentityId(for: "alice"))
-        XCTAssertNotEqual(try session.identityIdResult.get(), "us-east-1:guest")
-        XCTAssertEqual(try session.userSubResult.get(), "sub-alice")
+        XCTAssertEqual(session.identityId, FakeSessionEngine.loginIdentityId(for: "alice"))
+        XCTAssertNotEqual(session.identityId, "us-east-1:guest")
+        XCTAssertEqual(session.userSub, "sub-alice")
         XCTAssertEqual(harness.engine(for: work)?.confirmSignInCurrents, [guestPayload])
     }
 

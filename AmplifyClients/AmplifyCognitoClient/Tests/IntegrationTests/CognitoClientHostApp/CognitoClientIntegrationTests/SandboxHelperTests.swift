@@ -452,7 +452,7 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
             guard case .done = signIn.nextStep else {
                 return XCTFail("The \(pool?.rawValue ?? "main") user's sign-in did not complete")
             }
-            let tokens = try await client.fetchAuthSession().userPoolTokensResult.get()
+            let tokens = try await client.fetchAuthSession().requireUserPoolTokens()
             refreshTokens.append((tokens.refreshToken, RawUserPool.deviceKey(of: tokens.accessToken), client.core.configuration))
         }
         let before = try IntegrationTestEnvironment.rawKeychainAccounts()

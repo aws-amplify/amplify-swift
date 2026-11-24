@@ -399,7 +399,7 @@ final class PluginSharedLoginTests: XCTestCase {
                 return XCTFail("alice did not sign in through the client")
             }
             signedInToken = try await client.userPoolTokenProvider.accessToken()
-            refreshedToken = try await client.fetchAuthSession(options: .init(forceRefresh: true)).userPoolTokensResult.get().accessToken
+            refreshedToken = try await client.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens().accessToken
             XCTAssertTrue(refreshedToken != signedInToken, "the client's forced refresh did not mint a new token")
         }
         try await InteropEnvironment.waitUntilReleased(.default)

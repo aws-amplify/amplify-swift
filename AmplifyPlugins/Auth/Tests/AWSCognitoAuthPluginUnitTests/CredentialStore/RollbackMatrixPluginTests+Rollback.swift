@@ -113,7 +113,7 @@ extension RollbackMatrixPluginTests {
         let session = try await rolledForward.fetchAuthSession(options: .init(forceRefresh: true))
 
         XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "alice-sub")))
-        XCTAssertEqual(try session.userPoolTokensResult.get().refreshToken, "rotated-by-the-client")
+        XCTAssertEqual(session.userPoolTokens?.refreshToken, "rotated-by-the-client")
         XCTAssertEqual(cognito.sent, ["refresh-alice", "rotated-by-the-released-plugin", "rotated-by-the-current-plugin"])
         XCTAssertEqual(cognito.refused, [])
         XCTAssertEqual(try storedRefreshToken(), "rotated-by-the-client")
@@ -166,7 +166,7 @@ extension RollbackMatrixPluginTests {
             await app.waitForBaseline()
 
             XCTAssertEqual(relaunched, .signedIn(AuthClientUser(username: "alice", userId: "alice-sub")), "\(binary)")
-            XCTAssertEqual(try session?.userPoolTokensResult.get().refreshToken, "rotated-by-the-app", "\(binary)")
+            XCTAssertEqual(session?.userPoolTokens?.refreshToken, "rotated-by-the-app", "\(binary)")
             XCTAssertEqual(cognito.sent, ["refresh-alice", "rotated-by-the-extension"], "\(binary)")
             XCTAssertEqual(cognito.refused, [], "\(binary)")
             XCTAssertEqual(signedOut, .complete, "\(binary)")

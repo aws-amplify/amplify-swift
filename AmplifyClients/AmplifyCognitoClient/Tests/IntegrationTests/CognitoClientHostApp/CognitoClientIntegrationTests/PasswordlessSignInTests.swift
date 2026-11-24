@@ -793,7 +793,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
         file: StaticString = #filePath,
         line: UInt = #line
     ) async throws {
-        let tokens = try await client.fetchAuthSession().userPoolTokensResult.get()
+        let tokens = try await client.fetchAuthSession().requireUserPoolTokens()
         let sub = try IntegrationTestEnvironment.jwtClaims(tokens.idToken)["sub"] as? String
         XCTAssertTrue(sub == user.userSub, "the id token belongs to another user", file: file, line: line)
     }

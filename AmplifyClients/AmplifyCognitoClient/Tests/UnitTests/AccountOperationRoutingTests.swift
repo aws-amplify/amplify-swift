@@ -494,9 +494,10 @@ final class AccountOperationRoutingTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
 
         let session = try await client.fetchAuthSession()
-        XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:fed")
-        XCTAssertEqual(try session.awsCredentialsResult.get().accessKeyId, federated.awsCredentials.accessKeyId)
-        XCTAssertThrowsError(try session.userSubResult.get())
+        XCTAssertEqual(session.identityId, "us-east-1:fed")
+        XCTAssertEqual(session.awsCredentials?.accessKeyId, federated.awsCredentials.accessKeyId)
+        XCTAssertNil(session.userSub)
+        XCTAssertNil(session.userPoolTokens)
         await assertThrowsAsync({ try await client.getCurrentUser() }) { error in
             guard case .notSignedIn = authError(error) else {
                 return XCTFail("\(error)")

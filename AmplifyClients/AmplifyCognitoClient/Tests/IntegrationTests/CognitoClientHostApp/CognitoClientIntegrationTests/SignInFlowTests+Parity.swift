@@ -160,21 +160,20 @@ extension SignInFlowTests {
         XCTAssertTrue(user.username == alice.username, "signed in as another user")
         let state = await client.currentSessionState()
         XCTAssertState(state, .signedIn(user))
-        XCTAssertNoThrow(try fetched.identityIdResult.get(), "the racing fetch has an identity")
-        XCTAssertNoThrow(try fetched.awsCredentialsResult.get(), "the racing fetch has AWS credentials")
-        switch fetched.userPoolTokensResult {
-        case .success(let tokens):
+        XCTAssertNoThrow(try fetched.requireIdentityId(), "the racing fetch has an identity")
+        XCTAssertNoThrow(try fetched.requireAWSCredentials(), "the racing fetch has AWS credentials")
+        if let tokens = fetched.userPoolTokens {
             let sub = try IntegrationTestEnvironment.jwtClaims(tokens.idToken)["sub"] as? String
             XCTAssertTrue(sub == user.userId, "the racing fetch's tokens are alice's")
-            XCTAssertTrue(try fetched.userSubResult.get() == user.userId, "the racing fetch's sub is alice's")
-        case .failure(let error):
-            XCTAssertEqual(error.kind, .notSignedIn, "a fetch before the sign-in is a guest's")
+            XCTAssertTrue(fetched.userSub == user.userId, "the racing fetch's sub is alice's")
+        } else {
+            XCTAssertNil(fetched.userSub, "a fetch before the sign-in is a guest's")
         }
 
         let after = try await client.fetchAuthSession()
-        let afterSub = try IntegrationTestEnvironment.jwtClaims(after.userPoolTokensResult.get().idToken)["sub"] as? String
+        let afterSub = try IntegrationTestEnvironment.jwtClaims(after.requireUserPoolTokens().idToken)["sub"] as? String
         XCTAssertTrue(afterSub == user.userId, "a fetch afterwards returns alice's tokens")
-        XCTAssertNoThrow(try after.identityIdResult.get())
-        XCTAssertNoThrow(try after.awsCredentialsResult.get())
+        XCTAssertNoThrow(try after.requireIdentityId())
+        XCTAssertNoThrow(try after.requireAWSCredentials())
     }
 }

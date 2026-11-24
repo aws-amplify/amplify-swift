@@ -296,11 +296,12 @@ case .unavailable:                 waitForUnlock()   // storage locked, NOT "no 
 case .failed:                      showSignIn()
 case .awaitingChallenge(let step): resume(step)      // a sign-in was interrupted
 case .signedIn, .federated:
-    // The saved record said "signed in". A session read refreshes expired tokens. A dead
-    // refresh token is reported in the read's fields as sessionExpired, not thrown, so
-    // read a field. With unexpired tokens the read sends no request at all.
+    // The saved record said "signed in". A session read refreshes expired tokens, and
+    // throws sessionExpired for a dead refresh token. With unexpired tokens the read
+    // sends no request at all. (Amended 2026-11-24, API follow-up 10: the read throws
+    // every failure; it used to report each in a per-field Result.)
     do {
-        _ = try await client.fetchAuthSession().awsCredentialsResult.get()   // userPoolTokensResult without an identity pool
+        _ = try await client.fetchAuthSession()
         showHome()
     }
     catch AuthClientError.storageUnavailable { waitForUnlock() }   // NOT signed out
@@ -318,7 +319,7 @@ case .guest, .signedOut:
 
 **What a row can and cannot tell you.** A row tells you a session was saved and who it belonged to. **It cannot tell you the session still works.** Access- and id-token expiry can be checked offline, but refresh-token expiry cannot: the refresh token is never parsed.
 
-**Refresh happens on use, and only on use.** Listing never refreshes and never makes a network call. Reading a session refreshes expired tokens as part of the call, exactly as the plugin does today. There is no background timer and no refresh of sessions you are not using. If the refresh token has expired or been revoked, that call reports `sessionExpired` in its fields and the app sends the user to sign-in for that session only. The others are untouched.
+**Refresh happens on use, and only on use.** Listing never refreshes and never makes a network call. Reading a session refreshes expired tokens as part of the call, exactly as the plugin does today. There is no background timer and no refresh of sessions you are not using. If the refresh token has expired or been revoked, that call throws `sessionExpired` and the app sends the user to sign-in for that session only. The others are untouched.
 
 **Storage-unavailable is not "no sessions."** On a locked device the read can fail transiently, so listing must distinguish "no sessions" from "cannot read sessions" and the app must wait rather than offer sign-in. Returning an empty list would show a sign-in screen to a signed-in user.
 
@@ -356,8 +357,8 @@ func userTapped(_ id: SessionID) async throws {
     case .awaitingChallenge(let step): resume(step, using: client)
     case .signedIn:
         do {
-            // A dead refresh token is sessionExpired in the fields, not a throw.
-            _ = try await client.fetchAuthSession().awsCredentialsResult.get()
+            // A dead refresh token throws sessionExpired.
+            _ = try await client.fetchAuthSession()
             UserDefaults.standard.set(id.stringValue, forKey: "lastUsedSession")
             showHome(using: client)
         } catch AuthClientError.storageUnavailable {
@@ -939,8 +940,9 @@ the marker again under the gates and takes them again if it changed; a restore w
 refuse
 (`sessionConfigurationMismatch`) when the session is live in the process under another pool configuration in the same
 access group. A keychain failure reading the marker or the recorded record fails the restore (`storageUnavailable`); it
-is never read as "nothing to carry". A carried user pool session whose identity step fails reports its tokens and sub
-and fails only the identity, with that failure; the record keeps waiting for its identity, and a later fetch of its AWS
+is never read as "nothing to carry". A carried user pool session whose identity step fails keeps its tokens, which the token
+provider still vends, and `fetchAuthSession` throws that failure, as the plugin's does (amended 2026-11-24, API
+follow-up 10: it used to report the tokens and fail only the identity fields); the record keeps waiting for its identity, and a later fetch of its AWS
 credentials, in this launch or after a relaunch, tries the identity step again. (The plugin retries the identity step of
 user-pool-only tokens only when they need refreshing or a fetch forces a refresh, in the process and after a relaunch
 alike; until then it returns the tokens and fails the identity as not configured.) In the process (per record, shared by every client of it: `SessionRecordGates.memory`), a
@@ -948,14 +950,15 @@ known refusal (`notAuthorized`, `invalidParameter`, `resourceNotFound`, `configu
 refused user until the user pool tokens next need a refresh, a fetch forces a refresh, the app restarts, or the
 session is signed out or purged; any other failure (a cancellation aside), including a later try after a refusal,
 delays the next by 30 seconds, except a refresh the user pool tokens need or a forced fetch, which try the step again
-within them, and until then the last failure answers for the identity fields and AWS credentials.
+within them, and until then the last failure answers for `fetchAuthSession` and the AWS credentials.
 The AWS credentials provider wraps a known refusal: it throws `CredentialsError.notConfigured` (`.failLoudly`), with
 the refusal's description and recovery suggestion and the refusal as the underlying error, since a consumer's retries
-would only get the same answer until one of those happens; `fetchAuthSession`'s identity fields keep the refusal
+would only get the same answer until one of those happens; `fetchAuthSession` throws the refusal
 itself, the token provider still vends the access token, and any other failure keeps the provider's usual mapping
 (`.unknown`, `.retryWithBackoff`). A sign-out or purge also forgets the reused refresh token the dead-token check holds.
-Only an identity-step failure keeps the tokens: a refused or expired refresh token, or tokens that still need a
-refresh, fail every field with `sessionExpired`. If the refresh's commit lost to another writer whose record does not
+Only an identity-step failure keeps the tokens: a refused or expired refresh token throws `sessionExpired`. An
+identity-step failure whose refresh adopted another writer's tokens throws the step's failure too, whatever those
+tokens need. If the refresh's commit lost to another writer whose record does not
 wait for an identity (a complete one, or a signed-out or deleted one, which answers as signed out), that record is the
 answer.
 `storedSessions` lists a session that would be carried, once, as it would be carried. Device metadata and the ASF
@@ -1005,7 +1008,7 @@ Every level above is already how the code works today. The two changes are addin
 |---|---|
 | Temporary **AWS credentials** (access key, secret, session token) | Signed AWS calls: analytics, storage, any SDK client |
 | **Access token** (and id token) | Bearer auth: AppSync user-pools mode, REST authorization headers |
-| **Identity id** | Request attribution, unauthenticated identity. Read from a session (`fetchAuthSession().identityIdResult`) rather than vended as a provider, which is why 14.4 lists only the other two |
+| **Identity id** | Request attribution, unauthenticated identity. Read from a session (`fetchAuthSession().identityId`) rather than vended as a provider, which is why 14.4 lists only the other two |
 
 **What using them looks like.** A provider is a value the app hands to whatever needs credentials. Which session it resolves is fixed when it is handed over, so the receiving code cannot end up acting as a different user. Each session refreshes its own tokens on demand with no coordination between sessions, so an app holding several needs to do nothing to keep them all live. A rule worth stating here rather than leaving to 15.2: on a signed-out session, resolution **fails** with `notSignedIn` rather than falling back to guest credentials.
 

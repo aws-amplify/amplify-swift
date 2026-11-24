@@ -30,71 +30,48 @@ extension AuthClientFetchSessionOptions: Equatable {}
 
 extension AuthClientFetchSessionOptions: Sendable {}
 
-/// What `fetchAuthSession` found: the session's credentials, each field with its own result.
+/// What `fetchAuthSession` found: the session's credentials, as it holds them now.
 ///
-/// Mirrors the plugin's `AWSAuthCognitoSession`, without its `isSignedIn`: whether a user is signed in is
-/// the session's state, `currentSessionState()`, which also tells a guest and a storage failure apart. A
-/// field fails when the session cannot provide it — for
-/// example, the user pool tokens of a guest session, or the AWS credentials of a session with no identity
-/// pool — or when refreshing it failed. `fetchAuthSession` itself throws only for failures that are not
-/// per field: storage could not be read, the session's record is unusable, or the caller was cancelled.
+/// The plugin's `AWSAuthCognitoSession` reports each field as a `Result`; here `fetchAuthSession` throws
+/// instead, so every field is a plain value, and an expired session can't be taken for a working one. A field
+/// is `nil` only when the session has nothing for it: the identity ID and AWS credentials without an identity
+/// pool (or for a login made to the user pool only), and the user's `sub` and tokens for a guest or a
+/// federated session.
+///
+/// Without the plugin's `isSignedIn`: whether a user is signed in is the session's state,
+/// `currentSessionState()`, which also tells a guest and a storage failure apart.
 @_spi(AmplifyExperimental)
 public struct AuthClientSession {
 
-    /// The identity pool identity ID.
-    public let identityIdResult: Result<String, AuthClientError>
+    /// The identity pool identity ID, or `nil` without an identity pool.
+    public let identityId: String?
 
-    /// The identity pool's temporary AWS credentials.
-    public let awsCredentialsResult: Result<AuthClientAWSCredentials, AuthClientError>
+    /// The identity pool's temporary AWS credentials, or `nil` without an identity pool.
+    public let awsCredentials: AuthClientAWSCredentials?
 
-    /// The signed-in user's `sub`.
-    public let userSubResult: Result<String, AuthClientError>
+    /// The signed-in user's `sub`, or `nil` for a guest or a federated session.
+    public let userSub: String?
 
-    /// The user pool tokens. The plugin's `userPoolTokensResult` (its initializer's
-    /// `cognitoTokensResult`).
-    public let userPoolTokensResult: Result<AuthClientUserPoolTokens, AuthClientError>
+    /// The user pool tokens, or `nil` for a guest or a federated session. The plugin's `userPoolTokensResult`.
+    public let userPoolTokens: AuthClientUserPoolTokens?
 
     /// Public so an app can build one for a test double; the client builds its own.
     public init(
-        identityIdResult: Result<String, AuthClientError>,
-        awsCredentialsResult: Result<AuthClientAWSCredentials, AuthClientError>,
-        userSubResult: Result<String, AuthClientError>,
-        userPoolTokensResult: Result<AuthClientUserPoolTokens, AuthClientError>
+        identityId: String? = nil,
+        awsCredentials: AuthClientAWSCredentials? = nil,
+        userSub: String? = nil,
+        userPoolTokens: AuthClientUserPoolTokens? = nil
     ) {
-        self.identityIdResult = identityIdResult
-        self.awsCredentialsResult = awsCredentialsResult
-        self.userSubResult = userSubResult
-        self.userPoolTokensResult = userPoolTokensResult
+        self.identityId = identityId
+        self.awsCredentials = awsCredentials
+        self.userSub = userSub
+        self.userPoolTokens = userPoolTokens
     }
 }
 
 extension AuthClientSession: Sendable {}
 
-extension AuthClientSession: Equatable {
-
-    /// Values compare exactly. Errors compare as `AuthSessionState.failed` does: same case, structured
-    /// payload, description and suggestion; the underlying error is not compared.
-    public static func == (lhs: AuthClientSession, rhs: AuthClientSession) -> Bool {
-        equivalent(lhs.identityIdResult, rhs.identityIdResult)
-            && equivalent(lhs.awsCredentialsResult, rhs.awsCredentialsResult)
-            && equivalent(lhs.userSubResult, rhs.userSubResult)
-            && equivalent(lhs.userPoolTokensResult, rhs.userPoolTokensResult)
-    }
-
-    private static func equivalent<Value: Equatable>(
-        _ lhs: Result<Value, AuthClientError>,
-        _ rhs: Result<Value, AuthClientError>
-    ) -> Bool {
-        switch (lhs, rhs) {
-        case (.success(let left), .success(let right)):
-            return left == right
-        case (.failure(let left), .failure(let right)):
-            return left.isEquivalent(to: right)
-        default:
-            return false
-        }
-    }
-}
+extension AuthClientSession: Equatable {}
 
 /// A signed-in session's user pool tokens.
 ///

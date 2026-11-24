@@ -186,7 +186,7 @@ extension SessionCore {
     /// The engine's test, except that without an identity pool only a user's user pool tokens count. A login saved
     /// under a configuration that had one may still hold its AWS credentials (`.default`'s, which the plugin's rule
     /// copies as it is when the identity pool is removed), and nothing hands those out here: the AWS credentials
-    /// provider refuses, and `fetchAuthSession` reports them as not configured. Counted, once they expired every call
+    /// provider refuses, and `fetchAuthSession` reports no identity fields. Counted, once they expired every call
     /// would refresh, and rewrite the record, until the tokens next need a refresh.
     private nonisolated func credentialsNeedRefresh(_ payload: Data) throws -> Bool {
         if configuration.identityPool == nil, try engine.checkedDescribe(payload).kind == .userPoolAndIdentityPool {
@@ -543,8 +543,8 @@ extension SessionCore {
     /// is false), is `CredentialsError.notConfigured` (`.failLoudly`), with the refusal's description and recovery
     /// suggestion, and the refusal as its underlying error: the identity pool gives this user no identity, so a
     /// consumer's retries would only get the same answer until then, and a sign-in under the same configuration asks
-    /// the same pool. Anything else is returned unchanged. `fetchAuthSession`'s identity
-    /// fields and the access-token path keep the refusal itself.
+    /// the same pool. Anything else is returned unchanged. `fetchAuthSession` and the access-token path keep the
+    /// refusal itself.
     static func providerIdentityFailure(_ error: Error) -> Error {
         guard !isTransient(error), let refusal = error as? AuthClientError else {
             return error
@@ -644,8 +644,8 @@ extension SessionCore {
 }
 
 /// A refresh of a carried session waiting for its identity stored new user pool tokens, then failed the identity
-/// step with `error`: callers that need no identity (an access token, a session's token fields) can still use the
-/// tokens.
+/// step with `error`: a caller that needs no identity (an access token) can still use the tokens.
+/// `fetchAuthSession` throws `error`.
 struct IdentityStepFailure: Error {
     let error: Error
     /// What the refresh left: the record it committed, or another writer's, adopted, that still waits for its

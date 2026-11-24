@@ -324,13 +324,10 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         }
         let client = try liveClient(live)
         _ = try await client.signIn(username: "alice", password: "password")
-        _ = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+        _ = try? await client.fetchAuthSession(options: .init(forceRefresh: true))
         harness.advanceClock(by: RefreshTokenReuse.minimumGap)
-        let expired = try await client.fetchAuthSession(options: .init(forceRefresh: true))
-        guard case .failure(let expiry) = expired.userPoolTokensResult else {
-            return XCTFail("the second forced refresh should have expired the session")
-        }
-        XCTAssertEqual(expiry.errorDescription, Self.refreshTokenAlreadyUsed)
+        let expiry = await authClientError { try await client.fetchAuthSession(options: .init(forceRefresh: true)) }
+        XCTAssertEqual(expiry?.errorDescription, Self.refreshTokenAlreadyUsed, "the second forced refresh expires the session")
         let stored = try XCTUnwrap(harness.keychain.value(pluginAccount))
         let flagged = try flaggedExpired(stored)
         let engine = try live.engine()
@@ -338,14 +335,11 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertEqual(try engine.userPoolTokens(in: flagged)?.refreshToken, try engine.userPoolTokens(in: stored)?.refreshToken)
         harness.keychain.put(flagged, pluginAccount)
 
-        let session = try await client.fetchAuthSession()
+        let error = await authClientError { try await client.fetchAuthSession() }
         let aws = await credentialsError { try await client.credentialsProvider.resolve() }
 
-        guard case .failure(let error) = session.userPoolTokensResult else {
-            return XCTFail("the plugin's flagged re-save was taken for a new login")
-        }
-        XCTAssertEqual(error.kind, .sessionExpired, "\(error)")
-        XCTAssertEqual(error.errorDescription, Self.refreshTokenAlreadyUsed)
+        XCTAssertEqual(error?.kind, .sessionExpired, "the plugin's flagged re-save is not a new login: \(String(describing: error))")
+        XCTAssertEqual(error?.errorDescription, Self.refreshTokenAlreadyUsed)
         XCTAssertEqual(aws?.isSessionExpired, true, "\(String(describing: aws))")
         XCTAssertEqual((aws?.underlyingError as? AuthClientError)?.errorDescription, Self.refreshTokenAlreadyUsed)
         XCTAssertEqual(live.cognito.operations.count(where: { $0 == "GetTokensFromRefreshToken" }), 2)

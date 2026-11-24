@@ -88,8 +88,8 @@ final class FederationTests: XCTestCase {
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .federated(identityId: "us-east-1:fed"))
         let session = try await client.fetchAuthSession()
-        XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:fed")
-        XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(federated.awsCredentials))
+        XCTAssertEqual(session.identityId, "us-east-1:fed")
+        XCTAssertEqual(session.awsCredentials, AuthClientAWSCredentials(federated.awsCredentials))
 
         XCTAssertEqual(harness.engine(for: home)?.accountOperationCalls, [])
         XCTAssertNil(try harness.storedRecord(home))
@@ -544,7 +544,7 @@ final class FederationTests: XCTestCase {
         let credentials = try await client.credentialsProvider.resolve()
 
         XCTAssertEqual(harness.engine(for: work)?.refreshCalls, [stale.data])
-        XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(stale.refreshed.awsCredentials))
+        XCTAssertEqual(session.awsCredentials, AuthClientAWSCredentials(stale.refreshed.awsCredentials))
         XCTAssertEqual(credentials as? CognitoAWSCredentials, stale.refreshed.awsCredentials)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, stale.refreshed.data)
         let state = await client.currentSessionState()

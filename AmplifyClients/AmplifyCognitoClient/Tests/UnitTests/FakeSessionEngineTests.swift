@@ -39,7 +39,7 @@ final class FakeSessionEngineTests: XCTestCase {
 
         XCTAssertEqual(
             try engine.describe(alice.data),
-            CredentialSummary(kind: .userPoolAndIdentityPool, username: "alice", userId: "sub-alice")
+            CredentialSummary(kind: .userPoolAndIdentityPool, username: "alice", userId: "sub-alice", identityId: "us-east-1:alice")
         )
         XCTAssertEqual(try engine.awsCredentials(in: alice.data), alice.awsCredentials)
         XCTAssertEqual(try engine.accessToken(in: alice.data), "access-alice-v1")

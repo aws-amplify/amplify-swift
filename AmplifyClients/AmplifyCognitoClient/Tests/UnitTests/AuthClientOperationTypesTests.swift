@@ -353,36 +353,24 @@ final class AuthClientOperationTypesTests: XCTestCase {
         }
     }
 
-    /// - Given: sessions that are identical, or that differ only in their identity ID result or their user pool
-    ///   tokens result
+    /// - Given: sessions that are identical, or that differ only in their identity ID or their user pool tokens
     /// - When: they are compared with `==`
     /// - Then:
-    ///    - identical sessions are equal
-    ///    - a different identity ID, or a failure in place of an identity ID, makes them unequal
-    ///    - token failures of the same case and strings are equal even when their underlying errors differ, and
-    ///      failures of different cases are unequal
+    ///    - identical sessions are equal, and so are two with no fields
+    ///    - a different identity ID, no identity ID, other tokens or no tokens makes them unequal
     func testSessionEqualityComparesEveryField() {
         let tokens = AuthClientUserPoolTokens(idToken: "i", accessToken: "a", refreshToken: "r")
         let credentials = AuthClientAWSCredentials(accessKeyId: "k", secretAccessKey: "s", sessionToken: "t", expiration: TestClock.start)
-        func session(
-            identity: Result<String, AuthClientError> = .success("id-1"),
-            tokens tokenResult: Result<AuthClientUserPoolTokens, AuthClientError> = .success(tokens)
-        ) -> AuthClientSession {
-            AuthClientSession(
-                identityIdResult: identity,
-                awsCredentialsResult: .success(credentials),
-                userSubResult: .success("sub"),
-                userPoolTokensResult: tokenResult
-            )
+        func session(identity: String? = "id-1", tokens sessionTokens: AuthClientUserPoolTokens? = tokens) -> AuthClientSession {
+            AuthClientSession(identityId: identity, awsCredentials: credentials, userSub: "sub", userPoolTokens: sessionTokens)
         }
         XCTAssertEqual(session(), session())
-        XCTAssertNotEqual(session(), session(identity: .success("id-2")))
-        XCTAssertNotEqual(session(), session(identity: .failure(.notSignedIn("d", "s"))))
-        XCTAssertEqual(
-            session(tokens: .failure(.sessionExpired("d", "s", FixtureError(description: "a")))),
-            session(tokens: .failure(.sessionExpired("d", "s", FixtureError(description: "b"))))
-        )
-        XCTAssertNotEqual(session(tokens: .failure(.sessionExpired("d", "s"))), session(tokens: .failure(.notSignedIn("d", "s"))))
+        XCTAssertEqual(AuthClientSession(), AuthClientSession())
+        XCTAssertNotEqual(session(), session(identity: "id-2"))
+        XCTAssertNotEqual(session(), session(identity: nil))
+        XCTAssertNotEqual(session(), session(tokens: AuthClientUserPoolTokens(idToken: "i", accessToken: "other", refreshToken: "r")))
+        XCTAssertNotEqual(session(), session(tokens: nil))
+        XCTAssertNotEqual(session(), AuthClientSession())
     }
 
     /// - Given: user pool tokens and AWS credentials, alone, in a session and in an optional
@@ -397,12 +385,7 @@ final class AuthClientOperationTypesTests: XCTestCase {
             sessionToken: "SESSION-SECRET",
             expiration: TestClock.start
         ))
-        let session = AuthClientSession(
-            identityIdResult: .success("id-1"),
-            awsCredentialsResult: .success(credentials),
-            userSubResult: .success("sub"),
-            userPoolTokensResult: .success(tokens)
-        )
+        let session = AuthClientSession(identityId: "id-1", awsCredentials: credentials, userSub: "sub", userPoolTokens: tokens)
         for value in [tokens, credentials, session, Optional(tokens) as Any] as [Any] {
             var dumped = ""
             dump(value, to: &dumped)

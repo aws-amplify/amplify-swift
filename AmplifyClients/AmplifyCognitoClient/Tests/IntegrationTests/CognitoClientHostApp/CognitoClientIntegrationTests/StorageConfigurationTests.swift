@@ -135,10 +135,10 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
 
             let session = try await client.fetchAuthSession()
 
-            let sub = try IntegrationTestEnvironment.jwtClaims(session.userPoolTokensResult.get().idToken)["sub"] as? String
+            let sub = try IntegrationTestEnvironment.jwtClaims(session.requireUserPoolTokens().idToken)["sub"] as? String
             XCTAssertTrue(sub == alice.userId, "alice's tokens")
-            XCTAssertNoThrow(try session.identityIdResult.get(), "the identity is fetched on first use")
-            XCTAssertNoThrow(try session.awsCredentialsResult.get(), "with its AWS credentials")
+            XCTAssertNoThrow(try session.requireIdentityId(), "the identity is fetched on first use")
+            XCTAssertNoThrow(try session.requireAWSCredentials(), "with its AWS credentials")
             XCTAssertEqual(recorder.answeredOperations, ["GetTokensFromRefreshToken"])
         }
         try await SessionCleanup.waitUntilReleased([sessionId])
@@ -186,7 +186,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
         let aliceId = try tracked("alice-change-ip", in: [federated, otherIdentityPool])
         let original = try await guest(guestId, over: identityOnly)
         let aliceCredentials = try await makeFreshUser(on: role).testUser
-        let (alice, aliceIdentity) = try await signInWithIdentity(aliceCredentials, on: aliceId, over: federated)
+        let (alice, _) = try await signInWithIdentity(aliceCredentials, on: aliceId, over: federated)
 
         try await assertSignedOutWithNoRow(guestId, over: otherIdentityOnly, "after the identity pool changed")
         let oldStore = SessionRecordStore(namespace: SessionStorageNamespace(pools: identityOnly.poolNamespace, accessGroup: nil))
@@ -214,19 +214,24 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
             )
             try Self.assertCarriedTokensOnly(aliceId, under: otherIdentityPool, keptUnder: federated)
 
-            let first = try await client.fetchAuthSession()
-            recorder.reset()
-            let second = try await client.fetchAuthSession()
-
-            for session in [first, second] {
-                XCTAssertFalse((try? session.identityIdResult.get()) == aliceIdentity, "R-IP's identity is never carried")
-                // R-IP2 does not federate R-UP, so the lazy identity fetch fails there: only the identity.
-                XCTAssertThrowsError(try session.identityIdResult.get())
-                let sub = try IntegrationTestEnvironment.jwtClaims(session.userPoolTokensResult.get().idToken)["sub"] as? String
-                XCTAssertTrue(sub == alice.userId, "the tokens still succeed")
-                XCTAssertTrue(try session.userSubResult.get() == alice.userId, "the sub still succeeds")
+            // R-IP2 does not federate R-UP, so the lazy identity fetch fails there, and the fetch throws that
+            // failure, as the plugin's does: R-IP's identity is never carried. The token provider still vends
+            // alice's token.
+            let first = await Expect.authClientError("the first fetch of the carried session") {
+                try await client.fetchAuthSession()
             }
+            recorder.reset()
+            let second = await Expect.authClientError("the second fetch of the carried session") {
+                try await client.fetchAuthSession()
+            }
+
+            XCTAssertNotNil(first)
+            XCTAssertTrue(second?.errorDescription == first?.errorDescription, "the second fetch answers with the first's failure")
             XCTAssertEqual(recorder.operations, [], "a permanent identity failure is not retried on every call")
+            try Self.assertCarriedTokensOnly(aliceId, under: otherIdentityPool, keptUnder: federated)
+            let carried = try await client.userPoolTokenProvider.accessToken()
+            let sub = try IntegrationTestEnvironment.jwtClaims(carried)["sub"] as? String
+            XCTAssertTrue(sub == alice.userId, "the token provider still vends alice's token")
         }
         try await SessionCleanup.waitUntilReleased([aliceId])
     }
@@ -361,8 +366,8 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
         let accessKeyId: String
 
         init(_ session: AuthClientSession) throws {
-            self.identityId = try session.identityIdResult.get()
-            self.accessKeyId = try session.awsCredentialsResult.get().accessKeyId
+            self.identityId = try session.requireIdentityId()
+            self.accessKeyId = try session.requireAWSCredentials().accessKeyId
         }
     }
 
@@ -392,7 +397,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
             let result = try await client.signIn(username: user.username, password: user.password)
             XCTAssertStep(result.nextStep, .done)
-            signedIn = try await (client.getCurrentUser(), client.fetchAuthSession().identityIdResult.get())
+            signedIn = try await (client.getCurrentUser(), client.fetchAuthSession().requireIdentityId())
         }
         try await SessionCleanup.waitUntilReleased([sessionId])
         return signedIn

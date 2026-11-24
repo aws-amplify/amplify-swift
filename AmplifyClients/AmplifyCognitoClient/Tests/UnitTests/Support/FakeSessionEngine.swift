@@ -38,7 +38,8 @@ struct FakePayload: Codable, Equatable {
     var stale: Bool
     /// Whether the payload holds AWS credentials.
     var aws: Bool
-    /// The identity pool identity, if the payload names one.
+    /// The identity pool identity, if the payload names one. The factories below name one whenever the payload
+    /// holds AWS credentials, as real credentials do; set it to `nil` for a payload that lacks it.
     var identityId: String? = nil
     /// Whether the fake reports the user pool tokens themselves as needing a refresh (`nil`: no).
     var tokensStale: Bool? = nil
@@ -47,6 +48,8 @@ struct FakePayload: Codable, Equatable {
     var hostedUIShared: Bool? = nil
     /// The user pool refresh token, if a test needs one other than the default `refresh-<username>` (a rotation).
     var refreshToken: String? = nil
+    /// Whether the payload lacks the user pool tokens its user should have (`nil`: no).
+    var withoutUserPoolTokens: Bool? = nil
     /// The version of the AWS credentials, if a test needs them refreshed apart from the user pool tokens (`nil`:
     /// `version`).
     var awsVersion: Int? = nil
@@ -66,11 +69,11 @@ struct FakePayload: Codable, Equatable {
             version: version,
             stale: stale,
             aws: kind != .userPoolOnly,
-            identityId: identityId
+            identityId: identityId ?? (kind == .userPoolOnly ? nil : "us-east-1:\(username)")
         )
     }
 
-    static func guest(version: Int = 1, stale: Bool = false, identityId: String? = nil) -> FakePayload {
+    static func guest(version: Int = 1, stale: Bool = false, identityId: String = "us-east-1:guest") -> FakePayload {
         FakePayload(
             username: nil,
             userId: nil,
@@ -149,7 +152,7 @@ struct FakePayload: Codable, Equatable {
 
     /// The user pool tokens the fake vends for this payload.
     var userPoolTokens: AuthClientUserPoolTokens? {
-        guard let username, let accessToken else {
+        guard withoutUserPoolTokens != true, let username, let accessToken else {
             return nil
         }
         return AuthClientUserPoolTokens(
@@ -512,8 +515,8 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     ///
     /// A guest's sign-in gets an identity minted for the login (`loginIdentityId(for:)`), never the guest's: the
     /// live engine's identity pool step sends `GetId` with the login alone, so Cognito answers with the identity it
-    /// maps the login to, as for the plugin. With no guest, the payload names no identity, as the fixtures' signed-in
-    /// payloads do.
+    /// maps the login to, as for the plugin. With no guest, the payload names the fixtures' default identity for the
+    /// user, as their signed-in payloads do.
     static func signedIn(_ username: String, from current: Data?) -> FakePayload {
         let wasGuest = current.flatMap(FakePayload.decode)?.kind == SessionKind.guest.storedValue
         return FakePayload.signedIn(username, identityId: wasGuest ? loginIdentityId(for: username) : nil)

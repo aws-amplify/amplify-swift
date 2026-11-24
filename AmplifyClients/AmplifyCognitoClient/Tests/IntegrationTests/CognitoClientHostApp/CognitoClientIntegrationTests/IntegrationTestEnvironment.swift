@@ -856,6 +856,7 @@ enum HarnessError: Error, CustomStringConvertible {
     case malformedToken(String)
     case keychain(String, OSStatus)
     case timedOut(String)
+    case missingSessionField(String)
 
     var description: String {
         switch self {
@@ -875,6 +876,41 @@ enum HarnessError: Error, CustomStringConvertible {
             return "\(operation) returned \(status)."
         case .timedOut(let what):
             return "Timed out waiting for \(what)."
+        case .missingSessionField(let field):
+            return "The fetched session holds no \(field)."
         }
+    }
+}
+
+/// A fetched session's fields, for a test that expects them: each throws when the session holds none, where the
+/// field itself is `nil`.
+extension AuthClientSession {
+
+    func requireUserPoolTokens() throws -> AuthClientUserPoolTokens {
+        guard let userPoolTokens else {
+            throw HarnessError.missingSessionField("user pool tokens")
+        }
+        return userPoolTokens
+    }
+
+    func requireUserSub() throws -> String {
+        guard let userSub else {
+            throw HarnessError.missingSessionField("user sub")
+        }
+        return userSub
+    }
+
+    func requireIdentityId() throws -> String {
+        guard let identityId else {
+            throw HarnessError.missingSessionField("identity ID")
+        }
+        return identityId
+    }
+
+    func requireAWSCredentials() throws -> AuthClientAWSCredentials {
+        guard let awsCredentials else {
+            throw HarnessError.missingSessionField("AWS credentials")
+        }
+        return awsCredentials
     }
 }

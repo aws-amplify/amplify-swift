@@ -12,20 +12,28 @@ extension SessionCore {
 
     // MARK: fetchAuthSession
 
-    /// The session's credentials, each field with its own result.
+    /// The session's credentials: what the session holds now, or a throw.
     ///
-    /// - A signed-in or guest session is refreshed through the session's single refresh flight if its
+    /// - A signed-in, federated or guest session is refreshed through the session's single refresh flight if its
     ///   credentials need it. With `forceRefresh` it is refreshed through the forced flight, which joins
     ///   only other forced refreshes: a normal refresh in flight may find nothing to do.
     /// - A signed-out session acquires guest credentials when an identity pool is configured: the only
-    ///   path from `.signedOut` to `.guest`. If the pool allows no guest access it stays signed out. If another
-    ///   writer has saved credentials meanwhile, it adopts them instead, and refreshes them as above.
-    /// - A refresh or guest fetch that fails is reported in the fields, as the plugin does:
-    ///   `sessionExpired` for a dead refresh token, and the mapped error otherwise.
+    ///   path from `.signedOut` to `.guest`. If the pool allows no guest access, or there is no identity pool, it
+    ///   throws `notSignedIn` and stays signed out. If another writer has saved credentials meanwhile, it adopts
+    ///   them instead, and refreshes them as above.
+    /// - A field is `nil` only where nothing applies: the identity fields without an identity pool (or for a
+    ///   user-pool-only login), and the user fields for a guest or a federated session.
     ///
-    /// - Throws: only what is not per field: `storageUnavailable` (never reported as signed out), the
-    ///   record's own error when it is unreadable, and `CancellationError`. Always an `AuthClientError`
-    ///   otherwise: a `CredentialsError` from inside the core is converted.
+    /// - Throws: every failure, where the plugin reports one per field. Always an `AuthClientError` or a
+    ///   `CancellationError`: a `CredentialsError` from inside the core is converted.
+    ///   - `notSignedIn` for a signed-out session that cannot become a guest;
+    ///   - `sessionExpired` for a dead refresh token, or a federated session's refused provider token;
+    ///   - `storageUnavailable` (never reported as signed out), and the record's own error when it is unreadable;
+    ///   - the refresh's or the guest fetch's own failure (the network, Cognito), which leaves the login as it is;
+    ///   - the identity step's failure for a carried session waiting for its identity, even when the refresh
+    ///     stored new user pool tokens, as the plugin does (`FetchAuthSessionOperationHelper`); and, while that
+    ///     step may not be tried again (`PendingIdentityRetry`), its last failure;
+    ///   - `unknown` when the saved credentials lack what they should hold, or still need a refresh.
     nonisolated func fetchAuthSession(forceRefresh: Bool) async throws -> AuthClientSession {
         do {
             return try await fetchSession(forceRefresh: forceRefresh)
@@ -34,8 +42,9 @@ extension SessionCore {
         }
     }
 
-    /// - Parameter adopted: this call already took credentials as a signed-out session (`signedOutSession`), so it
-    ///   takes no more: a second pass answers from the record.
+    /// - Parameter adopted: this call has already gone round once, so it goes round no more, and a second pass
+    ///   answers from the record: it took credentials as a signed-out session (`acquireGuest`), or its refresh
+    ///   found the session signed out (the last step below).
     private nonisolated func fetchSession(forceRefresh: Bool, adopted: Bool = false) async throws -> AuthClientSession {
         _ = try await restoredSnapshot()
         try await rereadIfExpired()
@@ -51,23 +60,20 @@ extension SessionCore {
             // then answered as the session it now is, by the branch below: credentials it adopted are refreshed if
             // they need it, as another writer's login may have expired since it was saved, and a forced fetch
             // refreshes them whatever their expiry. A guest it fetched itself needs no refresh, forced or not.
-            switch try await signedOutSession(forced: forceRefresh && !adopted) {
-            case .answered(let session):
-                return session
-            case .acquired(let acquisition):
-                guard !adopted else {
-                    return try await acquiredSession()
-                }
-                return try await fetchSession(forceRefresh: forceRefresh && acquisition == .adopted, adopted: true)
+            let acquisition = try await acquireGuest(forced: forceRefresh && !adopted)
+            guard !adopted else {
+                return try await acquiredSession()
             }
+            return try await fetchSession(forceRefresh: forceRefresh && acquisition == .adopted, adopted: true)
         case .guest, .federated, .signedIn:
             if let expired {
                 // The expiry's cause, not the snapshot's: the same login saved again since (other bytes, or the
                 // plugin's expired flag) answers as the proof did.
-                return Self.session(failingWith: expiredError(expired))
+                throw expiredError(expired)
             }
             guard let payload = snapshot.credentials else {
-                return Self.session(failingWith: Self.notSignedIn(sessionId))
+                // Not reached: each of these states holds credentials.
+                throw Self.notSignedIn(sessionId)
             }
             guard try forceRefresh || needsRefresh(payload, of: snapshot) else {
                 return try session(of: snapshot)
@@ -79,45 +85,43 @@ extension SessionCore {
                     try await refreshOnce(force: forceRefresh)
                 }
             } catch let failure as IdentityStepFailure {
-                // A carried session's refresh stored new user pool tokens, then failed the identity step: only the
-                // identity and its AWS credentials fail. The refresh's own committed tokens are reported as they are;
-                // if tokens adopted from another writer need a refresh after all, the session is expired, as the
-                // plugin reports it.
+                // A carried session's refresh stored new user pool tokens, then failed the identity step. The call
+                // fails as that step did, as the plugin's does, though the tokens are valid: the token provider
+                // still hands them out (`freshPayload`).
                 if Self.isCancellation(failure.error) {
                     throw CancellationError()
                 }
-                let error = Self.identityStepError(failure.error)
-                if case .storageUnavailable = error {
-                    throw error
-                }
-                return try await sessionWithoutIdentity(failingWith: error, after: failure)
-                    ?? Self.session(failingWith: Self.sessionExpired(sessionId))
-            } catch let error as AuthClientError {
-                if case .storageUnavailable = error {
-                    throw error
-                }
-                return Self.session(failingWith: error)
-            } catch let error as CredentialsError {
-                return Self.session(failingWith: Self.authClientError(from: error))
+                throw Self.identityStepError(failure.error)
+            } catch let error as AuthClientError where Self.isCancellation(error) {
+                throw CancellationError()
             }
             // What the flight left may be a re-read or adopted record rather than a refresh's result. Never
             // report credentials from one that still need a refresh, as the providers never vend them. The
             // refresh's own result is reported as it is, as the plugin does: checked again by a device clock
             // running ahead of Cognito's, every refresh Cognito accepted would fail.
-            if case .adopted(let adopted) = refreshed, let fresh = adopted.credentials, try needsRefresh(fresh, of: adopted) {
-                return Self.session(failingWith: Self.notRefreshed(sessionId))
+            if case .adopted(let reread) = refreshed, let fresh = reread.credentials, try needsRefresh(fresh, of: reread) {
+                throw Self.notRefreshed(sessionId)
+            }
+            // The refresh found the session signed out (another writer's sign-out, adopted): it is answered as a
+            // signed-out session is, a guest if the identity pool allows one. Once: `adopted` stops both this and
+            // the signed-out branch from going round again. A forced fetch stays forced, so a login a call on this
+            // core installs before the second pass is still refreshed; another process's is found by
+            // `acquireGuestOnce`, and answered as it is (`acquiredSession`).
+            if !adopted, refreshed.snapshot.credentials == nil, case .signedOut = refreshed.snapshot.state(engine: engine, challenge: nil) {
+                return try await fetchSession(forceRefresh: forceRefresh, adopted: true)
             }
             return try session(of: refreshed.snapshot)
         }
     }
 
-    /// The answer of a call that took credentials as a signed-out session a second time (another writer signed the
-    /// session out meanwhile, and saved credentials again): the record's, as they are, unless they need a refresh,
-    /// which is never reported. The call does not go round again.
+    /// The answer of a call on its second pass (`fetchSession`'s `adopted`) that took credentials as a signed-out
+    /// session again: after it had already taken some (another writer signed the session out meanwhile, and saved
+    /// credentials again), or after its refresh found the session signed out. The record's, as they are, unless
+    /// they need a refresh, which is never reported. The call does not go round again.
     private nonisolated func acquiredSession() async throws -> AuthClientSession {
         let snapshot = await restoredSnapshotIfAny ?? .absent
         if let payload = snapshot.credentials, try needsRefresh(payload, of: snapshot) {
-            return Self.session(failingWith: Self.notRefreshed(sessionId))
+            throw Self.notRefreshed(sessionId)
         }
         return try session(of: snapshot)
     }
@@ -133,21 +137,16 @@ extension SessionCore {
         .unknown(error.errorDescription, error.recoverySuggestion, error)
     }
 
-    /// What a signed-out session's fetch found: an answer (signed out, or the guest fetch's failure), or credentials
-    /// it fetched or adopted, which the caller answers as the session they make it.
-    private enum SignedOutFetch {
-        case answered(AuthClientSession)
-        case acquired(GuestAcquisition)
-    }
-
-    /// A signed-out session's guest credentials if the identity pool allows them, or what another writer saved, else
-    /// every field failing with `notSignedIn`.
+    /// A signed-out session's guest credentials if the identity pool allows them, or what another writer saved.
     ///
     /// - Parameter forced: A forced fetch, which never joins an unforced one's guest flight, whose result may be
     ///   credentials it adopted.
-    private nonisolated func signedOutSession(forced: Bool) async throws -> SignedOutFetch {
+    /// - Throws: `notSignedIn` when the session stays signed out: there is no identity pool, the pool allows no
+    ///   guest access, or the session was signed out again meanwhile. The guest fetch's own failure otherwise, and
+    ///   `CancellationError` for a cancelled one.
+    private nonisolated func acquireGuest(forced: Bool) async throws -> GuestAcquisition {
         guard configuration.identityPool != nil else {
-            return .answered(Self.signedOutSession(sessionId))
+            throw Self.notSignedIn(sessionId)
         }
         let acquired: GuestAcquisition
         do {
@@ -158,17 +157,14 @@ extension SessionCore {
                 }
         } catch SessionEngineError.notSignedIn {
             // The identity pool allows no guest access. The session stays signed out.
-            return .answered(Self.signedOutSession(sessionId))
-        } catch let error as AuthClientError {
-            if case .storageUnavailable = error {
-                throw error
-            }
-            return .answered(Self.session(failingWith: error))
+            throw Self.notSignedIn(sessionId)
+        } catch let error as AuthClientError where Self.isCancellation(error) {
+            throw CancellationError()
         }
         if await restoredSnapshotIfAny?.credentials == nil {
-            return .answered(Self.signedOutSession(sessionId))
+            throw Self.notSignedIn(sessionId)
         }
-        return .acquired(acquired)
+        return acquired
     }
 
     /// What `acquireGuestOnce` did: fetched guest credentials and committed them, or adopted the record another
@@ -233,6 +229,14 @@ extension SessionCore {
     }
 
     /// The session's fields, read from a payload without the network.
+    ///
+    /// A guest or a federated session has no user fields: `nil`, where the plugin reports an error. For a
+    /// federated session that drops `federatedHasNoUser`'s guidance, which the user's own calls still give.
+    ///
+    /// - Throws: `notSignedIn` for a signed-out snapshot (signed out during the call, after it had gone round);
+    ///   for a carried session still waiting for its identity, its identity step's last failure while the step may
+    ///   not be tried again, else `identityNotFetched`; `missing` when the credentials lack a field they should
+    ///   hold; the record's own errors.
     private nonisolated func session(of snapshot: SessionSnapshot) throws -> AuthClientSession {
         switch snapshot.state(engine: engine, challenge: nil) {
         case .unavailable(let reason):
@@ -240,93 +244,49 @@ extension SessionCore {
         case .failed(let error):
             throw error
         case .signedOut, .awaitingChallenge:
-            return Self.signedOutSession(sessionId)
+            throw Self.notSignedIn(sessionId)
         case .guest, .federated, .signedIn:
             break
         }
         guard let payload = snapshot.credentials else {
-            return Self.signedOutSession(sessionId)
+            // Not reached: each of these states holds credentials.
+            throw Self.notSignedIn(sessionId)
         }
         let summary = try engine.checkedDescribe(payload)
-        let user = summary.user
-        // A federated session has no user pool user, and `signIn` refuses one: say what lets a user in.
-        let noUser = summary.kind == .federated ? Self.federatedHasNoUser(sessionId) : Self.notSignedIn(sessionId)
 
-        let identityId: Result<String, AuthClientError>
-        let awsCredentials: Result<AuthClientAWSCredentials, AuthClientError>
+        var identityId: String?
+        var awsCredentials: AuthClientAWSCredentials?
         if configuration.identityPool == nil || summary.kind == .userPoolOnly {
-            // A carried session waiting for its identity has not fetched it yet: while its identity step may not
-            // be tried again, that step's last failure answers, not "no identity pool".
-            let missing = isIdentityPending(snapshot)
-                ? identityRetry.blockingError(at: now(), userId: snapshot.ownRecord?.userId) ?? Self.identityNotFetched(sessionId)
-                : Self.noIdentityPoolCredentials(sessionId)
-            identityId = .failure(missing)
-            awsCredentials = .failure(missing)
+            // No identity to report, unless this is a carried session waiting for its identity, which has not
+            // fetched it yet: the call then fails as its identity step last did, while that step may not be tried
+            // again, as the plugin fails a session whose identity step failed.
+            if isIdentityPending(snapshot) {
+                throw identityRetry.blockingError(at: now(), userId: snapshot.ownRecord?.userId)
+                    ?? Self.identityNotFetched(sessionId)
+            }
         } else {
-            identityId = summary.identityId.map { .success($0) } ?? .failure(Self.missing("an identity ID", in: sessionId))
-            awsCredentials = try engine.checkedAWSCredentials(in: payload).map { .success(AuthClientAWSCredentials($0)) }
-                ?? .failure(Self.missing("AWS credentials", in: sessionId))
+            guard let identity = summary.identityId else {
+                throw Self.missing("an identity ID", in: sessionId)
+            }
+            guard let credentials = try engine.checkedAWSCredentials(in: payload) else {
+                throw Self.missing("AWS credentials", in: sessionId)
+            }
+            identityId = identity
+            awsCredentials = AuthClientAWSCredentials(credentials)
         }
 
-        let userSub: Result<String, AuthClientError> = user.map { .success($0.userId) } ?? .failure(noUser)
-        let tokens: Result<AuthClientUserPoolTokens, AuthClientError>
-        if user == nil {
-            tokens = .failure(noUser)
-        } else {
-            tokens = try engine.checkedUserPoolTokens(in: payload).map { .success($0) }
-                ?? .failure(Self.missing("user pool tokens", in: sessionId))
+        var userPoolTokens: AuthClientUserPoolTokens?
+        if summary.user != nil {
+            guard let tokens = try engine.checkedUserPoolTokens(in: payload) else {
+                throw Self.missing("user pool tokens", in: sessionId)
+            }
+            userPoolTokens = tokens
         }
         return AuthClientSession(
-            identityIdResult: identityId,
-            awsCredentialsResult: awsCredentials,
-            userSubResult: userSub,
-            userPoolTokensResult: tokens
-        )
-    }
-
-    /// The session's fields when it is a user pool session waiting for its identity (carried forward,
-    /// `identityPending`) and holds the user pool tokens `failure`'s refresh committed, or other tokens that need no
-    /// refresh: the tokens and sub as they are, and the identity ID and AWS credentials failing with `error`. The
-    /// refresh's own tokens are not checked again by the device clock, which may run ahead of Cognito's. `nil` for any
-    /// other session.
-    private nonisolated func sessionWithoutIdentity(
-        failingWith error: AuthClientError,
-        after failure: IdentityStepFailure
-    ) async throws -> AuthClientSession? {
-        guard let snapshot = await restoredSnapshotIfAny,
-              configuration.identityPool != nil,
-              let payload = snapshot.credentials,
-              try engine.checkedDescribe(payload).kind == .userPoolOnly,
-              try failure.committed(payload) || !engine.checkedUserPoolTokensNeedRefresh(payload, at: now()) else {
-            return nil
-        }
-        let fields = try session(of: snapshot)
-        return AuthClientSession(
-            identityIdResult: .failure(error),
-            awsCredentialsResult: .failure(error),
-            userSubResult: fields.userSubResult,
-            userPoolTokensResult: fields.userPoolTokensResult
-        )
-    }
-
-    /// Every field failing with `error`, for a refresh or guest fetch that failed.
-    static func session(failingWith error: AuthClientError) -> AuthClientSession {
-        AuthClientSession(
-            identityIdResult: .failure(error),
-            awsCredentialsResult: .failure(error),
-            userSubResult: .failure(error),
-            userPoolTokensResult: .failure(error)
-        )
-    }
-
-    static func signedOutSession(_ sessionId: SessionID) -> AuthClientSession {
-        session(failingWith: notSignedIn(sessionId))
-    }
-
-    static func noIdentityPoolCredentials(_ sessionId: SessionID) -> AuthClientError {
-        .configuration(
-            "Session \"\(sessionId)\" has no identity pool credentials: the configuration has no identity pool, or the user signed in to the user pool only.",
-            "Configure an identity pool to get AWS credentials and an identity ID."
+            identityId: identityId,
+            awsCredentials: awsCredentials,
+            userSub: summary.user?.userId,
+            userPoolTokens: userPoolTokens
         )
     }
 

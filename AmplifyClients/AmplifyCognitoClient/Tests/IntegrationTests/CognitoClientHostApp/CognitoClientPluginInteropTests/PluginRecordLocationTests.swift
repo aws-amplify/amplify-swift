@@ -415,3 +415,11 @@ struct InteropError: Error, CustomStringConvertible {
         self.description = description
     }
 }
+
+extension AuthClientSession {
+
+    /// The user pool tokens, for a test that expects a signed-in user; throws when the session holds none.
+    func requireUserPoolTokens() throws -> AuthClientUserPoolTokens {
+        try XCTUnwrap(userPoolTokens, "the fetched session holds no user pool tokens")
+    }
+}

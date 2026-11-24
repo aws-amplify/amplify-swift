@@ -10,8 +10,8 @@ import Security
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// `fetchAuthSession(options:)` and `getCurrentUser()`: the per-field results for each
-/// kind of session, refresh through the single flight, guest acquisition, and the failures that throw.
+/// `fetchAuthSession(options:)` and `getCurrentUser()`: what each kind of session holds, refresh through the
+/// single flight, guest acquisition, and the failures, which all throw.
 final class FetchAuthSessionTests: XCTestCase {
 
     private var harness: ClientHarness!
@@ -34,7 +34,7 @@ final class FetchAuthSessionTests: XCTestCase {
     /// - Given: a session signed in to both pools
     /// - When: its session is fetched
     /// - Then:
-    ///    - every field succeeds with the payload's values; the state is signed in; nothing is refreshed
+    ///    - every field holds the payload's values; the state is signed in; nothing is refreshed
     func testSignedInSessionReportsEveryField() async throws {
         let payload = FakePayload.signedIn("alice", identityId: "us-east-1:alice")
         try harness.signIn(work, payload)
@@ -43,10 +43,10 @@ final class FetchAuthSessionTests: XCTestCase {
         let session = try await client.fetchAuthSession()
 
         XCTAssertEqual(session, AuthClientSession(
-            identityIdResult: .success("us-east-1:alice"),
-            awsCredentialsResult: .success(AuthClientAWSCredentials(payload.awsCredentials)),
-            userSubResult: .success("sub-alice"),
-            userPoolTokensResult: .success(try XCTUnwrap(payload.userPoolTokens))
+            identityId: "us-east-1:alice",
+            awsCredentials: AuthClientAWSCredentials(payload.awsCredentials),
+            userSub: "sub-alice",
+            userPoolTokens: try XCTUnwrap(payload.userPoolTokens)
         ))
         XCTAssertEqual(harness.engine(for: work)?.refreshCalls, [])
         let state = await client.currentSessionState()
@@ -56,26 +56,23 @@ final class FetchAuthSessionTests: XCTestCase {
     /// - Given: a user-pool-only session
     /// - When: its session is fetched
     /// - Then:
-    ///    - the tokens and sub succeed; the identity ID and AWS credentials fail with `configuration`
+    ///    - it holds the tokens and sub; the identity ID and AWS credentials are `nil`
     func testUserPoolOnlySessionHasNoIdentityPoolFields() async throws {
         try harness.signIn(work, .signedIn("alice", kind: .userPoolOnly))
         let client = try harness.client(work)
 
         let session = try await client.fetchAuthSession()
 
-        XCTAssertEqual(try session.userSubResult.get(), "sub-alice")
-        XCTAssertNoThrow(try session.userPoolTokensResult.get())
-        XCTAssertThrowsError(try session.awsCredentialsResult.get()) { error in
-            XCTAssertEqual((error as? AuthClientError)?.kind, .configuration)
-        }
-        XCTAssertThrowsError(try session.identityIdResult.get())
+        XCTAssertEqual(session.userSub, "sub-alice")
+        XCTAssertNotNil(session.userPoolTokens)
+        XCTAssertNil(session.awsCredentials)
+        XCTAssertNil(session.identityId)
     }
 
     /// - Given: a guest session
     /// - When: its session is fetched
     /// - Then:
-    ///    - the identity ID and AWS credentials succeed; the sub and tokens fail with `notSignedIn`; the
-    ///      state is `.guest`
+    ///    - it holds the identity ID and AWS credentials; the sub and tokens are `nil`; the state is `.guest`
     func testGuestSessionHasCredentialsButNoUser() async throws {
         let guest = FakePayload.guest(identityId: "us-east-1:guest-1")
         try harness.signIn(work, guest)
@@ -85,12 +82,26 @@ final class FetchAuthSessionTests: XCTestCase {
 
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .guest)
-        XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:guest-1")
-        XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(guest.awsCredentials))
-        XCTAssertThrowsError(try session.userSubResult.get()) { error in
-            XCTAssertEqual((error as? AuthClientError)?.kind, .notSignedIn)
-        }
-        XCTAssertThrowsError(try session.userPoolTokensResult.get())
+        XCTAssertEqual(session.identityId, "us-east-1:guest-1")
+        XCTAssertEqual(session.awsCredentials, AuthClientAWSCredentials(guest.awsCredentials))
+        XCTAssertNil(session.userSub)
+        XCTAssertNil(session.userPoolTokens)
+    }
+
+    /// - Given: a session signed in under a configuration with no identity pool
+    /// - When: its session is fetched
+    /// - Then:
+    ///    - it holds the tokens and sub, and no identity ID or AWS credentials, whatever the saved login holds
+    func testASessionWithNoIdentityPoolHasNoIdentityFields() async throws {
+        let client = try harness.client(home, configuration: ClientFixtures.userPoolOnlyConfiguration)
+        _ = try await client.signInForTest()
+
+        let session = try await client.fetchAuthSession()
+
+        XCTAssertEqual(session.userSub, "sub-alice")
+        XCTAssertNotNil(session.userPoolTokens)
+        XCTAssertNil(session.identityId)
+        XCTAssertNil(session.awsCredentials)
     }
 
     // MARK: Guest acquisition
@@ -111,8 +122,8 @@ final class FetchAuthSessionTests: XCTestCase {
 
         let session = try await client.fetchAuthSession()
 
-        XCTAssertThrowsError(try session.userPoolTokensResult.get())
-        XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:guest")
+        XCTAssertNil(session.userPoolTokens)
+        XCTAssertEqual(session.identityId, "us-east-1:guest")
         XCTAssertEqual(engine.guestFetchCount, 1)
         XCTAssertEqual(try harness.storedRecord(work)?.kind, .guest)
         await states.waitFor(1)
@@ -126,19 +137,18 @@ final class FetchAuthSessionTests: XCTestCase {
     ///   pool at all
     /// - When: their sessions are fetched
     /// - Then:
-    ///    - both stay signed out, every field fails with `notSignedIn`; the one without an identity pool
-    ///      never asks the engine
+    ///    - both throw `notSignedIn` and stay signed out; the one without an identity pool never asks the engine
     func testNoGuestAccessStaysSignedOut() async throws {
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         engine.scriptGuestCredentials { _ in throw SessionEngineError.notSignedIn }
         let poolOnly = try harness.client(home, configuration: ClientFixtures.userPoolOnlyConfiguration)
 
-        let noGuest = try await client.fetchAuthSession()
-        let noPool = try await poolOnly.fetchAuthSession()
+        let noGuest = await authClientError { try await client.fetchAuthSession() }
+        let noPool = await authClientError { try await poolOnly.fetchAuthSession() }
 
-        XCTAssertEqual(noGuest, FetchAuthSessionTests.signedOut(work))
-        XCTAssertEqual(noPool, FetchAuthSessionTests.signedOut(home))
+        XCTAssertEqual(noGuest?.isEquivalent(to: SessionCore.notSignedIn(work)), true, "\(String(describing: noGuest))")
+        XCTAssertEqual(noPool?.isEquivalent(to: SessionCore.notSignedIn(home)), true, "\(String(describing: noPool))")
         XCTAssertEqual(engine.guestFetchCount, 1)
         XCTAssertEqual(harness.engine(for: home)?.guestFetchCount, 0)
         let state = await client.currentSessionState()
@@ -149,18 +159,17 @@ final class FetchAuthSessionTests: XCTestCase {
     /// - Given: a signed-out session whose guest fetch fails with a service error
     /// - When: its session is fetched
     /// - Then:
-    ///    - it does not throw: every field carries the error, and the session stays signed out
-    func testAFailedGuestFetchIsReportedInTheFields() async throws {
+    ///    - it throws that error, and the session stays signed out
+    func testAFailedGuestFetchThrows() async throws {
         let client = try harness.client(work)
         harness.engine(for: work)?.scriptGuestCredentials { _ in
             throw SessionEngineError.service(.service(.network, "offline", "retry"))
         }
 
-        let session = try await client.fetchAuthSession()
+        let error = await authClientError { try await client.fetchAuthSession() }
 
-        XCTAssertThrowsError(try session.awsCredentialsResult.get()) { error in
-            XCTAssertEqual((error as? AuthClientError)?.kind, .service(.network))
-        }
+        XCTAssertEqual(error?.kind, .service(.network))
+        XCTAssertEqual(error?.errorDescription, "offline")
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedOut)
     }
@@ -187,7 +196,7 @@ final class FetchAuthSessionTests: XCTestCase {
         await latch.open()
         for fetch in fetches {
             let session = try await fetch.value
-            XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:guest")
+            XCTAssertEqual(session.identityId, "us-east-1:guest")
         }
 
         XCTAssertEqual(engine.guestFetchCount, 1)
@@ -216,7 +225,7 @@ final class FetchAuthSessionTests: XCTestCase {
         await latch.open()
         for fetch in fetches {
             let session = try await fetch.value
-            XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, "access-alice-v2")
+            XCTAssertEqual(session.userPoolTokens?.accessToken, "access-alice-v2")
         }
 
         XCTAssertEqual(engine.refreshCalls, [stale.data])
@@ -253,7 +262,7 @@ final class FetchAuthSessionTests: XCTestCase {
 
         XCTAssertEqual(token, "access-alice-v2")
         XCTAssertEqual(engine.refreshCalls.count, 2)
-        XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, "access-alice-v3")
+        XCTAssertEqual(session.userPoolTokens?.accessToken, "access-alice-v3")
     }
 
     /// - Given: a signed-in session whose credentials are still valid
@@ -271,7 +280,7 @@ final class FetchAuthSessionTests: XCTestCase {
         let forced = try await client.fetchAuthSession(options: .init(forceRefresh: true))
 
         XCTAssertEqual(engine.refreshCalls, [fresh.data])
-        XCTAssertEqual(try forced.userPoolTokensResult.get().accessToken, "access-alice-v2")
+        XCTAssertEqual(forced.userPoolTokens?.accessToken, "access-alice-v2")
     }
 
     /// A forced refresh of a session signed out in this process still calls Cognito when another writer has saved a
@@ -298,10 +307,10 @@ final class FetchAuthSessionTests: XCTestCase {
         let unforced = try await unforcedClient.fetchAuthSession()
 
         XCTAssertEqual(forcedEngine.refreshCalls, [bob.data])
-        XCTAssertEqual(try forced.userPoolTokensResult.get().accessToken, "access-bob-v2")
+        XCTAssertEqual(forced.userPoolTokens?.accessToken, "access-bob-v2")
         XCTAssertEqual(forcedEngine.guestFetchCount, 0)
         XCTAssertEqual(unforcedEngine.refreshCalls, [])
-        XCTAssertEqual(try unforced.userPoolTokensResult.get().accessToken, bob.accessToken)
+        XCTAssertEqual(unforced.userPoolTokens?.accessToken, bob.accessToken)
     }
 
     /// A forced fetch of a session signed out in this process still refreshes another writer's login when an unforced
@@ -335,9 +344,9 @@ final class FetchAuthSessionTests: XCTestCase {
         let forcedSession = try await forced.value
         let unforcedSession = try await unforced.value
         XCTAssertEqual(engine.refreshCalls, [bob.data])
-        XCTAssertEqual(try forcedSession.userPoolTokensResult.get().accessToken, "access-bob-v2")
+        XCTAssertEqual(forcedSession.userPoolTokens?.accessToken, "access-bob-v2")
         XCTAssertEqual(engine.guestFetchCount, 0)
-        XCTAssertEqual(try unforcedSession.userPoolTokensResult.get().accessToken, bob.accessToken)
+        XCTAssertEqual(unforcedSession.userPoolTokens?.accessToken, bob.accessToken)
     }
 
     /// A forced fetch of a session signed out in this process never joins an unforced fetch's guest acquisition: it
@@ -369,8 +378,8 @@ final class FetchAuthSessionTests: XCTestCase {
         let unforcedSession = try await unforced.value
         XCTAssertEqual(engine.guestFetchCount, 1)
         XCTAssertEqual(engine.refreshCalls, [guest.data])
-        XCTAssertEqual(try forcedSession.awsCredentialsResult.get(), AuthClientAWSCredentials(guest.refreshed.awsCredentials))
-        XCTAssertEqual(try unforcedSession.awsCredentialsResult.get(), AuthClientAWSCredentials(guest.awsCredentials))
+        XCTAssertEqual(forcedSession.awsCredentials, AuthClientAWSCredentials(guest.refreshed.awsCredentials))
+        XCTAssertEqual(unforcedSession.awsCredentials, AuthClientAWSCredentials(guest.awsCredentials))
     }
 
     /// A forced fetch of a session signed out in this process never takes an unforced fetch's guest acquisition as its
@@ -404,7 +413,7 @@ final class FetchAuthSessionTests: XCTestCase {
         let forcedSession = try await forced.value
         _ = try await unforced.value
         XCTAssertEqual(engine.refreshCalls, [bob.data])
-        XCTAssertEqual(try forcedSession.userPoolTokensResult.get().accessToken, "access-bob-v2")
+        XCTAssertEqual(forcedSession.userPoolTokens?.accessToken, "access-bob-v2")
         XCTAssertEqual(FakePayload.decode(try XCTUnwrap(harness.storedRecord(work)?.credentials))?.username, "bob")
     }
 
@@ -433,12 +442,12 @@ final class FetchAuthSessionTests: XCTestCase {
         let guestSession = try await guestClient.fetchAuthSession()
 
         XCTAssertEqual(loginEngine.refreshCalls, [bob.data])
-        XCTAssertEqual(try login.userPoolTokensResult.get().accessToken, "access-bob-v2")
-        XCTAssertEqual(try login.awsCredentialsResult.get(), AuthClientAWSCredentials(bob.refreshed.awsCredentials))
+        XCTAssertEqual(login.userPoolTokens?.accessToken, "access-bob-v2")
+        XCTAssertEqual(login.awsCredentials, AuthClientAWSCredentials(bob.refreshed.awsCredentials))
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, bob.refreshed.data)
         XCTAssertEqual(loginEngine.guestFetchCount, 0)
         XCTAssertEqual(guestEngine.refreshCalls, [guest.data])
-        XCTAssertEqual(try guestSession.awsCredentialsResult.get(), AuthClientAWSCredentials(guest.refreshed.awsCredentials))
+        XCTAssertEqual(guestSession.awsCredentials, AuthClientAWSCredentials(guest.refreshed.awsCredentials))
         XCTAssertEqual(try harness.storedRecord(home)?.credentials, guest.refreshed.data)
         XCTAssertEqual(guestEngine.guestFetchCount, 0)
         let state = await loginClient.currentSessionState()
@@ -461,8 +470,8 @@ final class FetchAuthSessionTests: XCTestCase {
 
         XCTAssertEqual(engine.refreshCalls, [])
         XCTAssertEqual(engine.guestFetchCount, 0)
-        XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, bob.accessToken)
-        XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(bob.awsCredentials))
+        XCTAssertEqual(session.userPoolTokens?.accessToken, bob.accessToken)
+        XCTAssertEqual(session.awsCredentials, AuthClientAWSCredentials(bob.awsCredentials))
     }
 
     /// A guest a signed-out session fetches itself is fresh, so it is not refreshed, even by a forced fetch.
@@ -483,20 +492,19 @@ final class FetchAuthSessionTests: XCTestCase {
         for (session, engine) in [(unforced, unforcedEngine), (forced, forcedEngine)] {
             XCTAssertEqual(engine.guestFetchCount, 1)
             XCTAssertEqual(engine.refreshCalls, [])
-            XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:guest")
-            XCTAssertEqual(try session.awsCredentialsResult.get().accessKeyId, FakePayload.guest().awsCredentials.accessKeyId)
+            XCTAssertEqual(session.identityId, "us-east-1:guest")
+            XCTAssertEqual(session.awsCredentials?.accessKeyId, FakePayload.guest().awsCredentials.accessKeyId)
         }
     }
 
-    /// An adopted login whose refresh fails is reported in the fields after one refresh: the fetch does not go round
-    /// again.
+    /// An adopted login whose refresh fails throws after one refresh: the fetch does not go round again.
     ///
     /// - Given: a session restored signed out, with an identity pool; another writer then saves bob's expired login,
     ///   whose refresh token is dead
     /// - When: its session is fetched without `forceRefresh`
     /// - Then:
-    ///    - one refresh; every field is `sessionExpired`; the session is signed in as bob; no guest is fetched
-    func testAnAdoptedLoginWhoseRefreshFailsIsReportedAfterOneRefresh() async throws {
+    ///    - one refresh; it throws `sessionExpired`; the session is signed in as bob; no guest is fetched
+    func testAnAdoptedLoginWhoseRefreshFailsThrowsAfterOneRefresh() async throws {
         let bob = FakePayload.signedIn("bob", stale: true)
         let client = try harness.client(work)
         _ = await client.currentSessionState()
@@ -504,16 +512,11 @@ final class FetchAuthSessionTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
 
-        let session = try await client.fetchAuthSession()
+        let error = await authClientError { try await client.fetchAuthSession() }
 
         XCTAssertEqual(engine.refreshCalls, [bob.data])
         XCTAssertEqual(engine.guestFetchCount, 0)
-        XCTAssertThrowsError(try session.userPoolTokensResult.get()) { error in
-            XCTAssertEqual((error as? AuthClientError)?.kind, .sessionExpired)
-        }
-        XCTAssertThrowsError(try session.awsCredentialsResult.get()) { error in
-            XCTAssertEqual((error as? AuthClientError)?.kind, .sessionExpired)
-        }
+        XCTAssertEqual(error?.kind, .sessionExpired)
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
     }
@@ -521,24 +524,20 @@ final class FetchAuthSessionTests: XCTestCase {
     /// - Given: a signed-in session whose refresh token is dead
     /// - When: its session is fetched twice
     /// - Then:
-    ///    - it does not throw; every field is `sessionExpired`, and the state is still signed in as the
-    ///      user; `.sessionExpired` is sent once, and the second fetch does not refresh again
-    func testADeadRefreshTokenIsReportedAsSessionExpired() async throws {
+    ///    - both throw `sessionExpired`, and the state is still signed in as the user; `.sessionExpired` is sent
+    ///      once, and the second fetch does not refresh again
+    func testADeadRefreshTokenThrowsSessionExpired() async throws {
         try harness.signIn(work, .signedIn("alice", stale: true))
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
         let events = StreamRecorder(client.listenToAuthEvents())
 
-        let first = try await client.fetchAuthSession()
-        let second = try await client.fetchAuthSession()
+        let first = await authClientError { try await client.fetchAuthSession() }
+        let second = await authClientError { try await client.fetchAuthSession() }
 
-        for session in [first, second] {
-            XCTAssertThrowsError(try session.userPoolTokensResult.get()) { error in
-                XCTAssertEqual((error as? AuthClientError)?.kind, .sessionExpired)
-            }
-            XCTAssertThrowsError(try session.awsCredentialsResult.get())
-        }
+        XCTAssertEqual(first?.kind, .sessionExpired)
+        XCTAssertEqual(second?.kind, .sessionExpired)
         XCTAssertEqual(engine.refreshCalls.count, 1)
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedIn(alice))
@@ -551,21 +550,21 @@ final class FetchAuthSessionTests: XCTestCase {
     /// - Given: a signed-in session whose refresh fails at the network
     /// - When: its session is fetched
     /// - Then:
-    ///    - it does not throw; the fields carry the service error; the session is not expired
-    func testAFailedRefreshIsReportedInTheFields() async throws {
+    ///    - it throws the service error; the session is not expired, and stays signed in
+    func testAFailedRefreshThrows() async throws {
         try harness.signIn(work, .signedIn("alice", stale: true))
         let client = try harness.client(work)
         harness.engine(for: work)?.scriptRefresh { _ in
             throw SessionEngineError.service(.service(.network, "offline", "retry"))
         }
 
-        let session = try await client.fetchAuthSession()
+        let error = await authClientError { try await client.fetchAuthSession() }
 
-        XCTAssertThrowsError(try session.userPoolTokensResult.get()) { error in
-            XCTAssertEqual((error as? AuthClientError)?.kind, .service(.network))
-        }
+        XCTAssertEqual(error?.kind, .service(.network))
         let expired = await client.core.isExpired
         XCTAssertFalse(expired)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedIn(alice))
     }
 
     /// The engine refreshes unforced for a stale session, and forced only when the caller forces it.
@@ -592,12 +591,12 @@ final class FetchAuthSessionTests: XCTestCase {
         XCTAssertEqual(harness.engine(for: home)?.refreshForceFlags, [true])
     }
 
-    /// A refresh that stored rotated tokens and then failed is committed, then reported as the failure it was.
+    /// A refresh that stored rotated tokens and then failed is committed, then thrown as the failure it was.
     ///
     /// - Given: a stale session whose engine refresh stores the next tokens, then fails its identity pool step
     /// - When: its session is fetched
     /// - Then:
-    ///    - the fields fail with the mapped service error
+    ///    - it throws the mapped service error
     ///    - the record holds the new tokens, so the next refresh uses them, and the session is not expired
     func testARefreshThatStoredTokensThenFailedCommitsThem() async throws {
         let stale = FakePayload.signedIn("alice", stale: true)
@@ -611,11 +610,9 @@ final class FetchAuthSessionTests: XCTestCase {
             )
         }
 
-        let session = try await client.fetchAuthSession()
+        let error = await authClientError { try await client.fetchAuthSession() }
 
-        XCTAssertThrowsError(try session.userPoolTokensResult.get()) { error in
-            XCTAssertEqual((error as? AuthClientError)?.kind, .service(.network))
-        }
+        XCTAssertEqual(error?.kind, .service(.network))
         let record = try harness.storedRecord(work)
         XCTAssertEqual(record.flatMap { $0.credentials.flatMap(FakePayload.decode) }, stored, "the rotated tokens are kept")
         let expired = await client.core.isExpired
@@ -630,7 +627,7 @@ final class FetchAuthSessionTests: XCTestCase {
     /// - Given: a stale session whose refresh returns credentials that still read as stale
     /// - When: its session is fetched
     /// - Then:
-    ///    - the fields carry the refreshed tokens and AWS credentials, not a retryable `unknown`
+    ///    - it holds the refreshed tokens and AWS credentials, and throws no retryable `unknown`
     func testCredentialsStillStaleAfterTheirOwnRefreshAreReported() async throws {
         try harness.signIn(work, .signedIn("alice", stale: true))
         let client = try harness.client(work)
@@ -642,8 +639,8 @@ final class FetchAuthSessionTests: XCTestCase {
 
         let session = try await client.fetchAuthSession()
 
-        XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, "access-alice-v2")
-        XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(FakePayload.signedIn("alice", version: 2).awsCredentials))
+        XCTAssertEqual(session.userPoolTokens?.accessToken, "access-alice-v2")
+        XCTAssertEqual(session.awsCredentials, AuthClientAWSCredentials(FakePayload.signedIn("alice", version: 2).awsCredentials))
     }
 
     /// A `CredentialsError` from inside the session core never escapes `fetchAuthSession`,
@@ -652,22 +649,137 @@ final class FetchAuthSessionTests: XCTestCase {
     /// - Given: a stale session whose refresh throws `CredentialsError.notConfigured`
     /// - When: its session is fetched
     /// - Then:
-    ///    - it does not throw; the fields carry an `AuthClientError.unknown` with that error underneath
-    func testACredentialsErrorIsReportedAsAnAuthClientError() async throws {
+    ///    - it throws an `AuthClientError.unknown` with that error underneath
+    func testACredentialsErrorIsThrownAsAnAuthClientError() async throws {
         try harness.signIn(work, .signedIn("alice", stale: true))
         let client = try harness.client(work)
         harness.engine(for: work)?.scriptRefresh { _ in
             throw CredentialsError.notConfigured("no identity pool", "configure one")
         }
 
-        let session = try await client.fetchAuthSession()
+        let error = await authClientError { try await client.fetchAuthSession() }
 
-        XCTAssertThrowsError(try session.userPoolTokensResult.get()) { error in
-            let error = error as? AuthClientError
-            XCTAssertEqual(error?.kind, .unknown)
-            XCTAssertEqual(error?.errorDescription, "no identity pool")
-            XCTAssertTrue(error?.underlyingError is CredentialsError)
+        XCTAssertEqual(error?.kind, .unknown)
+        XCTAssertEqual(error?.errorDescription, "no identity pool")
+        XCTAssertTrue(error?.underlyingError is CredentialsError)
+    }
+
+    // MARK: Signed out during the call, cancellation, missing data
+
+    /// A refresh that finds the session signed out by another writer answers as a signed-out session's fetch does,
+    /// once: it does not go round again.
+    ///
+    /// - Given: a stale signed-in session, and a refresh during which another process signs the session out; in turn
+    ///   with an identity pool that allows guests, and with one that allows none
+    /// - When: the session is fetched
+    /// - Then:
+    ///    - with guest access it returns a guest session, and the state is `.guest`
+    ///    - without it, it throws `notSignedIn`, and the state is `.signedOut`
+    ///    - each refreshed once and asked for guest credentials once
+    func testARefreshThatFindsTheSessionSignedOutAnswersAsASignedOutSession() async throws {
+        for guestAccess in [true, false] {
+            harness = ClientHarness()
+            try harness.signIn(work, .signedIn("alice", stale: true))
+            let client = try harness.client(work)
+            _ = await client.currentSessionState()
+            let engine = try XCTUnwrap(harness.engine(for: work))
+            let store = harness.store()
+            let work = work
+            engine.scriptRefresh { payload in
+                _ = try store.signOut(work)
+                return try XCTUnwrap(FakePayload.decode(payload)).refreshed.data
+            }
+
+            if guestAccess {
+                let session = try await client.fetchAuthSession()
+                XCTAssertEqual(session, AuthClientSession(
+                    identityId: "us-east-1:guest",
+                    awsCredentials: AuthClientAWSCredentials(FakePayload.guest().awsCredentials)
+                ))
+            } else {
+                engine.scriptGuestCredentials { _ in throw SessionEngineError.notSignedIn }
+                let error = await authClientError { try await client.fetchAuthSession() }
+                XCTAssertEqual(error?.isEquivalent(to: SessionCore.notSignedIn(work)), true, "\(String(describing: error))")
+            }
+            XCTAssertEqual(engine.refreshCalls.count, 1, "guest access: \(guestAccess)")
+            XCTAssertEqual(engine.guestFetchCount, 1, "guest access: \(guestAccess)")
+            let state = await client.currentSessionState()
+            XCTAssertEqual(state, guestAccess ? .guest : .signedOut)
         }
+    }
+
+    /// A refresh or a guest fetch the engine reports as cancelled (a service call cancelled mid-flight) throws
+    /// `CancellationError`, never an `AuthClientError` that wraps one.
+    ///
+    /// - Given: a stale signed-in session whose refresh fails with an error caused by a cancellation, and a
+    ///   signed-out session whose guest fetch fails the same way
+    /// - When: each session is fetched
+    /// - Then:
+    ///    - both throw `CancellationError`; the first is not expired, and the second stays signed out
+    func testACancelledRefreshOrGuestFetchThrowsCancellationError() async throws {
+        try harness.signIn(work, .signedIn("alice", stale: true))
+        let signedIn = try harness.client(work)
+        let signedOut = try harness.client(home)
+        let cancelled = SessionEngineError.service(.unknown("The request was cancelled.", "Retry.", CancellationError()))
+        harness.engine(for: work)?.scriptRefresh { _ in throw cancelled }
+        harness.engine(for: home)?.scriptGuestCredentials { _ in throw cancelled }
+
+        for (name, client) in [("refresh", signedIn), ("guest fetch", signedOut)] {
+            do {
+                _ = try await client.fetchAuthSession()
+                XCTFail("\(name): expected a cancellation")
+            } catch {
+                XCTAssertTrue(error is CancellationError, "\(name): \(error)")
+            }
+        }
+        let expired = await signedIn.core.isExpired
+        XCTAssertFalse(expired)
+        let state = await signedOut.currentSessionState()
+        XCTAssertEqual(state, .signedOut)
+    }
+
+    /// - Given: under a configuration with an identity pool, a signed-in session whose saved credentials name no
+    ///   identity, one whose saved credentials hold no AWS credentials, and one whose saved credentials hold no
+    ///   user pool tokens
+    /// - When: each is fetched
+    /// - Then:
+    ///    - each throws `unknown` saying what the saved credentials lack, and suggesting a new sign-in
+    func testSavedCredentialsMissingAFieldThrowUnknown() async throws {
+        let personal = ClientFixtures.id("personal")
+        var noIdentity = FakePayload.signedIn("alice")
+        noIdentity.identityId = nil
+        var noAWSCredentials = FakePayload.signedIn("bob")
+        noAWSCredentials.aws = false
+        var noTokens = FakePayload.signedIn("carol")
+        noTokens.withoutUserPoolTokens = true
+        try harness.signIn(work, noIdentity)
+        try harness.signIn(home, noAWSCredentials)
+        try harness.signIn(personal, noTokens)
+        let alice = try harness.client(work)
+        let bob = try harness.client(home)
+        let carol = try harness.client(personal)
+
+        let identity = await authClientError { try await alice.fetchAuthSession() }
+        let credentials = await authClientError { try await bob.fetchAuthSession() }
+        let tokens = await authClientError { try await carol.fetchAuthSession() }
+
+        XCTAssertEqual(
+            tokens?.isEquivalent(to: SessionCore.missing("user pool tokens", in: personal)),
+            true,
+            "\(String(describing: tokens))"
+        )
+
+        XCTAssertEqual(
+            identity?.isEquivalent(to: SessionCore.missing("an identity ID", in: work)),
+            true,
+            "\(String(describing: identity))"
+        )
+        XCTAssertEqual(
+            credentials?.isEquivalent(to: SessionCore.missing("AWS credentials", in: home)),
+            true,
+            "\(String(describing: credentials))"
+        )
+        XCTAssertEqual(identity?.recoverySuggestion, "Sign the session out and sign in again.")
     }
 
     // MARK: Throws
@@ -728,9 +840,5 @@ final class FetchAuthSessionTests: XCTestCase {
         XCTAssertEqual(signedOutError?.errorDescription, "There is no user signed in to retrieve current user")
         XCTAssertEqual(signedOutError?.recoverySuggestion, "Call signIn to sign a user in to this session, then call getCurrentUser.")
         XCTAssertEqual(harness.engine(for: work)?.refreshCalls, [])
-    }
-
-    static func signedOut(_ sessionId: SessionID) -> AuthClientSession {
-        SessionCore.signedOutSession(sessionId)
     }
 }

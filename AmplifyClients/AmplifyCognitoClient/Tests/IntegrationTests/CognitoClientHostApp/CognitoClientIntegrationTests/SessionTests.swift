@@ -46,13 +46,13 @@ final class SessionTests: ClientIntegrationTestCase {
 
         let session = try await client.fetchAuthSession()
 
-        let tokens = try session.userPoolTokensResult.get()
+        let tokens = try session.requireUserPoolTokens()
         let claims = try IntegrationTestEnvironment.jwtClaims(tokens.idToken)
         XCTAssertTrue(claims["sub"] as? String == user.userId, "the id token is the session user's")
         XCTAssertTrue(claims["cognito:username"] as? String == alice.username, "the id token names alice")
-        XCTAssertTrue(try session.userSubResult.get() == user.userId, "the session's sub is the user's")
-        XCTAssertFalse(try session.identityIdResult.get().isEmpty)
-        let credentials = try session.awsCredentialsResult.get()
+        XCTAssertTrue(try session.requireUserSub() == user.userId, "the session's sub is the user's")
+        XCTAssertFalse(try session.requireIdentityId().isEmpty)
+        let credentials = try session.requireAWSCredentials()
         XCTAssertGreaterThan(credentials.expiration, Date())
         let state = await client.currentSessionState()
         XCTAssertState(state, .signedIn(user))
@@ -69,7 +69,8 @@ final class SessionTests: ClientIntegrationTestCase {
     ///      same session ID reads it
     /// - Then:
     ///    - the state is `.signedOut`; `getCurrentUser()` and the token provider fail as not signed in
-    ///    - `fetchAuthSession()` reports its user pool tokens as `.notSignedIn` (the plugin's `.signedOut`)
+    ///    - `fetchAuthSession()` makes the cleared session a guest, with no user pool tokens or sub (the default
+    ///      backend's identity pool allows guests; the plugin reports its tokens as `.signedOut`)
     ///
     func testRecordRemovedOutOfBandReadsSignedOut() async throws {
         let raw = try RawUserPool()
@@ -78,7 +79,7 @@ final class SessionTests: ClientIntegrationTestCase {
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
             _ = try await client.signIn(username: alice.username, password: alice.password)
-            refreshToken = try await client.fetchAuthSession().userPoolTokensResult.get().refreshToken
+            refreshToken = try await client.fetchAuthSession().requireUserPoolTokens().refreshToken
         }
         addTeardownBlock { try await raw.revoke(refreshToken) }
         try await SessionCleanup.waitUntilReleased([sessionId])
@@ -98,11 +99,14 @@ final class SessionTests: ClientIntegrationTestCase {
             try await reloaded.userPoolTokenProvider.accessToken()
         }
         XCTAssertEqual(tokenError?.caseName, "notSignedIn")
+        // A cleared session is signed out, so its fetch becomes a guest: the default backend's identity pool
+        // allows guests.
         let session = try await reloaded.fetchAuthSession()
-        guard case .failure(let error) = session.userPoolTokensResult else {
-            return XCTFail("a cleared session should hold no user pool tokens")
-        }
-        XCTAssertEqual(error.kind, .notSignedIn)
+        XCTAssertNil(session.userPoolTokens, "a cleared session should hold no user pool tokens")
+        XCTAssertNil(session.userSub, "a cleared session should have no user sub")
+        XCTAssertNoThrow(try session.requireIdentityId(), "the cleared session's fetch has a guest identity")
+        let guest = await reloaded.currentSessionState()
+        XCTAssertState(guest, .guest)
     }
 
     /// A stored session past its expiry, whose refresh token Cognito rejects, reads `.sessionExpired` from a plain
@@ -137,7 +141,7 @@ final class SessionTests: ClientIntegrationTestCase {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
             _ = try await client.signIn(username: alice.username, password: alice.password)
             user = try await client.getCurrentUser()
-            refreshToken = try await client.fetchAuthSession().userPoolTokensResult.get().refreshToken
+            refreshToken = try await client.fetchAuthSession().requireUserPoolTokens().refreshToken
         }
         addTeardownBlock { try await raw.revoke(refreshToken) }
         try await SessionCleanup.waitUntilReleased([sessionId])
@@ -157,12 +161,11 @@ final class SessionTests: ClientIntegrationTestCase {
         do {
             let reloaded = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
             events = StreamRecorder(reloaded.listenToAuthEvents())
-            let session = try await reloaded.fetchAuthSession()
-
-            guard case .failure(let error) = session.userPoolTokensResult else {
-                return XCTFail("an expired session with a rejected refresh token returned tokens")
+            let error = await Expect.authClientError("the fetch of an expired session with a rejected refresh token") {
+                try await reloaded.fetchAuthSession()
             }
-            XCTAssertEqual(error.kind, .sessionExpired, "\(error)")
+
+            XCTAssertEqual(error?.kind, .sessionExpired, "\(String(describing: error?.kind))")
             let state = await reloaded.currentSessionState()
             XCTAssertState(state, .signedIn(user), "an expired session stays signed in as its user")
             try await events.waitUntil("the sessionExpired event", timeout: Self.networkTimeout) {
@@ -227,16 +230,16 @@ final class SessionTests: ClientIntegrationTestCase {
         let client = try makeClient("alice-cached", configureUserPoolClient: recorder.configureUserPoolClient)
         _ = try await client.signIn(username: alice.username, password: alice.password)
         let first = try await client.fetchAuthSession()
-        let firstToken = try fingerprint(first.userPoolTokensResult.get().accessToken)
-        let firstIdentity = try first.identityIdResult.get()
-        let firstKey = try first.awsCredentialsResult.get().accessKeyId
+        let firstToken = try fingerprint(first.requireUserPoolTokens().accessToken)
+        let firstIdentity = try first.requireIdentityId()
+        let firstKey = try first.requireAWSCredentials().accessKeyId
         recorder.reset()
 
         for fetch in 1 ... 5 {
             let session = try await client.fetchAuthSession()
-            XCTAssertTrue(try fingerprint(session.userPoolTokensResult.get().accessToken) == firstToken, "fetch \(fetch): the same tokens")
-            XCTAssertTrue(try session.identityIdResult.get() == firstIdentity, "fetch \(fetch): the same identity")
-            XCTAssertTrue(try session.awsCredentialsResult.get().accessKeyId == firstKey, "fetch \(fetch): the same credentials")
+            XCTAssertTrue(try fingerprint(session.requireUserPoolTokens().accessToken) == firstToken, "fetch \(fetch): the same tokens")
+            XCTAssertTrue(try session.requireIdentityId() == firstIdentity, "fetch \(fetch): the same identity")
+            XCTAssertTrue(try session.requireAWSCredentials().accessKeyId == firstKey, "fetch \(fetch): the same credentials")
         }
 
         XCTAssertEqual(recorder.operations, [], "cached fetches make no request")
@@ -253,10 +256,10 @@ final class SessionTests: ClientIntegrationTestCase {
     ///    - all 150 are awaited for at most the plugin's `networkTimeout`, 5 s
     /// - Then:
     ///    - the sign-out is `.complete`, and no fetch throws
-    ///    - each of the first 100 has an identity, and its user pool tokens are either alice's or
-    ///      `.notSignedIn` (it ran after the sign-out)
-    ///    - none of the last 50 is signed in: each is `.notSignedIn` for its tokens, and all 50 share one
-    ///      guest identity, which is not alice's
+    ///    - each of the first 100 has an identity, and its user pool tokens are either alice's or absent (it ran
+    ///      after the sign-out, as a guest)
+    ///    - none of the last 50 is signed in: each has no user pool tokens, and all 50 share one guest identity,
+    ///      which is not alice's
     ///    - the final state is `.guest`: the session is signed out of the user pool, and a fetch on a
     ///      signed-out session with guest access acquires guest credentials (the plugin's "not signed in")
     ///
@@ -264,7 +267,7 @@ final class SessionTests: ClientIntegrationTestCase {
         let client = try makeClient("alice-parallel")
         _ = try await client.signIn(username: alice.username, password: alice.password)
         let user = try await client.getCurrentUser()
-        let aliceIdentity = try await client.fetchAuthSession().identityIdResult.get()
+        let aliceIdentity = try await client.fetchAuthSession().requireIdentityId()
 
         let duringCalls = ConcurrentCalls("the fetches across the sign-out", count: 100) { index in
             if (index + 1).isMultiple(of: 6) {
@@ -287,23 +290,18 @@ final class SessionTests: ClientIntegrationTestCase {
         XCTAssertSignOutComplete(signOut)
         XCTAssertEqual(during.count, 100)
         for (index, session) in during.enumerated() {
-            XCTAssertNoThrow(try session.identityIdResult.get(), "fetch \(index) has an identity")
-            switch session.userPoolTokensResult {
-            case .success(let tokens):
+            XCTAssertNoThrow(try session.requireIdentityId(), "fetch \(index) has an identity")
+            if let tokens = session.userPoolTokens {
                 let sub = try IntegrationTestEnvironment.jwtClaims(tokens.idToken)["sub"] as? String
                 XCTAssertTrue(sub == user.userId, "fetch \(index): signed-in tokens are alice's")
-            case .failure(let error):
-                XCTAssertEqual(error.kind, .notSignedIn, "fetch \(index)")
+            } else {
+                XCTAssertNil(session.userSub, "fetch \(index): a guest has no sub")
             }
         }
         for (index, session) in after.enumerated() {
-            guard case .failure(let error) = session.userPoolTokensResult else {
-                XCTFail("fetch \(index) after the sign-out is still signed in")
-                continue
-            }
-            XCTAssertEqual(error.kind, .notSignedIn, "fetch \(index) after the sign-out")
+            XCTAssertNil(session.userPoolTokens, "fetch \(index) after the sign-out is still signed in")
         }
-        let guestIdentities = try Set(after.map { try $0.identityIdResult.get() })
+        let guestIdentities = try Set(after.map { try $0.requireIdentityId() })
         XCTAssertEqual(guestIdentities.count, 1, "the fetches after the sign-out share one guest identity")
         XCTAssertFalse(guestIdentities.contains(aliceIdentity), "the guest identity is not alice's")
         let state = await client.currentSessionState()

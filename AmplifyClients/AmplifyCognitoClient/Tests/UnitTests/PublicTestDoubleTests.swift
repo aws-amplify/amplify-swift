@@ -28,10 +28,10 @@ final class PublicTestDoubleTests: XCTestCase {
             expiration: Date(timeIntervalSince1970: 0)
         )
         let session = AuthClientSession(
-            identityIdResult: .success("identity"),
-            awsCredentialsResult: .success(credentials),
-            userSubResult: .success("sub"),
-            userPoolTokensResult: .success(tokens)
+            identityId: "identity",
+            awsCredentials: credentials,
+            userSub: "sub",
+            userPoolTokens: tokens
         )
         let result = AuthClientSignInResult(nextStep: .confirmSignInWithTOTPCode)
         let partial = AuthClientSignOutResult.partial(
@@ -41,8 +41,8 @@ final class PublicTestDoubleTests: XCTestCase {
             storageError: nil
         )
 
-        XCTAssertEqual(try session.userPoolTokensResult.get(), tokens)
-        XCTAssertEqual(try session.awsCredentialsResult.get().accessKeyId, "AKID")
+        XCTAssertEqual(session.userPoolTokens, tokens)
+        XCTAssertEqual(session.awsCredentials?.accessKeyId, "AKID")
         XCTAssertEqual(result.nextStep, .confirmSignInWithTOTPCode)
         XCTAssertTrue(partial.signedOutLocally)
         guard case .partial(let revokeTokenError, let globalSignOutError, _, _) = partial else {

@@ -249,13 +249,13 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         let aliceResolved = try await alice.credentialsProvider.resolve()
         let bobResolved = try await bob.credentialsProvider.resolve()
 
-        let aliceKey = try aliceSession.awsCredentialsResult.get().accessKeyId
-        let bobKey = try bobSession.awsCredentialsResult.get().accessKeyId
+        let aliceKey = try aliceSession.requireAWSCredentials().accessKeyId
+        let bobKey = try bobSession.requireAWSCredentials().accessKeyId
         XCTAssertTrue(aliceResolved.accessKeyId == aliceKey, "alice's provider should resolve her session's credentials")
         XCTAssertTrue(bobResolved.accessKeyId == bobKey, "bob's provider should resolve his session's credentials")
         XCTAssertTrue(aliceResolved.accessKeyId != bobResolved.accessKeyId, "alice's and bob's credentials should differ")
-        let aliceIdentity = try aliceSession.identityIdResult.get()
-        let bobIdentity = try bobSession.identityIdResult.get()
+        let aliceIdentity = try aliceSession.requireIdentityId()
+        let bobIdentity = try bobSession.requireIdentityId()
         XCTAssertTrue(aliceIdentity != bobIdentity, "alice's and bob's identities should differ")
         let roles = try await SandboxRoles()
         for client in [alice, bob] {

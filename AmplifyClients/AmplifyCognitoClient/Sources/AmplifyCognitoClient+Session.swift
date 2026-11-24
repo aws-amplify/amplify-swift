@@ -162,16 +162,36 @@ public extension AmplifyCognitoClient {
         return await core.signOut(global: options.globalSignOut, purge: options.purgeStoredSession)
     }
 
-    /// This session's credentials, refreshed if they need it, each field with its own result.
+    /// This session's credentials, refreshed if they need it.
+    ///
+    /// It throws where the plugin reports a failure per field, so the fields are plain values: a field is `nil`
+    /// only when the session has nothing for it (no identity fields without an identity pool, no user fields
+    /// for a guest or a federated session).
     ///
     /// A signed-out session with an identity pool that allows guest access becomes `.guest` here, and
     /// only here. Concurrent refreshes of the same kind share one call: a normal fetch joins a normal
     /// refresh in flight, and a forced one (`forceRefresh`) joins only a forced one, running after a normal one.
     ///
-    /// - Throws: only for failures that are not per field: `AuthClientError.storageUnavailable`; `.unknown`
-    ///   when the session's saved record cannot be read by this version; `CancellationError` if the calling
-    ///   task is cancelled while it waits (a refresh it joined carries on for the session). A failed refresh
-    ///   is reported in the fields, as `sessionExpired` when the session needs a fresh sign-in.
+    /// - Throws:
+    ///   - `AuthClientError.notSignedIn` for a signed-out session that cannot become a guest: there is no
+    ///     identity pool, or it allows no guest access;
+    ///   - `.sessionExpired` when the refresh token is dead, or the identity pool no longer accepts a federated
+    ///     session's provider token. The state stays signed in;
+    ///   - `.storageUnavailable` if storage could not be read or written; never reported as signed out;
+    ///   - `.unknown` when the session's saved record cannot be read by this version, or its saved credentials
+    ///     lack what they should hold.
+    ///
+    ///   Each of those carries its own recovery suggestion: follow it. Any other error leaves the user pool
+    ///   sign-in intact, and the call can be retried:
+    ///   - the refresh's or the guest fetch's own failure (`.service` for the network or Cognito, say), and
+    ///     `.unknown` when the credentials could not be refreshed;
+    ///   - the identity pool step's failure, even when the user pool tokens are valid, as the plugin does
+    ///     (`userPoolTokenProvider` still vends the token). For a session carried from a configuration without
+    ///     an identity pool, while the client holds that step back the call rethrows its last failure: for 30
+    ///     seconds after a transient failure, or until the tokens next need a refresh after a refusal.
+    ///     `forceRefresh: true` retries at once;
+    ///   - `CancellationError` if the calling task is cancelled while it waits (a refresh it joined carries on
+    ///     for the session), or the request itself was cancelled.
     func fetchAuthSession(options: AuthClientFetchSessionOptions = AuthClientFetchSessionOptions()) async throws -> AuthClientSession {
         let core = core
         return try await core.fetchAuthSession(forceRefresh: options.forceRefresh)
