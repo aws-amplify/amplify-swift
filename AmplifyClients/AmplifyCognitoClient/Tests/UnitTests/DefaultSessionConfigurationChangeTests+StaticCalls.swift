@@ -15,7 +15,7 @@ import Security
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// Listing before a restore, and the static `signOutStoredSession` and `purgeStoredSession`.
+/// Listing before a restore, and the static `signOutStoredSession`, `purgeStoredSession` and `setSessionLabel`.
 extension DefaultSessionConfigurationChangeTests {
 
     // MARK: - Listing and the static calls
@@ -501,5 +501,64 @@ extension DefaultSessionConfigurationChangeTests {
                 expiration: Date(timeIntervalSince1970: 4_000_000_000)
             )
         ))
+    }
+}
+
+// MARK: - The static setSessionLabel
+
+extension DefaultSessionConfigurationChangeTests {
+
+    /// - Given: alice's record under a user-pool-only configuration, and no restore since an identity pool was added
+    /// - When: the static `setSessionLabel` labels `.default` under the new configuration, then the saved sessions
+    ///   are listed under it
+    /// - Then:
+    ///    - the rule runs first: the record is carried to the new account, still signed in, and the label is bound
+    ///      to alice there
+    ///    - the old record is left as it was, nothing is revoked, and `authConfiguration` still names the old
+    ///      configuration, which only a restore replaces
+    func testStaticLabelAfterAChange_appliesTheRuleFirst() async throws {
+        let old = try await pluginSignsIn("alice", under: ChangeConfigs.userPoolOnly)
+
+        try await AmplifyCognitoClient.setSessionLabel(
+            "Work",
+            sessionId: .default,
+            configuration: ChangeConfigs.both,
+            accessGroup: nil,
+            dependencies: dependencies
+        )
+        let rows = try await listed(ChangeConfigs.both)
+
+        XCTAssertEqual(rows.map(\.label), ["Work"])
+        XCTAssertEqual(rows.map(\.username), ["alice"])
+        XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.both)), old)
+        XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.userPoolOnly)), old)
+        XCTAssertEqual(harness.revoker.revokeCalls, [])
+        XCTAssertEqual(harness.keychain.recordedPluginConfiguration(), AuthConfiguration(client: ChangeConfigs.userPoolOnly))
+    }
+
+    /// - Given: alice's record under user pool A, and no restore since the user pool changed
+    /// - When: the static `setSessionLabel` labels `.default` under user pool B, then the saved sessions are listed
+    ///   under B, signed-out rows included
+    /// - Then:
+    ///    - the rule does not carry, so it is not applied: alice's record under A is left as it was, and nothing is
+    ///      revoked
+    ///    - B has no login, so the label is a signed-out row's there, bound to nobody
+    func testStaticLabelAfterAClearingChange_leavesTheOldLogin() async throws {
+        let old = try await pluginSignsIn("alice", under: ChangeConfigs.both)
+
+        try await AmplifyCognitoClient.setSessionLabel(
+            "Work",
+            sessionId: .default,
+            configuration: ChangeConfigs.otherUserPool,
+            accessGroup: nil,
+            dependencies: dependencies
+        )
+        let rows = try await listed(ChangeConfigs.otherUserPool, includingSignedOut: true)
+
+        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: "Work", username: nil, kind: .signedOut)])
+        XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.both)), old)
+        XCTAssertNil(harness.keychain.value(account(ChangeConfigs.otherUserPool)))
+        XCTAssertEqual(harness.revoker.revokeCalls, [])
+        XCTAssertEqual(harness.keychain.recordedPluginConfiguration(), AuthConfiguration(client: ChangeConfigs.both))
     }
 }

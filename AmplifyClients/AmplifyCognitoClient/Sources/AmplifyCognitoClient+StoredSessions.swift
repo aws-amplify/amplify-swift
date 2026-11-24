@@ -173,6 +173,43 @@ public extension AmplifyCognitoClient {
             dependencies: .live
         )
     }
+
+    /// Sets the display text a picker shows for a saved session, or clears it with `nil`, without building a
+    /// client for it. The label follows the rules of the instance `setSessionLabel(_:)`: it survives sign-out, and
+    /// is cleared when a different user signs in (see `StoredSession.label`).
+    ///
+    /// If a client for that session is live in this process, the label is set through it, as its own
+    /// `setSessionLabel(_:)` sets it (after its restore), so the client and the listing agree at once. Otherwise
+    /// the saved row is written with no network call. A session with nothing saved gets a labelled signed-out row,
+    /// listed with `includingSignedOut: true`; clearing the label of a session with nothing saved writes nothing.
+    /// The record is first read as a restore under this configuration reads it, as `signOutStoredSession` reads it:
+    /// a session saved under a previous pool configuration that a restore would carry forward is carried, so the
+    /// label lands on the record the next restore finds; for `.default`, that is the Auth plugin's
+    /// configuration-change rule, applied only when it carries, and the login it carried from is left as it was.
+    /// A carried login is then saved under `configuration` as well, signed in, as after a restore: it stays there
+    /// until a sign-out or a purge made with this configuration, whatever is done under the previous one.
+    ///
+    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written, and
+    ///   `storageUnavailable(.interrupted)` if the record kept changing under the call;
+    ///   `AuthClientError.unknown` if the saved record, or `.default`'s saved label, is one this version cannot
+    ///   read; `AuthClientError.sessionConfigurationMismatch` if a client for this session is live in this process
+    ///   with a different user pool or identity pool (that client labels its own configuration's row; release it
+    ///   to label this one); `CancellationError` if the calling task is cancelled while it waits for the session's
+    ///   restore or record.
+    static func setSessionLabel(
+        _ label: String?,
+        sessionId: SessionID,
+        configuration: AuthClientConfiguration,
+        accessGroup: String? = nil
+    ) async throws {
+        try await setSessionLabel(
+            label,
+            sessionId: sessionId,
+            configuration: configuration,
+            accessGroup: accessGroup,
+            dependencies: .live
+        )
+    }
 }
 
 // MARK: - Injectable implementations
@@ -223,6 +260,35 @@ extension AmplifyCognitoClient {
         }
         if let live {
             try await live.purgeStoredRecord()
+        }
+    }
+
+    static func setSessionLabel(
+        _ label: String?,
+        sessionId: SessionID,
+        configuration: AuthClientConfiguration,
+        accessGroup: String?,
+        dependencies: SessionCoreDependencies
+    ) async throws {
+        let namespace = SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: accessGroup)
+        let gate = dependencies.gates.gate(for: namespace, sessionId: sessionId)
+        let store = SessionRecordIO(store: dependencies.makeStore(namespace), queue: gate.ioQueue)
+        // As for a purge: whether a live session owns the record is decided under the gate, and a label written
+        // here is what a session built meanwhile restores.
+        let live = try await withSessionGates(sessionId, namespace, dependencies) { () -> SessionCore? in
+            if let live = liveSession(sessionId, in: namespace, dependencies: dependencies) {
+                return live
+            }
+            // What a restore would carry here is carried first, as the static sign-out carries it. For a named
+            // session, a labelled row written where nothing is saved yet would stop that carry, and the session would
+            // restore signed out; for `.default`, the label is then bound to the user the carried record holds.
+            try await applyPluginConfigurationRule(sessionId, configuration, store, dependencies)
+            _ = try await store.perform { try $0.readCarryingForward(sessionId) }
+            _ = try await store.setLabel(label, for: sessionId)
+            return nil
+        }
+        if let live {
+            try await live.setSessionLabel(label)
         }
     }
 
@@ -376,7 +442,7 @@ extension AmplifyCognitoClient {
                     throw AuthClientError.sessionConfigurationMismatch(
                         sessionId,
                         "Session \"\(sessionId)\" is in use with a different user pool or identity pool, whose saved records this call would change.",
-                        "Sign the session out, or purge it, through a client with that session's configuration."
+                        "Make this call through a client with that session's configuration."
                     )
                 }
                 guard try await named().isSubset(of: held) else {
@@ -399,7 +465,7 @@ extension AmplifyCognitoClient {
     /// the gates `withSessionGates` holds, **only when it carries**, and **never recording the configuration**:
     /// this call may be made with a configuration other than the app's, so it never deletes or revokes the
     /// app's login, and only a restore records a configuration. Returns what the rule did (`nil` for a named
-    /// session): a sign-out then signs out the record a carry came from; a purge leaves it.
+    /// session): a sign-out then signs out the record a carry came from; a purge and a label leave it.
     @discardableResult
     private static func applyPluginConfigurationRule(
         _ sessionId: SessionID,

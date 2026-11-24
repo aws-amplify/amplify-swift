@@ -39,7 +39,7 @@ import InternalAWSCognitoAuth
 // too, so no signed-out row is left for a login the user never signed out of, and so does the old namespace's
 // interrupted sign-in (`$default.challenge`). All are best effort.
 //
-// **The static `signOutStoredSession` and `purgeStoredSession` apply the rule only when it carries**: they can
+// **The static `signOutStoredSession`, `purgeStoredSession` and `setSessionLabel` apply the rule only when it carries**: they can
 // be called with a configuration other than the app's, which must never delete the app's login (`onlyIfCarrying`).
 // **And they never write `authConfiguration`**: only the app actually running a configuration, a restore, records
 // it. Otherwise a static purge under Y while the app runs X would record Y, and the app's next restore under X would
@@ -102,7 +102,7 @@ extension SessionRecordStore {
     ///   - current: The engine configuration `.default` runs with now, `AuthConfiguration(client:)`.
     ///   - heldSource: For a caller holding the gate of the namespace the previous configuration names: the namespace
     ///     it expects. Another throws `CarrySourceChanged`, and nothing is changed. `nil` does not check.
-    ///   - onlyIfCarrying: For the static `signOutStoredSession` and `purgeStoredSession`: apply the rule
+    ///   - onlyIfCarrying: For the static `signOutStoredSession`, `purgeStoredSession` and `setSessionLabel`: apply the rule
     ///     only when it carries, and never record `current`. They may be called with a configuration other than the
     ///     app's, which must never delete the app's login, so any other decision changes nothing at all; and a carry
     ///     leaves `authConfiguration` naming the configuration the app last ran with, which only a restore records.

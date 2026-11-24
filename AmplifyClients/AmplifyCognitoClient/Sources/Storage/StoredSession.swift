@@ -19,7 +19,7 @@ public struct StoredSession: Sendable, Equatable {
     public let sessionId: SessionID
 
     /// The app-supplied display name, the only name a user recognises. `nil` until the app sets one with
-    /// `setSessionLabel(_:)`. It survives sign-out, and is cleared when a different user signs in to the
+    /// `setSessionLabel(_:)` or the static `setSessionLabel(_:sessionId:configuration:accessGroup:)`. It survives sign-out, and is cleared when a different user signs in to the
     /// session through a client. For `.default`, a different user signed in by the Auth plugin, which never
     /// writes the label, only hides it: it is listed again once that user is signed out or the labelled user
     /// signs back in, unless a client wrote the session for the other user meanwhile, which clears it.

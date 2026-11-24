@@ -822,6 +822,32 @@ final class SessionCopyForwardTests: XCTestCase {
 
     // MARK: Stored-session calls
 
+    /// A label written where nothing is saved yet would stop the carry, and the session would restore signed out.
+    ///
+    /// - Given: alice under the user pool alone, labelled "Work", and no live client
+    /// - When: the static `setSessionLabel` runs over both pools, then a client reads the session
+    /// - Then: the record is carried first, so the label lands on alice's login under both pools; nothing is
+    ///   revoked; the client reads `.signedIn(alice)`
+    func testSetSessionLabelBeforeARestoreCarriesTheSessionFirst() async throws {
+        try aliceUnderTheUserPoolOnly()
+
+        try await AmplifyCognitoClient.setSessionLabel(
+            "Office",
+            sessionId: work,
+            configuration: ClientFixtures.configuration,
+            accessGroup: nil,
+            dependencies: harness.dependencies
+        )
+
+        let carried = try XCTUnwrap(currentRecord())
+        XCTAssertEqual(carried.label, "Office")
+        XCTAssertEqual(carried.username, "alice")
+        XCTAssertFalse(carried.isSignedOut)
+        XCTAssertEqual(harness.revoker.revokeCalls, [])
+        let state = await (try harness.client(work)).currentSessionState()
+        XCTAssertEqual(state, .signedIn(alice))
+    }
+
     /// - Given: alice under the user pool alone, and no live client
     /// - When: `signOutStoredSession` runs over both pools, then a client reads the session
     /// - Then: the carried tokens are revoked, `.complete`; the row is kept signed out under both pools; the kept

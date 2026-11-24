@@ -250,7 +250,18 @@ A label is bound to the session's user:
 ```swift
 try await work.setSessionLabel("Work")
 try await work.setSessionLabel(nil) // clear it
+
+// From an account picker, for any saved session, without building a client for it.
+try await AmplifyCognitoClient.setSessionLabel("Work", sessionId: row.sessionId, configuration: configuration)
 ```
+
+The static call writes the saved row directly, with no network call. If a client for that session is live in the
+process, the label is set through it, so the client and the listing agree at once; a client live with other pools
+in the same access group makes it throw `sessionConfigurationMismatch`. A session with nothing saved gets a
+labelled signed-out row, listed with `includingSignedOut: true`. The row is first read as a restore under this
+configuration reads it: a session saved under a previous configuration that its next restore would carry forward is
+carried, so the label lands on the row that restore finds. The carried login is then saved under this
+configuration too, as after a restore, and stays until a sign-out or purge made with this configuration.
 
 ### Listing saved sessions
 
@@ -1594,8 +1605,8 @@ Before you switch:
 
 - **Use the plugin's access group.** If the plugin set an access group (`secureStoragePreferences.accessGroup`),
   pass the same `accessGroup` to the client and to `storedSessions`; otherwise `.default` reads the unshared
-  keychain and starts signed out. The other stored-session calls (`signOutStoredSession`, `purgeStoredSession`)
-  take it too.
+  keychain and starts signed out. The other stored-session calls (`signOutStoredSession`, `purgeStoredSession`, the static
+  `setSessionLabel`) take it too.
 - **Ship the plugin's migrations first.** The client does not migrate AWSMobileClient (Amplify v1) logins or move
   items between access groups: ship a plugin release first if your users may still need those migrations. It only
   clears the AWSMobileClient logins when `.default` signs out or is purged, as the plugin's sign-out does, and again
@@ -1749,6 +1760,8 @@ current one:
     that login, sign it out instead. A named session differs: purged under a new configuration before its first
     restore there, its carry ends, so it comes up signed out under the new configuration, while the old
     configuration's login stays as it was (see [Named sessions](#named-sessions-each-configuration-keeps-its-login)).
+  - The static `setSessionLabel` applies the rule the same way, and like a purge leaves the login it copied from as
+    it was: the label is set on the copy, for the user it holds.
 - **An app and its extensions sharing an access group must use the same configuration for `.default`.** They share
   the plugin's saved login and its recorded configuration, so with two configurations each launch applies the rule
   against the other's. Where the rule deletes, each launch deletes the other's login, and on the same user pool

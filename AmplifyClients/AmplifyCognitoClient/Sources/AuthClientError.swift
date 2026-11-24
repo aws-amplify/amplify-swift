@@ -51,7 +51,7 @@ public enum AuthClientError {
     /// configuration: a different user pool, identity pool or keychain access group, or different settings
     /// (such as one handle passing `Options.configureUserPoolClient` and another none). Two handles on one
     /// session must agree, so the second construction throws rather than silently attaching. Also thrown by
-    /// `purgeStoredSession`, and returned in `.failed` by `signOutStoredSession`, when a client for the session is
+    /// `purgeStoredSession` and the static `setSessionLabel`, and returned in `.failed` by `signOutStoredSession`, when a client for the session is
     /// live in this process with a different user pool or identity pool: its records are that client's to change.
     case sessionConfigurationMismatch(SessionID, ErrorDescription, RecoverySuggestion, Error? = nil)
 

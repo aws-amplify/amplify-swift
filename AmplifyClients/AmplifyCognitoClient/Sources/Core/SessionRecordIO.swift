@@ -133,3 +133,53 @@ struct SessionRecordIO: Sendable {
         try await perform { try $0.signedInUserIds(describe: describe, pluginConfiguration: pluginConfiguration) }
     }
 }
+
+// MARK: - Label
+
+extension SessionRecordIO {
+
+    /// Writes the session's label, for the instance `setSessionLabel` and the static one alike. Run it while
+    /// holding the record's gate. See `SessionCore.setSessionLabel` for the rules.
+    ///
+    /// - Returns: The record as written, or `nil` if nothing was: clearing the label of a session with no record.
+    /// - Throws: `storageUnavailable` if storage failed, or if every attempt lost its race; `.unknown` if the
+    ///   record is one this build cannot read, which is never overwritten.
+    func setLabel(_ label: String?, for sessionId: SessionID) async throws -> SessionSnapshot? {
+        for _ in 1 ... SessionCore.maximumRecordWriteAttempts {
+            if sessionId == .default {
+                switch try await setDefaultLabel(label) {
+                case .written(let result):
+                    return SessionSnapshot(result)
+                case .discarded:
+                    continue
+                case .unreadableRecord:
+                    throw SessionCore.unlabellable(sessionId)
+                case .unreadableSidecar:
+                    throw SessionCore.labelUnreadable(sessionId)
+                }
+            }
+            let record: SessionRecord
+            let expected: RecordVersion?
+            switch try await read(sessionId) {
+            case .absent:
+                guard label != nil else {
+                    return nil
+                }
+                // A labelled signed-out row, listed with `includingSignedOut: true`.
+                record = .signedOut(label: label, username: nil)
+                expected = nil
+            case .record(let stored):
+                var labelled = stored.record
+                labelled.label = label
+                record = labelled
+                expected = stored.version
+            case .unsupportedSchema, .corrupt:
+                throw SessionCore.unlabellable(sessionId)
+            }
+            if case .committed(let committed) = try await write(record, for: sessionId, expecting: expected) {
+                return SessionSnapshot(committed)
+            }
+        }
+        throw SessionCore.contended("label")
+    }
+}

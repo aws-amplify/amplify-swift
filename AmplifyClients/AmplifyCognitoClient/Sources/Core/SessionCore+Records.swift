@@ -28,56 +28,21 @@ extension SessionCore {
     nonisolated func setSessionLabel(_ label: String?) async throws {
         _ = try await restoredSnapshot()
         try await withRecord { [self] store in
-            for _ in 1 ... Self.maximumRecordWriteAttempts {
-                if sessionId == .default {
-                    switch try await store.setDefaultLabel(label) {
-                    case .written(let result):
-                        await apply(SessionSnapshot(result), event: nil)
-                        return
-                    case .discarded:
-                        continue
-                    case .unreadableRecord:
-                        throw Self.unlabellable(sessionId)
-                    case .unreadableSidecar:
-                        throw Self.labelUnreadable(sessionId)
-                    }
-                }
-                let record: SessionRecord
-                let expected: RecordVersion?
-                switch try await store.read(sessionId) {
-                case .absent:
-                    guard label != nil else {
-                        return
-                    }
-                    // A labelled signed-out row, listed with `includingSignedOut: true`.
-                    record = .signedOut(label: label, username: nil)
-                    expected = nil
-                case .record(let stored):
-                    var labelled = stored.record
-                    labelled.label = label
-                    record = labelled
-                    expected = stored.version
-                case .unsupportedSchema, .corrupt:
-                    throw Self.unlabellable(sessionId)
-                }
-                if case .committed(let committed) = try await store.write(record, for: sessionId, expecting: expected) {
-                    await apply(SessionSnapshot(committed), event: nil)
-                    return
-                }
+            if let labelled = try await store.setLabel(label, for: sessionId) {
+                await apply(labelled, event: nil)
             }
-            throw Self.contended("label")
         }
     }
 
     /// `.default`'s label is kept in a sidecar written by a newer version, which this one never overwrites.
-    private static func labelUnreadable(_ sessionId: SessionID) -> AuthClientError {
+    static func labelUnreadable(_ sessionId: SessionID) -> AuthClientError {
         .unknown(
             "Session \"\(sessionId)\" cannot be labelled: its saved label was written by a newer version of the app, which this version cannot read.",
             "Update the app. A purge would reset the label, but for this session it also deletes the Auth plugin's saved login, which signs the user out."
         )
     }
 
-    private static func unlabellable(_ sessionId: SessionID) -> AuthClientError {
+    static func unlabellable(_ sessionId: SessionID) -> AuthClientError {
         .unknown(
             "Session \"\(sessionId)\" cannot be labelled: its saved record is one this version cannot read.",
             "Sign the session out to reset it, or update the app."
