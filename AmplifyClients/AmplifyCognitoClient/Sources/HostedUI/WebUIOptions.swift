@@ -19,7 +19,7 @@ import Foundation
 /// | Here | Plugin | Authorize query item |
 /// |---|---|---|
 /// | `scopes` | `AuthWebUISignInRequest.Options.scopes` | `scope` |
-/// | `provider` | the `for authProvider:` overload's argument | `identity_provider` |
+/// | the `for:` overload's provider | the `for authProvider:` overload's argument | `identity_provider` |
 /// | `idpIdentifier` | `AWSAuthWebUISignInOptions.idpIdentifier` | `idp_identifier` |
 /// | `prefersEphemeralSession` | `AWSAuthWebUISignInOptions.preferPrivateSession` | none: sets `prefersEphemeralWebBrowserSession` |
 /// | `nonce` | `AWSAuthWebUISignInOptions.nonce` | `nonce` |
@@ -59,14 +59,16 @@ public struct WebUIOptions {
     /// Sent sorted and space-separated, as the plugin sends them.
     public var scopes: [String]?
 
-    /// A federated provider to go straight to, skipping Cognito's provider picker.
+    /// A federated provider to go straight to, skipping Cognito's provider picker. Not public: set only by
+    /// `signInWithWebUI(for:presentationAnchor:options:)`, as the plugin keeps its provider on the request.
     ///
     /// Ignored when `idpIdentifier` is set, which is the plugin's precedence.
-    public var provider: AuthClientProvider?
+    var provider: AuthClientProvider?
 
     /// Identifies one of several instances of the same kind of provider, for example one of two
     /// SAML providers. When set, the hosted UI asks only for an email address instead of listing
-    /// the providers. Takes precedence over `provider`.
+    /// the providers. Takes precedence over the provider given to
+    /// `signInWithWebUI(for:presentationAnchor:options:)`.
     public var idpIdentifier: String?
 
     /// A random value to include in the request. Cognito copies it into the ID token's `nonce`
@@ -105,7 +107,6 @@ public struct WebUIOptions {
         whenBrowserBusy: BrowserBusyPolicy = .fail,
         prefersEphemeralSession: Bool = true,
         scopes: [String]? = nil,
-        provider: AuthClientProvider? = nil,
         idpIdentifier: String? = nil,
         nonce: String? = nil,
         language: String? = nil,
@@ -118,7 +119,6 @@ public struct WebUIOptions {
         self.whenBrowserBusy = whenBrowserBusy
         self.prefersEphemeralSession = prefersEphemeralSession
         self.scopes = scopes
-        self.provider = provider
         self.idpIdentifier = idpIdentifier
         self.nonce = nonce
         self.language = language

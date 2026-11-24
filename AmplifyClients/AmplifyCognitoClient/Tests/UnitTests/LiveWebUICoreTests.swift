@@ -189,6 +189,34 @@ final class LiveWebUICoreTests: XCTestCase {
         XCTAssertEqual(revokedRefreshTokens(), [])
     }
 
+    /// The `for:` overload is the one public way to pick a provider: it reaches the authorize URL, and still loses
+    /// to `idpIdentifier`.
+    ///
+    /// - Given: a signed-out session over the live engine
+    /// - When: it signs in with `signInWithWebUI(for: .google, …)`, signs out, and signs in again the same way with
+    ///   an `idpIdentifier` in the options
+    /// - Then:
+    ///    - the first authorize URL sends `identity_provider=Google` and no `idp_identifier`
+    ///    - the second sends `idp_identifier` and no `identity_provider`
+    func testTheForOverloadsProviderReachesTheAuthorizeURLAndLosesToIdpIdentifier() async throws {
+        let client = try client(work)
+        let window = await window
+
+        _ = try await client.signInWithWebUI(for: .google, presentationAnchor: window)
+        let providerOnly = try XCTUnwrap(presenter.shown.last?.queryItems)
+        await client.signOut()
+        _ = try await client.signInWithWebUI(for: .google, presentationAnchor: window, options: .init(idpIdentifier: "corp"))
+        let withIdentifier = try XCTUnwrap(presenter.shown.last?.queryItems)
+
+        func values(_ items: [URLQueryItem]) -> [String: String?] {
+            Dictionary(items.map { ($0.name, $0.value) }, uniquingKeysWith: { first, _ in first })
+        }
+        XCTAssertEqual(values(providerOnly)["identity_provider"], "Google")
+        XCTAssertNil(values(providerOnly)["idp_identifier"])
+        XCTAssertEqual(values(withIdentifier)["idp_identifier"], "corp")
+        XCTAssertNil(values(withIdentifier)["identity_provider"])
+    }
+
     /// A sign-out once the exchange has signed the machine in, while the identity pool step runs
     ///
     /// - Given: a hosted-UI sign-in whose tokens have been issued and whose `GetId` is held

@@ -1084,8 +1084,8 @@ The rule: **a browser lock across the client's sessions in the process, acquired
 
 ```swift
 // An excerpt. `prompt` (nil by default) and `identityExpectation` (.none by default)
-// are described in §9; the other fields (scopes, provider, login hint, ...) carry the
-// plugin's hosted-UI options.
+// are described in §9; the other fields (scopes, login hint, ...) carry the plugin's
+// hosted-UI options. The provider is not a field: it comes from the `for:` overload.
 public struct WebUIOptions: Sendable {
     /// What to do when another session already has a browser sign-in in flight.
     public var whenBrowserBusy: BrowserBusyPolicy = .fail

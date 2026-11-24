@@ -881,8 +881,7 @@ and `oauth` sends the secret with the hosted UI's token exchange (`Authorization
 | `whenBrowserBusy` | `.fail` | None: the plugin queues silently |
 | `prefersEphemeralSession` | `true` | `preferPrivateSession` (default `false`) |
 | `scopes` | The configuration's scopes | `scopes` |
-| `provider` | `nil` | The `for:` overload's provider |
-| `idpIdentifier` | `nil` (wins over `provider`) | `idpIdentifier` |
+| `idpIdentifier` | `nil` (wins over the `for:` overload's provider) | `idpIdentifier` |
 | `nonce` | `nil` (the client mints one) | `nonce` (the client also mints one for an empty string; the plugin sends an empty `nonce`) |
 | `language` | `nil` | `language` |
 | `loginHint` | `nil` | `loginHint` |

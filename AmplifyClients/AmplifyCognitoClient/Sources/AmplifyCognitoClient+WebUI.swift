@@ -59,8 +59,8 @@ public extension AmplifyCognitoClient {
     }
 
     /// Signs this session in through the hosted UI, straight to `provider`, skipping Cognito's provider picker:
-    /// `signInWithWebUI(presentationAnchor:options:)` with `options.provider` set to `provider`. An
-    /// `options.idpIdentifier` still wins over it, as with the plugin.
+    /// otherwise as `signInWithWebUI(presentationAnchor:options:)`. This overload is the only way to pick a
+    /// provider, as with the plugin. An `options.idpIdentifier` still wins over it, as with the plugin.
     @MainActor
     func signInWithWebUI(
         for provider: AuthClientProvider,

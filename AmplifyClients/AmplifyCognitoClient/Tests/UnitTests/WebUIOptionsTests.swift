@@ -89,16 +89,16 @@ final class WebUIOptionsTests: XCTestCase {
     ///    - each field is carried: the request's scopes, the engine's provider of the same case, the nonce, the
     ///      language, the login hint, the prompt space-separated in order, the resource, and the privacy
     func testEveryFieldReachesTheEnginesOptions() {
-        let options = WebUIOptions(
+        var options = WebUIOptions(
             prefersEphemeralSession: false,
             scopes: ["profile", "openid"],
-            provider: .google,
             nonce: "n-123",
             language: "fr",
             loginHint: "alice@example.com",
             prompt: [.login, .selectAccount],
             resource: "myapp://resource"
         )
+        options.provider = .google
 
         let engine = Self.engineOptions(options, configuredScopes: ["ignored"])
 
@@ -121,7 +121,8 @@ final class WebUIOptionsTests: XCTestCase {
     /// - Then:
     ///    - the provider info holds both
     func testIdpIdentifierAndProviderBothReachTheEngine() {
-        let options = WebUIOptions(provider: .saml("Okta"), idpIdentifier: "corp.example.com")
+        var options = WebUIOptions(idpIdentifier: "corp.example.com")
+        options.provider = .saml("Okta")
 
         let engine = Self.engineOptions(options, configuredScopes: ["openid"])
 

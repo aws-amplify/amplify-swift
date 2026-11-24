@@ -91,21 +91,23 @@ final class LiveEngineWebUITests: XCTestCase {
         }
     }
 
-    /// - Given: options with a provider and an `idpIdentifier`, no scopes, no prompt, and the other fields
+    /// - Given: options with a provider, set as the `for:` overload sets it, and an `idpIdentifier`, no scopes, no
+    ///   prompt, and the other fields
     /// - When: a hosted-UI sign-in runs
     /// - Then:
     ///    - the authorize URL sends `idp_identifier` and no `identity_provider`, the configuration's scopes
     ///      sorted, the nonce, `lang`, `login_hint` and `resource`, and no `prompt` item
     func testTheAuthorizeRequestCarriesTheOptions() async throws {
         let engine = try harness.engine()
-        let request = await request(WebUIOptions(
-            provider: .google,
+        var options = WebUIOptions(
             idpIdentifier: "corp",
             language: "fr",
             loginHint: "alice@example.com",
             prompt: [],
             resource: "https://api.example.com"
-        ))
+        )
+        options.provider = .google
+        let request = await request(options)
 
         _ = try await engine.signInWithWebUI(request, current: nil, epoch: 0)
 
@@ -147,7 +149,9 @@ final class LiveEngineWebUITests: XCTestCase {
     ///    - the authorize URL sends the provider's `identity_provider` and the prompt, space-separated
     func testAProviderAndAPromptReachTheAuthorizeRequest() async throws {
         let engine = try harness.engine()
-        let request = await request(WebUIOptions(provider: .apple, prompt: [.login, .selectAccount]))
+        var options = WebUIOptions(prompt: [.login, .selectAccount])
+        options.provider = .apple
+        let request = await request(options)
 
         _ = try await engine.signInWithWebUI(request, current: nil, epoch: 0)
 

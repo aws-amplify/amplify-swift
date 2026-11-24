@@ -916,11 +916,13 @@ final class WebUISignInTests: XCTestCase {
 
     // MARK: The request
 
-    /// - Given: a social sign-in for Google with an `idpIdentifier`, a prompt list, and the defaults
+    /// - Given: a social sign-in through the `for:` overload, for Google, with an `idpIdentifier`, a prompt list,
+    ///   and the defaults
     /// - When: the engine receives them
     /// - Then:
-    ///    - provider and `idpIdentifier` both reach it (the engine applies the precedence), the prompt is
-    ///      space-separated in order, an empty prompt list is sent as none, and ephemeral is the default
+    ///    - the overload's provider and `idpIdentifier` both reach it (the engine applies the precedence:
+    ///      `LiveEngineWebUITests.testTheAuthorizeRequestCarriesTheOptions`), the prompt is space-separated in
+    ///      order, an empty prompt list is sent as none, and ephemeral is the default
     func testTheRequestCarriesTheOptions() async throws {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
