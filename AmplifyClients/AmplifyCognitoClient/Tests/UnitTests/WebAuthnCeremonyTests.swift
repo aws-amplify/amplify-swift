@@ -793,14 +793,14 @@ final class WebAuthnCeremonyTests: XCTestCase {
 
     /// The options hold their window weakly and compare it by identity.
     ///
-    /// - Given: sign-in and confirmation options with window A, with window B, with a window that has gone, with
-    ///   a window released after it was set through the public `init`, and with none
+    /// - Given: sign-in and confirmation options with window A, with window B, with a window released after the
+    ///   options were built, with a `nil` window, and with none
     /// - When: they are compared, and the window is read back
     /// - Then:
     ///    - options are equal only with the same window, or with none on both sides; a window that has gone is
     ///      not "none"
-    ///    - the property reads the window back, and `nil` once it has gone, was cleared or was never set
-    ///    - a window set through the `init` is not kept alive by the options
+    ///    - the property reads the window back, and `nil` once it has gone or was never given
+    ///    - a window given to the `init` is not kept alive by the options
     @MainActor
     func testTheOptionsCompareTheirWindowByIdentity() {
         let windowA = WebAuthnFixtures.window()
@@ -816,23 +816,18 @@ final class WebAuthnCeremonyTests: XCTestCase {
         XCTAssertTrue(overA.presentationAnchorForWebAuthn === windowA)
         XCTAssertNil(plain.presentationAnchorForWebAuthn)
 
-        var gone = plain
-        gone.webAuthnAnchor.box = WebAuthnFixtures.goneWindowBox()
-        XCTAssertNil(gone.presentationAnchorForWebAuthn)
-        XCTAssertNotEqual(gone, plain)
         let released = autoreleasepool {
             AuthClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: WebAuthnFixtures.window())
         }
         XCTAssertNil(released.presentationAnchorForWebAuthn)
         XCTAssertNotEqual(released, plain)
+        XCTAssertEqual(AuthClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: nil), plain)
 
-        var confirm = AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowA)
+        let confirm = AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowA)
         XCTAssertEqual(confirm, AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowA))
         XCTAssertTrue(confirm.presentationAnchorForWebAuthn === windowA)
-        confirm.presentationAnchorForWebAuthn = windowB
-        XCTAssertNotEqual(confirm, AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowA))
-        confirm.presentationAnchorForWebAuthn = nil
-        XCTAssertEqual(confirm, AuthClientConfirmSignInOptions())
+        XCTAssertNotEqual(confirm, AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowB))
+        XCTAssertEqual(AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: nil), AuthClientConfirmSignInOptions())
     }
 }
 #endif

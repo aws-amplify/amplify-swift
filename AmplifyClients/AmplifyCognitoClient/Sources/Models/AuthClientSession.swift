@@ -18,7 +18,7 @@ public struct AuthClientFetchSessionOptions {
     /// Refreshes the session's credentials even if they are still valid. A forced refresh joins only
     /// another forced refresh in flight for this session; it runs after a normal refresh in flight, so it
     /// always calls Cognito.
-    public var forceRefresh: Bool
+    public let forceRefresh: Bool
 
     /// - Parameter forceRefresh: Whether to refresh credentials that are still valid. `false` by default.
     public init(forceRefresh: Bool = false) {

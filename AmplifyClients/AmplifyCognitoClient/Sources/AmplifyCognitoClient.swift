@@ -100,12 +100,12 @@ public final class AmplifyCognitoClient: Sendable {
         ///
         /// Running the plugin and this client side by side over `.default` in one app is not supported: each keeps
         /// its tokens in memory. See `SessionID.default`.
-        public var sessionId: SessionID
+        public let sessionId: SessionID
 
         /// The keychain access group to store the session in, to share it between apps and extensions,
         /// as the plugin does today. Part of which record the session reads, so every handle on a
         /// session must pass the same one, and a different group sees different saved sessions.
-        public var accessGroup: String?
+        public let accessGroup: String?
 
         /// Customizes the user pool SDK client's configuration.
         ///
@@ -130,7 +130,7 @@ public final class AmplifyCognitoClient: Sendable {
         /// other client in the process can be built until it returns. Only set configuration values in it:
         /// don't build an `AmplifyCognitoClient` in it, which deadlocks, and don't block waiting on work on
         /// another thread, which can deadlock the same way.
-        public var configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider?
+        public let configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider?
 
         /// - Parameters:
         ///   - sessionId: The session to be a handle onto; `.default` if not given.

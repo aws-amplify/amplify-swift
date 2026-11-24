@@ -67,9 +67,7 @@ public extension AmplifyCognitoClient {
         presentationAnchor: AuthClientPresentationAnchor,
         options: WebUIOptions = WebUIOptions()
     ) async throws -> AuthClientSignInResult {
-        var options = options
-        options.provider = provider
-        return try await signInWithWebUI(presentationAnchor: presentationAnchor, options: options)
+        try await signInWithWebUI(presentationAnchor: presentationAnchor, options: options.with(provider: provider))
     }
 
     /// Signs this session out, as `signOut(options:)` does, first showing the hosted UI's sign-out in

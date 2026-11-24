@@ -352,12 +352,9 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
     func testAConfirmationsGoneWindowFallsBackToTheSignInsWindow() async throws {
         let client = try liveClient()
         let windowA = await WebAuthnFixtures.window()
-        let goneBox = await WebAuthnFixtures.goneWindowBox()
-        let gone: AuthClientConfirmSignInOptions = {
-            var options = AuthClientConfirmSignInOptions()
-            options.webAuthnAnchor.box = goneBox
-            return options
-        }()
+        let gone = await MainActor.run {
+            autoreleasepool { AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: WebAuthnFixtures.window()) }
+        }
         harness.scriptIdentityPool()
         harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in
             InitiateAuthOutput(
@@ -575,21 +572,26 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
 
     /// A sign-in's window that has gone by its ceremony presents nothing.
     ///
-    /// - Given: Cognito answering a `WEB_AUTHN` challenge, and a box whose window has been released
+    /// - Given: Cognito answering a `WEB_AUTHN` challenge, and options whose window has been released
     /// - When:
-    ///    - alice signs in with the passkey, with that box as her options' window
+    ///    - alice signs in with the passkey, with those options
     /// - Then:
     ///    - it throws `.validation(field: "presentationAnchorForWebAuthn")`, no sheet is made, the challenge is
     ///      never answered, and nothing is pending
     func testASignInsGoneWindowPresentsNothing() async throws {
         let client = try liveClient()
-        let gone = await WebAuthnFixtures.goneWindowBox()
         harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in
             LiveEngineFixtures.initiateChallenge(.webAuthn, parameters: ["CREDENTIAL_REQUEST_OPTIONS": WebAuthnFixtures.requestOptions])
         }
 
-        var options = AuthClientSignInOptions(authFlowType: .userAuth(preferredFirstFactor: .webAuthn))
-        options.webAuthnAnchor.box = gone
+        let options = await MainActor.run {
+            autoreleasepool {
+                AuthClientSignInOptions(
+                    authFlowType: .userAuth(preferredFirstFactor: .webAuthn),
+                    presentationAnchorForWebAuthn: WebAuthnFixtures.window()
+                )
+            }
+        }
 
         let readsNoWindow = await MainActor.run { options.presentationAnchorForWebAuthn == nil }
         let error = await authClientError {

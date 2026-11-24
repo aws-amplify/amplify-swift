@@ -15,13 +15,13 @@ import Foundation
 public struct AuthClientSignUpOptions {
 
     /// The user attributes to register the user with, such as `email`.
-    public var userAttributes: [AuthClientUserAttribute]
+    public let userAttributes: [AuthClientUserAttribute]
 
     /// Passed to the pre-sign-up Lambda trigger as `ValidationData`. The plugin's `validationData`.
-    public var validationData: [String: String]
+    public let validationData: [String: String]
 
     /// Passed to the user pool's Lambda triggers as `ClientMetadata`. The plugin's `metadata`.
-    public var clientMetadata: [String: String]
+    public let clientMetadata: [String: String]
 
     public init(
         userAttributes: [AuthClientUserAttribute] = [],
@@ -46,11 +46,11 @@ extension AuthClientSignUpOptions: Sendable {}
 public struct AuthClientConfirmSignUpOptions {
 
     /// Passed to the user pool's Lambda triggers as `ClientMetadata`. The plugin's `metadata`.
-    public var clientMetadata: [String: String]
+    public let clientMetadata: [String: String]
 
     /// Cognito's `ForceAliasCreation`: move an alias (email, phone) that another user already uses to
     /// this user. `nil` leaves Cognito's default.
-    public var forceAliasCreation: Bool?
+    public let forceAliasCreation: Bool?
 
     public init(clientMetadata: [String: String] = [:], forceAliasCreation: Bool? = nil) {
         self.clientMetadata = clientMetadata
@@ -70,7 +70,7 @@ extension AuthClientConfirmSignUpOptions: Sendable {}
 public struct AuthClientResendSignUpCodeOptions {
 
     /// Passed to the user pool's Lambda triggers as `ClientMetadata`. The plugin's `metadata`.
-    public var clientMetadata: [String: String]
+    public let clientMetadata: [String: String]
 
     public init(clientMetadata: [String: String] = [:]) {
         self.clientMetadata = clientMetadata

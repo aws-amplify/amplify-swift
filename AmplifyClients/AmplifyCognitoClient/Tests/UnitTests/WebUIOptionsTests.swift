@@ -82,26 +82,32 @@ final class WebUIOptionsTests: XCTestCase {
     /// Every parity field reaches the engine's hosted-UI options, which the engine's `createSignInURL` turns into
     /// the authorize request's items (names and values pinned end to end by `LiveEngineWebUITests`).
     ///
-    /// - Given: options with every field set, and `idpIdentifier` absent so `provider` applies
+    /// - Given: options with every field set, and `idpIdentifier` absent so `provider` applies, given the provider
+    ///   the way the `for:` overload gives it
     /// - When:
     ///    - the engine's hosted-UI options are built from them
     /// - Then:
-    ///    - each field is carried: the request's scopes, the engine's provider of the same case, the nonce, the
-    ///      language, the login hint, the prompt space-separated in order, the resource, and the privacy
+    ///    - the copy with the provider keeps the two fields the client itself acts on, the busy policy and the
+    ///      identity expectation
+    ///    - each other field is carried: the request's scopes, the engine's provider of the same case, the nonce,
+    ///      the language, the login hint, the prompt space-separated in order, the resource, and the privacy
     func testEveryFieldReachesTheEnginesOptions() {
-        var options = WebUIOptions(
+        let options = WebUIOptions(
+            whenBrowserBusy: .wait(timeout: 5),
             prefersEphemeralSession: false,
             scopes: ["profile", "openid"],
             nonce: "n-123",
             language: "fr",
             loginHint: "alice@example.com",
             prompt: [.login, .selectAccount],
-            resource: "myapp://resource"
-        )
-        options.provider = .google
+            resource: "myapp://resource",
+            identityExpectation: .matches("alice")
+        ).with(provider: .google)
 
         let engine = Self.engineOptions(options, configuredScopes: ["ignored"])
 
+        XCTAssertEqual(options.whenBrowserBusy, .wait(timeout: 5))
+        XCTAssertEqual(options.identityExpectation, .matches("alice"))
         XCTAssertEqual(engine.scopes, ["profile", "openid"])
         XCTAssertEqual(engine.providerInfo, HostedUIProviderInfo(authProvider: .google, idpIdentifier: nil))
         XCTAssertEqual(engine.nonce, "n-123")
@@ -121,8 +127,7 @@ final class WebUIOptionsTests: XCTestCase {
     /// - Then:
     ///    - the provider info holds both
     func testIdpIdentifierAndProviderBothReachTheEngine() {
-        var options = WebUIOptions(idpIdentifier: "corp.example.com")
-        options.provider = .saml("Okta")
+        let options = WebUIOptions(idpIdentifier: "corp.example.com").with(provider: .saml("Okta"))
 
         let engine = Self.engineOptions(options, configuredScopes: ["openid"])
 

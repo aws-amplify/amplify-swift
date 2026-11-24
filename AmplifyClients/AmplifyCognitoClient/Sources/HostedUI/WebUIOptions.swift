@@ -42,7 +42,7 @@ public struct WebUIOptions {
     /// library policy rather than an OS guarantee: a flow needs a foreground-active presentation
     /// anchor, and a device cannot offer two. The Auth plugin's own hosted UI and passkey sheets do not
     /// take part, so one of them can be up beside a client's sheet.
-    public var whenBrowserBusy: BrowserBusyPolicy
+    public let whenBrowserBusy: BrowserBusyPolicy
 
     /// Whether to ask for a private (ephemeral) browser session. `true` by default.
     ///
@@ -52,48 +52,49 @@ public struct WebUIOptions {
     ///
     /// Best effort: it sets `ASWebAuthenticationSession.prefersEphemeralWebBrowserSession`, which
     /// Safari always honours and another default browser might not.
-    public var prefersEphemeralSession: Bool
+    public let prefersEphemeralSession: Bool
 
     /// The OAuth scopes to request. `nil`, the default, requests the scopes in the configuration.
     ///
     /// Sent sorted and space-separated, as the plugin sends them.
-    public var scopes: [String]?
+    public let scopes: [String]?
 
     /// A federated provider to go straight to, skipping Cognito's provider picker. Not public: set only by
-    /// `signInWithWebUI(for:presentationAnchor:options:)`, as the plugin keeps its provider on the request.
+    /// `signInWithWebUI(for:presentationAnchor:options:)` (`with(provider:)`), as the plugin keeps its provider on
+    /// the request.
     ///
     /// Ignored when `idpIdentifier` is set, which is the plugin's precedence.
-    var provider: AuthClientProvider?
+    let provider: AuthClientProvider?
 
     /// Identifies one of several instances of the same kind of provider, for example one of two
     /// SAML providers. When set, the hosted UI asks only for an email address instead of listing
     /// the providers. Takes precedence over the provider given to
     /// `signInWithWebUI(for:presentationAnchor:options:)`.
-    public var idpIdentifier: String?
+    public let idpIdentifier: String?
 
     /// A random value to include in the request. Cognito copies it into the ID token's `nonce`
     /// claim, so the app can compare the two to guard against replay.
     ///
     /// `nil` or an empty string sends one the client mints; the plugin sends an empty one as it is.
-    public var nonce: String?
+    public let nonce: String?
 
     /// The language to show the user-interactive pages in. See
     /// [managed login localization](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managed-login.html#managed-login-localization).
-    public var language: String?
+    public let language: String?
 
     /// A username, email address or phone number to pre-fill the sign-in page with.
-    public var loginHint: String?
+    public let loginHint: String?
 
     /// OIDC `prompt` values, controlling what happens to an existing browser session. `[.login]`
     /// forces re-authentication even if a Cognito cookie survived.
     ///
     /// Sent space-separated, in the order given. An empty list sends no `prompt` item, as `nil` does; the plugin
     /// sends an empty one.
-    public var prompt: [Prompt]?
+    public let prompt: [Prompt]?
 
     /// A resource to bind to the access token's `aud` claim. Must begin with `https://`,
     /// `http://localhost`, or a custom URL scheme such as `myapp://`.
-    public var resource: String?
+    public let resource: String?
 
     /// Which user the sign-in must return. `.none` by default: any user may come back, as with the
     /// plugin.
@@ -101,7 +102,7 @@ public struct WebUIOptions {
     /// Whatever it is, the client always checks that the tokens that come back belong to this flow and
     /// this app (the ID token's `token_use`, `aud`, `iss`, and the nonce, which it mints when `nonce` is
     /// `nil` or empty). When the check fails nobody is signed in and nothing is stored.
-    public var identityExpectation: IdentityExpectation
+    public let identityExpectation: IdentityExpectation
 
     public init(
         whenBrowserBusy: BrowserBusyPolicy = .fail,
@@ -119,12 +120,33 @@ public struct WebUIOptions {
         self.whenBrowserBusy = whenBrowserBusy
         self.prefersEphemeralSession = prefersEphemeralSession
         self.scopes = scopes
+        self.provider = nil
         self.idpIdentifier = idpIdentifier
         self.nonce = nonce
         self.language = language
         self.loginHint = loginHint
         self.prompt = prompt
         self.resource = resource
+    }
+
+    /// These options with `provider`: what `signInWithWebUI(for:presentationAnchor:options:)` signs in with. The
+    /// fields are `let`, so the overload builds a new value.
+    func with(provider: AuthClientProvider) -> WebUIOptions {
+        WebUIOptions(copying: self, provider: provider)
+    }
+
+    private init(copying options: WebUIOptions, provider: AuthClientProvider) {
+        self.identityExpectation = options.identityExpectation
+        self.whenBrowserBusy = options.whenBrowserBusy
+        self.prefersEphemeralSession = options.prefersEphemeralSession
+        self.scopes = options.scopes
+        self.provider = provider
+        self.idpIdentifier = options.idpIdentifier
+        self.nonce = options.nonce
+        self.language = options.language
+        self.loginHint = options.loginHint
+        self.prompt = options.prompt
+        self.resource = options.resource
     }
 }
 

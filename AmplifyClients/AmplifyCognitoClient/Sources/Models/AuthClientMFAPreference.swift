@@ -15,7 +15,7 @@ import Foundation
 public struct AuthClientVerifyTOTPSetupOptions {
 
     /// The name to give the TOTP device.
-    public var friendlyDeviceName: String?
+    public let friendlyDeviceName: String?
 
     public init(friendlyDeviceName: String? = nil) {
         self.friendlyDeviceName = friendlyDeviceName

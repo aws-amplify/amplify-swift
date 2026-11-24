@@ -18,7 +18,7 @@ import Foundation
 public struct AuthClientUpdateUserAttributesOptions {
 
     /// Passed to the user pool's Lambda triggers as `ClientMetadata`. The plugin's `metadata`.
-    public var clientMetadata: [String: String]
+    public let clientMetadata: [String: String]
 
     public init(clientMetadata: [String: String] = [:]) {
         self.clientMetadata = clientMetadata
@@ -37,7 +37,7 @@ extension AuthClientUpdateUserAttributesOptions: Sendable {}
 public struct AuthClientSendVerificationCodeOptions {
 
     /// Passed to the user pool's Lambda triggers as `ClientMetadata`. The plugin's `metadata`.
-    public var clientMetadata: [String: String]
+    public let clientMetadata: [String: String]
 
     public init(clientMetadata: [String: String] = [:]) {
         self.clientMetadata = clientMetadata

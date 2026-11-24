@@ -17,13 +17,13 @@ public struct AuthClientSignInOptions {
 
     /// The authentication flow to use for this sign-in. `nil` uses the configuration's, which is
     /// `userSRP` for an `amplify_outputs` configuration, as for the plugin.
-    public var authFlowType: AuthClientAuthFlowType?
+    public let authFlowType: AuthClientAuthFlowType?
 
     /// Passed to the user pool's Lambda triggers as `ClientMetadata`. The plugin's `metadata`.
-    public var clientMetadata: [String: String]
+    public let clientMetadata: [String: String]
 
     /// `presentationAnchorForWebAuthn`'s storage, on every platform: empty where there is no passkey sheet.
-    var webAuthnAnchor = WeakPresentationAnchor()
+    let webAuthnAnchor: WeakPresentationAnchor
 
     public init(
         authFlowType: AuthClientAuthFlowType? = nil,
@@ -31,6 +31,7 @@ public struct AuthClientSignInOptions {
     ) {
         self.authFlowType = authFlowType
         self.clientMetadata = clientMetadata
+        self.webAuthnAnchor = WeakPresentationAnchor(box: nil)
     }
 
     #if os(iOS) || os(macOS) || os(visionOS)
@@ -48,13 +49,12 @@ public struct AuthClientSignInOptions {
     /// the ceremony starts, nothing is presented, and the call throws the same error. A failed passkey step
     /// ends the sign-in: call `signIn` again to retry.
     ///
-    /// Read and set on the main actor, as a window is; the options themselves stay `Sendable`. Two options are
-    /// equal only if they were given the same window, or none. (The window is compared by its identity when it
-    /// was set, which a later window can reuse once this one has gone.)
+    /// Read on the main actor, as a window is, and set through the main-actor `init`; the options themselves
+    /// stay `Sendable`. Two options are equal only if they were given the same window, or none. (The window is
+    /// compared by its identity when it was set, which a later window can reuse once this one has gone.)
     @MainActor
     public var presentationAnchorForWebAuthn: AuthClientPresentationAnchor? {
-        get { webAuthnAnchor.box?.anchor }
-        set { webAuthnAnchor.box = newValue.map { EnginePresentationAnchorBox($0) } }
+        webAuthnAnchor.box?.anchor
     }
 
     /// Options with the window a passkey sheet attaches to: see `presentationAnchorForWebAuthn`.
@@ -64,8 +64,9 @@ public struct AuthClientSignInOptions {
         clientMetadata: [String: String] = [:],
         presentationAnchorForWebAuthn: AuthClientPresentationAnchor?
     ) {
-        self.init(authFlowType: authFlowType, clientMetadata: clientMetadata)
-        self.presentationAnchorForWebAuthn = presentationAnchorForWebAuthn
+        self.authFlowType = authFlowType
+        self.clientMetadata = clientMetadata
+        self.webAuthnAnchor = WeakPresentationAnchor(box: presentationAnchorForWebAuthn.map { EnginePresentationAnchorBox($0) })
     }
     #endif
 }
@@ -83,16 +84,16 @@ public struct AuthClientConfirmSignInOptions {
 
     /// User attributes to send with the answer, such as the required attributes of a new-password
     /// challenge.
-    public var userAttributes: [AuthClientUserAttribute]
+    public let userAttributes: [AuthClientUserAttribute]
 
     /// Passed to the user pool's Lambda triggers as `ClientMetadata`. The plugin's `metadata`.
-    public var clientMetadata: [String: String]
+    public let clientMetadata: [String: String]
 
     /// The name to give the device when the answer completes a TOTP setup.
-    public var friendlyDeviceName: String?
+    public let friendlyDeviceName: String?
 
     /// `presentationAnchorForWebAuthn`'s storage, on every platform: empty where there is no passkey sheet.
-    var webAuthnAnchor = WeakPresentationAnchor()
+    let webAuthnAnchor: WeakPresentationAnchor
 
     public init(
         userAttributes: [AuthClientUserAttribute] = [],
@@ -102,6 +103,7 @@ public struct AuthClientConfirmSignInOptions {
         self.userAttributes = userAttributes
         self.clientMetadata = clientMetadata
         self.friendlyDeviceName = friendlyDeviceName
+        self.webAuthnAnchor = WeakPresentationAnchor(box: nil)
     }
 
     #if os(iOS) || os(macOS) || os(visionOS)
@@ -112,11 +114,11 @@ public struct AuthClientConfirmSignInOptions {
     /// `nil`, the default, uses the sign-in's window, and so does a window that has gone by the time of the
     /// call, which reads as `nil` here. With neither window, a `"WEB_AUTHN"` answer is refused with
     /// `.validation(field: "presentationAnchorForWebAuthn")` before anything is sent, and the selection stays
-    /// pending. Held weakly, read and set on the main actor, and compared by identity, as the sign-in's is.
+    /// pending. Held weakly, read on the main actor, set through the main-actor `init`, and compared by identity,
+    /// as the sign-in's is.
     @MainActor
     public var presentationAnchorForWebAuthn: AuthClientPresentationAnchor? {
-        get { webAuthnAnchor.box?.anchor }
-        set { webAuthnAnchor.box = newValue.map { EnginePresentationAnchorBox($0) } }
+        webAuthnAnchor.box?.anchor
     }
 
     /// Options with the window a `"WEB_AUTHN"` answer's passkey sheet attaches to: see
@@ -128,12 +130,10 @@ public struct AuthClientConfirmSignInOptions {
         friendlyDeviceName: String? = nil,
         presentationAnchorForWebAuthn: AuthClientPresentationAnchor?
     ) {
-        self.init(
-            userAttributes: userAttributes,
-            clientMetadata: clientMetadata,
-            friendlyDeviceName: friendlyDeviceName
-        )
-        self.presentationAnchorForWebAuthn = presentationAnchorForWebAuthn
+        self.userAttributes = userAttributes
+        self.clientMetadata = clientMetadata
+        self.friendlyDeviceName = friendlyDeviceName
+        self.webAuthnAnchor = WeakPresentationAnchor(box: presentationAnchorForWebAuthn.map { EnginePresentationAnchorBox($0) })
     }
     #endif
 }
@@ -147,10 +147,10 @@ extension AuthClientConfirmSignInOptions: Sendable {}
 struct WeakPresentationAnchor: Equatable, Sendable {
 
     /// The boxed window, or `nil` when the options were given none.
-    var box: EnginePresentationAnchorBox?
+    let box: EnginePresentationAnchorBox?
 
     /// The same window, or none on both sides. Not the box's own `==`, which is the box's identity: every
-    /// set makes a new box.
+    /// `init` makes a new box.
     static func == (lhs: WeakPresentationAnchor, rhs: WeakPresentationAnchor) -> Bool {
         EnginePresentationAnchorBox.sameWindow(lhs.box, rhs.box)
     }

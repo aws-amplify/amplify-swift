@@ -15,7 +15,7 @@ public struct AuthClientFederateToIdentityPoolOptions {
 
     /// An identity ID the developer's backend already obtained for this user, to use instead of asking
     /// the identity pool for one. The plugin's `developerProvidedIdentityID`.
-    public var developerProvidedIdentityId: String?
+    public let developerProvidedIdentityId: String?
 
     public init(developerProvidedIdentityId: String? = nil) {
         self.developerProvidedIdentityId = developerProvidedIdentityId

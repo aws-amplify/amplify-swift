@@ -99,14 +99,13 @@ final class LiveEngineWebUITests: XCTestCase {
     ///      sorted, the nonce, `lang`, `login_hint` and `resource`, and no `prompt` item
     func testTheAuthorizeRequestCarriesTheOptions() async throws {
         let engine = try harness.engine()
-        var options = WebUIOptions(
+        let options = WebUIOptions(
             idpIdentifier: "corp",
             language: "fr",
             loginHint: "alice@example.com",
             prompt: [],
             resource: "https://api.example.com"
-        )
-        options.provider = .google
+        ).with(provider: .google)
         let request = await request(options)
 
         _ = try await engine.signInWithWebUI(request, current: nil, epoch: 0)
@@ -149,9 +148,7 @@ final class LiveEngineWebUITests: XCTestCase {
     ///    - the authorize URL sends the provider's `identity_provider` and the prompt, space-separated
     func testAProviderAndAPromptReachTheAuthorizeRequest() async throws {
         let engine = try harness.engine()
-        var options = WebUIOptions(prompt: [.login, .selectAccount])
-        options.provider = .apple
-        let request = await request(options)
+        let request = await request(WebUIOptions(prompt: [.login, .selectAccount]).with(provider: .apple))
 
         _ = try await engine.signInWithWebUI(request, current: nil, epoch: 0)
 

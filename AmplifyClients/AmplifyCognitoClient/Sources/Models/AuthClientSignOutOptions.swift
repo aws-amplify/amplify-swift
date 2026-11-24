@@ -15,13 +15,13 @@ public struct AuthClientSignOutOptions {
     /// Signs the user out of every device, not just this session: Cognito revokes all of the user's
     /// refresh tokens. That is a server-side revocation scoped to the *user*, so another session holding
     /// the same user — in this app or elsewhere — finds out on its next refresh, as `sessionExpired`.
-    public var globalSignOut: Bool
+    public let globalSignOut: Bool
 
     /// Also removes the session's saved row, so `storedSessions(configuration:accessGroup:includingSignedOut:)`
     /// no longer lists it. By default a signed-out session keeps its row, so a picker that lists with
     /// `includingSignedOut: true` can offer to resume it. Deleting the row is not recoverable, so it is
     /// opt-in.
-    public var purgeStoredSession: Bool
+    public let purgeStoredSession: Bool
 
     /// - Parameters:
     ///   - globalSignOut: Whether to sign the user out of every device. `false` by default.

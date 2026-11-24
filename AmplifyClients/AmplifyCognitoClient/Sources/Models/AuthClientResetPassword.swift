@@ -15,7 +15,7 @@ import Foundation
 public struct AuthClientResetPasswordOptions {
 
     /// Passed to the user pool's Lambda triggers as `ClientMetadata`. The plugin's `metadata`.
-    public var clientMetadata: [String: String]
+    public let clientMetadata: [String: String]
 
     public init(clientMetadata: [String: String] = [:]) {
         self.clientMetadata = clientMetadata
@@ -34,7 +34,7 @@ extension AuthClientResetPasswordOptions: Sendable {}
 public struct AuthClientConfirmResetPasswordOptions {
 
     /// Passed to the user pool's Lambda triggers as `ClientMetadata`. The plugin's `metadata`.
-    public var clientMetadata: [String: String]
+    public let clientMetadata: [String: String]
 
     public init(clientMetadata: [String: String] = [:]) {
         self.clientMetadata = clientMetadata

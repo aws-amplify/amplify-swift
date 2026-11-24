@@ -42,10 +42,10 @@ public struct AuthClientListWebAuthnCredentialsOptions: Sendable, Equatable {
 
     /// How many credentials to return, from 1 to 20. Checked before any request: a value outside that range
     /// throws `AuthClientError.validation(field: "pageSize", …)`.
-    public var pageSize: UInt
+    public let pageSize: UInt
 
     /// Where to resume a listing: the `nextToken` of the previous page's result, or `nil` for the first page.
-    public var nextToken: String?
+    public let nextToken: String?
 
     public init(pageSize: UInt = 20, nextToken: String? = nil) {
         self.pageSize = pageSize

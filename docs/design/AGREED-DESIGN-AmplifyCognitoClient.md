@@ -1091,9 +1091,9 @@ The rule: **a browser lock across the client's sessions in the process, acquired
 // hosted-UI options. The provider is not a field: it comes from the `for:` overload.
 public struct WebUIOptions: Sendable {
     /// What to do when another session already has a browser sign-in in flight.
-    public var whenBrowserBusy: BrowserBusyPolicy = .fail
+    public let whenBrowserBusy: BrowserBusyPolicy          // .fail by default; set through init
     /// Private or ephemeral browser session. The default for the Auth Client.
-    public var prefersEphemeralSession: Bool = true
+    public let prefersEphemeralSession: Bool               // true by default; set through init
 
     // A struct with two constructors rather than an enum, so a timeout is checked
     // when the policy is made (this matches the public API).
@@ -1300,9 +1300,9 @@ public final class AmplifyCognitoClient: Sendable {   // actor internals
     // build the configuration first.)
 
     public struct Options {
-        public var sessionId: SessionID                        // default `.default`
-        public var accessGroup: String?                        // shared storage, as the plugin has today
-        public var configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider?   // family escape-hatch closure
+        public let sessionId: SessionID                        // default `.default`
+        public let accessGroup: String?                        // shared storage, as the plugin has today
+        public let configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider?   // family escape-hatch closure
         public init(sessionId: SessionID = .default,
                     accessGroup: String? = nil,
                     configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider? = nil)
