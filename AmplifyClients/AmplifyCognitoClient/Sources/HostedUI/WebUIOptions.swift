@@ -41,8 +41,7 @@ public struct WebUIOptions {
     /// every `AmplifyCognitoClient`: a hosted-UI sign-in or sign-out page, or a passkey sheet. That is a
     /// library policy rather than an OS guarantee: a flow needs a foreground-active presentation
     /// anchor, and a device cannot offer two. The Auth plugin's own hosted UI and passkey sheets do not
-    /// take part, so one of them can be up beside a client's sheet, and `systemSheetHolder` does not
-    /// report it.
+    /// take part, so one of them can be up beside a client's sheet.
     public var whenBrowserBusy: BrowserBusyPolicy
 
     /// Whether to ask for a private (ephemeral) browser session. `true` by default.

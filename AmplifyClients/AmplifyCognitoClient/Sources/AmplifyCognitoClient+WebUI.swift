@@ -108,11 +108,10 @@ public extension AmplifyCognitoClient {
     }
 
     /// Cancels this session's hosted-UI sign-in, once it holds or is queued for the system sheet: the browser
-    /// is dismissed and the call throws `userCancelled` once the sign-in has released the sheet, so
-    /// `systemSheetHolder` no longer names this session by then (it is `nil`, or a session that was queued behind
-    /// it). If the sheet isn't released within a second (the browser is slow to close, or the code exchange was
-    /// already running), the call throws anyway, and the sheet stays held until the sign-in's remaining calls
-    /// finish. Idempotent; never throws; a no-op when there is none.
+    /// is dismissed and the call throws `userCancelled` once the sign-in has released the sheet (the sheet is then
+    /// free, or held by a session that was queued behind it). If the sheet isn't released within a second (the
+    /// browser is slow to close, or the code exchange was already running), the call throws anyway, and the sheet
+    /// stays held until the sign-in's remaining calls finish. Idempotent; never throws; a no-op when there is none.
     ///
     /// It also closes this session's hosted-UI sign-out page, if one is showing: that sign-out is then
     /// `.failed(.userCancelled)` and the session stays signed in, as when the user closes the page (a session a
@@ -136,9 +135,8 @@ public extension AmplifyCognitoClient {
     /// hosted-UI sign-out page holding it is closed, and its sign-out reports what it did. The next call may
     /// then show its sheet. In memory only.
     ///
-    /// The system sheet is one per process, shared by every client's sessions, so this and
-    /// `systemSheetHolder` see every session of every client. They do not see the Auth plugin's hosted UI or
-    /// passkey sheets, which do not take part.
+    /// The system sheet is one per process, shared by every client's sessions, so this sees every session of
+    /// every client. It does not see the Auth plugin's hosted UI or passkey sheets, which do not take part.
     ///
     /// - Returns: the session that was holding it, or `nil` if it was free.
     @discardableResult
@@ -146,8 +144,9 @@ public extension AmplifyCognitoClient {
         await SystemSheetLock.shared.reset()
     }
 
-    /// The session holding the process's system sheet, or `nil`: for "Finish signing in to <name> first".
-    static var systemSheetHolder: SessionID? {
+    /// The session holding the process's system sheet, or `nil`. Not public: a value read before a call can be
+    /// stale by the call, and `browserBusy(holder:)` names the holder when a call is refused.
+    internal static var systemSheetHolder: SessionID? {
         get async { await SystemSheetLock.shared.currentHolder }
     }
 }

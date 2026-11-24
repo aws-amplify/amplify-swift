@@ -899,8 +899,7 @@ still in progress while no session holds the sheet, `holder` is the session itse
 hosted-UI sign-in in progress." A hosted-UI sign-in can queue with `.wait(timeout:)` instead, for at most one hour; a
 passkey sheet or the sign-out page fails at once while another session holds the sheet.
 
-The Auth plugin's hosted UI and passkey sheets don't take part: one can be up beside a client sheet, and
-`systemSheetHolder` doesn't report it.
+The Auth plugin's hosted UI and passkey sheets don't take part: one can be up beside a client sheet.
 
 ### Adding another account
 
@@ -951,15 +950,15 @@ where user identifiers must not appear.
 
 ```swift
 await client.cancelWebUISignIn()                        // this session's sign-in, sign-out page or passkey sheet
-let holder = await AmplifyCognitoClient.systemSheetHolder // who holds the sheet, or nil
 let freed = await AmplifyCognitoClient.resetSystemSheet() // free the sheet, whoever holds it
 ```
 
+To learn which session holds the sheet, catch `browserBusy(holder:)` from the call it refused.
+
 A hosted-UI sign-in or passkey call cancelled with `cancelWebUISignIn()` throws `.userCancelled` once it has released
-the system sheet, so `systemSheetHolder` no longer names its session by then (a session queued behind it may hold
-it). If the sheet isn't released within a second (the browser is slow to close, or the code exchange was already
-running), the call throws anyway, and the sheet stays held until the sign-in's remaining calls, or the passkey
-ceremony, finish.
+the system sheet, so its session no longer holds the sheet by then (a session queued behind it may hold it). If the
+sheet isn't released within a second (the browser is slow to close, or the code exchange was already running), the
+call throws anyway, and the sheet stays held until the sign-in's remaining calls, or the passkey ceremony, finish.
 
 `resetSystemSheet()` is a recovery tool for a sheet that stopped responding. A sign-in or passkey call holding it
 throws `.userCancelled`; a sign-out page is closed, and its sign-out reports what it did (`.failed(.userCancelled)`
@@ -1442,7 +1441,7 @@ optional `underlyingError`.
 | `notSignedIn` | No user pool user: signed out, guest, federated, or waiting on a challenge | Sign in; on a federated session, clear the federation or sign out first |
 | `invalidSessionID` | Empty, too long, or a character outside `A-Z a-z 0-9 _ -` | Use a valid ID |
 | `challengeExpired` | Cognito no longer accepts the challenge | Call `signIn` again |
-| `browserBusy(holder:)` | The one system sheet is held, or a `.wait(timeout:)` expired, or this session already has a hosted-UI sign-in in progress | Finish or cancel the holder's sheet. When `holder` is this session and no session holds the sheet (`systemSheetHolder` is `nil`), there is no sheet to finish: wait for the earlier call, or cancel its task |
+| `browserBusy(holder:)` | The one system sheet is held, or a `.wait(timeout:)` expired, or this session already has a hosted-UI sign-in in progress | Finish or cancel the holder's sheet. When `holder` is this session and none of its sheets is up, there is no sheet to finish: wait for the earlier call, or cancel its task |
 | `sessionConfigurationMismatch(SessionID)` | The session is live under a different configuration | Release its handles and providers, or use the same configuration |
 | `validation(field:)` | An argument was invalid; `field` names it | Fix the argument |
 | `service(AuthClientServiceErrorCode?)` | Cognito rejected the request, with the code if the client recognises it; with no code, a Cognito internal error (`InternalErrorException`) or an error status the SDK doesn't model (the description has the status and message), in every call, or a network problem stopped the request, which may or may not have reached Cognito (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), or its answer couldn't be read | Depends on the code; with no code, read the suggestion: retry later, or check the request against the service's message (a 4xx status). In a `.partial` sign-out, the revoke's or global sign-out's failure is not retried |

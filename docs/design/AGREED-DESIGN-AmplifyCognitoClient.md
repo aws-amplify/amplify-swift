@@ -1076,7 +1076,7 @@ For sign outs, some platforms already skip the browser round trip on sign-out wh
 
 > **Scope (2026-10-02).** The rule is our library's policy on the platforms that have hosted UI, **iOS, macOS and visionOS**. It covers **one system sheet**: browser sign-in, the browser sign-out page and the passkey sheet. This section stays because it documents public API: `whenBrowserBusy`, `browserBusy` and `resetSystemSheet`.
 
-**Only one of the client's system sheets is up at a time, per process, on iOS, macOS and visionOS: a browser sign-in, the browser sign-out page or the passkey sheet. This is a deliberate library policy, not an OS guarantee.** As built, it covers the client's sessions (every session of every `AmplifyCognitoClient`, `SystemSheetLock.shared`): the Auth plugin's hosted UI and passkey sheets don't take the lock, so one can be up beside a client sheet, and `systemSheetHolder` doesn't report it. The distinction between a library policy and an OS guarantee matters because the doc previously claimed an OS guarantee, and a reviewer can falsify it: Apple documents only a *per-instance* rule for `ASWebAuthenticationSession.start()`, its error taxonomy has no "already in progress" case, and no Apple platform enforces a device-wide limit. On Android the effective limit is also ours — the redirect-handling activity is `launchMode="singleTask"` and one redirect scheme cannot be disambiguated between two pending requests. What genuinely constrains us is **UI presentation**: a flow needs a foreground-active `presentationAnchor`, and an iPhone cannot provide two. Concurrent browser sign-ins are therefore out of scope by decision; sessions are established sequentially.
+**Only one of the client's system sheets is up at a time, per process, on iOS, macOS and visionOS: a browser sign-in, the browser sign-out page or the passkey sheet. This is a deliberate library policy, not an OS guarantee.** As built, it covers the client's sessions (every session of every `AmplifyCognitoClient`, `SystemSheetLock.shared`): the Auth plugin's hosted UI and passkey sheets don't take the lock, so one can be up beside a client sheet. The distinction between a library policy and an OS guarantee matters because the doc previously claimed an OS guarantee, and a reviewer can falsify it: Apple documents only a *per-instance* rule for `ASWebAuthenticationSession.start()`, its error taxonomy has no "already in progress" case, and no Apple platform enforces a device-wide limit. On Android the effective limit is also ours — the redirect-handling activity is `launchMode="singleTask"` and one redirect scheme cannot be disambiguated between two pending requests. What genuinely constrains us is **UI presentation**: a flow needs a foreground-active `presentationAnchor`, and an iPhone cannot provide two. Concurrent browser sign-ins are therefore out of scope by decision; sessions are established sequentially.
 
 **This exclusivity cannot be inherited, and that is a risk to name rather than a detail.** The thing serializing browser flows today is the single global auth state machine — the session layer has no in-flight guard of its own. Splitting into N sessions removes the only serialization that exists, on a seam with a five-issue history (#3362 → PR #3466 → #3678 → PR #3715 → #3766). So the rule needs an explicit owner in the new architecture, plus a public cancel/reset: a guard left held by a flow the OS silently tore down otherwise blocks sign-in until the app restarts.
 
@@ -1114,10 +1114,9 @@ public func signInWithWebUI(presentationAnchor: AuthClientPresentationAnchor,
 // The public cancel and reset. cancelWebUISignIn closes this session's sheet (its
 // sign-in, sign-out page or passkey sheet): a sign-in or passkey call throws
 // `userCancelled`, and a closed sign-out page is `.failed(.userCancelled)`. A hosted-UI
-// sign-in or passkey call throws once it has released the sheet, so systemSheetHolder
-// no longer names its session by then. If the sheet isn't released within a second, the
-// call throws anyway, and the sheet stays held until the sign-in's remaining calls, or
-// the passkey ceremony, finish.
+// sign-in or passkey call throws once it has released the sheet. If the sheet isn't
+// released within a second, the call throws anyway, and the sheet stays held until the
+// sign-in's remaining calls, or the passkey ceremony, finish.
 // resetSystemSheet frees the client's sheet, whichever session holds it, and returns
 // the session that held it.
 public func cancelWebUISignIn() async
