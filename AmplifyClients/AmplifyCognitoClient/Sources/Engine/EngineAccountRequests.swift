@@ -66,9 +66,9 @@ struct EngineFederationRequest: Sendable, Equatable {
 ///
 /// One per call: the core makes it (`SystemSheetFlow.ceremonyContext`), and a sign-in step that runs no ceremony ignores it.
 struct EngineCeremonyContext: Sendable {
-    /// The window, or `nil` when the call was given none: a WebAuthn step then fails with
-    /// `.validation(field: "presentationAnchor")` without presenting. A confirmation without one uses the
-    /// window its sign-in was given.
+    /// The window, or `nil` when the call was given none: a WebAuthn sign-in step then fails with
+    /// `.validation(field: "presentationAnchorForWebAuthn")` without presenting. A confirmation without one
+    /// uses the window its sign-in was given.
     let anchor: EnginePresentationAnchorBox?
     /// Takes the sheet lease for this session and runs `body` (one ceremony) under it: the engine's
     /// `WebAuthnCredentialOperations.CeremonyRunner`, so it passes straight through.

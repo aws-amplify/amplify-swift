@@ -53,8 +53,8 @@ final class WebAuthnSignInCeremonySlotTests: XCTestCase, @unchecked Sendable {
     /// - Given: an environment whose slot holds a ceremony with no anchor and a counting runner
     /// - When: the action runs
     /// - Then:
-    ///    - the event is `.error` whose engine error is `.validation("presentationAnchor", …)`; the runner never
-    ///      ran, and neither the action's asserter nor the slot's asserter factory was used
+    ///    - the event is `.error` whose engine error is `.validation("presentationAnchorForWebAuthn", …)`; the
+    ///      runner never ran, and neither the action's asserter nor the slot's asserter factory was used
     func testAFilledSlotWithNoWindowRefusesWithoutAnAsserter() async throws {
         let asserter = RecordingAsserter()
         let runs = TestBox(0)
@@ -80,7 +80,7 @@ final class WebAuthnSignInCeremonySlotTests: XCTestCase, @unchecked Sendable {
         guard case .validation(let field, _, _, _) = error.engineError else {
             return XCTFail("expected .validation, got \(error.engineError)")
         }
-        XCTAssertEqual(field, WebAuthnCredentialOperations.presentationAnchorField)
+        XCTAssertEqual(field, WebAuthnCredentialOperations.signInPresentationAnchorField)
         XCTAssertEqual(runs.get(), 0)
         XCTAssertEqual(made.get(), 0)
         XCTAssertEqual(asserter.asserts.get(), 0)

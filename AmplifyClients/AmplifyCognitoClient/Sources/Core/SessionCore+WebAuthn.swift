@@ -114,17 +114,31 @@ extension SessionCore {
         }
     }
 
+    /// `box`, or `nil` if its window has gone, read on the main actor as a window is: what a confirmation's own
+    /// window is at the time of the call. A sign-in's keeps its box, and a window that has gone is refused when
+    /// its ceremony starts.
+    static func liveAnchor(_ box: EnginePresentationAnchorBox?) async -> EnginePresentationAnchorBox? {
+        #if os(iOS) || os(macOS) || os(visionOS)
+        guard let box else {
+            return nil
+        }
+        return await MainActor.run { box.anchor == nil ? nil : box }
+        #else
+        return box
+        #endif
+    }
+
     /// A WebAuthn step with no window to show the passkey sheet over: a sign-in asking for a WebAuthn first
-    /// factor, or a `"WEB_AUTHN"` selection, with no `presentationAnchor` anywhere. Refused before anything is
-    /// sent. The engine's description for the same refusal (a WebAuthn step Cognito started), with a recovery
-    /// that names the overloads.
+    /// factor, or a `"WEB_AUTHN"` selection, with no `presentationAnchorForWebAuthn` in either call's options.
+    /// Refused before anything is sent. The engine's description for the same refusal (a WebAuthn step Cognito
+    /// started), with a recovery that names both options.
     static func presentationAnchorRequired() -> AuthClientError {
         .validation(
-            field: WebAuthnCredentialOperations.presentationAnchorField,
+            field: WebAuthnCredentialOperations.signInPresentationAnchorField,
             WebAuthnCredentialOperations.presentationAnchorMissingDescription,
             """
-            Pass the window the passkey sheet attaches to: signIn(username:password:presentationAnchor:options:), \
-            or confirmSignIn(challengeResponse:presentationAnchor:options:) for a WEB_AUTHN selection.
+            Set the window the passkey sheet attaches to as presentationAnchorForWebAuthn, in signIn's options, \
+            or in confirmSignIn's options for a WEB_AUTHN selection.
             """
         )
     }

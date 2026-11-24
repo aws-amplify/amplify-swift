@@ -42,10 +42,10 @@ public extension AuthClientFactorType {
     /// `confirmSignIn(challengeResponse:options:)`: Cognito's name for it, such as `"PASSWORD_SRP"`. The
     /// plugin's `AuthFactorType.challengeResponse`.
     ///
-    /// `webAuthn`'s `"WEB_AUTHN"` shows the passkey sheet over the window given to
-    /// `confirmSignIn(challengeResponse:presentationAnchor:options:)`, else the one given to the anchored
-    /// `signIn`. With no window at all it is refused with `.validation(field: "presentationAnchor")` before
-    /// anything is sent, and the selection stays pending.
+    /// `webAuthn`'s `"WEB_AUTHN"` shows the passkey sheet over the window in `confirmSignIn`'s options
+    /// (`presentationAnchorForWebAuthn`), else the one in `signIn`'s. With no window at all it is refused with
+    /// `.validation(field: "presentationAnchorForWebAuthn")` before anything is sent, and the selection stays
+    /// pending.
     var challengeResponse: String {
         switch self {
         case .password: return "PASSWORD"

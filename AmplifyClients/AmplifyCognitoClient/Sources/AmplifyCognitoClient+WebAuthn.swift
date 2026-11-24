@@ -14,8 +14,9 @@ import InternalAWSCognitoAuth
 // WebAuthn: passkeys registered, listed and deleted, and passkey sign-in.
 
 #if os(iOS) || os(macOS) || os(visionOS)
-/// WebAuthn with a passkey sheet: registering a passkey, and signing in with one. Each takes the window the
-/// sheet attaches to, which the client never looks for itself.
+/// WebAuthn with a passkey sheet: registering a passkey, which takes the window the sheet attaches to. The
+/// client never looks for a window itself. Signing in with a passkey takes its window in the options
+/// (`AuthClientSignInOptions.presentationAnchorForWebAuthn`), and shares what follows.
 ///
 /// **One sheet per process.** A passkey sheet and the hosted UI's browser share one process-wide lease: while
 /// any of the client's sessions shows one, another session's (or this session's) passkey ceremony throws
@@ -60,63 +61,6 @@ public extension AmplifyCognitoClient {
         let anchor = EnginePresentationAnchorBox(presentationAnchor)
         let core = core
         try await core.associateWebAuthnCredential(anchor: anchor)
-    }
-
-    /// `signIn(username:password:options:)`, with the window a passkey sheet attaches to.
-    ///
-    /// With `authFlowType: .userAuth(preferredFirstFactor: .webAuthn)` (and usually no password), the passkey
-    /// sheet is shown over `presentationAnchor`, and the result is `.done`. Without a preference, a
-    /// `.continueSignInWithFirstFactorSelection` step may offer `.webAuthn`; answer it with
-    /// `confirmSignIn(challengeResponse: "WEB_AUTHN")`, which uses this window unless given its own. Any
-    /// other factor signs in as `signIn(username:password:options:)` does, and never shows a sheet.
-    ///
-    /// A failed passkey step ends the sign-in: call `signIn` again to retry. The window is held weakly: if it
-    /// has gone when the ceremony starts, nothing is presented.
-    ///
-    /// - Parameters:
-    ///   - username: The user's username or alias.
-    ///   - password: The password, or `nil` for a passwordless first factor.
-    ///   - presentationAnchor: The window the passkey sheet attaches to.
-    ///   - options: The flow and the client metadata.
-    /// - Returns: as `signIn(username:password:options:)`.
-    /// - Throws: as `signIn(username:password:options:)`, and for a passkey step: `.browserBusy(holder:)`
-    ///   while another sheet is up; `.validation(field: "presentationAnchor")` if the window has gone;
-    ///   `.userCancelled` when the user closes the sheet, or `cancelWebUISignIn()` or `resetSystemSheet()`
-    ///   closes it; `.webAuthnCeremonyFailed` when the device cannot use a passkey; `.service` for Cognito's
-    ///   WebAuthn answers; `CancellationError` if the calling task is cancelled while the sheet is up, or before
-    ///   it would appear.
-    @MainActor
-    func signIn(
-        username: String,
-        password: String? = nil,
-        presentationAnchor: AuthClientPresentationAnchor,
-        options: AuthClientSignInOptions = AuthClientSignInOptions()
-    ) async throws -> AuthClientSignInResult {
-        let anchor = EnginePresentationAnchorBox(presentationAnchor)
-        let core = core
-        return try await core.signIn(username: username, password: password, options: options, presentationAnchor: anchor)
-    }
-
-    /// `confirmSignIn(challengeResponse:options:)`, with the window a `"WEB_AUTHN"` answer's passkey sheet
-    /// attaches to, in place of the one given to `signIn`.
-    ///
-    /// - Parameters:
-    ///   - challengeResponse: The answer; `"WEB_AUTHN"` (`AuthClientFactorType.webAuthn`) to a first-factor
-    ///     selection shows the passkey sheet.
-    ///   - presentationAnchor: The window the passkey sheet attaches to.
-    ///   - options: User attributes, client metadata and, for a TOTP setup, the device name.
-    /// - Returns: as `confirmSignIn(challengeResponse:options:)`.
-    /// - Throws: as `confirmSignIn(challengeResponse:options:)`, and for a passkey step as
-    ///   `signIn(username:password:presentationAnchor:options:)`.
-    @MainActor
-    func confirmSignIn(
-        challengeResponse: String,
-        presentationAnchor: AuthClientPresentationAnchor,
-        options: AuthClientConfirmSignInOptions = AuthClientConfirmSignInOptions()
-    ) async throws -> AuthClientSignInResult {
-        let anchor = EnginePresentationAnchorBox(presentationAnchor)
-        let core = core
-        return try await core.confirmSignIn(challengeResponse: challengeResponse, options: options, presentationAnchor: anchor)
     }
 }
 #endif

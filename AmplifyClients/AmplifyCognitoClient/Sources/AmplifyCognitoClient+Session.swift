@@ -42,19 +42,29 @@ public extension AmplifyCognitoClient {
     /// `Task.isCancelled` true. A call cancelled while it still waits (for the session's restore, or behind
     /// another sign-in on this session) throws `CancellationError` and sends nothing.
     ///
-    /// This overload shows no passkey sheet: to sign in with a passkey, use
-    /// `signIn(username:password:presentationAnchor:options:)`.
+    /// **Passkeys** (iOS, macOS and visionOS). A passkey step shows its sheet over the window in
+    /// `options.presentationAnchorForWebAuthn`, and the client never picks one itself: with
+    /// `authFlowType: .userAuth(preferredFirstFactor: .webAuthn)` the result is `.done`, and a
+    /// `.continueSignInWithFirstFactorSelection` step that offers `.webAuthn` is answered with
+    /// `confirmSignIn(challengeResponse: "WEB_AUTHN")`. A failed passkey step ends the sign-in: call `signIn`
+    /// again to retry.
     ///
     /// - Parameters:
     ///   - username: The user's username or alias.
     ///   - password: The password, or `nil` for a passwordless first factor.
-    ///   - options: The flow and the client metadata.
+    ///   - options: The flow, the client metadata and, for a passkey, the window its sheet attaches to.
     /// - Returns: `.done` once signed in, which sends `.signedIn`; otherwise the step to present.
     /// - Throws:
     ///   - `AuthClientError.validation(field: "username")` for an empty username, before anything is sent;
-    ///   - `.validation(field: "presentationAnchor")`, since this overload has no window: for a WebAuthn first
-    ///     factor (`.userAuth(preferredFirstFactor: .webAuthn)`), before anything is sent, and for a WebAuthn
-    ///     step Cognito starts on its own, without presenting anything;
+    ///   - `.validation(field: "presentationAnchorForWebAuthn")` when the options hold no window: for a WebAuthn
+    ///     first factor (`.userAuth(preferredFirstFactor: .webAuthn)`), before anything is sent, and for a
+    ///     WebAuthn step Cognito starts on its own, without presenting anything; and when the window has gone by
+    ///     the time the sheet would appear;
+    ///   - for a passkey step: `.browserBusy(holder:)` while another sheet is up; `.userCancelled` when the user
+    ///     closes the sheet, or `cancelWebUISignIn()` or `resetSystemSheet()` closes it;
+    ///     `.webAuthnCeremonyFailed` when the device cannot use a passkey; `.service` for Cognito's WebAuthn
+    ///     answers; `CancellationError` if the calling task is cancelled while the sheet is up, or before it
+    ///     would appear;
     ///   - `.configuration` without a user pool;
     ///   - `.invalidState` if this session is signed in (sign out first; a session whose refresh token is known
     ///     dead may sign in again) or federated (clear the federation first); if a sign-out, purge or deletion of this session cancelled the sign-in while it was in
@@ -81,20 +91,21 @@ public extension AmplifyCognitoClient {
     /// it, and this answers it the same way.
     ///
     /// Cancellation works as for `signIn(username:password:options:)`: once the answer is sent, the call runs
-    /// to its end. A `"WEB_AUTHN"` answer shows the passkey sheet over the window the sign-in was given, if
-    /// it was given one (`signIn(username:password:presentationAnchor:options:)`).
+    /// to its end. A `"WEB_AUTHN"` answer shows the passkey sheet over the window in
+    /// `options.presentationAnchorForWebAuthn`, else over the one the sign-in's options gave.
     ///
     /// - Parameters:
     ///   - challengeResponse: The code, new password, selection or custom answer the step asks for.
-    ///   - options: User attributes, client metadata and, for a TOTP setup, the device name.
+    ///   - options: User attributes, client metadata, for a TOTP setup the device name, and for a `"WEB_AUTHN"`
+    ///     answer a window of its own.
     /// - Returns: `.done` once signed in, which sends `.signedIn`; otherwise the next step.
     /// - Throws:
     ///   - `AuthClientError.validation(field: "challengeResponse")` for an empty response, or a selection
     ///     outside the step's choices (an MFA selection other than `AuthClientMFAType.<type>.challengeResponse`, an
     ///     MFA setup selection other than one of the step's types, a first-factor selection other than
     ///     `AuthClientFactorType.<type>.challengeResponse`, or `"WEB_AUTHN"` when the step does not offer it);
-    ///     `.validation(field: "presentationAnchor")` for a `"WEB_AUTHN"` answer when the sign-in was given no
-    ///     window; each before anything is sent, keeping the challenge;
+    ///     `.validation(field: "presentationAnchorForWebAuthn")` for a `"WEB_AUTHN"` answer when neither these
+    ///     options nor the sign-in's hold a window; each before anything is sent, keeping the challenge;
     ///   - `.configuration` without a user pool;
     ///   - `.invalidState` if no sign-in is in progress on this session; if it can no longer continue, so
     ///     sign-in must restart; if a sign-out, purge or deletion of this session cancelled it; or if another
@@ -103,8 +114,7 @@ public extension AmplifyCognitoClient {
     ///     whose Cognito session has since lapsed), so sign-in must restart;
     ///   - `.notAuthorized` or `.service` as Cognito answers. After a wrong code the challenge is still
     ///     pending, so the user can retry;
-    ///   - for a `"WEB_AUTHN"` answer, the passkey errors of
-    ///     `signIn(username:password:presentationAnchor:options:)`;
+    ///   - for a `"WEB_AUTHN"` answer, the passkey errors of `signIn(username:password:options:)`;
     ///   - `.storageUnavailable` if storage could not be read, did not answer in time, or the result could not
     ///     be saved;
     ///   - `.unknown` if the session's saved record cannot be read by this version, or for a failure the

@@ -91,8 +91,8 @@ protocol SessionEngine: Sendable {
     /// engine's ceremony site, and `cancelPendingSignIn` stops it through
     /// `EngineCeremonyContext.cancel`. With no window (the core refuses a WebAuthn first factor without one
     /// before calling, so this is Cognito starting a WebAuthn step on its own), the step throws
-    /// `.validation(field: "presentationAnchor")`, presents nothing, and drops the attempt. A failed WebAuthn
-    /// step always drops the attempt.
+    /// `.validation(field: "presentationAnchorForWebAuthn")`, presents nothing, and drops the attempt. A failed
+    /// WebAuthn step always drops the attempt.
     ///
     /// - Returns: `.done` with the payload to commit, or `.challenge` with the step the sign-in now waits
     ///   on, which `pendingChallenge` then reports.
@@ -119,7 +119,7 @@ protocol SessionEngine: Sendable {
     ///
     /// **WebAuthn.** A `"WEB_AUTHN"` answer to a first-factor selection runs its ceremony over
     /// `request.webAuthn`'s window, else over the window the sign-in was given, through this call's runner.
-    /// With neither window it throws `.validation(field: "presentationAnchor")` before
+    /// With neither window it throws `.validation(field: "presentationAnchorForWebAuthn")` before
     /// anything is sent, and keeps the attempt.
     ///
     /// The attempt is dropped, and `pendingChallenge` becomes `nil`:
@@ -492,8 +492,9 @@ struct EngineSignInRequest: Sendable, Equatable {
     /// `nil` uses the configuration's flow (`userSRP`).
     let authFlowType: AuthClientAuthFlowType?
     let clientMetadata: [String: String]
-    /// The window and sheet-lease runner for a WebAuthn step, from the anchored `signIn` overload; `nil` from
-    /// the anchor-less one, where a WebAuthn step is refused without presenting.
+    /// The window and sheet-lease runner for a WebAuthn step, when the options hold a window
+    /// (`presentationAnchorForWebAuthn`); `nil` when they hold none, where a WebAuthn step is refused without
+    /// presenting.
     var webAuthn: EngineCeremonyContext?
 }
 
@@ -507,8 +508,8 @@ struct EngineConfirmSignInRequest: Sendable, Equatable {
     let clientMetadata: [String: String]
     /// The device name for a TOTP setup.
     let friendlyDeviceName: String?
-    /// This call's sheet-lease runner, and its window (`nil` from the anchor-less overload: a `"WEB_AUTHN"`
-    /// answer then uses the sign-in's). The core sets it on every confirmation, on the platforms with a
+    /// This call's sheet-lease runner, and its window (`nil` when the confirmation's options hold none: a
+    /// `"WEB_AUTHN"` answer then uses the sign-in's). The core sets it on every confirmation, on the platforms with a
     /// passkey sheet, so a ceremony always runs under this call's runner and cancellation.
     var webAuthn: EngineCeremonyContext?
 }

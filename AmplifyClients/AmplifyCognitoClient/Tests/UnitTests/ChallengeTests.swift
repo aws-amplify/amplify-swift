@@ -508,10 +508,10 @@ final class ChallengeTests: XCTestCase {
     /// - Given: a sign-in, made without a window, waiting on a first-factor selection that offers WebAuthn; and a
     ///   signed-out session
     /// - When: the selection is answered with `WEB_AUTHN` without a window, and a sign-in asks for a WebAuthn
-    ///   first factor through the overload without one
+    ///   first factor with options that hold no window
     /// - Then:
-    ///    - both throw `.validation(field: "presentationAnchor")`; the selection is refused by the engine
-    ///      before any ceremony, and stays pending; the sign-in never reaches the engine
+    ///    - both throw `.validation(field: "presentationAnchorForWebAuthn")`; the selection is refused by the
+    ///      engine before any ceremony, and stays pending; the sign-in never reaches the engine
     func testWebAuthnWithoutAPresentationAnchorIsRefused() async throws {
         #if os(iOS) || os(macOS) || os(visionOS)
         if #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) {
@@ -521,7 +521,7 @@ final class ChallengeTests: XCTestCase {
 
             let selection = await authClientError { try await client.confirmSignIn(challengeResponse: "WEB_AUTHN") }
             let state = await client.currentSessionState()
-            XCTAssertEqual(selection?.kind, .validation(field: "presentationAnchor"))
+            XCTAssertEqual(selection?.kind, .validation(field: "presentationAnchorForWebAuthn"))
             XCTAssertEqual(state, .awaitingChallenge(step))
             XCTAssertEqual(engine.ceremonyAnchorCalls.count, 0)
 
@@ -531,7 +531,7 @@ final class ChallengeTests: XCTestCase {
                     options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn))
                 )
             }
-            XCTAssertEqual(firstFactor?.kind, .validation(field: "presentationAnchor"))
+            XCTAssertEqual(firstFactor?.kind, .validation(field: "presentationAnchorForWebAuthn"))
             XCTAssertEqual(harness.engine(for: home)?.signInCalls.count, 0)
         }
         #endif

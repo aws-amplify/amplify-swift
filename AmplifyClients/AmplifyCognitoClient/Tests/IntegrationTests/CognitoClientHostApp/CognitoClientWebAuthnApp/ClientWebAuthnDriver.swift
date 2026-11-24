@@ -65,8 +65,10 @@ final class ClientWebAuthnDriver: WebAuthnHarnessDriver {
     func signInWithWebAuthn(username: String, presentationAnchor: ASPresentationAnchor) async throws {
         let result = try await client.signIn(
             username: username,
-            presentationAnchor: presentationAnchor,
-            options: AuthClientSignInOptions(authFlowType: .userAuth(preferredFirstFactor: .webAuthn))
+            options: AuthClientSignInOptions(
+                authFlowType: .userAuth(preferredFirstFactor: .webAuthn),
+                presentationAnchorForWebAuthn: presentationAnchor
+            )
         )
         guard result.nextStep == .done else {
             throw HarnessAppError("WebAuthn sign-in stopped at \(result.nextStep)")

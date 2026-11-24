@@ -63,7 +63,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
                 return Data("credential".utf8)
             }
             let signIn = Task { @MainActor in
-                try await client.signIn(username: "alice", presentationAnchor: window, options: .init(authFlowType: flow))
+                try await client.signIn(username: "alice", options: .init(authFlowType: flow, presentationAnchorForWebAuthn: window))
             }
             try await held.up()
             let holder = await harness.sheetLock.currentHolder
@@ -113,11 +113,11 @@ final class WebAuthnCeremonyTests: XCTestCase {
             return Data("credential".utf8)
         }
 
-        _ = try await client.signIn(username: "alice", presentationAnchor: windowA)
+        _ = try await client.signIn(username: "alice", options: .init(presentationAnchorForWebAuthn: windowA))
         let first = try await client.confirmSignIn(challengeResponse: "WEB_AUTHN")
         await client.signOut()
-        _ = try await client.signIn(username: "alice", presentationAnchor: windowA)
-        let second = try await client.confirmSignIn(challengeResponse: "WEB_AUTHN", presentationAnchor: windowB)
+        _ = try await client.signIn(username: "alice", options: .init(presentationAnchorForWebAuthn: windowA))
+        let second = try await client.confirmSignIn(challengeResponse: "WEB_AUTHN", options: .init(presentationAnchorForWebAuthn: windowB))
 
         XCTAssertEqual(first.nextStep, .done)
         XCTAssertEqual(second.nextStep, .done)
@@ -303,8 +303,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         let busySignIn = await authClientError {
             try await homeClient.signIn(
                 username: "bob",
-                presentationAnchor: window,
-                options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn))
+                options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn), presentationAnchorForWebAuthn: window)
             )
         }
         await held.letAnswer()
@@ -416,8 +415,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
             defer { signInReturned.with { $0 = true } }
             return try await client.signIn(
                 username: "alice",
-                presentationAnchor: window,
-                options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn))
+                options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn), presentationAnchorForWebAuthn: window)
             )
         }
         try await held.up()
@@ -468,8 +466,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         let signIn = Task { @MainActor in
             try await client.signIn(
                 username: "alice",
-                presentationAnchor: window,
-                options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn))
+                options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn), presentationAnchorForWebAuthn: window)
             )
         }
         try await held.up()
@@ -512,8 +509,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         let signIn = Task { @MainActor in
             try await client.signIn(
                 username: "alice",
-                presentationAnchor: window,
-                options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn))
+                options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn), presentationAnchorForWebAuthn: window)
             )
         }
         try await latch.arrivals(1)
@@ -545,7 +541,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         engine.holdSignIns(on: latch)
 
         let signIn = Task { @MainActor in
-            try await client.signIn(username: "alice", password: "password", presentationAnchor: window)
+            try await client.signIn(username: "alice", password: "password", options: .init(presentationAnchorForWebAuthn: window))
         }
         try await latch.arrivals(1)
         signIn.cancel()
@@ -578,8 +574,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         let signIn = Task {
             try await client.signIn(
                 username: "alice",
-                presentationAnchor: window,
-                options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn))
+                options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn), presentationAnchorForWebAuthn: window)
             )
         }
         try await responding.arrivals(1)
@@ -733,8 +728,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         let signIn = Task {
             try await homeClient.signIn(
                 username: "bob",
-                presentationAnchor: window,
-                options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn))
+                options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn), presentationAnchorForWebAuthn: window)
             )
         }
         try await homeHeld.up()
@@ -793,6 +787,52 @@ final class WebAuthnCeremonyTests: XCTestCase {
         XCTAssertEqual(error?.errorDescription, SessionCore.passkeySheetClosed().errorDescription)
         XCTAssertNil(holderWhenAnswered)
         XCTAssertLessThan(Date().timeIntervalSince(started), 5, "answered by the release, not the bound")
+    }
+
+    // MARK: The window in the options
+
+    /// The options hold their window weakly and compare it by identity.
+    ///
+    /// - Given: sign-in and confirmation options with window A, with window B, with a window that has gone, with
+    ///   a window released after it was set through the public `init`, and with none
+    /// - When: they are compared, and the window is read back
+    /// - Then:
+    ///    - options are equal only with the same window, or with none on both sides; a window that has gone is
+    ///      not "none"
+    ///    - the property reads the window back, and `nil` once it has gone, was cleared or was never set
+    ///    - a window set through the `init` is not kept alive by the options
+    @MainActor
+    func testTheOptionsCompareTheirWindowByIdentity() {
+        let windowA = WebAuthnFixtures.window()
+        let windowB = WebAuthnFixtures.window()
+        let flow = AuthClientAuthFlowType.userAuth(preferredFirstFactor: .webAuthn)
+        let plain = AuthClientSignInOptions(authFlowType: flow)
+        let overA = AuthClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: windowA)
+
+        XCTAssertEqual(overA, AuthClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: windowA))
+        XCTAssertNotEqual(overA, AuthClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: windowB))
+        XCTAssertNotEqual(overA, plain)
+        XCTAssertEqual(plain, AuthClientSignInOptions(authFlowType: flow))
+        XCTAssertTrue(overA.presentationAnchorForWebAuthn === windowA)
+        XCTAssertNil(plain.presentationAnchorForWebAuthn)
+
+        var gone = plain
+        gone.webAuthnAnchor.box = WebAuthnFixtures.goneWindowBox()
+        XCTAssertNil(gone.presentationAnchorForWebAuthn)
+        XCTAssertNotEqual(gone, plain)
+        let released = autoreleasepool {
+            AuthClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: WebAuthnFixtures.window())
+        }
+        XCTAssertNil(released.presentationAnchorForWebAuthn)
+        XCTAssertNotEqual(released, plain)
+
+        var confirm = AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowA)
+        XCTAssertEqual(confirm, AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowA))
+        XCTAssertTrue(confirm.presentationAnchorForWebAuthn === windowA)
+        confirm.presentationAnchorForWebAuthn = windowB
+        XCTAssertNotEqual(confirm, AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowA))
+        confirm.presentationAnchorForWebAuthn = nil
+        XCTAssertEqual(confirm, AuthClientConfirmSignInOptions())
     }
 }
 #endif

@@ -21,8 +21,8 @@ import XCTest
 /// confirms its own; on the sandbox's file set, the sandbox's pre-sign-up trigger confirms and verifies it instead.
 ///
 /// PL-11 (`testSignInWithUnsupportedPreference_givenValidUser_expectSelectChallenge`, a WebAuthn
-/// preference) goes through the anchored `signIn` overload: the
-/// anchor-less one refuses a WebAuthn first factor before anything is sent. U-PL offers no `WEB_AUTHN`, so
+/// preference) signs in with a window in the options: without
+/// one, a WebAuthn first factor is refused before anything is sent. U-PL offers no `WEB_AUTHN`, so
 /// Cognito answers with the selection and no passkey sheet is involved.
 ///
 /// Request checks read `RecordingHTTPClient.answered`, so an attempt the SDK sent again after a lost
@@ -350,8 +350,8 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
     /// - Given: a fresh user with a password, on a pool whose first factors do not include `WEB_AUTHN`, and the
     ///   recorder installed
     /// - When:
-    ///    - the user signs in with the password, a window, and `userAuth(preferredFirstFactor: .webAuthn)`,
-    ///      through the anchored overload
+    ///    - the user signs in with the password, a window in the options, and
+    ///      `userAuth(preferredFirstFactor: .webAuthn)`
     /// - Then:
     ///    - the sign-in returns `.continueSignInWithFirstFactorSelection`, as the plugin's does, with the
     ///      factors of PL-10 and without `.webAuthn`
@@ -369,8 +369,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
         let result = try await client.signIn(
             username: user.username,
             password: password,
-            presentationAnchor: window,
-            options: Self.userAuth(.webAuthn)
+            options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn), presentationAnchorForWebAuthn: window)
         )
 
         let factors = try firstFactors(of: result.nextStep)

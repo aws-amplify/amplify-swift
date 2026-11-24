@@ -43,20 +43,19 @@ extension SessionCore {
     /// has started, a cancelled caller still waits for the step and its commit, and may return successfully
     /// with `Task.isCancelled` true.
     ///
-    /// **WebAuthn.** `presentationAnchor` is the window a passkey sheet
-    /// attaches to, from the anchored overload; without one, a WebAuthn first factor is refused before
-    /// anything is sent, and a WebAuthn step Cognito starts on its own fails without presenting. With one,
-    /// the step runs its ceremony under the sheet lease, and the caller's cancellation stops it.
+    /// **WebAuthn.** The options' `presentationAnchorForWebAuthn` is the window a passkey sheet attaches to;
+    /// without one, a WebAuthn first factor is refused before anything is sent, and a WebAuthn step Cognito
+    /// starts on its own fails without presenting. With one, the step runs its ceremony under the sheet lease,
+    /// and the caller's cancellation stops it.
     ///
-    /// - Throws: `validation` for an empty username, and (`field: "presentationAnchor"`) for a WebAuthn first
-    ///   factor without an anchor; `configuration` without a user pool;
+    /// - Throws: `validation` for an empty username, and (`field: "presentationAnchorForWebAuthn"`) for a
+    ///   WebAuthn first factor without an anchor; `configuration` without a user pool;
     ///   `storageUnavailable` if storage could not be read, which is never reported as signed out; the
     ///   record's own error if it is unreadable; otherwise the engine's mapped failure.
     nonisolated func signIn(
         username: String,
         password: String?,
-        options: AuthClientSignInOptions,
-        presentationAnchor: EnginePresentationAnchorBox? = nil
+        options: AuthClientSignInOptions
     ) async throws -> AuthClientSignInResult {
         guard !username.isEmpty else {
             throw AuthClientError.validation(
@@ -66,6 +65,9 @@ extension SessionCore {
             )
         }
         try requireUserPool(for: "sign in")
+        // Whether a window was given, not whether it is still there: one that has gone since is refused when
+        // the ceremony starts, as the window's validation error.
+        let presentationAnchor = options.webAuthnAnchor.box
         if presentationAnchor == nil, Self.asksForWebAuthn(options.authFlowType) {
             throw Self.presentationAnchorRequired()
         }
@@ -95,19 +97,19 @@ extension SessionCore {
 
     /// Answers the challenge this session's sign-in is waiting on.
     ///
-    /// A `"WEB_AUTHN"` answer runs the passkey ceremony over `presentationAnchor`, else over the window the
-    /// sign-in was given. Every confirmation carries a ceremony context of its
+    /// A `"WEB_AUTHN"` answer runs the passkey ceremony over the options' `presentationAnchorForWebAuthn`, else
+    /// over the window the sign-in was given. Every confirmation carries a ceremony context of its
     /// own, so the caller's cancellation stops a ceremony it starts, whichever window it uses.
     ///
-    /// - Throws: `validation` for an empty response, and (`field: "presentationAnchor"`) for a `"WEB_AUTHN"`
-    ///   answer with no window at all, which keeps the challenge; `invalidState` if no sign-in is in progress
+    /// - Throws: `validation` for an empty response, and (`field: "presentationAnchorForWebAuthn"`) for a
+    ///   `"WEB_AUTHN"` answer with no window at all, which keeps the challenge; `invalidState` if no sign-in is
+    ///   in progress
     ///   on this session; `challengeExpired` if Cognito's challenge session has expired, so sign-in must
     ///   restart; otherwise the engine's mapped failure. After a retryable failure (a wrong code) the
     ///   challenge is still pending, and the state still reports it.
     nonisolated func confirmSignIn(
         challengeResponse: String,
-        options: AuthClientConfirmSignInOptions,
-        presentationAnchor: EnginePresentationAnchorBox? = nil
+        options: AuthClientConfirmSignInOptions
     ) async throws -> AuthClientSignInResult {
         guard !challengeResponse.isEmpty else {
             throw AuthClientError.validation(
@@ -124,7 +126,9 @@ extension SessionCore {
         )
         let engine = engine
         let endings = await sessionEndings
-        return try await withSheetCeremony(anchor: presentationAnchor) { [self] webAuthn in
+        // A window of its own that has gone by now is no window, as the options read it: the sign-in's is used.
+        let anchor = await Self.liveAnchor(options.webAuthnAnchor.box)
+        return try await withSheetCeremony(anchor: anchor) { [self] webAuthn in
             let request = EngineConfirmSignInRequest(
                 challengeResponse: challengeResponse,
                 userAttributes: userAttributes,

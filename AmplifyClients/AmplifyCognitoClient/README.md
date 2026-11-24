@@ -627,8 +627,9 @@ if case .continueSignInWithFirstFactorSelection(let factors) = result.nextStep,
 
 ### Passkeys (WebAuthn)
 
-A passkey sign-in shows the system passkey sheet, so it needs a window: use the `signIn` overload that takes a
-`presentationAnchor`. The client never looks for a window itself.
+A passkey sign-in shows the system passkey sheet, so it needs a window: set `presentationAnchorForWebAuthn` in the
+sign-in options, as with the plugin. The client never looks for a window itself. The option is main-actor
+isolated, as a window is, so build the options on the main actor; the options themselves are `Sendable`.
 
 ```swift
 @MainActor
@@ -636,15 +637,17 @@ A passkey sign-in shows the system passkey sheet, so it needs a window: use the 
 func signInWithPasskey(client: AmplifyCognitoClient, window: AuthClientPresentationAnchor) async throws {
     let result = try await client.signIn(
         username: "user@example.com",
-        presentationAnchor: window,
-        options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn))
+        options: .init(
+            authFlowType: .userAuth(preferredFirstFactor: .webAuthn),
+            presentationAnchorForWebAuthn: window
+        )
     )
     print(result.nextStep) // .done
 }
 ```
 
-If Cognito offers a passkey in a first-factor selection, answer `"WEB_AUTHN"`. The sheet uses the window given to
-`signIn`, or the one you pass to `confirmSignIn`:
+If Cognito offers a passkey in a first-factor selection, answer `"WEB_AUTHN"`. The sheet uses the window in
+`signIn`'s options, or the one in `confirmSignIn`'s:
 
 ```swift
 @MainActor
@@ -652,15 +655,12 @@ If Cognito offers a passkey in a first-factor selection, answer `"WEB_AUTHN"`. T
 func selectPasskey(client: AmplifyCognitoClient, window: AuthClientPresentationAnchor) async throws {
     let result = try await client.signIn(
         username: "user@example.com",
-        presentationAnchor: window,
-        options: .init(authFlowType: .userAuth(preferredFirstFactor: nil))
+        options: .init(authFlowType: .userAuth(preferredFirstFactor: nil), presentationAnchorForWebAuthn: window)
     )
     if case .continueSignInWithFirstFactorSelection(let factors) = result.nextStep,
        factors.contains(.webAuthn) {
-        _ = try await client.confirmSignIn(
-            challengeResponse: AuthClientFactorType.webAuthn.challengeResponse,
-            presentationAnchor: window
-        )
+        // Uses signIn's window; pass `options: .init(presentationAnchorForWebAuthn:)` to use another.
+        _ = try await client.confirmSignIn(challengeResponse: AuthClientFactorType.webAuthn.challengeResponse)
     }
 }
 ```
@@ -669,8 +669,9 @@ Presentation anchor rules:
 
 | Rule | Result |
 |---|---|
-| `signIn` or `confirmSignIn` without a window, asking for a passkey (`.userAuth(preferredFirstFactor: .webAuthn)`, or a `"WEB_AUTHN"` answer with no window at all) | `.validation(field: "presentationAnchor")` before anything is sent. A pending selection stays pending |
-| The window has closed when the sheet would appear | `.validation(field: "presentationAnchor")`, nothing shown. The window is held weakly |
+| `signIn` or `confirmSignIn` with no window in the options, asking for a passkey (`.userAuth(preferredFirstFactor: .webAuthn)`, or a `"WEB_AUTHN"` answer with no window in either call's options) | `.validation(field: "presentationAnchorForWebAuthn")` before anything is sent. A pending selection stays pending |
+| The sign-in's window has closed when the sheet would appear | `.validation(field: "presentationAnchorForWebAuthn")`, nothing shown. The window is held weakly |
+| `associateWebAuthnCredential`'s window has closed when the sheet would appear | `.validation(field: "presentationAnchor")`, nothing shown. The window is held weakly |
 | Another sheet (hosted UI or passkey, any session) is up | `.browserBusy(holder:)` |
 | The user closes the sheet | `.userCancelled` |
 | The device cannot complete the ceremony | `.webAuthnCeremonyFailed(...)` |
@@ -803,8 +804,8 @@ func completeSignIn(client: AmplifyCognitoClient, startingAt first: AuthClientSi
 }
 ```
 
-`ask(_:)`, `pick(_:)` and `showQRCode(_:)` stand for your UI. If the first factor could be a passkey, use the
-`confirmSignIn(challengeResponse:presentationAnchor:options:)` overload for that answer.
+`ask(_:)`, `pick(_:)` and `showQRCode(_:)` stand for your UI. If the first factor could be a passkey, give `signIn`
+a window in its options (`presentationAnchorForWebAuthn`), or give that answer's `confirmSignIn` one.
 
 Errors to expect from `confirmSignIn`:
 
@@ -1894,7 +1895,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | Hosted UI returned user | No expectation | Optional `identityExpectation`; the returned ID token is always checked |
 | Hosted-UI sign-in window | Optional; falls back to a window of its own | Required: `signInWithWebUI(presentationAnchor:)` |
 | Passkey registration window | Optional; falls back to a window of its own | Required |
-| Passkey sign-in without a window | Window optional | The overloads without a window refuse a passkey with `.validation(field: "presentationAnchor")` |
+| Passkey sign-in without a window | Window optional (`presentationAnchorForWebAuthn` in the options) | The same option, required for a passkey: without it a passkey is refused with `.validation(field: "presentationAnchorForWebAuthn")` |
 | Passkey registration token | Fetched again after the sheet | One token for the whole registration |
 | `listWebAuthnCredentials` page size | Sent as is; Cognito rejects bad values | Checked locally, 1 to 20 |
 | MFA setup selection answer | Sent to the engine as is; an unknown type is `.validation` (field "Unknown MFA type", the sign-in username texts; `.unknown` for `SMS_MFA`) | Checked before anything is sent: one of the step's types, else `.validation(field: "challengeResponse")`; the selection stays pending and the answer is not logged |
