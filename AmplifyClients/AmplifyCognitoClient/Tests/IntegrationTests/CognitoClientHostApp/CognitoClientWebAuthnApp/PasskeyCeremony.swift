@@ -51,11 +51,11 @@ final class PasskeyCeremony: NSObject {
             "id": id,
             "rawId": id,
             "type": "public-key",
-            "authenticatorAttachment": "platform",
+            "authenticatorAttachment": registration.attachment == .crossPlatform ? "cross-platform" : "platform",
             "response": [
                 "attestationObject": attestation.base64URL,
                 "clientDataJSON": registration.rawClientDataJSON.base64URL,
-                "transports": ["internal"]
+                "transports": ["hybrid", "internal"]
             ]
         ]
     }

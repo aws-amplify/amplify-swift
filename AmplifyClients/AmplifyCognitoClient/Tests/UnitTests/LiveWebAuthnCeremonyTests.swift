@@ -48,7 +48,8 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
     ///    - she associates a passkey with a window
     /// - Then:
     ///    - Cognito gets `StartWebAuthnRegistration` then `CompleteWebAuthnRegistration`, both with her access
-    ///      token as the session holds it, the second with the ceremony's credential; nothing else is sent
+    ///      token as the session holds it, the second with the ceremony's credential (`platform`, transports
+    ///      `["hybrid", "internal"]`); nothing else is sent
     ///    - one sheet was made, on the main thread, over the window, while the session held the sheet lease;
     ///      the lease is free afterwards, and the session's record is unchanged
     func testAssociateRegistersAPasskeyUnderTheSheetLease() async throws {
@@ -72,7 +73,11 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
         XCTAssertEqual(harness.cognito.inputs("StartWebAuthnRegistration", as: StartWebAuthnRegistrationInput.self).map(\.accessToken), [token])
         let complete = harness.cognito.inputs("CompleteWebAuthnRegistration", as: CompleteWebAuthnRegistrationInput.self)
         XCTAssertEqual(complete.map(\.accessToken), [token])
-        XCTAssertNotNil(complete.first?.credential)
+        let credential = try XCTUnwrap(complete.first?.credential?.asStringMap())
+        XCTAssertEqual(try credential["id"]?.asString(), "Y3JlZGVudGlhbA")
+        XCTAssertEqual(try credential["authenticatorAttachment"]?.asString(), "platform")
+        let transports = try credential["response"]?.asStringMap()["transports"]?.asList().map { try $0.asString() }
+        XCTAssertEqual(transports, ["hybrid", "internal"])
         XCTAssertEqual(sheet.ceremonies.count, 1)
         XCTAssertEqual(sheet.ceremonies.first?.madeOnMainThread, true)
         let madeOverWindow = sheet.ceremonies.first?.anchor === window
