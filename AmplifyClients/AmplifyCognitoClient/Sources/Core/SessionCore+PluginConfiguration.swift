@@ -87,7 +87,7 @@ extension SessionCore {
         Task.detached {
             let revoked: Bool
             do {
-                revoked = try await makeRevoker(previous).revoke(payload).revokeError == nil
+                revoked = try await makeRevoker(previous).revoke(payload, global: false).revokeError == nil
             } catch {
                 revoked = false
             }

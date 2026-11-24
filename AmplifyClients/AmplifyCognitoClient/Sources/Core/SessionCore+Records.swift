@@ -187,13 +187,7 @@ extension SessionCore {
                         try await store.purge(sessionId)
                     } catch {
                         // Signed out, but the row is kept: `.partial` with the purge's failure.
-                        let reason = (error as? AuthClientError).flatMap(\.storageUnavailableReason) ?? .interrupted
-                        return outcome.server.signedOutResult(storageError: .storageUnavailable(
-                            reason,
-                            "Session \"\(sessionId)\" was signed out, but its saved row could not be removed.",
-                            "Purge the session to remove the row.",
-                            error
-                        ))
+                        return outcome.server.signedOutResult(storageError: Self.rowNotRemoved(sessionId, error))
                     }
                     await apply(.absent, event: nil)
                 }
@@ -206,6 +200,17 @@ extension SessionCore {
     }
 
     // MARK: Helpers
+
+    /// What a purging sign-out reports as its `storageError` when the session was signed out but its row was not
+    /// removed.
+    static func rowNotRemoved(_ sessionId: SessionID, _ error: Error) -> AuthClientError {
+        .storageUnavailable(
+            (error as? AuthClientError).flatMap(\.storageUnavailableReason) ?? .interrupted,
+            "Session \"\(sessionId)\" was signed out, but its saved row could not be removed.",
+            "Purge the session to remove the row.",
+            error
+        )
+    }
 
     static func contended(_ operation: String) -> AuthClientError {
         .storageUnavailable(

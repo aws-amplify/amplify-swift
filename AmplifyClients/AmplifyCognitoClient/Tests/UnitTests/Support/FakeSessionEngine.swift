@@ -1028,12 +1028,20 @@ final class FakeRevoker: SessionRevoker, @unchecked Sendable {
 
     private let lock = NSLock()
     private var calls: [Data] = []
+    private var globalFlags: [Bool] = []
     private var script: (@Sendable (Data) throws -> EngineSignOutOutcome)?
 
     var revokeCalls: [Data] {
         lock.lock()
         defer { lock.unlock() }
         return calls
+    }
+
+    /// The `global` flag of each revoke, in order.
+    var revokeGlobalFlags: [Bool] {
+        lock.lock()
+        defer { lock.unlock() }
+        return globalFlags
     }
 
     /// Replaces the default revoke (complete) with a script that either throws or completes.
@@ -1050,18 +1058,19 @@ final class FakeRevoker: SessionRevoker, @unchecked Sendable {
         self.script = script
     }
 
-    func revoke(_ payload: Data) async throws -> EngineSignOutOutcome {
-        try record(payload)?(payload) ?? .complete
+    func revoke(_ payload: Data, global: Bool) async throws -> EngineSignOutOutcome {
+        try record(payload, global)?(payload) ?? .complete
     }
 
     func signOutPresentsBrowser(_ payload: Data) -> Bool {
         FakePayload.decode(payload)?.hostedUIShared ?? false
     }
 
-    private func record(_ payload: Data) -> (@Sendable (Data) throws -> EngineSignOutOutcome)? {
+    private func record(_ payload: Data, _ global: Bool) -> (@Sendable (Data) throws -> EngineSignOutOutcome)? {
         lock.lock()
         defer { lock.unlock() }
         calls.append(payload)
+        globalFlags.append(global)
         return script
     }
 }

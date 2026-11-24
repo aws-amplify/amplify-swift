@@ -82,7 +82,7 @@ struct SessionCoreDependencies: Sendable {
 /// A revoker that revokes nothing and reports success: the default of `makePreviousConfigurationRevoker` outside
 /// `live`.
 struct InertSessionRevoker: SessionRevoker {
-    func revoke(_ payload: Data) async throws -> EngineSignOutOutcome {
+    func revoke(_ payload: Data, global: Bool) async throws -> EngineSignOutOutcome {
         .complete
     }
 

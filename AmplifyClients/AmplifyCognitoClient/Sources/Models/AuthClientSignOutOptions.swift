@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// Options for `AmplifyCognitoClient.signOut(options:)`.
+/// Options for `AmplifyCognitoClient.signOut(options:)` and the static `signOutStoredSession`.
 ///
 /// The client's counterpart of Amplify core's `AuthSignOutRequest.Options`, plus `purgeStoredSession`. To
 /// show the hosted UI's sign-out page, pass a window to `signOutWithWebUI(presentationAnchor:options:)`.

@@ -10,7 +10,8 @@ import Security
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// The public `signOut(options:)`: local, global and purging sign-out, their partial results and events.
+/// The public `signOut(options:)`: local, global and purging sign-out, their partial results and events. The static
+/// `signOutStoredSession` takes the same options, with and without a live client for the session.
 final class SignOutOptionsTests: XCTestCase {
 
     private var harness: ClientHarness!
@@ -224,5 +225,185 @@ final class SignOutOptionsTests: XCTestCase {
         XCTAssertEqual(try harness.store().read(home), .record(homeRecord))
         XCTAssertEqual(harness.storedBytes(home), homeBytes)
         XCTAssertEqual(harness.engine(for: home)?.revokeCalls, [])
+    }
+}
+
+// MARK: - The static signOutStoredSession
+
+extension SignOutOptionsTests {
+
+    private func signOutStored(
+        _ options: AuthClientSignOutOptions,
+        sessionId: SessionID = ClientFixtures.id("work")
+    ) async -> AuthClientSignOutResult {
+        await AmplifyCognitoClient.signOutStoredSession(
+            sessionId: sessionId,
+            configuration: ClientFixtures.configuration,
+            accessGroup: nil,
+            options: options,
+            dependencies: harness.dependencies
+        )
+    }
+
+    /// - Given: a saved, signed-in, labelled session with no client live for it
+    /// - When: it is signed out through the static call with `purgeStoredSession`
+    /// - Then:
+    ///    - it is revoked once, not globally, and the row is gone from storage and from the listing
+    func testAStaticPurgingSignOutRemovesTheRowWithoutALiveClient() async throws {
+        let alice = FakePayload.signedIn("alice")
+        try harness.signIn(work, alice, label: "Work")
+
+        let result = await signOutStored(.init(purgeStoredSession: true))
+
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(harness.revoker.revokeCalls, [alice.data])
+        XCTAssertEqual(harness.revoker.revokeGlobalFlags, [false])
+        XCTAssertEqual(try harness.store().read(work), .absent)
+        XCTAssertEqual(try harness.store().storedSessions(includingSignedOut: true), [])
+    }
+
+    /// - Given: a saved, signed-in session with a client live for it, subscribed to its events
+    /// - When: it is signed out through the static call with `purgeStoredSession`
+    /// - Then:
+    ///    - the sign-out goes through the live client's engine, not the revoker; the row is removed, the client
+    ///      is `.signedOut`, and `.signedOut` is sent once
+    func testAStaticPurgingSignOutGoesThroughTheLiveClient() async throws {
+        try harness.signIn(work, .signedIn("alice"), label: "Work")
+        let client = try harness.client(work)
+        _ = await client.currentSessionState()
+        let events = StreamRecorder(client.listenToAuthEvents())
+
+        let result = await signOutStored(.init(purgeStoredSession: true))
+
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(harness.engine(for: work)?.revokeGlobalFlags, [false])
+        XCTAssertEqual(harness.revoker.revokeCalls, [])
+        XCTAssertEqual(try harness.store().read(work), .absent)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedOut)
+        await events.waitFor(1)
+        XCTAssertEqual(events.received, [.signedOut])
+    }
+
+    /// - Given: two saved, signed-in sessions, one with no client live for it and one with a live client
+    /// - When: each is signed out through the static call with `globalSignOut`
+    /// - Then:
+    ///    - the revoker for the first, and the live client's engine for the second, is asked for a global
+    ///      sign-out; each row is kept, signed out
+    func testAStaticGlobalSignOutIsGlobalWithAndWithoutALiveClient() async throws {
+        try harness.signIn(work, .signedIn("alice"))
+        try harness.signIn(home, .signedIn("bob"))
+        let client = try harness.client(home)
+        _ = await client.currentSessionState()
+
+        let stored = await signOutStored(.init(globalSignOut: true))
+        let live = await signOutStored(.init(globalSignOut: true), sessionId: home)
+
+        XCTAssertEqual(stored, .complete)
+        XCTAssertEqual(live, .complete)
+        XCTAssertEqual(harness.revoker.revokeGlobalFlags, [true])
+        XCTAssertEqual(harness.engine(for: home)?.revokeGlobalFlags, [true])
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
+        XCTAssertEqual(try harness.storedRecord(home)?.isSignedOut, true)
+    }
+
+    /// A global sign-out that could not be sent is reported from the static call as the instance reports it.
+    ///
+    /// - Given: a named session whose record a newer version of the app saved (schema 2), with no live client
+    /// - When: it is signed out through the static call with `globalSignOut`
+    /// - Then:
+    ///    - the result is `.partial` with the same error as both its revoke and its global sign-out error, since
+    ///      no global sign-out was sent; the record is a signed-out row
+    func testAStaticGlobalSignOutOfANewerSchemasRecordReportsTheGlobalSignOutAsFailed() async throws {
+        harness.keychain.put(StorageFixtures.futureSchemaRecord, harness.store().sessionAccount(for: work))
+
+        let result = await signOutStored(.init(globalSignOut: true))
+
+        let unrevoked = SessionSignOut.unrevokedNewerRecordError(version: 2)
+        XCTAssertEqual(result, .partialResult(
+            revokeTokenError: unrevoked,
+            globalSignOutError: unrevoked,
+            hostedUIError: nil,
+            storageError: nil
+        ))
+        XCTAssertEqual(harness.revoker.revokeCalls, [])
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
+    }
+
+    /// - Given: a saved, signed-in session with no live client, whose revoke fails at Cognito and whose keychain
+    ///   removals fail
+    /// - When: it is signed out through the static call with `purgeStoredSession`
+    /// - Then:
+    ///    - the result is `.partial` with the revoke failure and a `storageUnavailable(.locked)` `storageError`,
+    ///      as the instance's is; the row is kept, signed out
+    func testAStaticPurgeThatFailsCarriesThePartialSignOut() async throws {
+        try harness.signIn(work, .signedIn("alice"))
+        let revoke = AuthClientError.service(.network, "revoke failed", "retry")
+        harness.revoker.scriptRevokeOutcome { _ in EngineSignOutOutcome(revokeError: revoke) }
+        harness.keychain.failingRemovals(of: harness.store().sessionAccount(for: work), with: errSecInteractionNotAllowed)
+
+        let result = await signOutStored(.init(purgeStoredSession: true))
+
+        XCTAssertTrue(result.signedOutLocally)
+        let partial = try XCTUnwrap(result.partialErrors, "\(result)")
+        XCTAssertEqual(partial.revokeTokenError.map { $0.isEquivalent(to: revoke) }, true)
+        XCTAssertNil(partial.globalSignOutError)
+        XCTAssertNil(partial.hostedUIError)
+        XCTAssertEqual(partial.storageError?.kind, .storageUnavailable(.locked))
+        harness.keychain.clearFailures()
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
+    }
+
+    /// - Given: a labelled signed-out row that no client holds
+    /// - When: it is signed out through the static call with `purgeStoredSession`
+    /// - Then:
+    ///    - nothing is revoked, and the row is removed: a session with nothing to sign out is purged too
+    func testAStaticPurgingSignOutOfASignedOutRowRemovesIt() async throws {
+        try harness.store().write(.signedOut(label: "Work", username: "alice"), for: work, expecting: nil)
+
+        let result = await signOutStored(.init(purgeStoredSession: true))
+
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(harness.revoker.revokeCalls, [])
+        XCTAssertEqual(try harness.store().read(work), .absent)
+    }
+
+    /// Both options in one call, as the README's account-picker example passes them.
+    ///
+    /// - Given: a saved, signed-in session that no client holds
+    /// - When: it is signed out through the static call with `globalSignOut` and `purgeStoredSession`
+    /// - Then:
+    ///    - the revoker is asked for a global sign-out, and the row is removed
+    func testAStaticGlobalPurgingSignOutDoesBoth() async throws {
+        try harness.signIn(work, .signedIn("alice"), label: "Work")
+
+        let result = await signOutStored(.init(globalSignOut: true, purgeStoredSession: true))
+
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(harness.revoker.revokeGlobalFlags, [true])
+        XCTAssertEqual(try harness.store().read(work), .absent)
+    }
+
+    /// A purge must never delete another user's row, from the static call either.
+    ///
+    /// - Given: a saved session with no live client, whose record another process replaces with a different user
+    ///   during the revoke
+    /// - When: it is signed out through the static call with `purgeStoredSession`
+    /// - Then:
+    ///    - the result is `.failed(.invalidState)`, and the other user's record is kept
+    func testAStaticSupersededSignOutPurgesNothing() async throws {
+        try harness.signIn(work, .signedIn("alice"))
+        let store = harness.store()
+        let bob = FakePayload.signedIn("bob")
+        harness.revoker.scriptRevoke { [work] _ in
+            if case .record(let envelope) = try store.read(work) {
+                try store.write(bob.record(), for: work, expecting: envelope.version)
+            }
+        }
+
+        let result = await signOutStored(.init(purgeStoredSession: true))
+
+        XCTAssertEqual(result, .failed(SessionSignOut.supersededError()))
+        XCTAssertEqual(try harness.storedRecord(work)?.credentials, bob.data)
     }
 }

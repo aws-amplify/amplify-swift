@@ -374,7 +374,7 @@ func userTapped(_ id: SessionID) async throws {
 
 **New API:** `SessionID.stringValue` and `SessionID: Codable`. Both exist so an app can persist a session ID in its own storage and construct the same session directly next launch, without listing first. Declared in 14.6.
 
-**Removing a row from the picker** is `purgeStoredSession(sessionId:configuration:)`, also static and also without a network call - the counterpart to the listing above, for the "remove this account" affordance every picker needs. It is local-only and revokes nothing, so where reaching Cognito is acceptable, call `signOutStoredSession` first, then `purgeStoredSession`: the sign-out revokes the tokens and keeps the row, and the purge removes the row. On a client the app holds, `signOut(options: .init(purgeStoredSession: true))` does both in one call. Both statics are in 14.3. For `.default` after a configuration change, a static purge can be undone until `.default` first restores under the new configuration (§6, "The static `signOutStoredSession` and `purgeStoredSession`").
+**Removing a row from the picker** is `purgeStoredSession(sessionId:configuration:)`, also static and also without a network call - the counterpart to the listing above, for the "remove this account" affordance every picker needs. It is local-only and revokes nothing, so where reaching Cognito is acceptable, call `signOutStoredSession(…, options: .init(purgeStoredSession: true))` instead: it revokes the tokens, then removes the row, in one call (API follow-up 18; before it, a sign-out then a purge). On a client the app holds, `signOut(options: .init(purgeStoredSession: true))` does the same. Both statics are in 14.3. For `.default` after a configuration change, a static purge can be undone until `.default` first restores under the new configuration (§6, "The static `signOutStoredSession` and `purgeStoredSession`").
 
 ### 4.4 Guest browsing, then signing in
 
@@ -472,11 +472,11 @@ _ = await AmplifyCognitoClient.signOutStoredSession(sessionId: workID, configura
 
 // Removing a saved row entirely, without contacting Cognito. The refresh token stays
 // valid server-side until it expires, so where you can, call signOutStoredSession
-// first (it revokes, and keeps the row), then purge.
+// with options: .init(purgeStoredSession: true) instead: it revokes, then removes the row.
 try await AmplifyCognitoClient.purgeStoredSession(sessionId: workID, configuration: config)
 ```
 
-**New API:** `signOut(options:)` with `AuthClientSignOutOptions.purgeStoredSession` (default `false`), plus the statics `signOutStoredSession(sessionId:configuration:)` and `purgeStoredSession(sessionId:configuration:)`. The statics take a session ID because a picker needs to offer "sign out" or "remove" on a row without first constructing a client for it, and they are named apart because only one of them revokes anything. All declared in 14.3.
+**New API:** `signOut(options:)` with `AuthClientSignOutOptions.purgeStoredSession` (default `false`), plus the statics `signOutStoredSession(sessionId:configuration:accessGroup:options:)`, which takes the same options, and `purgeStoredSession(sessionId:configuration:)`. The statics take a session ID because a picker needs to offer "sign out" or "remove" on a row without first constructing a client for it, and they are named apart because only one of them revokes anything. All declared in 14.3.
 
 **Sign-out keeps the row by default; purging is opt-in.** Deleting a saved record is not recoverable, so the non-destructive behaviour is the default on every path.
 
@@ -1407,16 +1407,18 @@ extension AmplifyCognitoClient {
     ) async throws -> [StoredSession]
 
     // Never throws: .complete, .partial(...) or .failed(error), as signOut (4.7, 14.8).
+    // The same options as signOut(options:), with or without a live client for the session.
     public static func signOutStoredSession(
         sessionId: SessionID,
         configuration: AuthClientConfiguration,
-        accessGroup: String? = nil
+        accessGroup: String? = nil,
+        options: AuthClientSignOutOptions = AuthClientSignOutOptions()
     ) async -> AuthClientSignOutResult
 
     // LOCAL-ONLY: deletes the saved record without contacting Cognito, so the refresh
     // token stays valid server-side until it expires. Where you can, call
-    // signOutStoredSession first: it revokes, then clears the credentials and keeps
-    // the row, which this then removes.
+    // signOutStoredSession with purgeStoredSession instead: it revokes, clears the
+    // credentials, then removes the row.
     public static func purgeStoredSession(
         sessionId: SessionID,
         configuration: AuthClientConfiguration,
@@ -1553,7 +1555,7 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
   `AuthSignOutResult` (14.3). The client does not depend on Amplify core, so it owns the type. §4.7 has the
   full list of outcomes.
   - **No throw.** `signOut(options:)`, `signOutWithWebUI(presentationAnchor:options:)` and
-    `signOutStoredSession(sessionId:configuration:accessGroup:)` are `async`, not `async throws`. `signOut(options:)`
+    `signOutStoredSession(sessionId:configuration:accessGroup:options:)` are `async`, not `async throws`. `signOut(options:)`
     and `signOutWithWebUI` are `@discardableResult`, as the plugin's `signOut` is. `purgeStoredSession` still throws: the plugin
     has no such call.
   - **Cases.** `.complete`, `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` and
@@ -1584,7 +1586,7 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
 - **`AuthSessionState` has a separate `.federated(identityId:)`** (14.2). A federated session has no user pool
   user, so it is not `.signedIn(AuthClientUser)`.
 - **The static calls take `accessGroup:`**: `storedSessions(configuration:accessGroup:includingSignedOut:)`,
-  `signOutStoredSession(sessionId:configuration:accessGroup:)` and
+  `signOutStoredSession(sessionId:configuration:accessGroup:options:)` and
   `purgeStoredSession(sessionId:configuration:accessGroup:)` (14.3). Saved sessions are scoped to the pools and
   the keychain access group, so a listing or a stored-session call names both.
 - **`SessionKind.none` is renamed `.signedOut`** (14.6). `.none` collided with `Optional.none`: with an optional
@@ -1648,7 +1650,7 @@ Nothing here changes the design. These are the rules an implementer needs and a 
 
 Keying on session ID alone is deliberate. Keying on the configuration would make the different-pool case a *miss* - a second session installed silently, which is the very case this rule exists to catch - and would let a cosmetic configuration change address a different session over the same stored record. This table is internal: no public static accessor, per C.6. **Why it has to exist at all:** it is what makes "one state machine per session ID" true, and therefore what makes divergence structurally impossible in-process. Without it, two handles are two state machines over one storage record — the shape Supabase ships and has publicly documented the cost of, whose observed harm is repeated unintended sign-out (`auth-js#213`, `supabase-js#2126`, `#2145`).
 
-- **Two operations end a session, and they are named apart.** `signOut()` revokes tokens and clears the *credentials*, but **keeps the stored row** so a picker can still show "Alice — signed out, tap to resume"; the session lands in `.signedOut`. Deleting the row is a separate, explicit act: either `signOut(options: .init(purgeStoredSession: true))` in the same call, or the static `purgeStoredSession(sessionId:configuration:)` for a row no Auth Client is holding. Microsoft's cache behaves the same way — MSAL's account enumeration has `returnOnlySignedInAccounts` defaulting to true, i.e. a signed-out-but-still-listed record is a first-class state, which is why `storedSessions()` takes `includingSignedOut:` and defaults it to `false`.
+- **Two operations end a session, and they are named apart.** `signOut()` revokes tokens and clears the *credentials*, but **keeps the stored row** so a picker can still show "Alice — signed out, tap to resume"; the session lands in `.signedOut`. Deleting the row is a separate, explicit act: either `signOut(options: .init(purgeStoredSession: true))` in the same call, or, for a row no Auth Client is holding, the static `signOutStoredSession` with the same option (which revokes first) or `purgeStoredSession(sessionId:configuration:)` (which does not). Microsoft's cache behaves the same way — MSAL's account enumeration has `returnOnlySignedInAccounts` defaulting to true, i.e. a signed-out-but-still-listed record is a first-class state, which is why `storedSessions()` takes `includingSignedOut:` and defaults it to `false`.
 
 - **Operations on one session are serialized; different sessions do not wait on each other.** Within a session, a sign-in and a sign-out are ordered and a refresh happens once rather than several times over. Across sessions, work proceeds independently, so one slow sign-in does not block another user. Today it blocks every auth call in the process.
 

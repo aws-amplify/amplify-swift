@@ -154,7 +154,7 @@ final class LiveEngineWiringTests: XCTestCase {
         )
         let revoker = LiveSessionRevoker(resources: resources)
 
-        let outcome = try await revoker.revoke(payload)
+        let outcome = try await revoker.revoke(payload, global: false)
 
         XCTAssertEqual(outcome, .complete)
         XCTAssertEqual(harness.cognito.operations, ["RevokeToken"])
@@ -163,6 +163,34 @@ final class LiveEngineWiringTests: XCTestCase {
         try await resources.devices.saveASFDeviceId("asf-id", for: "alice")
         let read = try await resources.devices.asfDeviceId(for: "alice")
         XCTAssertEqual(read, .absent)
+    }
+
+    /// The static sign-out's `globalSignOut`, with no live client: the revoker passes it to the engine.
+    ///
+    /// - Given: a signed-in payload, and a revoker built from the configuration alone
+    /// - When: it revokes the payload globally
+    /// - Then:
+    ///    - `GlobalSignOut` is sent with the payload's access token, then `RevokeToken`; the outcome is complete
+    ///
+    func testTheRevokerSignsOutGloballyWhenAsked() async throws {
+        let harness = LiveEngineHarness()
+        let payload = try await harness.signedInPayload(on: harness.engine())
+        harness.cognito.clearCalls()
+        harness.scriptSignOut()
+        let resources = try LiveSessionRevoker.resources(
+            configuration: harness.configuration,
+            clients: CognitoServiceClients(configuration: harness.configuration, configureUserPoolClient: nil),
+            services: EngineServices(userPool: ScriptedUserPool(cognito: harness.cognito), identity: nil)
+        )
+
+        let outcome = try await LiveSessionRevoker(resources: resources).revoke(payload, global: true)
+
+        XCTAssertEqual(outcome, .complete)
+        XCTAssertEqual(harness.cognito.operations, ["GlobalSignOut", "RevokeToken"])
+        XCTAssertEqual(
+            harness.cognito.inputs("GlobalSignOut", as: GlobalSignOutInput.self).first?.accessToken,
+            LiveEngineFixtures.jwt("alice", use: "access")
+        )
     }
 
     // MARK: The real SDK clients underneath

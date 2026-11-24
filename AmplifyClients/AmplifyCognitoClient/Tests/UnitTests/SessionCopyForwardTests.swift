@@ -1100,9 +1100,9 @@ final class SessionCopyForwardTests: XCTestCase {
     /// - Given: alice carried from the user pool alone into both pools, then refreshed there, and her record under the
     ///   user pool alone refreshed by an extension still on it (so it is not the untouched copy), with and (a second
     ///   run) without rotation; no client held
-    /// - When: `signOutStoredSession` runs with the user-pool-only configuration (a rollback)
+    /// - When: `signOutStoredSession` runs with the user-pool-only configuration (a rollback), globally
     /// - Then: with the rotation, the revoker revokes her own record and the rotated copy; without it, only her own
-    ///   record; the copy is deleted either way
+    ///   record; the copy is deleted either way. Only her own record's revoke is global: the copy's never is
     func testSignOutStoredSessionRevokesACopyWithARotatedRefreshToken() async throws {
         for rotated in [true, false] {
             harness = ClientHarness()
@@ -1124,12 +1124,14 @@ final class SessionCopyForwardTests: XCTestCase {
                 sessionId: work,
                 configuration: ClientFixtures.userPoolOnlyConfiguration,
                 accessGroup: nil,
+                options: AuthClientSignOutOptions(globalSignOut: true),
                 dependencies: harness.dependencies
             )
 
             XCTAssertEqual(result, .complete, "rotated: \(rotated)")
             let revoked = harness.revoker.revokeCalls.compactMap { FakePayload.decode($0) }
             XCTAssertEqual(revoked.map(\.version), rotated ? [3, 2] : [3], "rotated: \(rotated)")
+            XCTAssertEqual(harness.revoker.revokeGlobalFlags, rotated ? [true, false] : [true], "rotated: \(rotated)")
             XCTAssertEqual(try bothStore.read(work), .absent, "rotated: \(rotated): the copy is swept")
         }
     }

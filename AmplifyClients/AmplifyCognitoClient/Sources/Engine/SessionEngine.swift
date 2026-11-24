@@ -613,11 +613,11 @@ struct SessionEngineContext: Sendable {
     let clients: CognitoServiceClients
 }
 
-/// Revokes a stored session's tokens when no live session core holds it. Stateless, and never global.
-/// Reports server-side failures as the engine's `revoke` does. It has no window, so it never shows the hosted
-/// UI's sign-out.
+/// Revokes a stored session's tokens when no live session core holds it. Stateless. `global` signs the user out
+/// of every device, as the engine's `revoke` does, and server-side failures are reported as it reports them. It
+/// has no window, so it never shows the hosted UI's sign-out.
 protocol SessionRevoker: Sendable {
-    func revoke(_ payload: Data) async throws -> EngineSignOutOutcome
+    func revoke(_ payload: Data, global: Bool) async throws -> EngineSignOutOutcome
 
     /// The engine's `signOutPresentsBrowser`: whether a sign-out given a window would have shown the browser.
     func signOutPresentsBrowser(_ payload: Data) -> Bool

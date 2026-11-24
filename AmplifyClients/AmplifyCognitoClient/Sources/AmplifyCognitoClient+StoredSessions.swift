@@ -69,10 +69,19 @@ public extension AmplifyCognitoClient {
     }
 
     /// Signs out a saved session the app is not holding: revokes its tokens, then clears them from this
-    /// device, keeping its row. If a client for that session is live in this process, the sign-out goes
-    /// through it, so its state, streams and providers see it at once.
+    /// device, keeping its row unless `options.purgeStoredSession` removes it. If a client for that session is
+    /// live in this process, the sign-out goes through it with the same options, so its state, streams and
+    /// providers see it at once.
     ///
-    /// The revocation is never global. It changes no other session's records and no device records; for `.default`,
+    /// The revocation is global only with `options.globalSignOut`, as `signOut(options:)`'s is; it sends the saved
+    /// access token as it is, so for a session whose access token has expired Cognito refuses it, and the refresh
+    /// token is then not revoked either (`.partial` with a `globalSignOutError`). With
+    /// `options.purgeStoredSession`, the row is removed once the session is signed out, as `purgeStoredSession`
+    /// removes it; if only that fails, the result is `.partial` with a `storageError`, and the row is kept, signed
+    /// out. For `.default`, when the Auth plugin's configuration-change rule carried the login here for this call,
+    /// the purge removes this configuration's record only: the login it was carried from is left signed out, with its
+    /// label, and its signed-out row is listed, and carried here again, until `.default` first restores under this
+    /// configuration. It changes no other session's records and no device records; for `.default`,
     /// which is the Auth plugin's saved login, it also clears the AWSMobileClient logins the plugin would otherwise
     /// migrate back into it, as the plugin's own sign-out does. A failed revocation is reported in `.partial`; the
     /// session is still cleared on this device. With no client for the session live in this process, the revoke goes
@@ -102,8 +111,8 @@ public extension AmplifyCognitoClient {
     /// A guest's is left, as a named session leaves a guest's copy: a restore under either configuration then finds
     /// the same guest.
     ///
-    /// - Returns: `.complete`, or `.partial` with the revoke's failure or the hosted UI's cookie left behind,
-    ///   when the session is signed out on this device. `.failed`, and the session is still signed in:
+    /// - Returns: `.complete`, or `.partial` with the revoke's or the global sign-out's failure, the hosted UI's
+    ///   cookie left behind, or the purge's failure (`storageError`), when the session is signed out on this device. `.failed`, and the session is still signed in:
     ///   `storageUnavailable` if storage could not be read or written, or `storageUnavailable(.interrupted)` if
     ///   the record kept changing under the sign-out (the revoke's failure, if any, is its underlying error, mapped as
     ///   any other call maps it; when the revoke succeeded, a session whose sign-in shared the browser's cookies has
@@ -115,12 +124,14 @@ public extension AmplifyCognitoClient {
     static func signOutStoredSession(
         sessionId: SessionID,
         configuration: AuthClientConfiguration,
-        accessGroup: String? = nil
+        accessGroup: String? = nil,
+        options: AuthClientSignOutOptions = AuthClientSignOutOptions()
     ) async -> AuthClientSignOutResult {
         await signOutStoredSession(
             sessionId: sessionId,
             configuration: configuration,
             accessGroup: accessGroup,
+            options: options,
             dependencies: .live
         )
     }
@@ -219,6 +230,7 @@ extension AmplifyCognitoClient {
         sessionId: SessionID,
         configuration: AuthClientConfiguration,
         accessGroup: String?,
+        options: AuthClientSignOutOptions = AuthClientSignOutOptions(),
         dependencies: SessionCoreDependencies
     ) async -> AuthClientSignOutResult {
         do {
@@ -226,6 +238,7 @@ extension AmplifyCognitoClient {
                 sessionId: sessionId,
                 configuration: configuration,
                 accessGroup: accessGroup,
+                options: options,
                 dependencies: dependencies
             )
         } catch {
@@ -240,6 +253,7 @@ extension AmplifyCognitoClient {
         sessionId: SessionID,
         configuration: AuthClientConfiguration,
         accessGroup: String?,
+        options: AuthClientSignOutOptions,
         dependencies: SessionCoreDependencies
     ) async throws -> AuthClientSignOutResult {
         let namespace = SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: accessGroup)
@@ -279,17 +293,18 @@ extension AmplifyCognitoClient {
                         )
                         : nil
                 },
+                global: options.globalSignOut,
                 revoke: { payload, firstAttempt in
                     // No window here, so the hosted UI's sign-out never runs; when it would have, the cookie
                     // it leaves in the browser is reported.
-                    var outcome = try await revoker.revoke(payload)
+                    var outcome = try await revoker.revoke(payload, global: options.globalSignOut)
                     if firstAttempt, revoker.signOutPresentsBrowser(payload) {
                         outcome.hostedUIError = outcome.hostedUIError ?? SessionCore.noSignOutWindow()
                     }
                     return outcome
                 },
                 revokeCopy: { payload in
-                    try await revoker.revoke(payload)
+                    try await revoker.revoke(payload, global: false)
                 }
             ).run()
             if outcome.endedSession {
@@ -298,11 +313,21 @@ extension AmplifyCognitoClient {
             if outcome.removedCredentials, case .carried(let source, let bytes)? = carried {
                 await SessionCore.signOutCarrySource(source, carried: bytes, through: store)
             }
+            if options.purgeStoredSession, outcome.endedSession {
+                do {
+                    try await store.purge(sessionId)
+                } catch {
+                    // Signed out, but the row is kept: `.partial` with the purge's failure, as a live session's.
+                    return .done(outcome.server.signedOutResult(
+                        storageError: SessionCore.rowNotRemoved(sessionId, error)
+                    ))
+                }
+            }
             return .done(outcome.result())
         }
         switch routed {
         case .live(let core):
-            return await core.signOut()
+            return await core.signOut(global: options.globalSignOut, purge: options.purgeStoredSession)
         case .done(let result):
             return result
         }

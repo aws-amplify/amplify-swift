@@ -317,13 +317,25 @@ if !result.signedOutLocally {
     print("Still signed in:", result)
 }
 
+// The same options as signOut(options:): sign the user out of every device, and remove the row too.
+_ = await AmplifyCognitoClient.signOutStoredSession(
+    sessionId: id,
+    configuration: configuration,
+    options: .init(globalSignOut: true, purgeStoredSession: true)
+)
+
 // Local only: deletes the records without revoking anything.
 try await AmplifyCognitoClient.purgeStoredSession(sessionId: id, configuration: configuration)
 ```
 
 If a client for that session is live in the process, both calls go through it, so its state, streams and providers
-see the change at once. `signOutStoredSession` returns the same result as `signOut` (see [Sign-out](#sign-out)) and
-never throws. It never signs out a user who signs in while the call runs: if someone else signs in to that session
+see the change at once. `signOutStoredSession` takes the same `options:` as `signOut` and returns the same result
+(see [Sign-out](#sign-out)), with or without a live client: `globalSignOut` signs the user out of every device, and
+`purgeStoredSession` removes the row once the session is signed out (`.partial` with a `storageError` if only that
+fails). A global sign-out sends the saved access token as it is, as the plugin's does, and a saved session nobody
+holds has often outlived it: Cognito then refuses the global sign-out, the refresh token is not revoked either
+(`.partial` with a `globalSignOutError`), and the session is still cleared on this device. Sign such a session out
+without `globalSignOut` to revoke its refresh token. It never throws. It never signs out a user who signs in while the call runs: if someone else signs in to that session
 meanwhile, it returns `.failed(.invalidState)` and they stay signed in. A client for that session live with other
 pools in the same access group makes it `.failed(.sessionConfigurationMismatch)` (a purge throws it); a client live
 in another access group holds a different saved session, and is left alone. With no client for the session live in
@@ -1729,7 +1741,9 @@ current one:
     federated identity) it just signed out, so the user stays signed out under both configurations: a restore under
     the app's configuration reads them signed out, and a later move to the new one copies the signed-out login. A
     login another writer has changed meanwhile is left alone, and so is a guest's: a restore under either
-    configuration finds the same guest.
+    configuration finds the same guest. With `purgeStoredSession`, only the copy is removed: the login it copied
+    from stays as a signed-out row with its label, which the listing under the new configuration still shows, and
+    the next restore there copies, until `.default` has restored under the new configuration once.
   - `purgeStoredSession` revokes nothing, so it leaves the login it copied from as it was: the app's login under its
     own configuration. The next restore under the new configuration copies it again, over the deleted copy. To end
     that login, sign it out instead. A named session differs: purged under a new configuration before its first
