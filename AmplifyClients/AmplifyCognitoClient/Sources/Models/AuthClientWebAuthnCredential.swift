@@ -37,8 +37,8 @@ public struct AuthClientWebAuthnCredential: Sendable, Equatable, Hashable {
 @_spi(AmplifyExperimental)
 public struct AuthClientListWebAuthnCredentialsOptions: Sendable, Equatable {
 
-    /// The largest page size Cognito accepts (`MaxResults`), and the default.
-    public static let maximumPageSize: UInt = 20
+    /// The largest page size Cognito accepts (`MaxResults`), and the default: `init`'s `20`.
+    static let maximumPageSize: UInt = 20
 
     /// How many credentials to return, from 1 to 20. Checked before any request: a value outside that range
     /// throws `AuthClientError.validation(field: "pageSize", …)`.
@@ -47,7 +47,7 @@ public struct AuthClientListWebAuthnCredentialsOptions: Sendable, Equatable {
     /// Where to resume a listing: the `nextToken` of the previous page's result, or `nil` for the first page.
     public var nextToken: String?
 
-    public init(pageSize: UInt = AuthClientListWebAuthnCredentialsOptions.maximumPageSize, nextToken: String? = nil) {
+    public init(pageSize: UInt = 20, nextToken: String? = nil) {
         self.pageSize = pageSize
         self.nextToken = nextToken
     }
