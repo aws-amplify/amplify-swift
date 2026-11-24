@@ -331,11 +331,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
         guard let poolId = auth["identity_pool_id"] as? String, let region = auth["aws_region"] as? String else {
             throw HarnessError.malformedFixture("The default outputs have no identity pool or region.")
         }
-        return try AuthClientConfiguration(identityPool: .init(
-            poolId: poolId,
-            region: region,
-            unauthenticatedIdentitiesEnabled: auth["unauthenticated_identities_enabled"] as? Bool
-        ))
+        return try AuthClientConfiguration(identityPool: .init(poolId: poolId, region: region))
     }
 
     /// A session ID whose records are signed out and purged at teardown under each of `configurations`,

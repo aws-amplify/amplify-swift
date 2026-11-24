@@ -140,8 +140,7 @@ let configuration = try AuthClientConfiguration(
     ),
     identityPool: .init(
         poolId: "<identity-pool-id>",
-        region: "us-east-1",
-        unauthenticatedIdentitiesEnabled: true
+        region: "us-east-1"
     )
 )
 let client = try AmplifyCognitoClient(configuration: configuration)

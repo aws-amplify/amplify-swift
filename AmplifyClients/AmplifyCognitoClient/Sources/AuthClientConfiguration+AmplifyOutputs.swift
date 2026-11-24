@@ -118,11 +118,7 @@ extension AuthClientConfiguration {
         )
         // Type-checked by the decode, as the plugin does; an empty ID still means no identity pool.
         let identityPool = settings.identityPoolId.flatMap { poolId in
-            poolId.isEmpty ? nil : IdentityPool(
-                poolId: poolId,
-                region: region,
-                unauthenticatedIdentitiesEnabled: settings.unauthenticatedIdentitiesEnabled
-            )
+            poolId.isEmpty ? nil : IdentityPool(poolId: poolId, region: region)
         }
         try self.init(userPool: userPool, identityPool: identityPool)
     }
@@ -166,6 +162,7 @@ private struct OutputsAuthSettings: Decodable {
     let standardRequiredAttributes: [String]?
     let usernameAttributes: [String]?
     let userVerificationTypes: [String]?
+    /// Not used: decoded only so that a value that is not a Bool still fails the parse.
     let unauthenticatedIdentitiesEnabled: Bool?
     let mfaConfiguration: String?
     let mfaMethods: [String]?

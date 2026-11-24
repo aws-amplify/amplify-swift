@@ -192,8 +192,7 @@ final class ClientConstructionTests: XCTestCase {
         passwordPolicy: AuthClientConfiguration.PasswordPolicy = .init(minLength: 8, requiresNumbers: true),
         standardRequiredAttributes: [AuthClientUserAttributeKey] = [.email],
         mfaEnforcement: AuthClientConfiguration.MFAEnforcement? = .optional,
-        mfaMethods: [AuthClientMFAType] = [.sms, .totp],
-        unauthenticatedIdentitiesEnabled: Bool? = nil
+        mfaMethods: [AuthClientMFAType] = [.sms, .totp]
     ) -> AuthClientConfiguration {
         ClientFixtures.make(
             userPool: .init(
@@ -217,8 +216,7 @@ final class ClientConstructionTests: XCTestCase {
             ),
             identityPool: .init(
                 poolId: ClientFixtures.identityPool.poolId,
-                region: ClientFixtures.identityPool.region,
-                unauthenticatedIdentitiesEnabled: unauthenticatedIdentitiesEnabled
+                region: ClientFixtures.identityPool.region
             )
         )
     }
@@ -232,7 +230,7 @@ final class ClientConstructionTests: XCTestCase {
     ///   setting the engine does receive
     /// - Then:
     ///    - `"work"` is joined despite reordered scopes, extra redirect URIs, other identity providers and
-    ///      response type, another MFA enforcement and method list, stated guest access, and extra
+    ///      response type, another MFA enforcement and method list, and extra
     ///      standard attributes the engine drops
     ///    - `"plain"` is joined by the same pools carrying only such settings, as a configuration read
     ///      from `amplify_outputs` would
@@ -251,7 +249,6 @@ final class ClientConstructionTests: XCTestCase {
             ("another response type", settingsConfiguration(responseType: "token")),
             ("another MFA enforcement", settingsConfiguration(mfaEnforcement: .required)),
             ("another MFA method list", settingsConfiguration(mfaMethods: [.totp])),
-            ("guest access stated", settingsConfiguration(unauthenticatedIdentitiesEnabled: true)),
             ("attributes the engine drops", settingsConfiguration(standardRequiredAttributes: [.email, .locale, .sub]))
         ]
         for (description, configuration) in joining {
@@ -271,8 +268,7 @@ final class ClientConstructionTests: XCTestCase {
             ),
             identityPool: .init(
                 poolId: ClientFixtures.identityPool.poolId,
-                region: ClientFixtures.identityPool.region,
-                unauthenticatedIdentitiesEnabled: false
+                region: ClientFixtures.identityPool.region
             )
         )
         XCTAssertTrue(try harness.client(plain, configuration: fromOutputs).core === bare.core)

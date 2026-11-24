@@ -35,7 +35,7 @@ struct SessionIdentity: Sendable {
 /// What the engine is configured with (`EngineConfigurationInput`), not the whole public configuration.
 /// It holds both pools, the app client ID and secret, the regions, the hosted UI and the Authenticator
 /// settings the engine carries. Settings the engine never receives do not take part. These are the redirect
-/// URIs past the first, identity providers, response type, MFA, guest access, and the standard attributes
+/// URIs past the first, identity providers, response type, MFA, and the standard attributes
 /// the engine drops. So a handle read from `amplify_outputs` and one built from pool IDs alone join when
 /// the engine would treat them alike. Scope order is not compared either, because OAuth scopes are a set.
 /// Any field the engine input gains joins the comparison automatically. Compared for equality only, never

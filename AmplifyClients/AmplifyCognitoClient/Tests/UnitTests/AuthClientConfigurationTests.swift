@@ -318,14 +318,15 @@ final class AuthClientConfigurationTests: XCTestCase {
         return auth
     }
 
-    /// Test that every optional `auth` key is kept, including what the engine does not use
+    /// Test that every optional `auth` setting the configuration has is kept, including what the engine does not
+    /// use
     ///
     /// - Given: An `amplify_outputs` document with every optional `auth` key
     /// - When:
     ///    - It is parsed
     /// - Then:
     ///    - Each setting holds the file's values, in file order: every redirect URI, the identity
-    ///      providers, the response type, every standard attribute, the MFA settings and guest access
+    ///      providers, the response type, every standard attribute and the MFA settings
     ///
     func testParsesEveryOptionalSetting() throws {
         let config = try AuthClientConfiguration(outputsData: outputs(settingsAuth), resourceName: "x")
@@ -347,7 +348,6 @@ final class AuthClientConfigurationTests: XCTestCase {
         XCTAssertEqual(userPool.mfaEnforcement, .required)
         XCTAssertEqual(userPool.mfaMethods, [.totp, .sms, .email])
         XCTAssertNil(userPool.appClientSecret)
-        XCTAssertEqual(config.identityPool?.unauthenticatedIdentitiesEnabled, true)
     }
 
     /// Test that absent optional keys leave the settings empty
@@ -356,7 +356,7 @@ final class AuthClientConfigurationTests: XCTestCase {
     /// - When:
     ///    - It is parsed
     /// - Then:
-    ///    - The optional settings are `nil` or empty, and guest access is not stated
+    ///    - The optional settings are `nil` or empty
     ///
     func testAbsentOptionalSettingsAreEmpty() throws {
         let config = try AuthClientConfiguration(outputsData: outputs(fullAuth), resourceName: "x")
@@ -368,7 +368,6 @@ final class AuthClientConfigurationTests: XCTestCase {
         XCTAssertEqual(userPool.standardRequiredAttributes, [])
         XCTAssertEqual(userPool.verificationMechanisms, [])
         XCTAssertEqual(userPool.mfaMethods, [])
-        XCTAssertNil(config.identityPool?.unauthenticatedIdentitiesEnabled)
     }
 
     /// Test that an invalid optional setting is a configuration error naming the key
@@ -601,12 +600,11 @@ final class AuthClientConfigurationTests: XCTestCase {
     /// - Then:
     ///    - the pool ID appears only masked as the engine's `IdentityPoolConfigurationData` masks it (four
     ///      characters kept at each end), and the region is `<REDACTED>`
-    ///    - the guest flag still appears, and the stored values are unchanged
+    ///    - the stored values are unchanged
     func testIdentityPoolPrintsMasked() throws {
         let identityPool = AuthClientConfiguration.IdentityPool(
             poolId: "us-west-2:11111111-2222-3333-4444-555555555555",
-            region: "us-west-2",
-            unauthenticatedIdentitiesEnabled: true
+            region: "us-west-2"
         )
         let configuration = try AuthClientConfiguration(identityPool: identityPool)
         for value in [identityPool, configuration, Optional(identityPool) as Any] as [Any] {
@@ -614,14 +612,12 @@ final class AuthClientConfigurationTests: XCTestCase {
                 for identifier in ["us-west-2:11111111-2222-3333-4444-555555555555", "11111111", "us-west-2"] {
                     XCTAssertFalse(text.contains(identifier), "\(identifier) in \(text)")
                 }
-                for shown in ["us-w****5555", "<REDACTED>", "unauthenticatedIdentitiesEnabled", "true"] {
+                for shown in ["us-w****5555", "<REDACTED>"] {
                     XCTAssertTrue(text.contains(shown), "\(shown) missing from \(text)")
                 }
             }
         }
-        XCTAssertEqual(String(describing: identityPool), "IdentityPool(poolId: us-w****5555, region: <REDACTED>, unauthenticatedIdentitiesEnabled: true)")
-        let unstated = AuthClientConfiguration.IdentityPool(poolId: "p", region: "r")
-        XCTAssertTrue(String(describing: unstated).contains("unauthenticatedIdentitiesEnabled: nil"), String(describing: unstated))
+        XCTAssertEqual(String(describing: identityPool), "IdentityPool(poolId: us-w****5555, region: <REDACTED>)")
         XCTAssertEqual(identityPool.poolId, "us-west-2:11111111-2222-3333-4444-555555555555")
         XCTAssertEqual(identityPool.region, "us-west-2")
     }
@@ -652,8 +648,7 @@ final class AuthClientConfigurationTests: XCTestCase {
     /// `UserPoolStoredProperties`).
     private typealias IdentityPoolStoredProperties = (
         String, // poolId
-        String, // region
-        Bool? // unauthenticatedIdentitiesEnabled
+        String // region
     )
 
     private typealias OAuthStoredProperties = (
@@ -665,7 +660,7 @@ final class AuthClientConfigurationTests: XCTestCase {
         String // responseType
     )
 
-    private static let identityPoolStoredPropertyNames = ["poolId", "region", "unauthenticatedIdentitiesEnabled"]
+    private static let identityPoolStoredPropertyNames = ["poolId", "region"]
 
     private static let oauthStoredPropertyNames = [
         "domain", "scopes", "redirectSignInURIs", "redirectSignOutURIs", "identityProviders", "responseType"

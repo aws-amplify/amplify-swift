@@ -173,7 +173,7 @@ enum IntegrationTestEnvironment {
                   let region = auth["aws_region"] as? String else {
                 continue
             }
-            return .init(poolId: poolId, region: region, unauthenticatedIdentitiesEnabled: true)
+            return .init(poolId: poolId, region: region)
         }
         let credentials = try credentials()
         guard let poolId = credentials.secondIdentityPoolId, poolId != firstPool,
@@ -184,7 +184,7 @@ enum IntegrationTestEnvironment {
             second_identity_pool_id.
             """)
         }
-        return .init(poolId: poolId, region: region, unauthenticatedIdentitiesEnabled: true)
+        return .init(poolId: poolId, region: region)
     }
 
     /// A role whose user pool does not track devices and whose outputs name an identity pool with guest
@@ -195,8 +195,8 @@ enum IntegrationTestEnvironment {
     static func untrackedFederatedRole() throws -> SandboxPool {
         for pool in SandboxPool.allCases where !pool.tracksDevices {
             guard hasOutputs(pool),
-                  let identityPool = try? configuration(pool).identityPool,
-                  identityPool.unauthenticatedIdentitiesEnabled == true else {
+                  (try? configuration(pool).identityPool) != nil,
+                  (try? outputsAuthSection(pool))?["unauthenticated_identities_enabled"] as? Bool == true else {
                 continue
             }
             return pool
