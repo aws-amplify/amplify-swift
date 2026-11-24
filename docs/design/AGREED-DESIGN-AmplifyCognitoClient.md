@@ -198,7 +198,7 @@ Construction is therefore the family's shape, unchanged - precisely what the Kin
 
 ```swift
 // The single-account case. No Amplify.configure(), no plugin registration.
-let client = try AmplifyCognitoClient(from: "amplify_outputs")
+let client = try AmplifyCognitoClient(configuration: try AuthClientConfiguration(from: "amplify_outputs"))
 
 // Two sessions is the same call twice, with a session ID each. Nothing global
 // changes, and neither handle can be mistaken for the other.
@@ -1295,9 +1295,9 @@ public final class AmplifyCognitoClient: Sendable {   // actor internals
     public init(configuration: AuthClientConfiguration,
                 options: Options = Options()) throws
 
-    public init(from resource: String = "amplify_outputs",
-                bundle: Bundle = .main,
-                options: Options = Options()) throws
+    // (Amended 2026-11-24, API follow-up 14: the `init(from:bundle:options:)` convenience
+    // is removed. It only forwarded to `AuthClientConfiguration(from:bundle:)`, so apps
+    // build the configuration first.)
 
     public struct Options {
         public var sessionId: SessionID                        // default `.default`
@@ -1312,7 +1312,7 @@ public final class AmplifyCognitoClient: Sendable {   // actor internals
 }
 ```
 
-`AuthClientConfiguration` is the pool IDs and region, loadable from `amplify_outputs.json` exactly as every sibling's `Configuration` is - which is what the second `init` does. `ConfigurationProvider` is the family's escape-hatch closure type, unchanged here. `ConfigurationProvider` is not new at all, and `AuthClientConfiguration` is new only as a name - each sibling has its own equivalently-named `Configuration` type. So neither is specified further in this document. (Amended during implementation: the client declares its own escape-hatch type, `AmplifyCognitoClientUserPoolConfigurationProvider`, `(inout CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig) -> Void`, named as each sibling names its own, such as `AmplifyKinesisClientConfigurationProvider`. Also amended: `AuthClientConfiguration` also carries the Gen2 `auth` settings as public `@_spi(AmplifyExperimental)` fields, except guest access, which it parses and drops (the client never read it). These are OAuth, password policy, username, required and verification attributes, and MFA.) `Options` is the family's per-client options struct - `sessionId`, the keychain access group, and the escape-hatch closure - and it is declared above, nested in the client exactly as each sibling nests its own.
+`AuthClientConfiguration` is the pool IDs and region, loadable from `amplify_outputs.json` exactly as every sibling's `Configuration` is, through `AuthClientConfiguration(from:bundle:)`. `ConfigurationProvider` is the family's escape-hatch closure type, unchanged here. `ConfigurationProvider` is not new at all, and `AuthClientConfiguration` is new only as a name - each sibling has its own equivalently-named `Configuration` type. So neither is specified further in this document. (Amended during implementation: the client declares its own escape-hatch type, `AmplifyCognitoClientUserPoolConfigurationProvider`, `(inout CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig) -> Void`, named as each sibling names its own, such as `AmplifyKinesisClientConfigurationProvider`. Also amended: `AuthClientConfiguration` also carries the Gen2 `auth` settings as public `@_spi(AmplifyExperimental)` fields, except guest access, which it parses and drops (the client never read it). These are OAuth, password policy, username, required and verification attributes, and MFA.) `Options` is the family's per-client options struct - `sessionId`, the keychain access group, and the escape-hatch closure - and it is declared above, nested in the client exactly as each sibling nests its own.
 
 ### 14.2 Session state and events
 

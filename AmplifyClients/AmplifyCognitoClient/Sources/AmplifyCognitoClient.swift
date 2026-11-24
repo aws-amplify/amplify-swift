@@ -21,8 +21,8 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 /// A handle onto one Cognito session.
 ///
 /// Construction is synchronous and throwing, like every client in the family. Built from an
-/// `AuthClientConfiguration`, it does no file or keychain I/O (`init(from:bundle:options:)` reads the
-/// configuration file first): the saved session is restored in the background, and every operation waits
+/// `AuthClientConfiguration`, it does no file or keychain I/O (`AuthClientConfiguration(from:bundle:)` is what
+/// reads the configuration file): the saved session is restored in the background, and every operation waits
 /// for that restore internally, bounded, so a caller never has to sequence around it.
 ///
 /// **Two clients with the same session ID are two handles onto one session.** Constructing a second
@@ -32,8 +32,9 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 /// configuration throws `sessionConfigurationMismatch` rather than silently attaching.
 ///
 /// ```swift
-/// let work = try AmplifyCognitoClient(options: .init(sessionId: .named("work")))
-/// let home = try AmplifyCognitoClient(options: .init(sessionId: .named("home")))
+/// let configuration = try AuthClientConfiguration()
+/// let work = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: .named("work")))
+/// let home = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: .named("home")))
 /// let connect = AmplifyConnectClient(
 ///     configuration: connectConfiguration,
 ///     credentialsProvider: work.credentialsProvider
@@ -166,21 +167,6 @@ public final class AmplifyCognitoClient: Sendable {
     ///   could not be configured.
     public convenience init(configuration: AuthClientConfiguration, options: Options = Options()) throws {
         try self.init(configuration: configuration, options: options, dependencies: .live)
-    }
-
-    /// Builds a handle from the `auth` section of a Gen2 `amplify_outputs` JSON resource.
-    ///
-    /// Gen2 `amplify_outputs` only: a Gen1 `amplifyconfiguration.json` is refused. The file is read by
-    /// `AuthClientConfiguration.init(from:bundle:)`, never by the client itself.
-    ///
-    /// - Throws: `AuthClientError.configuration` naming the problem with the resource, or anything
-    ///   `init(configuration:options:)` throws.
-    public convenience init(
-        from resource: String = "amplify_outputs",
-        bundle: Bundle = .main,
-        options: Options = Options()
-    ) throws {
-        try self.init(configuration: AuthClientConfiguration(from: resource, bundle: bundle), options: options)
     }
 
     /// The designated initializer, with every dependency injectable.

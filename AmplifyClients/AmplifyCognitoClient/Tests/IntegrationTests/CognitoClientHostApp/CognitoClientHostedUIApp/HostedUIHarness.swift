@@ -31,8 +31,10 @@ enum HostedUIHarness {
         }
         do {
             return try .success(AmplifyCognitoClient(
-                from: outputsResource,
-                bundle: PluginTestConfiguration.outputsBundle(outputsResource, in: .main)
+                configuration: AuthClientConfiguration(
+                    from: outputsResource,
+                    bundle: PluginTestConfiguration.outputsBundle(outputsResource, in: .main)
+                )
             ))
         } catch {
             return .failure(HarnessAppError("Could not configure the client: \(harnessResultText(error))"))

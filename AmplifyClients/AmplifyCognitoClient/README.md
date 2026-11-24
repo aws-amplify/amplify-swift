@@ -107,15 +107,11 @@ To name the `AWSCredentialsProvider` protocol or add a log sink (`AmplifyLogging
 ## Configure and create a client
 
 The configuration is the `auth` section of `amplify_outputs.json`. The file is read when an
-`AuthClientConfiguration` is built from it. Building a client from an `AuthClientConfiguration` does no file I/O;
-`AmplifyCognitoClient()` and `AmplifyCognitoClient(from:bundle:options:)` read the file first.
+`AuthClientConfiguration` is built from it. Building a client from an `AuthClientConfiguration` does no file I/O.
 
 ```swift
-// Reads amplify_outputs.json from the main bundle; uses the default session.
-let client = try AmplifyCognitoClient()
-
-// The same configuration on its own: AuthClientConfiguration() loads amplify_outputs.json from the main bundle.
-let defaultConfiguration = try AuthClientConfiguration()
+// AuthClientConfiguration() reads amplify_outputs.json from the main bundle; the client uses the default session.
+let client = try AmplifyCognitoClient(configuration: try AuthClientConfiguration())
 
 // Or load the configuration once and pass it to every client.
 let configuration = try AuthClientConfiguration(from: "amplify_outputs", bundle: .main)
