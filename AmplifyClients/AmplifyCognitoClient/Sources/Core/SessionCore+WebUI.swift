@@ -12,7 +12,7 @@ import InternalAWSCognitoAuth
 enum SignOutWindow: Sendable {
     /// No window: `signOut(options:)`, `signOutStoredSession`.
     case none
-    /// `signOut(presentationAnchor:options:)`'s window.
+    /// `signOutWithWebUI(presentationAnchor:options:)`'s window.
     case anchor(EnginePresentationAnchorBox)
 }
 

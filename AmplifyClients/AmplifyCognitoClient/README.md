@@ -1326,7 +1326,7 @@ await client.signOut(options: .init(purgeStoredSession: true))
 - `storageUnavailable` when storage couldn't be read or written, or the saved record kept changing (`.interrupted`);
 - `invalidState` when another sign-in replaced the session during the sign-out; that user stays signed in;
 - `userCancelled` when the user closed the hosted UI's sign-out page;
-- for `signOut(presentationAnchor:options:)`, whenever the hosted UI's sign-out page could not be shown or
+- for `signOutWithWebUI(presentationAnchor:options:)`, whenever the hosted UI's sign-out page could not be shown or
   completed: `configuration` (no hosted UI, or no usable sign-out redirect URI, in the configuration),
   `browserBusy` (another sheet holds the browser), `validation` (the window has closed), or the browser's own
   failure. Nothing is revoked;
@@ -1388,7 +1388,7 @@ out with a window:
 ```swift
 @MainActor
 func hostedUISignOut(client: AmplifyCognitoClient, window: AuthClientPresentationAnchor) async -> Bool {
-    await client.signOut(presentationAnchor: window).signedOutLocally
+    await client.signOutWithWebUI(presentationAnchor: window).signedOutLocally
 }
 ```
 
@@ -1903,7 +1903,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | Sign-out of a federated session | `.failed`: call `clearFederationToIdentityPool` | Signed out, `.complete` |
 | `deleteUser` after a hosted-UI sign-in that shared the browser's cookies | Shows the hosted-UI sign-out page | Shows nothing: the browser keeps its cookie, and no later sign-out clears it |
 | Sign-out that removes the saved row | Not available | `purgeStoredSession`; a removal that fails after the sign-out is `.partial` with `storageError` |
-| Hosted-UI sign-out window | Optional; falls back to a window of its own | Required: `signOut(presentationAnchor:options:)`. Without one, the browser keeps its cookie and `.partial` reports `hostedUIError` |
+| Hosted-UI sign-out window | Optional; falls back to a window of its own | Required: `signOutWithWebUI(presentationAnchor:options:)`. Without one, the browser keeps its cookie and `.partial` reports `hostedUIError` |
 | `isSignedIn` | On the session and results | Not provided; use `currentSessionState()` |
 | Service error code | `underlyingError as? AWSCognitoAuthError`; a closed sheet is `.service` with `.userCancelled` underneath, and a failed passkey ceremony `.service` with the `ASAuthorizationError` underneath | `AuthClientError.service(code, …)`; a closed sheet is `.userCancelled`, and a failed passkey ceremony `.webAuthnCeremonyFailed` |
 | MFA type `rawValue` | The Cognito name | `"sms"`, `"totp"`, `"email"`; use `challengeResponse` |

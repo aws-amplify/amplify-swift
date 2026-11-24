@@ -141,7 +141,7 @@ struct HostedUIView: View {
         return "User is signed in"
     }
 
-    /// `signOut(presentationAnchor:)` with the view's window. After a private sign-in it shows nothing
+    /// `signOutWithWebUI(presentationAnchor:)` with the view's window. After a private sign-in it shows nothing
     /// (no cookie to clear) and revokes the tokens. The session is purged, so a run leaves no login behind: the
     /// shared login (the plugin's record), the sidecar and any interrupted sign-in go. The configuration `.default`
     /// records for the plugin (`authConfiguration`) stays, as the plugin's own does.
@@ -158,7 +158,7 @@ struct HostedUIView: View {
         guard let window = windowHolder.window ?? HostedUIHarness.foregroundKeyWindow() else {
             throw HarnessAppError("The view is in no window")
         }
-        let result = await client.signOut(
+        let result = await client.signOutWithWebUI(
             presentationAnchor: window,
             options: AuthClientSignOutOptions(purgeStoredSession: true)
         )

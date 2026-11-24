@@ -8,7 +8,7 @@
 /// Options for `AmplifyCognitoClient.signOut(options:)`.
 ///
 /// The client's counterpart of Amplify core's `AuthSignOutRequest.Options`, plus `purgeStoredSession`. To
-/// show the hosted UI's sign-out page, pass a window to `signOut(presentationAnchor:options:)`.
+/// show the hosted UI's sign-out page, pass a window to `signOutWithWebUI(presentationAnchor:options:)`.
 @_spi(AmplifyExperimental)
 public struct AuthClientSignOutOptions {
 

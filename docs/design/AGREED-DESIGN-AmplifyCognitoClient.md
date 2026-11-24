@@ -481,7 +481,7 @@ try await AmplifyCognitoClient.purgeStoredSession(sessionId: workID, configurati
 
 **The result takes the plugin's shape.** The type is `AuthClientSignOutResult` (`Sources/Models/AuthClientSignOutResult.swift`).
 
-- **No sign-out throws.** `signOut(options:)`, `signOut(presentationAnchor:options:)` and `signOutStoredSession` return `.complete`, `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` or `.failed(AuthClientError)`. `signedOutLocally` is false only for `.failed`.
+- **No sign-out throws.** `signOut(options:)`, `signOutWithWebUI(presentationAnchor:options:)` and `signOutStoredSession` return `.complete`, `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` or `.failed(AuthClientError)`. `signedOutLocally` is false only for `.failed`.
 - **Another sign-in replacing the session during the sign-out is `.failed(.invalidState(…))`**, and that user stays signed in.
 - **These also return `.failed`**, with the session still signed in on this device:
   - a storage failure before the local sign-out, or a saved record that kept changing (`storageUnavailable(.interrupted)`). A revoke may already have run;
@@ -503,10 +503,10 @@ try await AmplifyCognitoClient.purgeStoredSession(sessionId: workID, configurati
 For example, an app that offers a retry only when the user is still signed in:
 
 ```swift
-// The window overload is main-actor isolated, so call it from main-actor code (a view or view model).
+// signOutWithWebUI is main-actor isolated, so call it from main-actor code (a view or view model).
 @MainActor
 func signOutOfWork(_ work: AmplifyCognitoClient, window: AuthClientPresentationAnchor) async {
-    switch await work.signOut(presentationAnchor: window) {
+    switch await work.signOutWithWebUI(presentationAnchor: window) {
     case .complete:
         showSignedOut()
     case .partial(_, _, let hostedUIError, _):
@@ -1548,9 +1548,9 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
 - **Sign-outs return `AuthClientSignOutResult`, in the plugin's shape**, not the plugin's
   `AuthSignOutResult` (14.3). The client does not depend on Amplify core, so it owns the type. §4.7 has the
   full list of outcomes.
-  - **No throw.** `signOut(options:)`, `signOut(presentationAnchor:options:)` and
-    `signOutStoredSession(sessionId:configuration:accessGroup:)` are `async`, not `async throws`. The two
-    `signOut` calls are `@discardableResult`, as the plugin's is. `purgeStoredSession` still throws: the plugin
+  - **No throw.** `signOut(options:)`, `signOutWithWebUI(presentationAnchor:options:)` and
+    `signOutStoredSession(sessionId:configuration:accessGroup:)` are `async`, not `async throws`. `signOut(options:)`
+    and `signOutWithWebUI` are `@discardableResult`, as the plugin's `signOut` is. `purgeStoredSession` still throws: the plugin
     has no such call.
   - **Cases.** `.complete`, `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` and
     `.failed(AuthClientError)`. `signedOutLocally` is false only for `.failed`. `storageError` is client-only.

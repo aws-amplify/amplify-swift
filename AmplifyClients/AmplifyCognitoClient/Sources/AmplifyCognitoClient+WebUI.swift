@@ -98,7 +98,7 @@ public extension AmplifyCognitoClient {
     ///     `.validation` if the window has closed; or the browser's own failure.
     @MainActor
     @discardableResult
-    func signOut(
+    func signOutWithWebUI(
         presentationAnchor: AuthClientPresentationAnchor,
         options: AuthClientSignOutOptions = AuthClientSignOutOptions()
     ) async -> AuthClientSignOutResult {

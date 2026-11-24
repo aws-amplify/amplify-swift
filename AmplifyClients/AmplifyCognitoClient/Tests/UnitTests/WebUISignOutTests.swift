@@ -51,7 +51,7 @@ final class WebUISignOutTests: XCTestCase {
         options: AuthClientSignOutOptions = AuthClientSignOutOptions()
     ) async -> AuthClientSignOutResult {
         let window = await window
-        return await client.signOut(presentationAnchor: window, options: options)
+        return await client.signOutWithWebUI(presentationAnchor: window, options: options)
     }
 
     /// The plan the engine got, without the box (boxes compare by identity).
@@ -254,7 +254,7 @@ final class WebUISignOutTests: XCTestCase {
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await up.arrivals(1)
         let result = try await withinTime(10, "the sign-out") {
-            await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions())
+            await client.signOutWithWebUI(presentationAnchor: window, options: AuthClientSignOutOptions())
         }
 
         XCTAssertEqual(failedSignOutError(result)?.kind, .browserBusy(holder: work))
@@ -311,7 +311,7 @@ final class WebUISignOutTests: XCTestCase {
         try await start.arrivals(1)
 
         let result = try await withinTime(10, "the sign-out") {
-            await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions())
+            await client.signOutWithWebUI(presentationAnchor: window, options: AuthClientSignOutOptions())
         }
 
         XCTAssertEqual(failedSignOutError(result)?.kind, .browserBusy(holder: home))
@@ -382,7 +382,7 @@ final class WebUISignOutTests: XCTestCase {
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await start.arrivals(1)
 
-        let signOut = Task { await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions()) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window, options: AuthClientSignOutOptions()) }
         try await signOutAsks.arrivals(1)
         let otherHolds = Gate(isOpen: true)
         let otherRelease = Gate()
@@ -474,7 +474,7 @@ final class WebUISignOutTests: XCTestCase {
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await held.up()
 
-        let signOut = Task { await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions()) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window, options: AuthClientSignOutOptions()) }
         try await releaseHeld.arrivals(1)
         await waitUntil("the sign-out queues behind its own closing sheet") { await lock.waiterCount == 1 }
 
@@ -534,7 +534,7 @@ final class WebUISignOutTests: XCTestCase {
         }
         await waitUntil("the other session queues behind the passkey sheet") { await lock.waiterCount == 1 }
 
-        let signOut = Task { await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions()) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window, options: AuthClientSignOutOptions()) }
         try await releaseHeld.arrivals(1)
         await waitUntil("the sign-out queues behind its own closing sheet") { await lock.waiterCount == 2 }
         await releaseGo.open()
@@ -611,7 +611,7 @@ final class WebUISignOutTests: XCTestCase {
         try await holds.arrivals(1)
 
         let result = try await withinTime(10, "the sign-out") {
-            await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions())
+            await client.signOutWithWebUI(presentationAnchor: window, options: AuthClientSignOutOptions())
         }
 
         XCTAssertEqual(result, .complete)
@@ -705,7 +705,7 @@ final class WebUISignOutTests: XCTestCase {
 
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await seamHeld.arrivals(1)
-        let signOut = Task { await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions()) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window, options: AuthClientSignOutOptions()) }
         await waitUntil("the sign-out queues behind the stopped lease") { await lock.waiterCount == 1 }
         await seamRelease.open()
 
@@ -1148,7 +1148,7 @@ final class WebUISignOutTests: XCTestCase {
             return try end(Task.isCancelled)
         }
         let window = await window
-        let signOut = Task { await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window) }
         await opened.waitForArrivals(1)
         await client.cancelWebUISignIn()
         await closed.open()
@@ -1266,7 +1266,7 @@ final class WebUISignOutTests: XCTestCase {
             return try end(Task.isCancelled)
         }
         let window = await window
-        let signOut = Task { await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window) }
         await opened.waitForArrivals(1)
         signOut.cancel()
         await closed.open()
@@ -1328,7 +1328,7 @@ final class WebUISignOutTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let lock = harness.sheetLock
         let window = await window
-        let signOut = Task { await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window) }
         await held.waitForArrivals(1)
 
         await client.cancelWebUISignIn()
@@ -1374,7 +1374,7 @@ final class WebUISignOutTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let anchor = await self.window
-        let signOut = Task { await client.signOut(presentationAnchor: anchor) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: anchor) }
         await held.waitForArrivals(1)
 
         switch window {

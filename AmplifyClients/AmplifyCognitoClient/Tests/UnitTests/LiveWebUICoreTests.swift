@@ -367,7 +367,7 @@ final class LiveWebUICoreTests: XCTestCase {
         let client = try await signedInSharingCookies()
         presenter.behave(.hold)
         let window = await window
-        let signOut = Task { await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window) }
         await presenter.showing.waitForArrivals(2)
 
         await client.cancelWebUISignIn()
@@ -403,7 +403,7 @@ final class LiveWebUICoreTests: XCTestCase {
         presenter.behave(.fail(.unableToStartASWebAuthenticationSession))
         let window = await window
 
-        let result = await client.signOut(presentationAnchor: window)
+        let result = await client.signOutWithWebUI(presentationAnchor: window)
 
         try await assertRefusedAndStillSignedIn(result, .service(.errorLoadingUI))
         let state = await client.currentSessionState()
@@ -433,7 +433,7 @@ final class LiveWebUICoreTests: XCTestCase {
         await holds.waitForArrivals(1)
         let window = await window
 
-        let result = await client.signOut(presentationAnchor: window)
+        let result = await client.signOutWithWebUI(presentationAnchor: window)
 
         try await assertRefusedAndStillSignedIn(result, .browserBusy(holder: home))
         XCTAssertEqual(failedSignOutError(result)?.recoverySuggestion, SessionCore.signOutBrowserBusySuggestion)
@@ -492,7 +492,7 @@ final class LiveWebUICoreTests: XCTestCase {
         _ = try await client.signInWithWebUI(presentationAnchor: window, options: WebUIOptions(prefersEphemeralSession: false))
         live.cognito.clearCalls()
 
-        let result = await client.signOut(presentationAnchor: window)
+        let result = await client.signOutWithWebUI(presentationAnchor: window)
 
         let error = failedSignOutError(result)
         XCTAssertEqual(error.map { $0.isEquivalent(to: SessionCore.noHostedUIForSignOut()) }, true, "\(result)")
@@ -514,7 +514,7 @@ final class LiveWebUICoreTests: XCTestCase {
             return RevokeTokenOutput()
         }
         let window = await window
-        let signOut = Task { await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window) }
         await revoking.waitForArrivals(1)
 
         await client.cancelWebUISignIn()
@@ -538,7 +538,7 @@ final class LiveWebUICoreTests: XCTestCase {
             return RevokeTokenOutput()
         }
         let window = await window
-        let signOut = Task { await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window) }
         await revoking.waitForArrivals(1)
 
         signOut.cancel()

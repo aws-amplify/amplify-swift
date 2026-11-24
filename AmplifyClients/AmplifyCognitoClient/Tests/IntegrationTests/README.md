@@ -391,7 +391,7 @@ signs in with `signInWithWebUI(presentationAnchor:)` on the plugin's hosted-UI b
 (`AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json`, copied into the app at build time, or on CI
 its Gen1 file, which the app translates to Gen2; on the sandbox, the `default` pool's `hostedui-plugin` client,
 P-7), registers the plugin's `myapp` URL scheme its
-redirect URIs use (and its own `cognitoclienthostapp`), and signs out with `signOut(presentationAnchor:)`, purging
+redirect URIs use (and its own `cognitoclienthostapp`), and signs out with `signOutWithWebUI(presentationAnchor:)`, purging
 the session. The app's client is on `.default`, whose saved login is the plugin's own record, `amplify.<ns>.session`
 , in the app's own keychain group. The app's result line after a sign-out: "User is signed out" for
 `.complete`; the same, with what failed after it, for `.partial` (signed out on this device); "Sign Out failed:

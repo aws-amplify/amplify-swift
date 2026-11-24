@@ -83,7 +83,7 @@ final class HostedUISignInTests: XCTestCase, @unchecked Sendable {
     /// - Then:
     ///    - The browser returns to the app (the outputs' sign-in redirect, the plugin's `myapp://`), the
     ///      session is signed in and `getCurrentUser` names the user
-    ///    - `signOut(presentationAnchor:)` returns `.complete` without showing a browser, and leaves the session
+    ///    - `signOutWithWebUI(presentationAnchor:)` returns `.complete` without showing a browser, and leaves the session
     ///      signed out
     ///
     @MainActor

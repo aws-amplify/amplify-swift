@@ -131,7 +131,7 @@ public extension AmplifyCognitoClient {
     ///
     /// After a hosted-UI sign-in that shared the browser's cookies, this sign-out has no window to clear the
     /// hosted UI's cookie in, and reports that in `.partial` as `hostedUIError`; use
-    /// `signOut(presentationAnchor:options:)` for such a session.
+    /// `signOutWithWebUI(presentationAnchor:options:)` for such a session.
     ///
     /// Never throws, as the plugin's `signOut` does not. Check `signedOutLocally`, or switch over the result.
     ///

@@ -55,7 +55,7 @@ public enum AuthClientSignOutResult: Sendable, Equatable {
     /// - `invalidState` when another sign-in replaced the session while it was signing out; that user is
     ///   left signed in;
     /// - `userCancelled` when the user closed the hosted UI's sign-out page;
-    /// - for `signOut(presentationAnchor:options:)` after a sign-in that shared the browser's cookies, when the
+    /// - for `signOutWithWebUI(presentationAnchor:options:)` after a sign-in that shared the browser's cookies, when the
     ///   page could not be shown or completed, as the plugin does: `configuration` when the configuration has
     ///   no hosted UI, or no sign-out redirect URI, to sign it out of; `browserBusy` when another sheet holds
     ///   the browser; `validation` when the window has closed; or the browser's own failure;
