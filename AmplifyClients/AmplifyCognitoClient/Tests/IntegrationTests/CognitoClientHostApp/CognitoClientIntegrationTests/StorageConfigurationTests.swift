@@ -107,9 +107,12 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     ///
     /// - Given: alice signed in over R-UP′ alone, then every handle dropped
     /// - When:
+    ///    - a client over R-UP′ alone fetches the session, and is released
     ///    - the configuration gains R-IP′ (the role's outputs), and a client over the same session ID,
     ///      the recorder installed, reads its state, then fetches its session
     /// - Then:
+    ///    - with no identity pool configured, the session has no identity ID and no AWS credentials, and its
+    ///      `userSub` is alice's
     ///    - the state is `.signedIn(alice)` with no request: the restore carried the record offline
     ///    - the fetch returns alice's tokens, an identity and AWS credentials; fetching the identity took one
     ///      `GetTokensFromRefreshToken` (the engine's refresh of user-pool-only credentials, with an identity
@@ -122,6 +125,14 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
         let userPoolOnly = try AmplifyCognitoClientConfiguration(userPool: federated.userPool)
         let sessionId = try tracked("alice-add-ip", in: [userPoolOnly, federated])
         let alice = try await signIn(makeFreshUser(on: role).testUser, on: sessionId, over: userPoolOnly)
+        do {
+            let client = try AmplifyCognitoClient(configuration: userPoolOnly, options: .init(sessionId: sessionId))
+            let session = try await client.fetchAuthSession()
+            XCTAssertTrue(session.identityId == nil, "no identity pool is configured, so there is no identity")
+            XCTAssertTrue(session.awsCredentials == nil, "nor AWS credentials")
+            XCTAssertTrue(session.userSub == alice.userId, "alice's sub")
+        }
+        try await SessionCleanup.waitUntilReleased([sessionId])
 
         let recorder = RecordingHTTPClient()
         do {
@@ -169,8 +180,8 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     ///      her token provider returns her access token. Only the tokens are carried, never R-IP′'s identity
     ///      (where the plugin's `:138` branch copies it): the carried record holds `userPoolOnly` credentials,
     ///      the old record is kept, and her session's fetch never reports that identity. R-IP2 does not
-    ///      federate R-UP′, so the identity fetch fails: her tokens and sub still succeed, and a second fetch
-    ///      makes no request (the failure is not retried on every call)
+    ///      federate R-UP′, so the identity fetch fails, `.notAuthorized`: her tokens and sub still succeed, and a
+    ///      second fetch makes no request (the failure is not retried on every call)
     ///
     func testChangedIdentityPoolDoesNotSeeTheOldGuestRecord() async throws {
         let role = try IntegrationTestEnvironment.untrackedFederatedRole()
@@ -225,7 +236,10 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
                 try await client.fetchAuthSession()
             }
 
-            XCTAssertNotNil(first)
+            XCTAssertTrue(
+                first?.kind == .notAuthorized,
+                "the identity step failed with \(first?.kindName ?? "no error"), expected the identity pool's refusal, notAuthorized"
+            )
             XCTAssertTrue(second?.errorDescription == first?.errorDescription, "the second fetch answers with the first's failure")
             XCTAssertEqual(recorder.operations, [], "a permanent identity failure is not retried on every call")
             try Self.assertCarriedTokensOnly(aliceId, under: otherIdentityPool, keptUnder: federated)

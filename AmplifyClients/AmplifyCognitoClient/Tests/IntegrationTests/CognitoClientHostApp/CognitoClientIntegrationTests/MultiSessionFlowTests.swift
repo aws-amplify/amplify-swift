@@ -138,26 +138,30 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
     /// `storedSessions()` lists every stored session from the real keychain, with its label, and without a
     /// network call; the plugin's own record is `.default`'s, and adds no other session (MS-4).
     ///
-    /// - Given: alice and bob signed in under two named session IDs, alice labelled `"Work"`, every handle then
-    ///   dropped, and a plugin record (`amplify.<ns>.session`) in the same keychain service: written by the test,
-    ///   for a probe user, unless one is already there
+    /// - Given: alice and bob signed in under two named session IDs, alice labelled `"Work"` through her client and
+    ///   bob `"Home"` by his session ID's own label, every handle then dropped, and a plugin record
+    ///   (`amplify.<ns>.session`) in the same keychain service: written by the test, for a probe user, unless one
+    ///   is already there
     /// - When:
     ///    - `storedSessions()` reads the keychain, with no live session for any of them
+    ///    - then the static `setSessionLabel` renames bob's session, and a new client is built for it
     /// - Then:
-    ///    - both session IDs are listed, alice with the label `"Work"`, each naming its user
+    ///    - both session IDs are listed, alice with the label `"Work"` and bob with `"Home"`, each naming its user
     ///    - every listed ID is a named session's v1 `amplify.1.` record's, a session's with a sign-in waiting on a
     ///      challenge (its `.challenge` record: one another test left less than 15 minutes ago is listed), or
     ///      `.default`, whose record is the plugin's; the plugin's account is never a session ID of its own
     ///    - when the test wrote the plugin record, `.default` is listed from it, naming the probe user
     ///    - no request is sent: structurally, since no handle is live and the listing reads only the
     ///      keychain; the recorder the handles used confirms it saw nothing
+    ///    - after the rename bob's row is labelled `"Renamed"`, and the new client restores signed in as bob, the
+    ///      row's user
     ///
     func testStoredSessionsListsEverySession() async throws {
         let aliceId = try makeSessionID("alice")
         let bobId = try makeSessionID("bob")
         let recorder = RecordingHTTPClient()
         try await signIn(aliceId, as: users.alice, label: "Work", recorder: recorder)
-        try await signIn(bobId, as: users.bob, label: nil, recorder: recorder)
+        try await signIn(SessionID.named(bobId.stringValue, label: "Home"), as: users.bob, label: nil, recorder: recorder)
         try await SessionCleanup.waitUntilReleased([aliceId, bobId])
         recorder.reset()
         let pluginAccount = SessionRecordKey.pluginSessionAccount(in: configuration.poolNamespace)
@@ -183,7 +187,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         XCTAssertTrue(byId[aliceId]?.user?.username == users.alice.username, "alice's row names another user")
         XCTAssertEqual(byId[aliceId]?.label, "Work")
         XCTAssertTrue(byId[bobId]?.user?.username == users.bob.username, "bob's row names another user")
-        XCTAssertNil(byId[bobId]?.label)
+        XCTAssertEqual(byId[bobId]?.label, "Home")
         // A `$default.session` record is a development build's leftover, never `.default`'s record. A session with
         // nothing saved but an interrupted sign-in is listed from its `.challenge` record.
         let v1Ids = try Set(IntegrationTestEnvironment.rawKeychainAccounts().compactMap { account -> SessionID? in
@@ -203,6 +207,18 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         if pluginRecordWritten {
             XCTAssertEqual(byId[.default]?.user?.username, "plugin-probe", "`.default` is not listed from the plugin's record")
         }
+
+        try await AmplifyCognitoClient.setSessionLabel("Renamed", sessionId: bobId, configuration: configuration)
+
+        let relabelled = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
+        let bobRow = try XCTUnwrap(relabelled.first { $0.sessionId == bobId }, "bob's row is no longer listed")
+        XCTAssertEqual(bobRow.label, "Renamed")
+        let bob = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: bobId))
+        let restored = await bob.currentSessionState()
+        let bobUser = try await bob.getCurrentUser()
+        XCTAssertState(restored, .signedIn(bobUser), "a relabelled session restores signed in")
+        XCTAssertTrue(bobUser.username == users.bob.username, "bob's session restores as another user")
+        XCTAssertTrue(bobRow.user == bobUser, "bob's row names another user")
     }
 
     /// Deletes one raw account from the session records' service.

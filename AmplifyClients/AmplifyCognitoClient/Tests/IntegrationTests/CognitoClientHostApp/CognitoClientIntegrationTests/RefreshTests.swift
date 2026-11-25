@@ -112,7 +112,7 @@ final class RefreshTests: ClientIntegrationTestCase {
     /// - Then:
     ///    - A's sign-out is `.complete`
     ///    - B's refreshes report `.sessionExpired` in the token field; B stays `.signedIn(user)`,
-    ///      and its row is kept and still listed
+    ///      and its row is kept and still listed, `.signedIn(user)` too
     ///    - B's credentials provider and its user pool token provider throw `CredentialsError.sessionExpired`
     ///    - B's event stream delivered `.sessionExpired` exactly once
     ///
@@ -153,7 +153,9 @@ final class RefreshTests: ClientIntegrationTestCase {
             let state = await b.currentSessionState()
             XCTAssertState(state, .signedIn(user), "an expired session stays signed in as its user")
             let listed = try await AmplifyCognitoClient.storedSessions(configuration: poolConfiguration)
-            XCTAssertTrue(listed.first { $0.sessionId == sessionB }?.user?.username == fresh.username, "the expired session's row is kept")
+            let row = try XCTUnwrap(listed.first { $0.sessionId == sessionB }, "the expired session's row is kept")
+            XCTAssertTrue(row.user == user, "the expired session's row names its user")
+            XCTAssertState(row.state, .signedIn(user), "an expired session's row is still signed in as its user")
             let credentialsError = await Expect.credentialsError("an expired session's AWS credentials") {
                 try await b.credentialsProvider.resolve()
             }

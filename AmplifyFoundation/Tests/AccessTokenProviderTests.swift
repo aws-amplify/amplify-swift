@@ -24,6 +24,9 @@ final class AccessTokenProviderTests: XCTestCase {
 
     /// A consumer needs only AmplifyFoundation to take a token provider.
     ///
+    /// The providers here are this test's own fake, so it checks the protocol's shape, not a conformance: the client's
+    /// provider is checked in `CredentialProviderTests.testSignedInVendsBoth`.
+    ///
     /// - Given: a provider that vends a token, and one whose session has expired, each held as
     ///   `any AccessTokenProvider`
     /// - When: a consumer asks the first for a token from another task, and the second directly

@@ -80,7 +80,7 @@ final class WebAuthnSignInCeremonySlotTests: XCTestCase, @unchecked Sendable {
         guard case .validation(let field, _, _, _) = error.engineError else {
             return XCTFail("expected .validation, got \(error.engineError)")
         }
-        XCTAssertEqual(field, WebAuthnCredentialOperations.signInPresentationAnchorField)
+        XCTAssertEqual(field, "presentationAnchorForWebAuthn")
         XCTAssertEqual(runs.get(), 0)
         XCTAssertEqual(made.get(), 0)
         XCTAssertEqual(asserter.asserts.get(), 0)

@@ -541,6 +541,7 @@ final class SessionCopyForwardTests: XCTestCase {
     func testAnIdentityFailureWhoseCommitLostToASignOutAnswersAsSignedOut() async throws {
         let refusal = AmplifyCognitoClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
         for call in ["fetchAuthSession", "fetchAuthSession without guest access", "credentialsProvider"] {
+            await harness.waitForBaseline()
             harness = ClientHarness()
             try aliceUnderTheUserPoolOnly()
             let client = try harness.client(work)

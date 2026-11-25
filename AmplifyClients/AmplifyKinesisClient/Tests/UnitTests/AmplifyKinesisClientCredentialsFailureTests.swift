@@ -20,8 +20,7 @@ private struct FailingCredentialsProvider: AmplifyFoundation.AWSCredentialsProvi
 }
 
 /// A flush whose credentials provider fails, through the real SDK client: the provider's `CredentialsError`
-/// reaches `flush()` as `KinesisError.credentials` before any request is sent, and its `disposition` decides what
-/// happens to the cached records.
+/// reaches `flush()` as `KinesisError.credentials`, and its `disposition` decides what happens to the cached records.
 class AmplifyKinesisClientCredentialsFailureTests: XCTestCase {
 
     /// A region of this test's own, so the region's shared cache file is this test's too, not one another test (or

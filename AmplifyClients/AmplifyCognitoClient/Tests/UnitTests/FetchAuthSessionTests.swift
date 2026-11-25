@@ -678,6 +678,7 @@ final class FetchAuthSessionTests: XCTestCase {
     ///    - each refreshed once and asked for guest credentials once
     func testARefreshThatFindsTheSessionSignedOutAnswersAsASignedOutSession() async throws {
         for guestAccess in [true, false] {
+            await harness.waitForBaseline()
             harness = ClientHarness()
             try harness.signIn(work, .signedIn("alice", stale: true))
             let client = try harness.client(work)

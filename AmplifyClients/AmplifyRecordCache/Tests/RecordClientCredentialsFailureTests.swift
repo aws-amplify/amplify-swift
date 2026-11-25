@@ -203,7 +203,34 @@ class RecordClientCredentialsFailureTests: XCTestCase, @unchecked Sendable {
         let kept = try await records(in: storage)
         XCTAssertEqual(kept.map(\.data), [Data([9, 9])])
         let size = try await storage.getCurrentCacheSize()
-        XCTAssertEqual(size, Int64(kept[0].dataSize))
+        XCTAssertEqual(size, try Int64(XCTUnwrap(kept.first).dataSize))
+    }
+
+    /// A discard that cannot delete still reports the credentials failure, not the delete's.
+    ///
+    /// - Given: a cache of the client's own that holds one record and whose delete of everything cached fails, and a
+    ///   sender that fails with `notSignedIn`
+    /// - When: the client flushes
+    /// - Then:
+    ///    - it throws `RecordCacheError.credentials` with the `notSignedIn` underneath, not the delete's error
+    ///    - the delete was tried once, and the streak counts the failure
+    func testADiscardWhoseDeleteFailsStillThrowsTheCredentialsFailure() async throws {
+        struct DeleteFailed: Error {}
+        let record = Record(id: 1, streamName: "stream", partitionKey: "key", data: Data([1]), retryCount: 0, createdAt: Date())
+        let storage = MockRecordStorage(records: [record], discardError: DeleteFailed())
+        let client = RecordClient(
+            sender: failing(with: .notSignedIn("signed out", "sign in first")),
+            storage: storage,
+            ownsCache: true
+        )
+
+        let thrown = await credentialsFailure(of: client)
+
+        XCTAssertEqual(thrown?.disposition, .discard)
+        let deletes = await storage.deleteRecordsCallCount
+        XCTAssertEqual(deletes, 1)
+        let streak = await client.credentialsFailureStreak
+        XCTAssertEqual(streak, 1)
     }
 
     /// The region's shared cache holds every session's records, so one session's `.discard` deletes nothing.
@@ -277,6 +304,40 @@ class RecordClientCredentialsFailureTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(streakAfterCancellation, 1)
         XCTAssertEqual(afterFailure.map(\.retryCount), [1])
         XCTAssertEqual(streakAfterFailure, 0)
+    }
+
+    /// A flush whose task is cancelled counts no retry either, whatever error its send then fails with.
+    ///
+    /// - Given: a cached record, one credentials failure counted, and a sender that cancels the task it is asked on,
+    ///   then throws a plain error
+    /// - When: the client flushes, in a task of its own
+    /// - Then:
+    ///    - the flush throws the sender's error
+    ///    - no retry is counted, and the credentials-failure streak is still 1
+    func testACancelledFlushCountsNoRetryWhateverItsSendThrows() async throws {
+        struct Plain: Error {}
+        let storage = try makeStorage()
+        try await add("stream", to: storage)
+        let sender = failing(with: .sessionExpired("expired", "sign in again"))
+        let client = RecordClient(sender: sender, storage: storage)
+        _ = await credentialsFailure(of: client)
+        await sender.script { _, _ in
+            withUnsafeCurrentTask { $0?.cancel() }
+            throw Plain()
+        }
+
+        let flush: Task<Void, Error> = Task { _ = try await client.flush() }
+        do {
+            try await flush.value
+            XCTFail("expected the sender's error")
+        } catch {
+            XCTAssertTrue(error is Plain, "\(error)")
+        }
+
+        let kept = try await records(in: storage)
+        let streak = await client.credentialsFailureStreak
+        XCTAssertEqual(kept.map(\.retryCount), [0])
+        XCTAssertEqual(streak, 1)
     }
 
     // MARK: The streak and the auto-flush's back-off
