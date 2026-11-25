@@ -20,7 +20,7 @@ final class LiveEngineWebUITests: XCTestCase {
     private var harness: LiveEngineHarness!
     /// The window to anchor sheets to, made on first use rather than in `setUp()`: a process's first `UIWindow()`
     /// can block for minutes on a just-booted simulator, so a test that needs no window makes none.
-    private var window: AuthClientPresentationAnchor {
+    private var window: AmplifyCognitoClientPresentationAnchor {
         get async { await HostedUIFixtures.window() }
     }
 
@@ -164,7 +164,7 @@ final class LiveEngineWebUITests: XCTestCase {
     ///    - each throws `.unexpectedIdentity` returning alice (the first carrying the expectation), and no payload
     ///      is returned, so nothing can be committed
     func testAnUnexpectedIdentityIsRefused() async throws {
-        let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+        let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
         for (identity, expected) in [
             (EngineIdentityPolicy(expectedIdentity: "bob"), "bob" as String?),
             (EngineIdentityPolicy(excludedSubjects: ["sub-alice"]), nil)
@@ -353,7 +353,7 @@ final class LiveEngineWebUITests: XCTestCase {
     ///      the sign-in reaches `.done`; without one, it carries no `Authorization` header
     func testTheTokenExchangeCarriesTheAppClientSecret() async throws {
         let base = HostedUIFixtures.userPool
-        let confidential = AuthClientConfiguration.UserPool(
+        let confidential = AmplifyCognitoClientConfiguration.UserPool(
             poolId: base.poolId,
             appClientId: base.appClientId,
             region: base.region,
@@ -539,7 +539,7 @@ final class LiveEngineWebUITests: XCTestCase {
                 XCTFail("expected a refusal for \(failure)")
             } catch let refusal as SignOutRefusal {
                 XCTAssertTrue(refusal.error.isEquivalent(to: SessionCore.noHostedUIForSignOut()), "\(failure)")
-                XCTAssertEqual((refusal.error.underlyingError as? AuthClientError)?.kind, .configuration, "\(failure)")
+                XCTAssertEqual((refusal.error.underlyingError as? AmplifyCognitoClientError)?.kind, .configuration, "\(failure)")
             }
 
             XCTAssertEqual(harness.cognito.operations, [], "\(failure)")
@@ -571,14 +571,14 @@ final class LiveEngineWebUITests: XCTestCase {
                 XCTFail("expected a refusal for \(failure)")
             } catch let refusal as SignOutRefusal {
                 XCTAssertTrue(
-                    refusal.error.isEquivalent(to: AuthClientError(engine: failure.engineError)),
+                    refusal.error.isEquivalent(to: AmplifyCognitoClientError(engine: failure.engineError)),
                     "\(failure): \(refusal.error)"
                 )
             }
 
             XCTAssertEqual(harness.cognito.operations, [], "\(failure)")
         }
-        XCTAssertEqual(AuthClientError(engine: HostedUIError.unableToStartASWebAuthenticationSession.engineError).kind, .service(.errorLoadingUI))
+        XCTAssertEqual(AmplifyCognitoClientError(engine: HostedUIError.unableToStartASWebAuthenticationSession.engineError).kind, .service(.errorLoadingUI))
     }
 
     /// - Given: a shared-cookie payload
@@ -615,7 +615,7 @@ final class LiveEngineWebUITests: XCTestCase {
     }
 }
 
-/// `AuthClientError(hostedUIMismatch:)`, every reason.
+/// `AmplifyCognitoClientError(hostedUIMismatch:)`, every reason.
 final class HostedUIMismatchMappingTests: XCTestCase {
 
     /// - Given: a mismatch of each reason, returning a user by `sub` and username
@@ -633,13 +633,13 @@ final class HostedUIMismatchMappingTests: XCTestCase {
                 returnedUserId: "sub-alice"
             )
 
-            let error = AuthClientError(hostedUIMismatch: mismatch)
+            let error = AmplifyCognitoClientError(hostedUIMismatch: mismatch)
 
             switch reason {
             case .notExpectedIdentity:
-                XCTAssertEqual(error.kind, .unexpectedIdentity(expected: "bob", returned: AuthClientUser(username: "alice", userId: "sub-alice")))
+                XCTAssertEqual(error.kind, .unexpectedIdentity(expected: "bob", returned: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
             case .signedInToAnotherSession:
-                XCTAssertEqual(error.kind, .unexpectedIdentity(expected: nil, returned: AuthClientUser(username: "alice", userId: "sub-alice")))
+                XCTAssertEqual(error.kind, .unexpectedIdentity(expected: nil, returned: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
             case .tokenUse, .audience, .issuer, .nonce, .subject, .missingIdentity:
                 XCTAssertEqual(error.kind, .service(nil), "\(reason)")
                 XCTAssertTrue(error.errorDescription.contains("could not be verified"), "\(reason)")
@@ -659,9 +659,9 @@ final class HostedUIMismatchMappingTests: XCTestCase {
     func testTheReturnedUsernameFallsBackToTheSubject() {
         let mismatch = HostedUIIdentityMismatch(reason: .signedInToAnotherSession, returnedUsername: nil, returnedUserId: "sub-alice")
 
-        let error = AuthClientError(hostedUIMismatch: mismatch)
+        let error = AmplifyCognitoClientError(hostedUIMismatch: mismatch)
 
-        XCTAssertEqual(error.kind, .unexpectedIdentity(expected: nil, returned: AuthClientUser(username: "sub-alice", userId: "sub-alice")))
+        XCTAssertEqual(error.kind, .unexpectedIdentity(expected: nil, returned: AmplifyCognitoClientUser(username: "sub-alice", userId: "sub-alice")))
     }
 
     /// - Given: a hosted-UI failure that is not an identity check (the browser could not start)
@@ -669,7 +669,7 @@ final class HostedUIMismatchMappingTests: XCTestCase {
     /// - Then:
     ///    - it maps as any engine error does: `.service(.errorLoadingUI)`
     func testOtherHostedUIFailuresMapAsEngineErrors() {
-        let error = AuthClientError(hostedUISignIn: .hostedUI(.unableToStartASWebAuthenticationSession))
+        let error = AmplifyCognitoClientError(hostedUISignIn: .hostedUI(.unableToStartASWebAuthenticationSession))
 
         XCTAssertEqual(error.kind, .service(.errorLoadingUI))
     }

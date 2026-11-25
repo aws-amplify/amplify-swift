@@ -21,9 +21,9 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
     private var harness: ClientHarness!
     private var sink: CapturingLogSink!
     private let work = ClientFixtures.id("work")
-    private let alice = AuthClientUser(username: "alice", userId: "sub-alice")
-    private let smsCode = AuthClientSignInStep.confirmSignInWithSMSMFACode(
-        AuthClientCodeDeliveryDetails(destination: .sms("+1***"), attributeKey: .phoneNumber),
+    private let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
+    private let smsCode = AmplifyCognitoClientSignInStep.confirmSignInWithSMSMFACode(
+        AmplifyCognitoClientCodeDeliveryDetails(destination: .sms("+1***"), attributeKey: .phoneNumber),
         nil
     )
 
@@ -49,7 +49,7 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
 
     /// A client for `work` whose sign-in stops on `step`, signed in as far as that step.
     private func challenged(
-        _ step: AuthClientSignInStep = .confirmSignInWithTOTPCode
+        _ step: AmplifyCognitoClientSignInStep = .confirmSignInWithTOTPCode
     ) async throws -> (AmplifyCognitoClient, FakeSessionEngine) {
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
@@ -90,7 +90,7 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
         let (client, engine) = try await challenged(smsCode)
         let before = try store.storedChallenge(work)
         engine.scriptConfirmSignIn { _ in
-            throw FakeRetryable(error: AuthClientError.service(.codeMismatch, "Wrong code", "Try again"))
+            throw FakeRetryable(error: AmplifyCognitoClientError.service(.codeMismatch, "Wrong code", "Try again"))
         }
         harness.advanceClock(by: 30)
 
@@ -112,11 +112,11 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
     func testAFinalFailureDeletesTheRecord() async throws {
         let (client, engine) = try await challenged()
         engine.scriptConfirmSignIn { _ in
-            throw AuthClientError.challengeExpired("The challenge session has expired.", "Sign in again.")
+            throw AmplifyCognitoClientError.challengeExpired("The challenge session has expired.", "Sign in again.")
         }
 
         await assertThrowsAsync({ try await client.confirmSignIn(challengeResponse: "123456") }) { error in
-            guard case .challengeExpired = error as? AuthClientError else {
+            guard case .challengeExpired = error as? AmplifyCognitoClientError else {
                 return XCTFail("expected challengeExpired, got \(error)")
             }
         }
@@ -145,7 +145,7 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
             if (try? store.readChallenge(work)) == .absent {
                 deletedBeforeTheStep.raise()
             }
-            throw AuthClientError.notAuthorized("Incorrect username or password.", "Check them.")
+            throw AmplifyCognitoClientError.notAuthorized("Incorrect username or password.", "Check them.")
         }
         await assertThrowsAsync { try await client.signInForTest("alice") }
 
@@ -235,7 +235,7 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
     /// - Then:
     ///    - it is `.awaitingChallenge(.continueSignInWithTOTPSetup)` with the same secret and username
     func testATOTPSetupIsResumed() async throws {
-        let setup = AuthClientSignInStep.continueSignInWithTOTPSetup(AuthClientTOTPSetupDetails(sharedSecret: "SECRET", username: "alice"))
+        let setup = AmplifyCognitoClientSignInStep.continueSignInWithTOTPSetup(AmplifyCognitoClientTOTPSetupDetails(sharedSecret: "SECRET", username: "alice"))
         var first: AmplifyCognitoClient?
         (first, _) = try await challenged(setup)
 

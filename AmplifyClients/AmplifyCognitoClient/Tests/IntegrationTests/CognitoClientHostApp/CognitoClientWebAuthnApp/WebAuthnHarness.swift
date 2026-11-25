@@ -54,11 +54,11 @@ enum WebAuthnHarness {
     /// (on the sandbox, infra/parity.py, P-10).
     static let outputsResource = "AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs"
 
-    static func configuration() throws -> AuthClientConfiguration {
+    static func configuration() throws -> AmplifyCognitoClientConfiguration {
         guard Bundle.main.url(forResource: outputsResource, withExtension: "json") != nil else {
             throw HarnessAppError("\(outputsResource).json is not in the app bundle: it is copied from $COGNITO_CLIENT_INTEG_DIR at build time.")
         }
-        return try AuthClientConfiguration(from: outputsResource, bundle: .main)
+        return try AmplifyCognitoClientConfiguration(from: outputsResource, bundle: .main)
     }
 
     static func makeDriver() -> Result<WebAuthnHarnessDriver, HarnessAppError> {
@@ -106,7 +106,7 @@ struct HarnessAppError: Error, CustomStringConvertible {
     }
 }
 
-extension AuthClientSignOutResult {
+extension AmplifyCognitoClientSignOutResult {
 
     /// What a sign-out that signed the user out on this device left undone, by case names only, for the result
     /// line: "" for `.complete`, else the parts that failed, as `revokeTokenError: service`. Never an error's text or
@@ -115,7 +115,7 @@ extension AuthClientSignOutResult {
         guard case .partial(let revoke, let global, let hostedUI, let storage) = self else {
             return ""
         }
-        let parts: [(String, AuthClientError?)] = [
+        let parts: [(String, AmplifyCognitoClientError?)] = [
             ("revokeTokenError", revoke?.error),
             ("globalSignOutError", global?.error),
             ("hostedUIError", hostedUI?.error),
@@ -125,7 +125,7 @@ extension AuthClientSignOutResult {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     /// The error's case name alone (`browserBusy`, `userCancelled`), never its text or payload.
     var harnessCaseName: String {

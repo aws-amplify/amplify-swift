@@ -32,7 +32,7 @@ import InternalAWSCognitoAuth
 struct EngineSignUpRequest: Sendable, Equatable {
     let username: String
     let password: String?
-    /// Cognito attribute names (`email`, `custom:team`, ...), mapped from `AuthClientUserAttributeKey`.
+    /// Cognito attribute names (`email`, `custom:team`, ...), mapped from `AmplifyCognitoClientUserAttributeKey`.
     let userAttributes: [String: String]
     let validationData: [String: String]
     let clientMetadata: [String: String]
@@ -57,7 +57,7 @@ struct EngineConfirmResetPasswordRequest: Sendable, Equatable {
 /// A federation to the identity pool, as the engine receives it.
 struct EngineFederationRequest: Sendable, Equatable {
     let token: String
-    let provider: AuthClientProvider
+    let provider: AmplifyCognitoClientProvider
     let developerProvidedIdentityId: String?
 }
 

@@ -94,7 +94,7 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         _ body: () throws -> some Any
     ) {
         XCTAssertThrowsError(try body(), file: file, line: line) { error in
-            XCTAssertEqual((error as? AuthClientError)?.storageUnavailableReason, reason, "\(error)", file: file, line: line)
+            XCTAssertEqual((error as? AmplifyCognitoClientError)?.storageUnavailableReason, reason, "\(error)", file: file, line: line)
         }
     }
 
@@ -1693,7 +1693,7 @@ final class SessionRecordCopyForwardTests: XCTestCase {
 
         let listing = try store(Self.bothPools).listing()
 
-        let (alice, bob) = (AuthClientUser(username: "alice", userId: "sub-alice"), AuthClientUser(username: "bob", userId: "sub-bob"))
+        let (alice, bob) = (AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), AmplifyCognitoClientUser(username: "bob", userId: "sub-bob"))
         XCTAssertEqual(listing.sessions.dropFirst(), [
             StoredSession(sessionId: home, label: "Home", user: bob, kind: .userPoolAndIdentityPool, state: .signedIn(bob)),
             StoredSession(sessionId: work, label: "Work", user: alice, kind: .userPoolOnly, state: .signedIn(alice))

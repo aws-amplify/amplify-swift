@@ -40,7 +40,7 @@ import XCTest
 enum IntegrationTestEnvironment {
 
     /// The main configuration: the plugin's default backend (`SandboxPool.standard`). The resource name
-    /// `AuthClientConfiguration(from:bundle:)` is given, exactly as an app would.
+    /// `AmplifyCognitoClientConfiguration(from:bundle:)` is given, exactly as an app would.
     static let outputsResource = SandboxPool.standard.outputsResource
     /// The default backend's credentials file: its custom-auth answer, its new-password users and the
     /// second identity pool.
@@ -125,18 +125,18 @@ enum IntegrationTestEnvironment {
 
     /// The main client configuration, loaded from the default backend's outputs exactly as an app loads
     /// them.
-    static func configuration() throws -> AuthClientConfiguration {
+    static func configuration() throws -> AmplifyCognitoClientConfiguration {
         try configuration(.standard)
     }
 
     /// The client configuration of one role, loaded from its plugin outputs file (or the Gen2 translation of
     /// the plugin's Gen1 file) exactly as an app loads its outputs file.
-    static func configuration(_ pool: SandboxPool) throws -> AuthClientConfiguration {
+    static func configuration(_ pool: SandboxPool) throws -> AmplifyCognitoClientConfiguration {
         try requireProvisioned()
-        return try AuthClientConfiguration(from: pool.outputsResource, bundle: outputsBundle(pool))
+        return try AmplifyCognitoClientConfiguration(from: pool.outputsResource, bundle: outputsBundle(pool))
     }
 
-    /// The raw `auth` section of a role's outputs, for what `AuthClientConfiguration` does not parse, such
+    /// The raw `auth` section of a role's outputs, for what `AmplifyCognitoClientConfiguration` does not parse, such
     /// as the `oauth` block.
     static func outputsAuthSection(_ pool: SandboxPool) throws -> [String: Any] {
         guard let auth = try outputsDocument(pool)["auth"] as? [String: Any] else {
@@ -163,7 +163,7 @@ enum IntegrationTestEnvironment {
     /// backend's), for the configuration-change rows (CS-3): another backend's identity pool from the
     /// plugin's file set, which federates none of the first one's user pool, or, where none has one (the
     /// sandbox's set), the default credentials file's `second_identity_pool_id`.
-    static func secondIdentityPool(besides identityPoolId: String? = nil) throws -> AuthClientConfiguration.IdentityPool {
+    static func secondIdentityPool(besides identityPoolId: String? = nil) throws -> AmplifyCognitoClientConfiguration.IdentityPool {
         let firstPool = try identityPoolId ?? identityOnlyAuthSection()["identity_pool_id"] as? String
         for pool in SandboxPool.allCases {
             guard hasOutputs(pool),
@@ -884,9 +884,9 @@ enum HarnessError: Error, CustomStringConvertible {
 
 /// A fetched session's fields, for a test that expects them: each throws when the session holds none, where the
 /// field itself is `nil`.
-extension AuthClientSession {
+extension AmplifyCognitoClientSession {
 
-    func requireUserPoolTokens() throws -> AuthClientUserPoolTokens {
+    func requireUserPoolTokens() throws -> AmplifyCognitoClientUserPoolTokens {
         guard let userPoolTokens else {
             throw HarnessError.missingSessionField("user pool tokens")
         }
@@ -907,7 +907,7 @@ extension AuthClientSession {
         return identityId
     }
 
-    func requireAWSCredentials() throws -> AuthClientAWSCredentials {
+    func requireAWSCredentials() throws -> AmplifyCognitoClientAWSCredentials {
         guard let awsCredentials else {
             throw HarnessError.missingSessionField("AWS credentials")
         }

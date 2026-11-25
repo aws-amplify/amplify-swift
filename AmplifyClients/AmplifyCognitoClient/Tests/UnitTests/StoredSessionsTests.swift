@@ -48,7 +48,7 @@ final class StoredSessionsTests: XCTestCase {
         _ body: () throws -> some Any
     ) {
         XCTAssertThrowsError(try body(), file: file, line: line) { error in
-            XCTAssertEqual((error as? AuthClientError)?.storageUnavailableReason, reason, "\(error)", file: file, line: line)
+            XCTAssertEqual((error as? AmplifyCognitoClientError)?.storageUnavailableReason, reason, "\(error)", file: file, line: line)
         }
     }
 
@@ -95,7 +95,7 @@ final class StoredSessionsTests: XCTestCase {
     ///    - each row carries the stored label and kind, and the state the record projects to
     ///    - the signed-in row's user is the record's username and user ID; the guest and federated rows have none
     func testRowsCarryTheListingMetadata() throws {
-        let alice = AuthClientUser(username: "alice@corp", userId: "sub-alice")
+        let alice = AmplifyCognitoClientUser(username: "alice@corp", userId: "sub-alice")
         try store.write(StorageFixtures.signedIn(label: "Acme Corp", username: alice.username, userId: alice.userId), for: id("work"), expecting: nil)
         try store.write(StorageFixtures.guest, for: id("browse"), expecting: nil)
         let federated = SessionRecord(label: nil, username: nil, kind: .federated, credentials: PluginRecordFixtures.identityPoolWithFederation)
@@ -114,7 +114,7 @@ final class StoredSessionsTests: XCTestCase {
     ///    - the default hides the signed-out row; `includingSignedOut: true` shows it with its label and its last
     ///      user
     func testSignedOutRowsAreHiddenByDefault() throws {
-        let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+        let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
         try store.write(StorageFixtures.signedIn(label: "Acme Corp", userId: alice.userId), for: id("work"), expecting: nil)
         try store.write(StorageFixtures.signedIn(userId: alice.userId), for: id("home"), expecting: nil)
         XCTAssertEqual(try store.signOut(id("work")), .signedOut)
@@ -214,8 +214,8 @@ final class StoredSessionsTests: XCTestCase {
     /// The plugin fixtures' user.
     private let pluginUserId = "1234567890"
     private let pluginUsername = "alice@corp"
-    private var pluginUser: AuthClientUser {
-        AuthClientUser(username: pluginUsername, userId: pluginUserId)
+    private var pluginUser: AmplifyCognitoClientUser {
+        AmplifyCognitoClientUser(username: pluginUsername, userId: pluginUserId)
     }
 
     private func putSidecar(label: String?, username: String?, userId: String?) throws {
@@ -232,7 +232,7 @@ final class StoredSessionsTests: XCTestCase {
     ///    - there is one `.default` row with the mapped kind and state, the signed-in user for the user-pool
     ///      shapes and none otherwise, no label, and nothing is written
     func testPluginOnlyRecordIsListedAsTheDefaultSession() throws {
-        let cases: [(Data, SessionKind, AuthClientUser?, AuthSessionState)] = [
+        let cases: [(Data, SessionKind, AmplifyCognitoClientUser?, AuthSessionState)] = [
             (PluginRecordFixtures.userPoolOnly, .userPoolOnly, pluginUser, .signedIn(pluginUser)),
             (PluginRecordFixtures.userPoolAndIdentityPool, .userPoolAndIdentityPool, pluginUser, .signedIn(pluginUser)),
             (PluginRecordFixtures.identityPoolOnly, .guest, nil, .guest),
@@ -467,7 +467,7 @@ final class StoredSessionsTests: XCTestCase {
     ///      as unreadable with their reasons, and listed without signed-out rows too
     ///    - nothing is written or deleted
     func testRecordsThisBuildCannotReadDoNotBlankTheList() throws {
-        let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+        let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
         try store.write(StorageFixtures.signedIn(userId: alice.userId), for: id("good"), expecting: nil)
         keychain.put(StorageFixtures.futureSchemaRecord, store.sessionAccount(for: try id("future")))
         keychain.put(StorageFixtures.corruptRecord, store.sessionAccount(for: try id("broken")))

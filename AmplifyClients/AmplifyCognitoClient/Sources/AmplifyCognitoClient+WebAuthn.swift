@@ -16,13 +16,13 @@ import InternalAWSCognitoAuth
 #if os(iOS) || os(macOS) || os(visionOS)
 /// WebAuthn with a passkey sheet: registering a passkey, which takes the window the sheet attaches to. The
 /// client never looks for a window itself. Signing in with a passkey takes its window in the options
-/// (`AuthClientSignInOptions.presentationAnchorForWebAuthn`), and shares what follows.
+/// (`AmplifyCognitoClientSignInOptions.presentationAnchorForWebAuthn`), and shares what follows.
 ///
 /// **One sheet per process.** A passkey sheet and the hosted UI's browser share one process-wide lease: while
 /// any of the client's sessions shows one, another session's (or this session's) passkey ceremony throws
-/// `AuthClientError.browserBusy(holder:)` and presents nothing. The Auth plugin's sheets do not take part.
+/// `AmplifyCognitoClientError.browserBusy(holder:)` and presents nothing. The Auth plugin's sheets do not take part.
 ///
-/// **Cancellation.** The user closing the sheet is `AuthClientError.userCancelled`. Cancelling the calling
+/// **Cancellation.** The user closing the sheet is `AmplifyCognitoClientError.userCancelled`. Cancelling the calling
 /// task closes the sheet, and the call throws `CancellationError`.
 @_spi(AmplifyExperimental)
 public extension AmplifyCognitoClient {
@@ -40,7 +40,7 @@ public extension AmplifyCognitoClient {
     ///   - presentationAnchor: The window the passkey sheet attaches to, such as the active scene's key window.
     ///     It must stay open until the ceremony finishes.
     ///   - options: Nothing yet; here so the call keeps the plugin's shape.
-    /// - Throws: `AuthClientError.configuration` without a user pool; `.notSignedIn` for a signed-out, guest
+    /// - Throws: `AmplifyCognitoClientError.configuration` without a user pool; `.notSignedIn` for a signed-out, guest
     ///   or federated session, and while a sign-in on this session waits on a challenge; `.sessionExpired`
     ///   when the refresh the session needed first failed for good; `.browserBusy(holder:)` while another
     ///   sheet is up; `.validation(field: "presentationAnchor")` if the window has gone when the ceremony
@@ -55,8 +55,8 @@ public extension AmplifyCognitoClient {
     @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
     @MainActor
     func associateWebAuthnCredential(
-        presentationAnchor: AuthClientPresentationAnchor,
-        options: AuthClientAssociateWebAuthnCredentialOptions = AuthClientAssociateWebAuthnCredentialOptions()
+        presentationAnchor: AmplifyCognitoClientPresentationAnchor,
+        options: AmplifyCognitoClientAssociateWebAuthnCredentialOptions = AmplifyCognitoClientAssociateWebAuthnCredentialOptions()
     ) async throws {
         let anchor = EnginePresentationAnchorBox(presentationAnchor)
         let core = core
@@ -80,7 +80,7 @@ public extension AmplifyCognitoClient {
     /// as the plugin does.
     ///
     /// - Parameter options: The page size (1…20, default 20) and where to resume.
-    /// - Throws: `AuthClientError.validation(field: "pageSize", …)` for a page size outside 1…20, before
+    /// - Throws: `AmplifyCognitoClientError.validation(field: "pageSize", …)` for a page size outside 1…20, before
     ///   anything else; `.configuration` without a user pool; `.notSignedIn` for a signed-out, guest or
     ///   federated session, and while a sign-in on this session waits on a challenge; `.sessionExpired` when
     ///   the refresh the session needed first failed for good; `.storageUnavailable`; `.notAuthorized` when
@@ -88,11 +88,11 @@ public extension AmplifyCognitoClient {
     ///   (`.webAuthnNotEnabled` when the pool has no WebAuthn); `.unknown` for a failure the client does not
     ///   recognise; `CancellationError` if the calling task is cancelled.
     func listWebAuthnCredentials(
-        options: AuthClientListWebAuthnCredentialsOptions = AuthClientListWebAuthnCredentialsOptions()
-    ) async throws -> AuthClientListWebAuthnCredentialsResult {
-        let range = 1 ... AuthClientListWebAuthnCredentialsOptions.maximumPageSize
+        options: AmplifyCognitoClientListWebAuthnCredentialsOptions = AmplifyCognitoClientListWebAuthnCredentialsOptions()
+    ) async throws -> AmplifyCognitoClientListWebAuthnCredentialsResult {
+        let range = 1 ... AmplifyCognitoClientListWebAuthnCredentialsOptions.maximumPageSize
         guard range.contains(options.pageSize) else {
-            throw AuthClientError.webAuthnPageSizeOutOfRange
+            throw AmplifyCognitoClientError.webAuthnPageSizeOutOfRange
         }
         let pageSize = Int(options.pageSize)
         let nextToken = options.nextToken
@@ -100,7 +100,7 @@ public extension AmplifyCognitoClient {
         let page = try await core.signedInOperation("list the WebAuthn credentials") { engine, payload in
             try await engine.listWebAuthnCredentials(payload, pageSize: pageSize, nextToken: nextToken)
         }
-        return AuthClientListWebAuthnCredentialsResult(page)
+        return AmplifyCognitoClientListWebAuthnCredentialsResult(page)
     }
 
     /// Deletes one of the signed-in user's WebAuthn credentials (passkeys).
@@ -114,7 +114,7 @@ public extension AmplifyCognitoClient {
     /// - Throws: as `listWebAuthnCredentials(options:)`, without the page-size check.
     func deleteWebAuthnCredential(
         credentialId: String,
-        options: AuthClientDeleteWebAuthnCredentialOptions = AuthClientDeleteWebAuthnCredentialOptions()
+        options: AmplifyCognitoClientDeleteWebAuthnCredentialOptions = AmplifyCognitoClientDeleteWebAuthnCredentialOptions()
     ) async throws {
         let core = core
         try await core.signedInOperation("delete the WebAuthn credential") { engine, payload in
@@ -123,12 +123,12 @@ public extension AmplifyCognitoClient {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     /// A list page size outside Cognito's `MaxResults`, 1…20. Checked by the client, where the plugin
     /// leaves it to Cognito's `InvalidParameterException`.
-    static var webAuthnPageSizeOutOfRange: AuthClientError {
-        let maximum = AuthClientListWebAuthnCredentialsOptions.maximumPageSize
+    static var webAuthnPageSizeOutOfRange: AmplifyCognitoClientError {
+        let maximum = AmplifyCognitoClientListWebAuthnCredentialsOptions.maximumPageSize
         return .validation(
             field: "pageSize",
             "pageSize must be from 1 to \(maximum).",
@@ -137,15 +137,15 @@ extension AuthClientError {
     }
 }
 
-extension AuthClientListWebAuthnCredentialsResult {
+extension AmplifyCognitoClientListWebAuthnCredentialsResult {
 
     /// The engine's page, as the public result.
     init(_ page: EngineWebAuthnCredentialPage) {
-        self.init(credentials: page.credentials.map(AuthClientWebAuthnCredential.init), nextToken: page.nextToken)
+        self.init(credentials: page.credentials.map(AmplifyCognitoClientWebAuthnCredential.init), nextToken: page.nextToken)
     }
 }
 
-extension AuthClientWebAuthnCredential {
+extension AmplifyCognitoClientWebAuthnCredential {
 
     /// The engine's credential, as the public one. The engine has already made an empty name `nil`.
     init(_ credential: EngineWebAuthnCredential) {

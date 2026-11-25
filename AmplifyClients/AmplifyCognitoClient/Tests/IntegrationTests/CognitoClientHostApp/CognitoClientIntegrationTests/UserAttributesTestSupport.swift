@@ -33,7 +33,7 @@ extension ClientIntegrationTestCase {
 enum ClientErrorShape {
 
     static func of(_ error: Error) -> String {
-        guard let error = error as? AuthClientError else {
+        guard let error = error as? AmplifyCognitoClientError else {
             return String(describing: type(of: error))
         }
         switch error {

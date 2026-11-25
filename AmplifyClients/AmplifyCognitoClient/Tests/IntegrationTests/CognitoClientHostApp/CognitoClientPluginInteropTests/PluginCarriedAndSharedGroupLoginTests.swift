@@ -38,7 +38,7 @@ final class PluginCarriedAndSharedGroupLoginTests: XCTestCase {
     private let accessGroupDefaultsKey = "amplify_secure_storage_scopes.awsCognitoAuthPlugin.accessGroup"
 
     /// The default backend's outputs: its user pool and its identity pool.
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
     /// The host app's second keychain access group, S.
     private var sharedGroup = ""
     /// The test's own user, signed up in `setUp` and deleted at teardown.
@@ -50,7 +50,7 @@ final class PluginCarriedAndSharedGroupLoginTests: XCTestCase {
         try await super.setUp()
         try InteropEnvironment.requireProvisioned()
         sharedGroup = try RealKeychain.sharedGroup(defaultGroup: RealKeychain.defaultGroup())
-        configuration = try AuthClientConfiguration(
+        configuration = try AmplifyCognitoClientConfiguration(
             from: InteropEnvironment.outputsResource,
             bundle: InteropEnvironment.outputsBundle()
         )
@@ -109,7 +109,7 @@ final class PluginCarriedAndSharedGroupLoginTests: XCTestCase {
             which federates its user pool.
             """)
         }
-        let userPoolOnly = try AuthClientConfiguration(userPool: full.userPool)
+        let userPoolOnly = try AmplifyCognitoClientConfiguration(userPool: full.userPool)
         let oldLogin = SessionRecordKey.pluginSessionAccount(in: userPoolOnly.poolNamespace)
         let oldSidecar = SessionRecordKey.metaAccount(in: userPoolOnly.poolNamespace)
         let newLogin = SessionRecordKey.pluginSessionAccount(in: full.poolNamespace)

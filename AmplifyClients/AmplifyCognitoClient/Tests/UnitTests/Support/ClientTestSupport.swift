@@ -34,7 +34,7 @@ final class ClientHarness: @unchecked Sendable {
     private var madeEngines: [FakeSessionEngine] = []
     private var engineFailure: Error?
     private var clientsFactory: (@Sendable (
-        AuthClientConfiguration,
+        AmplifyCognitoClientConfiguration,
         AmplifyCognitoClientUserPoolConfigurationProvider?
     ) throws -> CognitoServiceClients)?
     private var restoreBound: UInt64
@@ -114,7 +114,7 @@ final class ClientHarness: @unchecked Sendable {
 
     func useClientsFactory(
         _ factory: (@Sendable (
-            AuthClientConfiguration,
+            AmplifyCognitoClientConfiguration,
             AmplifyCognitoClientUserPoolConfigurationProvider?
         ) throws -> CognitoServiceClients)?
     ) {
@@ -125,7 +125,7 @@ final class ClientHarness: @unchecked Sendable {
 
     func client(
         _ sessionId: SessionID = .default,
-        configuration: AuthClientConfiguration = ClientFixtures.configuration,
+        configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration,
         accessGroup: String? = nil,
         configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider? = nil
     ) throws -> AmplifyCognitoClient {
@@ -149,7 +149,7 @@ final class ClientHarness: @unchecked Sendable {
 
     /// A record store over this harness's keychain, for fixtures and inspection.
     func store(
-        configuration: AuthClientConfiguration = ClientFixtures.configuration,
+        configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration,
         accessGroup: String? = nil
     ) -> SessionRecordStore {
         keychain.recordStore(for: SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: accessGroup))
@@ -208,13 +208,13 @@ final class ClientHarness: @unchecked Sendable {
 
 enum ClientFixtures {
 
-    static let userPool = AuthClientConfiguration.UserPool(
+    static let userPool = AmplifyCognitoClientConfiguration.UserPool(
         poolId: StorageFixtures.userPoolId,
         appClientId: "app-client-1",
         region: "us-east-1"
     )
 
-    static let identityPool = AuthClientConfiguration.IdentityPool(poolId: StorageFixtures.identityPoolId, region: "us-east-1")
+    static let identityPool = AmplifyCognitoClientConfiguration.IdentityPool(poolId: StorageFixtures.identityPoolId, region: "us-east-1")
 
     /// Both pools: the namespace is `StorageFixtures.namespace`.
     static let configuration = make(userPool: userPool, identityPool: identityPool)
@@ -224,11 +224,11 @@ enum ClientFixtures {
     static let identityPoolOnlyConfiguration = make(userPool: nil, identityPool: identityPool)
 
     static func make(
-        userPool: AuthClientConfiguration.UserPool?,
-        identityPool: AuthClientConfiguration.IdentityPool?
-    ) -> AuthClientConfiguration {
+        userPool: AmplifyCognitoClientConfiguration.UserPool?,
+        identityPool: AmplifyCognitoClientConfiguration.IdentityPool?
+    ) -> AmplifyCognitoClientConfiguration {
         do {
-            return try AuthClientConfiguration(userPool: userPool, identityPool: identityPool)
+            return try AmplifyCognitoClientConfiguration(userPool: userPool, identityPool: identityPool)
         } catch {
             preconditionFailure("fixture configuration is invalid: \(error)")
         }
@@ -419,7 +419,7 @@ final class StreamRecorder<Element: Sendable>: @unchecked Sendable {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     /// Whether this is `sessionConfigurationMismatch` for `sessionId`.
     func isMismatch(for sessionId: SessionID) -> Bool {
@@ -428,30 +428,30 @@ extension AuthClientError {
     }
 }
 
-/// Runs `body`, expecting it to throw an `AuthClientError`, and returns that error.
+/// Runs `body`, expecting it to throw an `AmplifyCognitoClientError`, and returns that error.
 func authClientError(
     _ body: () async throws -> some Any,
     file: StaticString = #filePath,
     line: UInt = #line
-) async -> AuthClientError? {
+) async -> AmplifyCognitoClientError? {
     do {
         _ = try await body()
         XCTFail("expected an error", file: file, line: line)
         return nil
-    } catch let error as AuthClientError {
+    } catch let error as AmplifyCognitoClientError {
         return error
     } catch {
-        XCTFail("expected an AuthClientError, got \(error)", file: file, line: line)
+        XCTFail("expected an AmplifyCognitoClientError, got \(error)", file: file, line: line)
         return nil
     }
 }
 
 /// The error of a `.failed` sign-out, expecting one: what a sign-out that used to throw now returns.
 func failedSignOutError(
-    _ result: AuthClientSignOutResult,
+    _ result: AmplifyCognitoClientSignOutResult,
     file: StaticString = #filePath,
     line: UInt = #line
-) -> AuthClientError? {
+) -> AmplifyCognitoClientError? {
     guard case .failed(let error) = result else {
         XCTFail("expected .failed, got \(result)", file: file, line: line)
         return nil
@@ -460,29 +460,29 @@ func failedSignOutError(
     return error
 }
 
-extension AuthClientSignOutResult {
+extension AmplifyCognitoClientSignOutResult {
 
     /// `.partial`, with each part `nil` unless given, each error in its wrapper.
     static func partialResult(
-        revokeTokenError: AuthClientError? = nil,
-        globalSignOutError: AuthClientError? = nil,
-        hostedUIError: AuthClientError? = nil,
-        storageError: AuthClientError? = nil
-    ) -> AuthClientSignOutResult {
+        revokeTokenError: AmplifyCognitoClientError? = nil,
+        globalSignOutError: AmplifyCognitoClientError? = nil,
+        hostedUIError: AmplifyCognitoClientError? = nil,
+        storageError: AmplifyCognitoClientError? = nil
+    ) -> AmplifyCognitoClientSignOutResult {
         .partial(
-            revokeTokenError: revokeTokenError.map(AuthClientRevokeTokenError.init(error:)),
-            globalSignOutError: globalSignOutError.map(AuthClientGlobalSignOutError.init(error:)),
-            hostedUIError: hostedUIError.map(AuthClientHostedUIError.init(error:)),
+            revokeTokenError: revokeTokenError.map(AmplifyCognitoClientRevokeTokenError.init(error:)),
+            globalSignOutError: globalSignOutError.map(AmplifyCognitoClientGlobalSignOutError.init(error:)),
+            hostedUIError: hostedUIError.map(AmplifyCognitoClientHostedUIError.init(error:)),
             storageError: storageError
         )
     }
 
     /// The parts of a `.partial` result, by name, each error out of its wrapper.
     struct PartialErrors {
-        let revokeTokenError: AuthClientError?
-        let globalSignOutError: AuthClientError?
-        let hostedUIError: AuthClientError?
-        let storageError: AuthClientError?
+        let revokeTokenError: AmplifyCognitoClientError?
+        let globalSignOutError: AmplifyCognitoClientError?
+        let hostedUIError: AmplifyCognitoClientError?
+        let storageError: AmplifyCognitoClientError?
     }
 
     /// The parts, or `nil` for any other case.
@@ -503,7 +503,7 @@ extension AmplifyCognitoClient {
 
     /// Signs in through the public API as `username`, with the fake engine's default (done).
     @discardableResult
-    func signInForTest(_ username: String = "alice") async throws -> AuthClientSignInResult {
+    func signInForTest(_ username: String = "alice") async throws -> AmplifyCognitoClientSignInResult {
         try await signIn(username: username, password: "password")
     }
 }

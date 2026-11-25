@@ -20,7 +20,7 @@ final class SignOutResultShapeTests: XCTestCase {
 
     var harness: ClientHarness!
     let work = ClientFixtures.id("work")
-    let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+    let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
 
     override func setUp() {
         harness = ClientHarness()
@@ -39,13 +39,13 @@ final class SignOutResultShapeTests: XCTestCase {
     /// - Then:
     ///    - it is `false` for `.failed` only
     func testSignedOutLocallyIsFalseOnlyForFailed() {
-        let error = AuthClientError.unknown("failed", "retry")
-        XCTAssertTrue(AuthClientSignOutResult.complete.signedOutLocally)
-        XCTAssertTrue(AuthClientSignOutResult.partialResult(revokeTokenError: error).signedOutLocally)
-        XCTAssertTrue(AuthClientSignOutResult.partialResult(globalSignOutError: error).signedOutLocally)
-        XCTAssertTrue(AuthClientSignOutResult.partialResult(hostedUIError: error).signedOutLocally)
-        XCTAssertTrue(AuthClientSignOutResult.partialResult(storageError: error).signedOutLocally)
-        XCTAssertFalse(AuthClientSignOutResult.failed(error).signedOutLocally)
+        let error = AmplifyCognitoClientError.unknown("failed", "retry")
+        XCTAssertTrue(AmplifyCognitoClientSignOutResult.complete.signedOutLocally)
+        XCTAssertTrue(AmplifyCognitoClientSignOutResult.partialResult(revokeTokenError: error).signedOutLocally)
+        XCTAssertTrue(AmplifyCognitoClientSignOutResult.partialResult(globalSignOutError: error).signedOutLocally)
+        XCTAssertTrue(AmplifyCognitoClientSignOutResult.partialResult(hostedUIError: error).signedOutLocally)
+        XCTAssertTrue(AmplifyCognitoClientSignOutResult.partialResult(storageError: error).signedOutLocally)
+        XCTAssertFalse(AmplifyCognitoClientSignOutResult.failed(error).signedOutLocally)
     }
 
     /// Security fix H1: unlike the plugin's, the partial result carries errors only.
@@ -178,7 +178,7 @@ final class SignOutResultShapeTests: XCTestCase {
         XCTAssertEqual(error.recoverySuggestion, "Check the session's state, then sign out again if needed.")
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, bob.data)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         XCTAssertEqual(events.received, [])
     }
 
@@ -276,7 +276,7 @@ final class SignOutResultShapeTests: XCTestCase {
         try harness.signIn(work, .signedIn("alice"))
         try harness.signIn(home, .signedIn("bob"))
         try harness.signIn(school, .signedIn("carol"))
-        let failure = AuthClientError.service(.network, "revoke failed", "retry")
+        let failure = AmplifyCognitoClientError.service(.network, "revoke failed", "retry")
         harness.revoker.scriptRevoke { payload in
             switch FakePayload.decode(payload)?.username {
             case "bob":
@@ -306,7 +306,7 @@ final class SignOutResultShapeTests: XCTestCase {
 
     // MARK: Helpers
 
-    func signOutStored(_ sessionId: SessionID) async -> AuthClientSignOutResult {
+    func signOutStored(_ sessionId: SessionID) async -> AmplifyCognitoClientSignOutResult {
         await AmplifyCognitoClient.signOutStoredSession(
             sessionId: sessionId,
             configuration: ClientFixtures.configuration,

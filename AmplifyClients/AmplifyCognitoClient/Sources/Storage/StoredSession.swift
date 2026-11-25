@@ -36,7 +36,7 @@ public struct StoredSession: Sendable, Equatable {
     ///
     /// `user.username` is Cognito's username, not a display name: often a UUID, or `<Provider>_<id>` for a user
     /// of another identity provider. The row's title is `label`.
-    public let user: AuthClientUser?
+    public let user: AmplifyCognitoClientUser?
 
     /// What the saved record is, for rendering or filtering rows.
     public let kind: SessionKind
@@ -72,7 +72,7 @@ public struct StoredSession: Sendable, Equatable {
     public let state: AuthSessionState
 
     /// Public so an app can build one for a test double; the client builds its own.
-    public init(sessionId: SessionID, label: String?, user: AuthClientUser?, kind: SessionKind, state: AuthSessionState) {
+    public init(sessionId: SessionID, label: String?, user: AmplifyCognitoClientUser?, kind: SessionKind, state: AuthSessionState) {
         self.sessionId = sessionId
         self.label = label
         self.user = user

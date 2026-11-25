@@ -103,7 +103,7 @@ final class LiveEngineDevicesTests: XCTestCase {
         let token = try accessToken(in: payload)
         XCTAssertEqual(harness.cognito.inputs("ListDevices", as: ListDevicesInput.self).map(\.accessToken), [token])
         XCTAssertEqual(devices, [
-            AuthClientDevice(
+            AmplifyCognitoClientDevice(
                 id: "us-east-1_device-1",
                 name: "iPhone",
                 attributes: ["device_name": "iPhone", "last_ip_used": "192.0.2.1"],
@@ -111,7 +111,7 @@ final class LiveEngineDevicesTests: XCTestCase {
                 lastAuthenticatedDate: authenticated,
                 lastModifiedDate: modified
             ),
-            AuthClientDevice(id: "", name: "", attributes: [:])
+            AmplifyCognitoClientDevice(id: "", name: "", attributes: [:])
         ])
     }
 

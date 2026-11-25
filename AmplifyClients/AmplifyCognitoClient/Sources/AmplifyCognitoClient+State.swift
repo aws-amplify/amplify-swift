@@ -22,7 +22,7 @@ public extension AmplifyCognitoClient {
     /// The first read after launch can be `.awaitingChallenge(step)`: a sign-in this session started before the
     /// app was closed, saved on the device, which the app may resume (present the step, then
     /// `confirmSignIn(challengeResponse:options:)`) or abandon (call `signIn` again). A resumed challenge whose
-    /// Cognito session has since expired fails that answer with `AuthClientError.challengeExpired`.
+    /// Cognito session has since expired fails that answer with `AmplifyCognitoClientError.challengeExpired`.
     func currentSessionState() async -> AuthSessionState {
         let core = core
         return await core.sessionState()

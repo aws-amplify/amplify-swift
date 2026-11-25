@@ -33,14 +33,14 @@ enum FakeAccountOperationCall: Equatable, Sendable {
     case resetPassword(username: String, clientMetadata: [String: String])
     case confirmResetPassword(EngineConfirmResetPasswordRequest)
     case fetchUserAttributes(payload: Data)
-    case updateUserAttributes(payload: Data, attributes: [AuthClientUserAttribute], clientMetadata: [String: String])
-    case sendVerificationCode(payload: Data, attributeKey: AuthClientUserAttributeKey, clientMetadata: [String: String])
-    case confirmUserAttribute(payload: Data, attributeKey: AuthClientUserAttributeKey, confirmationCode: String)
+    case updateUserAttributes(payload: Data, attributes: [AmplifyCognitoClientUserAttribute], clientMetadata: [String: String])
+    case sendVerificationCode(payload: Data, attributeKey: AmplifyCognitoClientUserAttributeKey, clientMetadata: [String: String])
+    case confirmUserAttribute(payload: Data, attributeKey: AmplifyCognitoClientUserAttributeKey, confirmationCode: String)
     case changePassword(payload: Data, oldPassword: String, newPassword: String)
     case setUpTOTP(payload: Data)
     case verifyTOTPSetup(payload: Data, code: String, friendlyDeviceName: String?)
     case fetchMFAPreference(payload: Data)
-    case updateMFAPreference(payload: Data, sms: AuthClientMFAPreference?, totp: AuthClientMFAPreference?, email: AuthClientMFAPreference?)
+    case updateMFAPreference(payload: Data, sms: AmplifyCognitoClientMFAPreference?, totp: AmplifyCognitoClientMFAPreference?, email: AmplifyCognitoClientMFAPreference?)
     case fetchDevices(payload: Data)
     case rememberDevice(payload: Data)
     case forgetDevice(payload: Data, deviceId: String?)
@@ -87,24 +87,24 @@ enum FakeAccountOperationCall: Equatable, Sendable {
 /// defaults are a plain success. `autoSignIn` is in the main file, because it follows the sign-in contract.
 extension FakeSessionEngine {
 
-    static let delivery = AuthClientCodeDeliveryDetails(destination: .email("a***@example.com"), attributeKey: .email)
+    static let delivery = AmplifyCognitoClientCodeDeliveryDetails(destination: .email("a***@example.com"), attributeKey: .email)
 
-    func signUp(_ request: EngineSignUpRequest) async throws -> AuthClientSignUpResult {
-        try await recordAccountOperation(.signUp(request), default: AuthClientSignUpResult(.done, userId: "sub-\(request.username)"))
+    func signUp(_ request: EngineSignUpRequest) async throws -> AmplifyCognitoClientSignUpResult {
+        try await recordAccountOperation(.signUp(request), default: AmplifyCognitoClientSignUpResult(.done, userId: "sub-\(request.username)"))
     }
 
-    func confirmSignUp(_ request: EngineConfirmSignUpRequest) async throws -> AuthClientSignUpResult {
-        try await recordAccountOperation(.confirmSignUp(request), default: AuthClientSignUpResult(.done, userId: "sub-\(request.username)"))
+    func confirmSignUp(_ request: EngineConfirmSignUpRequest) async throws -> AmplifyCognitoClientSignUpResult {
+        try await recordAccountOperation(.confirmSignUp(request), default: AmplifyCognitoClientSignUpResult(.done, userId: "sub-\(request.username)"))
     }
 
-    func resendSignUpCode(username: String, clientMetadata: [String: String]) async throws -> AuthClientCodeDeliveryDetails {
+    func resendSignUpCode(username: String, clientMetadata: [String: String]) async throws -> AmplifyCognitoClientCodeDeliveryDetails {
         try await recordAccountOperation(.resendSignUpCode(username: username, clientMetadata: clientMetadata), default: Self.delivery)
     }
 
-    func resetPassword(username: String, clientMetadata: [String: String]) async throws -> AuthClientResetPasswordResult {
+    func resetPassword(username: String, clientMetadata: [String: String]) async throws -> AmplifyCognitoClientResetPasswordResult {
         try await recordAccountOperation(
             .resetPassword(username: username, clientMetadata: clientMetadata),
-            default: AuthClientResetPasswordResult(isPasswordReset: false, nextStep: .confirmResetPasswordWithCode(Self.delivery, nil))
+            default: AmplifyCognitoClientResetPasswordResult(isPasswordReset: false, nextStep: .confirmResetPasswordWithCode(Self.delivery, nil))
         )
     }
 
@@ -112,17 +112,17 @@ extension FakeSessionEngine {
         try await recordAccountOperation(.confirmResetPassword(request), default: ())
     }
 
-    func fetchUserAttributes(_ payload: Data) async throws -> [AuthClientUserAttribute] {
+    func fetchUserAttributes(_ payload: Data) async throws -> [AmplifyCognitoClientUserAttribute] {
         let username = FakePayload.decode(payload)?.username ?? "unknown"
-        return try await recordAccountOperation(.fetchUserAttributes(payload: payload), default: [AuthClientUserAttribute(.email, value: "\(username)@example.com")])
+        return try await recordAccountOperation(.fetchUserAttributes(payload: payload), default: [AmplifyCognitoClientUserAttribute(.email, value: "\(username)@example.com")])
     }
 
     func updateUserAttributes(
         _ payload: Data,
-        attributes: [AuthClientUserAttribute],
+        attributes: [AmplifyCognitoClientUserAttribute],
         clientMetadata: [String: String]
-    ) async throws -> [AuthClientUserAttributeKey: AuthClientUpdateAttributeResult] {
-        let done = AuthClientUpdateAttributeResult(isUpdated: true, nextStep: .done)
+    ) async throws -> [AmplifyCognitoClientUserAttributeKey: AmplifyCognitoClientUpdateAttributeResult] {
+        let done = AmplifyCognitoClientUpdateAttributeResult(isUpdated: true, nextStep: .done)
         return try await recordAccountOperation(
             .updateUserAttributes(payload: payload, attributes: attributes, clientMetadata: clientMetadata),
             default: Dictionary(attributes.map { ($0.key, done) }, uniquingKeysWith: { _, last in last })
@@ -131,16 +131,16 @@ extension FakeSessionEngine {
 
     func sendVerificationCode(
         _ payload: Data,
-        attributeKey: AuthClientUserAttributeKey,
+        attributeKey: AmplifyCognitoClientUserAttributeKey,
         clientMetadata: [String: String]
-    ) async throws -> AuthClientCodeDeliveryDetails {
+    ) async throws -> AmplifyCognitoClientCodeDeliveryDetails {
         try await recordAccountOperation(
             .sendVerificationCode(payload: payload, attributeKey: attributeKey, clientMetadata: clientMetadata),
             default: Self.delivery
         )
     }
 
-    func confirmUserAttribute(_ payload: Data, attributeKey: AuthClientUserAttributeKey, confirmationCode: String) async throws {
+    func confirmUserAttribute(_ payload: Data, attributeKey: AmplifyCognitoClientUserAttributeKey, confirmationCode: String) async throws {
         try await recordAccountOperation(.confirmUserAttribute(payload: payload, attributeKey: attributeKey, confirmationCode: confirmationCode), default: ())
     }
 
@@ -148,30 +148,30 @@ extension FakeSessionEngine {
         try await recordAccountOperation(.changePassword(payload: payload, oldPassword: oldPassword, newPassword: newPassword), default: ())
     }
 
-    func setUpTOTP(_ payload: Data) async throws -> AuthClientTOTPSetupDetails {
+    func setUpTOTP(_ payload: Data) async throws -> AmplifyCognitoClientTOTPSetupDetails {
         let username = FakePayload.decode(payload)?.username ?? "unknown"
-        return try await recordAccountOperation(.setUpTOTP(payload: payload), default: AuthClientTOTPSetupDetails(sharedSecret: "SECRET", username: username))
+        return try await recordAccountOperation(.setUpTOTP(payload: payload), default: AmplifyCognitoClientTOTPSetupDetails(sharedSecret: "SECRET", username: username))
     }
 
     func verifyTOTPSetup(_ payload: Data, code: String, friendlyDeviceName: String?) async throws {
         try await recordAccountOperation(.verifyTOTPSetup(payload: payload, code: code, friendlyDeviceName: friendlyDeviceName), default: ())
     }
 
-    func fetchMFAPreference(_ payload: Data) async throws -> AuthClientUserMFAPreference {
-        try await recordAccountOperation(.fetchMFAPreference(payload: payload), default: AuthClientUserMFAPreference(enabled: nil, preferred: nil))
+    func fetchMFAPreference(_ payload: Data) async throws -> AmplifyCognitoClientUserMFAPreference {
+        try await recordAccountOperation(.fetchMFAPreference(payload: payload), default: AmplifyCognitoClientUserMFAPreference(enabled: nil, preferred: nil))
     }
 
     func updateMFAPreference(
         _ payload: Data,
-        sms: AuthClientMFAPreference?,
-        totp: AuthClientMFAPreference?,
-        email: AuthClientMFAPreference?
+        sms: AmplifyCognitoClientMFAPreference?,
+        totp: AmplifyCognitoClientMFAPreference?,
+        email: AmplifyCognitoClientMFAPreference?
     ) async throws {
         try await recordAccountOperation(.updateMFAPreference(payload: payload, sms: sms, totp: totp, email: email), default: ())
     }
 
-    func fetchDevices(_ payload: Data) async throws -> [AuthClientDevice] {
-        try await recordAccountOperation(.fetchDevices(payload: payload), default: [AuthClientDevice(id: "device-1", name: "iPhone")])
+    func fetchDevices(_ payload: Data) async throws -> [AmplifyCognitoClientDevice] {
+        try await recordAccountOperation(.fetchDevices(payload: payload), default: [AmplifyCognitoClientDevice(id: "device-1", name: "iPhone")])
     }
 
     func rememberDevice(_ payload: Data) async throws {

@@ -19,7 +19,7 @@ struct LiveSessionRevoker: SessionRevoker {
 
     private let engine: Result<LiveSessionEngine, Error>
 
-    init(configuration: AuthClientConfiguration) {
+    init(configuration: AmplifyCognitoClientConfiguration) {
         self.engine = Result {
             try LiveSessionEngine(resources: Self.resources(
                 configuration: configuration,
@@ -67,7 +67,7 @@ struct LiveSessionRevoker: SessionRevoker {
     ///
     /// - Parameter services: what the engine calls Cognito through; the clients' own unless a test scripts them.
     static func resources(
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         clients: CognitoServiceClients,
         services: EngineServices? = nil
     ) -> EngineResources {

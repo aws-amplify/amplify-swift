@@ -37,7 +37,7 @@ final class StoredSessionLabelTests: XCTestCase {
     private func setLabel(
         _ label: String?,
         _ sessionId: SessionID,
-        configuration: AuthClientConfiguration = ClientFixtures.configuration
+        configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration
     ) async throws {
         try await AmplifyCognitoClient.setSessionLabel(
             label,
@@ -190,7 +190,7 @@ final class StoredSessionLabelTests: XCTestCase {
                     dependencies: dependencies
                 )
             }) { error in
-                guard case .unknown = error as? AuthClientError else {
+                guard case .unknown = error as? AmplifyCognitoClientError else {
                     return XCTFail("\(error)")
                 }
             }
@@ -256,7 +256,7 @@ final class StoredSessionLabelTests: XCTestCase {
                 dependencies: dependencies
             )
         }) { error in
-            XCTAssertEqual((error as? AuthClientError)?.storageUnavailableReason, .interrupted, "\(error)")
+            XCTAssertEqual((error as? AmplifyCognitoClientError)?.storageUnavailableReason, .interrupted, "\(error)")
         }
         harness.keychain.afterEveryRead(of: harness.store().sessionAccount(for: work), nil)
         XCTAssertNotEqual(try harness.storedRecord(work)?.label, "Work")
@@ -330,7 +330,7 @@ final class StoredSessionLabelTests: XCTestCase {
                 dependencies: dependencies
             )
         }) { error in
-            guard case .sessionConfigurationMismatch(let sessionId)? = (error as? AuthClientError)?.kind else {
+            guard case .sessionConfigurationMismatch(let sessionId)? = (error as? AmplifyCognitoClientError)?.kind else {
                 return XCTFail("\(error)")
             }
             XCTAssertEqual(sessionId, work)

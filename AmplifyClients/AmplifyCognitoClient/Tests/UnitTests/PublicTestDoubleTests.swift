@@ -20,23 +20,23 @@ final class PublicTestDoubleTests: XCTestCase {
     /// - Then:
     ///    - every value holds what it was given
     func testResultTypesHavePublicInitializers() throws {
-        let tokens = AuthClientUserPoolTokens(idToken: "id", accessToken: "access", refreshToken: "refresh")
-        let credentials = AuthClientAWSCredentials(
+        let tokens = AmplifyCognitoClientUserPoolTokens(idToken: "id", accessToken: "access", refreshToken: "refresh")
+        let credentials = AmplifyCognitoClientAWSCredentials(
             accessKeyId: "AKID",
             secretAccessKey: "secret",
             sessionToken: "token",
             expiration: Date(timeIntervalSince1970: 0)
         )
-        let session = AuthClientSession(
+        let session = AmplifyCognitoClientSession(
             identityId: "identity",
             awsCredentials: credentials,
             userSub: "sub",
             userPoolTokens: tokens
         )
-        let result = AuthClientSignInResult(nextStep: .confirmSignInWithTOTPCode)
-        let partial = AuthClientSignOutResult.partial(
+        let result = AmplifyCognitoClientSignInResult(nextStep: .confirmSignInWithTOTPCode)
+        let partial = AmplifyCognitoClientSignOutResult.partial(
             revokeTokenError: nil,
-            globalSignOutError: AuthClientGlobalSignOutError(error: .unknown("global", "retry")),
+            globalSignOutError: AmplifyCognitoClientGlobalSignOutError(error: .unknown("global", "retry")),
             hostedUIError: nil,
             storageError: nil
         )
@@ -50,8 +50,8 @@ final class PublicTestDoubleTests: XCTestCase {
         }
         XCTAssertNil(revokeTokenError)
         XCTAssertEqual(globalSignOutError?.error.errorDescription, "global")
-        XCTAssertEqual(AuthClientRevokeTokenError(error: .unknown("revoke", "retry")).error.errorDescription, "revoke")
-        XCTAssertEqual(AuthClientHostedUIError(error: .unknown("page", "retry")).error.errorDescription, "page")
+        XCTAssertEqual(AmplifyCognitoClientRevokeTokenError(error: .unknown("revoke", "retry")).error.errorDescription, "revoke")
+        XCTAssertEqual(AmplifyCognitoClientHostedUIError(error: .unknown("page", "retry")).error.errorDescription, "page")
     }
 
     /// - Given: an app outside the module
@@ -59,16 +59,16 @@ final class PublicTestDoubleTests: XCTestCase {
     /// - Then:
     ///    - each compiles (the initializers are public), and two values of a type are equal
     func testTheEmptyOptionsAreBuildableOutsideTheModule() {
-        XCTAssertEqual(AuthClientChangePasswordOptions(), .init())
-        XCTAssertEqual(AuthClientFetchUserAttributesOptions(), .init())
-        XCTAssertEqual(AuthClientConfirmUserAttributeOptions(), .init())
-        XCTAssertEqual(AuthClientFetchDevicesOptions(), .init())
-        XCTAssertEqual(AuthClientRememberDeviceOptions(), .init())
-        XCTAssertEqual(AuthClientForgetDeviceOptions(), .init())
-        XCTAssertEqual(AuthClientDeleteWebAuthnCredentialOptions(), .init())
-        XCTAssertEqual(AuthClientClearFederationToIdentityPoolOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientChangePasswordOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientFetchUserAttributesOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientConfirmUserAttributeOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientFetchDevicesOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientRememberDeviceOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientForgetDeviceOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientDeleteWebAuthnCredentialOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientClearFederationToIdentityPoolOptions(), .init())
         #if os(iOS) || os(macOS) || os(visionOS)
-        XCTAssertEqual(AuthClientAssociateWebAuthnCredentialOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientAssociateWebAuthnCredentialOptions(), .init())
         #endif
     }
 }

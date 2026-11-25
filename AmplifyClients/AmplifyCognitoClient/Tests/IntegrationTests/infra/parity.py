@@ -1890,7 +1890,7 @@ def outputs_document(pool_id, client_id, template, oauth_domain=None, client=Non
 
 def outputs_path(name):
     """`<name>-amplify_outputs.json`, the plugin's naming (…/testconfiguration/XYZ-amplify_outputs.json).
-    The client's AuthClientConfiguration(from:) rejects a resource name with a dot in it."""
+    The client's AmplifyCognitoClientConfiguration(from:) rejects a resource name with a dot in it."""
     return os.path.join(STATE_DIR, f"{name}-amplify_outputs.json")
 
 

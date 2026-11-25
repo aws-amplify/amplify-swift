@@ -463,7 +463,7 @@ enum SandboxSignUp {
     static func selfSignUpRefusal(_ error: Error, on pool: SandboxPool) -> Error {
         let message: String? = switch error {
         case let refused as NotAuthorizedException: refused.message
-        case AuthClientError.notAuthorized(let description, _, _): description
+        case AmplifyCognitoClientError.notAuthorized(let description, _, _): description
         default: nil
         }
         guard isSelfSignUpRefusal(message), IntegrationTestEnvironment.isSandbox(pool) else {

@@ -10,7 +10,7 @@ import Foundation
 /// The engine's `AuthConfiguration`, in the client's vocabulary: the same cases, and for the user pool the
 /// same twelve fields as `UserPoolConfigurationData`, with the same names.
 ///
-/// It is derived from an `AuthClientConfiguration` exactly as the plugin's `ConfigurationHelper` derives
+/// It is derived from an `AmplifyCognitoClientConfiguration` exactly as the plugin's `ConfigurationHelper` derives
 /// `AuthConfiguration` from `amplify_outputs` (`parseUserPoolData`, `parseHostedConfiguration`,
 /// `parseIdentityPoolData`). `AuthConfiguration(client:)` maps this value field by field, with no decision left to make. The parity
 /// test compares it with the plugin's golden configurations.
@@ -19,7 +19,7 @@ enum EngineConfigurationInput: Sendable, Equatable {
     case identityPools(EngineIdentityPoolSettings)
     case userPoolsAndIdentityPools(EngineUserPoolSettings, EngineIdentityPoolSettings)
 
-    init(_ configuration: AuthClientConfiguration) {
+    init(_ configuration: AmplifyCognitoClientConfiguration) {
         switch (configuration.userPool, configuration.identityPool) {
         case let (userPool?, identityPool?):
             self = .userPoolsAndIdentityPools(.init(userPool), .init(identityPool))
@@ -29,12 +29,12 @@ enum EngineConfigurationInput: Sendable, Equatable {
             self = .identityPools(.init(identityPool))
         case (nil, nil):
             // Unreachable: every initializer requires at least one pool.
-            preconditionFailure("AuthClientConfiguration must contain at least one pool")
+            preconditionFailure("AmplifyCognitoClientConfiguration must contain at least one pool")
         }
     }
 }
 
-extension AuthClientConfiguration {
+extension AmplifyCognitoClientConfiguration {
     /// What the engine is configured with.
     var engineInput: EngineConfigurationInput { EngineConfigurationInput(self) }
 }
@@ -44,7 +44,7 @@ struct EngineIdentityPoolSettings: Sendable, Equatable {
     let poolId: String
     let region: String
 
-    init(_ identityPool: AuthClientConfiguration.IdentityPool) {
+    init(_ identityPool: AmplifyCognitoClientConfiguration.IdentityPool) {
         self.poolId = identityPool.poolId
         self.region = identityPool.region
     }
@@ -90,7 +90,7 @@ struct EngineUserPoolSettings: Sendable, Equatable {
 
     /// The standard attributes `UserPoolConfigurationData.SignUpAttributeType` has a case for. The plugin
     /// drops the others (`locale`, `picture`, `sub`, `updated_at`, `zoneinfo`), and so does the client.
-    static let signUpAttributeKeys: Set<AuthClientUserAttributeKey> = [
+    static let signUpAttributeKeys: Set<AmplifyCognitoClientUserAttributeKey> = [
         .address, .birthDate, .email, .familyName, .gender, .givenName, .middleName, .name, .nickname,
         .phoneNumber, .preferredUsername, .profile, .website
     ]
@@ -106,11 +106,11 @@ struct EngineUserPoolSettings: Sendable, Equatable {
     var hostedUIConfig: HostedUIConfig?
     let authFlowType: AuthFlowType
     let passwordProtectionSettings: PasswordProtectionSettings?
-    let usernameAttributes: [AuthClientConfiguration.UsernameAttribute]
-    let signUpAttributes: [AuthClientUserAttributeKey]
-    let verificationMechanisms: [AuthClientConfiguration.VerificationMechanism]
+    let usernameAttributes: [AmplifyCognitoClientConfiguration.UsernameAttribute]
+    let signUpAttributes: [AmplifyCognitoClientUserAttributeKey]
+    let verificationMechanisms: [AmplifyCognitoClientConfiguration.VerificationMechanism]
 
-    init(_ userPool: AuthClientConfiguration.UserPool) {
+    init(_ userPool: AmplifyCognitoClientConfiguration.UserPool) {
         self.poolId = userPool.poolId
         self.clientId = userPool.appClientId
         self.region = userPool.region

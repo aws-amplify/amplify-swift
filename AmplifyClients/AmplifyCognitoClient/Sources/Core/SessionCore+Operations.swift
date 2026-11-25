@@ -84,7 +84,7 @@ extension SessionCore {
 
     /// A federated session has no user pool user, and a sign-in is refused over it (`signInSeed`) until the
     /// federation is cleared or the session signed out.
-    static func federatedHasNoUser(_ sessionId: SessionID) -> AuthClientError {
+    static func federatedHasNoUser(_ sessionId: SessionID) -> AmplifyCognitoClientError {
         .notSignedIn(
             "Session \"\(sessionId)\" has no user pool user: it is federated to the identity pool.",
             "Call clearFederationToIdentityPool() or sign the session out, then sign in through the user pool."
@@ -97,19 +97,19 @@ extension SessionCore {
     /// that.
     static func operationFailure(_ error: Error, operation: String) -> Error {
         switch error {
-        case is AuthClientError, is CancellationError:
+        case is AmplifyCognitoClientError, is CancellationError:
             return error
         case let error as CredentialsError:
             return authClientError(from: error)
         case SessionEngineError.service(let error):
             return error
         case SessionEngineError.notSignedIn:
-            return AuthClientError.notSignedIn("The session is not signed in.", "Sign in first.", error)
+            return AmplifyCognitoClientError.notSignedIn("The session is not signed in.", "Sign in first.", error)
         default:
-            if let network = AuthClientError.transportFailure(error) {
+            if let network = AmplifyCognitoClientError.transportFailure(error) {
                 return network
             }
-            return AuthClientError.unknown("The client could not \(operation).", "Retry the operation.", error)
+            return AmplifyCognitoClientError.unknown("The client could not \(operation).", "Retry the operation.", error)
         }
     }
 }

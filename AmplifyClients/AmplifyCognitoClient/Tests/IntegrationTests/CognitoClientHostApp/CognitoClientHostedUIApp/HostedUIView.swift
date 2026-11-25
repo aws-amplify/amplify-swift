@@ -117,7 +117,7 @@ struct HostedUIView: View {
             do {
                 currentUsername = try await client.getCurrentUser().username
                 isSignedIn = true
-            } catch AuthClientError.notSignedIn {
+            } catch AmplifyCognitoClientError.notSignedIn {
                 isSignedIn = false
             } catch {
                 lastResult = "Load failed: \(harnessResultText(error))"
@@ -160,7 +160,7 @@ struct HostedUIView: View {
         }
         let result = await client.signOutWithWebUI(
             presentationAnchor: window,
-            options: AuthClientSignOutOptions(purgeStoredSession: true)
+            options: AmplifyCognitoClientSignOutOptions(purgeStoredSession: true)
         )
         if case .failed(let error) = result {
             throw HarnessAppError(error.harnessCaseName)
@@ -168,7 +168,7 @@ struct HostedUIView: View {
         do {
             _ = try await client.getCurrentUser()
             return "Sign Out left a user signed in"
-        } catch AuthClientError.notSignedIn {
+        } catch AmplifyCognitoClientError.notSignedIn {
             isSignedIn = false
             currentUsername = ""
             return result == .complete ? "User is signed out" : "User is signed out, but part of it failed: \(result.failedParts)"

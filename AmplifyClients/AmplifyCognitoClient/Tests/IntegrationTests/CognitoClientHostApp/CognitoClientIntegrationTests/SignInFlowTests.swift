@@ -19,7 +19,7 @@ import XCTest
 /// written first, with the sign-in they depend on.
 final class SignInFlowTests: ClientIntegrationTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -65,7 +65,7 @@ final class SignInFlowTests: ClientIntegrationTestCase {
             let sub = try XCTUnwrap(IntegrationTestEnvironment.jwtClaims(idToken)["sub"] as? String)
             let state = await client.currentSessionState()
             XCTAssertTrue(
-                state == .signedIn(AuthClientUser(username: alice.username, userId: sub)),
+                state == .signedIn(AmplifyCognitoClientUser(username: alice.username, userId: sub)),
                 "the state should be .signedIn as alice, with her id token's sub"
             )
         }
@@ -259,9 +259,9 @@ final class SignInFlowTests: ClientIntegrationTestCase {
     @discardableResult
     private func assertRestores(
         _ sessionId: SessionID,
-        as stored: AuthClientSession,
+        as stored: AmplifyCognitoClientSession,
         user alice: TestUser,
-        through outputs: AuthClientConfiguration,
+        through outputs: AmplifyCognitoClientConfiguration,
         then: (AmplifyCognitoClient) async throws -> Void = { _ in }
     ) async throws -> RecordingHTTPClient {
         let recorder = RecordingHTTPClient()
@@ -292,12 +292,12 @@ final class SignInFlowTests: ClientIntegrationTestCase {
 
     /// The outputs with sections added that an auth client does not read: what changes when an app adds
     /// another category, and must not touch a stored session.
-    private static func withUnrelatedSections(_ outputs: Data) throws -> AuthClientConfiguration {
+    private static func withUnrelatedSections(_ outputs: Data) throws -> AmplifyCognitoClientConfiguration {
         var json = try XCTUnwrap(JSONSerialization.jsonObject(with: outputs) as? [String: Any])
         json["analytics"] = ["amazon_pinpoint": ["aws_region": "us-east-1", "app_id": "unrelated-app"]]
         json["notifications"] = ["aws_region": "us-east-1", "amazon_pinpoint_app_id": "unrelated-app", "channels": ["APNS"]]
         json["custom"] = ["note": "changed after the sign-in"]
-        return try AuthClientConfiguration(
+        return try AmplifyCognitoClientConfiguration(
             outputsData: JSONSerialization.data(withJSONObject: json),
             resourceName: IntegrationTestEnvironment.outputsResource
         )
@@ -305,7 +305,7 @@ final class SignInFlowTests: ClientIntegrationTestCase {
 
     /// Signs alice in on `sessionId` through a client that is released when this returns, and returns her
     /// session, which holds an identity ID and AWS credentials.
-    private func signInAndDrop(_ sessionId: SessionID, as alice: TestUser) async throws -> AuthClientSession {
+    private func signInAndDrop(_ sessionId: SessionID, as alice: TestUser) async throws -> AmplifyCognitoClientSession {
         let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
         _ = try await client.signIn(username: alice.username, password: alice.password)
         let session = try await client.fetchAuthSession()

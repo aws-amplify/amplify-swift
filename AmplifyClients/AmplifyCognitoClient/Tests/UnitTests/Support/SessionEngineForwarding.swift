@@ -30,7 +30,7 @@ extension SessionEngineForwarding {
         get async { await forwardingBase.pendingChallengeState }
     }
 
-    func resumeSignIn(from state: ChallengeRecord.State, epoch: UInt64) async -> AuthClientSignInStep? {
+    func resumeSignIn(from state: ChallengeRecord.State, epoch: UInt64) async -> AmplifyCognitoClientSignInStep? {
         await forwardingBase.resumeSignIn(from: state, epoch: epoch)
     }
 
@@ -42,15 +42,15 @@ extension SessionEngineForwarding {
         try await forwardingBase.revoke(payload, global: global, hostedUI: hostedUI)
     }
 
-    func signUp(_ request: EngineSignUpRequest) async throws -> AuthClientSignUpResult {
+    func signUp(_ request: EngineSignUpRequest) async throws -> AmplifyCognitoClientSignUpResult {
         try await forwardingBase.signUp(request)
     }
 
-    func confirmSignUp(_ request: EngineConfirmSignUpRequest) async throws -> AuthClientSignUpResult {
+    func confirmSignUp(_ request: EngineConfirmSignUpRequest) async throws -> AmplifyCognitoClientSignUpResult {
         try await forwardingBase.confirmSignUp(request)
     }
 
-    func resendSignUpCode(username: String, clientMetadata: [String: String]) async throws -> AuthClientCodeDeliveryDetails {
+    func resendSignUpCode(username: String, clientMetadata: [String: String]) async throws -> AmplifyCognitoClientCodeDeliveryDetails {
         try await forwardingBase.resendSignUpCode(username: username, clientMetadata: clientMetadata)
     }
 
@@ -62,7 +62,7 @@ extension SessionEngineForwarding {
         try await forwardingBase.autoSignIn(current: current, epoch: epoch)
     }
 
-    func resetPassword(username: String, clientMetadata: [String: String]) async throws -> AuthClientResetPasswordResult {
+    func resetPassword(username: String, clientMetadata: [String: String]) async throws -> AmplifyCognitoClientResetPasswordResult {
         try await forwardingBase.resetPassword(username: username, clientMetadata: clientMetadata)
     }
 
@@ -70,27 +70,27 @@ extension SessionEngineForwarding {
         try await forwardingBase.confirmResetPassword(request)
     }
 
-    func fetchUserAttributes(_ payload: Data) async throws -> [AuthClientUserAttribute] {
+    func fetchUserAttributes(_ payload: Data) async throws -> [AmplifyCognitoClientUserAttribute] {
         try await forwardingBase.fetchUserAttributes(payload)
     }
 
     func updateUserAttributes(
         _ payload: Data,
-        attributes: [AuthClientUserAttribute],
+        attributes: [AmplifyCognitoClientUserAttribute],
         clientMetadata: [String: String]
-    ) async throws -> [AuthClientUserAttributeKey: AuthClientUpdateAttributeResult] {
+    ) async throws -> [AmplifyCognitoClientUserAttributeKey: AmplifyCognitoClientUpdateAttributeResult] {
         try await forwardingBase.updateUserAttributes(payload, attributes: attributes, clientMetadata: clientMetadata)
     }
 
     func sendVerificationCode(
         _ payload: Data,
-        attributeKey: AuthClientUserAttributeKey,
+        attributeKey: AmplifyCognitoClientUserAttributeKey,
         clientMetadata: [String: String]
-    ) async throws -> AuthClientCodeDeliveryDetails {
+    ) async throws -> AmplifyCognitoClientCodeDeliveryDetails {
         try await forwardingBase.sendVerificationCode(payload, attributeKey: attributeKey, clientMetadata: clientMetadata)
     }
 
-    func confirmUserAttribute(_ payload: Data, attributeKey: AuthClientUserAttributeKey, confirmationCode: String) async throws {
+    func confirmUserAttribute(_ payload: Data, attributeKey: AmplifyCognitoClientUserAttributeKey, confirmationCode: String) async throws {
         try await forwardingBase.confirmUserAttribute(payload, attributeKey: attributeKey, confirmationCode: confirmationCode)
     }
 
@@ -98,7 +98,7 @@ extension SessionEngineForwarding {
         try await forwardingBase.changePassword(payload, oldPassword: oldPassword, newPassword: newPassword)
     }
 
-    func setUpTOTP(_ payload: Data) async throws -> AuthClientTOTPSetupDetails {
+    func setUpTOTP(_ payload: Data) async throws -> AmplifyCognitoClientTOTPSetupDetails {
         try await forwardingBase.setUpTOTP(payload)
     }
 
@@ -106,20 +106,20 @@ extension SessionEngineForwarding {
         try await forwardingBase.verifyTOTPSetup(payload, code: code, friendlyDeviceName: friendlyDeviceName)
     }
 
-    func fetchMFAPreference(_ payload: Data) async throws -> AuthClientUserMFAPreference {
+    func fetchMFAPreference(_ payload: Data) async throws -> AmplifyCognitoClientUserMFAPreference {
         try await forwardingBase.fetchMFAPreference(payload)
     }
 
     func updateMFAPreference(
         _ payload: Data,
-        sms: AuthClientMFAPreference?,
-        totp: AuthClientMFAPreference?,
-        email: AuthClientMFAPreference?
+        sms: AmplifyCognitoClientMFAPreference?,
+        totp: AmplifyCognitoClientMFAPreference?,
+        email: AmplifyCognitoClientMFAPreference?
     ) async throws {
         try await forwardingBase.updateMFAPreference(payload, sms: sms, totp: totp, email: email)
     }
 
-    func fetchDevices(_ payload: Data) async throws -> [AuthClientDevice] {
+    func fetchDevices(_ payload: Data) async throws -> [AmplifyCognitoClientDevice] {
         try await forwardingBase.fetchDevices(payload)
     }
 

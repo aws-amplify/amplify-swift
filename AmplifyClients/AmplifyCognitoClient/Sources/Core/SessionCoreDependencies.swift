@@ -27,11 +27,11 @@ struct SessionCoreDependencies: Sendable {
     let gates: SessionRecordGates
     let makeStore: @Sendable (SessionStorageNamespace) -> SessionRecordStore
     let makeClients: @Sendable (
-        AuthClientConfiguration,
+        AmplifyCognitoClientConfiguration,
         AmplifyCognitoClientUserPoolConfigurationProvider?
     ) throws -> CognitoServiceClients
     let makeEngine: @Sendable (SessionEngineContext) throws -> any SessionEngine
-    let makeRevoker: @Sendable (AuthClientConfiguration) -> any SessionRevoker
+    let makeRevoker: @Sendable (AmplifyCognitoClientConfiguration) -> any SessionRevoker
     /// Revokes a login `.default` deleted on a configuration change, with the previous configuration's region and app
     /// client ID: `RevokeToken` refuses a token from another app client. `LiveSessionRevoker(previous:)` in
     /// `live`; inert by default, so dependencies a test builds never reach Cognito.

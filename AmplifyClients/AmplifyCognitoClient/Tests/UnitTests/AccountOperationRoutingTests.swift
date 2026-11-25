@@ -87,8 +87,8 @@ final class AccountOperationRoutingTests: XCTestCase {
                 clientMetadata: metadata
             ))
         ])
-        XCTAssertEqual(signUp, AuthClientSignUpResult(.done, userId: "sub-carol"))
-        XCTAssertEqual(confirm, AuthClientSignUpResult(.done, userId: "sub-carol"))
+        XCTAssertEqual(signUp, AmplifyCognitoClientSignUpResult(.done, userId: "sub-carol"))
+        XCTAssertEqual(confirm, AmplifyCognitoClientSignUpResult(.done, userId: "sub-carol"))
         XCTAssertEqual(resend, FakeSessionEngine.delivery)
         XCTAssertEqual(reset.nextStep, .confirmResetPasswordWithCode(FakeSessionEngine.delivery, nil))
         XCTAssertEqual(other.accountOperationCalls, [])
@@ -157,14 +157,14 @@ final class AccountOperationRoutingTests: XCTestCase {
         let federated = try harness.client(home)
         let engine = try XCTUnwrap(harness.engine(for: work))
 
-        _ = try await client.fetchUserAttributes(options: AuthClientFetchUserAttributesOptions())
-        try await client.confirm(userAttribute: .email, confirmationCode: "111111", options: AuthClientConfirmUserAttributeOptions())
-        try await client.update(oldPassword: "old", to: "new", options: AuthClientChangePasswordOptions())
-        _ = try await client.fetchDevices(options: AuthClientFetchDevicesOptions())
-        try await client.rememberDevice(options: AuthClientRememberDeviceOptions())
-        try await client.forgetDevice(options: AuthClientForgetDeviceOptions())
-        try await client.deleteWebAuthnCredential(credentialId: "credential", options: AuthClientDeleteWebAuthnCredentialOptions())
-        try await federated.clearFederationToIdentityPool(options: AuthClientClearFederationToIdentityPoolOptions())
+        _ = try await client.fetchUserAttributes(options: AmplifyCognitoClientFetchUserAttributesOptions())
+        try await client.confirm(userAttribute: .email, confirmationCode: "111111", options: AmplifyCognitoClientConfirmUserAttributeOptions())
+        try await client.update(oldPassword: "old", to: "new", options: AmplifyCognitoClientChangePasswordOptions())
+        _ = try await client.fetchDevices(options: AmplifyCognitoClientFetchDevicesOptions())
+        try await client.rememberDevice(options: AmplifyCognitoClientRememberDeviceOptions())
+        try await client.forgetDevice(options: AmplifyCognitoClientForgetDeviceOptions())
+        try await client.deleteWebAuthnCredential(credentialId: "credential", options: AmplifyCognitoClientDeleteWebAuthnCredentialOptions())
+        try await federated.clearFederationToIdentityPool(options: AmplifyCognitoClientClearFederationToIdentityPoolOptions())
 
         XCTAssertEqual(engine.accountOperationCalls, [
             .fetchUserAttributes(payload: alice.data),
@@ -196,9 +196,9 @@ final class AccountOperationRoutingTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let other = try XCTUnwrap(harness.engine(for: home))
         let metadata = ["app": "test"]
-        let email = AuthClientUserAttribute(.email, value: "alice@example.org")
-        let name = AuthClientUserAttribute(.name, value: "Alice")
-        let device = AuthClientDevice(id: "device-2", name: "iPad")
+        let email = AmplifyCognitoClientUserAttribute(.email, value: "alice@example.org")
+        let name = AmplifyCognitoClientUserAttribute(.name, value: "Alice")
+        let device = AmplifyCognitoClientDevice(id: "device-2", name: "iPad")
 
         let attributes = try await client.fetchUserAttributes()
         let single = try await client.update(userAttribute: email, options: .init(clientMetadata: metadata))
@@ -216,7 +216,7 @@ final class AccountOperationRoutingTests: XCTestCase {
         try await client.forgetDevice(device)
         _ = try await homeClient.fetchUserAttributes()
 
-        let done = AuthClientUpdateAttributeResult(isUpdated: true, nextStep: .done)
+        let done = AmplifyCognitoClientUpdateAttributeResult(isUpdated: true, nextStep: .done)
         XCTAssertEqual(engine.accountOperationCalls, [
             .fetchUserAttributes(payload: alice.data),
             .updateUserAttributes(payload: alice.data, attributes: [email], clientMetadata: metadata),
@@ -234,13 +234,13 @@ final class AccountOperationRoutingTests: XCTestCase {
             .forgetDevice(payload: alice.data, deviceId: "device-2")
         ])
         XCTAssertEqual(other.accountOperationCalls, [.fetchUserAttributes(payload: bob.data)])
-        XCTAssertEqual(attributes, [AuthClientUserAttribute(.email, value: "alice@example.com")])
+        XCTAssertEqual(attributes, [AmplifyCognitoClientUserAttribute(.email, value: "alice@example.com")])
         XCTAssertEqual(single, done)
         XCTAssertEqual(several, [.email: done, .name: done])
         XCTAssertEqual(delivery, FakeSessionEngine.delivery)
-        XCTAssertEqual(totp, AuthClientTOTPSetupDetails(sharedSecret: "SECRET", username: "alice"))
-        XCTAssertEqual(preference, AuthClientUserMFAPreference(enabled: nil, preferred: nil))
-        XCTAssertEqual(devices, [AuthClientDevice(id: "device-1", name: "iPhone")])
+        XCTAssertEqual(totp, AmplifyCognitoClientTOTPSetupDetails(sharedSecret: "SECRET", username: "alice"))
+        XCTAssertEqual(preference, AmplifyCognitoClientUserMFAPreference(enabled: nil, preferred: nil))
+        XCTAssertEqual(devices, [AmplifyCognitoClientDevice(id: "device-1", name: "iPhone")])
         XCTAssertEqual(harness.keychain.writtenAccounts, [])
     }
 
@@ -294,7 +294,7 @@ final class AccountOperationRoutingTests: XCTestCase {
         let result = try await client.confirmSignIn(challengeResponse: "123456")
         XCTAssertEqual(result.nextStep, .done)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 
     /// - Given: a federated session
@@ -338,7 +338,7 @@ final class AccountOperationRoutingTests: XCTestCase {
     /// - Given: a signed-in session whose engine fails a call
     /// - When: the call is made
     /// - Then:
-    ///    - an `AuthClientError` passes through, a `SessionEngineError.service` is unwrapped, and anything
+    ///    - an `AmplifyCognitoClientError` passes through, a `SessionEngineError.service` is unwrapped, and anything
     ///      else is `unknown` naming the operation
     func testSignedInOperationFailuresAreMapped() async throws {
         try harness.signIn(work, .signedIn("alice"))
@@ -385,7 +385,7 @@ final class AccountOperationRoutingTests: XCTestCase {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        engine.scriptAccountOperation(.updateUserAttributes) { _ in [AuthClientUserAttributeKey: AuthClientUpdateAttributeResult]() }
+        engine.scriptAccountOperation(.updateUserAttributes) { _ in [AmplifyCognitoClientUserAttributeKey: AmplifyCognitoClientUpdateAttributeResult]() }
 
         await assertThrowsAsync({ try await client.update(userAttribute: .init(.email, value: "a@example.com")) }) { error in
             guard case .unknown(let description, _, _) = authError(error) else {

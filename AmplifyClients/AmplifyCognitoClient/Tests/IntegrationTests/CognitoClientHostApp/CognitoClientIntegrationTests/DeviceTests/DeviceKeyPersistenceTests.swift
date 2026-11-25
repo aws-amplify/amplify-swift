@@ -151,8 +151,8 @@ final class DeviceKeyPersistenceTests: DeviceTestCase {
     /// Signs a fresh user in with `first`, remembers the device, then for each of `then` signs out and
     /// back in with that flow, checking after each that the one listed device is the first one.
     private func assertDeviceKeyPersists(
-        from first: AuthClientAuthFlowType,
-        to then: [AuthClientAuthFlowType],
+        from first: AmplifyCognitoClientAuthFlowType,
+        to then: [AmplifyCognitoClientAuthFlowType],
         tag: String
     ) async throws {
         let user = try await makeFreshUser(on: .standard)

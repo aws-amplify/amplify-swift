@@ -13,7 +13,7 @@ import XCTest
 /// callers ask, and a global sign-out reaching a sibling session on its next refresh.
 final class RefreshTests: ClientIntegrationTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -130,7 +130,7 @@ final class RefreshTests: ClientIntegrationTestCase {
                 configuration: poolConfiguration
             )
         }
-        let signOutResult: AuthClientSignOutResult
+        let signOutResult: AmplifyCognitoClientSignOutResult
         let events: StreamRecorder<AuthEvent>
         do {
             let a = try AmplifyCognitoClient(configuration: poolConfiguration, options: .init(sessionId: sessionA))

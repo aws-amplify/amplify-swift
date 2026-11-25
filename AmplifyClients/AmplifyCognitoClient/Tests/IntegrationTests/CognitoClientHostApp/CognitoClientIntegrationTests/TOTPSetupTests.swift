@@ -59,7 +59,7 @@ final class TOTPSetupTests: ClientMFATestCase {
             try await client.verifyTOTPSetup(code: TOTP.wrongCode(secret: secret))
             XCTFail("a wrong code should not verify the setup")
         } catch {
-            guard case .service(.softwareTokenMFANotEnabled?, _, _, _) = error as? AuthClientError else {
+            guard case .service(.softwareTokenMFANotEnabled?, _, _, _) = error as? AmplifyCognitoClientError else {
                 return XCTFail("expected .service(.softwareTokenMFANotEnabled), got \(Self.describe(error))")
             }
         }

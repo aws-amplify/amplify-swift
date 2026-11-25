@@ -121,7 +121,7 @@ public struct SessionID: Hashable, Sendable {
     ///   - label: The picker label a sign-in saves for the session when its row keeps none; `nil`, the default, for
     ///     none. See `label`. Any text: it is not validated, and is not part of the ID. With `"$default"`, the result
     ///     equals `.default` and carries the label.
-    /// - Throws: `AuthClientError.invalidSessionID` for an empty or overlong ID, or one naming the first
+    /// - Throws: `AmplifyCognitoClientError.invalidSessionID` for an empty or overlong ID, or one naming the first
     ///   character outside the charset. The message never repeats the ID itself.
     public static func named(_ id: String, label: String? = nil) throws -> SessionID {
         if id != SessionID.default.stringValue {
@@ -158,19 +158,19 @@ public struct SessionID: Hashable, Sendable {
 
     private static func validate(_ id: String) throws {
         guard !id.isEmpty else {
-            throw AuthClientError.invalidSessionID(
+            throw AmplifyCognitoClientError.invalidSessionID(
                 "A session ID cannot be empty.",
                 "Pass a non-empty identifier, or use SessionID.new() to let the library mint one."
             )
         }
         guard id.unicodeScalars.count <= maximumLength else {
-            throw AuthClientError.invalidSessionID(
+            throw AmplifyCognitoClientError.invalidSessionID(
                 "A session ID can be at most \(maximumLength) characters; this one has \(id.unicodeScalars.count).",
                 "Use a shorter identifier, or hash a long one before passing it."
             )
         }
         if let offender = id.unicodeScalars.first(where: { !isPermitted($0) }) {
-            throw AuthClientError.invalidSessionID(
+            throw AmplifyCognitoClientError.invalidSessionID(
                 "A session ID may only contain letters, digits, '_' and '-'; found \"\(offender)\".",
                 "Remove or replace the character. The restriction keeps session IDs safe to use in storage keys."
             )

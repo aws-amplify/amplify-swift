@@ -62,7 +62,7 @@ final class SessionRegistry<Namespace: Equatable & Sendable, Fingerprint: Equata
     /// cannot both build a session. It must therefore be cheap and must not call back into the
     /// registry, which would deadlock.
     ///
-    /// - Throws: `AuthClientError.sessionConfigurationMismatch` if the session is already live under
+    /// - Throws: `AmplifyCognitoClientError.sessionConfigurationMismatch` if the session is already live under
     ///   a different namespace or fingerprint, or whatever `make` throws.
     func session(
         for sessionId: SessionID,
@@ -76,14 +76,14 @@ final class SessionRegistry<Namespace: Equatable & Sendable, Fingerprint: Equata
         if let entry = entries[sessionId], let live = entry.session {
             didLoadLiveEntry?(sessionId)
             guard entry.namespace == namespace else {
-                throw AuthClientError.sessionConfigurationMismatch(
+                throw AmplifyCognitoClientError.sessionConfigurationMismatch(
                     sessionId,
                     "Session \"\(sessionId)\" is already in use with a different user pool, identity pool or keychain access group.",
                     "Use a different session ID for each configuration, or construct every client for this session with the same pools and access group."
                 )
             }
             guard entry.fingerprint == fingerprint else {
-                throw AuthClientError.sessionConfigurationMismatch(
+                throw AmplifyCognitoClientError.sessionConfigurationMismatch(
                     sessionId,
                     "Session \"\(sessionId)\" is already in use with different settings.",
                     "Construct every client for one session with the same configuration."

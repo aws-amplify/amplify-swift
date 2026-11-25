@@ -26,7 +26,7 @@ actor SessionCore {
 
     // Immutable and Sendable, so synchronously readable from any context.
     nonisolated let sessionId: SessionID
-    nonisolated let configuration: AuthClientConfiguration
+    nonisolated let configuration: AmplifyCognitoClientConfiguration
     nonisolated let namespace: SessionStorageNamespace
     nonisolated let clients: CognitoServiceClients
     /// Only ever used off the actor.
@@ -79,7 +79,7 @@ actor SessionCore {
     private var snapshot: SessionSnapshot?
 
     /// The sign-in step the session is waiting on, as last reported by the engine.
-    private(set) var pendingChallenge: AuthClientSignInStep?
+    private(set) var pendingChallenge: AmplifyCognitoClientSignInStep?
 
     /// Bumped whenever `pendingChallenge` is set, so a reader that suspended can tell it went stale.
     private(set) var challengeGeneration: UInt64 = 0
@@ -141,7 +141,7 @@ actor SessionCore {
     /// `await`, no keychain call, no call back into the registry.
     init(
         sessionId: SessionID,
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         namespace: SessionStorageNamespace,
         clients: CognitoServiceClients,
         dependencies: SessionCoreDependencies
@@ -203,7 +203,7 @@ actor SessionCore {
 
     enum ChallengeUpdate: Sendable {
         case unchanged
-        case set(AuthClientSignInStep?)
+        case set(AmplifyCognitoClientSignInStep?)
     }
 
     /// Installs a snapshot read or written by an operation, publishes the state it projects to if that
@@ -249,7 +249,7 @@ actor SessionCore {
     /// session's challenge was set since then, the newer one is kept rather than overwritten.
     func adoptRestored(
         _ restored: SessionSnapshot,
-        challenge pending: AuthClientSignInStep?,
+        challenge pending: AmplifyCognitoClientSignInStep?,
         readAtChallengeGeneration generation: UInt64
     ) -> SessionSnapshot {
         if let snapshot {
@@ -270,7 +270,7 @@ actor SessionCore {
 
     /// Records the sign-in step the session now waits on (`nil` when none). The sign-in paths of task
     /// 2.5 call this; two different steps both publish.
-    func setPendingChallenge(_ step: AuthClientSignInStep?) {
+    func setPendingChallenge(_ step: AmplifyCognitoClientSignInStep?) {
         guard let snapshot else {
             setChallenge(step)
             return
@@ -365,14 +365,14 @@ actor SessionCore {
     }
 
     /// `setPendingChallenge(_:)`, unless the sign-in epoch has moved from `epoch`.
-    func setPendingChallenge(_ step: AuthClientSignInStep?, ifEpoch epoch: UInt64) {
+    func setPendingChallenge(_ step: AmplifyCognitoClientSignInStep?, ifEpoch epoch: UInt64) {
         guard signInEpoch == epoch else {
             return
         }
         setPendingChallenge(step)
     }
 
-    private func setChallenge(_ step: AuthClientSignInStep?) {
+    private func setChallenge(_ step: AmplifyCognitoClientSignInStep?) {
         pendingChallenge = step
         challengeGeneration &+= 1
     }

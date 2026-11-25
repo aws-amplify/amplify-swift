@@ -25,7 +25,7 @@ struct EngineWebUISignInRequest: Sendable, Equatable {
 struct EngineWebUIOptions: Sendable, Equatable {
     /// `nil` requests the configuration's scopes.
     let scopes: [String]?
-    let provider: AuthClientProvider?
+    let provider: AmplifyCognitoClientProvider?
     /// Wins over `provider` (the plugin's precedence).
     let idpIdentifier: String?
     let prefersEphemeralSession: Bool

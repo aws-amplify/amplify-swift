@@ -27,15 +27,15 @@ public extension AmplifyCognitoClient {
     ///   - options: User attributes, validation data and client metadata.
     /// - Returns: `.confirmUser` when the user must confirm a code; `.completeAutoSignIn` when
     ///   `autoSignIn()` can sign them in to this session; otherwise `.done`.
-    /// - Throws: `AuthClientError.validation` for an empty username; `.configuration` without a user pool;
+    /// - Throws: `AmplifyCognitoClientError.validation` for an empty username; `.configuration` without a user pool;
     ///   `.service` as Cognito answers, such as `.usernameExists` or `.invalidPassword`; `.notAuthorized` when
     ///   the user pool refuses the request (sign-up disabled for the app client, for example); `.unknown` for a
     ///   failure the client does not recognise; `CancellationError` if the calling task is cancelled.
     func signUp(
         username: String,
         password: String? = nil,
-        options: AuthClientSignUpOptions = AuthClientSignUpOptions()
-    ) async throws -> AuthClientSignUpResult {
+        options: AmplifyCognitoClientSignUpOptions = AmplifyCognitoClientSignUpOptions()
+    ) async throws -> AmplifyCognitoClientSignUpResult {
         try Self.requireSignUpArgument(username, SignUpValidation.signUpUsername)
         let request = EngineSignUpRequest(
             username: username,
@@ -53,15 +53,15 @@ public extension AmplifyCognitoClient {
     /// Confirms a sign-up with the code Cognito sent.
     ///
     /// - Returns: `.completeAutoSignIn` when `autoSignIn()` can sign the user in to this session, else `.done`.
-    /// - Throws: `AuthClientError.validation` for an empty username or code; `.configuration` without a user
+    /// - Throws: `AmplifyCognitoClientError.validation` for an empty username or code; `.configuration` without a user
     ///   pool; `.service` as Cognito answers, such as `.codeMismatch` or `.codeExpired`; `.notAuthorized` when
     ///   the user pool refuses the confirmation (a user already confirmed, for example); `.unknown` for a
     ///   failure the client does not recognise; `CancellationError` if the calling task is cancelled.
     func confirmSignUp(
         for username: String,
         confirmationCode: String,
-        options: AuthClientConfirmSignUpOptions = AuthClientConfirmSignUpOptions()
-    ) async throws -> AuthClientSignUpResult {
+        options: AmplifyCognitoClientConfirmSignUpOptions = AmplifyCognitoClientConfirmSignUpOptions()
+    ) async throws -> AmplifyCognitoClientSignUpResult {
         try Self.requireSignUpArgument(username, SignUpValidation.confirmUsername)
         try Self.requireSignUpArgument(confirmationCode, SignUpValidation.confirmationCode)
         let request = EngineConfirmSignUpRequest(
@@ -79,14 +79,14 @@ public extension AmplifyCognitoClient {
     /// Sends the sign-up confirmation code again.
     ///
     /// - Returns: Where the code was sent.
-    /// - Throws: `AuthClientError.validation` for an empty username; `.configuration` without a user pool;
+    /// - Throws: `AmplifyCognitoClientError.validation` for an empty username; `.configuration` without a user pool;
     ///   `.service` as Cognito answers, such as `.limitExceeded`; `.notAuthorized` when the user pool refuses
     ///   the request; `.unknown` for a failure the client does not recognise, or an answer without delivery
     ///   details; `CancellationError` if the calling task is cancelled.
     func resendSignUpCode(
         for username: String,
-        options: AuthClientResendSignUpCodeOptions = AuthClientResendSignUpCodeOptions()
-    ) async throws -> AuthClientCodeDeliveryDetails {
+        options: AmplifyCognitoClientResendSignUpCodeOptions = AmplifyCognitoClientResendSignUpCodeOptions()
+    ) async throws -> AmplifyCognitoClientCodeDeliveryDetails {
         try Self.requireSignUpArgument(username, SignUpValidation.resendUsername)
         let clientMetadata = options.clientMetadata
         let core = core
@@ -107,10 +107,10 @@ public extension AmplifyCognitoClient {
     /// out, so a second call reaches Cognito again, which refuses the spent session with `.notAuthorized`.
     ///
     /// - Returns: `.done` once signed in; otherwise the step to present, as `signIn` does.
-    /// - Throws: `AuthClientError.invalidState` if this session has no sign-up ready to sign in (checked
+    /// - Throws: `AmplifyCognitoClientError.invalidState` if this session has no sign-up ready to sign in (checked
     ///   first, so a pending sign-in is kept), or is signed in; otherwise as
     ///   `signIn(username:password:options:)`.
-    func autoSignIn() async throws -> AuthClientSignInResult {
+    func autoSignIn() async throws -> AmplifyCognitoClientSignInResult {
         let core = core
         return try await core.autoSignIn()
     }
@@ -119,7 +119,7 @@ public extension AmplifyCognitoClient {
 extension AmplifyCognitoClient {
 
     /// User attributes as Cognito names them; the last value wins for a repeated key.
-    static func cognitoAttributes(_ attributes: [AuthClientUserAttribute]) -> [String: String] {
+    static func cognitoAttributes(_ attributes: [AmplifyCognitoClientUserAttribute]) -> [String: String] {
         Dictionary(attributes.map { ($0.key.cognitoName, $0.value) }, uniquingKeysWith: { _, last in last })
     }
 
@@ -128,7 +128,7 @@ extension AmplifyCognitoClient {
         guard value.isEmpty else {
             return
         }
-        throw AuthClientError.validation(field: rule.field, rule.description, rule.suggestion)
+        throw AmplifyCognitoClientError.validation(field: rule.field, rule.description, rule.suggestion)
     }
 }
 

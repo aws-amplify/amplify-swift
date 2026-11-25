@@ -57,7 +57,7 @@ final class RefreshResultTests: XCTestCase {
 
         XCTAssertEqual(credentials as? CognitoAWSCredentials, FakePayload.signedIn("alice", version: 2).awsCredentials)
         XCTAssertEqual(token, "access-alice-v3")
-        XCTAssertEqual(session.awsCredentials, AuthClientAWSCredentials(FakePayload.signedIn("alice", version: 4).awsCredentials))
+        XCTAssertEqual(session.awsCredentials, AmplifyCognitoClientAWSCredentials(FakePayload.signedIn("alice", version: 4).awsCredentials))
         XCTAssertEqual(session.userPoolTokens?.accessToken, "access-alice-v4")
         XCTAssertEqual(engine.refreshCalls.count, 3)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, FakePayload.signedIn("alice", version: 4, stale: true).data)

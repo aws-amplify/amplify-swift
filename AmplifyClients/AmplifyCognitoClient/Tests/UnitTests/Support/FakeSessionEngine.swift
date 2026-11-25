@@ -151,11 +151,11 @@ struct FakePayload: Codable, Equatable {
     }
 
     /// The user pool tokens the fake vends for this payload.
-    var userPoolTokens: AuthClientUserPoolTokens? {
+    var userPoolTokens: AmplifyCognitoClientUserPoolTokens? {
         guard withoutUserPoolTokens != true, let username, let accessToken else {
             return nil
         }
-        return AuthClientUserPoolTokens(
+        return AmplifyCognitoClientUserPoolTokens(
             idToken: "id-\(username)-v\(version)",
             accessToken: accessToken,
             refreshToken: "refresh-\(username)-v\(version)"
@@ -178,7 +178,7 @@ struct FakeRetryable: Error {
 /// a refresh or a sign-in open on a `Gate` until the test opens it.
 ///
 /// Its pending sign-in follows the seam's contract: a sign-in that reaches a challenge is retained; a new
-/// sign-in supersedes it; `.done` or a failure clears it, except a `FakeRetryable` or `AuthClientError.validation`
+/// sign-in supersedes it; `.done` or a failure clears it, except a `FakeRetryable` or `AmplifyCognitoClientError.validation`
 /// failure of `confirmSignIn`; `confirmSignIn` with nothing pending throws `invalidState`; and a step held by
 /// `holdSignIns(on:)` throws `CancellationError` when released if `cancelPendingSignIn` ran meanwhile.
 /// Its epochs follow the live engine's rules: `confirmSignIn` answers only an attempt of its own epoch, and
@@ -217,7 +217,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         /// Cognito had already issued the tokens: return them, for the core to refuse and revoke.
         case returnIssuedTokens
     }
-    private var challenge: AuthClientSignInStep?
+    private var challenge: AmplifyCognitoClientSignInStep?
     /// The core's epoch of the pending attempt, and the epoch the latest cancel ended everything below.
     private var attemptEpoch: UInt64 = 0
     private var latestCancelBefore: UInt64 = 0
@@ -353,7 +353,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         }
     }
 
-    func setPendingChallenge(_ step: AuthClientSignInStep?) {
+    func setPendingChallenge(_ step: AmplifyCognitoClientSignInStep?) {
         withLock { challenge = step }
     }
 
@@ -459,7 +459,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         return decoded.accessToken
     }
 
-    func userPoolTokens(in payload: Data) throws -> AuthClientUserPoolTokens? {
+    func userPoolTokens(in payload: Data) throws -> AmplifyCognitoClientUserPoolTokens? {
         guard let decoded = FakePayload.decode(payload) else {
             throw FakeEngineError.unreadablePayload
         }
@@ -607,7 +607,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         } catch let error as FakeRetryable where retryable {
             withLock { _ = endStep(step) }
             throw error.error
-        } catch let error as AuthClientError where retryable && error.isValidation {
+        } catch let error as AmplifyCognitoClientError where retryable && error.isValidation {
             // The contract: an answer rejected as invalid keeps the attempt.
             withLock { _ = endStep(step) }
             throw error
@@ -725,7 +725,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         try await script?(payload)
     }
 
-    var pendingChallenge: AuthClientSignInStep? {
+    var pendingChallenge: AmplifyCognitoClientSignInStep? {
         get async {
             let (value, hook) = withLock { (challenge, challengeReadHook) }
             await hook?()
@@ -751,7 +751,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
 
     /// Resumes a saved sign-in as the pending attempt of `epoch`, as the live engine does: refused while one is
     /// pending or a sign-in step is in flight, and when `refuseResumes` was called.
-    func resumeSignIn(from state: ChallengeRecord.State, epoch: UInt64) async -> AuthClientSignInStep? {
+    func resumeSignIn(from state: ChallengeRecord.State, epoch: UInt64) async -> AmplifyCognitoClientSignInStep? {
         withLock {
             resumes.append((state, epoch))
             // Refused while an attempt or a step is live, as the live engine refuses: either is newer.
@@ -901,7 +901,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         } else {
             typed = defaultResult()
         }
-        if let signUp = typed as? AuthClientSignUpResult, case .completeAutoSignIn = signUp.nextStep {
+        if let signUp = typed as? AmplifyCognitoClientSignUpResult, case .completeAutoSignIn = signUp.nextStep {
             let username: String?
             switch call {
             case .signUp(let request):
@@ -1013,7 +1013,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     var isValidation: Bool {
         if case .validation = self {

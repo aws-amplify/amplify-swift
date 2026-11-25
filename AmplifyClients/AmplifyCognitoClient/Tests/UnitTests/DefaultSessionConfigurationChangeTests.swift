@@ -26,7 +26,7 @@ final class DefaultSessionConfigurationChangeTests: XCTestCase {
     var cognito: ScriptedCognito!
     var revokers: PreviousConfigurationRevokers!
     var sink: CategoryCapture!
-    let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+    let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
 
     override func setUp() {
         harness = ClientHarness()

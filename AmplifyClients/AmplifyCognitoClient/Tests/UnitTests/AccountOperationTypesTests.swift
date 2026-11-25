@@ -26,8 +26,8 @@ final class AccountOperationTypesTests: XCTestCase {
     ///      ceremony failures of different kinds are not equivalent
     func testNewErrorCasesCarryTheirPayload() {
         let underlying = FixtureError(description: "platform")
-        let cancelled = AuthClientError.userCancelled("closed", "retry", underlying)
-        let exists = AuthClientError.webAuthnCeremonyFailed(.credentialAlreadyExists, "exists", "use it", underlying)
+        let cancelled = AmplifyCognitoClientError.userCancelled("closed", "retry", underlying)
+        let exists = AmplifyCognitoClientError.webAuthnCeremonyFailed(.credentialAlreadyExists, "exists", "use it", underlying)
 
         for (error, description, suggestion) in [(cancelled, "closed", "retry"), (exists, "exists", "use it")] {
             XCTAssertEqual(error.errorDescription, description)
@@ -45,7 +45,7 @@ final class AccountOperationTypesTests: XCTestCase {
     /// - Then:
     ///    - it is `unknown`: neither means signed out
     func testNewErrorCasesMapToUnknownForProviders() {
-        for error in [AuthClientError.userCancelled("d", "s"), .webAuthnCeremonyFailed(.failed, "d", "s")] {
+        for error in [AmplifyCognitoClientError.userCancelled("d", "s"), .webAuthnCeremonyFailed(.failed, "d", "s")] {
             guard case .unknown = CredentialsError(authClientError: error) else {
                 return XCTFail("\(error)")
             }
@@ -60,16 +60,16 @@ final class AccountOperationTypesTests: XCTestCase {
     ///    - the defaults are the plugin's: no attributes, validation data or metadata, no alias forcing,
     ///      no device name, no developer identity
     func testOptionDefaultsMatchThePlugin() {
-        XCTAssertEqual(AuthClientSignUpOptions(), AuthClientSignUpOptions(userAttributes: [], validationData: [:], clientMetadata: [:]))
-        XCTAssertNil(AuthClientConfirmSignUpOptions().forceAliasCreation)
-        XCTAssertEqual(AuthClientConfirmSignUpOptions().clientMetadata, [:])
-        XCTAssertEqual(AuthClientResendSignUpCodeOptions().clientMetadata, [:])
-        XCTAssertEqual(AuthClientResetPasswordOptions().clientMetadata, [:])
-        XCTAssertEqual(AuthClientConfirmResetPasswordOptions().clientMetadata, [:])
-        XCTAssertEqual(AuthClientUpdateUserAttributesOptions().clientMetadata, [:])
-        XCTAssertEqual(AuthClientSendVerificationCodeOptions().clientMetadata, [:])
-        XCTAssertNil(AuthClientVerifyTOTPSetupOptions().friendlyDeviceName)
-        XCTAssertNil(AuthClientFederateToIdentityPoolOptions().developerProvidedIdentityId)
+        XCTAssertEqual(AmplifyCognitoClientSignUpOptions(), AmplifyCognitoClientSignUpOptions(userAttributes: [], validationData: [:], clientMetadata: [:]))
+        XCTAssertNil(AmplifyCognitoClientConfirmSignUpOptions().forceAliasCreation)
+        XCTAssertEqual(AmplifyCognitoClientConfirmSignUpOptions().clientMetadata, [:])
+        XCTAssertEqual(AmplifyCognitoClientResendSignUpCodeOptions().clientMetadata, [:])
+        XCTAssertEqual(AmplifyCognitoClientResetPasswordOptions().clientMetadata, [:])
+        XCTAssertEqual(AmplifyCognitoClientConfirmResetPasswordOptions().clientMetadata, [:])
+        XCTAssertEqual(AmplifyCognitoClientUpdateUserAttributesOptions().clientMetadata, [:])
+        XCTAssertEqual(AmplifyCognitoClientSendVerificationCodeOptions().clientMetadata, [:])
+        XCTAssertNil(AmplifyCognitoClientVerifyTOTPSetupOptions().friendlyDeviceName)
+        XCTAssertNil(AmplifyCognitoClientFederateToIdentityPoolOptions().developerProvidedIdentityId)
     }
 
     /// Mirrors `AuthSignUpResult.isSignUpComplete`.
@@ -79,9 +79,9 @@ final class AccountOperationTypesTests: XCTestCase {
     /// - Then:
     ///    - it is false only for `.confirmUser`
     func testSignUpIsCompleteUnlessTheUserMustConfirm() {
-        XCTAssertFalse(AuthClientSignUpResult(.confirmUser()).isSignUpComplete)
-        XCTAssertTrue(AuthClientSignUpResult(.completeAutoSignIn("session")).isSignUpComplete)
-        XCTAssertTrue(AuthClientSignUpResult(.done).isSignUpComplete)
+        XCTAssertFalse(AmplifyCognitoClientSignUpResult(.confirmUser()).isSignUpComplete)
+        XCTAssertTrue(AmplifyCognitoClientSignUpResult(.completeAutoSignIn("session")).isSignUpComplete)
+        XCTAssertTrue(AmplifyCognitoClientSignUpResult(.done).isSignUpComplete)
     }
 
     /// A ceremony context compares by its window only: its runner is a closure.

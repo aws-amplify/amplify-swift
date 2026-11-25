@@ -40,7 +40,7 @@ struct CognitoUnsignedOperationResolver: AWSCredentialIdentityResolver {
     }
 
     func getIdentity(identityProperties: Smithy.Attributes?) async throws -> AWSCredentialIdentity {
-        throw AuthClientError.configuration(
+        throw AmplifyCognitoClientError.configuration(
             "A Cognito operation that needs AWS credentials was called, and the client's Cognito SDK clients have none.",
             recoverySuggestion
         )

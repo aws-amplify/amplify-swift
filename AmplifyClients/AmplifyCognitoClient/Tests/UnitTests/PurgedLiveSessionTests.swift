@@ -35,7 +35,7 @@ final class PurgedLiveSessionTests: XCTestCase {
 
     private static func purge(
         _ sessionId: SessionID,
-        configuration: AuthClientConfiguration = ClientFixtures.configuration,
+        configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration,
         dependencies: SessionCoreDependencies
     ) async throws {
         try await AmplifyCognitoClient.purgeStoredSession(
@@ -62,7 +62,7 @@ final class PurgedLiveSessionTests: XCTestCase {
         line: UInt = #line
     ) async {
         await assertThrowsAsync(call) { error in
-            XCTAssertEqual((error as? AuthClientError)?.kind, .notSignedIn, "\(name): \(error)", file: file, line: line)
+            XCTAssertEqual((error as? AmplifyCognitoClientError)?.kind, .notSignedIn, "\(name): \(error)", file: file, line: line)
         }
     }
 
@@ -315,7 +315,7 @@ final class PurgedLiveSessionTests: XCTestCase {
         let work = work
 
         await assertThrowsAsync({ try await Self.purge(work, dependencies: dependencies) }) { error in
-            guard case .sessionConfigurationMismatch(let sessionId)? = (error as? AuthClientError)?.kind else {
+            guard case .sessionConfigurationMismatch(let sessionId)? = (error as? AmplifyCognitoClientError)?.kind else {
                 return XCTFail("\(error)")
             }
             XCTAssertEqual(sessionId, work)

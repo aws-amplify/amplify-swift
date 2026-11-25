@@ -47,7 +47,7 @@ final class SessionRegistryTests: XCTestCase {
         let live = try registry.session(for: id, namespace: "pool-a", fingerprint: 1) { FakeSession() }
 
         XCTAssertThrowsError(try registry.session(for: id, namespace: "pool-b", fingerprint: 1) { FakeSession() }) { error in
-            guard case AuthClientError.sessionConfigurationMismatch(let reported, _, _, _) = error else {
+            guard case AmplifyCognitoClientError.sessionConfigurationMismatch(let reported, _, _, _) = error else {
                 return XCTFail("Expected sessionConfigurationMismatch, got \(error)")
             }
             XCTAssertEqual(reported, id)

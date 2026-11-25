@@ -29,14 +29,14 @@ final class PluginRecordLocationTests: XCTestCase {
     /// The plugin's record, `amplify.<ns>.session`.
     private var pluginAccount = ""
     /// The client configuration for the default backend, from the same outputs as the plugin's.
-    private var configuration: AuthClientConfiguration?
+    private var configuration: AmplifyCognitoClientConfiguration?
     /// The test's own user, deleted at teardown.
     private var user: InteropUser?
 
     override func setUp() async throws {
         try await super.setUp()
         try InteropEnvironment.requireProvisioned()
-        let configuration = try AuthClientConfiguration(
+        let configuration = try AmplifyCognitoClientConfiguration(
             from: InteropEnvironment.outputsResource,
             bundle: InteropEnvironment.outputsBundle()
         )
@@ -214,18 +214,18 @@ enum InteropEnvironment {
         try requireSelfSignUp()
         let hex = UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(12).lowercased()
         let user = InteropUser(username: "ccit-\(hex)", password: "Ccit-\(UUID().uuidString)-1!", outputsResource: resource)
-        let configuration = try AuthClientConfiguration(from: resource, bundle: outputsBundle(resource))
+        let configuration = try AmplifyCognitoClientConfiguration(from: resource, bundle: outputsBundle(resource))
         let sessionId = try SessionID.named("interop-signup-\(hex.prefix(8))")
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
-            let result: AuthClientSignUpResult
+            let result: AmplifyCognitoClientSignUpResult
             do {
                 result = try await client.signUp(
                     username: user.username,
                     password: user.password,
-                    options: .init(userAttributes: [AuthClientUserAttribute(.email, value: "\(user.username)@example.com")])
+                    options: .init(userAttributes: [AmplifyCognitoClientUserAttribute(.email, value: "\(user.username)@example.com")])
                 )
-            } catch AuthClientError.notAuthorized(let description, _, _)
+            } catch AmplifyCognitoClientError.notAuthorized(let description, _, _)
                 where description.contains("SignUp is not permitted") && isSandbox {
                 // Inside a run, the run had turned it on, so something turned it off again since.
                 if ProcessInfo.processInfo.environment["COGNITO_CLIENT_INTEG_SELF_SIGN_UP"] == "on" {
@@ -250,7 +250,7 @@ enum InteropEnvironment {
     /// else and calls `deleteUser()`, and the session is purged. Best effort, for teardown: a user already
     /// gone is fine. Never touches the plugin's record.
     static func deleteFreshUser(_ user: InteropUser) async {
-        guard let configuration = try? AuthClientConfiguration(
+        guard let configuration = try? AmplifyCognitoClientConfiguration(
             from: user.outputsResource,
             bundle: outputsBundle(user.outputsResource)
         ),
@@ -285,7 +285,7 @@ enum InteropEnvironment {
 
     /// Removes `user`'s device and advanced-security records under `configuration`'s pools from this device's
     /// keychain, as `DeviceTestCase` does: the plugin and the client keep them per user and never remove them.
-    static func removeDeviceRecords(of user: InteropUser, under configuration: AuthClientConfiguration) throws {
+    static func removeDeviceRecords(of user: InteropUser, under configuration: AmplifyCognitoClientConfiguration) throws {
         let store = DeviceRecordStore(namespace: SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: nil))
         try store.removeDeviceMetadata(for: user.username)
         try store.removeASFDeviceId(for: user.username)
@@ -416,10 +416,10 @@ struct InteropError: Error, CustomStringConvertible {
     }
 }
 
-extension AuthClientSession {
+extension AmplifyCognitoClientSession {
 
     /// The user pool tokens, for a test that expects a signed-in user; throws when the session holds none.
-    func requireUserPoolTokens() throws -> AuthClientUserPoolTokens {
+    func requireUserPoolTokens() throws -> AmplifyCognitoClientUserPoolTokens {
         try XCTUnwrap(userPoolTokens, "the fetched session holds no user pool tokens")
     }
 }

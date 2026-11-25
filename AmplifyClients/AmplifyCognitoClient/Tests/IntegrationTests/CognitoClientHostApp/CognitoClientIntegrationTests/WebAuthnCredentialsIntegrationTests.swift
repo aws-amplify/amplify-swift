@@ -56,7 +56,7 @@ final class WebAuthnCredentialsIntegrationTests: ClientIntegrationTestCase {
         do {
             try await client.deleteWebAuthnCredential(credentialId: unknownId)
             XCTFail("Deleting a credential that does not exist succeeded")
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             guard case .service(let code, _, _, _) = error else {
                 return XCTFail("Expected .service(.resourceNotFound), got \(Self.caseName(error))")
             }
@@ -86,7 +86,7 @@ final class WebAuthnCredentialsIntegrationTests: ClientIntegrationTestCase {
             do {
                 _ = try await client.listWebAuthnCredentials(options: .init(pageSize: pageSize))
                 XCTFail("Page size \(pageSize) was accepted")
-            } catch let error as AuthClientError {
+            } catch let error as AmplifyCognitoClientError {
                 guard case .validation(let field, _, _, _) = error else {
                     return XCTFail("Expected .validation, got \(Self.caseName(error))")
                 }
@@ -112,7 +112,7 @@ final class WebAuthnCredentialsIntegrationTests: ClientIntegrationTestCase {
         do {
             _ = try await client.listWebAuthnCredentials()
             XCTFail("A signed-out session listed credentials")
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             guard case .notSignedIn = error else {
                 return XCTFail("Expected .notSignedIn, got \(Self.caseName(error))")
             }
@@ -120,7 +120,7 @@ final class WebAuthnCredentialsIntegrationTests: ClientIntegrationTestCase {
         do {
             try await client.deleteWebAuthnCredential(credentialId: "none")
             XCTFail("A signed-out session deleted a credential")
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             guard case .notSignedIn = error else {
                 return XCTFail("Expected .notSignedIn, got \(Self.caseName(error))")
             }
@@ -144,7 +144,7 @@ final class WebAuthnCredentialsIntegrationTests: ClientIntegrationTestCase {
     }
 
     /// The error's case name only, so a failure message never carries a service message or an identifier.
-    private static func caseName(_ error: AuthClientError) -> String {
+    private static func caseName(_ error: AmplifyCognitoClientError) -> String {
         String(describing: error).prefix { $0 != "(" }.description
     }
 }

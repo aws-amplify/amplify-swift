@@ -65,7 +65,7 @@ final class ClientOverKeychain: @unchecked Sendable {
     /// are then in the shared service under that group.
     func client(
         _ sessionId: SessionID = .default,
-        configuration: AuthClientConfiguration = ClientOverKeychain.configuration,
+        configuration: AmplifyCognitoClientConfiguration = ClientOverKeychain.configuration,
         accessGroup: String? = nil
     ) throws -> AmplifyCognitoClient {
         try AmplifyCognitoClient(
@@ -77,7 +77,7 @@ final class ClientOverKeychain: @unchecked Sendable {
 
     /// The saved sessions `AmplifyCognitoClient.storedSessions` lists for `configuration`.
     func storedSessions(
-        configuration: AuthClientConfiguration = ClientOverKeychain.configuration,
+        configuration: AmplifyCognitoClientConfiguration = ClientOverKeychain.configuration,
         includingSignedOut: Bool = false
     ) async throws -> [StoredSession] {
         try await AmplifyCognitoClient.storedSessions(
@@ -206,9 +206,9 @@ final class ClientOverKeychain: @unchecked Sendable {
         )
     }
 
-    private static func makeConfiguration(userPool: Bool, identityPool: Bool) -> AuthClientConfiguration {
+    private static func makeConfiguration(userPool: Bool, identityPool: Bool) -> AmplifyCognitoClientConfiguration {
         do {
-            return try AuthClientConfiguration(
+            return try AmplifyCognitoClientConfiguration(
                 userPool: userPool
                     ? .init(poolId: ConfigurationChangeCase.userPoolId, appClientId: "client-1", region: "us-east-1")
                     : nil,

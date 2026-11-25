@@ -15,7 +15,7 @@
 ///
 /// ## Equality
 ///
-/// Every case compares its payload, including `.failed`, even though `AuthClientError` is not
+/// Every case compares its payload, including `.failed`, even though `AmplifyCognitoClientError` is not
 /// `Equatable`. Two `.failed` states are equal when their errors are the same case with the same
 /// structured payload (the `StorageUnavailableReason`, the `SessionID`, the validation `field`),
 /// the same `errorDescription`, and the same `recoverySuggestion`. The `underlyingError` is not
@@ -32,11 +32,11 @@
 public enum AuthSessionState: Sendable {
 
     /// Signed in to the user pool, by any means: password, passwordless, hosted UI.
-    case signedIn(AuthClientUser)
+    case signedIn(AmplifyCognitoClientUser)
 
     /// Federated to the identity pool with a token from another provider
     /// (`federateToIdentityPool(withProviderToken:for:options:)`). There is no user pool user, so no
-    /// `AuthClientUser`: the identity pool identity is what the session holds. Its AWS credentials are
+    /// `AmplifyCognitoClientUser`: the identity pool identity is what the session holds. Its AWS credentials are
     /// usable; operations that need a user pool user throw `notSignedIn`.
     case federated(identityId: String)
 
@@ -59,13 +59,13 @@ public enum AuthSessionState: Sendable {
     /// (never synchronized, never with the password), and a client built later
     /// with the same session ID starts in this state. The app chooses whether to
     /// resume it or start sign-in over.
-    case awaitingChallenge(AuthClientSignInStep)
+    case awaitingChallenge(AmplifyCognitoClientSignInStep)
 
     /// Could not read storage. NOT "signed out" - a retry may succeed.
     case unavailable(StorageUnavailableReason)
 
     /// Misconfigured or unrecoverable. See "Equality" above for how this case compares.
-    case failed(AuthClientError)
+    case failed(AmplifyCognitoClientError)
 }
 
 extension AuthSessionState: Equatable {
@@ -98,9 +98,9 @@ extension AuthSessionState: Equatable {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
-    /// Which `AuthClientError` case this is, with its structured, comparable payload. Excludes the
+    /// Which `AmplifyCognitoClientError` case this is, with its structured, comparable payload. Excludes the
     /// strings and the underlying error, which `isEquivalent(to:)` handles separately.
     enum Kind: Equatable {
         case configuration
@@ -112,12 +112,12 @@ extension AuthClientError {
         case browserBusy(holder: SessionID)
         case sessionConfigurationMismatch(SessionID)
         case validation(field: String)
-        case service(AuthClientServiceErrorCode?)
+        case service(AmplifyCognitoClientServiceErrorCode?)
         case notAuthorized
         case invalidState
         case userCancelled
-        case webAuthnCeremonyFailed(AuthClientWebAuthnCeremonyFailure)
-        case unexpectedIdentity(expected: String?, returned: AuthClientUser)
+        case webAuthnCeremonyFailed(AmplifyCognitoClientWebAuthnCeremonyFailure)
+        case unexpectedIdentity(expected: String?, returned: AmplifyCognitoClientUser)
         case unknown
     }
 
@@ -146,9 +146,9 @@ extension AuthClientError {
     /// The equality `AuthSessionState.failed` uses: same case, same structured payload, same
     /// description and suggestion. The underlying error is not compared, because it cannot be.
     ///
-    /// Deliberately not an `Equatable` conformance on `AuthClientError` itself: an `==` that
+    /// Deliberately not an `Equatable` conformance on `AmplifyCognitoClientError` itself: an `==` that
     /// ignores the underlying error would read as full equality to anyone catching the error.
-    func isEquivalent(to other: AuthClientError) -> Bool {
+    func isEquivalent(to other: AmplifyCognitoClientError) -> Bool {
         kind == other.kind
             && errorDescription == other.errorDescription
             && recoverySuggestion == other.recoverySuggestion

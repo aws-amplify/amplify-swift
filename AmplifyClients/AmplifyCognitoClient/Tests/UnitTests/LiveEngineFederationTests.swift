@@ -30,7 +30,7 @@ final class LiveEngineFederationTests: XCTestCase {
 
     private static func request(
         _ token: String = "provider-token",
-        _ provider: AuthClientProvider = .facebook,
+        _ provider: AmplifyCognitoClientProvider = .facebook,
         developerProvidedIdentityId: String? = nil
     ) -> EngineFederationRequest {
         EngineFederationRequest(token: token, provider: provider, developerProvidedIdentityId: developerProvidedIdentityId)
@@ -77,7 +77,7 @@ final class LiveEngineFederationTests: XCTestCase {
     ///    - `GetId`'s login key is the plugin's identity pool provider name: the well-known domains, or the
     ///      name given for OIDC, SAML and custom providers
     func testEachProviderUsesTheIdentityPoolLoginKey() async throws {
-        let cases: [(AuthClientProvider, String)] = [
+        let cases: [(AmplifyCognitoClientProvider, String)] = [
             (.amazon, "www.amazon.com"),
             (.apple, "appleid.apple.com"),
             (.facebook, "graph.facebook.com"),
@@ -208,7 +208,7 @@ final class LiveEngineFederationTests: XCTestCase {
     /// - Then:
     ///    - each throws `.service` with `invalidParameter`, then `resourceNotFound`
     func testAnUnconfiguredProviderIsAServiceError() async throws {
-        let cases: [(Error, AuthClientServiceErrorCode)] = [
+        let cases: [(Error, AmplifyCognitoClientServiceErrorCode)] = [
             (AWSCognitoIdentity.InvalidParameterException(message: "Invalid login provider."), .invalidParameter),
             (AWSCognitoIdentity.ResourceNotFoundException(message: "Identity pool not found."), .resourceNotFound)
         ]

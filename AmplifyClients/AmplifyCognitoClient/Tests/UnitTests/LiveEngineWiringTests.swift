@@ -284,7 +284,7 @@ final class LiveEngineWiringTests: XCTestCase {
         let afterSignOut = try clientHarness.storedRecord(ClientFixtures.id("work"))
 
         XCTAssertEqual(signIn.nextStep, .done)
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(record?.username, "alice")
         XCTAssertEqual(record?.kind, .userPoolAndIdentityPool)
         XCTAssertEqual(session.identityId, LiveEngineFixtures.identityId)

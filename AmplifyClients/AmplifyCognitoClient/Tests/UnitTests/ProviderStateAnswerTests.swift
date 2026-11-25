@@ -16,8 +16,8 @@ final class ProviderStateAnswerTests: XCTestCase {
 
     private var harness: ClientHarness!
     private let work = ClientFixtures.id("work")
-    private let smsCode = AuthClientSignInStep.confirmSignInWithSMSMFACode(
-        AuthClientCodeDeliveryDetails(destination: .sms("+1***"), attributeKey: .phoneNumber),
+    private let smsCode = AmplifyCognitoClientSignInStep.confirmSignInWithSMSMFACode(
+        AmplifyCognitoClientCodeDeliveryDetails(destination: .sms("+1***"), attributeKey: .phoneNumber),
         nil
     )
 
@@ -78,7 +78,7 @@ final class ProviderStateAnswerTests: XCTestCase {
         XCTAssertEqual(aws?.disposition, .discard)
         XCTAssertEqual(token?.isNotSignedIn, true, "\(String(describing: token))")
         XCTAssertEqual(token?.disposition, .discard)
-        XCTAssertEqual(session.awsCredentials, AuthClientAWSCredentials(guest.awsCredentials))
+        XCTAssertEqual(session.awsCredentials, AmplifyCognitoClientAWSCredentials(guest.awsCredentials))
         XCTAssertEqual(engine.refreshCalls.count, 0)
     }
 

@@ -42,14 +42,14 @@ extension LiveSessionEngine {
             case (.federatedToIdentityPool, .sessionEstablished(let credentials)):
                 guard case .identityPoolWithFederation = credentials else {
                     // The plugin's `getFederatedResult` string.
-                    throw AuthClientError.unknown(
+                    throw AmplifyCognitoClientError.unknown(
                         "Unable to parse credentials to expected output",
                         "This is not expected. Retry the federation."
                     )
                 }
                 return try operation.payload(establishing: credentials)
             case (.error, .error(let error)):
-                throw SessionEngineError.service(AuthClientError(engineFailure: error))
+                throw SessionEngineError.service(AmplifyCognitoClientError(engineFailure: error))
             default:
                 return nil
             }
@@ -98,7 +98,7 @@ extension EngineAuthProvider {
 
     /// The engine's provider for the client's, case for case. The identity pool login key is the engine's
     /// (`identityPoolProviderName`): `graph.facebook.com`, `accounts.google.com`, or the name as given.
-    init(_ provider: AuthClientProvider) {
+    init(_ provider: AmplifyCognitoClientProvider) {
         switch provider {
         case .amazon: self = .amazon
         case .apple: self = .apple

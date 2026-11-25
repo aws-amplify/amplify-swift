@@ -76,7 +76,7 @@ final class SharedRecordWarningTests: XCTestCase {
         await refresh(client)
 
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         assertOneWarning(naming: ["alice", "bob", "sub-", LiveEngineFixtures.identityId])
     }
 
@@ -182,7 +182,7 @@ final class SharedRecordWarningTests: XCTestCase {
         await refresh(client)
 
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         XCTAssertEqual(try storedCredentials(), bob)
         assertOneWarning(naming: ["alice", "bob", "sub-"])
     }
@@ -224,7 +224,7 @@ final class SharedRecordWarningTests: XCTestCase {
         try await client.setSessionLabel("Work")
 
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         assertOneWarning(naming: ["alice", "bob", "sub-", "Work"])
     }
 
@@ -270,7 +270,7 @@ final class SharedRecordWarningTests: XCTestCase {
         await refresh(client)
 
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(sink.lines, [])
     }
 
@@ -309,7 +309,7 @@ final class SharedRecordWarningTests: XCTestCase {
 
         XCTAssertEqual(signedIn.nextStep, .done)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(sink.lines, [])
     }
 
@@ -333,7 +333,7 @@ final class SharedRecordWarningTests: XCTestCase {
 
         XCTAssertEqual(signedIn.nextStep, .done)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         XCTAssertEqual(sink.lines, [])
     }
 
@@ -379,7 +379,7 @@ final class SharedRecordWarningTests: XCTestCase {
         await refresh(client)
 
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         XCTAssertEqual(sink.lines, [])
     }
 

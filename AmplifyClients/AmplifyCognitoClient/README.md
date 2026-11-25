@@ -48,7 +48,7 @@ plugin uses.
 | API | Behind `@_spi(AmplifyExperimental)`. Any release may change or remove it |
 | Platforms | iOS first: the whole integration suite runs on iOS. On tvOS, watchOS and visionOS the suite's default-backend tests run on simulators with the same results; the tests on the other backends, the hosted UI and passkeys are untested there. macOS is built, not run (see the [integration tests' README](Tests/IntegrationTests/README.md), "Other platforms"). The hosted UI and passkeys are on iOS, macOS and visionOS only |
 | Passkeys | iOS 17.4, macOS 13.5, visionOS 1.0 or later. On visionOS, registering can't detect a passkey the device already holds for the user (see [Passkeys (WebAuthn credentials)](#passkeys-webauthn-credentials)) |
-| Configuration | Gen2 `amplify_outputs.json` only. A Gen1 `amplifyconfiguration.json` is refused with `AuthClientError.configuration` |
+| Configuration | Gen2 `amplify_outputs.json` only. A Gen1 `amplifyconfiguration.json` is refused with `AmplifyCognitoClientError.configuration` |
 | Amplify categories | Storage, API, Analytics and the other category plugins do **not** use these sessions. See [Tokens, sessions and credentials](#tokens-sessions-and-credentials) |
 
 Public enums may gain cases in a minor release. Include `@unknown default` when you switch over them.
@@ -60,7 +60,7 @@ We want to hear what works, what doesn't, and what is confusing.
 Open a GitHub issue on [aws-amplify/amplify-swift](https://github.com/aws-amplify/amplify-swift/issues) and put
 `AmplifyCognitoClient` in the title.
 
-Useful things to include: the API you called, what you expected, what happened, the `AuthClientError` case with its
+Useful things to include: the API you called, what you expected, what happened, the `AmplifyCognitoClientError` case with its
 `errorDescription` and `recoverySuggestion`, and whether the app also uses the Auth plugin. Don't include tokens,
 passwords, pool IDs or user identifiers.
 
@@ -107,14 +107,14 @@ To name the `AWSCredentialsProvider` protocol or add a log sink (`AmplifyLogging
 ## Configure and create a client
 
 The configuration is the `auth` section of `amplify_outputs.json`. The file is read when an
-`AuthClientConfiguration` is built from it. Building a client from an `AuthClientConfiguration` does no file I/O.
+`AmplifyCognitoClientConfiguration` is built from it. Building a client from an `AmplifyCognitoClientConfiguration` does no file I/O.
 
 ```swift
-// AuthClientConfiguration() reads amplify_outputs.json from the main bundle; the client uses the default session.
-let client = try AmplifyCognitoClient(configuration: try AuthClientConfiguration())
+// AmplifyCognitoClientConfiguration() reads amplify_outputs.json from the main bundle; the client uses the default session.
+let client = try AmplifyCognitoClient(configuration: try AmplifyCognitoClientConfiguration())
 
 // Or load the configuration once and pass it to every client.
-let configuration = try AuthClientConfiguration(from: "amplify_outputs", bundle: .main)
+let configuration = try AmplifyCognitoClientConfiguration(from: "amplify_outputs", bundle: .main)
 let work = try AmplifyCognitoClient(
     configuration: configuration,
     options: .init(sessionId: .named("work"))
@@ -122,14 +122,14 @@ let work = try AmplifyCognitoClient(
 ```
 
 Pass the resource name without `.json`; a dotted name such as `"amplify_outputs.staging"` loads
-`amplify_outputs.staging.json`. The initializer throws `AuthClientError.configuration` naming the problem: an empty
+`amplify_outputs.staging.json`. The initializer throws `AmplifyCognitoClientError.configuration` naming the problem: an empty
 name, a name ending in `.json` (in any case), a missing file, a Gen1 file, a missing `auth` section or key, or a
 value outside the schema.
 
 To configure without a file:
 
 ```swift
-let configuration = try AuthClientConfiguration(
+let configuration = try AmplifyCognitoClientConfiguration(
     userPool: .init(
         poolId: "<user-pool-id>",
         appClientId: "<app-client-id>",
@@ -172,7 +172,7 @@ let client = try AmplifyCognitoClient(
 | | |
 |---|---|
 | `SessionID.default` | The single-account session. It is also the only session that uses the Auth plugin's saved login: it reads and writes the plugin's own record (see [Moving from the Auth plugin](#moving-from-the-auth-plugin)) |
-| `SessionID.named(_:label:)` | An ID your app chooses: 1 to 64 characters from `A-Z a-z 0-9 _ -`, case-sensitive. Throws `AuthClientError.invalidSessionID` otherwise |
+| `SessionID.named(_:label:)` | An ID your app chooses: 1 to 64 characters from `A-Z a-z 0-9 _ -`, case-sensitive. Throws `AmplifyCognitoClientError.invalidSessionID` otherwise |
 | `SessionID.new(label:)` | An ID the library mints. Each call returns a new one, so save it |
 
 Use an opaque ID (`.new()`, or a tenant or workspace ID), not a username or `sub`: session IDs appear in error
@@ -227,7 +227,7 @@ Rules:
   and one token refresh. Building a second handle never fails because the ID is in use.
 - Building a client for a session that is already live in the process under a different configuration (other
   pools, access group or settings, or `configureUserPoolClient` on one handle and not the other) throws
-  `AuthClientError.sessionConfigurationMismatch`. Two different closures can't be compared, so the first handle's
+  `AmplifyCognitoClientError.sessionConfigurationMismatch`. Two different closures can't be compared, so the first handle's
   wins.
 - A session stays in memory while any handle or credentials provider for it is alive. Its streams finish when the
   last one goes away.
@@ -375,7 +375,7 @@ if let picked = rows.first {
   restores as a session with nothing saved. And `.default`, before its first restore after a configuration change
   that copies the plugin's saved login: if this version can't read that login, the row is whatever the new
   configuration already holds (often none); the restore copies the login and is `.failed`.
-- `row.user` is the signed-in user, or a signed-out row's last user: the same `AuthClientUser` as `getCurrentUser()`
+- `row.user` is the signed-in user, or a signed-out row's last user: the same `AmplifyCognitoClientUser` as `getCurrentUser()`
   and `.signedIn(user)`. Match a row to a live client, or find one person signed in to two sessions, by
   `user.userId`. It is `nil` for a guest or federated row, and for a row saved before rows kept the user's ID,
   unless that row is signed in and its saved credentials still name the user.
@@ -393,7 +393,7 @@ if let picked = rows.first {
   login is listed as `.userPoolOnly`, and a copied guest or federated identity as signed out, as a named session is,
   although its saved bytes are the plugin's as they were.
 - Listing also deletes interrupted sign-ins saved more than 15 minutes ago.
-- A failure throws `AuthClientError.storageUnavailable`. You never get an empty list for a failure.
+- A failure throws `AmplifyCognitoClientError.storageUnavailable`. You never get an empty list for a failure.
 
 ### Signing out or purging a saved session without a client
 
@@ -479,13 +479,13 @@ should skip `.failed` rows, or catch per row, rather than stop at the first.
 
 | State | Meaning |
 |---|---|
-| `.signedIn(AuthClientUser)` | Signed in to the user pool, by any means |
+| `.signedIn(AmplifyCognitoClientUser)` | Signed in to the user pool, by any means |
 | `.federated(identityId:)` | Federated to the identity pool with another provider's token. No user pool user |
 | `.guest` | No user, but guest (unauthenticated) identity pool credentials. Reached only after something fetched them |
 | `.signedOut` | No user and no credentials |
-| `.awaitingChallenge(AuthClientSignInStep)` | A sign-in is waiting on the user. Can survive a relaunch |
+| `.awaitingChallenge(AmplifyCognitoClientSignInStep)` | A sign-in is waiting on the user. Can survive a relaunch |
 | `.unavailable(StorageUnavailableReason)` | The keychain could not be read. **Not** signed out: don't show a sign-in screen; retry |
-| `.failed(AuthClientError)` | Misconfigured or unrecoverable |
+| `.failed(AmplifyCognitoClientError)` | Misconfigured or unrecoverable |
 
 ```swift
 switch await client.currentSessionState() {
@@ -579,7 +579,7 @@ let result = try await client.signUp(
     username: "user@example.com",
     password: "<password>",
     options: .init(userAttributes: [
-        AuthClientUserAttribute(.email, value: "user@example.com")
+        AmplifyCognitoClientUserAttribute(.email, value: "user@example.com")
     ])
 )
 
@@ -612,7 +612,7 @@ A passwordless sign-up passes no password:
 ```swift
 _ = try await client.signUp(
     username: "user@example.com",
-    options: .init(userAttributes: [AuthClientUserAttribute(.email, value: "user@example.com")])
+    options: .init(userAttributes: [AmplifyCognitoClientUserAttribute(.email, value: "user@example.com")])
 )
 let confirmed = try await client.confirmSignUp(for: "user@example.com", confirmationCode: "123456")
 if case .completeAutoSignIn = confirmed.nextStep {
@@ -629,8 +629,8 @@ About `autoSignIn()`:
   `autoSignIn()` again after a sign-out reaches Cognito, which refuses the spent session with `.notAuthorized`.
 - With nothing ready, or with the session already signed in, it throws `.invalidState`.
 
-`AuthClientSignUpOptions` also takes `validationData` (for the pre-sign-up trigger) and `clientMetadata`.
-`AuthClientConfirmSignUpOptions` takes `clientMetadata` and `forceAliasCreation`.
+`AmplifyCognitoClientSignUpOptions` also takes `validationData` (for the pre-sign-up trigger) and `clientMetadata`.
+`AmplifyCognitoClientConfirmSignUpOptions` takes `clientMetadata` and `forceAliasCreation`.
 
 ## Sign-in
 
@@ -736,7 +736,7 @@ let result = try await client.signIn(
 if case .continueSignInWithFirstFactorSelection(let factors) = result.nextStep,
    factors.contains(.emailOTP) {
     _ = try await client.confirmSignIn(
-        challengeResponse: AuthClientFactorType.emailOTP.challengeResponse
+        challengeResponse: AmplifyCognitoClientFactorType.emailOTP.challengeResponse
     )
 }
 ```
@@ -750,7 +750,7 @@ isolated, as a window is, so build the options on the main actor; the options th
 ```swift
 @MainActor
 @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
-func signInWithPasskey(client: AmplifyCognitoClient, window: AuthClientPresentationAnchor) async throws {
+func signInWithPasskey(client: AmplifyCognitoClient, window: AmplifyCognitoClientPresentationAnchor) async throws {
     let result = try await client.signIn(
         username: "user@example.com",
         options: .init(
@@ -768,7 +768,7 @@ If Cognito offers a passkey in a first-factor selection, answer `"WEB_AUTHN"`. T
 ```swift
 @MainActor
 @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
-func selectPasskey(client: AmplifyCognitoClient, window: AuthClientPresentationAnchor) async throws {
+func selectPasskey(client: AmplifyCognitoClient, window: AmplifyCognitoClientPresentationAnchor) async throws {
     let result = try await client.signIn(
         username: "user@example.com",
         options: .init(authFlowType: .userAuth(preferredFirstFactor: nil), presentationAnchorForWebAuthn: window)
@@ -776,7 +776,7 @@ func selectPasskey(client: AmplifyCognitoClient, window: AuthClientPresentationA
     if case .continueSignInWithFirstFactorSelection(let factors) = result.nextStep,
        factors.contains(.webAuthn) {
         // Uses signIn's window; pass `options: .init(presentationAnchorForWebAuthn:)` to use another.
-        _ = try await client.confirmSignIn(challengeResponse: AuthClientFactorType.webAuthn.challengeResponse)
+        _ = try await client.confirmSignIn(challengeResponse: AmplifyCognitoClientFactorType.webAuthn.challengeResponse)
     }
 }
 ```
@@ -832,27 +832,27 @@ or `.done`.
 | `.confirmSignInWithSMSMFACode(details, info)` | The SMS code |
 | `.confirmSignInWithTOTPCode` | The code from the authenticator app |
 | `.confirmSignInWithOTP(details)` | The email or SMS code |
-| `.continueSignInWithMFASelection(allowed)` | `AuthClientMFAType.<type>.challengeResponse` (`"SMS_MFA"`, `"SOFTWARE_TOKEN_MFA"`, `"EMAIL_OTP"`). Anything else is `.validation` |
-| `.continueSignInWithMFASetupSelection(allowed)` | `AuthClientMFAType.<type>.challengeResponse` for the type to set up, one of `allowed`. Anything else is `.validation` |
+| `.continueSignInWithMFASelection(allowed)` | `AmplifyCognitoClientMFAType.<type>.challengeResponse` (`"SMS_MFA"`, `"SOFTWARE_TOKEN_MFA"`, `"EMAIL_OTP"`). Anything else is `.validation` |
+| `.continueSignInWithMFASetupSelection(allowed)` | `AmplifyCognitoClientMFAType.<type>.challengeResponse` for the type to set up, one of `allowed`. Anything else is `.validation` |
 | `.continueSignInWithTOTPSetup(details)` | A code from the authenticator app, after the user adds `details`. `options.friendlyDeviceName` names the device |
 | `.continueSignInWithEmailMFASetup` | The email address to use |
 | `.confirmSignInWithNewPassword(info)` | The new password. Pass required attributes in `options.userAttributes` |
 | `.confirmSignInWithPassword` | The password (after choosing `.password` or `.passwordSRP`). A wrong password ends the sign-in: call `signIn` again |
-| `.continueSignInWithFirstFactorSelection(factors)` | `AuthClientFactorType.<type>.challengeResponse`. Anything else is `.validation`, and so is `"WEB_AUTHN"` when `factors` does not offer it |
+| `.continueSignInWithFirstFactorSelection(factors)` | `AmplifyCognitoClientFactorType.<type>.challengeResponse`. Anything else is `.validation`, and so is `"WEB_AUTHN"` when `factors` does not offer it |
 | `.confirmSignInWithCustomChallenge(info)` | Your custom answer |
 | `.resetPassword(info)` | Not answered here: reset the password, then sign in again. `confirmSignIn` throws `.invalidState` for this step and ends the attempt, except after Cognito refused a challenge answer, or a TOTP code at `VerifySoftwareToken`, with it, where the answer is sent again |
 | `.confirmSignUp(info)` | Not answered here: confirm the sign-up, then sign in again. `confirmSignIn` throws `.invalidState` for this step and ends the attempt, except after Cognito refused a challenge answer, or a TOTP code at `VerifySoftwareToken`, with it, where the answer is sent again |
 | `.done` | Nothing: signed in |
 
-`AuthClientMFAType.rawValue` (`"sms"`, `"totp"`, `"email"`) is not a valid answer. Use `challengeResponse`.
+`AmplifyCognitoClientMFAType.rawValue` (`"sms"`, `"totp"`, `"email"`) is not a valid answer. Use `challengeResponse`.
 
 A loop over every step:
 
 ```swift
-func completeSignIn(client: AmplifyCognitoClient, startingAt first: AuthClientSignInStep) async throws {
+func completeSignIn(client: AmplifyCognitoClient, startingAt first: AmplifyCognitoClientSignInStep) async throws {
     var step = first
     while step != .done {
-        let result: AuthClientSignInResult
+        let result: AmplifyCognitoClientSignInResult
         switch step {
         case .confirmSignInWithSMSMFACode(let details, _):
             print("Code sent to", details.destination)
@@ -888,7 +888,7 @@ func completeSignIn(client: AmplifyCognitoClient, startingAt first: AuthClientSi
         case .confirmSignInWithNewPassword:
             result = try await client.confirmSignIn(
                 challengeResponse: await ask("New password"),
-                options: .init(userAttributes: [AuthClientUserAttribute(.givenName, value: "Sam")])
+                options: .init(userAttributes: [AmplifyCognitoClientUserAttribute(.givenName, value: "Sam")])
             )
 
         case .confirmSignInWithPassword:
@@ -951,7 +951,7 @@ let client = try AmplifyCognitoClient(
 if case .awaitingChallenge(let step) = await client.currentSessionState() {
     do {
         try await completeSignIn(client: client, startingAt: step)
-    } catch AuthClientError.challengeExpired {
+    } catch AmplifyCognitoClientError.challengeExpired {
         // Cognito no longer accepts the challenge: start sign-in over.
     }
 }
@@ -970,7 +970,7 @@ The hosted UI (managed login) runs in an `ASWebAuthenticationSession` sheet over
 
 ```swift
 @MainActor
-func hostedUI(client: AmplifyCognitoClient, window: AuthClientPresentationAnchor) async throws {
+func hostedUI(client: AmplifyCognitoClient, window: AmplifyCognitoClientPresentationAnchor) async throws {
     // Private browser session (the default): no shared cookie.
     _ = try await client.signInWithWebUI(presentationAnchor: window)
 
@@ -989,7 +989,7 @@ func hostedUI(client: AmplifyCognitoClient, window: AuthClientPresentationAnchor
 shared cookie, signing a second session in would silently return the first session's user. It is best effort:
 Safari honours it; another default browser might not.
 
-An app client with a secret works too: an `AuthClientConfiguration.UserPool` built in code with an `appClientSecret`
+An app client with a secret works too: an `AmplifyCognitoClientConfiguration.UserPool` built in code with an `appClientSecret`
 and `oauth` sends the secret with the hosted UI's token exchange (`Authorization: Basic`), as the plugin does.
 `amplify_outputs` carries no secret.
 
@@ -1037,7 +1037,7 @@ warning under `AmplifyCognitoClient.HostedUI` and completes the sign-in on the f
 
 ```swift
 @MainActor
-func addAccount(client: AmplifyCognitoClient, window: AuthClientPresentationAnchor) async throws {
+func addAccount(client: AmplifyCognitoClient, window: AmplifyCognitoClientPresentationAnchor) async throws {
     do {
         _ = try await client.signInWithWebUI(
             presentationAnchor: window,
@@ -1047,11 +1047,11 @@ func addAccount(client: AmplifyCognitoClient, window: AuthClientPresentationAnch
                 identityExpectation: .distinctFromOtherSessions
             )
         )
-    } catch AuthClientError.browserBusy(let holder, _, _, _) {
+    } catch AmplifyCognitoClientError.browserBusy(let holder, _, _, _) {
         print("Finish signing in to \(holder) first")
-    } catch AuthClientError.unexpectedIdentity(_, _, let description, _, _) {
+    } catch AmplifyCognitoClientError.unexpectedIdentity(_, _, let description, _, _) {
         print(description)
-    } catch AuthClientError.userCancelled {
+    } catch AmplifyCognitoClientError.userCancelled {
         // The user closed the browser.
     }
 }
@@ -1327,7 +1327,7 @@ for attribute in attributes {
 }
 
 let result = try await client.update(
-    userAttribute: AuthClientUserAttribute(.email, value: "new@example.com")
+    userAttribute: AmplifyCognitoClientUserAttribute(.email, value: "new@example.com")
 )
 if case .confirmAttributeWithCode(let details, _) = result.nextStep {
     print("Code sent to", details.destination)
@@ -1335,8 +1335,8 @@ if case .confirmAttributeWithCode(let details, _) = result.nextStep {
 }
 
 let results = try await client.update(userAttributes: [
-    AuthClientUserAttribute(.givenName, value: "Sam"),
-    AuthClientUserAttribute(.custom("plan"), value: "pro")
+    AmplifyCognitoClientUserAttribute(.givenName, value: "Sam"),
+    AmplifyCognitoClientUserAttribute(.custom("plan"), value: "pro")
 ])
 print(results[.givenName]?.isUpdated ?? false)
 
@@ -1409,7 +1409,7 @@ try await client.updateMFAPreference(sms: .enabled, totp: .preferred)
 try await client.updateMFAPreference(email: .disabled)
 ```
 
-| `AuthClientMFAPreference` | Effect |
+| `AmplifyCognitoClientMFAPreference` | Effect |
 |---|---|
 | `nil` (argument left out) | Unchanged |
 | `.disabled` | Off |
@@ -1418,7 +1418,7 @@ try await client.updateMFAPreference(email: .disabled)
 | `.notPreferred` | On, not preferred |
 
 A wrong TOTP code is `.service(.softwareTokenMFANotEnabled, …)`; verify again with a right one. Preferring more
-than one type is `.service(.invalidParameter, …)`. `AuthClientTOTPSetupDetails` prints its secret redacted, but the
+than one type is `.service(.invalidParameter, …)`. `AmplifyCognitoClientTOTPSetupDetails` prints its secret redacted, but the
 setup URI carries the secret in clear, so never print or log it. `showQRCode(_:)` stands for your UI.
 
 ## Passkeys (WebAuthn credentials)
@@ -1428,7 +1428,7 @@ Register a passkey for the signed-in user. The window is required.
 ```swift
 @MainActor
 @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
-func registerPasskey(client: AmplifyCognitoClient, window: AuthClientPresentationAnchor) async throws {
+func registerPasskey(client: AmplifyCognitoClient, window: AmplifyCognitoClientPresentationAnchor) async throws {
     try await client.associateWebAuthnCredential(presentationAnchor: window)
 }
 ```
@@ -1436,7 +1436,7 @@ func registerPasskey(client: AmplifyCognitoClient, window: AuthClientPresentatio
 List and delete them. These show nothing and work on every platform.
 
 ```swift
-var passkeys: [AuthClientWebAuthnCredential] = []
+var passkeys: [AmplifyCognitoClientWebAuthnCredential] = []
 var nextToken: String?
 repeat {
     let page = try await client.listWebAuthnCredentials(
@@ -1500,8 +1500,8 @@ await client.signOut(options: .init(purgeStoredSession: true))
 | Result | Meaning |
 |---|---|
 | `.complete` | Tokens revoked and cleared from this device, or there were none |
-| `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` | Signed out on this device, but part of the work failed. The first three are wrappers, as the plugin's are (`AuthClientRevokeTokenError`, `AuthClientGlobalSignOutError`, `AuthClientHostedUIError`): read the failure as `revokeTokenError?.error`; `storageError` is the error itself. `revokeTokenError`: the refresh token stays valid until it expires, unless a global sign-out succeeded (`globalSignOutError` is `nil`), which already invalidated it. After a failed global sign-out the token isn't revoked and this holds a placeholder `.service` error with empty texts, as in the plugin. `globalSignOutError`: other devices stay signed in. Neither is retried, and signing out again doesn't retry it: the session is signed out on this device, so a second sign-out is `.complete` and sends nothing. `hostedUIError`: the browser keeps its hosted-UI cookie; only for a sign-out without a window (`signOut(options:)` or `signOutStoredSession`, as `.validation`), or a closed page on a session a refresh found expired, in this launch or an earlier one, when the login signed out still has that refresh token. `storageError`: with `purgeStoredSession`, the row couldn't be removed; purge it again |
-| `.failed(AuthClientError)` | Not signed out: the session is still signed in on this device. See below |
+| `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` | Signed out on this device, but part of the work failed. The first three are wrappers, as the plugin's are (`AmplifyCognitoClientRevokeTokenError`, `AmplifyCognitoClientGlobalSignOutError`, `AmplifyCognitoClientHostedUIError`): read the failure as `revokeTokenError?.error`; `storageError` is the error itself. `revokeTokenError`: the refresh token stays valid until it expires, unless a global sign-out succeeded (`globalSignOutError` is `nil`), which already invalidated it. After a failed global sign-out the token isn't revoked and this holds a placeholder `.service` error with empty texts, as in the plugin. `globalSignOutError`: other devices stay signed in. Neither is retried, and signing out again doesn't retry it: the session is signed out on this device, so a second sign-out is `.complete` and sends nothing. `hostedUIError`: the browser keeps its hosted-UI cookie; only for a sign-out without a window (`signOut(options:)` or `signOutStoredSession`, as `.validation`), or a closed page on a session a refresh found expired, in this launch or an earlier one, when the login signed out still has that refresh token. `storageError`: with `purgeStoredSession`, the row couldn't be removed; purge it again |
+| `.failed(AmplifyCognitoClientError)` | Not signed out: the session is still signed in on this device. See below |
 
 `.failed` carries:
 - `storageUnavailable` when storage couldn't be read or written, or the saved record kept changing (`.interrupted`);
@@ -1568,7 +1568,7 @@ out with a window:
 
 ```swift
 @MainActor
-func hostedUISignOut(client: AmplifyCognitoClient, window: AuthClientPresentationAnchor) async -> Bool {
+func hostedUISignOut(client: AmplifyCognitoClient, window: AmplifyCognitoClientPresentationAnchor) async -> Bool {
     await client.signOutWithWebUI(presentationAnchor: window).signedOutLocally
 }
 ```
@@ -1609,7 +1609,7 @@ is dropped and the sign-in starts again without it.
 
 ## Errors
 
-Every operation throws `AuthClientError`, which conforms to AmplifyFoundation's `AmplifyError` (not Amplify core's,
+Every operation throws `AmplifyCognitoClientError`, which conforms to AmplifyFoundation's `AmplifyError` (not Amplify core's,
 which the plugin's `AuthError` conforms to): each case carries an `errorDescription`, a `recoverySuggestion` and an
 optional `underlyingError`.
 
@@ -1624,7 +1624,7 @@ optional `underlyingError`.
 | `browserBusy(holder:)` | The one system sheet is held, or a `.wait(timeout:)` expired, or this session already has a hosted-UI sign-in in progress | Finish or cancel the holder's sheet. When `holder` is this session and none of its sheets is up, there is no sheet to finish: wait for the earlier call, or cancel its task |
 | `sessionConfigurationMismatch(SessionID)` | The session is live under a different configuration | Release its handles and providers, or use the same configuration |
 | `validation(field:)` | An argument was invalid; `field` names it | Fix the argument |
-| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request, with the code if the client recognises it; with no code, a Cognito internal error (`InternalErrorException`) or an error status the SDK doesn't model (the description has the status and message), in every call, or a network problem stopped the request, which may or may not have reached Cognito (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), or its answer couldn't be read | Depends on the code; with no code, read the suggestion: retry later, or check the request against the service's message (a 4xx status). In a `.partial` sign-out, the revoke's or global sign-out's failure is not retried |
+| `service(AmplifyCognitoClientServiceErrorCode?)` | Cognito rejected the request, with the code if the client recognises it; with no code, a Cognito internal error (`InternalErrorException`) or an error status the SDK doesn't model (the description has the status and message), in every call, or a network problem stopped the request, which may or may not have reached Cognito (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), or its answer couldn't be read | Depends on the code; with no code, read the suggestion: retry later, or check the request against the service's message (a 4xx status). In a `.partial` sign-out, the revoke's or global sign-out's failure is not retried |
 | `notAuthorized` | Wrong password, disabled user, revoked token | Ask the user again, or sign in |
 | `invalidState` | Not valid in this state: already signed in, federated, no sign-in in progress, or cancelled by a sign-out | Check `currentSessionState()` |
 | `userCancelled` | The user closed a system sheet, or it was cancelled | Nothing changed; let the user retry |
@@ -1637,15 +1637,15 @@ Match cases directly. `service` carries its code in the case, so no downcast is 
 ```swift
 do {
     _ = try await client.signIn(username: "user@example.com", password: "<password>")
-} catch AuthClientError.notAuthorized(let description, _, _) {
+} catch AmplifyCognitoClientError.notAuthorized(let description, _, _) {
     print("Wrong username or password:", description)
-} catch AuthClientError.service(.requestLimitExceeded?, _, _, _) {
+} catch AmplifyCognitoClientError.service(.requestLimitExceeded?, _, _, _) {
     print("Too many requests; try again later")
-} catch AuthClientError.invalidState {
+} catch AmplifyCognitoClientError.invalidState {
     print("This session is already signed in")
-} catch AuthClientError.storageUnavailable(let reason, _, _, _) {
+} catch AmplifyCognitoClientError.storageUnavailable(let reason, _, _, _) {
     print("Keychain unavailable:", reason)
-} catch let error as AuthClientError {
+} catch let error as AmplifyCognitoClientError {
     print(error.errorDescription)
     print(error.recoverySuggestion)
     print(error.underlyingError as Any)
@@ -1654,7 +1654,7 @@ do {
 }
 ```
 
-`AuthClientServiceErrorCode` has the same cases as the plugin's `AWSCognitoAuthError` (for example
+`AmplifyCognitoClientServiceErrorCode` has the same cases as the plugin's `AWSCognitoAuthError` (for example
 `.codeMismatch`, `.codeExpired`, `.usernameExists`, `.invalidPassword`, `.limitExceeded`, `.userNotFound`,
 `.webAuthnNotEnabled`). A cancellation is never `.service(.userCancelled?, …)`: it is always `.userCancelled`.
 
@@ -1662,8 +1662,8 @@ A network failure is `.service` with no code in every call: offline, a failed DN
 connection, a timeout, or a failed secure connection gives the description "A network problem stopped the request. It
 may not have reached the service." and the suggestion "A network or service problem occurred. Check the connection
 and retry the operation.", with the network error itself underneath (`underlyingError` is the `URLError`, or the
-CFNetwork or POSIX error), so `catch AuthClientError.service(nil, _, _, let error as URLError) where error.code ==
-.notConnectedToInternet` matches it in every call. `AuthClientServiceErrorCode.network` is only set by an HTTP client
+CFNetwork or POSIX error), so `catch AmplifyCognitoClientError.service(nil, _, _, let error as URLError) where error.code ==
+.notConnectedToInternet` matches it in every call. `AmplifyCognitoClientServiceErrorCode.network` is only set by an HTTP client
 that reports connectivity failures in its own terms, such as a CRT engine set through `configureUserPoolClient`; with
 the default one, match the `URLError`. The description doesn't say the request never arrived: a timed-out or lost
 connection may follow a request Cognito acted on, whose answer was lost. A transport failure that isn't a network
@@ -2091,7 +2091,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | Sign-out that removes the saved row | Not available | `purgeStoredSession`; a removal that fails after the sign-out is `.partial` with `storageError` |
 | Hosted-UI sign-out window | Optional; falls back to a window of its own | Required: `signOutWithWebUI(presentationAnchor:options:)`. Without one, the browser keeps its cookie and `.partial` reports `hostedUIError` |
 | `isSignedIn` | On the session and results | Not provided; use `currentSessionState()` |
-| Service error code | `underlyingError as? AWSCognitoAuthError`; a closed sheet is `.service` with `.userCancelled` underneath, and a failed passkey ceremony `.service` with the `ASAuthorizationError` underneath | `AuthClientError.service(code, …)`; a closed sheet is `.userCancelled`, and a failed passkey ceremony `.webAuthnCeremonyFailed` |
+| Service error code | `underlyingError as? AWSCognitoAuthError`; a closed sheet is `.service` with `.userCancelled` underneath, and a failed passkey ceremony `.service` with the `ASAuthorizationError` underneath | `AmplifyCognitoClientError.service(code, …)`; a closed sheet is `.userCancelled`, and a failed passkey ceremony `.webAuthnCeremonyFailed` |
 | MFA type `rawValue` | The Cognito name | `"sms"`, `"totp"`, `"email"`; use `challengeResponse` |
 | Deprecated `validationData` on sign-in, `.custom` flow | Supported | Not mirrored: use `clientMetadata`, `.customWithSRP` |
 | Non-JSON service response | "Report a bug" suggestion | `.service` with no code and a retry suggestion |

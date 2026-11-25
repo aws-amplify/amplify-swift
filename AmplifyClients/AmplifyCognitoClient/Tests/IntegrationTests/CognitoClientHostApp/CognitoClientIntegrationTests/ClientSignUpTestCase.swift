@@ -43,7 +43,7 @@ class ClientSignUpTestCase: ClientIntegrationTestCase {
         pool: SandboxPool,
         needsConfirmation: Bool = false,
         withPassword: Bool = true
-    ) async throws -> (result: AuthClientSignUpResult, user: FreshUser) {
+    ) async throws -> (result: AmplifyCognitoClientSignUpResult, user: FreshUser) {
         try await Self.signUp(
             on: client,
             pool: pool,
@@ -65,7 +65,7 @@ class ClientSignUpTestCase: ClientIntegrationTestCase {
         needsConfirmation: Bool = false,
         withPassword: Bool = true,
         recordingIn users: SignedUpUsers
-    ) async throws -> (result: AuthClientSignUpResult, user: FreshUser) {
+    ) async throws -> (result: AmplifyCognitoClientSignUpResult, user: FreshUser) {
         try SandboxSignUp.requireNotKnownUnconfirmable(pool)
         try SandboxSignUp.requireSelfSignUp(pool)
         let identity = SandboxSignUp.identity(needsConfirmation: needsConfirmation)
@@ -73,7 +73,7 @@ class ClientSignUpTestCase: ClientIntegrationTestCase {
         // Listening before the sign-up: its code is published once, when it is sent.
         await CodeSink.prepare(pool)
         let signedUpAt = Date()
-        let result: AuthClientSignUpResult
+        let result: AmplifyCognitoClientSignUpResult
         do {
             result = try await client.signUp(
                 username: identity.username,
@@ -108,7 +108,7 @@ class ClientSignUpTestCase: ClientIntegrationTestCase {
     func signUpAndConfirm(
         on client: AmplifyCognitoClient,
         pool: SandboxPool
-    ) async throws -> (confirmation: AuthClientSignUpResult, user: FreshUser) {
+    ) async throws -> (confirmation: AmplifyCognitoClientSignUpResult, user: FreshUser) {
         let (signUp, user) = try await signUp(on: client, pool: pool, needsConfirmation: true, withPassword: false)
         guard case .confirmUser = signUp.nextStep else {
             throw HarnessError.malformedFixture("the passwordless sign-up should wait for confirmation")
@@ -123,7 +123,7 @@ class ClientSignUpTestCase: ClientIntegrationTestCase {
     /// Asserts a confirmation left an auto-sign-in session: `.completeAutoSignIn` with a non-empty session,
     /// and complete. Prints neither the session nor the user.
     func assertReadyForAutoSignIn(
-        _ confirmation: AuthClientSignUpResult,
+        _ confirmation: AmplifyCognitoClientSignUpResult,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
@@ -143,7 +143,7 @@ class ClientSignUpTestCase: ClientIntegrationTestCase {
         do {
             _ = try await body()
             XCTFail("expected a validation error", file: file, line: line)
-        } catch AuthClientError.validation(let actual, _, _, _) {
+        } catch AmplifyCognitoClientError.validation(let actual, _, _, _) {
             XCTAssertEqual(actual, field, file: file, line: line)
         } catch {
             XCTFail("expected a validation error, got \(error)", file: file, line: line)
@@ -151,7 +151,7 @@ class ClientSignUpTestCase: ClientIntegrationTestCase {
     }
 
     func assertService(
-        _ code: AuthClientServiceErrorCode,
+        _ code: AmplifyCognitoClientServiceErrorCode,
         _ body: () async throws -> some Any,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -160,7 +160,7 @@ class ClientSignUpTestCase: ClientIntegrationTestCase {
     }
 
     func assertService(
-        _ codes: Set<AuthClientServiceErrorCode>,
+        _ codes: Set<AmplifyCognitoClientServiceErrorCode>,
         _ body: () async throws -> some Any,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -168,7 +168,7 @@ class ClientSignUpTestCase: ClientIntegrationTestCase {
         do {
             _ = try await body()
             XCTFail("expected one of \(codes)", file: file, line: line)
-        } catch AuthClientError.service(let actual, _, _, _) {
+        } catch AmplifyCognitoClientError.service(let actual, _, _, _) {
             let matched = actual.map(codes.contains) ?? false
             XCTAssertTrue(matched, "\(String(describing: actual)) is not one of \(codes)", file: file, line: line)
         } catch {

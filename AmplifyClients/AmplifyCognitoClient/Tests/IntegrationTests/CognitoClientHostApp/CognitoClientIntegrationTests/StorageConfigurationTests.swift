@@ -45,7 +45,7 @@ import XCTest
 final class StorageConfigurationTests: ClientIntegrationTestCase {
 
     /// The default backend's outputs: R-UP and R-IP.
-    private var standard: AuthClientConfiguration!
+    private var standard: AmplifyCognitoClientConfiguration!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -72,7 +72,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     ///
     func testGuestRecordSurvivesAddingAUserPool() async throws {
         let identityOnly = try Self.identityOnlyConfiguration()
-        let withUserPool = try AuthClientConfiguration(userPool: standard.userPool, identityPool: identityOnly.identityPool)
+        let withUserPool = try AmplifyCognitoClientConfiguration(userPool: standard.userPool, identityPool: identityOnly.identityPool)
         let sessionId = try tracked("guest-add-up", in: [identityOnly, withUserPool])
         let original = try await guest(sessionId, over: identityOnly)
 
@@ -119,7 +119,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     func testAddingAnIdentityPoolKeepsTheUserPoolSession() async throws {
         let role = try IntegrationTestEnvironment.untrackedFederatedRole()
         let federated = try IntegrationTestEnvironment.configuration(role)
-        let userPoolOnly = try AuthClientConfiguration(userPool: federated.userPool)
+        let userPoolOnly = try AmplifyCognitoClientConfiguration(userPool: federated.userPool)
         let sessionId = try tracked("alice-add-ip", in: [userPoolOnly, federated])
         let alice = try await signIn(makeFreshUser(on: role).testUser, on: sessionId, over: userPoolOnly)
 
@@ -175,11 +175,11 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     func testChangedIdentityPoolDoesNotSeeTheOldGuestRecord() async throws {
         let role = try IntegrationTestEnvironment.untrackedFederatedRole()
         let federated = try IntegrationTestEnvironment.configuration(role)
-        let identityOnly = try AuthClientConfiguration(
+        let identityOnly = try AmplifyCognitoClientConfiguration(
             identityPool: IntegrationTestEnvironment.secondIdentityPool(besides: federated.identityPool?.poolId)
         )
-        let otherIdentityOnly = try AuthClientConfiguration(identityPool: federated.identityPool)
-        let otherIdentityPool = try AuthClientConfiguration(userPool: federated.userPool, identityPool: identityOnly.identityPool)
+        let otherIdentityOnly = try AmplifyCognitoClientConfiguration(identityPool: federated.identityPool)
+        let otherIdentityPool = try AmplifyCognitoClientConfiguration(userPool: federated.userPool, identityPool: identityOnly.identityPool)
         XCTAssertFalse(identityOnly.poolNamespace == otherIdentityOnly.poolNamespace, "identity pool only")
         XCTAssertFalse(federated.poolNamespace == otherIdentityPool.poolNamespace, "user pool and identity pool")
         let guestId = try tracked("guest-change-ip", in: [identityOnly, otherIdentityOnly])
@@ -240,8 +240,8 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     /// `{"userPoolOnly": …}`, no identity ID and no AWS credentials), and the record under `old` is kept.
     private static func assertCarriedTokensOnly(
         _ sessionId: SessionID,
-        under pools: AuthClientConfiguration,
-        keptUnder old: AuthClientConfiguration,
+        under pools: AmplifyCognitoClientConfiguration,
+        keptUnder old: AmplifyCognitoClientConfiguration,
         file: StaticString = #filePath,
         line: UInt = #line
     ) throws {
@@ -331,17 +331,17 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     // MARK: - Helpers
 
     /// The identity-only role alone (P-6′): the default backend's identity pool, without its user pool.
-    private static func identityOnlyConfiguration() throws -> AuthClientConfiguration {
+    private static func identityOnlyConfiguration() throws -> AmplifyCognitoClientConfiguration {
         let auth = try IntegrationTestEnvironment.identityOnlyAuthSection()
         guard let poolId = auth["identity_pool_id"] as? String, let region = auth["aws_region"] as? String else {
             throw HarnessError.malformedFixture("The default outputs have no identity pool or region.")
         }
-        return try AuthClientConfiguration(identityPool: .init(poolId: poolId, region: region))
+        return try AmplifyCognitoClientConfiguration(identityPool: .init(poolId: poolId, region: region))
     }
 
     /// A session ID whose records are signed out and purged at teardown under each of `configurations`,
     /// since the base class's cleanup knows only the base sandbox and parity pools.
-    private func tracked(_ tag: String, in configurations: [AuthClientConfiguration]) throws -> SessionID {
+    private func tracked(_ tag: String, in configurations: [AmplifyCognitoClientConfiguration]) throws -> SessionID {
         let sessionId = try IntegrationTestEnvironment.uniqueSessionID(tag)
         let session = CreatedSession(sessionId: sessionId, accessGroup: nil)
         addTeardownBlock {
@@ -365,7 +365,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
         let identityId: String
         let accessKeyId: String
 
-        init(_ session: AuthClientSession) throws {
+        init(_ session: AmplifyCognitoClientSession) throws {
             self.identityId = try session.requireIdentityId()
             self.accessKeyId = try session.requireAWSCredentials().accessKeyId
         }
@@ -373,7 +373,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
 
     /// Makes `sessionId` a guest over `configuration`, returns its identity and credentials, and releases
     /// the session.
-    private func guest(_ sessionId: SessionID, over configuration: AuthClientConfiguration) async throws -> AWSGuest {
+    private func guest(_ sessionId: SessionID, over configuration: AmplifyCognitoClientConfiguration) async throws -> AWSGuest {
         let guest: AWSGuest
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
@@ -390,9 +390,9 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     private func signInWithIdentity(
         _ user: TestUser,
         on sessionId: SessionID,
-        over configuration: AuthClientConfiguration
-    ) async throws -> (AuthClientUser, String) {
-        let signedIn: (AuthClientUser, String)
+        over configuration: AmplifyCognitoClientConfiguration
+    ) async throws -> (AmplifyCognitoClientUser, String) {
+        let signedIn: (AmplifyCognitoClientUser, String)
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
             let result = try await client.signIn(username: user.username, password: user.password)
@@ -407,10 +407,10 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     private func signIn(
         _ user: TestUser,
         on sessionId: SessionID,
-        over configuration: AuthClientConfiguration,
+        over configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String? = nil
-    ) async throws -> AuthClientUser {
-        let signedIn: AuthClientUser
+    ) async throws -> AmplifyCognitoClientUser {
+        let signedIn: AmplifyCognitoClientUser
         do {
             let client = try AmplifyCognitoClient(
                 configuration: configuration,
@@ -430,7 +430,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     /// record, and it is released on return.
     private func assertSignedOutWithNoRow(
         _ sessionId: SessionID,
-        over configuration: AuthClientConfiguration,
+        over configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String? = nil,
         _ context: String,
         file: StaticString = #filePath,

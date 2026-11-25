@@ -52,10 +52,10 @@ final class LiveEngineResetPasswordTests: XCTestCase {
         let withMetadata = try await engine.resetPassword(username: "carol", clientMetadata: ["app": "test"])
         let without = try await engine.resetPassword(username: "carol", clientMetadata: [:])
 
-        let expected = AuthClientResetPasswordResult(
+        let expected = AmplifyCognitoClientResetPasswordResult(
             isPasswordReset: false,
             nextStep: .confirmResetPasswordWithCode(
-                AuthClientCodeDeliveryDetails(destination: .email("c***@e***"), attributeKey: .email),
+                AmplifyCognitoClientCodeDeliveryDetails(destination: .email("c***@e***"), attributeKey: .email),
                 [:]
             )
         )
@@ -126,7 +126,7 @@ final class LiveEngineResetPasswordTests: XCTestCase {
     ///    - both requests carry `ClientSecretHelper`'s hash for carol
     ///
     func testTheResetRequestsCarryTheSecretHash() async throws {
-        let userPool = AuthClientConfiguration.UserPool(
+        let userPool = AmplifyCognitoClientConfiguration.UserPool(
             poolId: StorageFixtures.userPoolId,
             appClientId: "app-client-1",
             region: "us-east-1",
@@ -241,7 +241,7 @@ final class LiveEngineResetPasswordTests: XCTestCase {
             throw InvalidPasswordException(message: "Password does not conform to policy.")
         }
 
-        for expected in [AuthClientServiceErrorCode.codeMismatch, .codeExpired, .invalidPassword] {
+        for expected in [AmplifyCognitoClientServiceErrorCode.codeMismatch, .codeExpired, .invalidPassword] {
             await assertThrowsAsync({ try await engine.confirmResetPassword(.carol(code: "123456")) }) { error in
                 guard case .service(let code, _, _, _) = authError(error) else {
                     return XCTFail("\(expected): \(error)")

@@ -44,9 +44,9 @@ struct CognitoServiceClients: Sendable {
     ///   wrapper. `nil` (the SDK default) everywhere but tests. The escape hatch can still replace it for
     ///   the user pool client.
     /// - Throws: whatever the SDK's configuration throws. The facade maps it to
-    ///   `AuthClientError.configuration`.
+    ///   `AmplifyCognitoClientError.configuration`.
     init(
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider?,
         baseHTTPClientEngine: (any HTTPClient)? = nil
     ) throws {

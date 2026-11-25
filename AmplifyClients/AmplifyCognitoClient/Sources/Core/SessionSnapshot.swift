@@ -128,7 +128,7 @@ struct SessionSnapshot: Sendable, Equatable {
     /// refresh that proved the refresh token dead does not change the state: the session stays
     /// `.signedIn(user)`, so an app knows which user to re-authenticate, and its operations throw
     /// `sessionExpired`.
-    func state(engine: any SessionEngine, challenge: AuthClientSignInStep?) -> AuthSessionState {
+    func state(engine: any SessionEngine, challenge: AmplifyCognitoClientSignInStep?) -> AuthSessionState {
         Self.state(of: source, challenge: challenge, describe: engine.describe)
     }
 
@@ -137,7 +137,7 @@ struct SessionSnapshot: Sendable, Equatable {
     /// for the same saved record and pending challenge.
     static func state(
         of source: Source,
-        challenge: AuthClientSignInStep?,
+        challenge: AmplifyCognitoClientSignInStep?,
         describe: (Data) throws -> CredentialSummary
     ) -> AuthSessionState {
         let base = baseState(of: source, describe: describe)

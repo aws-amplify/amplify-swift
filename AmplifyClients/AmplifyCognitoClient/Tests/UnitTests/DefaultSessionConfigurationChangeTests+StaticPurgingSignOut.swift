@@ -36,7 +36,7 @@ extension DefaultSessionConfigurationChangeTests {
             sessionId: .default,
             configuration: ChangeConfigs.both,
             accessGroup: nil,
-            options: AuthClientSignOutOptions(purgeStoredSession: true),
+            options: AmplifyCognitoClientSignOutOptions(purgeStoredSession: true),
             dependencies: dependencies
         )
         let rows = try await listed(ChangeConfigs.both, includingSignedOut: true)
@@ -46,6 +46,6 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertNil(harness.keychain.value(account(ChangeConfigs.both)))
         XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.userPoolOnly)), PluginRecordSummary.signedOutPayload)
         XCTAssertEqual(harness.keychain.recordedPluginConfiguration(), AuthConfiguration(client: ChangeConfigs.userPoolOnly))
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: "Work", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)])
+        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)])
     }
 }

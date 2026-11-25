@@ -309,7 +309,7 @@ final class ClientCredentialStore: AmplifyAuthCredentialStoreBehavior, @unchecke
     static func mappingStorageErrors<Result>(_ body: () async throws -> Result) async throws -> Result {
         do {
             return try await body()
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             throw engineError(for: error)
         } catch let error as EngineCredentialStoreError {
             throw error
@@ -322,7 +322,7 @@ final class ClientCredentialStore: AmplifyAuthCredentialStoreBehavior, @unchecke
     /// that could not be encoded is the `codingError` the plugin's store throws; anything else is `unknown`,
     /// with the client's error underneath. `itemNotFound` is never produced here: an absent record is a
     /// `Read`, not an error.
-    static func engineError(for error: AuthClientError) -> EngineCredentialStoreError {
+    static func engineError(for error: AmplifyCognitoClientError) -> EngineCredentialStoreError {
         if error.underlyingError is EncodingError {
             return .codingError("Error occurred while encoding the value", error)
         }

@@ -10,7 +10,9 @@ the beta (2026-09-23 to 2026-10-05); they are summarised [below](#later-decision
 Decisions 20–28 were taken on 2026-10-19, after end-to-end testing of the beta, decisions 29–34 on 2026-10-22, on
 the review of its last round, and decisions 35–40 on 2026-10-23, on the review that followed; they are summarised
 [below](#decisions-of-2026-10-19), [below](#decisions-of-2026-10-22) and [below](#decisions-of-2026-10-23). Where
-a later decision changes an earlier one, the earlier entry says so and is kept as the record.
+a later decision changes an earlier one, the earlier entry says so and is kept as the record. Type names are the
+current ones: the `AuthClient…` types were renamed `AmplifyCognitoClient…` on 2026-11-24, after every decision
+below was taken.
 
 ## Summary (decided 2026-09-22)
 
@@ -102,11 +104,11 @@ public cancel and reset. Its scope was widened on 2026-10-02: see #16.
 
 - There is no `.others` scope. §11 Limits records that there is no sign-out-all, so nobody reads its absence
   as an oversight.
-- *As built,* there is no `SignOutScope`: the option is `AuthClientSignOutOptions.globalSignOut: Bool`, as in
+- *As built,* there is no `SignOutScope`: the option is `AmplifyCognitoClientSignOutOptions.globalSignOut: Bool`, as in
   the plugin, beside `purgeStoredSession`.
 - `AuthSignOutResult` having zero requirements is **less urgent but not moot**: a purging sign-out can still
   partially fail — revoke succeeds and local clear fails, or revoke fails and we purge anyway — and there was
-  nowhere to say so. (The client returns its own `AuthClientSignOutResult`; design §14.8.)
+  nowhere to say so. (The client returns its own `AmplifyCognitoClientSignOutResult`; design §14.8.)
 
 ## Later decisions (2026-09-23 to 2026-10-05)
 
@@ -276,8 +278,8 @@ say so loudly.
 ## 10. What does the client depend on?
 
 Decided 2026-09-24. **Only AmplifyFoundation and AmplifyFoundationBridge (with the AWS SDK), never Amplify core**,
-as the CloudWatch and Kinesis clients do. So the client owns its model types: `AuthClientUser`,
-`AuthClientSignInStep` (a case-for-case mirror of the plugin's `AuthSignInStep`) and `AuthClientError`, in place of
+as the CloudWatch and Kinesis clients do. So the client owns its model types: `AmplifyCognitoClientUser`,
+`AmplifyCognitoClientSignInStep` (a case-for-case mirror of the plugin's `AuthSignInStep`) and `AmplifyCognitoClientError`, in place of
 Amplify core's. The Cognito engine the plugin and the client share (`InternalAWSCognitoAuth`) is Amplify-free too,
 and the shared modules live outside `AmplifyPlugins/`.
 
@@ -285,7 +287,7 @@ and the shared modules live outside `AmplifyPlugins/`.
 
 Decided 2026-09-25.
 
-- **Gen2 configuration only.** A Gen1 `amplifyconfiguration.json` is refused with `AuthClientError.configuration`,
+- **Gen2 configuration only.** A Gen1 `amplifyconfiguration.json` is refused with `AmplifyCognitoClientError.configuration`,
   naming Gen2 `amplify_outputs` as what to use.
 - **iOS first.** iOS is the beta's first platform; the client also builds for macOS, visionOS, tvOS and
   watchOS.
@@ -351,7 +353,7 @@ The conditions that came with it:
 
 Decided 2026-10-02. **The plugin's shape.** No sign-out throws: `signOut(options:)`,
 `signOutWithWebUI(presentationAnchor:options:)` and `signOutStoredSession` return `.complete`,
-`.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` or `.failed(AuthClientError)`.
+`.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` or `.failed(AmplifyCognitoClientError)`.
 `signedOutLocally` is false only for `.failed`, and `.failed` leaves the user signed in. Any hosted-UI sign-out page
 that could not be shown or completed is `.failed`, as in the plugin. A sign-out given no window (`signOut(options:)`,
 `signOutStoredSession`) shows no page: after a sign-in that shared the browser's cookies it is `.partial`, with
@@ -408,8 +410,8 @@ refresh-token rotation on.
   *Refined 2026-10-19 (#28):* the rule holds within one launch, and a refused forced refresh fails rather than
   returning the tokens it sent. *Refined 2026-10-23 (#35):* a refused forced refresh counts toward the rule, and the
   expiry has its own `sessionExpired` text.
-- **`AuthClientServiceErrorCode` is not an `Error`** (2026-10-02). It is a plain value carried by
-  `AuthClientError.service`, never thrown on its own; `errorDescription` stays as a property.
+- **`AmplifyCognitoClientServiceErrorCode` is not an `Error`** (2026-10-02). It is a plain value carried by
+  `AmplifyCognitoClientError.service`, never thrown on its own; `errorDescription` stays as a property.
 - **Logging** (2026-10-02). Every client log line is under an `AmplifyCognitoClient.<area>` category, and the
   engine's static log sites log through the caller's logger, so a client path never logs under a plugin category.
 - **Keychain keys stay out of log lines** (2026-10-02). A key can hold a username or a session ID, so log lines

@@ -50,9 +50,9 @@ public extension AmplifyCognitoClient {
     ///     does not recognise.
     @MainActor
     func signInWithWebUI(
-        presentationAnchor: AuthClientPresentationAnchor,
+        presentationAnchor: AmplifyCognitoClientPresentationAnchor,
         options: WebUIOptions = WebUIOptions()
-    ) async throws -> AuthClientSignInResult {
+    ) async throws -> AmplifyCognitoClientSignInResult {
         let anchor = EnginePresentationAnchorBox(presentationAnchor)
         let core = core
         return try await core.signInWithWebUI(anchor: anchor, options: options)
@@ -63,10 +63,10 @@ public extension AmplifyCognitoClient {
     /// provider, as with the plugin. An `options.idpIdentifier` still wins over it, as with the plugin.
     @MainActor
     func signInWithWebUI(
-        for provider: AuthClientProvider,
-        presentationAnchor: AuthClientPresentationAnchor,
+        for provider: AmplifyCognitoClientProvider,
+        presentationAnchor: AmplifyCognitoClientPresentationAnchor,
         options: WebUIOptions = WebUIOptions()
-    ) async throws -> AuthClientSignInResult {
+    ) async throws -> AmplifyCognitoClientSignInResult {
         try await signInWithWebUI(presentationAnchor: presentationAnchor, options: options.with(provider: provider))
     }
 
@@ -97,9 +97,9 @@ public extension AmplifyCognitoClient {
     @MainActor
     @discardableResult
     func signOutWithWebUI(
-        presentationAnchor: AuthClientPresentationAnchor,
-        options: AuthClientSignOutOptions = AuthClientSignOutOptions()
-    ) async -> AuthClientSignOutResult {
+        presentationAnchor: AmplifyCognitoClientPresentationAnchor,
+        options: AmplifyCognitoClientSignOutOptions = AmplifyCognitoClientSignOutOptions()
+    ) async -> AmplifyCognitoClientSignOutResult {
         let window = SignOutWindow.anchor(EnginePresentationAnchorBox(presentationAnchor))
         let core = core
         return await core.signOut(global: options.globalSignOut, purge: options.purgeStoredSession, window: window)

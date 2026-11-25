@@ -17,7 +17,7 @@ final class AuthSessionStateTests: XCTestCase {
 
     /// One value of every `AuthSessionState` case.
     private static let oneOfEach: [AuthSessionState] = [
-        .signedIn(AuthClientUser(username: "alice", userId: "sub-1")),
+        .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-1")),
         .federated(identityId: "us-east-1:federated"),
         .signedOut,
         .guest,
@@ -39,16 +39,16 @@ final class AuthSessionStateTests: XCTestCase {
         }
     }
 
-    /// Every `AuthClientError` case, by name. `errorCase(of:)` and `sample(of:)` keep it complete.
+    /// Every `AmplifyCognitoClientError` case, by name. `errorCase(of:)` and `sample(of:)` keep it complete.
     private enum ErrorCase: CaseIterable {
         case configuration, storageUnavailable, sessionExpired, notSignedIn, invalidSessionID, challengeExpired
         case browserBusy, sessionConfigurationMismatch, validation, service, notAuthorized, invalidState
         case userCancelled, webAuthnCeremonyFailed, unexpectedIdentity, unknown
     }
 
-    /// Exhaustive on purpose, with no `default`: a new `AuthClientError` case does not compile until it is
+    /// Exhaustive on purpose, with no `default`: a new `AmplifyCognitoClientError` case does not compile until it is
     /// given an `ErrorCase`, and then `sample(of:)` does not compile until it is given a sample.
-    private static func errorCase(of error: AuthClientError) -> ErrorCase {
+    private static func errorCase(of error: AmplifyCognitoClientError) -> ErrorCase {
         switch error {
         case .configuration: return .configuration
         case .storageUnavailable: return .storageUnavailable
@@ -71,7 +71,7 @@ final class AuthSessionStateTests: XCTestCase {
 
     /// One value of `errorCase`, with the same strings as every other, so only the case and its structured
     /// payload tell them apart.
-    private static func sample(of errorCase: ErrorCase) -> AuthClientError {
+    private static func sample(of errorCase: ErrorCase) -> AmplifyCognitoClientError {
         switch errorCase {
         case .configuration: return .configuration("d", "s")
         case .storageUnavailable: return .storageUnavailable(.locked, "d", "s")
@@ -87,13 +87,13 @@ final class AuthSessionStateTests: XCTestCase {
         case .invalidState: return .invalidState("d", "s")
         case .userCancelled: return .userCancelled("d", "s")
         case .webAuthnCeremonyFailed: return .webAuthnCeremonyFailed(.failed, "d", "s")
-        case .unexpectedIdentity: return .unexpectedIdentity(expected: "alice", returned: AuthClientUser(username: "bob", userId: "sub-bob"), "d", "s")
+        case .unexpectedIdentity: return .unexpectedIdentity(expected: "alice", returned: AmplifyCognitoClientUser(username: "bob", userId: "sub-bob"), "d", "s")
         case .unknown: return .unknown("d", "s")
         }
     }
 
-    /// One value of every `AuthClientError` case, from `sample(of:)`.
-    private static func oneOfEachError() -> [AuthClientError] {
+    /// One value of every `AmplifyCognitoClientError` case, from `sample(of:)`.
+    private static func oneOfEachError() -> [AmplifyCognitoClientError] {
         ErrorCase.allCases.map(sample(of:))
     }
 
@@ -127,10 +127,10 @@ final class AuthSessionStateTests: XCTestCase {
     /// - Then:
     ///    - only the same user compares equal
     func testSignedInComparesTheUser() {
-        let alice = AuthClientUser(username: "alice", userId: "sub-1")
-        XCTAssertEqual(AuthSessionState.signedIn(alice), .signedIn(AuthClientUser(username: "alice", userId: "sub-1")))
-        XCTAssertNotEqual(AuthSessionState.signedIn(alice), .signedIn(AuthClientUser(username: "bob", userId: "sub-1")))
-        XCTAssertNotEqual(AuthSessionState.signedIn(alice), .signedIn(AuthClientUser(username: "alice", userId: "sub-2")))
+        let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-1")
+        XCTAssertEqual(AuthSessionState.signedIn(alice), .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-1")))
+        XCTAssertNotEqual(AuthSessionState.signedIn(alice), .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-1")))
+        XCTAssertNotEqual(AuthSessionState.signedIn(alice), .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-2")))
     }
 
     /// - Given: `.federated` with the same identity and a different one
@@ -148,8 +148,8 @@ final class AuthSessionStateTests: XCTestCase {
     /// - Then:
     ///    - only the identical step compares equal
     func testAwaitingChallengeComparesTheStep() {
-        let email = AuthClientCodeDeliveryDetails(destination: .email("a***"))
-        let sms = AuthClientCodeDeliveryDetails(destination: .sms("+1***"))
+        let email = AmplifyCognitoClientCodeDeliveryDetails(destination: .email("a***"))
+        let sms = AmplifyCognitoClientCodeDeliveryDetails(destination: .sms("+1***"))
         XCTAssertEqual(AuthSessionState.awaitingChallenge(.confirmSignInWithOTP(email)), .awaitingChallenge(.confirmSignInWithOTP(email)))
         XCTAssertNotEqual(AuthSessionState.awaitingChallenge(.confirmSignInWithOTP(email)), .awaitingChallenge(.confirmSignInWithOTP(sms)))
         XCTAssertNotEqual(AuthSessionState.awaitingChallenge(.confirmSignInWithTOTPCode), .awaitingChallenge(.done))
@@ -182,10 +182,10 @@ final class AuthSessionStateTests: XCTestCase {
         )
     }
 
-    /// The rule is not payload-blind: every `AuthClientError` case, given identical strings,
+    /// The rule is not payload-blind: every `AmplifyCognitoClientError` case, given identical strings,
     /// is still a different failure.
     ///
-    /// - Given: one error of every `AuthClientError` case, built through exhaustive switches, all carrying the
+    /// - Given: one error of every `AmplifyCognitoClientError` case, built through exhaustive switches, all carrying the
     ///   same description and suggestion
     /// - When: each pair is wrapped in `.failed` and compared
     /// - Then:
@@ -251,14 +251,14 @@ final class AuthSessionStateTests: XCTestCase {
             AuthSessionState.failed(.webAuthnCeremonyFailed(.failed, "d", "s")),
             .failed(.webAuthnCeremonyFailed(.credentialAlreadyExists, "d", "s"))
         )
-        let bob = AuthClientUser(username: "bob", userId: "sub-bob")
+        let bob = AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")
         XCTAssertNotEqual(
             AuthSessionState.failed(.unexpectedIdentity(expected: "alice", returned: bob, "d", "s")),
             .failed(.unexpectedIdentity(expected: nil, returned: bob, "d", "s"))
         )
         XCTAssertNotEqual(
             AuthSessionState.failed(.unexpectedIdentity(expected: "alice", returned: bob, "d", "s")),
-            .failed(.unexpectedIdentity(expected: "alice", returned: AuthClientUser(username: "bob", userId: "sub-other"), "d", "s"))
+            .failed(.unexpectedIdentity(expected: "alice", returned: AmplifyCognitoClientUser(username: "bob", userId: "sub-other"), "d", "s"))
         )
         XCTAssertEqual(
             AuthSessionState.failed(.browserBusy(holder: work, "d", "s")),
@@ -266,7 +266,7 @@ final class AuthSessionStateTests: XCTestCase {
         )
         XCTAssertEqual(
             AuthSessionState.failed(.unexpectedIdentity(expected: "alice", returned: bob, "d", "s")),
-            .failed(.unexpectedIdentity(expected: "alice", returned: AuthClientUser(username: "bob", userId: "sub-bob"), "d", "s"))
+            .failed(.unexpectedIdentity(expected: "alice", returned: AmplifyCognitoClientUser(username: "bob", userId: "sub-bob"), "d", "s"))
         )
     }
 

@@ -19,15 +19,15 @@ public extension AmplifyCognitoClient {
     /// The signed-in user's remembered devices.
     ///
     /// - Parameter options: Nothing yet; here so the call keeps the plugin's shape.
-    /// - Throws: `AuthClientError.notSignedIn` for a signed-out, guest or federated session, or while a
+    /// - Throws: `AmplifyCognitoClientError.notSignedIn` for a signed-out, guest or federated session, or while a
     ///   sign-in waits on a challenge; `.sessionExpired` when the refresh token is no longer valid;
     ///   `.storageUnavailable` if storage could not be read; `.configuration` without a user pool, and when
     ///   the user pool doesn't track devices (Cognito's `InvalidUserPoolConfigurationException`); `.notAuthorized`
     ///   or `.service` as Cognito answers; `.unknown` if Cognito answers without a device
     ///   list.
     func fetchDevices(
-        options: AuthClientFetchDevicesOptions = AuthClientFetchDevicesOptions()
-    ) async throws -> [AuthClientDevice] {
+        options: AmplifyCognitoClientFetchDevicesOptions = AmplifyCognitoClientFetchDevicesOptions()
+    ) async throws -> [AmplifyCognitoClientDevice] {
         let core = core
         return try await core.signedInOperation("fetch the devices") { engine, payload in
             try await engine.fetchDevices(payload)
@@ -37,12 +37,12 @@ public extension AmplifyCognitoClient {
     /// Remembers this device for the signed-in user.
     ///
     /// - Parameter options: Nothing yet; here so the call keeps the plugin's shape.
-    /// - Throws: `AuthClientError.notSignedIn`, `.sessionExpired`, `.configuration`, `.notAuthorized` and
+    /// - Throws: `AmplifyCognitoClientError.notSignedIn`, `.sessionExpired`, `.configuration`, `.notAuthorized` and
     ///   `.service` as `fetchDevices()`; `.storageUnavailable` if storage, including this device's device
     ///   record, could not be read; `.unknown` ("Unable to get device metadata") when this device holds no
     ///   device record for the user, as the plugin does (the pool does not track devices, or this device
     ///   has not signed in since tracking was enabled). No request is sent then.
-    func rememberDevice(options: AuthClientRememberDeviceOptions = AuthClientRememberDeviceOptions()) async throws {
+    func rememberDevice(options: AmplifyCognitoClientRememberDeviceOptions = AmplifyCognitoClientRememberDeviceOptions()) async throws {
         let core = core
         try await core.signedInOperation("remember the device") { engine, payload in
             try await engine.rememberDevice(payload)
@@ -54,14 +54,14 @@ public extension AmplifyCognitoClient {
     /// - Parameters:
     ///   - device: The device to forget, from `fetchDevices()`; `nil` for this device.
     ///   - options: Nothing yet; here so the call keeps the plugin's shape.
-    /// - Throws: `AuthClientError.notSignedIn`, `.sessionExpired`, `.storageUnavailable`, `.configuration`,
+    /// - Throws: `AmplifyCognitoClientError.notSignedIn`, `.sessionExpired`, `.storageUnavailable`, `.configuration`,
     ///   `.notAuthorized` and `.service` as `fetchDevices()`. For this device (`nil`), also as
     ///   `rememberDevice()`: `.storageUnavailable` if its device record could not be read, and `.unknown`
     ///   ("Unable to get device metadata") when there is none. Forgetting keeps the record on this device,
     ///   as the plugin does.
     func forgetDevice(
-        _ device: AuthClientDevice? = nil,
-        options: AuthClientForgetDeviceOptions = AuthClientForgetDeviceOptions()
+        _ device: AmplifyCognitoClientDevice? = nil,
+        options: AmplifyCognitoClientForgetDeviceOptions = AmplifyCognitoClientForgetDeviceOptions()
     ) async throws {
         let deviceId = device?.id
         let core = core

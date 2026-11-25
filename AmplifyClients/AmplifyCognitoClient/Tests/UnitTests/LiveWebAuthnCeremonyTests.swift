@@ -99,7 +99,7 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
         let client = try liveClient()
         try await signIn(client)
         let window = await WebAuthnFixtures.window()
-        let cases: [(ASAuthorizationError.Code, AuthClientError.Kind)] = [
+        let cases: [(ASAuthorizationError.Code, AmplifyCognitoClientError.Kind)] = [
             (.canceled, .userCancelled),
             (ASAuthorizationError.Code(rawValue: 1_006) ?? .unknown, .webAuthnCeremonyFailed(.credentialAlreadyExists)),
             (.failed, .webAuthnCeremonyFailed(.failed))
@@ -134,7 +134,7 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
         let client = try liveClient()
         try await signIn(client)
         let window = await WebAuthnFixtures.window()
-        let cases: [(Error, AuthClientServiceErrorCode)] = [
+        let cases: [(Error, AmplifyCognitoClientServiceErrorCode)] = [
             (WebAuthnNotEnabledException(message: "m"), .webAuthnNotEnabled),
             (WebAuthnCredentialNotSupportedException(message: "m"), .webAuthnNotSupported),
             (WebAuthnConfigurationMissingException(message: "m"), .webAuthnConfigurationMissing),
@@ -353,7 +353,7 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
         let client = try liveClient()
         let windowA = await WebAuthnFixtures.window()
         let gone = await MainActor.run {
-            autoreleasepool { AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: WebAuthnFixtures.window()) }
+            autoreleasepool { AmplifyCognitoClientConfirmSignInOptions(presentationAnchorForWebAuthn: WebAuthnFixtures.window()) }
         }
         harness.scriptIdentityPool()
         harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in
@@ -586,7 +586,7 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
 
         let options = await MainActor.run {
             autoreleasepool {
-                AuthClientSignInOptions(
+                AmplifyCognitoClientSignInOptions(
                     authFlowType: .userAuth(preferredFirstFactor: .webAuthn),
                     presentationAnchorForWebAuthn: WebAuthnFixtures.window()
                 )

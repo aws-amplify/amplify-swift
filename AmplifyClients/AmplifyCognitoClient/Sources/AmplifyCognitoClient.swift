@@ -21,7 +21,7 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 /// A handle onto one Cognito session.
 ///
 /// Construction is synchronous and throwing, like every client in the family. Built from an
-/// `AuthClientConfiguration`, it does no file or keychain I/O (`AuthClientConfiguration(from:bundle:)` is what
+/// `AmplifyCognitoClientConfiguration`, it does no file or keychain I/O (`AmplifyCognitoClientConfiguration(from:bundle:)` is what
 /// reads the configuration file): the saved session is restored in the background, and every operation waits
 /// for that restore internally, bounded, so a caller never has to sequence around it.
 ///
@@ -32,7 +32,7 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 /// configuration throws `sessionConfigurationMismatch` rather than silently attaching.
 ///
 /// ```swift
-/// let configuration = try AuthClientConfiguration()
+/// let configuration = try AmplifyCognitoClientConfiguration()
 /// let work = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: .named("work")))
 /// let home = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: .named("home")))
 /// let connect = AmplifyConnectClient(
@@ -166,10 +166,10 @@ public final class AmplifyCognitoClient: Sendable {
     /// the old login, so switching back finds it signed out. See `SessionID.default`, and use named sessions to
     /// switch between backends.
     ///
-    /// - Throws: `AuthClientError.sessionConfigurationMismatch` if that session is already live in this
-    ///   process under a different configuration; `AuthClientError.configuration` if the SDK clients
+    /// - Throws: `AmplifyCognitoClientError.sessionConfigurationMismatch` if that session is already live in this
+    ///   process under a different configuration; `AmplifyCognitoClientError.configuration` if the SDK clients
     ///   could not be configured.
-    public convenience init(configuration: AuthClientConfiguration, options: Options = Options()) throws {
+    public convenience init(configuration: AmplifyCognitoClientConfiguration, options: Options = Options()) throws {
         try self.init(configuration: configuration, options: options, dependencies: .live)
     }
 
@@ -177,7 +177,7 @@ public final class AmplifyCognitoClient: Sendable {
     ///
     /// No `await` and no keychain call: the core is found or built under the registry lock, and its
     /// restore is only scheduled.
-    init(configuration: AuthClientConfiguration, options: Options, dependencies: SessionCoreDependencies) throws {
+    init(configuration: AmplifyCognitoClientConfiguration, options: Options, dependencies: SessionCoreDependencies) throws {
         let identity = SessionIdentity(configuration: configuration, options: options)
         let sessionId = options.sessionId
         let configureUserPoolClient = options.configureUserPoolClient
@@ -190,10 +190,10 @@ public final class AmplifyCognitoClient: Sendable {
             let clients: CognitoServiceClients
             do {
                 clients = try dependencies.makeClients(configuration, configureUserPoolClient)
-            } catch let error as AuthClientError {
+            } catch let error as AmplifyCognitoClientError {
                 throw error
             } catch {
-                throw AuthClientError.configuration(
+                throw AmplifyCognitoClientError.configuration(
                     "The Cognito SDK clients could not be configured.",
                     "Check the region in the configuration, and any changes made by configureUserPoolClient.",
                     error
@@ -218,7 +218,7 @@ public final class AmplifyCognitoClient: Sendable {
     /// session uses, shared by every handle on it.
     ///
     /// Operations that need AWS (SigV4) credentials, such as the `Admin*` operations, throw
-    /// `AuthClientError.configuration` by design, unless `Options.configureUserPoolClient` set an
+    /// `AmplifyCognitoClientError.configuration` by design, unless `Options.configureUserPoolClient` set an
     /// `awsCredentialIdentityResolver`.
     public func getUserPoolClient() -> CognitoIdentityProviderClient? {
         core.clients.userPool
@@ -227,7 +227,7 @@ public final class AmplifyCognitoClient: Sendable {
     /// The session's identity pool SDK client, or `nil` if no identity pool is configured.
     ///
     /// Operations that need AWS (SigV4) credentials, such as `DescribeIdentityPool`, throw
-    /// `AuthClientError.configuration` by design. To make them, build your own `CognitoIdentityClient`.
+    /// `AmplifyCognitoClientError.configuration` by design. To make them, build your own `CognitoIdentityClient`.
     public func getIdentityClient() -> CognitoIdentityClient? {
         core.clients.identity
     }

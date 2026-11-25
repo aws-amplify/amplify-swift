@@ -13,16 +13,16 @@ import InternalAWSCognitoAuth
 /// matrix): user pool A with app client 1 or 2, user pool B, identity pools 1 and 2.
 enum ChangeConfigs {
 
-    static let identityPool2 = AuthClientConfiguration.IdentityPool(
+    static let identityPool2 = AmplifyCognitoClientConfiguration.IdentityPool(
         poolId: "us-east-1:00000000-0000-0000-0000-000000000002",
         region: "us-east-1"
     )
-    static let userPoolClient2 = AuthClientConfiguration.UserPool(
+    static let userPoolClient2 = AmplifyCognitoClientConfiguration.UserPool(
         poolId: StorageFixtures.userPoolId,
         appClientId: "app-client-2",
         region: "us-east-1"
     )
-    static let userPoolB = AuthClientConfiguration.UserPool(poolId: "us-east-1_OtherPool9", appClientId: "app-client-b", region: "us-east-1")
+    static let userPoolB = AmplifyCognitoClientConfiguration.UserPool(poolId: "us-east-1_OtherPool9", appClientId: "app-client-b", region: "us-east-1")
 
     static let both = ClientFixtures.configuration
     static let userPoolOnly = ClientFixtures.userPoolOnlyConfiguration
@@ -38,7 +38,7 @@ enum ChangeConfigs {
 
     /// `configuration` as a Gen1 plugin configuration records it: a custom endpoint and a Pinpoint app ID, which
     /// `amplify_outputs` cannot hold.
-    static func gen1(of configuration: AuthClientConfiguration) -> AuthConfiguration {
+    static func gen1(of configuration: AmplifyCognitoClientConfiguration) -> AuthConfiguration {
         guard case .userPoolsAndIdentityPools(let userPool, let identityPool) = AuthConfiguration(client: configuration) else {
             preconditionFailure("a configuration with both pools")
         }
@@ -56,7 +56,7 @@ enum ChangeConfigs {
 
     /// A run of changes through every branch: the user pool added, the identity pool changed, removed and added
     /// back, the app client alone, the app client with the key, another user pool, and back.
-    static let run: [AuthClientConfiguration] = [
+    static let run: [AmplifyCognitoClientConfiguration] = [
         identityPoolOnly, both, bothOtherIdentityPool, userPoolOnly, both, otherClientBothSamePools,
         otherClientUserPoolOnly, otherClientBoth, userPoolOnly, otherUserPool, both, identityPoolOnly, otherIdentityPoolOnly
     ]
@@ -68,7 +68,7 @@ enum ChangeConfigs {
     }
 
     static let pairs: [Pair] = {
-        func engine(_ configuration: AuthClientConfiguration) -> AuthConfiguration {
+        func engine(_ configuration: AmplifyCognitoClientConfiguration) -> AuthConfiguration {
             AuthConfiguration(client: configuration)
         }
         return [

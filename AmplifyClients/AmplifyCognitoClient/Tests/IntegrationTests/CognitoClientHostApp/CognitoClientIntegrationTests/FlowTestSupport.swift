@@ -160,7 +160,7 @@ extension AuthSessionState {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     /// The case's name alone, for failure messages: never its payload (`unexpectedIdentity` carries a username and
     /// a sub, `browserBusy` a session ID) nor its text.
@@ -170,7 +170,7 @@ extension AuthClientError {
     }
 }
 
-extension AuthClientUser {
+extension AmplifyCognitoClientUser {
 
     /// The username, unless it is a fresh user's generated `ccit-…` name.
     var redactedUsername: String {
@@ -178,7 +178,7 @@ extension AuthClientUser {
     }
 }
 
-extension AuthClientSignInStep {
+extension AmplifyCognitoClientSignInStep {
 
     /// The case's name alone, without its payload.
     var caseName: String {
@@ -189,8 +189,8 @@ extension AuthClientSignInStep {
 
 /// Asserts a sign-in step, printing only case names on failure.
 func XCTAssertStep(
-    _ step: AuthClientSignInStep,
-    _ expected: AuthClientSignInStep,
+    _ step: AmplifyCognitoClientSignInStep,
+    _ expected: AmplifyCognitoClientSignInStep,
     file: StaticString = #filePath,
     line: UInt = #line
 ) {
@@ -213,11 +213,11 @@ func XCTAssertState(
     )
 }
 
-extension AuthClientSignOutResult {
+extension AmplifyCognitoClientSignOutResult {
 
     /// For failure messages: the case and each error's case name, never an error's payload or text.
     var redactedDescription: String {
-        func kind(_ error: AuthClientError?) -> String {
+        func kind(_ error: AmplifyCognitoClientError?) -> String {
             error?.kindName ?? "nil"
         }
         switch self {
@@ -235,7 +235,7 @@ extension AuthClientSignOutResult {
 /// Asserts that a sign-out completed: `.complete`, so the session is signed out on this device and nothing
 /// failed. A sign-out never throws: `.partial` and `.failed` are results, and either fails this.
 func XCTAssertSignOutComplete(
-    _ result: AuthClientSignOutResult,
+    _ result: AmplifyCognitoClientSignOutResult,
     _ message: String = "",
     file: StaticString = #filePath,
     line: UInt = #line
@@ -257,21 +257,21 @@ func XCTAssertSignOutComplete(
 /// The error an operation must throw, for assertions on its case.
 enum Expect {
 
-    /// The `AuthClientError` `operation` throws; fails the test (and returns `nil`) if it returns, or
+    /// The `AmplifyCognitoClientError` `operation` throws; fails the test (and returns `nil`) if it returns, or
     /// throws anything else.
     static func authClientError(
         _ what: String,
         file: StaticString = #filePath,
         line: UInt = #line,
         _ operation: () async throws -> some Any
-    ) async -> AuthClientError? {
+    ) async -> AmplifyCognitoClientError? {
         do {
             _ = try await operation()
             XCTFail("\(what) should have thrown", file: file, line: line)
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             return error
         } catch {
-            XCTFail("\(what) should throw an AuthClientError, got \(error)", file: file, line: line)
+            XCTFail("\(what) should throw an AmplifyCognitoClientError, got \(error)", file: file, line: line)
         }
         return nil
     }
@@ -309,7 +309,7 @@ extension CredentialsError {
     }
 }
 
-extension AuthClientSignInStep {
+extension AmplifyCognitoClientSignInStep {
 
     /// Whether this is the TOTP-code step, whatever its payload.
     var isTOTPCode: Bool {
@@ -331,7 +331,7 @@ extension AuthClientSignInStep {
 extension AuthSessionState {
 
     /// The step, if this session waits on a challenge.
-    var pendingStep: AuthClientSignInStep? {
+    var pendingStep: AmplifyCognitoClientSignInStep? {
         if case .awaitingChallenge(let step) = self {
             return step
         }
@@ -507,7 +507,7 @@ struct RawUserPool: Sendable {
 enum FederatedStandardPool {
 
     /// The client configuration: the default backend's outputs, which must name an identity pool.
-    static func configuration() throws -> AuthClientConfiguration {
+    static func configuration() throws -> AmplifyCognitoClientConfiguration {
         let configuration = try IntegrationTestEnvironment.configuration(.standard)
         guard configuration.identityPool != nil else {
             throw HarnessError.malformedFixture("""

@@ -24,7 +24,7 @@ extension SessionCore {
     /// configuration.
     ///
     /// - Returns: What the rule did: for the static sign-out, the record it carried from.
-    /// - Throws: `AuthClientError.storageUnavailable` if storage failed; `SessionRecordStore.CarrySourceChanged` if
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage failed; `SessionRecordStore.CarrySourceChanged` if
     ///   the previous configuration no longer names `heldSource`.
     @discardableResult
     static func applyPluginConfigurationRule(
@@ -106,5 +106,5 @@ extension SessionCore {
 private struct AppliedPluginRule: Sendable {
     let outcome: SessionRecordStore.PluginConfigurationOutcome
     let revocable: (payload: Data, previous: AuthConfiguration)?
-    let recordFailure: AuthClientError?
+    let recordFailure: AmplifyCognitoClientError?
 }

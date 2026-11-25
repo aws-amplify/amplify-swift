@@ -39,7 +39,7 @@ extension LiveSessionEngine {
     /// Registers the user (`AWSAuthSignUpTask.doSignUp`).
     ///
     /// - Throws: Cognito's answer, mapped as the plugin maps it (`usernameExists`, `invalidPassword`, …).
-    nonisolated func signUp(_ request: EngineSignUpRequest) async throws -> AuthClientSignUpResult {
+    nonisolated func signUp(_ request: EngineSignUpRequest) async throws -> AmplifyCognitoClientSignUpResult {
         try requireUserPool()
         let data = SignUpEventData(
             username: request.username,
@@ -61,7 +61,7 @@ extension LiveSessionEngine {
         }
         let (signedUp, result) = outcome
         await endSignUpStep(ticket, LiveSignUpState(reached: result, with: signedUp))
-        return AuthClientSignUpResult(result)
+        return AmplifyCognitoClientSignUpResult(result)
     }
 
     // MARK: Confirmation
@@ -70,7 +70,7 @@ extension LiveSessionEngine {
     /// sign-up waiting for confirmation only when its username is this one, as the plugin does.
     ///
     /// - Throws: Cognito's answer, mapped (`codeMismatch`, `expiredCode`, …).
-    nonisolated func confirmSignUp(_ request: EngineConfirmSignUpRequest) async throws -> AuthClientSignUpResult {
+    nonisolated func confirmSignUp(_ request: EngineConfirmSignUpRequest) async throws -> AmplifyCognitoClientSignUpResult {
         try requireUserPool()
         let (ticket, data) = await beginConfirmation(request)
         let outcome: (SignUpEventData, EngineSignUpResult)
@@ -87,7 +87,7 @@ extension LiveSessionEngine {
         }
         let (signedUp, result) = outcome
         await endSignUpStep(ticket, .signedUp(signedUp))
-        return AuthClientSignUpResult(result)
+        return AmplifyCognitoClientSignUpResult(result)
     }
 
     /// The confirmation's data, with the session of the sign-up waiting for it when the username matches
@@ -108,14 +108,14 @@ extension LiveSessionEngine {
     /// advanced-security context, analytics and secret hash.
     ///
     /// - Throws: Cognito's answer, mapped; `unknown` if Cognito answers without delivery details.
-    nonisolated func resendSignUpCode(username: String, clientMetadata: [String: String]) async throws -> AuthClientCodeDeliveryDetails {
+    nonisolated func resendSignUpCode(username: String, clientMetadata: [String: String]) async throws -> AmplifyCognitoClientCodeDeliveryDetails {
         try requireUserPool()
         let resources = resources
         guard let userPoolConfiguration = resources.authConfiguration.getUserPoolConfiguration() else {
             // `requireUserPool` has already refused this.
-            throw AuthClientError.configuration(
+            throw AmplifyCognitoClientError.configuration(
                 "UserPool configuration is missing",
-                "Add a user pool to AuthClientConfiguration."
+                "Add a user pool to AmplifyCognitoClientConfiguration."
             )
         }
         // The operation's machines give the request the device records the plugin's environment reads.
@@ -157,14 +157,14 @@ extension LiveSessionEngine {
             )
             output = try await userPoolService.resendConfirmationCode(input: input)
         } catch let error as EngineAuthErrorConvertible {
-            throw AuthClientError(engineFailure: error)
+            throw AmplifyCognitoClientError(engineFailure: error)
         }
         guard let details = output.codeDeliveryDetails?.toEngineCodeDeliveryDetails() else {
             // The plugin's `AuthError.unknown(…, nil)`, so its wording ("Unexpected error occurred with
             // message: …") and suggestion.
-            throw AuthClientError(engine: .unknown("Unable to get Auth code delivery details"))
+            throw AmplifyCognitoClientError(engine: .unknown("Unable to get Auth code delivery details"))
         }
-        return AuthClientCodeDeliveryDetails(details)
+        return AmplifyCognitoClientCodeDeliveryDetails(details)
     }
 
     // MARK: Auto sign-in
@@ -246,7 +246,7 @@ extension LiveSessionEngine {
             case .awaitingUserConfirmation(let data, let result), .signedUp(let data, let result):
                 return (data, result)
             case .error(let error, _):
-                throw AuthClientError(signUp: error)
+                throw AmplifyCognitoClientError(signUp: error)
             case .notStarted, .initiatingSignUp, .confirmingSignUp:
                 return nil
             }
@@ -313,20 +313,20 @@ enum LiveSignUpState: Sendable, Equatable {
 
 // MARK: Engine -> client
 
-extension AuthClientSignUpResult {
+extension AmplifyCognitoClientSignUpResult {
 
     init(_ result: EngineSignUpResult) {
-        self.init(AuthClientSignUpStep(result.nextStep), userId: result.userID)
+        self.init(AmplifyCognitoClientSignUpStep(result.nextStep), userId: result.userID)
     }
 }
 
-extension AuthClientSignUpStep {
+extension AmplifyCognitoClientSignUpStep {
 
     /// Case for case with `EngineSignUpStep`, as the plugin maps it to `AuthSignUpStep`.
     init(_ step: EngineSignUpStep) {
         switch step {
         case .confirmUser(let details, let info, let userId):
-            self = .confirmUser(details.map(AuthClientCodeDeliveryDetails.init), info, userId)
+            self = .confirmUser(details.map(AmplifyCognitoClientCodeDeliveryDetails.init), info, userId)
         case .completeAutoSignIn(let session):
             self = .completeAutoSignIn(session)
         case .done:
@@ -335,7 +335,7 @@ extension AuthClientSignUpStep {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     /// A sign-up machine's failure, as the plugin's `SignUpError.authError` maps it. The engine only ever
     /// reports `.service` (its actions wrap every failure), so the two cases its own mapping leaves to a

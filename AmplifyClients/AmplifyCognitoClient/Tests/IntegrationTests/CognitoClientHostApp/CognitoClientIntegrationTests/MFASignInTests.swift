@@ -95,7 +95,7 @@ final class MFASignInTests: ClientMFATestCase {
             return XCTFail("expected continueSignInWithMFASelection, got \(Self.name(of: signIn.nextStep))")
         }
         XCTAssertEqual(offered, [.sms, .totp])
-        let selected = try await client.confirmSignIn(challengeResponse: AuthClientMFAType.totp.challengeResponse)
+        let selected = try await client.confirmSignIn(challengeResponse: AmplifyCognitoClientMFAType.totp.challengeResponse)
         guard case .confirmSignInWithTOTPCode = selected.nextStep else {
             return XCTFail("expected confirmSignInWithTOTPCode, got \(Self.name(of: selected.nextStep))")
         }
@@ -126,7 +126,7 @@ final class MFASignInTests: ClientMFATestCase {
         }
         XCTAssertEqual(offered, [.sms, .totp])
         let (selected, code) = try await sink.code(for: user, .mfa) {
-            try await client.confirmSignIn(challengeResponse: AuthClientMFAType.sms.challengeResponse)
+            try await client.confirmSignIn(challengeResponse: AmplifyCognitoClientMFAType.sms.challengeResponse)
         }
         guard case .confirmSignInWithSMSMFACode(let delivery, _) = selected.nextStep else {
             return XCTFail("expected confirmSignInWithSMSMFACode, got \(Self.name(of: selected.nextStep))")

@@ -85,7 +85,7 @@ extension LiveSessionEngine {
             }
             return try CredentialSlot.encode(credentials)
         default:
-            failure = .service(AuthClientError(engineFailure: error))
+            failure = .service(AmplifyCognitoClientError(engineFailure: error))
         }
         if case .written(let stored) = try operation.slot.outcome() {
             throw SessionEngineError.refreshedThenFailed(payload: stored, error: failure)
@@ -119,7 +119,7 @@ extension LiveSessionEngine {
             case .error(.sessionError(.notAuthorized, _)), .error(.sessionError(.noCredentialsToRefresh, _)):
                 throw SessionEngineError.notSignedIn
             case .error(let error):
-                throw SessionEngineError.service(AuthClientError(engineFailure: error))
+                throw SessionEngineError.service(AmplifyCognitoClientError(engineFailure: error))
             default:
                 return nil
             }
@@ -182,7 +182,7 @@ extension LiveSessionEngine {
         case .signedOut(let signedOut):
             return outcome(of: signedOut)
         case .signingOut(.error(let error)):
-            throw AuthClientError(engineFailure: error)
+            throw AmplifyCognitoClientError(engineFailure: error)
         default:
             return nil
         }
@@ -214,7 +214,7 @@ extension LiveSessionEngine {
     nonisolated func deleteUser(_ payload: Data) async throws {
         try requireUserPool()
         guard let accessToken = try Self.credentials(in: payload).userPoolTokens?.accessToken else {
-            throw AuthClientError.notSignedIn(
+            throw AmplifyCognitoClientError.notSignedIn(
                 "There is no user signed in to delete",
                 "Call signIn to sign in a user, then deleteUser."
             )
@@ -254,7 +254,7 @@ struct DeletionProgress {
             if deleted {
                 return true
             }
-            throw AuthClientError(engine: error, cause: cause)
+            throw AmplifyCognitoClientError(engine: error, cause: cause)
         case .notStarted, .deletingUser:
             return false
         }

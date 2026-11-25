@@ -19,12 +19,12 @@ final class WebUISignInTests: XCTestCase {
     private var harness: ClientHarness!
     /// The window to anchor sheets to, made on first use rather than in `setUp()`: a process's first `UIWindow()`
     /// can block for minutes on a just-booted simulator, so a test that needs no window makes none.
-    private var window: AuthClientPresentationAnchor {
+    private var window: AmplifyCognitoClientPresentationAnchor {
         get async { await HostedUIFixtures.window() }
     }
     private let work = ClientFixtures.id("work")
     private let home = ClientFixtures.id("home")
-    private let webUser = AuthClientUser(username: "web-user", userId: "sub-web-user")
+    private let webUser = AmplifyCognitoClientUser(username: "web-user", userId: "sub-web-user")
 
     override func setUp() async throws {
         harness = ClientHarness()
@@ -45,7 +45,7 @@ final class WebUISignInTests: XCTestCase {
     private func startSignIn(
         _ client: AmplifyCognitoClient,
         options: WebUIOptions = WebUIOptions()
-    ) async -> Task<AuthClientSignInResult, Error> {
+    ) async -> Task<AmplifyCognitoClientSignInResult, Error> {
         let window = await window
         return Task { try await client.signInWithWebUI(presentationAnchor: window, options: options) }
     }
@@ -885,7 +885,7 @@ final class WebUISignInTests: XCTestCase {
         let signIn = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
         let lock = harness.sheetLock
-        let answered = Task { () -> (AuthClientError?, SessionID?) in
+        let answered = Task { () -> (AmplifyCognitoClientError?, SessionID?) in
             let error = await authClientError { try await signIn.value }
             return (error, await lock.currentHolder)
         }
@@ -947,7 +947,7 @@ final class WebUISignInTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let window = await window
-        engine.scriptWebUISignIn { _, _ in throw AuthClientError.userCancelled("closed", "retry") }
+        engine.scriptWebUISignIn { _, _ in throw AmplifyCognitoClientError.userCancelled("closed", "retry") }
 
         _ = await authClientError {
             try await client.signInWithWebUI(
@@ -996,7 +996,7 @@ final class WebUISignInTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let window = await window
-        engine.scriptWebUISignIn { _, _ in throw AuthClientError.userCancelled("closed", "retry") }
+        engine.scriptWebUISignIn { _, _ in throw AmplifyCognitoClientError.userCancelled("closed", "retry") }
 
         for options in [WebUIOptions(), WebUIOptions(), WebUIOptions(nonce: "caller-nonce"), WebUIOptions(nonce: "")] {
             _ = await authClientError { try await client.signInWithWebUI(presentationAnchor: window, options: options) }
@@ -1075,9 +1075,9 @@ final class WebUISignInTests: XCTestCase {
         _ = try harness.signIn(home, .signedIn("bob"))
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let bob = AuthClientUser(username: "bob", userId: "sub-bob")
+        let bob = AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")
         engine.scriptWebUISignIn { _, _ in
-            throw AuthClientError.unexpectedIdentity(expected: nil, returned: bob, "a different user", "retry with login")
+            throw AmplifyCognitoClientError.unexpectedIdentity(expected: nil, returned: bob, "a different user", "retry with login")
         }
 
         let error = await authClientError {
@@ -1230,7 +1230,7 @@ final class WebUISignInTests: XCTestCase {
     func testEngineFailuresReachTheCaller() async throws {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let failures: [AuthClientError] = [
+        let failures: [AmplifyCognitoClientError] = [
             .validation(field: "presentationAnchor", "gone", "retry"),
             .userCancelled("closed", "retry"),
             .invalidState("no window", "retry"),

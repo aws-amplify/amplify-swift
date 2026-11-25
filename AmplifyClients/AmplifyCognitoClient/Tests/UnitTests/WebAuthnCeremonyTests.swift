@@ -56,7 +56,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
             return .done(payload: FakeSessionEngine.signedIn(request.username, from: current).data)
         }
 
-        for (index, flow) in [AuthClientAuthFlowType.userAuth(preferredFirstFactor: .webAuthn), .userAuth(preferredFirstFactor: nil)].enumerated() {
+        for (index, flow) in [AmplifyCognitoClientAuthFlowType.userAuth(preferredFirstFactor: .webAuthn), .userAuth(preferredFirstFactor: nil)].enumerated() {
             let held = HeldSheet()
             engine.scriptCeremonyBody { _ in
                 try await held.answer()
@@ -311,7 +311,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
 
         XCTAssertEqual(busyAssociate?.kind, .browserBusy(holder: work))
         XCTAssertEqual(busySignIn?.kind, .browserBusy(holder: work))
-        let lockError = AuthClientError.browserBusy(heldBy: work, requestedBy: home, reason: .heldByAnotherSession)
+        let lockError = AmplifyCognitoClientError.browserBusy(heldBy: work, requestedBy: home, reason: .heldByAnotherSession)
         for busy in [busyAssociate, busySignIn] {
             XCTAssertEqual(busy?.recoverySuggestion, SystemSheetFlow.passkeyBrowserBusySuggestion)
             XCTAssertFalse(busy?.recoverySuggestion.contains("whenBrowserBusy") ?? true)
@@ -361,7 +361,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         XCTAssertEqual(busy?.kind, .browserBusy(holder: work))
         XCTAssertEqual(
             busy?.errorDescription,
-            AuthClientError.browserBusy(heldBy: work, requestedBy: work, reason: .stillClosing).errorDescription
+            AmplifyCognitoClientError.browserBusy(heldBy: work, requestedBy: work, reason: .stillClosing).errorDescription
         )
         XCTAssertEqual(busy?.recoverySuggestion, SystemSheetFlow.passkeyBrowserBusySuggestion)
         XCTAssertFalse(busy?.recoverySuggestion.contains("whenBrowserBusy") ?? true)
@@ -568,7 +568,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         engine.scriptSignIn { request, _ in
             _ = try await engine.runCeremony(request.webAuthn, anchor: request.webAuthn?.anchor)
             await responding.pass()
-            throw AuthClientError.notAuthorized("Incorrect credential.", "Sign in again.")
+            throw AmplifyCognitoClientError.notAuthorized("Incorrect credential.", "Sign in again.")
         }
 
         let signIn = Task {
@@ -773,7 +773,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await up.arrivals(1)
         let lock = harness.sheetLock
-        let answered = Task { () -> (AuthClientError?, SessionID?) in
+        let answered = Task { () -> (AmplifyCognitoClientError?, SessionID?) in
             let error = await authClientError { try await associate.value(within: 10) }
             return (error, await lock.currentHolder)
         }
@@ -805,29 +805,29 @@ final class WebAuthnCeremonyTests: XCTestCase {
     func testTheOptionsCompareTheirWindowByIdentity() {
         let windowA = WebAuthnFixtures.window()
         let windowB = WebAuthnFixtures.window()
-        let flow = AuthClientAuthFlowType.userAuth(preferredFirstFactor: .webAuthn)
-        let plain = AuthClientSignInOptions(authFlowType: flow)
-        let overA = AuthClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: windowA)
+        let flow = AmplifyCognitoClientAuthFlowType.userAuth(preferredFirstFactor: .webAuthn)
+        let plain = AmplifyCognitoClientSignInOptions(authFlowType: flow)
+        let overA = AmplifyCognitoClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: windowA)
 
-        XCTAssertEqual(overA, AuthClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: windowA))
-        XCTAssertNotEqual(overA, AuthClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: windowB))
+        XCTAssertEqual(overA, AmplifyCognitoClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: windowA))
+        XCTAssertNotEqual(overA, AmplifyCognitoClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: windowB))
         XCTAssertNotEqual(overA, plain)
-        XCTAssertEqual(plain, AuthClientSignInOptions(authFlowType: flow))
+        XCTAssertEqual(plain, AmplifyCognitoClientSignInOptions(authFlowType: flow))
         XCTAssertTrue(overA.presentationAnchorForWebAuthn === windowA)
         XCTAssertNil(plain.presentationAnchorForWebAuthn)
 
         let released = autoreleasepool {
-            AuthClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: WebAuthnFixtures.window())
+            AmplifyCognitoClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: WebAuthnFixtures.window())
         }
         XCTAssertNil(released.presentationAnchorForWebAuthn)
         XCTAssertNotEqual(released, plain)
-        XCTAssertEqual(AuthClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: nil), plain)
+        XCTAssertEqual(AmplifyCognitoClientSignInOptions(authFlowType: flow, presentationAnchorForWebAuthn: nil), plain)
 
-        let confirm = AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowA)
-        XCTAssertEqual(confirm, AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowA))
+        let confirm = AmplifyCognitoClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowA)
+        XCTAssertEqual(confirm, AmplifyCognitoClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowA))
         XCTAssertTrue(confirm.presentationAnchorForWebAuthn === windowA)
-        XCTAssertNotEqual(confirm, AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowB))
-        XCTAssertEqual(AuthClientConfirmSignInOptions(presentationAnchorForWebAuthn: nil), AuthClientConfirmSignInOptions())
+        XCTAssertNotEqual(confirm, AmplifyCognitoClientConfirmSignInOptions(presentationAnchorForWebAuthn: windowB))
+        XCTAssertEqual(AmplifyCognitoClientConfirmSignInOptions(presentationAnchorForWebAuthn: nil), AmplifyCognitoClientConfirmSignInOptions())
     }
 }
 #endif

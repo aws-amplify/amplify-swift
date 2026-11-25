@@ -13,7 +13,7 @@ import XCTest
 /// is never "signed out", and a session in a shared access group is scoped to that group.
 final class PersistenceTests: ClientIntegrationTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -91,7 +91,7 @@ final class PersistenceTests: ClientIntegrationTestCase {
         let bobCredentials = try await makeSignInUser()
         let shared = try IntegrationTestEnvironment.sharedAccessGroup()
         let sessionId = try makeSessionID("bob-shared", accessGroup: shared)
-        let bob: AuthClientUser
+        let bob: AmplifyCognitoClientUser
         do {
             let client = try AmplifyCognitoClient(
                 configuration: configuration,

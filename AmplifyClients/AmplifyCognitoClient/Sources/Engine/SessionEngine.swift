@@ -22,18 +22,18 @@ import InternalAWSCognitoAuth
 /// must do no I/O. It may hold in-memory multi-step sign-in state. The core's `deinit` cannot `await`,
 /// so the engine must need no async teardown: any internal task is cancelled from its own `deinit`.
 ///
-/// Its public-facing values are client-owned types (`AuthClientSignInStep`, `AuthClientError`), because
+/// Its public-facing values are client-owned types (`AmplifyCognitoClientSignInStep`, `AmplifyCognitoClientError`), because
 /// the client does not depend on Amplify core.
 ///
 /// **Error contract.**
 /// - The pure methods may throw any error: a payload they cannot read is an ordinary outcome. The core
-///   calls them through the `checked…` wrappers below, which pass `AuthClientError` and `CredentialsError`
-///   through and wrap anything else in `AuthClientError.unknown`, with the engine's error as its
+///   calls them through the `checked…` wrappers below, which pass `AmplifyCognitoClientError` and `CredentialsError`
+///   through and wrap anything else in `AmplifyCognitoClientError.unknown`, with the engine's error as its
 ///   underlying error. So no engine error type ever reaches a public API.
 /// - The network methods throw `SessionEngineError` for the cases the core must tell apart
-///   (`refreshTokenReused`, `refreshTokenInvalid`, `notSignedIn`, `service`), `AuthClientError` for
+///   (`refreshTokenReused`, `refreshTokenInvalid`, `notSignedIn`, `service`), `AmplifyCognitoClientError` for
 ///   anything already mapped, and `CancellationError` when cancelled. The core maps anything else to
-///   `AuthClientError.unknown`.
+///   `AmplifyCognitoClientError.unknown`.
 protocol SessionEngine: Sendable {
 
     // MARK: Pure: no network, no storage. Used by restore and state projection.
@@ -53,7 +53,7 @@ protocol SessionEngine: Sendable {
     func accessToken(in payload: Data) throws -> String?
 
     /// The user pool tokens in a payload, or `nil` if it holds none.
-    func userPoolTokens(in payload: Data) throws -> AuthClientUserPoolTokens?
+    func userPoolTokens(in payload: Data) throws -> AmplifyCognitoClientUserPoolTokens?
 
     /// Whether a payload's credentials are expired, or about to be, at `now`, by the engine's skew.
     func needsRefresh(_ payload: Data, at now: Date) throws -> Bool
@@ -189,7 +189,7 @@ protocol SessionEngine: Sendable {
     /// **The hosted UI's sign-out.** With `.skip` no browser is shown,
     /// whatever the sign-in was. With `.present(anchor)`, after a sign-in that shared the browser's cookies,
     /// the logout page is shown in the anchor's window first, with the sign-in's own cookie jar:
-    /// - the user closing it throws `AuthClientError.userCancelled`, with nothing revoked;
+    /// - the user closing it throws `AmplifyCognitoClientError.userCancelled`, with nothing revoked;
     /// - any other `HostedUIError` of the browser step (no hosted UI or sign-out redirect URI, a failed start, an
     ///   invalid context, ...), or the window gone, throws a `SignOutRefusal`, with nothing revoked: the plugin's
     ///   `.failed`;
@@ -200,7 +200,7 @@ protocol SessionEngine: Sendable {
 
     /// Deletes the signed-in user. Clears nothing: the core removes the session's record.
     ///
-    /// - Throws: the mapped failure; `AuthClientError.service(.userNotFound, ...)` when the user no longer
+    /// - Throws: the mapped failure; `AmplifyCognitoClientError.service(.userNotFound, ...)` when the user no longer
     ///   exists, which the core answers with a global sign-out.
     func deleteUser(_ payload: Data) async throws
 
@@ -223,7 +223,7 @@ protocol SessionEngine: Sendable {
 
     // MARK: Multi-step state, in memory, and saved as the challenge record
 
-    var pendingChallenge: AuthClientSignInStep? { get async }
+    var pendingChallenge: AmplifyCognitoClientSignInStep? { get async }
 
     /// The pending attempt in its saved form, for the core to write as the session's challenge record; `nil` when
     /// nothing is pending, or the attempt waits in a state `confirmSignIn` does not answer or that cannot be saved
@@ -237,7 +237,7 @@ protocol SessionEngine: Sendable {
     ///
     /// - Returns: The step, or `nil` if the record cannot be resumed (a spelling this build does not know, no user
     ///   pool), or an attempt or a step is already live, which is newer. Nothing is pending then that was not before.
-    func resumeSignIn(from state: ChallengeRecord.State, epoch: UInt64) async -> AuthClientSignInStep?
+    func resumeSignIn(from state: ChallengeRecord.State, epoch: UInt64) async -> AmplifyCognitoClientSignInStep?
 
     /// Drops the pending sign-in, and ends a `signIn` or `confirmSignIn` still in flight.
     /// It **must not wait for that step to finish**: it runs under the record gate, which the step's
@@ -288,11 +288,11 @@ protocol SessionEngine: Sendable {
     //   confirmation) only when its username matches (`AWSAuthConfirmSignUpTask`); otherwise, and while
     //   another step is in progress, it confirms without one.
 
-    func signUp(_ request: EngineSignUpRequest) async throws -> AuthClientSignUpResult
+    func signUp(_ request: EngineSignUpRequest) async throws -> AmplifyCognitoClientSignUpResult
 
-    func confirmSignUp(_ request: EngineConfirmSignUpRequest) async throws -> AuthClientSignUpResult
+    func confirmSignUp(_ request: EngineConfirmSignUpRequest) async throws -> AmplifyCognitoClientSignUpResult
 
-    func resendSignUpCode(username: String, clientMetadata: [String: String]) async throws -> AuthClientCodeDeliveryDetails
+    func resendSignUpCode(username: String, clientMetadata: [String: String]) async throws -> AmplifyCognitoClientCodeDeliveryDetails
 
     /// Whether this engine's sign-up state is signed up with an auto-sign-in session. The core reads it
     /// **before** any other check on `autoSignIn`, as the plugin checks its sign-up state first
@@ -314,48 +314,48 @@ protocol SessionEngine: Sendable {
 
     // Password reset
 
-    func resetPassword(username: String, clientMetadata: [String: String]) async throws -> AuthClientResetPasswordResult
+    func resetPassword(username: String, clientMetadata: [String: String]) async throws -> AmplifyCognitoClientResetPasswordResult
 
     func confirmResetPassword(_ request: EngineConfirmResetPasswordRequest) async throws
 
     // Attributes and password change
 
-    func fetchUserAttributes(_ payload: Data) async throws -> [AuthClientUserAttribute]
+    func fetchUserAttributes(_ payload: Data) async throws -> [AmplifyCognitoClientUserAttribute]
 
     func updateUserAttributes(
         _ payload: Data,
-        attributes: [AuthClientUserAttribute],
+        attributes: [AmplifyCognitoClientUserAttribute],
         clientMetadata: [String: String]
-    ) async throws -> [AuthClientUserAttributeKey: AuthClientUpdateAttributeResult]
+    ) async throws -> [AmplifyCognitoClientUserAttributeKey: AmplifyCognitoClientUpdateAttributeResult]
 
     func sendVerificationCode(
         _ payload: Data,
-        attributeKey: AuthClientUserAttributeKey,
+        attributeKey: AmplifyCognitoClientUserAttributeKey,
         clientMetadata: [String: String]
-    ) async throws -> AuthClientCodeDeliveryDetails
+    ) async throws -> AmplifyCognitoClientCodeDeliveryDetails
 
-    func confirmUserAttribute(_ payload: Data, attributeKey: AuthClientUserAttributeKey, confirmationCode: String) async throws
+    func confirmUserAttribute(_ payload: Data, attributeKey: AmplifyCognitoClientUserAttributeKey, confirmationCode: String) async throws
 
     func changePassword(_ payload: Data, oldPassword: String, newPassword: String) async throws
 
     // MFA
 
-    func setUpTOTP(_ payload: Data) async throws -> AuthClientTOTPSetupDetails
+    func setUpTOTP(_ payload: Data) async throws -> AmplifyCognitoClientTOTPSetupDetails
 
     func verifyTOTPSetup(_ payload: Data, code: String, friendlyDeviceName: String?) async throws
 
-    func fetchMFAPreference(_ payload: Data) async throws -> AuthClientUserMFAPreference
+    func fetchMFAPreference(_ payload: Data) async throws -> AmplifyCognitoClientUserMFAPreference
 
     func updateMFAPreference(
         _ payload: Data,
-        sms: AuthClientMFAPreference?,
-        totp: AuthClientMFAPreference?,
-        email: AuthClientMFAPreference?
+        sms: AmplifyCognitoClientMFAPreference?,
+        totp: AmplifyCognitoClientMFAPreference?,
+        email: AmplifyCognitoClientMFAPreference?
     ) async throws
 
     // Devices. The per-user device records stay the engine's.
 
-    func fetchDevices(_ payload: Data) async throws -> [AuthClientDevice]
+    func fetchDevices(_ payload: Data) async throws -> [AmplifyCognitoClientDevice]
 
     func rememberDevice(_ payload: Data) async throws
 
@@ -400,7 +400,7 @@ extension SessionEngine {
         try Self.checked("the access token") { try accessToken(in: payload) }
     }
 
-    func checkedUserPoolTokens(in payload: Data) throws -> AuthClientUserPoolTokens? {
+    func checkedUserPoolTokens(in payload: Data) throws -> AmplifyCognitoClientUserPoolTokens? {
         try Self.checked("the user pool tokens") { try userPoolTokens(in: payload) }
     }
 
@@ -424,12 +424,12 @@ extension SessionEngine {
     private static func checked<T>(_ what: String, _ body: () throws -> T) throws -> T {
         do {
             return try body()
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             throw error
         } catch let error as CredentialsError {
             throw error
         } catch {
-            throw AuthClientError.unknown(
+            throw AmplifyCognitoClientError.unknown(
                 "This session's saved credentials could not be read (\(what)).",
                 "Sign the session out and sign in again.",
                 error
@@ -448,11 +448,11 @@ struct CredentialSummary: Sendable, Equatable {
     var identityId: String?
 
     /// The signed-in user, when the payload names one completely.
-    var user: AuthClientUser? {
+    var user: AmplifyCognitoClientUser? {
         guard let username, let userId else {
             return nil
         }
-        return AuthClientUser(username: username, userId: userId)
+        return AmplifyCognitoClientUser(username: username, userId: userId)
     }
 
     /// Whether `other` is provably the same principal: the same user by `sub` when both know it, else by
@@ -481,7 +481,7 @@ enum EngineStepResult: Sendable, Equatable {
     /// Sign-in completed; the core commits this payload.
     case done(payload: Data)
     /// Sign-in waits on the user.
-    case challenge(AuthClientSignInStep)
+    case challenge(AmplifyCognitoClientSignInStep)
 }
 
 /// A sign-in request, as the engine receives it.
@@ -490,7 +490,7 @@ struct EngineSignInRequest: Sendable, Equatable {
     /// `nil` for a passwordless `userAuth` first factor.
     let password: String?
     /// `nil` uses the configuration's flow (`userSRP`).
-    let authFlowType: AuthClientAuthFlowType?
+    let authFlowType: AmplifyCognitoClientAuthFlowType?
     let clientMetadata: [String: String]
     /// The window and sheet-lease runner for a WebAuthn step, when the options hold a window
     /// (`presentationAnchorForWebAuthn`); `nil` when they hold none, where a WebAuthn step is refused without
@@ -501,7 +501,7 @@ struct EngineSignInRequest: Sendable, Equatable {
 /// A challenge response, as the engine receives it.
 struct EngineConfirmSignInRequest: Sendable, Equatable {
     let challengeResponse: String
-    /// Cognito attribute names (`email`, `custom:team`, ...), mapped from `AuthClientUserAttributeKey`.
+    /// Cognito attribute names (`email`, `custom:team`, ...), mapped from `AmplifyCognitoClientUserAttributeKey`.
     /// Unprefixed: the engine adds the `userAttributes.` prefix `RespondToAuthChallenge` expects, as the
     /// plugin's confirm task does.
     let userAttributes: [String: String]
@@ -518,21 +518,21 @@ struct EngineConfirmSignInRequest: Sendable, Equatable {
 struct EngineSignOutOutcome: Sendable, Equatable {
     /// Revoking the refresh token failed. `nil` when it succeeded. After a failed global sign-out the engine
     /// does not call `RevokeToken` and this holds its placeholder error, as the plugin's result does.
-    var revokeError: AuthClientError?
+    var revokeError: AmplifyCognitoClientError?
     /// The global sign-out failed: the real error. Only ever set when a global sign-out was asked for.
-    var globalSignOutError: AuthClientError?
+    var globalSignOutError: AmplifyCognitoClientError?
     /// The hosted UI's sign-out did not run, so its cookie survives in the browser:
     /// there was no window (`signOut(options:)`), the user closed the page of an expired session, or the
     /// engine continued past a failure that is not a `HostedUIError`. A device-side failure, reported beside the
     /// server-side ones.
-    var hostedUIError: AuthClientError?
-    /// `revokeError` and `globalSignOutError` mapped as any other call maps them (`AuthClientError(engine:cause:)`),
+    var hostedUIError: AmplifyCognitoClientError?
+    /// `revokeError` and `globalSignOutError` mapped as any other call maps them (`AmplifyCognitoClientError(engine:cause:)`),
     /// without the sign-out's context ("The session was signed out on this device, and … will not be retried"),
     /// which holds only once the session is cleared: what a sign-out that could not finish carries (`firstError`).
     /// `nil` when the failure has no other mapping (a newer schema's record the sign-out could not revoke); each is
     /// kept with its pair. A revoke attempt that threw has both (`SessionSignOut.revokeFailureOutcome(_:)`).
-    var plainRevokeError: AuthClientError?
-    var plainGlobalSignOutError: AuthClientError?
+    var plainRevokeError: AmplifyCognitoClientError?
+    var plainGlobalSignOutError: AmplifyCognitoClientError?
 
     static let complete = EngineSignOutOutcome()
 
@@ -555,14 +555,14 @@ struct EngineSignOutOutcome: Sendable, Equatable {
 
     /// The public result of a sign-out that cleared the session locally: `.complete` if nothing failed, else
     /// `.partial`. `storageError` is the purge's failure, when it ran after the sign-out and failed.
-    func signedOutResult(storageError: AuthClientError? = nil) -> AuthClientSignOutResult {
+    func signedOutResult(storageError: AmplifyCognitoClientError? = nil) -> AmplifyCognitoClientSignOutResult {
         guard !isComplete || storageError != nil else {
             return .complete
         }
         return .partial(
-            revokeTokenError: revokeError.map(AuthClientRevokeTokenError.init(error:)),
-            globalSignOutError: globalSignOutError.map(AuthClientGlobalSignOutError.init(error:)),
-            hostedUIError: hostedUIError.map(AuthClientHostedUIError.init(error:)),
+            revokeTokenError: revokeError.map(AmplifyCognitoClientRevokeTokenError.init(error:)),
+            globalSignOutError: globalSignOutError.map(AmplifyCognitoClientGlobalSignOutError.init(error:)),
+            hostedUIError: hostedUIError.map(AmplifyCognitoClientHostedUIError.init(error:)),
             storageError: storageError
         )
     }
@@ -572,22 +572,22 @@ struct EngineSignOutOutcome: Sendable, Equatable {
     /// a revoke never sent. Each is its plain mapping, when it has one: the session is still signed in on this device
     /// (`.contended`), or its record was left as it is (`.unreadable`), so the sign-out's "signed out on this device"
     /// does not hold, and a retried sign-out of a session still signed in sends the revoke and global sign-out again.
-    var firstError: AuthClientError? {
+    var firstError: AmplifyCognitoClientError? {
         globalSignOutError.map { plainGlobalSignOutError ?? $0 }
             ?? revokeError.map { plainRevokeError ?? $0 }
             ?? hostedUIError
     }
 
-    /// Errors compare as `AuthClientSignOutResult` compares them.
+    /// Errors compare as `AmplifyCognitoClientSignOutResult` compares them.
     static func == (lhs: EngineSignOutOutcome, rhs: EngineSignOutOutcome) -> Bool {
-        AuthClientSignOutResult.equivalent(lhs.revokeError, rhs.revokeError)
-            && AuthClientSignOutResult.equivalent(lhs.globalSignOutError, rhs.globalSignOutError)
-            && AuthClientSignOutResult.equivalent(lhs.hostedUIError, rhs.hostedUIError)
+        AmplifyCognitoClientSignOutResult.equivalent(lhs.revokeError, rhs.revokeError)
+            && AmplifyCognitoClientSignOutResult.equivalent(lhs.globalSignOutError, rhs.globalSignOutError)
+            && AmplifyCognitoClientSignOutResult.equivalent(lhs.hostedUIError, rhs.hostedUIError)
     }
 }
 
 /// Engine failures the core must tell apart. Everything else arrives already mapped to
-/// `AuthClientError`.
+/// `AmplifyCognitoClientError`.
 enum SessionEngineError: Error, Sendable {
     /// `RefreshTokenReuseException`: another writer already used this refresh token. Re-read storage;
     /// never signed out.
@@ -595,7 +595,7 @@ enum SessionEngineError: Error, Sendable {
     /// The refresh token expired or was revoked: the session needs a fresh sign-in.
     case refreshTokenInvalid
     case notSignedIn
-    case service(AuthClientError)
+    case service(AmplifyCognitoClientError)
     /// The refresh stored new credentials, then failed: with refresh-token rotation, the user pool refresh
     /// retired the old refresh token before the identity pool step failed. The core commits `payload`, under
     /// the same guard as a successful refresh, then fails with `error`, so the next refresh uses the new
@@ -606,7 +606,7 @@ enum SessionEngineError: Error, Sendable {
 /// What an engine is built with.
 struct SessionEngineContext: Sendable {
     let sessionId: SessionID
-    let configuration: AuthClientConfiguration
+    let configuration: AmplifyCognitoClientConfiguration
     /// The engine keeps device and advanced-security records at the plugin's per-user keys.
     let namespace: SessionStorageNamespace
     /// The same SDK clients the escape hatches return.

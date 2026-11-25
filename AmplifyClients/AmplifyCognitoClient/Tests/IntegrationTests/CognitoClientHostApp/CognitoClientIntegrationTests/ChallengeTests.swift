@@ -14,7 +14,7 @@ import XCTest
 /// (design §4.11), so a new client over the same session can answer it (`ChallengeResumeTests`).
 final class ChallengeTests: ClientIntegrationTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -62,10 +62,10 @@ final class ChallengeTests: ClientIntegrationTestCase {
 
         for username in candidates {
             let states = StreamRecorder(client.listenToSessionStateChanges())
-            let result: AuthClientSignInResult
+            let result: AmplifyCognitoClientSignInResult
             do {
                 result = try await client.signIn(username: username, password: temporary.value)
-            } catch let error as AuthClientError where error.kind == .notAuthorized {
+            } catch let error as AmplifyCognitoClientError where error.kind == .notAuthorized {
                 guard await !PerRunUsers.stillAwaitsANewPassword(username, on: raw) else {
                     return XCTFail(PerRunUsers.wrongTemporaryPassword)
                 }
@@ -85,13 +85,13 @@ final class ChallengeTests: ClientIntegrationTestCase {
 
             let newPassword = SandboxSignUp.freshPassword()
             PerRunUsers.newPasswordAttempt = TestUser(username: username, password: newPassword)
-            let confirmed: AuthClientSignInResult
+            let confirmed: AmplifyCognitoClientSignInResult
             do {
                 confirmed = try await client.confirmSignIn(
                     challengeResponse: newPassword,
-                    options: .init(userAttributes: [AuthClientUserAttribute(.email, value: "\(username)@\(SandboxSignUp.emailDomain)")])
+                    options: .init(userAttributes: [AmplifyCognitoClientUserAttribute(.email, value: "\(username)@\(SandboxSignUp.emailDomain)")])
                 )
-            } catch let error as AuthClientError where [.notAuthorized, .challengeExpired].contains(error.kind) {
+            } catch let error as AmplifyCognitoClientError where [.notAuthorized, .challengeExpired].contains(error.kind) {
                 // Possibly another run set this user's password between the sign-in and the answer: only if
                 // the user now refuses the temporary password.
                 guard try await PerRunUsers.refusesTemporaryPassword(username, temporary, on: raw) else {
@@ -268,7 +268,7 @@ final class ChallengeTests: ClientIntegrationTestCase {
     ///    - more than 3 minutes pass
     ///    - the user confirms with a fresh, right code
     /// - Then:
-    ///    - the confirmation throws `AuthClientError.challengeExpired`
+    ///    - the confirmation throws `AmplifyCognitoClientError.challengeExpired`
     ///    - the state no longer waits on the challenge: it is `.signedOut`, and a retry of the
     ///      confirmation is refused with `.invalidState`
     ///

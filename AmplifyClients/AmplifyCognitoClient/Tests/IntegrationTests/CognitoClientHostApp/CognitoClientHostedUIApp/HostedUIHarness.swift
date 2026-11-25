@@ -31,7 +31,7 @@ enum HostedUIHarness {
         }
         do {
             return try .success(AmplifyCognitoClient(
-                configuration: AuthClientConfiguration(
+                configuration: AmplifyCognitoClientConfiguration(
                     from: outputsResource,
                     bundle: PluginTestConfiguration.outputsBundle(outputsResource, in: .main)
                 )
@@ -92,7 +92,7 @@ struct HarnessAppError: Error, CustomStringConvertible {
     }
 }
 
-extension AuthClientSignOutResult {
+extension AmplifyCognitoClientSignOutResult {
 
     /// What a sign-out that signed the user out on this device left undone, by case names only, for the result
     /// line: "" for `.complete`, else the parts that failed, as `revokeTokenError: service`. Never an error's text or
@@ -101,7 +101,7 @@ extension AuthClientSignOutResult {
         guard case .partial(let revoke, let global, let hostedUI, let storage) = self else {
             return ""
         }
-        let parts: [(String, AuthClientError?)] = [
+        let parts: [(String, AmplifyCognitoClientError?)] = [
             ("revokeTokenError", revoke?.error),
             ("globalSignOutError", global?.error),
             ("hostedUIError", hostedUI?.error),
@@ -111,7 +111,7 @@ extension AuthClientSignOutResult {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     /// The error's case name alone (`browserBusy`, `userCancelled`), never its text or payload.
     var harnessCaseName: String {
@@ -119,12 +119,12 @@ extension AuthClientError {
     }
 }
 
-/// What the app's result line says of `error`: an `AuthClientError`'s case name (with its service code, for
+/// What the app's result line says of `error`: an `AmplifyCognitoClientError`'s case name (with its service code, for
 /// `.service`), a `HarnessAppError`'s own message, or else the error's type alone. Never an error's text or
 /// payload: an underlying `NSError` names the URL it failed on (the hosted-UI domain), and other errors can
 /// hold a username or an identifier.
 func harnessResultText(_ error: Error) -> String {
-    if let error = error as? AuthClientError {
+    if let error = error as? AmplifyCognitoClientError {
         if case .service(let code?, _, _, _) = error {
             return "service(\(code))"
         }

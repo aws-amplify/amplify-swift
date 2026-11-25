@@ -24,7 +24,7 @@ extension SessionCore {
     /// - A field is `nil` only where nothing applies: the identity fields without an identity pool (or for a
     ///   user-pool-only login), and the user fields for a guest or a federated session.
     ///
-    /// - Throws: every failure, where the plugin reports one per field. Always an `AuthClientError` or a
+    /// - Throws: every failure, where the plugin reports one per field. Always an `AmplifyCognitoClientError` or a
     ///   `CancellationError`: a `CredentialsError` from inside the core is converted.
     ///   - `notSignedIn` for a signed-out session that cannot become a guest;
     ///   - `sessionExpired` for a dead refresh token, or a federated session's refused provider token;
@@ -34,7 +34,7 @@ extension SessionCore {
     ///     stored new user pool tokens, as the plugin does (`FetchAuthSessionOperationHelper`); and, while that
     ///     step may not be tried again (`PendingIdentityRetry`), its last failure;
     ///   - `unknown` when the saved credentials lack what they should hold, or still need a refresh.
-    nonisolated func fetchAuthSession(forceRefresh: Bool) async throws -> AuthClientSession {
+    nonisolated func fetchAuthSession(forceRefresh: Bool) async throws -> AmplifyCognitoClientSession {
         do {
             return try await fetchSession(forceRefresh: forceRefresh)
         } catch let error as CredentialsError {
@@ -45,13 +45,13 @@ extension SessionCore {
     /// - Parameter adopted: this call has already gone round once, so it goes round no more, and a second pass
     ///   answers from the record: it took credentials as a signed-out session (`acquireGuest`), or its refresh
     ///   found the session signed out (the last step below).
-    private nonisolated func fetchSession(forceRefresh: Bool, adopted: Bool = false) async throws -> AuthClientSession {
+    private nonisolated func fetchSession(forceRefresh: Bool, adopted: Bool = false) async throws -> AmplifyCognitoClientSession {
         _ = try await restoredSnapshot()
         try await rereadIfExpired()
         let (snapshot, expired) = await snapshotAndExpiry
         switch snapshot.state(engine: engine, challenge: nil) {
         case .unavailable(let reason):
-            throw AuthClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later. Do not treat this as signed out.")
+            throw AmplifyCognitoClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later. Do not treat this as signed out.")
         case .failed(let error):
             throw error
         case .signedOut, .awaitingChallenge:
@@ -92,7 +92,7 @@ extension SessionCore {
                     throw CancellationError()
                 }
                 throw Self.identityStepError(failure.error)
-            } catch let error as AuthClientError where Self.isCancellation(error) {
+            } catch let error as AmplifyCognitoClientError where Self.isCancellation(error) {
                 throw CancellationError()
             }
             // What the flight left may be a re-read or adopted record rather than a refresh's result. Never
@@ -118,7 +118,7 @@ extension SessionCore {
     /// session again: after it had already taken some (another writer signed the session out meanwhile, and saved
     /// credentials again), or after its refresh found the session signed out. The record's, as they are, unless
     /// they need a refresh, which is never reported. The call does not go round again.
-    private nonisolated func acquiredSession() async throws -> AuthClientSession {
+    private nonisolated func acquiredSession() async throws -> AmplifyCognitoClientSession {
         let snapshot = await restoredSnapshotIfAny ?? .absent
         if let payload = snapshot.credentials, try needsRefresh(payload, of: snapshot) {
             throw Self.notRefreshed(sessionId)
@@ -126,14 +126,14 @@ extension SessionCore {
         return try session(of: snapshot)
     }
 
-    static func notRefreshed(_ sessionId: SessionID) -> AuthClientError {
+    static func notRefreshed(_ sessionId: SessionID) -> AmplifyCognitoClientError {
         .unknown(
             "Session \"\(sessionId)\"'s credentials could not be refreshed.",
             "Retry the operation."
         )
     }
 
-    static func authClientError(from error: CredentialsError) -> AuthClientError {
+    static func authClientError(from error: CredentialsError) -> AmplifyCognitoClientError {
         .unknown(error.errorDescription, error.recoverySuggestion, error)
     }
 
@@ -158,7 +158,7 @@ extension SessionCore {
         } catch SessionEngineError.notSignedIn {
             // The identity pool allows no guest access. The session stays signed out.
             throw Self.notSignedIn(sessionId)
-        } catch let error as AuthClientError where Self.isCancellation(error) {
+        } catch let error as AmplifyCognitoClientError where Self.isCancellation(error) {
             throw CancellationError()
         }
         if await restoredSnapshotIfAny?.credentials == nil {
@@ -237,10 +237,10 @@ extension SessionCore {
     ///   for a carried session still waiting for its identity, its identity step's last failure while the step may
     ///   not be tried again, else `identityNotFetched`; `missing` when the credentials lack a field they should
     ///   hold; the record's own errors.
-    private nonisolated func session(of snapshot: SessionSnapshot) throws -> AuthClientSession {
+    private nonisolated func session(of snapshot: SessionSnapshot) throws -> AmplifyCognitoClientSession {
         switch snapshot.state(engine: engine, challenge: nil) {
         case .unavailable(let reason):
-            throw AuthClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later.")
+            throw AmplifyCognitoClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later.")
         case .failed(let error):
             throw error
         case .signedOut, .awaitingChallenge:
@@ -255,7 +255,7 @@ extension SessionCore {
         let summary = try engine.checkedDescribe(payload)
 
         var identityId: String?
-        var awsCredentials: AuthClientAWSCredentials?
+        var awsCredentials: AmplifyCognitoClientAWSCredentials?
         if configuration.identityPool == nil || summary.kind == .userPoolOnly {
             // No identity to report, unless this is a carried session waiting for its identity, which has not
             // fetched it yet: the call then fails as its identity step last did, while that step may not be tried
@@ -272,17 +272,17 @@ extension SessionCore {
                 throw Self.missing("AWS credentials", in: sessionId)
             }
             identityId = identity
-            awsCredentials = AuthClientAWSCredentials(credentials)
+            awsCredentials = AmplifyCognitoClientAWSCredentials(credentials)
         }
 
-        var userPoolTokens: AuthClientUserPoolTokens?
+        var userPoolTokens: AmplifyCognitoClientUserPoolTokens?
         if summary.user != nil {
             guard let tokens = try engine.checkedUserPoolTokens(in: payload) else {
                 throw Self.missing("user pool tokens", in: sessionId)
             }
             userPoolTokens = tokens
         }
-        return AuthClientSession(
+        return AmplifyCognitoClientSession(
             identityId: identityId,
             awsCredentials: awsCredentials,
             userSub: summary.user?.userId,
@@ -290,14 +290,14 @@ extension SessionCore {
         )
     }
 
-    static func identityNotFetched(_ sessionId: SessionID) -> AuthClientError {
+    static func identityNotFetched(_ sessionId: SessionID) -> AmplifyCognitoClientError {
         .unknown(
             "Session \"\(sessionId)\" was carried forward from a previous configuration and has not fetched its identity yet.",
             "Retry the operation."
         )
     }
 
-    static func missing(_ what: String, in sessionId: SessionID) -> AuthClientError {
+    static func missing(_ what: String, in sessionId: SessionID) -> AmplifyCognitoClientError {
         .unknown(
             "Session \"\(sessionId)\"'s saved credentials hold no \(what).",
             "Sign the session out and sign in again."
@@ -317,29 +317,29 @@ extension SessionCore {
     /// - Throws: `notSignedIn` for a signed-out or guest session; `invalidState` while a sign-in waits on a
     ///   challenge; `storageUnavailable` if storage could not be read; the record's own error if it is
     ///   unreadable.
-    nonisolated func currentUser() async throws -> AuthClientUser {
+    nonisolated func currentUser() async throws -> AmplifyCognitoClientUser {
         _ = try await restoredSnapshot()
         switch await currentState ?? .signedOut {
         case .signedIn(let user):
             return user
         case .awaitingChallenge:
-            throw AuthClientError.invalidState(
+            throw AmplifyCognitoClientError.invalidState(
                 "Auth State not in a valid state",
                 "Operation performed is not a valid operation for the current auth state"
             )
         case .signedOut, .guest:
-            throw AuthClientError.notSignedIn(
+            throw AmplifyCognitoClientError.notSignedIn(
                 "There is no user signed in to retrieve current user",
                 "Call signIn to sign a user in to this session, then call getCurrentUser."
             )
         case .federated:
             // A sign-in is refused over a federated session (`signInSeed`): say what lets one in.
-            throw AuthClientError.notSignedIn(
+            throw AmplifyCognitoClientError.notSignedIn(
                 "There is no user signed in to retrieve current user",
                 "Call clearFederationToIdentityPool() or sign the session out, then sign a user in to this session and call getCurrentUser."
             )
         case .unavailable(let reason):
-            throw AuthClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later. Do not treat this as signed out.")
+            throw AmplifyCognitoClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later. Do not treat this as signed out.")
         case .failed(let error):
             throw error
         }
@@ -349,7 +349,7 @@ extension SessionCore {
 
     private enum Deletion: Sendable {
         case deleted
-        case userNotFound(AuthClientError)
+        case userNotFound(AmplifyCognitoClientError)
     }
 
     /// Deletes the signed-in user, then removes the session's saved row: a
@@ -400,7 +400,7 @@ extension SessionCore {
             // Another handle may have refreshed meanwhile: delete with whatever the same user holds now.
             guard held == payload || (try? engine.describe(held))?.isSamePrincipal(as: principal) == true else {
                 await apply(current, event: nil)
-                throw AuthClientError.invalidState(
+                throw AmplifyCognitoClientError.invalidState(
                     "A different user signed in to session \"\(sessionId)\" while its user was being deleted.",
                     "Nothing was deleted. Check which user is signed in, then retry."
                 )
@@ -409,7 +409,7 @@ extension SessionCore {
                 try await engine.deleteUser(held)
             } catch {
                 let mapped = Self.engineFailure(error)
-                if let mapped = mapped as? AuthClientError, case .service(.userNotFound?, _, _, _) = mapped {
+                if let mapped = mapped as? AmplifyCognitoClientError, case .service(.userNotFound?, _, _, _) = mapped {
                     return .userNotFound(mapped)
                 }
                 throw mapped
@@ -426,8 +426,8 @@ extension SessionCore {
             await cancelPendingSignIns()
             await apply(.absent, challenge: .set(nil), event: .userDeleted)
             if let purgeFailure {
-                throw AuthClientError.storageUnavailable(
-                    (purgeFailure as? AuthClientError).flatMap(\.storageUnavailableReason) ?? .interrupted,
+                throw AmplifyCognitoClientError.storageUnavailable(
+                    (purgeFailure as? AmplifyCognitoClientError).flatMap(\.storageUnavailableReason) ?? .interrupted,
                     "The user was deleted, but session \"\(sessionId)\"'s saved record could not be removed.",
                     "Purge the session, or sign it out, to remove the record.",
                     purgeFailure
@@ -438,7 +438,7 @@ extension SessionCore {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     /// The reason, for `storageUnavailable`.
     var storageUnavailableReason: StorageUnavailableReason? {

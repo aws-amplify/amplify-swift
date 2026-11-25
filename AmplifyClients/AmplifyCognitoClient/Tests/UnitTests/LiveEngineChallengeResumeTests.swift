@@ -109,7 +109,7 @@ final class LiveEngineChallengeResumeTests: XCTestCase {
 
         let second = try harness.engine()
         let resumed = await second.resumeSignIn(from: saved, epoch: 0)
-        XCTAssertEqual(resumed, .continueSignInWithTOTPSetup(AuthClientTOTPSetupDetails(sharedSecret: "SHARED-SECRET", username: "alice")))
+        XCTAssertEqual(resumed, .continueSignInWithTOTPSetup(AmplifyCognitoClientTOTPSetupDetails(sharedSecret: "SHARED-SECRET", username: "alice")))
 
         harness.cognito.once("VerifySoftwareToken") { (_: VerifySoftwareTokenInput) in
             VerifySoftwareTokenOutput(session: "verified-session", status: .success)
@@ -180,7 +180,7 @@ final class LiveEngineChallengeResumeTests: XCTestCase {
     /// - Then:
     ///    - the step is `.confirmSignUp(nil)` or `.resetPassword(nil)`, and there is no saved form
     func testAnAnswerRefusedForAnUnconfirmedUserOrAPasswordResetHasNoSavedForm() async throws {
-        let refusals: [(String, @Sendable () -> Error, AuthClientSignInStep)] = [
+        let refusals: [(String, @Sendable () -> Error, AmplifyCognitoClientSignInStep)] = [
             ("unconfirmed", { UserNotConfirmedException(message: "User is not confirmed.") }, .confirmSignUp(nil)),
             ("reset", { PasswordResetRequiredException(message: "Password reset required for the user") }, .resetPassword(nil))
         ]
@@ -223,7 +223,7 @@ final class LiveEngineChallengeResumeTests: XCTestCase {
     ///    - the answer reports `.confirmSignUp(nil)` or `.resetPassword(nil)`, and the challenge record is gone
     ///    - the new client's session is signed out, with nothing pending and nothing sent to Cognito
     func testARelaunchAfterAnAnswerRefusedForAnUnconfirmedUserOrAPasswordResetIsSignedOut() async throws {
-        let refusals: [(String, @Sendable () -> Error, AuthClientSignInStep)] = [
+        let refusals: [(String, @Sendable () -> Error, AmplifyCognitoClientSignInStep)] = [
             ("unconfirmed", { UserNotConfirmedException(message: "User is not confirmed.") }, .confirmSignUp(nil)),
             ("reset", { PasswordResetRequiredException(message: "Password reset required for the user") }, .resetPassword(nil))
         ]

@@ -75,7 +75,7 @@ final class LiveEngineCoreRaceTests: XCTestCase {
         await cancelGate.open()
         _ = try await signOut.value(within: 10)
         await getId.open()
-        let signedIn: AuthClientSignInResult
+        let signedIn: AmplifyCognitoClientSignInResult
         do {
             signedIn = try await second.value(within: 10)
         } catch {
@@ -83,7 +83,7 @@ final class LiveEngineCoreRaceTests: XCTestCase {
         }
         XCTAssertEqual(signedIn.nextStep, .done)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         let revoked = live.cognito.inputs("RevokeToken", as: RevokeTokenInput.self).map(\.token)
         XCTAssertFalse(revoked.contains("refresh-bob-v1"), "bob's committed refresh token was revoked")
         let record = try XCTUnwrap(clientHarness.storedRecord(work))
@@ -168,7 +168,7 @@ final class CancelHoldingEngine: SessionEngine, SessionEngineForwarding, @unchec
     func describe(_ payload: Data) throws -> CredentialSummary { try base.describe(payload) }
     func awsCredentials(in payload: Data) throws -> CognitoAWSCredentials? { try base.awsCredentials(in: payload) }
     func accessToken(in payload: Data) throws -> String? { try base.accessToken(in: payload) }
-    func userPoolTokens(in payload: Data) throws -> AuthClientUserPoolTokens? { try base.userPoolTokens(in: payload) }
+    func userPoolTokens(in payload: Data) throws -> AmplifyCognitoClientUserPoolTokens? { try base.userPoolTokens(in: payload) }
     func needsRefresh(_ payload: Data, at now: Date) throws -> Bool { try base.needsRefresh(payload, at: now) }
     func userPoolTokensNeedRefresh(_ payload: Data, at now: Date) throws -> Bool {
         try base.userPoolTokensNeedRefresh(payload, at: now)
@@ -186,7 +186,7 @@ final class CancelHoldingEngine: SessionEngine, SessionEngineForwarding, @unchec
     func fetchGuestCredentials(current: Data?) async throws -> Data { try await base.fetchGuestCredentials(current: current) }
     func deleteUser(_ payload: Data) async throws { try await base.deleteUser(payload) }
 
-    var pendingChallenge: AuthClientSignInStep? {
+    var pendingChallenge: AmplifyCognitoClientSignInStep? {
         get async { await base.pendingChallenge }
     }
 

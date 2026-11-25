@@ -563,7 +563,7 @@ enum PluginRecordFixtures {
     static let noCredentials = Data(#"{"noCredentials":{}}"#.utf8)
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     /// The reason, if this is `storageUnavailable`.
     var storageUnavailableReason: StorageUnavailableReason? {

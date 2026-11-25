@@ -34,7 +34,7 @@ final class ChallengeRecordStoreTests: XCTestCase {
         store = keychain.recordStore(for: StorageFixtures.namespace)
     }
 
-    private func record(session: String = "session-1", at date: Date? = nil, step: AuthClientSignInStep = .confirmSignInWithTOTPCode) -> ChallengeRecord {
+    private func record(session: String = "session-1", at date: Date? = nil, step: AmplifyCognitoClientSignInStep = .confirmSignInWithTOTPCode) -> ChallengeRecord {
         // `.fake` saves every answerable step.
         ChallengeRecord(createdAt: date ?? createdAt, state: .fake(step, session: session)!)
     }
@@ -174,7 +174,7 @@ final class ChallengeRecordStoreTests: XCTestCase {
 
     private func assertUnavailable(_ body: () throws -> some Any, line: UInt = #line) {
         XCTAssertThrowsError(try body(), line: line) { error in
-            XCTAssertNotNil((error as? AuthClientError)?.storageUnavailableReason, "\(error)", line: line)
+            XCTAssertNotNil((error as? AmplifyCognitoClientError)?.storageUnavailableReason, "\(error)", line: line)
         }
     }
 
@@ -451,7 +451,7 @@ final class ChallengeRecordStoreTests: XCTestCase {
     ///    - `work` is a row awaiting its challenge's step, with no label or user and kind `.signedOut`
     ///    - `home` is listed as signed in: its leftover is not resumed, nor read
     func testAChallengeOnlySessionIsListedAwaitingItsChallenge() throws {
-        let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+        let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
         try store.writeChallenge(record(step: .confirmSignInWithPassword), for: work)
         _ = try store.write(StorageFixtures.signedIn(userId: alice.userId), for: home, expecting: nil)
         try store.writeChallenge(record(), for: home)

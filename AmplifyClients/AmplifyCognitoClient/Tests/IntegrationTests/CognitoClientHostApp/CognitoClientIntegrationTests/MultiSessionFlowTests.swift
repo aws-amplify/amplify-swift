@@ -16,7 +16,7 @@ import XCTest
 /// signs up on the default backend, on the real keychain.
 final class MultiSessionFlowTests: ClientIntegrationTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
     /// This test's own two users: fresh ones on the default backend (`makeSignInUser()`), never users
     /// another run shares.
     var users: (alice: TestUser, bob: TestUser)!

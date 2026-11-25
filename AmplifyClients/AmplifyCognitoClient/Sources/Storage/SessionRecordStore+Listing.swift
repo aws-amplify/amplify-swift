@@ -33,7 +33,7 @@ extension SessionRecordStore {
     /// `includingSignedOut: false` hides the rows whose state is `.signedOut`: rows that were signed out and kept.
     /// One with an interrupted sign-in is `.awaitingChallenge`, and is not hidden.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the saved sessions could not be listed. Never
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the saved sessions could not be listed. Never
     ///   `[]` for a failure: an empty list shows sign-in to a user who is signed in.
     ///
     /// With `sweepingChallengesAt`, an interrupted sign-in past its ceiling at that instant is not listed, as a
@@ -174,7 +174,7 @@ extension SessionRecordStore {
     /// The row for what is saved under `sessionId`: the session's record, a record this build cannot read, or
     /// nothing (`.absent`) beside an interrupted sign-in, which is a row only while a restore would resume it.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the interrupted sign-in's record could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the interrupted sign-in's record could not be read.
     private func row(
         _ sessionId: SessionID,
         _ source: SessionSnapshot.Source,
@@ -196,7 +196,7 @@ extension SessionRecordStore {
         case .own(let record):
             // The signed-in user, else the last one a signed-out row kept. A guest or federated row names none,
             // whatever its record holds.
-            var user: AuthClientUser?
+            var user: AmplifyCognitoClientUser?
             if case .signedIn(let signedIn) = state {
                 user = signedIn
             } else if Self.isSignedIn(record.kind) || record.kind == .signedOut {
@@ -209,7 +209,7 @@ extension SessionRecordStore {
     /// The step of the session's interrupted sign-in, if a restore at `now` would resume it: `nil` with no record,
     /// one past its ceiling, a newer schema's, corrupt bytes, or one this build cannot resume. Nothing is deleted
     /// here: a restore deletes most of those, and a listing sweeps the expired (`sweepExpiredChallenges`).
-    private func resumableChallenge(_ sessionId: SessionID, at now: Date?) throws -> AuthClientSignInStep? {
+    private func resumableChallenge(_ sessionId: SessionID, at now: Date?) throws -> AmplifyCognitoClientSignInStep? {
         guard case .record(let record) = try readChallenge(sessionId), now.map(record.isPastCeiling(at:)) != true else {
             return nil
         }
@@ -226,7 +226,7 @@ extension SessionRecordStore {
     /// Signed-out, guest and federated rows, unreadable records, and credentials `describe` cannot read contribute
     /// nothing.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if a record could not be read: a missing session could
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if a record could not be read: a missing session could
     ///   let its user through.
     ///
     /// With `pluginConfiguration`, `.default` counts as the user a restore under it would read after the Auth plugin's

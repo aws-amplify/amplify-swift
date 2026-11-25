@@ -23,7 +23,7 @@ extension LiveSessionEngine {
     ///
     /// - Returns: `.confirmResetPasswordWithCode(details, [:])`, not reset yet, as the plugin.
     /// - Throws: Cognito's answer, mapped; `unknown` if Cognito answers without delivery details.
-    nonisolated func resetPassword(username: String, clientMetadata: [String: String]) async throws -> AuthClientResetPasswordResult {
+    nonisolated func resetPassword(username: String, clientMetadata: [String: String]) async throws -> AmplifyCognitoClientResetPasswordResult {
         let output = try await withResetPasswordContext(for: username) { context in
             try await context.userPool.forgotPassword(input: ForgotPasswordInput(
                 analyticsMetadata: context.analyticsMetadata,
@@ -37,11 +37,11 @@ extension LiveSessionEngine {
         guard let details = output.codeDeliveryDetails?.toEngineCodeDeliveryDetails() else {
             // The plugin's `AuthError.unknown(…, nil)`, so its wording ("Unexpected error occurred with
             // message: …") and suggestion.
-            throw AuthClientError(engine: .unknown("Unable to get Auth code delivery details"))
+            throw AmplifyCognitoClientError(engine: .unknown("Unable to get Auth code delivery details"))
         }
-        return AuthClientResetPasswordResult(
+        return AmplifyCognitoClientResetPasswordResult(
             isPasswordReset: false,
-            nextStep: .confirmResetPasswordWithCode(AuthClientCodeDeliveryDetails(details), [:])
+            nextStep: .confirmResetPasswordWithCode(AmplifyCognitoClientCodeDeliveryDetails(details), [:])
         )
     }
 
@@ -85,9 +85,9 @@ extension LiveSessionEngine {
         let resources = resources
         guard let userPoolConfiguration = resources.authConfiguration.getUserPoolConfiguration() else {
             // `requireUserPool` has already refused this.
-            throw AuthClientError.configuration(
+            throw AmplifyCognitoClientError.configuration(
                 "UserPool configuration is missing",
-                "Add a user pool to AuthClientConfiguration."
+                "Add a user pool to AmplifyCognitoClientConfiguration."
             )
         }
         // The operation's machines give the request the device records the plugin's environment reads.
@@ -126,7 +126,7 @@ extension LiveSessionEngine {
             )
             return try await call(context)
         } catch let error as EngineAuthErrorConvertible {
-            throw AuthClientError(engineFailure: error)
+            throw AmplifyCognitoClientError(engineFailure: error)
         }
     }
 }

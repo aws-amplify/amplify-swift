@@ -68,7 +68,7 @@ extension SignInFlowTests {
 
     /// Client metadata reaches Cognito on every request of an SRP sign-in (SI-5; the plugin's
     /// `testSignInWithSignInOptions`, whose `AWSAuthSignInOptions(metadata:)` is the client's
-    /// `AuthClientSignInOptions.clientMetadata`).
+    /// `AmplifyCognitoClientSignInOptions.clientMetadata`).
     ///
     /// - Given: a client on a fresh session, the recorder installed
     /// - When:
@@ -86,7 +86,7 @@ extension SignInFlowTests {
         let result = try await client.signIn(
             username: alice.username,
             password: alice.password,
-            options: AuthClientSignInOptions(clientMetadata: metadata)
+            options: AmplifyCognitoClientSignInOptions(clientMetadata: metadata)
         )
 
         XCTAssertStep(result.nextStep, .done)

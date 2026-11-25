@@ -24,19 +24,19 @@ extension DefaultSessionConfigurationChangeTests {
         harness.keychain.itemStore(service: SessionRecordStore.unsharedService)
     }
 
-    func account(_ configuration: AuthClientConfiguration) -> String {
+    func account(_ configuration: AmplifyCognitoClientConfiguration) -> String {
         SessionRecordKey.pluginSessionAccount(in: configuration.poolNamespace)
     }
 
     /// The plugin's credential store, built with `configuration` over the harness's keychain: it runs its own rule.
     @discardableResult
-    func pluginStore(_ configuration: AuthClientConfiguration) -> AWSCognitoAuthCredentialStore {
+    func pluginStore(_ configuration: AmplifyCognitoClientConfiguration) -> AWSCognitoAuthCredentialStore {
         AWSCognitoAuthCredentialStore(authConfiguration: AuthConfiguration(client: configuration), keychain: pluginKeychain, logger: DiscardingEngineLogger())
     }
 
     /// The plugin, built with `configuration`, saves `payload`; returns the bytes it stored. The logs are cleared.
     @discardableResult
-    func pluginSaves(_ payload: Data, under configuration: AuthClientConfiguration) throws -> Data {
+    func pluginSaves(_ payload: Data, under configuration: AmplifyCognitoClientConfiguration) throws -> Data {
         try pluginSaves(payload, under: AuthConfiguration(client: configuration))
     }
 
@@ -50,11 +50,11 @@ extension DefaultSessionConfigurationChangeTests {
 
     /// `username` signed in through the live engine under `configuration`, then saved by the plugin built with it.
     @discardableResult
-    func pluginSignsIn(_ username: String, under configuration: AuthClientConfiguration) async throws -> Data {
+    func pluginSignsIn(_ username: String, under configuration: AmplifyCognitoClientConfiguration) async throws -> Data {
         try await pluginSaves(signedInPayload(username, under: configuration), under: configuration)
     }
 
-    func signedInPayload(_ username: String, under configuration: AuthClientConfiguration) async throws -> Data {
+    func signedInPayload(_ username: String, under configuration: AmplifyCognitoClientConfiguration) async throws -> Data {
         scriptSRP(username)
         if configuration.identityPool != nil {
             scriptIdentityPool()
@@ -67,7 +67,7 @@ extension DefaultSessionConfigurationChangeTests {
         return payload
     }
 
-    func listed(_ configuration: AuthClientConfiguration, includingSignedOut: Bool = false) async throws -> [StoredSession] {
+    func listed(_ configuration: AmplifyCognitoClientConfiguration, includingSignedOut: Bool = false) async throws -> [StoredSession] {
         try await AmplifyCognitoClient.storedSessions(
             configuration: configuration,
             accessGroup: nil,
@@ -121,7 +121,7 @@ extension DefaultSessionConfigurationChangeTests {
 
     // MARK: The client
 
-    func makeClient(_ configuration: AuthClientConfiguration, _ sessionId: SessionID = .default) -> AmplifyCognitoClient {
+    func makeClient(_ configuration: AmplifyCognitoClientConfiguration, _ sessionId: SessionID = .default) -> AmplifyCognitoClient {
         do {
             return try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId), dependencies: dependencies)
         } catch {
@@ -168,7 +168,7 @@ extension DefaultSessionConfigurationChangeTests {
     }
 
     static func liveEngine(
-        _ configuration: AuthClientConfiguration,
+        _ configuration: AmplifyCognitoClientConfiguration,
         keychain: TestKeychain,
         cognito: ScriptedCognito
     ) throws -> LiveSessionEngine {

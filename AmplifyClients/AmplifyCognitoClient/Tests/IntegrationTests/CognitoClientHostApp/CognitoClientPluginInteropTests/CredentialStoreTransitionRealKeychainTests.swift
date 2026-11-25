@@ -68,14 +68,14 @@ final class CredentialStoreTransitionRealKeychainTests: XCTestCase {
     private var defaultGroup = ""
     private var sharedGroup = ""
     private var plugin: AWSCognitoAuthPlugin?
-    private var clientConfiguration: AuthClientConfiguration?
+    private var clientConfiguration: AmplifyCognitoClientConfiguration?
 
     override func setUpWithError() throws {
         try super.setUpWithError()
         defaultGroup = try RealKeychain.defaultGroup()
         sharedGroup = RealKeychain.sharedGroup(defaultGroup: defaultGroup)
         try InteropEnvironment.requireProvisioned()
-        clientConfiguration = try AuthClientConfiguration(
+        clientConfiguration = try AmplifyCognitoClientConfiguration(
             from: InteropEnvironment.outputsResource,
             bundle: InteropEnvironment.outputsBundle()
         )

@@ -67,7 +67,7 @@ final class SignOutUnreadableRecordTests: XCTestCase {
         let client = try harness.client(work)
         _ = await client.currentSessionState()
 
-        let result = await client.signOut(options: AuthClientSignOutOptions(globalSignOut: true))
+        let result = await client.signOut(options: AmplifyCognitoClientSignOutOptions(globalSignOut: true))
 
         let unrevoked = SessionSignOut.unrevokedNewerRecordError(version: 2)
         XCTAssertEqual(result, .partialResult(
@@ -239,7 +239,7 @@ final class SignOutUnreadableRecordTests: XCTestCase {
         XCTAssertEqual(state, .signedOut)
     }
 
-    private func signOutStored(_ sessionId: SessionID) async -> AuthClientSignOutResult {
+    private func signOutStored(_ sessionId: SessionID) async -> AmplifyCognitoClientSignOutResult {
         await AmplifyCognitoClient.signOutStoredSession(
             sessionId: sessionId,
             configuration: ClientFixtures.configuration,

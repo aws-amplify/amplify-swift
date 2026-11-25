@@ -14,8 +14,8 @@ import InternalAWSCognitoAuth
 
 extension EngineSignInStep {
 
-    /// The engine step a client step mirrors, case for case: the inverse of `AuthClientSignInStep.init(_:)`.
-    init(client step: AuthClientSignInStep) {
+    /// The engine step a client step mirrors, case for case: the inverse of `AmplifyCognitoClientSignInStep.init(_:)`.
+    init(client step: AmplifyCognitoClientSignInStep) {
         switch step {
         case .confirmSignInWithSMSMFACode(let details, let info):
             self = .confirmSignInWithSMSMFACode(EngineCodeDeliveryDetails(client: details), info)
@@ -50,7 +50,7 @@ extension EngineSignInStep {
 }
 
 extension EngineMFAType {
-    init(client type: AuthClientMFAType) {
+    init(client type: AmplifyCognitoClientMFAType) {
         switch type {
         case .sms: self = .sms
         case .totp: self = .totp
@@ -60,7 +60,7 @@ extension EngineMFAType {
 }
 
 extension EngineCodeDeliveryDetails {
-    init(client details: AuthClientCodeDeliveryDetails) {
+    init(client details: AmplifyCognitoClientCodeDeliveryDetails) {
         let destination: EngineDeliveryDestination
         switch details.destination {
         case .email(let value): destination = .email(value)
@@ -78,7 +78,7 @@ extension ChallengeRecord.State {
     /// answerable step as `.challenge` for `username` with `session`; `nil` for `confirmSignUp`, `resetPassword`
     /// and `done`, which the live engine does not save.
     static func fake(
-        _ step: AuthClientSignInStep,
+        _ step: AmplifyCognitoClientSignInStep,
         session: String = "fake-session",
         username: String = "alice",
         signInMethod: ChallengeRecord.SignInMethod = .init(authFlow: "userSRP")
@@ -108,12 +108,12 @@ extension ChallengeRecord.State {
     }
 
     /// The client step a saved sign-in reports, as the live engine resumes it.
-    var fakeResumedStep: AuthClientSignInStep? {
+    var fakeResumedStep: AmplifyCognitoClientSignInStep? {
         switch self {
         case .challenge(let challenge):
-            return EngineSignInStep(challenge.step, logger: ClientEngineLogger()).map(AuthClientSignInStep.init)
+            return EngineSignInStep(challenge.step, logger: ClientEngineLogger()).map(AmplifyCognitoClientSignInStep.init)
         case .totpSetup(let setup):
-            return .continueSignInWithTOTPSetup(AuthClientTOTPSetupDetails(sharedSecret: setup.secretCode, username: setup.username))
+            return .continueSignInWithTOTPSetup(AmplifyCognitoClientTOTPSetupDetails(sharedSecret: setup.secretCode, username: setup.username))
         }
     }
 

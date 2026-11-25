@@ -47,7 +47,7 @@ final class ChallengeResumeTests: ClientMFATestCase {
         _ user: FreshUser,
         on sessionId: SessionID,
         pool: SandboxPool = .standard
-    ) async throws -> AuthClientSignInStep {
+    ) async throws -> AmplifyCognitoClientSignInStep {
         let client = try AmplifyCognitoClient(
             configuration: IntegrationTestEnvironment.configuration(pool),
             options: .init(sessionId: sessionId)

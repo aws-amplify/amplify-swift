@@ -92,7 +92,7 @@ final class SignUpValidationTests: XCTestCase {
     /// - Then:
     ///    - it is `validation` for `confirmationCode`, with the machine's message and a suggestion naming the parameter
     func testAnInvalidConfirmationCodeNamesTheParameter() {
-        let error = AuthClientError(signUp: .invalidConfirmationCode(message: "Invalid code"))
+        let error = AmplifyCognitoClientError(signUp: .invalidConfirmationCode(message: "Invalid code"))
 
         guard case .validation(let field, let description, let suggestion, _) = error else {
             return XCTFail("\(error)")

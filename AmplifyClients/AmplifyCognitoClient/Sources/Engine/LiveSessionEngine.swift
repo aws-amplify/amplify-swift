@@ -100,8 +100,8 @@ actor LiveSessionEngine: SessionEngine {
         try Self.credentials(in: payload).userPoolTokens?.accessToken
     }
 
-    nonisolated func userPoolTokens(in payload: Data) throws -> AuthClientUserPoolTokens? {
-        try Self.credentials(in: payload).userPoolTokens.map(AuthClientUserPoolTokens.init)
+    nonisolated func userPoolTokens(in payload: Data) throws -> AmplifyCognitoClientUserPoolTokens? {
+        try Self.credentials(in: payload).userPoolTokens.map(AmplifyCognitoClientUserPoolTokens.init)
     }
 
     /// `!areValid(at: now)`, the plugin's refresh test (`FetchAuthSessionOperationHelper`): no credentials,
@@ -168,7 +168,7 @@ actor LiveSessionEngine: SessionEngine {
         }
     }
 
-    var pendingChallenge: AuthClientSignInStep? {
+    var pendingChallenge: AmplifyCognitoClientSignInStep? {
         attempt?.step
     }
 
@@ -194,7 +194,7 @@ actor LiveSessionEngine: SessionEngine {
     /// A fresh operation whose machine starts in the saved state, made the pending attempt of `epoch`. It is never
     /// configured (configuring would sign the machine out, and the challenge state cannot be reached by events), so
     /// its credential machine is primed instead. Refused while an attempt or a step is live: those are newer.
-    func resumeSignIn(from state: ChallengeRecord.State, epoch: UInt64) async -> AuthClientSignInStep? {
+    func resumeSignIn(from state: ChallengeRecord.State, epoch: UInt64) async -> AmplifyCognitoClientSignInStep? {
         guard attempt == nil, inFlight == nil, resources.authConfiguration.getUserPoolConfiguration() != nil,
               let (machineState, step) = state.resumedState(logger: resources.logger),
               let operation = try? resources.makeOperation(seed: nil, resuming: machineState) else {
@@ -421,18 +421,18 @@ actor LiveSessionEngine: SessionEngine {
     /// no identity-pool event without an identity pool.
     nonisolated func requireUserPool() throws {
         guard resources.authConfiguration.getUserPoolConfiguration() != nil else {
-            throw AuthClientError.configuration(
+            throw AmplifyCognitoClientError.configuration(
                 "Could not find user pool configuration",
-                "Add a user pool to AuthClientConfiguration."
+                "Add a user pool to AmplifyCognitoClientConfiguration."
             )
         }
     }
 
     nonisolated func requireIdentityPool() throws {
         guard resources.authConfiguration.getIdentityPoolConfiguration() != nil else {
-            throw AuthClientError.configuration(
+            throw AmplifyCognitoClientError.configuration(
                 "Could not find identity pool configuration",
-                "Add an identity pool to AuthClientConfiguration."
+                "Add an identity pool to AmplifyCognitoClientConfiguration."
             )
         }
     }

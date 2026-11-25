@@ -22,7 +22,7 @@ final class LiveWebUICoreTests: XCTestCase {
     private var harness: ClientHarness!
     /// The window to anchor sheets to, made on first use rather than in `setUp()`: a process's first `UIWindow()`
     /// can block for minutes on a just-booted simulator, so a test that needs no window makes none.
-    private var window: AuthClientPresentationAnchor {
+    private var window: AmplifyCognitoClientPresentationAnchor {
         get async { await HostedUIFixtures.window() }
     }
     private let work = ClientFixtures.id("work")
@@ -53,7 +53,7 @@ final class LiveWebUICoreTests: XCTestCase {
     /// A client whose session core runs the live engine.
     private func client(
         _ sessionId: SessionID,
-        configuration: AuthClientConfiguration = HostedUIFixtures.configuration
+        configuration: AmplifyCognitoClientConfiguration = HostedUIFixtures.configuration
     ) throws -> AmplifyCognitoClient {
         let engine = try live.engine()
         var dependencies = harness.dependencies
@@ -184,7 +184,7 @@ final class LiveWebUICoreTests: XCTestCase {
         _ = try await client.signInWithWebUI(presentationAnchor: window)
 
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         try await Task.sleep(nanoseconds: 200_000_000)
         XCTAssertEqual(revokedRefreshTokens(), [])
     }
@@ -253,7 +253,7 @@ final class LiveWebUICoreTests: XCTestCase {
     private func assertRefusalRevokesTheIssuedTokenOnce(
         _ sessionId: SessionID,
         options: WebUIOptions = WebUIOptions(),
-        expecting kind: AuthClientError.Kind,
+        expecting kind: AmplifyCognitoClientError.Kind,
         suggesting suggestion: String? = nil,
         _ context: String,
         file: StaticString = #filePath,
@@ -284,7 +284,7 @@ final class LiveWebUICoreTests: XCTestCase {
     ///    - each throws `.unexpectedIdentity`, suggesting a sign-in with `prompt: [.login]`; the refresh token the
     ///      refused response was issued is revoked at Cognito exactly once; nothing is committed
     func testAnIdentityTheExpectationRefusesIsRevokedOnce() async throws {
-        let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+        let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
         try await assertRefusalRevokesTheIssuedTokenOnce(
             ClientFixtures.id("expects-bob"),
             options: WebUIOptions(identityExpectation: .matches("bob")),
@@ -330,7 +330,7 @@ final class LiveWebUICoreTests: XCTestCase {
             try await assertRefusalRevokesTheIssuedTokenOnce(
                 ClientFixtures.id("refused-\(check)"),
                 expecting: .service(nil),
-                suggesting: AuthClientError.unverifiedHostedUIResponseSuggestion,
+                suggesting: AmplifyCognitoClientError.unverifiedHostedUIResponseSuggestion,
                 check
             )
         }
@@ -383,8 +383,8 @@ final class LiveWebUICoreTests: XCTestCase {
 
     /// Asserts `result` is `.failed` with an error of `kind`, and that nothing was revoked or cleared.
     private func assertRefusedAndStillSignedIn(
-        _ result: AuthClientSignOutResult,
-        _ kind: AuthClientError.Kind,
+        _ result: AmplifyCognitoClientSignOutResult,
+        _ kind: AmplifyCognitoClientError.Kind,
         file: StaticString = #filePath,
         line: UInt = #line
     ) async throws {
@@ -468,11 +468,11 @@ final class LiveWebUICoreTests: XCTestCase {
     ///      underneath; nothing is revoked, and the session is still signed in
     func testAnUnusableSignOutRedirectURIIsFailedWithTheOneNoHostedUIValue() async throws {
         let oauth = try XCTUnwrap(HostedUIFixtures.userPool.oauth)
-        let userPool = AuthClientConfiguration.UserPool(
+        let userPool = AmplifyCognitoClientConfiguration.UserPool(
             poolId: HostedUIFixtures.userPool.poolId,
             appClientId: HostedUIFixtures.userPool.appClientId,
             region: HostedUIFixtures.userPool.region,
-            oauth: AuthClientConfiguration.OAuth(
+            oauth: AmplifyCognitoClientConfiguration.OAuth(
                 domain: oauth.domain,
                 scopes: oauth.scopes,
                 redirectSignInURIs: oauth.redirectSignInURIs,
@@ -496,7 +496,7 @@ final class LiveWebUICoreTests: XCTestCase {
 
         let error = failedSignOutError(result)
         XCTAssertEqual(error.map { $0.isEquivalent(to: SessionCore.noHostedUIForSignOut()) }, true, "\(result)")
-        XCTAssertEqual((error?.underlyingError as? AuthClientError)?.kind, .configuration)
+        XCTAssertEqual((error?.underlyingError as? AmplifyCognitoClientError)?.kind, .configuration)
         XCTAssertEqual(result, .failed(SessionCore.noHostedUIForSignOut()))
         XCTAssertEqual(live.cognito.operations, [])
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)

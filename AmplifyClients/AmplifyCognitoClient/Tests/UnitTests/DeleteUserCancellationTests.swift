@@ -80,6 +80,6 @@ final class DeleteUserCancellationTests: XCTestCase {
         XCTAssertEqual(engine.deleteUserCalls, [])
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, alice.data)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 }

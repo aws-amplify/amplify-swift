@@ -17,7 +17,7 @@ final class FetchAuthSessionTests: XCTestCase {
     private var harness: ClientHarness!
     private let work = ClientFixtures.id("work")
     private let home = ClientFixtures.id("home")
-    private let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+    private let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
 
     override func setUp() {
         harness = ClientHarness()
@@ -42,9 +42,9 @@ final class FetchAuthSessionTests: XCTestCase {
 
         let session = try await client.fetchAuthSession()
 
-        XCTAssertEqual(session, AuthClientSession(
+        XCTAssertEqual(session, AmplifyCognitoClientSession(
             identityId: "us-east-1:alice",
-            awsCredentials: AuthClientAWSCredentials(payload.awsCredentials),
+            awsCredentials: AmplifyCognitoClientAWSCredentials(payload.awsCredentials),
             userSub: "sub-alice",
             userPoolTokens: try XCTUnwrap(payload.userPoolTokens)
         ))
@@ -83,7 +83,7 @@ final class FetchAuthSessionTests: XCTestCase {
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .guest)
         XCTAssertEqual(session.identityId, "us-east-1:guest-1")
-        XCTAssertEqual(session.awsCredentials, AuthClientAWSCredentials(guest.awsCredentials))
+        XCTAssertEqual(session.awsCredentials, AmplifyCognitoClientAWSCredentials(guest.awsCredentials))
         XCTAssertNil(session.userSub)
         XCTAssertNil(session.userPoolTokens)
     }
@@ -378,8 +378,8 @@ final class FetchAuthSessionTests: XCTestCase {
         let unforcedSession = try await unforced.value
         XCTAssertEqual(engine.guestFetchCount, 1)
         XCTAssertEqual(engine.refreshCalls, [guest.data])
-        XCTAssertEqual(forcedSession.awsCredentials, AuthClientAWSCredentials(guest.refreshed.awsCredentials))
-        XCTAssertEqual(unforcedSession.awsCredentials, AuthClientAWSCredentials(guest.awsCredentials))
+        XCTAssertEqual(forcedSession.awsCredentials, AmplifyCognitoClientAWSCredentials(guest.refreshed.awsCredentials))
+        XCTAssertEqual(unforcedSession.awsCredentials, AmplifyCognitoClientAWSCredentials(guest.awsCredentials))
     }
 
     /// A forced fetch of a session signed out in this process never takes an unforced fetch's guest acquisition as its
@@ -443,15 +443,15 @@ final class FetchAuthSessionTests: XCTestCase {
 
         XCTAssertEqual(loginEngine.refreshCalls, [bob.data])
         XCTAssertEqual(login.userPoolTokens?.accessToken, "access-bob-v2")
-        XCTAssertEqual(login.awsCredentials, AuthClientAWSCredentials(bob.refreshed.awsCredentials))
+        XCTAssertEqual(login.awsCredentials, AmplifyCognitoClientAWSCredentials(bob.refreshed.awsCredentials))
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, bob.refreshed.data)
         XCTAssertEqual(loginEngine.guestFetchCount, 0)
         XCTAssertEqual(guestEngine.refreshCalls, [guest.data])
-        XCTAssertEqual(guestSession.awsCredentials, AuthClientAWSCredentials(guest.refreshed.awsCredentials))
+        XCTAssertEqual(guestSession.awsCredentials, AmplifyCognitoClientAWSCredentials(guest.refreshed.awsCredentials))
         XCTAssertEqual(try harness.storedRecord(home)?.credentials, guest.refreshed.data)
         XCTAssertEqual(guestEngine.guestFetchCount, 0)
         let state = await loginClient.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
     }
 
     /// - Given: a session restored signed out, with an identity pool; another writer then saves bob's valid login in its
@@ -471,7 +471,7 @@ final class FetchAuthSessionTests: XCTestCase {
         XCTAssertEqual(engine.refreshCalls, [])
         XCTAssertEqual(engine.guestFetchCount, 0)
         XCTAssertEqual(session.userPoolTokens?.accessToken, bob.accessToken)
-        XCTAssertEqual(session.awsCredentials, AuthClientAWSCredentials(bob.awsCredentials))
+        XCTAssertEqual(session.awsCredentials, AmplifyCognitoClientAWSCredentials(bob.awsCredentials))
     }
 
     /// A guest a signed-out session fetches itself is fresh, so it is not refreshed, even by a forced fetch.
@@ -518,7 +518,7 @@ final class FetchAuthSessionTests: XCTestCase {
         XCTAssertEqual(engine.guestFetchCount, 0)
         XCTAssertEqual(error?.kind, .sessionExpired)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
     }
 
     /// - Given: a signed-in session whose refresh token is dead
@@ -640,17 +640,17 @@ final class FetchAuthSessionTests: XCTestCase {
         let session = try await client.fetchAuthSession()
 
         XCTAssertEqual(session.userPoolTokens?.accessToken, "access-alice-v2")
-        XCTAssertEqual(session.awsCredentials, AuthClientAWSCredentials(FakePayload.signedIn("alice", version: 2).awsCredentials))
+        XCTAssertEqual(session.awsCredentials, AmplifyCognitoClientAWSCredentials(FakePayload.signedIn("alice", version: 2).awsCredentials))
     }
 
     /// A `CredentialsError` from inside the session core never escapes `fetchAuthSession`,
-    /// which speaks `AuthClientError` only.
+    /// which speaks `AmplifyCognitoClientError` only.
     ///
     /// - Given: a stale session whose refresh throws `CredentialsError.notConfigured`
     /// - When: its session is fetched
     /// - Then:
-    ///    - it throws an `AuthClientError.unknown` with that error underneath
-    func testACredentialsErrorIsThrownAsAnAuthClientError() async throws {
+    ///    - it throws an `AmplifyCognitoClientError.unknown` with that error underneath
+    func testACredentialsErrorIsThrownAsAnAmplifyCognitoClientError() async throws {
         try harness.signIn(work, .signedIn("alice", stale: true))
         let client = try harness.client(work)
         harness.engine(for: work)?.scriptRefresh { _ in
@@ -692,9 +692,9 @@ final class FetchAuthSessionTests: XCTestCase {
 
             if guestAccess {
                 let session = try await client.fetchAuthSession()
-                XCTAssertEqual(session, AuthClientSession(
+                XCTAssertEqual(session, AmplifyCognitoClientSession(
                     identityId: "us-east-1:guest",
-                    awsCredentials: AuthClientAWSCredentials(FakePayload.guest().awsCredentials)
+                    awsCredentials: AmplifyCognitoClientAWSCredentials(FakePayload.guest().awsCredentials)
                 ))
             } else {
                 engine.scriptGuestCredentials { _ in throw SessionEngineError.notSignedIn }
@@ -709,7 +709,7 @@ final class FetchAuthSessionTests: XCTestCase {
     }
 
     /// A refresh or a guest fetch the engine reports as cancelled (a service call cancelled mid-flight) throws
-    /// `CancellationError`, never an `AuthClientError` that wraps one.
+    /// `CancellationError`, never an `AmplifyCognitoClientError` that wraps one.
     ///
     /// - Given: a stale signed-in session whose refresh fails with an error caused by a cancellation, and a
     ///   signed-out session whose guest fetch fails the same way

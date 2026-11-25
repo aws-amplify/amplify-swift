@@ -21,8 +21,8 @@ final class CognitoServiceClientsTests: XCTestCase {
     private static let userPoolRegion = "eu-west-1"
     private static let identityPoolRegion = "us-east-2"
 
-    private func configuration() throws -> AuthClientConfiguration {
-        try AuthClientConfiguration(
+    private func configuration() throws -> AmplifyCognitoClientConfiguration {
+        try AmplifyCognitoClientConfiguration(
             userPool: .init(poolId: "eu-west-1_AbCdEf123", appClientId: "app-client-1", region: Self.userPoolRegion),
             identityPool: .init(
                 poolId: "us-east-2:0e3c1a52-7f0b-4a55-9d7a-2b6f3c1d9e88",
@@ -93,7 +93,7 @@ final class CognitoServiceClientsTests: XCTestCase {
     /// - When:
     ///    - each is asked for an identity
     /// - Then:
-    ///    - each throws `AuthClientError.configuration`
+    ///    - each throws `AmplifyCognitoClientError.configuration`
     ///    - the user pool advice points at `configureUserPoolClient`; the identity advice, since that
     ///      client has no escape hatch, says to build a separate `CognitoIdentityClient`
     ///
@@ -132,7 +132,7 @@ final class CognitoServiceClientsTests: XCTestCase {
     ///    - the user pool client calls `AdminGetUser` and the identity client calls `DescribeIdentityPool`,
     ///      two operations that need AWS credentials
     /// - Then:
-    ///    - each throws `AuthClientError.configuration`, with its own client's advice
+    ///    - each throws `AmplifyCognitoClientError.configuration`, with its own client's advice
     ///    - no request reaches the HTTP engine
     ///
     func testSignedOperationsFailInTheResolver() async throws {
@@ -274,8 +274,8 @@ final class CognitoServiceClientsTests: XCTestCase {
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
-        guard case .configuration(_, let suggestion, _) = error as? AuthClientError else {
-            XCTFail("expected AuthClientError.configuration, got \(error)", file: file, line: line)
+        guard case .configuration(_, let suggestion, _) = error as? AmplifyCognitoClientError else {
+            XCTFail("expected AmplifyCognitoClientError.configuration, got \(error)", file: file, line: line)
             return
         }
         switch client {

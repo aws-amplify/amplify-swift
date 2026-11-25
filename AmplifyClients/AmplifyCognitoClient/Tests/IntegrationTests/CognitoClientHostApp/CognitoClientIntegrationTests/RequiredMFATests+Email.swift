@@ -147,7 +147,7 @@ extension RequiredMFATests {
     /// - Given: a fresh user with neither email nor phone number on U-REQ-ALL
     /// - When:
     ///    - the user signs in, and is asked to choose an MFA type to set up
-    ///    - chooses `AuthClientMFAType.email.challengeResponse`
+    ///    - chooses `AmplifyCognitoClientMFAType.email.challengeResponse`
     ///    - gives an email address
     ///    - and confirms with the code sent to it
     /// - Then:
@@ -163,7 +163,7 @@ extension RequiredMFATests {
         let result = try await client.signIn(username: user.username, password: user.password)
         assertSetupSelection(result.nextStep)
 
-        let chosen = try await client.confirmSignIn(challengeResponse: AuthClientMFAType.email.challengeResponse)
+        let chosen = try await client.confirmSignIn(challengeResponse: AmplifyCognitoClientMFAType.email.challengeResponse)
 
         XCTAssertStep(chosen.nextStep, .continueSignInWithEmailMFASetup)
 
@@ -185,7 +185,7 @@ extension RequiredMFATests {
     /// - Given: a fresh user with neither email nor phone number on U-REQ-ALL
     /// - When:
     ///    - the user signs in, and is asked to choose an MFA type to set up
-    ///    - chooses `AuthClientMFAType.totp.challengeResponse`
+    ///    - chooses `AmplifyCognitoClientMFAType.totp.challengeResponse`
     ///    - and confirms with a code from the shared secret, naming the device
     /// - Then:
     ///    - the choice returns `.continueSignInWithTOTPSetup`, with a shared secret and the username
@@ -198,7 +198,7 @@ extension RequiredMFATests {
         let result = try await client.signIn(username: user.username, password: user.password)
         assertSetupSelection(result.nextStep)
 
-        let chosen = try await client.confirmSignIn(challengeResponse: AuthClientMFAType.totp.challengeResponse)
+        let chosen = try await client.confirmSignIn(challengeResponse: AmplifyCognitoClientMFAType.totp.challengeResponse)
 
         let secret = try recordTOTPSetup(chosen.nextStep, of: user)
         let confirmed = try await client.confirmSignIn(
@@ -213,7 +213,7 @@ extension RequiredMFATests {
     // MARK: - Helpers
 
     /// Asserts `step` is `.confirmSignInWithOTP` to a named email destination, printing neither.
-    private func assertEmailOTPStep(_ step: AuthClientSignInStep, file: StaticString = #filePath, line: UInt = #line) {
+    private func assertEmailOTPStep(_ step: AmplifyCognitoClientSignInStep, file: StaticString = #filePath, line: UInt = #line) {
         guard case .confirmSignInWithOTP(let delivery) = step else {
             return XCTFail("the step is \(step.caseName), expected confirmSignInWithOTP", file: file, line: line)
         }
@@ -225,7 +225,7 @@ extension RequiredMFATests {
 
     /// Asserts `step` is `.continueSignInWithMFASetupSelection` offering exactly what the plugin's tests
     /// expect: TOTP and email, never SMS (an SMS setup needs a phone number).
-    private func assertSetupSelection(_ step: AuthClientSignInStep, file: StaticString = #filePath, line: UInt = #line) {
+    private func assertSetupSelection(_ step: AmplifyCognitoClientSignInStep, file: StaticString = #filePath, line: UInt = #line) {
         guard case .continueSignInWithMFASetupSelection(let types) = step else {
             return XCTFail("the step is \(step.caseName), expected continueSignInWithMFASetupSelection", file: file, line: line)
         }

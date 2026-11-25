@@ -153,11 +153,11 @@ final class FakeBrowser: @unchecked Sendable {
 enum HostedUIFixtures {
 
     /// The user pool with a hosted UI: `auth.oauth` with one sign-in and one sign-out redirect URI.
-    static let userPool = AuthClientConfiguration.UserPool(
+    static let userPool = AmplifyCognitoClientConfiguration.UserPool(
         poolId: StorageFixtures.userPoolId,
         appClientId: "app-client-1",
         region: "us-east-1",
-        oauth: AuthClientConfiguration.OAuth(
+        oauth: AmplifyCognitoClientConfiguration.OAuth(
             domain: "auth.example.com",
             scopes: ["openid", "email", "profile"],
             redirectSignInURIs: ["myapp://signin/"],
@@ -174,12 +174,12 @@ enum HostedUIFixtures {
     /// Made on first use, not up front: a process's first `UIWindow()` can block for minutes on a just-booted,
     /// loaded simulator while SpringBoard bootstraps the test host.
     @MainActor
-    static func window() -> AuthClientPresentationAnchor {
+    static func window() -> AmplifyCognitoClientPresentationAnchor {
         sharedWindow
     }
 
     @MainActor
-    private static let sharedWindow: AuthClientPresentationAnchor = {
+    private static let sharedWindow: AmplifyCognitoClientPresentationAnchor = {
         #if canImport(UIKit)
         return UIWindow()
         #else

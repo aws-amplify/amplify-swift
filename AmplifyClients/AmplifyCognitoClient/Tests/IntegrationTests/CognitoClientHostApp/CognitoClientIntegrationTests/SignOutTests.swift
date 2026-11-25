@@ -13,7 +13,7 @@ import XCTest
 /// what Cognito itself thinks of the refresh token afterwards, through a plain SDK client.
 final class SignOutTests: ClientIntegrationTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
     /// This test's own user, a fresh one on the default backend (`makeSignInUser()`).
     private var alice: TestUser!
 

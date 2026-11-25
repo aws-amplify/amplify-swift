@@ -18,7 +18,7 @@ final class SessionTests: ClientIntegrationTestCase {
     /// The plugin's `AWSAuthBaseTest.networkTimeout`.
     private static let networkTimeout: TimeInterval = 5
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
     /// This test's own user.
     private var alice: TestUser!
 
@@ -136,7 +136,7 @@ final class SessionTests: ClientIntegrationTestCase {
         let raw = try RawUserPool()
         let sessionId = try makeSessionID("alice-expired")
         let refreshToken: String
-        let user: AuthClientUser
+        let user: AmplifyCognitoClientUser
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
             _ = try await client.signIn(username: alice.username, password: alice.password)

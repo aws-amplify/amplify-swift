@@ -13,7 +13,7 @@ import XCTest
 /// the never-guest rule for a signed-out session, and a guest session signing in in place.
 final class CredentialsProviderTests: ClientIntegrationTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
 
     override func setUp() async throws {
         try await super.setUp()

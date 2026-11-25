@@ -58,14 +58,14 @@ class ClientMFATestCase: ClientIntegrationTestCase {
     }
 
     /// The case of `step`, without its associated values, which may hold a TOTP secret.
-    static func name(of step: AuthClientSignInStep) -> String {
+    static func name(of step: AmplifyCognitoClientSignInStep) -> String {
         caseName(step)
     }
 
     /// An error's case and description, for a failure message. The underlying error, which may carry a
     /// request identifier, is left out.
     static func describe(_ error: Error) -> String {
-        guard let error = error as? AuthClientError else {
+        guard let error = error as? AmplifyCognitoClientError else {
             return String(describing: type(of: error))
         }
         return "\(caseName(error)): \(error.errorDescription)"

@@ -258,7 +258,7 @@ final class ClientCredentialStoreTests: XCTestCase {
     ///    - each is `unknown` with the client's error underneath, never `itemNotFound`
     ///
     func testOtherStorageFailuresAreUnknown() {
-        let errors: [AuthClientError] = [
+        let errors: [AmplifyCognitoClientError] = [
             .unknown("encode", "bug"),
             .storageUnavailable(.interrupted, "d", "s", KeychainAccessError.itemNotFound)
         ]
@@ -267,7 +267,7 @@ final class ClientCredentialStoreTests: XCTestCase {
             guard case .unknown(_, let underlying) = mapped else {
                 return XCTFail("\(error) mapped to \(mapped)")
             }
-            XCTAssertNotNil(underlying as? AuthClientError)
+            XCTAssertNotNil(underlying as? AmplifyCognitoClientError)
         }
     }
 
@@ -283,7 +283,7 @@ final class ClientCredentialStoreTests: XCTestCase {
     ///    - the foreign error is `unknown`, with it underneath; an engine error passes through unchanged
     ///
     func testEncodingAndForeignFailuresAreEngineErrors() async {
-        let encoding = AuthClientError.unknown(
+        let encoding = AmplifyCognitoClientError.unknown(
             "Could not encode the value.",
             "bug",
             EncodingError.invalidValue(Double.nan, .init(codingPath: [], debugDescription: "NaN"))
@@ -291,7 +291,7 @@ final class ClientCredentialStoreTests: XCTestCase {
         guard case .codingError(_, let underlying) = ClientCredentialStore.engineError(for: encoding) else {
             return XCTFail("an encoding failure should be codingError")
         }
-        XCTAssertNotNil(underlying as? AuthClientError)
+        XCTAssertNotNil(underlying as? AmplifyCognitoClientError)
 
         do {
             try await ClientCredentialStore.mappingStorageErrors { throw FixtureError(description: "foreign") }

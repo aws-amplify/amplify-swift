@@ -111,7 +111,7 @@ final class ChallengeRecordFormatTests: XCTestCase {
         XCTAssertEqual(challenge.step, .init(kind: .confirmSignInWithTOTPCode))
     }
 
-    /// The step kinds are spelled as `AuthClientSignInStep`'s cases, frozen.
+    /// The step kinds are spelled as `AmplifyCognitoClientSignInStep`'s cases, frozen.
     ///
     /// - Given: every step kind
     /// - When: its raw value is read

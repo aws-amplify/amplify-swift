@@ -133,7 +133,7 @@ enum SessionCleanup {
     /// way. The first error is rethrown at the end: a sign-out's `.failed` result (the session is still signed
     /// in), a purge's error, or a call that ran out of time. A `.partial` sign-out signed the session out here,
     /// and the purge follows, so it is not a failure.
-    static func cleanUp(_ sessions: [CreatedSession], configuration: AuthClientConfiguration) async throws {
+    static func cleanUp(_ sessions: [CreatedSession], configuration: AmplifyCognitoClientConfiguration) async throws {
         var firstError: Error?
         // Bounded: a call routed through a live core that deadlocked must fail the teardown, not hang the run.
         func attempt(_ what: String, _ operation: @escaping @Sendable () async throws -> Void) async {

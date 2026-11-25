@@ -19,14 +19,14 @@ public extension AmplifyCognitoClient {
     ///
     /// - Returns: `.confirmResetPasswordWithCode` with where the code was sent. A pool that prevents
     ///   user-existence errors answers the same for an unknown user.
-    /// - Throws: `AuthClientError.validation` for an empty username; `.configuration` without a user pool;
+    /// - Throws: `AmplifyCognitoClientError.validation` for an empty username; `.configuration` without a user pool;
     ///   `.service` as Cognito answers, such as `.limitExceeded`; `.notAuthorized` when the user pool refuses
     ///   the reset (a disabled user, for example); `.unknown` for a failure the client does not recognise, or an
     ///   answer without delivery details; `CancellationError` if the calling task is cancelled.
     func resetPassword(
         for username: String,
-        options: AuthClientResetPasswordOptions = AuthClientResetPasswordOptions()
-    ) async throws -> AuthClientResetPasswordResult {
+        options: AmplifyCognitoClientResetPasswordOptions = AmplifyCognitoClientResetPasswordOptions()
+    ) async throws -> AmplifyCognitoClientResetPasswordResult {
         try Self.requireResetPasswordArgument(username, AuthPluginErrorConstants.resetPasswordUsernameError)
         let clientMetadata = options.clientMetadata
         let core = core
@@ -37,7 +37,7 @@ public extension AmplifyCognitoClient {
 
     /// Completes a password reset with the code Cognito sent.
     ///
-    /// - Throws: `AuthClientError.validation` for an empty username, new password or code, checked in that
+    /// - Throws: `AmplifyCognitoClientError.validation` for an empty username, new password or code, checked in that
     ///   order; `.configuration` without a user pool; `.service` as Cognito answers, such as `.codeMismatch` or
     ///   `.invalidPassword`; `.notAuthorized` when the user pool refuses the reset; `.unknown` for a failure the
     ///   client does not recognise; `CancellationError` if the calling task is cancelled.
@@ -45,7 +45,7 @@ public extension AmplifyCognitoClient {
         for username: String,
         with newPassword: String,
         confirmationCode: String,
-        options: AuthClientConfirmResetPasswordOptions = AuthClientConfirmResetPasswordOptions()
+        options: AmplifyCognitoClientConfirmResetPasswordOptions = AmplifyCognitoClientConfirmResetPasswordOptions()
     ) async throws {
         try Self.requireResetPasswordArgument(username, AuthPluginErrorConstants.confirmResetPasswordUsernameError)
         try Self.requireResetPasswordArgument(newPassword, AuthPluginErrorConstants.confirmResetPasswordNewPasswordError)
@@ -72,6 +72,6 @@ extension AmplifyCognitoClient {
         guard value.isEmpty else {
             return
         }
-        throw AuthClientError.validation(field: rule.field, rule.errorDescription, rule.recoverySuggestion)
+        throw AmplifyCognitoClientError.validation(field: rule.field, rule.errorDescription, rule.recoverySuggestion)
     }
 }

@@ -34,7 +34,7 @@ NOTE: Swift is used throughout the design doc showcasing API changes and a per p
   same way. → [§4.8](#48-migrating-an-existing-app)
 - **Limits** add side by side in one process, Gen2 configuration only, and the beta's scope. → [§11](#11-limits)
 - **API text checked against the code**: `.federated(identityId:)` in the samples and §14.2,
-  `AuthClientSignInStep` where the text said `AuthSignInStep`, `identityIdResult`, `signInWithWebUI`'s signature,
+  `AmplifyCognitoClientSignInStep` where the text said `AuthSignInStep`, `identityIdResult`, `signInWithWebUI`'s signature,
   `cancelWebUISignIn()` and `resetSystemSheet()`, §14.1's class, escape-hatch type and `sessionId`, §14.5's list,
   and the challenge record's key. → [§4.2](#42-account-picker-on-cold-launch) · [§4.10](#410-reading-a-sessions-state) · [§7](#7-credential-providers) · [§9.1](#91-one-browser-sign-in-at-a-time-and-how-the-api-says-so) · [§14](#14-api-surface)
 - **The decisions record** now covers the decisions taken after 2026-09-22 (its #9–#19). → [auth-client-DECISIONS.md](auth-client-DECISIONS.md)
@@ -114,7 +114,7 @@ Also stated in the doc: one user at a time per session, the same human *can* hol
 
 - **The providers are concrete `Sendable` types**, `CognitoCredentialsProvider` and `CognitoUserPoolTokenProvider`, not existentials. AmplifyFoundation's `AWSCredentialsProvider` is not `Sendable` and changing that would break every existing conformer; the token provider conforms to AmplifyFoundation's `AccessTokenProvider` (experimental SPI, `Sendable`), added for it so a token consumer needs AmplifyFoundation alone. → 14.4
 
-- **The client does not depend on Amplify core** - only on AmplifyFoundation and AmplifyFoundationBridge, like the CloudWatch and Kinesis clients. So `AuthSessionState` uses client-owned `AuthClientUser`, `AuthClientSignInStep` and `AuthClientError` in place of Amplify core's `AuthUser`, `AuthSignInStep` and `AuthError`, and a plugin bridge would map between them (not built; §4.9). It also means the extracted Cognito engine must itself be Amplify-free before the client can use it. → 14.2 · 14.6
+- **The client does not depend on Amplify core** - only on AmplifyFoundation and AmplifyFoundationBridge, like the CloudWatch and Kinesis clients. So `AuthSessionState` uses client-owned `AmplifyCognitoClientUser`, `AmplifyCognitoClientSignInStep` and `AmplifyCognitoClientError` in place of Amplify core's `AuthUser`, `AuthSignInStep` and `AuthError`, and a plugin bridge would map between them (not built; §4.9). It also means the extracted Cognito engine must itself be Amplify-free before the client can use it. → 14.2 · 14.6
 
 - **Release order.** A forward-compatible *reader* has to ship in the current plugin **before** the new client does, so that a released plugin version can read the new record format. → 4.9 *(Removed 2026-10-02: with the shared login there is no new format for the plugin to read.)*
 
@@ -199,11 +199,11 @@ Construction is therefore the family's shape, unchanged - precisely what the Kin
 
 ```swift
 // The single-account case. No Amplify.configure(), no plugin registration.
-let client = try AmplifyCognitoClient(configuration: try AuthClientConfiguration(from: "amplify_outputs"))
+let client = try AmplifyCognitoClient(configuration: try AmplifyCognitoClientConfiguration(from: "amplify_outputs"))
 
 // Two sessions is the same call twice, with a session ID each. Nothing global
 // changes, and neither handle can be mistaken for the other.
-let config = try AuthClientConfiguration(from: "amplify_outputs")
+let config = try AmplifyCognitoClientConfiguration(from: "amplify_outputs")
 let work = try AmplifyCognitoClient(configuration: config,
                                     options: .init(sessionId: .named("work")))
 let home = try AmplifyCognitoClient(configuration: config,
@@ -289,8 +289,8 @@ The app lists the saved sessions, renders a row each, and resumes the one the us
 let rows = try await AmplifyCognitoClient.storedSessions(configuration: config)
 //  -> [ StoredSession(sessionId: "work", label: "Acme Corp", user: work, kind: .userPoolAndIdentityPool, state: .signedIn(work)),
 //       StoredSession(sessionId: "home", label: nil,         user: home, kind: .userPoolAndIdentityPool, state: .signedIn(home)) ]
-//  where work is AuthClientUser(username: "alice@corp", userId: "…") and home is
-//  AuthClientUser(username: "alice@personal", userId: "…").
+//  where work is AmplifyCognitoClientUser(username: "alice@corp", userId: "…") and home is
+//  AmplifyCognitoClientUser(username: "alice@personal", userId: "…").
 //  (Amended 2026-11-24, API follow-ups 17 and 21: a row has `user`, not `username`, and `state`; 14.6.)
 
 let client = try AmplifyCognitoClient(configuration: config, options: .init(sessionId: rows[0].sessionId))
@@ -308,7 +308,7 @@ case .signedIn, .federated:
         _ = try await client.fetchAuthSession()
         showHome()
     }
-    catch AuthClientError.storageUnavailable { waitForUnlock() }   // NOT signed out
+    catch AmplifyCognitoClientError.storageUnavailable { waitForUnlock() }   // NOT signed out
     catch { showSignIn() }                                         // e.g. sessionExpired: refresh token dead
 case .guest, .signedOut:
     // This app offers sign-in for both. 4.10 shows one that browses as a guest
@@ -365,7 +365,7 @@ func userTapped(_ id: SessionID) async throws {
             _ = try await client.fetchAuthSession()
             UserDefaults.standard.set(id.stringValue, forKey: "lastUsedSession")
             showHome(using: client)
-        } catch AuthClientError.storageUnavailable {
+        } catch AmplifyCognitoClientError.storageUnavailable {
             showTryAgain()            // transient; do NOT offer sign-in
         } catch {
             showSignIn(reusing: id)   // refresh token died while the app was closed
@@ -493,13 +493,13 @@ _ = await AmplifyCognitoClient.signOutStoredSession(sessionId: workID, configura
 try await AmplifyCognitoClient.purgeStoredSession(sessionId: workID, configuration: config)
 ```
 
-**New API:** `signOut(options:)` with `AuthClientSignOutOptions.purgeStoredSession` (default `false`), plus the statics `signOutStoredSession(sessionId:configuration:accessGroup:options:)`, which takes the same options, and `purgeStoredSession(sessionId:configuration:)`. The statics take a session ID because a picker needs to offer "sign out" or "remove" on a row without first constructing a client for it, and they are named apart because only one of them revokes anything. All declared in 14.3.
+**New API:** `signOut(options:)` with `AmplifyCognitoClientSignOutOptions.purgeStoredSession` (default `false`), plus the statics `signOutStoredSession(sessionId:configuration:accessGroup:options:)`, which takes the same options, and `purgeStoredSession(sessionId:configuration:)`. The statics take a session ID because a picker needs to offer "sign out" or "remove" on a row without first constructing a client for it, and they are named apart because only one of them revokes anything. All declared in 14.3.
 
 **Sign-out keeps the row by default; purging is opt-in.** Deleting a saved record is not recoverable, so the non-destructive behaviour is the default on every path.
 
-**The result takes the plugin's shape.** The type is `AuthClientSignOutResult` (`Sources/Models/AuthClientSignOutResult.swift`).
+**The result takes the plugin's shape.** The type is `AmplifyCognitoClientSignOutResult` (`Sources/Models/AmplifyCognitoClientSignOutResult.swift`).
 
-- **No sign-out throws.** `signOut(options:)`, `signOutWithWebUI(presentationAnchor:options:)` and `signOutStoredSession` return `.complete`, `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` or `.failed(AuthClientError)`. `signedOutLocally` is false only for `.failed`.
+- **No sign-out throws.** `signOut(options:)`, `signOutWithWebUI(presentationAnchor:options:)` and `signOutStoredSession` return `.complete`, `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` or `.failed(AmplifyCognitoClientError)`. `signedOutLocally` is false only for `.failed`.
 - **Another sign-in replacing the session during the sign-out is `.failed(.invalidState(…))`**, and that user stays signed in.
 - **These also return `.failed`**, with the session still signed in on this device:
   - a storage failure before the local sign-out, or a saved record that kept changing (`storageUnavailable(.interrupted)`). A revoke may already have run;
@@ -512,7 +512,7 @@ try await AmplifyCognitoClient.purgeStoredSession(sessionId: workID, configurati
 - **Once a revoke has completed, cancellation never stops the local clear.**
 - **A failed global sign-out reports the plugin's placeholder `revokeTokenError`**. As in the plugin, `RevokeToken` is then skipped, and `.partial` carries the global sign-out's error and the placeholder revoke error.
 - **Deliberate differences from the plugin, documented:**
-  - `.partial` carries no raw tokens (a security fix): its `revokeTokenError`, `globalSignOutError` and `hostedUIError` are the plugin's wrappers without the token fields (`AuthClientRevokeTokenError`, `AuthClientGlobalSignOutError`, `AuthClientHostedUIError`, each with one field, `error`), so callers still write `revokeTokenError?.error`;
+  - `.partial` carries no raw tokens (a security fix): its `revokeTokenError`, `globalSignOutError` and `hostedUIError` are the plugin's wrappers without the token fields (`AmplifyCognitoClientRevokeTokenError`, `AmplifyCognitoClientGlobalSignOutError`, `AmplifyCognitoClientHostedUIError`, each with one field, `error`), so callers still write `revokeTokenError?.error`;
   - `.partial` has the client-only `storageError`;
   - a federated session can be signed out (the plugin refuses);
   - `purgeStoredSession`;
@@ -523,7 +523,7 @@ For example, an app that offers a retry only when the user is still signed in:
 ```swift
 // signOutWithWebUI is main-actor isolated, so call it from main-actor code (a view or view model).
 @MainActor
-func signOutOfWork(_ work: AmplifyCognitoClient, window: AuthClientPresentationAnchor) async {
+func signOutOfWork(_ work: AmplifyCognitoClient, window: AmplifyCognitoClientPresentationAnchor) async {
     switch await work.signOutWithWebUI(presentationAnchor: window) {
     case .complete:
         showSignedOut()
@@ -540,7 +540,7 @@ func signOutOfWork(_ work: AmplifyCognitoClient, window: AuthClientPresentationA
 
 The declaration is in 14.8.
 
-**Deliberately out of scope: there is no "sign out of all sessions".** An app that wants it loops over `storedSessions()`. We are not shipping a bulk operation in this revision — the precedents are uniformly bad (`aws sso logout` prints *"Successfully signed out of all SSO profiles"*; MSAL documents `wipeAccount` as *"a dangerous operation"*; Auth0's `clearAll()` warns it *"may delete non-Auth0 data as well"*), and doing it safely needs per-session result reporting that `AuthClientSignOutResult` cannot currently express. Noted in §11 so its absence reads as a decision rather than an oversight.
+**Deliberately out of scope: there is no "sign out of all sessions".** An app that wants it loops over `storedSessions()`. We are not shipping a bulk operation in this revision — the precedents are uniformly bad (`aws sso logout` prints *"Successfully signed out of all SSO profiles"*; MSAL documents `wipeAccount` as *"a dangerous operation"*; Auth0's `clearAll()` warns it *"may delete non-Auth0 data as well"*), and doing it safely needs per-session result reporting that `AmplifyCognitoClientSignOutResult` cannot currently express. Noted in §11 so its absence reads as a decision rather than an oversight.
 
 Two caveats the design must state plainly:
 
@@ -648,7 +648,7 @@ This solves rollback with rotation, and rollback past the reader, for the defaul
 
 - **A guest session is indistinguishable from a signed-out one** by `isSignedIn` alone, and a picker needs to tell them apart.
 
-So the type is deliberately small, and it reuses the existing types like `AuthSignInStep`. It is declared in 14.2, alongside the calls that return it. (As built, it mirrors them instead: `AuthClientSignInStep` is the plugin's `AuthSignInStep` case for case, owned by the client, which does not depend on Amplify core. And a federated session has its own case, `.federated(identityId:)`, because it has no user pool user: 14.8.)
+So the type is deliberately small, and it reuses the existing types like `AuthSignInStep`. It is declared in 14.2, alongside the calls that return it. (As built, it mirrors them instead: `AmplifyCognitoClientSignInStep` is the plugin's `AuthSignInStep` case for case, owned by the client, which does not depend on Amplify core. And a federated session has its own case, `.federated(identityId:)`, because it has no user pool user: 14.8.)
 
 **Grabbing it, and using it.** Read it once for a decision the app makes now, or follow it for UI that has to re-render when the session changes underneath it:
 
@@ -714,11 +714,11 @@ if case .awaitingChallenge(let step) = await client.currentSessionState() {
     // The app's choice: resume, or call signIn again and start over.
     presentChallengePrompt(for: step)
     do    { _ = try await client.confirmSignIn(challengeResponse: code) }
-    catch AuthClientError.challengeExpired { restartSignIn() }
+    catch AmplifyCognitoClientError.challengeExpired { restartSignIn() }
 }
 ```
 
-**New API:** `.awaitingChallenge(AuthClientSignInStep)` on `AuthSessionState`, and the `challengeExpired` error. Nothing else changes - `confirmSignIn` is today's call. Declared in 14.2 (`AuthSessionState`) and 14.7 (the error).
+**New API:** `.awaitingChallenge(AmplifyCognitoClientSignInStep)` on `AuthSessionState`, and the `challengeExpired` error. Nothing else changes - `confirmSignIn` is today's call. Declared in 14.2 (`AuthSessionState`) and 14.7 (the error).
 
 ## 5. Session model
 
@@ -1129,8 +1129,8 @@ public struct WebUIOptions: Sendable {
 
 // The window is required (the plugin's is optional), so the call is main-actor isolated.
 @MainActor
-public func signInWithWebUI(presentationAnchor: AuthClientPresentationAnchor,
-                            options: WebUIOptions = .init()) async throws -> AuthClientSignInResult
+public func signInWithWebUI(presentationAnchor: AmplifyCognitoClientPresentationAnchor,
+                            options: WebUIOptions = .init()) async throws -> AmplifyCognitoClientSignInResult
 
 // The public cancel and reset. cancelWebUISignIn closes this session's sheet (its
 // sign-in, sign-out page or passkey sheet): a sign-in or passkey call throws
@@ -1148,7 +1148,7 @@ public static func resetSystemSheet() async -> SessionID?
 ```swift
 do {
     _ = try await work.signInWithWebUI(presentationAnchor: anchor)
-} catch AuthClientError.browserBusy(let holder, _, _, _) {
+} catch AmplifyCognitoClientError.browserBusy(let holder, _, _, _) {
     // Another session is mid-sign-in. Surface it; do not silently queue.
     showAlert("Finish signing in to \(name(for: holder)) first.")
 }
@@ -1243,7 +1243,7 @@ Restated together, because a design is judged partly on what it declines:
 
 3. Sessions are not free, so concurrent sessions are bounded in practice, though the supported number is not yet decided.
 
-4. **No "sign out of all sessions".** Decided, not overlooked: an app loops `storedSessions()`. A safe bulk operation needs per-session result reporting that `AuthClientSignOutResult` cannot express today, and every surveyed precedent for it is a footgun (see 4.7).
+4. **No "sign out of all sessions".** Decided, not overlooked: an app loops `storedSessions()`. A safe bulk operation needs per-session result reporting that `AmplifyCognitoClientSignOutResult` cannot express today, and every surveyed precedent for it is a footgun (see 4.7).
 
 5. **Cross-process record sharing has no concurrency guard.** An app and its extension sharing a keychain group are two state machines over one record. A commit guard bounds the damage; it does not eliminate it. Under Cognito refresh-token rotation this can leave a record that cannot refresh, so an app that shares a session ID across processes should expect to handle re-auth. Detail in §6.
 
@@ -1275,7 +1275,7 @@ Settled, and recorded here.
 
 6. **Session state stays close to today's surface.** One small enum over `isSignedIn`, adding only the two distinctions a Bool cannot make, and reusing the existing `AuthSignInStep`. No in-flight dimension in the type.
 
-    > **As built:** the step is the client's own mirror, `AuthClientSignInStep`, because the client does not depend on Amplify core; and a federated session has its own case, `.federated(identityId:)` (14.2, 14.8).
+    > **As built:** the step is the client's own mirror, `AmplifyCognitoClientSignInStep`, because the client does not depend on Amplify core; and a federated session has its own case, `.federated(identityId:)` (14.2, 14.8).
 
 7. **A storage failure is made distinguishable from being signed out - in the Auth Client. The plugin is left as it is.** Today a keychain read failure at startup is swallowed and reported as signed-out, so an app can show a sign-in screen to a signed-in user. The Auth Client fixes it: that is what `AuthSessionState.unavailable`, the `storageUnavailable` error, and the listing rule in 4.2 are for, and a reason to retry is carried so an app can tell "wait" apart from "this is misconfigured".
 
@@ -1310,11 +1310,11 @@ public final class AmplifyCognitoClient: Sendable {   // actor internals
     // The family shape: synchronous and throwing, exactly like AmplifyKinesisClient.
     // Two Auth Clients with the same session ID are two handles onto one session,
     // so this never throws for "already in use".
-    public init(configuration: AuthClientConfiguration,
+    public init(configuration: AmplifyCognitoClientConfiguration,
                 options: Options = Options()) throws
 
     // (Amended 2026-11-24, API follow-up 14: the `init(from:bundle:options:)` convenience
-    // is removed. It only forwarded to `AuthClientConfiguration(from:bundle:)`, so apps
+    // is removed. It only forwarded to `AmplifyCognitoClientConfiguration(from:bundle:)`, so apps
     // build the configuration first.)
 
     public struct Options {
@@ -1330,7 +1330,7 @@ public final class AmplifyCognitoClient: Sendable {   // actor internals
 }
 ```
 
-`AuthClientConfiguration` is the pool IDs and region, loadable from `amplify_outputs.json` exactly as every sibling's `Configuration` is, through `AuthClientConfiguration(from:bundle:)`. `ConfigurationProvider` is the family's escape-hatch closure type, unchanged here. `ConfigurationProvider` is not new at all, and `AuthClientConfiguration` is new only as a name - each sibling has its own equivalently-named `Configuration` type. So neither is specified further in this document. (Amended during implementation: the client declares its own escape-hatch type, `AmplifyCognitoClientUserPoolConfigurationProvider`, `(inout CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig) -> Void`, named as each sibling names its own, such as `AmplifyKinesisClientConfigurationProvider`. Also amended: `AuthClientConfiguration` also carries the Gen2 `auth` settings as public `@_spi(AmplifyExperimental)` fields, except guest access, which it parses and drops (the client never read it). These are OAuth, password policy, username, required and verification attributes, and MFA.) `Options` is the family's per-client options struct - `sessionId`, the keychain access group, and the escape-hatch closure - and it is declared above, nested in the client exactly as each sibling nests its own.
+`AmplifyCognitoClientConfiguration` is the pool IDs and region, loadable from `amplify_outputs.json` exactly as every sibling's `Configuration` is, through `AmplifyCognitoClientConfiguration(from:bundle:)`. `ConfigurationProvider` is the family's escape-hatch closure type, unchanged here. `ConfigurationProvider` is not new at all, and `AmplifyCognitoClientConfiguration` is new only as a name - each sibling has its own equivalently-named `Configuration` type. So neither is specified further in this document. (Amended during implementation: the client declares its own escape-hatch type, `AmplifyCognitoClientUserPoolConfigurationProvider`, `(inout CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig) -> Void`, named as each sibling names its own, such as `AmplifyKinesisClientConfigurationProvider`. Also amended: `AmplifyCognitoClientConfiguration` also carries the Gen2 `auth` settings as public `@_spi(AmplifyExperimental)` fields, except guest access, which it parses and drops (the client never read it). These are OAuth, password policy, username, required and verification attributes, and MFA.) `Options` is the family's per-client options struct - `sessionId`, the keychain access group, and the escape-hatch closure - and it is declared above, nested in the client exactly as each sibling nests its own.
 
 ### 14.2 Session state and events
 
@@ -1341,7 +1341,7 @@ public final class AmplifyCognitoClient: Sendable {   // actor internals
 public enum AuthSessionState: Sendable, Equatable {
 
     /// Signed in as a user pool user.
-    case signedIn(AuthClientUser)
+    case signedIn(AmplifyCognitoClientUser)
 
     /// Federated to the identity pool with an external provider's token. There is no
     /// user pool user, so it is not `.signedIn` (14.8).
@@ -1361,13 +1361,13 @@ public enum AuthSessionState: Sendable, Equatable {
     /// A sign-in is part-way through and waiting on the user. The client's own
     /// mirror of the plugin's `AuthSignInStep`, because the client does not
     /// depend on Amplify core (see 14.6).
-    case awaitingChallenge(AuthClientSignInStep)
+    case awaitingChallenge(AmplifyCognitoClientSignInStep)
 
     /// Could not read storage. NOT "signed out" - a retry may succeed.
     case unavailable(StorageUnavailableReason)
 
     /// Misconfigured or unrecoverable.
-    case failed(AuthClientError)
+    case failed(AmplifyCognitoClientError)
 }
 
 // NOTE: an `isSignedIn` convenience was considered and deliberately dropped.
@@ -1420,7 +1420,7 @@ extension AmplifyCognitoClient {
     // MSAL's returnOnlySignedInAccounts. Each row has the session's state, read offline
     // (14.6); a row whose sign-in is waiting on a challenge is listed either way.
     public static func storedSessions(
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String? = nil,
         includingSignedOut: Bool = false
     ) async throws -> [StoredSession]
@@ -1429,10 +1429,10 @@ extension AmplifyCognitoClient {
     // The same options as signOut(options:), with or without a live client for the session.
     public static func signOutStoredSession(
         sessionId: SessionID,
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String? = nil,
-        options: AuthClientSignOutOptions = AuthClientSignOutOptions()
-    ) async -> AuthClientSignOutResult
+        options: AmplifyCognitoClientSignOutOptions = AmplifyCognitoClientSignOutOptions()
+    ) async -> AmplifyCognitoClientSignOutResult
 
     // LOCAL-ONLY: deletes the saved record without contacting Cognito, so the refresh
     // token stays valid server-side until it expires. Where you can, call
@@ -1440,7 +1440,7 @@ extension AmplifyCognitoClient {
     // credentials, then removes the row.
     public static func purgeStoredSession(
         sessionId: SessionID,
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String? = nil
     ) async throws
 
@@ -1450,7 +1450,7 @@ extension AmplifyCognitoClient {
     public static func setSessionLabel(
         _ label: String?,
         sessionId: SessionID,
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String? = nil
     ) async throws
 
@@ -1507,19 +1507,19 @@ Every type this design adds, except the construction types 14.1 accounts for and
 public struct StoredSession: Sendable, Equatable {   // one row of the picker
     public let sessionId: SessionID         // to construct the Auth Client the user picked
     public let label: String?               // the only name a user recognises
-    public let user: AuthClientUser?        // the signed-in user, or a signed-out row's last user; nil for guest and federated rows
+    public let user: AmplifyCognitoClientUser?        // the signed-in user, or a signed-out row's last user; nil for guest and federated rows
     public let kind: SessionKind            // what the saved record holds
     public let state: AuthSessionState      // what a client built with sessionId restores to, read offline (14.8)
 
     // For an app's test doubles.
-    public init(sessionId: SessionID, label: String?, user: AuthClientUser?, kind: SessionKind, state: AuthSessionState)
+    public init(sessionId: SessionID, label: String?, user: AmplifyCognitoClientUser?, kind: SessionKind, state: AuthSessionState)
 }
 
 // The client depends only on AmplifyFoundation and AmplifyFoundationBridge - never on
 // Amplify core - exactly as the CloudWatch and Kinesis clients do. So it owns the few
 // model types the plugin borrows from Amplify core. No bridge between the two ships yet.
 
-public struct AuthClientUser: Sendable, Equatable {
+public struct AmplifyCognitoClientUser: Sendable, Equatable {
     public let username: String
     public let userId: String        // the user pool `sub`
 }
@@ -1527,7 +1527,7 @@ public struct AuthClientUser: Sendable, Equatable {
 /// The next step of a multi-step sign-in. Mirrors the plugin's `AuthSignInStep` case for
 /// case (MFA code, TOTP setup, new password, custom challenge, email/SMS OTP, factor
 /// selection, ...), with client-owned payload types in place of Amplify core's.
-public enum AuthClientSignInStep: Sendable, Equatable { /* case-for-case mirror */ }
+public enum AmplifyCognitoClientSignInStep: Sendable, Equatable { /* case-for-case mirror */ }
 
 // `==`, `hash(into:)` and `Codable` use `stringValue` only: the label is metadata, not identity (4.6; API follow-up 20).
 public struct SessionID: Hashable, Sendable, Codable {
@@ -1562,7 +1562,7 @@ public enum StorageUnavailableReason: Sendable, Equatable {
 
 *Superseded by §14.8, whose table lists the shipped cases; this is the first revision's table, kept as the record.*
 
-All of these are cases of `AuthClientError`, which conforms to the foundation error protocol as every client in the family does.
+All of these are cases of `AmplifyCognitoClientError`, which conforms to the foundation error protocol as every client in the family does.
 
 | Error | Meaning |
 |---|---|
@@ -1583,7 +1583,7 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
 
 - **`getUserPoolClient()` is optional** (`CognitoIdentityProviderClient?`, `nil` without a user pool), like
   `getIdentityClient()`, since a configuration may have an identity pool only (14.4).
-- **Sign-outs return `AuthClientSignOutResult`, in the plugin's shape**, not the plugin's
+- **Sign-outs return `AmplifyCognitoClientSignOutResult`, in the plugin's shape**, not the plugin's
   `AuthSignOutResult` (14.3). The client does not depend on Amplify core, so it owns the type. §4.7 has the
   full list of outcomes.
   - **No throw.** `signOut(options:)`, `signOutWithWebUI(presentationAnchor:options:)` and
@@ -1591,10 +1591,10 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
     and `signOutWithWebUI` are `@discardableResult`, as the plugin's `signOut` is. `purgeStoredSession` still throws: the plugin
     has no such call.
   - **Cases.** `.complete`, `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` and
-    `.failed(AuthClientError)`. `signedOutLocally` is false only for `.failed`. `.partial`'s first three values
-    are wrappers in the plugin's shape, `AuthClientRevokeTokenError`, `AuthClientGlobalSignOutError` and
-    `AuthClientHostedUIError`, each holding only `error: AuthClientError`. `storageError` is client-only, and an
-    `AuthClientError` itself. `==` compares errors as `AuthSessionState.failed` does (`isEquivalent(to:)`).
+    `.failed(AmplifyCognitoClientError)`. `signedOutLocally` is false only for `.failed`. `.partial`'s first three values
+    are wrappers in the plugin's shape, `AmplifyCognitoClientRevokeTokenError`, `AmplifyCognitoClientGlobalSignOutError` and
+    `AmplifyCognitoClientHostedUIError`, each holding only `error: AmplifyCognitoClientError`. `storageError` is client-only, and an
+    `AmplifyCognitoClientError` itself. `==` compares errors as `AuthSessionState.failed` does (`isEquivalent(to:)`).
   - **`.failed`, with the session still signed in:** another sign-in replaced the session during the sign-out
     (`.invalidState`); a storage failure before the local sign-out; `sessionConfigurationMismatch` and any other
     error before anything was revoked; a closed hosted-UI sign-out page (`.userCancelled`), unless a refresh had
@@ -1616,7 +1616,7 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
   - *Earlier revision (2026-09-27):* sign-outs threw on failure, and returned a `.partial` struct or a separate
     case for a sign-out that another sign-in overtook. Replaced on 2026-10-02.
 - **`AuthSessionState` has a separate `.federated(identityId:)`** (14.2). A federated session has no user pool
-  user, so it is not `.signedIn(AuthClientUser)`.
+  user, so it is not `.signedIn(AmplifyCognitoClientUser)`.
 - **The static calls take `accessGroup:`**: `storedSessions(configuration:accessGroup:includingSignedOut:)`,
   `signOutStoredSession(sessionId:configuration:accessGroup:options:)`,
   `purgeStoredSession(sessionId:configuration:accessGroup:)` and
@@ -1627,12 +1627,16 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
 - **`SessionID.named("$default")` returns `.default`** (14.6), so a persisted `stringValue` always rebuilds its
   ID; every other spelling with a `$` is still refused.
 - **`StoredSession` has a public initializer**, for an app's test doubles, like the client's other result types.
-- **`StoredSession.user: AuthClientUser?` replaces `username: String?`** (14.6; API follow-up 17, 2026-11-24). It is
+- **`StoredSession.user: AmplifyCognitoClientUser?` replaces `username: String?`** (14.6; API follow-up 17, 2026-11-24). It is
   the signed-in user, or a signed-out row's last user, the same value as `getCurrentUser()` and `.signedIn(user)`,
   so a row can be matched to a live client, or to another row of the same user, by `userId`. `nil` for guest and
   federated rows, and for a row saved before records kept the user's ID, unless it is signed in and its saved
   credentials still name the user (they are read offline). `user.username` is Cognito's username, often a UUID or
   `<Provider>_<id>`, not a display name: the row's title is `label`. `signIn(username:)` stays required.
+- **The `AuthClient…` types are renamed `AmplifyCognitoClient…`** (API follow-up 16, 2026-11-24), the prefix the
+  released clients use for the client and its SDK hook: `AmplifyCognitoClientConfiguration`,
+  `AmplifyCognitoClientError`, `AmplifyCognitoClientUser` and the rest. The unprefixed types keep their names. This
+  document uses the new names throughout, also where it records decisions made under the old ones.
 - **`StoredSession` has `state: AuthSessionState`**, beside `kind` (14.6; API follow-up 21, 2026-11-24): the state
   a client built with the row's `sessionId` restores to, read offline through the same mapping a live session
   uses. Per saved row:
@@ -1666,7 +1670,7 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
   (decided 2026-09-27), like the rest of the client, so they do not become stable API with the next release.
 - **Public enums may gain cases** in a minor release, and each says so. `AuthEvent` is no longer "the same four
   events, and nothing more" (14.6).
-- **Errors** (14.7). `AuthClientError`'s cases are:
+- **Errors** (14.7). `AmplifyCognitoClientError`'s cases are:
 
 | Error | Meaning |
 |---|---|
@@ -1679,11 +1683,11 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
 | `browserBusy(holder:)` | The one system sheet across the client's sessions (hosted-UI sign-in or sign-out page, or passkey sheet) is held, or a `.wait(timeout:)` expired first, or this session already has a hosted-UI sign-in in progress. `holder` is the session holding the sheet; when none does and this session's earlier hosted-UI sign-in is still in progress, it is this session, with no sheet to finish: wait for the earlier call, or cancel its task. The Auth plugin's sheets don't take part. |
 | `sessionConfigurationMismatch(SessionID)` | A session ID already live under a different user pool, identity pool, keychain access group or settings. Thrown instead of silently attaching - see D.1. |
 | `validation(field:)` | An argument the caller passed is invalid. Names the offending field. |
-| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request; the code when the client recognises the exception. `AuthClientServiceErrorCode` is a plain value this error carries: it is not an `Error`, so it is never thrown or caught on its own, and its `errorDescription` is an ordinary property. Match it inside the case: `catch AuthClientError.service(.userNotConfirmed?, _, _, _)`. A Cognito internal error (`InternalErrorException`) and an error status the SDK does not model are `service` with no code too, in every call (the plugin's `unknown`), with a recovery suggestion to retry (a 5xx, an internal error) or naming the refusal (a 4xx); in a `.partial` sign-out, the revoke's or global sign-out's suggestion says it is not retried (the global sign-out's without the network hedge when Cognito failed it itself), and a sign-out that could not finish carries the failure as any other call maps it. The engine keeps nothing under an internal error, so it carries the SDK exception: in the sign-in flows' state-machine errors (`SignInError.service`, `AuthenticationError.service` from `ThrowSignInError`, the passkey sign-in's `WebAuthnError.service`), or beside the engine error (a revoke's and global sign-out's failure `cause`, the deletion's `.error(_, cause:)`, the passkey calls' `WebAuthnCredentialOperations.Failure`). The client maps with it. A network failure (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), whose request may or may not have reached Cognito, is `service` with no code in every call, with the client's network description and suggestion and the network error itself underneath (the `URLError`, or the CFNetwork or POSIX error); any other transport failure is `service` with no code too, never an empty `unknown` (an unreadable response, or another URL loading failure such as an App Transport Security refusal); in a `.partial` sign-out, a revoke or global sign-out that failed that way keeps the sign-out's context in its suggestion: it is not retried. |
+| `service(AmplifyCognitoClientServiceErrorCode?)` | Cognito rejected the request; the code when the client recognises the exception. `AmplifyCognitoClientServiceErrorCode` is a plain value this error carries: it is not an `Error`, so it is never thrown or caught on its own, and its `errorDescription` is an ordinary property. Match it inside the case: `catch AmplifyCognitoClientError.service(.userNotConfirmed?, _, _, _)`. A Cognito internal error (`InternalErrorException`) and an error status the SDK does not model are `service` with no code too, in every call (the plugin's `unknown`), with a recovery suggestion to retry (a 5xx, an internal error) or naming the refusal (a 4xx); in a `.partial` sign-out, the revoke's or global sign-out's suggestion says it is not retried (the global sign-out's without the network hedge when Cognito failed it itself), and a sign-out that could not finish carries the failure as any other call maps it. The engine keeps nothing under an internal error, so it carries the SDK exception: in the sign-in flows' state-machine errors (`SignInError.service`, `AuthenticationError.service` from `ThrowSignInError`, the passkey sign-in's `WebAuthnError.service`), or beside the engine error (a revoke's and global sign-out's failure `cause`, the deletion's `.error(_, cause:)`, the passkey calls' `WebAuthnCredentialOperations.Failure`). The client maps with it. A network failure (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), whose request may or may not have reached Cognito, is `service` with no code in every call, with the client's network description and suggestion and the network error itself underneath (the `URLError`, or the CFNetwork or POSIX error); any other transport failure is `service` with no code too, never an empty `unknown` (an unreadable response, or another URL loading failure such as an App Transport Security refusal); in a `.partial` sign-out, a revoke or global sign-out that failed that way keeps the sign-out's context in its suggestion: it is not retried. |
 | `notAuthorized` | The caller is not allowed to perform the operation: a wrong password, a disabled user, a revoked token. |
 | `invalidState` | The operation is not valid in the session's state: signed in already, federated, no sign-in in progress, or cancelled by a sign-out. |
 | `userCancelled` | The user closed a system sheet, or `cancelWebUISignIn()` or `resetSystemSheet()` closed it. |
-| `webAuthnCeremonyFailed(AuthClientWebAuthnCeremonyFailure)` | A local passkey ceremony failed before its result was sent to Cognito. |
+| `webAuthnCeremonyFailed(AmplifyCognitoClientWebAuthnCeremonyFailure)` | A local passkey ceremony failed before its result was sent to Cognito. |
 | `unexpectedIdentity(expected:returned:)` | A hosted-UI sign-in returned another user than the one asked for; nobody was signed in. |
 | `unknown` | Anything else, including a saved record this version cannot read. |
 
@@ -2009,7 +2013,7 @@ public init(region: String,
             options: Options = Options()) throws
 
 // Auth, proposed
-public init(configuration: AuthClientConfiguration,
+public init(configuration: AmplifyCognitoClientConfiguration,
             options: Options = Options()) throws
 ```
 

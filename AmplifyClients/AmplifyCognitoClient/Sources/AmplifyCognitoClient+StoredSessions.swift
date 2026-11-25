@@ -22,8 +22,8 @@ public extension AmplifyCognitoClient {
     /// It replaces whatever label the session's ID was created with (`SessionID.label`), which a sign-in saves only
     /// when the session's row keeps none.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be written;
-    ///   `AuthClientError.unknown` if the saved record is one this version cannot read; `CancellationError` if
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage could not be written;
+    ///   `AmplifyCognitoClientError.unknown` if the saved record is one this version cannot read; `CancellationError` if
     ///   the calling task is cancelled while it waits for the session's restore or record.
     func setSessionLabel(_ label: String?) async throws {
         let core = core
@@ -61,11 +61,11 @@ public extension AmplifyCognitoClient {
     ///   - includingSignedOut: Whether to list `.signedOut` rows too. `false` by default.
     /// - Returns: One row per saved session, ordered by session ID. A record this version cannot read is a row
     ///   whose `state` is `.failed`.
-    /// - Throws: `AuthClientError.storageUnavailable` if the saved sessions could not be read, a saved interrupted
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the saved sessions could not be read, a saved interrupted
     ///   sign-in the listing has to read among them (one beside a signed-out or guest row, or with nothing else
     ///   saved). Never an empty list for a failure.
     static func storedSessions(
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String? = nil,
         includingSignedOut: Bool = false
     ) async throws -> [StoredSession] {
@@ -132,10 +132,10 @@ public extension AmplifyCognitoClient {
     ///   `CancellationError` if the calling task was cancelled before anything was revoked.
     static func signOutStoredSession(
         sessionId: SessionID,
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String? = nil,
-        options: AuthClientSignOutOptions = AuthClientSignOutOptions()
-    ) async -> AuthClientSignOutResult {
+        options: AmplifyCognitoClientSignOutOptions = AmplifyCognitoClientSignOutOptions()
+    ) async -> AmplifyCognitoClientSignOutResult {
         await signOutStoredSession(
             sessionId: sessionId,
             configuration: configuration,
@@ -163,16 +163,16 @@ public extension AmplifyCognitoClient {
     /// is left, so it carries nothing. Purged with an older configuration than the one the session last ran with,
     /// the record under that later configuration is left, and is then a session of its own there.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the session's configuration record, its record, or a
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the session's configuration record, its record, or a
     ///   copy under an earlier configuration could not be read, a record could not be deleted, or the configuration
     ///   record could not be rewritten or deleted last, and `storageUnavailable(.interrupted)` if the session's
     ///   configuration record kept changing under the call;
-    ///   `AuthClientError.sessionConfigurationMismatch` if a client for this session is live in this process with a
+    ///   `AmplifyCognitoClientError.sessionConfigurationMismatch` if a client for this session is live in this process with a
     ///   different user pool or identity pool (purge it through that client); `CancellationError` if the calling
     ///   task is cancelled while it waits for the session's record.
     static func purgeStoredSession(
         sessionId: SessionID,
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String? = nil
     ) async throws {
         try await purgeStoredSession(
@@ -199,17 +199,17 @@ public extension AmplifyCognitoClient {
     /// A carried login is then saved under `configuration` as well, signed in, as after a restore: it stays there
     /// until a sign-out or a purge made with this configuration, whatever is done under the previous one.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written, and
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage could not be read or written, and
     ///   `storageUnavailable(.interrupted)` if the record kept changing under the call;
-    ///   `AuthClientError.unknown` if the saved record, or `.default`'s saved label, is one this version cannot
-    ///   read; `AuthClientError.sessionConfigurationMismatch` if a client for this session is live in this process
+    ///   `AmplifyCognitoClientError.unknown` if the saved record, or `.default`'s saved label, is one this version cannot
+    ///   read; `AmplifyCognitoClientError.sessionConfigurationMismatch` if a client for this session is live in this process
     ///   with a different user pool or identity pool (that client labels its own configuration's row; release it
     ///   to label this one); `CancellationError` if the calling task is cancelled while it waits for the session's
     ///   restore or record.
     static func setSessionLabel(
         _ label: String?,
         sessionId: SessionID,
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String? = nil
     ) async throws {
         try await setSessionLabel(
@@ -227,7 +227,7 @@ public extension AmplifyCognitoClient {
 extension AmplifyCognitoClient {
 
     static func storedSessions(
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String?,
         includingSignedOut: Bool,
         dependencies: SessionCoreDependencies
@@ -245,7 +245,7 @@ extension AmplifyCognitoClient {
 
     static func purgeStoredSession(
         sessionId: SessionID,
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String?,
         dependencies: SessionCoreDependencies
     ) async throws {
@@ -276,7 +276,7 @@ extension AmplifyCognitoClient {
     static func setSessionLabel(
         _ label: String?,
         sessionId: SessionID,
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String?,
         dependencies: SessionCoreDependencies
     ) async throws {
@@ -304,11 +304,11 @@ extension AmplifyCognitoClient {
 
     static func signOutStoredSession(
         sessionId: SessionID,
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String?,
-        options: AuthClientSignOutOptions = AuthClientSignOutOptions(),
+        options: AmplifyCognitoClientSignOutOptions = AmplifyCognitoClientSignOutOptions(),
         dependencies: SessionCoreDependencies
-    ) async -> AuthClientSignOutResult {
+    ) async -> AmplifyCognitoClientSignOutResult {
         do {
             return try await routedSignOutStoredSession(
                 sessionId: sessionId,
@@ -327,11 +327,11 @@ extension AmplifyCognitoClient {
     /// `signOutStoredSession`, throwing what happened before anything was cleared; the caller maps it to `.failed`.
     private static func routedSignOutStoredSession(
         sessionId: SessionID,
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String?,
-        options: AuthClientSignOutOptions,
+        options: AmplifyCognitoClientSignOutOptions,
         dependencies: SessionCoreDependencies
-    ) async throws -> AuthClientSignOutResult {
+    ) async throws -> AmplifyCognitoClientSignOutResult {
         let namespace = SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: accessGroup)
         let gate = dependencies.gates.gate(for: namespace, sessionId: sessionId)
         let store = SessionRecordIO(store: dependencies.makeStore(namespace), queue: gate.ioQueue)
@@ -339,7 +339,7 @@ extension AmplifyCognitoClient {
 
         enum Routed: Sendable {
             case live(SessionCore)
-            case done(AuthClientSignOutResult)
+            case done(AmplifyCognitoClientSignOutResult)
         }
         // Revoke first, then clear locally, holding the gate throughout — the same order as a live
         // session's sign-out. The plugin's stored format is read without an engine to tell who a
@@ -407,7 +407,7 @@ extension AmplifyCognitoClient {
     /// whose gate is not held (a restore carried the session meanwhile), the gates are released and taken again,
     /// at most `SessionRecordGates.maximumGateAttempts` times.
     ///
-    /// - Throws: `AuthClientError.sessionConfigurationMismatch` if the session is live in this process under any
+    /// - Throws: `AmplifyCognitoClientError.sessionConfigurationMismatch` if the session is live in this process under any
     ///   other pool configuration in the same access group: its records are that session's to change, through a
     ///   client with its configuration. `storageUnavailable` if the marker could not be read, or kept changing.
     private static func withSessionGates<T: Sendable>(
@@ -439,7 +439,7 @@ extension AmplifyCognitoClient {
                 // touches. A live session in another access group has records of its own, untouched here.
                 if let live = dependencies.registry.liveSession(for: sessionId),
                    live.namespace != namespace, live.namespace.accessGroup == namespace.accessGroup {
-                    throw AuthClientError.sessionConfigurationMismatch(
+                    throw AmplifyCognitoClientError.sessionConfigurationMismatch(
                         sessionId,
                         "Session \"\(sessionId)\" is in use with a different user pool or identity pool, whose saved records this call would change.",
                         "Make this call through a client with that session's configuration."
@@ -454,7 +454,7 @@ extension AmplifyCognitoClient {
                 return outcome
             }
         }
-        throw AuthClientError.storageUnavailable(
+        throw AmplifyCognitoClientError.storageUnavailable(
             .interrupted,
             "Session \"\(sessionId)\"'s namespace marker kept changing.",
             "Retry the operation."
@@ -469,7 +469,7 @@ extension AmplifyCognitoClient {
     @discardableResult
     private static func applyPluginConfigurationRule(
         _ sessionId: SessionID,
-        _ configuration: AuthClientConfiguration,
+        _ configuration: AmplifyCognitoClientConfiguration,
         _ store: SessionRecordIO,
         _ dependencies: SessionCoreDependencies
     ) async throws -> SessionRecordStore.PluginConfigurationOutcome? {

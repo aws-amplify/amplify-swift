@@ -23,14 +23,14 @@ import InternalAWSCognitoAuth
 
 // MARK: Sign-in steps
 
-extension AuthClientSignInStep {
+extension AmplifyCognitoClientSignInStep {
 
     /// Case for case, in declaration order. `.done` maps to `.done`; the engine adapter
     /// reports a finished sign-in as `EngineStepResult.done`, not as a step.
     init(_ step: EngineSignInStep) {
         switch step {
         case .confirmSignInWithSMSMFACode(let details, let info):
-            self = .confirmSignInWithSMSMFACode(AuthClientCodeDeliveryDetails(details), info)
+            self = .confirmSignInWithSMSMFACode(AmplifyCognitoClientCodeDeliveryDetails(details), info)
         case .confirmSignInWithCustomChallenge(let info):
             self = .confirmSignInWithCustomChallenge(info)
         case .confirmSignInWithNewPassword(let info):
@@ -40,17 +40,17 @@ extension AuthClientSignInStep {
         case .confirmSignInWithTOTPCode:
             self = .confirmSignInWithTOTPCode
         case .continueSignInWithTOTPSetup(let details):
-            self = .continueSignInWithTOTPSetup(AuthClientTOTPSetupDetails(details))
+            self = .continueSignInWithTOTPSetup(AmplifyCognitoClientTOTPSetupDetails(details))
         case .continueSignInWithMFASelection(let types):
-            self = .continueSignInWithMFASelection(Set(types.map(AuthClientMFAType.init)))
+            self = .continueSignInWithMFASelection(Set(types.map(AmplifyCognitoClientMFAType.init)))
         case .continueSignInWithEmailMFASetup:
             self = .continueSignInWithEmailMFASetup
         case .continueSignInWithMFASetupSelection(let types):
-            self = .continueSignInWithMFASetupSelection(Set(types.map(AuthClientMFAType.init)))
+            self = .continueSignInWithMFASetupSelection(Set(types.map(AmplifyCognitoClientMFAType.init)))
         case .confirmSignInWithOTP(let details):
-            self = .confirmSignInWithOTP(AuthClientCodeDeliveryDetails(details))
+            self = .confirmSignInWithOTP(AmplifyCognitoClientCodeDeliveryDetails(details))
         case .continueSignInWithFirstFactorSelection(let factors):
-            self = .continueSignInWithFirstFactorSelection(Set(factors.map(AuthClientFactorType.init)))
+            self = .continueSignInWithFirstFactorSelection(Set(factors.map(AmplifyCognitoClientFactorType.init)))
         case .resetPassword(let info):
             self = .resetPassword(info)
         case .confirmSignUp(let info):
@@ -61,18 +61,18 @@ extension AuthClientSignInStep {
     }
 }
 
-extension AuthClientCodeDeliveryDetails {
+extension AmplifyCognitoClientCodeDeliveryDetails {
 
     /// The engine carries the attribute as its Cognito name; the client names it with its own key.
     init(_ details: EngineCodeDeliveryDetails) {
         self.init(
-            destination: AuthClientDeliveryDestination(details.destination),
-            attributeKey: details.attributeKey.map(AuthClientUserAttributeKey.init(cognitoName:))
+            destination: AmplifyCognitoClientDeliveryDestination(details.destination),
+            attributeKey: details.attributeKey.map(AmplifyCognitoClientUserAttributeKey.init(cognitoName:))
         )
     }
 }
 
-extension AuthClientDeliveryDestination {
+extension AmplifyCognitoClientDeliveryDestination {
 
     init(_ destination: EngineDeliveryDestination) {
         switch destination {
@@ -84,14 +84,14 @@ extension AuthClientDeliveryDestination {
     }
 }
 
-extension AuthClientTOTPSetupDetails {
+extension AmplifyCognitoClientTOTPSetupDetails {
 
     init(_ details: EngineTOTPSetupDetails) {
         self.init(sharedSecret: details.sharedSecret, username: details.username)
     }
 }
 
-extension AuthClientMFAType {
+extension AmplifyCognitoClientMFAType {
 
     init(_ type: EngineMFAType) {
         switch type {
@@ -102,7 +102,7 @@ extension AuthClientMFAType {
     }
 }
 
-extension AuthClientFactorType {
+extension AmplifyCognitoClientFactorType {
 
     init(_ factor: EngineAuthFactorType) {
         switch factor {
@@ -126,7 +126,7 @@ extension AuthClientFactorType {
 
 extension EngineAuthFactorType {
 
-    init(_ factor: AuthClientFactorType) {
+    init(_ factor: AmplifyCognitoClientFactorType) {
         switch factor {
         case .password: self = .password
         case .passwordSRP: self = .passwordSRP
@@ -136,7 +136,7 @@ extension EngineAuthFactorType {
         case .webAuthn:
             guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
                 // A `.webAuthn` value only exists where the case is available.
-                preconditionFailure("AuthClientFactorType.webAuthn outside its availability")
+                preconditionFailure("AmplifyCognitoClientFactorType.webAuthn outside its availability")
             }
             self = .webAuthn
         #endif
@@ -147,7 +147,7 @@ extension EngineAuthFactorType {
 extension EngineAuthFlowType {
 
     /// The engine's deprecated `.custom` has no client case, so it is never produced.
-    init(_ flow: AuthClientAuthFlowType) {
+    init(_ flow: AmplifyCognitoClientAuthFlowType) {
         switch flow {
         case .userSRP: self = .userSRP
         case .customWithSRP: self = .customWithSRP
@@ -161,7 +161,7 @@ extension EngineAuthFlowType {
 
 // MARK: Tokens and credentials
 
-extension AuthClientUserPoolTokens {
+extension AmplifyCognitoClientUserPoolTokens {
 
     /// The deprecated `expiration` is dropped; read the token's `exp` claim instead.
     init(_ tokens: EngineUserPoolTokens) {
@@ -235,7 +235,7 @@ extension AmplifyCredentials {
 
 // MARK: Errors
 
-extension AuthClientServiceErrorCode {
+extension AmplifyCognitoClientServiceErrorCode {
 
     /// Case for case: the same 34 cases, in the same order.
     init(_ code: EngineServiceErrorCode) {
@@ -278,7 +278,7 @@ extension AuthClientServiceErrorCode {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     /// One exhaustive switch. The description and recovery suggestion are the engine's,
     /// which are the plugin's strings verbatim (pinned by its error-catalogue golden), read through the same accessors `AuthError` has, so
@@ -290,7 +290,7 @@ extension AuthClientError {
     /// `.service` carries the service code the engine put underneath (`EngineServiceErrorCode`), or `nil`
     /// when the service error is one the client does not recognise. The exceptions are checked first, in
     /// this order, so none of them is ever `.service`:
-    /// - an `AuthClientError` underneath is the client's own, handed to the engine and back (the sheet
+    /// - an `AmplifyCognitoClientError` underneath is the client's own, handed to the engine and back (the sheet
     ///   lease's `.browserBusy(holder:)`, for example): it is itself;
     /// - a local WebAuthn ceremony's failure, the platform's `ASAuthorizationError` underneath:
     ///   `.canceled` (the user closed the sheet) is `.userCancelled`, code
@@ -333,7 +333,7 @@ extension AuthClientError {
     ///
     /// Engine texts that name the plugin's calls are given the client's names (`clientText(_:)`): the recovery
     /// suggestions in `clientRecoverySuggestions` ("Invoke Auth.signIn …" becomes "Call signIn …"), and
-    /// `Amplify.MFAType.<type>` in a text becomes `AuthClientMFAType.<type>`. The engine's strings themselves are
+    /// `Amplify.MFAType.<type>` in a text becomes `AmplifyCognitoClientMFAType.<type>`. The engine's strings themselves are
     /// unchanged: they are the plugin's, which its error-catalogue golden pins.
     init(engine error: EngineAuthError, cause: Error? = nil) {
         let description = Self.clientText(error.errorDescription)
@@ -346,7 +346,7 @@ extension AuthClientError {
                 error
             )
         case .service(_, _, let underlying):
-            if let clientError = underlying as? AuthClientError {
+            if let clientError = underlying as? AmplifyCognitoClientError {
                 self = clientError
                 return
             }
@@ -354,7 +354,7 @@ extension AuthClientError {
                 self = ceremonyFailure
                 return
             }
-            let code = (underlying as? EngineServiceErrorCode).map(AuthClientServiceErrorCode.init)
+            let code = (underlying as? EngineServiceErrorCode).map(AmplifyCognitoClientServiceErrorCode.init)
             if code == .userCancelled {
                 // Cancellation has one shape in the client, whatever sheet the user closed.
                 self = .userCancelled(description, suggestion, error)
@@ -424,7 +424,7 @@ extension AuthClientError {
     /// How the engine names an MFA type in a text (`EngineMFAType.legacyDescription(of:)`, in the MFA setup
     /// refusal "Cannot initiate MFA setup from available Types: [Amplify.MFAType.totp]"), and the client's name.
     static let engineMFATypePrefix = "Amplify.MFAType."
-    static let clientMFATypePrefix = "AuthClientMFAType."
+    static let clientMFATypePrefix = "AmplifyCognitoClientMFAType."
 
     /// An engine description or recovery suggestion, with the plugin's call and type names replaced by the
     /// client's (`init(engine:)`).
@@ -437,7 +437,7 @@ extension AuthClientError {
 
     /// The recovery suggestion of an engine `.configuration` that has none.
     static let clientConfigurationSuggestion =
-        "Check the client's configuration: the auth section of amplify_outputs.json, or the AuthClientConfiguration passed in."
+        "Check the client's configuration: the auth section of amplify_outputs.json, or the AmplifyCognitoClientConfiguration passed in."
 
     /// The recovery suggestion of a `.service` with no service code whose engine suggestion is empty or asks for
     /// a bug report.
@@ -451,7 +451,7 @@ extension AuthClientError {
     ///   `unreadableResponseDescription` and `unreadableServiceResponseSuggestion`, as the refresh path suggests;
     /// - any other URL loading failure but a cancellation (App Transport Security, say): `.service` with no code,
     ///   `emptyServiceFailureDescription` and the client's network-or-service suggestion.
-    static func transportFailure(_ underlying: Error, wrapping: Error) -> AuthClientError? {
+    static func transportFailure(_ underlying: Error, wrapping: Error) -> AmplifyCognitoClientError? {
         if isNetworkFailure(underlying) {
             return .service(nil, networkFailureDescription, clientServiceSuggestion, underlying)
         }
@@ -468,8 +468,8 @@ extension AuthClientError {
 
     /// `transportFailure(error, wrapping: error)`, for an error the engine did not wrap: what the core's fallbacks
     /// report for a transport failure.
-    static func transportFailure(_ error: Error) -> AuthClientError? {
-        guard !(error is AuthClientError), !(error is EngineAuthError), !(error is CancellationError) else {
+    static func transportFailure(_ error: Error) -> AmplifyCognitoClientError? {
+        guard !(error is AmplifyCognitoClientError), !(error is EngineAuthError), !(error is CancellationError) else {
             return nil
         }
         return transportFailure(error, wrapping: error)
@@ -514,7 +514,7 @@ extension AuthClientError {
     /// (`badServerResponse`, `cannotParseResponse`), App Transport Security, authentication, or a cancellation, is not
     /// one. The caller's own cancellation is `CancellationError`.
     static func isNetworkFailure(_ error: Error?) -> Bool {
-        guard let error, !(error is CancellationError), !(error is AuthClientError), !(error is EngineAuthError) else {
+        guard let error, !(error is CancellationError), !(error is AmplifyCognitoClientError), !(error is EngineAuthError) else {
             return false
         }
         let nsError = error as NSError
@@ -716,15 +716,15 @@ extension AuthClientError {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     /// A failed revoke under a sign-out, mapped as `init(engine:cause:)` maps it, except a code-less service failure
     /// whose texts are the client's (`isSignOutContextFailure`), which keeps the sign-out's context: the session is
     /// signed out on this device, and nothing retries the revoke (a second sign-out finds nothing to sign out). A
     /// network failure also says the token may still be valid. `cause` is the failure the engine error was made from
     /// (`EngineRevokeTokenFailure.cause`).
-    static func revokeFailure(engine error: EngineAuthError, cause: Error? = nil) -> AuthClientError {
-        let mapped = AuthClientError(engine: error, cause: cause)
+    static func revokeFailure(engine error: EngineAuthError, cause: Error? = nil) -> AmplifyCognitoClientError {
+        let mapped = AmplifyCognitoClientError(engine: error, cause: cause)
         guard case .service(nil, let description, let suggestion, let underlying) = mapped,
               isSignOutContextFailure(description: description, suggestion: suggestion) else {
             return mapped
@@ -746,7 +746,7 @@ extension AuthClientError {
     }
 
     /// A revoke that failed on the network.
-    static func revokeNetworkFailure(_ error: Error) -> AuthClientError {
+    static func revokeNetworkFailure(_ error: Error) -> AmplifyCognitoClientError {
         .service(nil, revokeNetworkFailureDescription, revokeNotRetriedSuggestion, error)
     }
 
@@ -764,8 +764,8 @@ extension AuthClientError {
     /// the sign-out's context, as a revoke's does (`revokeFailure(engine:cause:)`). One Cognito failed itself (an
     /// internal error, an error status the SDK does not model) reached the service, so its suggestion says the other
     /// sessions stay signed in; one that failed in transport may or may not have, so its suggestion hedges.
-    static func globalSignOutFailure(engine error: EngineAuthError, cause: Error? = nil) -> AuthClientError {
-        let mapped = AuthClientError(engine: error, cause: cause)
+    static func globalSignOutFailure(engine error: EngineAuthError, cause: Error? = nil) -> AmplifyCognitoClientError {
+        let mapped = AmplifyCognitoClientError(engine: error, cause: cause)
         guard case .service(nil, let description, let suggestion, let underlying) = mapped,
               isSignOutContextFailure(description: description, suggestion: suggestion) else {
             return mapped
@@ -805,13 +805,13 @@ extension EngineSignOutOutcome {
         hostedUIFailure: EngineHostedUISignOutFailure? = nil
     ) {
         self.init(
-            revokeError: revokeFailure.map { AuthClientError.revokeFailure(engine: $0.error, cause: $0.cause) },
+            revokeError: revokeFailure.map { AmplifyCognitoClientError.revokeFailure(engine: $0.error, cause: $0.cause) },
             globalSignOutError: globalSignOutFailure.map {
-                AuthClientError.globalSignOutFailure(engine: $0.error, cause: $0.cause)
+                AmplifyCognitoClientError.globalSignOutFailure(engine: $0.error, cause: $0.cause)
             },
-            hostedUIError: hostedUIFailure.map { AuthClientError(engine: $0.error) },
-            plainRevokeError: revokeFailure.map { AuthClientError(engine: $0.error, cause: $0.cause) },
-            plainGlobalSignOutError: globalSignOutFailure.map { AuthClientError(engine: $0.error, cause: $0.cause) }
+            hostedUIError: hostedUIFailure.map { AmplifyCognitoClientError(engine: $0.error) },
+            plainRevokeError: revokeFailure.map { AmplifyCognitoClientError(engine: $0.error, cause: $0.cause) },
+            plainGlobalSignOutError: globalSignOutFailure.map { AmplifyCognitoClientError(engine: $0.error, cause: $0.cause) }
         )
     }
 }

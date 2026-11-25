@@ -13,7 +13,7 @@ import InternalAWSCognitoAuth
 /// superseded or is cancelled. The step is the last one it reported.
 struct SignInAttempt: Sendable {
     let operation: EngineOperation
-    let step: AuthClientSignInStep
+    let step: AmplifyCognitoClientSignInStep
     /// The core's sign-in epoch the attempt belongs to: a cancel for a later epoch leaves it alone.
     let epoch: UInt64
     /// The window the sign-in was given, which a `"WEB_AUTHN"` answer without one of its own uses.
@@ -25,7 +25,7 @@ enum SignInStepOutcome: Sendable {
     /// Signed in: the payload to commit.
     case done(Data)
     /// Waiting on the user; the machine is kept as the pending attempt.
-    case challenge(AuthClientSignInStep, EngineOperation)
+    case challenge(AmplifyCognitoClientSignInStep, EngineOperation)
 }
 
 /// A sign-in step's failure, and whether the pending attempt survives it (the seam's confirm contract).
@@ -218,9 +218,9 @@ enum LiveSignInSteps {
                 challengeRejected: operation.tokenTap.lastChallengeRejectedByUserPool
             ).map { .challenge($0, operation) }
         case .notConfigured:
-            throw dropping(AuthClientError.configuration(
+            throw dropping(AmplifyCognitoClientError.configuration(
                 "UserPool configuration is missing",
-                "Configure the user pool in AuthClientConfiguration."
+                "Configure the user pool in AmplifyCognitoClientConfiguration."
             ))
         case .signedOut, .signingOut, .deletingUser, .federatedToIdentityPool, .federatingToIdentityPool,
              .clearingFederation:
@@ -238,7 +238,7 @@ enum LiveSignInSteps {
     /// glue half of `UserPoolSignInHelper.checkNextStep`.
     /// `challengeRejected` says whether the latest answer was rejected with the user pool's
     /// `NotAuthorizedException`, which an expired challenge needs besides its message.
-    static func step(in signInState: SignInState, confirming: Bool, challengeRejected: Bool = false) throws -> AuthClientSignInStep? {
+    static func step(in signInState: SignInState, confirming: Bool, challengeRejected: Bool = false) throws -> AmplifyCognitoClientSignInStep? {
         switch signInState {
         case .signingInWithSRP(let srpState, _):
             if case .error(let error) = srpState {
@@ -265,7 +265,7 @@ enum LiveSignInSteps {
             case .error(_, _, let error, _):
                 return try failed(error, retryable: true, confirming: confirming, challengeRejected: challengeRejected)
             case .waitingForAnswer(_, _, let step):
-                return AuthClientSignInStep(step)
+                return AmplifyCognitoClientSignInStep(step)
             default:
                 break
             }
@@ -279,7 +279,7 @@ enum LiveSignInSteps {
                 // it) refuses a further answer in `confirmation(for:answering:)`.
                 return try failed(error, retryable: setup != nil, confirming: confirming, challengeRejected: challengeRejected)
             case .waitingForAnswer(let setup):
-                return .continueSignInWithTOTPSetup(AuthClientTOTPSetupDetails(
+                return .continueSignInWithTOTPSetup(AmplifyCognitoClientTOTPSetupDetails(
                     sharedSecret: setup.secretCode,
                     username: setup.username
                 ))
@@ -308,7 +308,7 @@ enum LiveSignInSteps {
         retryable: Bool,
         confirming: Bool,
         challengeRejected: Bool
-    ) throws -> AuthClientSignInStep {
+    ) throws -> AmplifyCognitoClientSignInStep {
         if error.isUserNotConfirmed {
             return .confirmSignUp(nil)
         }
@@ -327,7 +327,7 @@ enum LiveSignInSteps {
 
     /// A failed WebAuthn step, as the caller sees it. The sheet lease's own `CancellationError` (a sign-out,
     /// or the caller, stopped the ceremony) is cancellation, which the core then names; anything else is the
-    /// mapped engine error, where a ceremony failure is never `.service` (`AuthClientError(engine:)`).
+    /// mapped engine error, where a ceremony failure is never `.service` (`AmplifyCognitoClientError(engine:)`).
     static func webAuthnFailure(_ error: SignInError, confirming: Bool, challengeRejected: Bool) -> Error {
         let engineError = error.engineError
         if case .service(_, _, let underlying) = engineError, underlying is CancellationError {
@@ -337,17 +337,17 @@ enum LiveSignInSteps {
     }
 
     /// Whether `answer` selects WebAuthn at `step`, which needs a presentation anchor.
-    static func selectsWebAuthn(_ answer: String, at step: AuthClientSignInStep) -> Bool {
+    static func selectsWebAuthn(_ answer: String, at step: AmplifyCognitoClientSignInStep) -> Bool {
         guard case .continueSignInWithFirstFactorSelection = step else {
             return false
         }
         return answer == "WEB_AUTHN"
     }
 
-    private static func map(_ failure: any EngineAuthErrorConvertible, confirming: Bool, challengeRejected: Bool) -> AuthClientError {
+    private static func map(_ failure: any EngineAuthErrorConvertible, confirming: Bool, challengeRejected: Bool) -> AmplifyCognitoClientError {
         confirming
-            ? AuthClientError(engineConfirmingSignIn: failure.engineError, rejectedByUserPool: challengeRejected, cause: failure as? Error)
-            : AuthClientError(engineFailure: failure)
+            ? AmplifyCognitoClientError(engineConfirmingSignIn: failure.engineError, rejectedByUserPool: challengeRejected, cause: failure as? Error)
+            : AmplifyCognitoClientError(engineFailure: failure)
     }
 
     // MARK: Cancellation
@@ -391,11 +391,11 @@ enum LiveSignInSteps {
         SignInStepFailure(error: error, keepsAttempt: false)
     }
 
-    static func noSignInInProgress() -> AuthClientError {
+    static func noSignInInProgress() -> AmplifyCognitoClientError {
         .invalidState("There is no sign-in in progress for this session", "Call signIn first.")
     }
 
-    static func restartRequired() -> AuthClientError {
+    static func restartRequired() -> AmplifyCognitoClientError {
         .invalidState(
             "Cannot use confirmSignIn in the current state. Call signIn to start the sign-in again.",
             "Call signIn to start a new sign-in."

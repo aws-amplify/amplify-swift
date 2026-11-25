@@ -46,7 +46,7 @@ final class DeviceRecordStoreTests: XCTestCase {
         _ body: () throws -> some Any
     ) {
         XCTAssertThrowsError(try body(), file: file, line: line) { error in
-            XCTAssertEqual((error as? AuthClientError)?.storageUnavailableReason, reason, "\(error)", file: file, line: line)
+            XCTAssertEqual((error as? AmplifyCognitoClientError)?.storageUnavailableReason, reason, "\(error)", file: file, line: line)
         }
     }
 

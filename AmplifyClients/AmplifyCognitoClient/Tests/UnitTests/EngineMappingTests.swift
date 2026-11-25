@@ -28,7 +28,7 @@ import XCTest
 final class EngineMappingTests: XCTestCase {
 
     private static let details = EngineCodeDeliveryDetails(destination: .sms("+1***"), attributeKey: "phone_number")
-    private static let clientDetails = AuthClientCodeDeliveryDetails(destination: .sms("+1***"), attributeKey: .phoneNumber)
+    private static let clientDetails = AmplifyCognitoClientCodeDeliveryDetails(destination: .sms("+1***"), attributeKey: .phoneNumber)
     private static let info = ["key": "value"]
 
     // MARK: Sign-in steps
@@ -44,7 +44,7 @@ final class EngineMappingTests: XCTestCase {
     ///      all 14 cases
     ///
     func testEverySignInStepMapsCaseForCase() {
-        let rows: [(EngineSignInStep, AuthClientSignInStep)] = [
+        let rows: [(EngineSignInStep, AmplifyCognitoClientSignInStep)] = [
             (.confirmSignInWithSMSMFACode(Self.details, Self.info), .confirmSignInWithSMSMFACode(Self.clientDetails, Self.info)),
             (.confirmSignInWithSMSMFACode(Self.details, nil), .confirmSignInWithSMSMFACode(Self.clientDetails, nil)),
             (.confirmSignInWithCustomChallenge(Self.info), .confirmSignInWithCustomChallenge(Self.info)),
@@ -54,7 +54,7 @@ final class EngineMappingTests: XCTestCase {
             (.confirmSignInWithTOTPCode, .confirmSignInWithTOTPCode),
             (
                 .continueSignInWithTOTPSetup(EngineTOTPSetupDetails(sharedSecret: "secret", username: "alice")),
-                .continueSignInWithTOTPSetup(AuthClientTOTPSetupDetails(sharedSecret: "secret", username: "alice"))
+                .continueSignInWithTOTPSetup(AmplifyCognitoClientTOTPSetupDetails(sharedSecret: "secret", username: "alice"))
             ),
             (.continueSignInWithMFASelection([.sms, .totp, .email]), .continueSignInWithMFASelection([.sms, .totp, .email])),
             (.continueSignInWithEmailMFASetup, .continueSignInWithEmailMFASetup),
@@ -71,7 +71,7 @@ final class EngineMappingTests: XCTestCase {
         ]
 
         for (engine, client) in rows {
-            XCTAssertEqual(AuthClientSignInStep(engine), client, "\(engine)")
+            XCTAssertEqual(AmplifyCognitoClientSignInStep(engine), client, "\(engine)")
             XCTAssertEqual(Self.signInStepCaseIndex(engine), Self.signInStepCaseIndex(client), "\(engine)")
         }
         XCTAssertEqual(Set(rows.map { Self.signInStepCaseIndex($0.0) }), Set(0 ... Self.lastSignInStepCaseIndex))
@@ -91,7 +91,7 @@ final class EngineMappingTests: XCTestCase {
             throw XCTSkip("WebAuthn is not available on this OS version")
         }
         XCTAssertEqual(
-            AuthClientSignInStep(.continueSignInWithFirstFactorSelection([.webAuthn, .password])),
+            AmplifyCognitoClientSignInStep(.continueSignInWithFirstFactorSelection([.webAuthn, .password])),
             .continueSignInWithFirstFactorSelection([.webAuthn, .password])
         )
         #else
@@ -112,13 +112,13 @@ final class EngineMappingTests: XCTestCase {
     ///    - the client case's `challengeResponse` is the engine's, which the engine answers selections with
     ///
     func testMFATypesMapCaseToCaseNotByRawValue() {
-        let rows: [(EngineMFAType, AuthClientMFAType, String)] = [
+        let rows: [(EngineMFAType, AmplifyCognitoClientMFAType, String)] = [
             (.sms, .sms, "SMS_MFA"),
             (.totp, .totp, "SOFTWARE_TOKEN_MFA"),
             (.email, .email, "EMAIL_OTP")
         ]
         for (engine, client, cognitoName) in rows {
-            XCTAssertEqual(AuthClientMFAType(engine), client)
+            XCTAssertEqual(AmplifyCognitoClientMFAType(engine), client)
             XCTAssertEqual(engine.rawValue, cognitoName)
             XCTAssertNotEqual(engine.rawValue, client.rawValue)
             XCTAssertEqual(client.challengeResponse, engine.challengeResponse)
@@ -135,7 +135,7 @@ final class EngineMappingTests: XCTestCase {
     ///    - both directions pair the same names, and the round trip is the identity
     ///
     func testFactorTypesMapCaseToCaseBothWays() {
-        var rows: [(EngineAuthFactorType, AuthClientFactorType)] = [
+        var rows: [(EngineAuthFactorType, AmplifyCognitoClientFactorType)] = [
             (.password, .password), (.passwordSRP, .passwordSRP), (.smsOTP, .smsOTP), (.emailOTP, .emailOTP)
         ]
         // WebAuthn, the last index where the platform has it, is only a value where the OS has it too.
@@ -148,9 +148,9 @@ final class EngineMappingTests: XCTestCase {
         }
         #endif
         for (engine, client) in rows {
-            XCTAssertEqual(AuthClientFactorType(engine), client)
+            XCTAssertEqual(AmplifyCognitoClientFactorType(engine), client)
             XCTAssertEqual(EngineAuthFactorType(client), engine)
-            XCTAssertEqual(AuthClientFactorType(EngineAuthFactorType(client)), client)
+            XCTAssertEqual(AmplifyCognitoClientFactorType(EngineAuthFactorType(client)), client)
             XCTAssertNotEqual(engine.rawValue, client.rawValue)
         }
         XCTAssertEqual(Set(rows.map { Self.factorCaseIndex($0.0) }), Set(0 ... lastAvailable))
@@ -169,7 +169,7 @@ final class EngineMappingTests: XCTestCase {
     ///      `testWebAuthnWithoutAPresentationAnchorIsRefused`)
     ///
     func testFactorChallengeResponsesAreCognitosNamesAndPassTheSelectionCheck() throws {
-        var factors: [AuthClientFactorType] = [.password, .passwordSRP, .smsOTP, .emailOTP]
+        var factors: [AmplifyCognitoClientFactorType] = [.password, .passwordSRP, .smsOTP, .emailOTP]
         #if os(iOS) || os(macOS) || os(visionOS)
         if #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) {
             factors.append(.webAuthn)
@@ -179,7 +179,7 @@ final class EngineMappingTests: XCTestCase {
             factors.prefix(4).map(\.challengeResponse),
             ["PASSWORD", "PASSWORD_SRP", "SMS_OTP", "EMAIL_OTP"]
         )
-        let selection = AuthClientSignInStep.continueSignInWithFirstFactorSelection(Set(factors))
+        let selection = AmplifyCognitoClientSignInStep.continueSignInWithFirstFactorSelection(Set(factors))
         for factor in factors {
             let engine = EngineAuthFactorType(factor)
             XCTAssertEqual(factor.challengeResponse, engine.challengeResponse)
@@ -198,7 +198,7 @@ final class EngineMappingTests: XCTestCase {
     ///    - it is the engine flow of the same name, with the factor mapped; `custom` is never produced
     ///
     func testAuthFlowTypesMapToTheEngine() {
-        let rows: [(AuthClientAuthFlowType, EngineAuthFlowType)] = [
+        let rows: [(AmplifyCognitoClientAuthFlowType, EngineAuthFlowType)] = [
             (.userSRP, .userSRP),
             (.customWithSRP, .customWithSRP),
             (.customWithoutSRP, .customWithoutSRP),
@@ -224,14 +224,14 @@ final class EngineMappingTests: XCTestCase {
     ///    - it is the client case of the same name, with the same value
     ///
     func testDeliveryDestinationsMapCaseToCase() {
-        let rows: [(EngineDeliveryDestination, AuthClientDeliveryDestination)] = [
+        let rows: [(EngineDeliveryDestination, AmplifyCognitoClientDeliveryDestination)] = [
             (.email("a***@example.com"), .email("a***@example.com")),
             (.phone(nil), .phone(nil)),
             (.sms("+1***"), .sms("+1***")),
             (.unknown("x"), .unknown("x"))
         ]
         for (engine, client) in rows {
-            XCTAssertEqual(AuthClientDeliveryDestination(engine), client)
+            XCTAssertEqual(AmplifyCognitoClientDeliveryDestination(engine), client)
         }
         XCTAssertEqual(Set(rows.map { Self.destinationCaseIndex($0.0) }), Set(0 ... Self.lastDestinationCaseIndex))
     }
@@ -247,21 +247,21 @@ final class EngineMappingTests: XCTestCase {
     ///      `AuthUserAttributeKey(rawValue:)` reads them
     ///
     func testDeliveryDetailsAttributeUsesTheCognitoNameTable() {
-        for key in AuthClientUserAttributeKey.standardKeys {
+        for key in AmplifyCognitoClientUserAttributeKey.standardKeys {
             let details = EngineCodeDeliveryDetails(destination: .email(nil), attributeKey: key.cognitoName)
-            XCTAssertEqual(AuthClientCodeDeliveryDetails(details).attributeKey, key, key.cognitoName)
+            XCTAssertEqual(AmplifyCognitoClientCodeDeliveryDetails(details).attributeKey, key, key.cognitoName)
         }
         // Compiler-checked, not a count: `standardKeyCaseIndex` switches over every case
         // with no `default:`, so a new key fails to compile until it has an index, and the list must hold
         // every index, in order, exactly once.
         XCTAssertEqual(
-            AuthClientUserAttributeKey.standardKeys.map(Self.standardKeyCaseIndex),
+            AmplifyCognitoClientUserAttributeKey.standardKeys.map(Self.standardKeyCaseIndex),
             Array(0 ... Self.lastStandardKeyCaseIndex)
         )
-        for key in AuthClientUserAttributeKey.standardKeys {
-            XCTAssertEqual(AuthClientUserAttributeKey(cognitoName: key.cognitoName), key, key.cognitoName)
+        for key in AmplifyCognitoClientUserAttributeKey.standardKeys {
+            XCTAssertEqual(AmplifyCognitoClientUserAttributeKey(cognitoName: key.cognitoName), key, key.cognitoName)
         }
-        let rows: [(String?, AuthClientUserAttributeKey?)] = [
+        let rows: [(String?, AmplifyCognitoClientUserAttributeKey?)] = [
             ("custom:team", .custom("team")),
             ("custom:", .custom("")),
             ("dev:custom:team", .unknown("dev:custom:team")),
@@ -270,7 +270,7 @@ final class EngineMappingTests: XCTestCase {
         ]
         for (name, key) in rows {
             let details = EngineCodeDeliveryDetails(destination: .email("e"), attributeKey: name)
-            XCTAssertEqual(AuthClientCodeDeliveryDetails(details), AuthClientCodeDeliveryDetails(destination: .email("e"), attributeKey: key))
+            XCTAssertEqual(AmplifyCognitoClientCodeDeliveryDetails(details), AmplifyCognitoClientCodeDeliveryDetails(destination: .email("e"), attributeKey: key))
         }
     }
 
@@ -284,7 +284,7 @@ final class EngineMappingTests: XCTestCase {
     ///
     func testTokensAndCredentialsCopyTheirFields() {
         let tokens = EngineUserPoolTokens(idToken: "id", accessToken: "access", refreshToken: "refresh", expiration: Date())
-        XCTAssertEqual(AuthClientUserPoolTokens(tokens), AuthClientUserPoolTokens(idToken: "id", accessToken: "access", refreshToken: "refresh"))
+        XCTAssertEqual(AmplifyCognitoClientUserPoolTokens(tokens), AmplifyCognitoClientUserPoolTokens(idToken: "id", accessToken: "access", refreshToken: "refresh"))
 
         let expiration = Date(timeIntervalSince1970: 1_800_000_000)
         let credentials = EngineAWSCredentials(accessKeyId: "a", secretAccessKey: "s", sessionToken: "t", expiration: expiration)
@@ -305,8 +305,8 @@ final class EngineMappingTests: XCTestCase {
     ///    - it is the client code of the same name, at the same position of `allCases`; there are 34
     ///
     func testServiceErrorCodesMapCaseForCase() {
-        let mapped = EngineServiceErrorCode.allCases.map(AuthClientServiceErrorCode.init)
-        XCTAssertEqual(mapped, AuthClientServiceErrorCode.allCases)
+        let mapped = EngineServiceErrorCode.allCases.map(AmplifyCognitoClientServiceErrorCode.init)
+        XCTAssertEqual(mapped, AmplifyCognitoClientServiceErrorCode.allCases)
         XCTAssertEqual(mapped.count, 34)
         for (engine, client) in zip(EngineServiceErrorCode.allCases, mapped) {
             XCTAssertEqual(String(describing: engine), String(describing: client))
@@ -325,7 +325,7 @@ final class EngineMappingTests: XCTestCase {
     ///
     func testEveryEngineErrorMapsToItsClientCase() throws {
         let underlying = EngineServiceErrorCode.codeMismatch
-        let rows: [(EngineAuthError, AuthClientError.Kind)] = [
+        let rows: [(EngineAuthError, AmplifyCognitoClientError.Kind)] = [
             (.configuration("d", "s", underlying), .configuration),
             (.service("d", "s", underlying), .service(.codeMismatch)),
             (.unknown("d", underlying), .unknown),
@@ -336,7 +336,7 @@ final class EngineMappingTests: XCTestCase {
             (.sessionExpired("d", "s", underlying), .sessionExpired)
         ]
         for (engine, kind) in rows {
-            let client = AuthClientError(engine: engine)
+            let client = AmplifyCognitoClientError(engine: engine)
             XCTAssertEqual(client.kind, kind, "\(engine)")
             XCTAssertEqual(client.errorDescription, engine.errorDescription, "\(engine)")
             XCTAssertEqual(client.recoverySuggestion, engine.recoverySuggestion, "\(engine)")
@@ -346,7 +346,7 @@ final class EngineMappingTests: XCTestCase {
             XCTAssertEqual(underlying.errorDescription, engine.errorDescription, "\(engine)")
         }
         XCTAssertEqual(Set(rows.map { Self.errorCaseIndex($0.0) }), Set(0 ... Self.lastErrorCaseIndex))
-        XCTAssertEqual(AuthClientError(engine: .unknown("boom")).errorDescription, "Unexpected error occurred with message: boom")
+        XCTAssertEqual(AmplifyCognitoClientError(engine: .unknown("boom")).errorDescription, "Unexpected error occurred with message: boom")
     }
 
     /// Test that a service error keeps its code only when the engine put one underneath
@@ -359,13 +359,13 @@ final class EngineMappingTests: XCTestCase {
     ///
     func testServiceErrorsCarryTheirCode() {
         for code in EngineServiceErrorCode.allCases where code != .userCancelled {
-            guard case .service(let mapped, _, _, _) = AuthClientError(engine: .service("d", "s", code)) else {
+            guard case .service(let mapped, _, _, _) = AmplifyCognitoClientError(engine: .service("d", "s", code)) else {
                 return XCTFail("\(code) is not a service error")
             }
-            XCTAssertEqual(mapped, AuthClientServiceErrorCode(code))
+            XCTAssertEqual(mapped, AmplifyCognitoClientServiceErrorCode(code))
         }
         for underlying in [URLError(.notConnectedToInternet) as Error?, nil] {
-            guard case .service(let mapped, _, _, _) = AuthClientError(engine: .service("d", "s", underlying)) else {
+            guard case .service(let mapped, _, _, _) = AmplifyCognitoClientError(engine: .service("d", "s", underlying)) else {
                 return XCTFail("not a service error")
             }
             XCTAssertNil(mapped)
@@ -388,28 +388,28 @@ final class EngineMappingTests: XCTestCase {
     ///
     func testUnhelpfulEngineRecoverySuggestionsAreReplaced() {
         let reportBug = EngineErrorMessages.reportBugToAWS(function: "authError")
-        XCTAssertTrue(reportBug.hasPrefix(AuthClientError.reportBugPrefix), "the engine's text changed: \(reportBug)")
+        XCTAssertTrue(reportBug.hasPrefix(AmplifyCognitoClientError.reportBugPrefix), "the engine's text changed: \(reportBug)")
 
         for suggestion in [reportBug, ""] {
-            let mapped = AuthClientError(engine: .service("Service error occurred", suggestion, FixtureError(description: "x")))
+            let mapped = AmplifyCognitoClientError(engine: .service("Service error occurred", suggestion, FixtureError(description: "x")))
             XCTAssertEqual(mapped.kind, .service(nil))
             XCTAssertEqual(mapped.errorDescription, "Service error occurred")
-            XCTAssertEqual(mapped.recoverySuggestion, AuthClientError.clientServiceSuggestion)
+            XCTAssertEqual(mapped.recoverySuggestion, AmplifyCognitoClientError.clientServiceSuggestion)
             XCTAssertFalse(mapped.recoverySuggestion.contains("bug"), mapped.recoverySuggestion)
         }
-        let coded = AuthClientError(engine: .service("d", reportBug, EngineServiceErrorCode.limitExceeded))
+        let coded = AmplifyCognitoClientError(engine: .service("d", reportBug, EngineServiceErrorCode.limitExceeded))
         XCTAssertEqual(coded.recoverySuggestion, reportBug)
-        let own = AuthClientError(engine: .service("d", "Wait, then retry.", nil))
+        let own = AmplifyCognitoClientError(engine: .service("d", "Wait, then retry.", nil))
         XCTAssertEqual(own.recoverySuggestion, "Wait, then retry.")
         // Nothing underneath: the engine's own state, as `FetchSessionError.noCredentialsToRefresh`. Not a network error.
-        let noCredentials = AuthClientError(engine: .service("No credentials found to refresh", reportBug, nil))
+        let noCredentials = AmplifyCognitoClientError(engine: .service("No credentials found to refresh", reportBug, nil))
         XCTAssertEqual(noCredentials.recoverySuggestion, reportBug)
 
-        let emptyConfiguration = AuthClientError(engine: .configuration("UserPool configuration is missing", ""))
+        let emptyConfiguration = AmplifyCognitoClientError(engine: .configuration("UserPool configuration is missing", ""))
         XCTAssertEqual(emptyConfiguration.kind, .configuration)
-        XCTAssertEqual(emptyConfiguration.recoverySuggestion, AuthClientError.clientConfigurationSuggestion)
+        XCTAssertEqual(emptyConfiguration.recoverySuggestion, AmplifyCognitoClientError.clientConfigurationSuggestion)
         XCTAssertFalse(emptyConfiguration.recoverySuggestion.isEmpty)
-        let configuration = AuthClientError(engine: .configuration("d", "Add a user pool."))
+        let configuration = AmplifyCognitoClientError(engine: .configuration("d", "Add a user pool."))
         XCTAssertEqual(configuration.recoverySuggestion, "Add a user pool.")
     }
 
@@ -449,10 +449,10 @@ final class EngineMappingTests: XCTestCase {
         ]
         for failure in network {
             for engine in [EngineAuthError.unknown("", failure), .service("", "", failure), .service("Service error occurred", "", failure)] {
-                let mapped = AuthClientError(engine: engine)
+                let mapped = AmplifyCognitoClientError(engine: engine)
                 XCTAssertEqual(mapped.kind, .service(nil), "\(engine)")
-                XCTAssertEqual(mapped.errorDescription, AuthClientError.networkFailureDescription, "\(engine)")
-                XCTAssertEqual(mapped.recoverySuggestion, AuthClientError.clientServiceSuggestion, "\(engine)")
+                XCTAssertEqual(mapped.errorDescription, AmplifyCognitoClientError.networkFailureDescription, "\(engine)")
+                XCTAssertEqual(mapped.recoverySuggestion, AmplifyCognitoClientError.clientServiceSuggestion, "\(engine)")
                 // The network error itself, not the engine's error over it.
                 let underlying = mapped.underlyingError as NSError?
                 XCTAssertEqual(underlying?.domain, (failure as NSError).domain, "\(engine)")
@@ -473,22 +473,22 @@ final class EngineMappingTests: XCTestCase {
         ]
         for failure in notNetwork {
             for engine in [EngineAuthError.unknown("", failure), .service("Service error occurred", "", failure)] {
-                XCTAssertNotEqual(AuthClientError(engine: engine).errorDescription, AuthClientError.networkFailureDescription, "\(engine)")
+                XCTAssertNotEqual(AmplifyCognitoClientError(engine: engine).errorDescription, AmplifyCognitoClientError.networkFailureDescription, "\(engine)")
             }
         }
         // Neither is a transport failure either (`testATransportFailureIsAReadableServiceError` has the others).
         for failure in [URLError(.cancelled) as Error, NSError(domain: NSPOSIXErrorDomain, code: Int(ENOENT))] {
-            let service = AuthClientError(engine: .service("Service error occurred", "", failure))
+            let service = AmplifyCognitoClientError(engine: .service("Service error occurred", "", failure))
             XCTAssertEqual(service.errorDescription, "Service error occurred", "\(failure)")
         }
-        XCTAssertEqual(AuthClientError(engine: .unknown("d", EngineServiceErrorCode.codeMismatch)).kind, .unknown)
+        XCTAssertEqual(AmplifyCognitoClientError(engine: .unknown("d", EngineServiceErrorCode.codeMismatch)).kind, .unknown)
 
-        let placeholder = AuthClientError(engine: .service("", "", nil))
+        let placeholder = AmplifyCognitoClientError(engine: .service("", "", nil))
         XCTAssertEqual(placeholder.errorDescription, "")
         XCTAssertEqual(placeholder.recoverySuggestion, "")
-        let emptyOther = AuthClientError(engine: .service("", "", FixtureError(description: "x")))
-        XCTAssertEqual(emptyOther.errorDescription, AuthClientError.emptyServiceFailureDescription)
-        XCTAssertEqual(emptyOther.recoverySuggestion, AuthClientError.clientServiceSuggestion)
+        let emptyOther = AmplifyCognitoClientError(engine: .service("", "", FixtureError(description: "x")))
+        XCTAssertEqual(emptyOther.errorDescription, AmplifyCognitoClientError.emptyServiceFailureDescription)
+        XCTAssertEqual(emptyOther.recoverySuggestion, AmplifyCognitoClientError.clientServiceSuggestion)
     }
 
     /// A Cognito failure the engine reports as `.unknown` is `.service` with no code, with a recovery suggestion that
@@ -511,8 +511,8 @@ final class EngineMappingTests: XCTestCase {
         let fault = "The service could not complete the request, usually a temporary problem at the service. Retry the operation."
         let refusal = "The service refused the request with an error this client does not recognise. The description has the "
             + "service's status and message: check the request against it before retrying."
-        XCTAssertEqual(AuthClientError.serviceFaultSuggestion, fault)
-        XCTAssertEqual(AuthClientError.unrecognisedServiceErrorSuggestion, refusal)
+        XCTAssertEqual(AmplifyCognitoClientError.serviceFaultSuggestion, fault)
+        XCTAssertEqual(AmplifyCognitoClientError.unrecognisedServiceErrorSuggestion, refusal)
 
         let statuses: [(HTTPStatusCode, String)] = [
             (.internalServerError, fault), (.serviceUnavailable, fault), (.badRequest, refusal), (.notFound, refusal)
@@ -526,7 +526,7 @@ final class EngineMappingTests: XCTestCase {
                 typeName: nil
             )
             let engine = unmodelled.engineError
-            let mapped = AuthClientError(engine: engine)
+            let mapped = AmplifyCognitoClientError(engine: engine)
             XCTAssertEqual(mapped.kind, .service(nil), "\(status)")
             XCTAssertEqual(mapped.errorDescription, engine.errorDescription, "\(status)")
             XCTAssertTrue(mapped.errorDescription.contains("\(status.rawValue)"), mapped.errorDescription)
@@ -560,25 +560,25 @@ final class EngineMappingTests: XCTestCase {
             guard case .unknown(_, nil) = engine else {
                 return XCTFail("\(name): the engine's mapping changed: \(engine)")
             }
-            let mapped = AuthClientError(engineFailure: failure)
+            let mapped = AmplifyCognitoClientError(engineFailure: failure)
             XCTAssertEqual(mapped.kind, .service(nil), name)
             XCTAssertEqual(mapped.errorDescription, "Unexpected error occurred with message: boom", name)
             XCTAssertEqual(mapped.recoverySuggestion, fault, name)
             XCTAssertNotNil(mapped.underlyingError as? EngineAuthError, name)
             // The confirm path's mapping keeps the cause too.
-            let confirming = AuthClientError(engineConfirmingSignIn: engine, rejectedByUserPool: false, cause: failure as? Error)
+            let confirming = AmplifyCognitoClientError(engineConfirmingSignIn: engine, rejectedByUserPool: false, cause: failure as? Error)
             XCTAssertEqual(confirming.kind, .service(nil), name)
             XCTAssertEqual(confirming.recoverySuggestion, fault, name)
         }
 
         let engineText = EngineAuthError.unknown("boom").recoverySuggestion
         XCTAssertTrue(engineText.contains("file an issue"), engineText)
-        let others: [(String, AuthClientError)] = [
-            ("no cause", AuthClientError(engine: .unknown("boom"))),
-            ("not a service error", AuthClientError(engine: .unknown("boom"), cause: SignInError.unknown(message: "boom"))),
+        let others: [(String, AmplifyCognitoClientError)] = [
+            ("no cause", AmplifyCognitoClientError(engine: .unknown("boom"))),
+            ("not a service error", AmplifyCognitoClientError(engine: .unknown("boom"), cause: SignInError.unknown(message: "boom"))),
             (
                 "another exception",
-                AuthClientError(engine: .unknown("boom"), cause: AWSCognitoIdentityProvider.InvalidParameterException(message: "boom"))
+                AmplifyCognitoClientError(engine: .unknown("boom"), cause: AWSCognitoIdentityProvider.InvalidParameterException(message: "boom"))
             )
         ]
         for (name, mapped) in others {
@@ -617,13 +617,13 @@ final class EngineMappingTests: XCTestCase {
             URLError(.userAuthenticationRequired),
             URLError(.badURL)
         ]
-        let rows = unreadable.map { ($0, AuthClientError.unreadableResponseDescription, AuthClientError.unreadableServiceResponseSuggestion) }
-            + otherURLFailures.map { ($0, AuthClientError.emptyServiceFailureDescription, AuthClientError.clientServiceSuggestion) }
-        XCTAssertEqual(AuthClientError.unreadableResponseDescription, "The service returned a response that could not be read.")
-        XCTAssertEqual(AuthClientError.emptyServiceFailureDescription, "The service request failed.")
+        let rows = unreadable.map { ($0, AmplifyCognitoClientError.unreadableResponseDescription, AmplifyCognitoClientError.unreadableServiceResponseSuggestion) }
+            + otherURLFailures.map { ($0, AmplifyCognitoClientError.emptyServiceFailureDescription, AmplifyCognitoClientError.clientServiceSuggestion) }
+        XCTAssertEqual(AmplifyCognitoClientError.unreadableResponseDescription, "The service returned a response that could not be read.")
+        XCTAssertEqual(AmplifyCognitoClientError.emptyServiceFailureDescription, "The service request failed.")
         for (failure, description, suggestion) in rows {
             for engine in Self.transportFailureShapes(failure) {
-                let mapped = AuthClientError(engine: engine)
+                let mapped = AmplifyCognitoClientError(engine: engine)
                 XCTAssertEqual(mapped.kind, .service(nil), "\(engine)")
                 XCTAssertEqual(mapped.errorDescription, description, "\(engine)")
                 XCTAssertEqual(mapped.recoverySuggestion, suggestion, "\(engine)")
@@ -633,7 +633,7 @@ final class EngineMappingTests: XCTestCase {
             }
         }
         for failure in [URLError(.cancelled) as Error, NSError(domain: NSPOSIXErrorDomain, code: Int(ENOENT)), EngineServiceErrorCode.codeMismatch] {
-            XCTAssertEqual(AuthClientError(engine: .unknown("", failure)).kind, .unknown, "\(failure)")
+            XCTAssertEqual(AmplifyCognitoClientError(engine: .unknown("", failure)).kind, .unknown, "\(failure)")
         }
     }
 
@@ -648,10 +648,10 @@ final class EngineMappingTests: XCTestCase {
     func testANetworkFailureReadsTheSameUnderEveryEngineShape() {
         let offline = URLError(.notConnectedToInternet)
         for engine in Self.transportFailureShapes(offline) {
-            let mapped = AuthClientError(engine: engine)
+            let mapped = AmplifyCognitoClientError(engine: engine)
             XCTAssertEqual(mapped.kind, .service(nil), "\(engine)")
-            XCTAssertEqual(mapped.errorDescription, AuthClientError.networkFailureDescription, "\(engine)")
-            XCTAssertEqual(mapped.recoverySuggestion, AuthClientError.clientServiceSuggestion, "\(engine)")
+            XCTAssertEqual(mapped.errorDescription, AmplifyCognitoClientError.networkFailureDescription, "\(engine)")
+            XCTAssertEqual(mapped.recoverySuggestion, AmplifyCognitoClientError.clientServiceSuggestion, "\(engine)")
             XCTAssertEqual((mapped.underlyingError as? URLError)?.code, .notConnectedToInternet, "\(engine)")
         }
     }
@@ -670,11 +670,11 @@ final class EngineMappingTests: XCTestCase {
         let engine = WebAuthnError.unknown(message: "Unable to list WebAuthn credentials", error: FixtureError(description: "x")).engineError
         XCTAssertTrue(engine.recoverySuggestion.hasPrefix("This should not happen."), "the engine's text changed: \(engine.recoverySuggestion)")
 
-        let mapped = AuthClientError(engine: engine)
+        let mapped = AmplifyCognitoClientError(engine: engine)
 
         XCTAssertEqual(mapped.kind, .service(nil))
         XCTAssertEqual(mapped.errorDescription, engine.errorDescription)
-        XCTAssertEqual(mapped.recoverySuggestion, AuthClientError.clientServiceSuggestion)
+        XCTAssertEqual(mapped.recoverySuggestion, AmplifyCognitoClientError.clientServiceSuggestion)
         XCTAssertNotNil(mapped.underlyingError as? EngineAuthError)
         #else
         throw XCTSkip("WebAuthn is not available on this platform")
@@ -710,7 +710,7 @@ final class EngineMappingTests: XCTestCase {
     func testRecoverySuggestionsNamingThePluginsCallsNameTheClients() throws {
         let sessionExpired = AuthorizationError.sessionExpired(error: FixtureError(description: "expired")).engineError
         XCTAssertEqual(sessionExpired.recoverySuggestion, "Invoke Auth.signIn to re-authenticate the user")
-        let mapped = AuthClientError(engine: sessionExpired)
+        let mapped = AmplifyCognitoClientError(engine: sessionExpired)
         XCTAssertEqual(mapped.kind, .sessionExpired)
         XCTAssertEqual(mapped.errorDescription, "Session expired")
         XCTAssertEqual(mapped.recoverySuggestion, "Call signIn to sign the user in again.")
@@ -737,16 +737,16 @@ final class EngineMappingTests: XCTestCase {
                 .sessionExpired(constant.errorDescription, constant.recoverySuggestion),
                 .invalidState(constant.errorDescription, constant.recoverySuggestion)
             ] {
-                let client = AuthClientError(engine: engine)
+                let client = AmplifyCognitoClientError(engine: engine)
                 XCTAssertEqual(client.errorDescription, constant.errorDescription, "\(engine)")
                 XCTAssertEqual(client.recoverySuggestion, clientText, "\(engine)")
             }
         }
         XCTAssertEqual(
-            Set(AuthClientError.clientRecoverySuggestions.keys),
+            Set(AmplifyCognitoClientError.clientRecoverySuggestions.keys),
             Set(rows.map(\.1) + [AuthPluginErrorConstants.configurationError])
         )
-        for text in AuthClientError.clientRecoverySuggestions.values {
+        for text in AmplifyCognitoClientError.clientRecoverySuggestions.values {
             XCTAssertFalse(text.contains("Auth."), text)
             XCTAssertFalse(text.contains("Amplify."), text)
             XCTAssertFalse(text.contains("plugin"), text)
@@ -779,7 +779,7 @@ final class EngineMappingTests: XCTestCase {
             let engine = failure.engineError
             XCTAssertEqual(engine.recoverySuggestion, AuthPluginErrorConstants.configurationError, description)
 
-            let mapped = AuthClientError(engineFailure: failure)
+            let mapped = AmplifyCognitoClientError(engineFailure: failure)
 
             XCTAssertEqual(mapped.kind, .configuration, description)
             XCTAssertEqual(mapped.errorDescription, description)
@@ -795,24 +795,24 @@ final class EngineMappingTests: XCTestCase {
     /// - When:
     ///    - it is mapped
     /// - Then:
-    ///    - the engine's description is unchanged; the client's names `AuthClientMFAType.<type>` for each type, and
+    ///    - the engine's description is unchanged; the client's names `AmplifyCognitoClientMFAType.<type>` for each type, and
     ///      is otherwise the engine's text; a text naming no MFA type is unchanged
     ///
     func testTextsNamingThePluginsMFATypeNameTheClients() {
         let message = "Cannot initiate MFA setup from available Types: [Amplify.MFAType.sms, Amplify.MFAType.totp]"
         let engine = SignInError.invalidServiceResponse(message: message).engineError
         XCTAssertEqual(engine.errorDescription, message)
-        let mapped = AuthClientError(engine: engine)
+        let mapped = AmplifyCognitoClientError(engine: engine)
         XCTAssertEqual(mapped.kind, .service(nil))
         XCTAssertEqual(
             mapped.errorDescription,
-            "Cannot initiate MFA setup from available Types: [AuthClientMFAType.sms, AuthClientMFAType.totp]"
+            "Cannot initiate MFA setup from available Types: [AmplifyCognitoClientMFAType.sms, AmplifyCognitoClientMFAType.totp]"
         )
         XCTAssertEqual(
-            AuthClientError(engine: .unknown("[Amplify.MFAType.email]")).errorDescription,
-            "Unexpected error occurred with message: [AuthClientMFAType.email]"
+            AmplifyCognitoClientError(engine: .unknown("[Amplify.MFAType.email]")).errorDescription,
+            "Unexpected error occurred with message: [AmplifyCognitoClientMFAType.email]"
         )
-        XCTAssertEqual(AuthClientError(engine: .service("Service error occurred", "Retry.")).errorDescription, "Service error occurred")
+        XCTAssertEqual(AmplifyCognitoClientError(engine: .service("Service error occurred", "Retry.")).errorDescription, "Service error occurred")
     }
 
     /// Test that a service response that could not be read is a temporary service problem, not a bug to report
@@ -832,26 +832,26 @@ final class EngineMappingTests: XCTestCase {
         ])
         let decoding = DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "not JSON"))
         for underlying in [notJSON as Error] {
-            let mapped = AuthClientError(engine: .service("Service error occurred", "Report a bug.", underlying))
+            let mapped = AmplifyCognitoClientError(engine: .service("Service error occurred", "Report a bug.", underlying))
             guard case .service(let code, let description, let suggestion, let error) = mapped else {
                 return XCTFail("not a service error: \(mapped)")
             }
             XCTAssertNil(code)
-            XCTAssertEqual(description, AuthClientError.unreadableResponseDescription)
-            XCTAssertEqual(suggestion, AuthClientError.unreadableServiceResponseSuggestion)
+            XCTAssertEqual(description, AmplifyCognitoClientError.unreadableResponseDescription)
+            XCTAssertEqual(suggestion, AmplifyCognitoClientError.unreadableServiceResponseSuggestion)
             XCTAssertNotNil(error as? EngineAuthError)
         }
         let other = NSError(domain: NSCocoaErrorDomain, code: NSFileReadNoSuchFileError)
         for contrast in [decoding as Error, other] {
-            let mapped = AuthClientError(engine: .service("d", "Report a bug.", contrast))
+            let mapped = AmplifyCognitoClientError(engine: .service("d", "Report a bug.", contrast))
             XCTAssertEqual(mapped.recoverySuggestion, "Report a bug.", "\(contrast)")
         }
         // The engine's own "report a bug" text stays for a response that does not fit the model: likely a client bug.
         let reportBug = EngineErrorMessages.reportBugToAWS(function: "authError")
-        XCTAssertEqual(AuthClientError(engine: .service("d", reportBug, decoding)).recoverySuggestion, reportBug)
+        XCTAssertEqual(AmplifyCognitoClientError(engine: .service("d", reportBug, decoding)).recoverySuggestion, reportBug)
         XCTAssertEqual(
-            AuthClientError(engine: .service("d", reportBug, notJSON)).recoverySuggestion,
-            AuthClientError.unreadableServiceResponseSuggestion
+            AmplifyCognitoClientError(engine: .service("d", reportBug, notJSON)).recoverySuggestion,
+            AmplifyCognitoClientError.unreadableServiceResponseSuggestion
         )
     }
 
@@ -866,9 +866,9 @@ final class EngineMappingTests: XCTestCase {
     func testUserCancelledIsNeverAServiceError() {
         let engine = EngineAuthError.service("cancelled", "retry", EngineServiceErrorCode.userCancelled)
         for error in [
-            AuthClientError(engine: engine),
-            AuthClientError(engineConfirmingSignIn: engine, rejectedByUserPool: true),
-            AuthClientError(engineConfirmingSignIn: engine, rejectedByUserPool: false)
+            AmplifyCognitoClientError(engine: engine),
+            AmplifyCognitoClientError(engineConfirmingSignIn: engine, rejectedByUserPool: true),
+            AmplifyCognitoClientError(engineConfirmingSignIn: engine, rejectedByUserPool: false)
         ] {
             guard case .userCancelled(let description, let suggestion, let underlying) = error else {
                 return XCTFail("\(error)")
@@ -895,7 +895,7 @@ final class EngineMappingTests: XCTestCase {
     ///
     func testWebAuthnCeremonyFailuresAreNeverServiceErrors() throws {
         let alreadyExists = try XCTUnwrap(ASAuthorizationError.Code(rawValue: 1_006))
-        let cases: [(WebAuthnError, AuthClientError.Kind)] = [
+        let cases: [(WebAuthnError, AmplifyCognitoClientError.Kind)] = [
             (.creationFailed(error: ASAuthorizationError(.canceled)), .userCancelled),
             (.assertionFailed(error: ASAuthorizationError(.canceled)), .userCancelled),
             (.creationFailed(error: ASAuthorizationError(alreadyExists)), .webAuthnCeremonyFailed(.credentialAlreadyExists)),
@@ -911,8 +911,8 @@ final class EngineMappingTests: XCTestCase {
         for (webAuthnError, kind) in cases {
             let engine = webAuthnError.engineError
             for error in [
-                AuthClientError(engine: engine),
-                AuthClientError(engineConfirmingSignIn: engine, rejectedByUserPool: false)
+                AmplifyCognitoClientError(engine: engine),
+                AmplifyCognitoClientError(engineConfirmingSignIn: engine, rejectedByUserPool: false)
             ] {
                 XCTAssertEqual(error.kind, kind, "\(webAuthnError)")
                 XCTAssertEqual(error.errorDescription, engine.errorDescription)
@@ -930,7 +930,7 @@ final class EngineMappingTests: XCTestCase {
     /// Test that a client error the engine hands back (a runner's own, such as the sheet lease's refusal) is
     /// itself, never wrapped in `.service`
     ///
-    /// - Given: the engine's service error with an `AuthClientError.browserBusy(holder:)` underneath, as the
+    /// - Given: the engine's service error with an `AmplifyCognitoClientError.browserBusy(holder:)` underneath, as the
     ///   engine reports an error it cannot convert (`WebAuthnError.unknown`)
     /// - When:
     ///    - it is mapped
@@ -938,10 +938,10 @@ final class EngineMappingTests: XCTestCase {
     ///    - it is that `browserBusy`, holder and strings unchanged
     ///
     func testAClientErrorUnderneathIsItself() {
-        let busy = AuthClientError.browserBusy(holder: ClientFixtures.id("home"), "busy", "wait")
+        let busy = AmplifyCognitoClientError.browserBusy(holder: ClientFixtures.id("home"), "busy", "wait")
         let engine = EngineAuthError.service("An unknown error type was thrown by the service.", "file a bug", busy)
 
-        let mapped = AuthClientError(engine: engine)
+        let mapped = AmplifyCognitoClientError(engine: engine)
 
         XCTAssertTrue(mapped.isEquivalent(to: busy), "\(mapped)")
     }
@@ -959,19 +959,19 @@ final class EngineMappingTests: XCTestCase {
     func testOnlyAnExpiredChallengeSessionIsChallengeExpired() {
         for message in ["Invalid session for the user, session is expired.", "INVALID SESSION FOR THE USER, SESSION IS EXPIRED."] {
             let engine = EngineAuthError.notAuthorized(message, "s")
-            let client = AuthClientError(engineConfirmingSignIn: engine, rejectedByUserPool: true)
+            let client = AmplifyCognitoClientError(engineConfirmingSignIn: engine, rejectedByUserPool: true)
             XCTAssertEqual(client.kind, .challengeExpired)
             XCTAssertEqual(client.errorDescription, message)
             XCTAssertEqual(client.underlyingError as? EngineAuthError, engine)
         }
-        let others: [(EngineAuthError, AuthClientError.Kind)] = [
+        let others: [(EngineAuthError, AmplifyCognitoClientError.Kind)] = [
             (.notAuthorized("Incorrect username or password.", "s"), .notAuthorized),
             (.service("session is expired", "s", EngineServiceErrorCode.codeExpired), .service(.codeExpired)),
             (.sessionExpired("session is expired", "s"), .sessionExpired),
             (.invalidState("d", "s"), .invalidState)
         ]
         for (engine, kind) in others {
-            XCTAssertEqual(AuthClientError(engineConfirmingSignIn: engine, rejectedByUserPool: true).kind, kind, "\(engine)")
+            XCTAssertEqual(AmplifyCognitoClientError(engineConfirmingSignIn: engine, rejectedByUserPool: true).kind, kind, "\(engine)")
         }
     }
 
@@ -994,19 +994,19 @@ final class EngineMappingTests: XCTestCase {
         ]
         for message in dead {
             let engine = AWSCognitoIdentityProvider.NotAuthorizedException(message: message).engineError
-            XCTAssertEqual(AuthClientError(engineConfirmingSignIn: engine, rejectedByUserPool: true).kind, .challengeExpired, "\(String(describing: message))")
+            XCTAssertEqual(AmplifyCognitoClientError(engineConfirmingSignIn: engine, rejectedByUserPool: true).kind, .challengeExpired, "\(String(describing: message))")
         }
         let wrongPassword = AWSCognitoIdentityProvider.NotAuthorizedException(message: "Incorrect username or password.").engineError
-        XCTAssertEqual(AuthClientError(engineConfirmingSignIn: wrongPassword, rejectedByUserPool: true).kind, .notAuthorized)
+        XCTAssertEqual(AmplifyCognitoClientError(engineConfirmingSignIn: wrongPassword, rejectedByUserPool: true).kind, .notAuthorized)
         // The same messages without the user pool's rejection behind them (an identity pool step, say) are
         // never an expired challenge.
         for message in dead {
             let engine = AWSCognitoIdentityProvider.NotAuthorizedException(message: message).engineError
-            XCTAssertEqual(AuthClientError(engineConfirmingSignIn: engine, rejectedByUserPool: false).kind, .notAuthorized)
+            XCTAssertEqual(AmplifyCognitoClientError(engineConfirmingSignIn: engine, rejectedByUserPool: false).kind, .notAuthorized)
         }
         XCTAssertEqual(
             AWSCognitoIdentityProvider.NotAuthorizedException(message: nil).engineError.errorDescription,
-            AuthClientError.messagelessNotAuthorized
+            AmplifyCognitoClientError.messagelessNotAuthorized
         )
     }
 
@@ -1049,7 +1049,7 @@ final class EngineMappingTests: XCTestCase {
     ///      the sign-out's not-retried suggestion; its public fields keep that suggestion
     ///
     func testAnUnfinishedSignOutsErrorKeepsTheFirstFailuresMapping() {
-        let own = AuthClientError.unknown("revoke failed", "retry")
+        let own = AmplifyCognitoClientError.unknown("revoke failed", "retry")
         let timedOut = URLError(.timedOut)
         let network = EngineSignOutOutcome(
             revokeFailure: EngineRevokeTokenFailure(refreshToken: "refresh-token", error: .service("", "", timedOut), cause: timedOut),
@@ -1071,8 +1071,8 @@ final class EngineMappingTests: XCTestCase {
         merged.merge(global)
         first.merge(global)
         for outcome in [merged, first] {
-            XCTAssertEqual(outcome.firstError?.errorDescription, AuthClientError.networkFailureDescription)
-            XCTAssertEqual(outcome.firstError?.recoverySuggestion, AuthClientError.clientServiceSuggestion)
+            XCTAssertEqual(outcome.firstError?.errorDescription, AmplifyCognitoClientError.networkFailureDescription)
+            XCTAssertEqual(outcome.firstError?.recoverySuggestion, AmplifyCognitoClientError.clientServiceSuggestion)
             XCTAssertEqual(outcome.globalSignOutError?.recoverySuggestion, SignOutTexts.globalSignOutNotRetried)
         }
     }
@@ -1092,23 +1092,23 @@ final class EngineMappingTests: XCTestCase {
     ///    - the placeholder keeps its empty texts
     func testASignOutsTransportFailureSaysItIsNotRetried() {
         let rows: [(Error, String)] = [
-            (NSError(domain: NSCocoaErrorDomain, code: NSPropertyListReadCorruptError), AuthClientError.unreadableResponseDescription),
-            (URLError(.badServerResponse), AuthClientError.unreadableResponseDescription),
-            (URLError(.appTransportSecurityRequiresSecureConnection), AuthClientError.emptyServiceFailureDescription),
-            (FixtureError(description: "x"), AuthClientError.emptyServiceFailureDescription)
+            (NSError(domain: NSCocoaErrorDomain, code: NSPropertyListReadCorruptError), AmplifyCognitoClientError.unreadableResponseDescription),
+            (URLError(.badServerResponse), AmplifyCognitoClientError.unreadableResponseDescription),
+            (URLError(.appTransportSecurityRequiresSecureConnection), AmplifyCognitoClientError.emptyServiceFailureDescription),
+            (FixtureError(description: "x"), AmplifyCognitoClientError.emptyServiceFailureDescription)
         ]
         for (failure, description) in rows {
             let engine = EngineAuthError.service("", "", failure)
-            let revoke = AuthClientError.revokeFailure(engine: engine)
+            let revoke = AmplifyCognitoClientError.revokeFailure(engine: engine)
             XCTAssertEqual(revoke.kind, .service(nil), "\(failure)")
             XCTAssertEqual(revoke.errorDescription, description, "\(failure)")
             XCTAssertEqual(revoke.recoverySuggestion, SignOutTexts.revokeNotRetried, "\(failure)")
-            let global = AuthClientError.globalSignOutFailure(engine: engine)
+            let global = AmplifyCognitoClientError.globalSignOutFailure(engine: engine)
             XCTAssertEqual(global.kind, .service(nil), "\(failure)")
             XCTAssertEqual(global.errorDescription, description, "\(failure)")
             XCTAssertEqual(global.recoverySuggestion, SignOutTexts.globalSignOutNotRetried, "\(failure)")
         }
-        let placeholder = AuthClientError.revokeFailure(engine: .service("", "", nil))
+        let placeholder = AmplifyCognitoClientError.revokeFailure(engine: .service("", "", nil))
         XCTAssertEqual(placeholder.errorDescription, "")
         XCTAssertEqual(placeholder.recoverySuggestion, "")
     }
@@ -1143,9 +1143,9 @@ final class EngineMappingTests: XCTestCase {
             )
         }
         let rows: [(String, EngineAuthError, Error, String)] = [
-            ("internal error", internalError.engineError, internalError, AuthClientError.serviceFaultSuggestion),
-            ("500", unmodelled(.internalServerError).engineError, unmodelled(.internalServerError), AuthClientError.serviceFaultSuggestion),
-            ("400", unmodelled(.badRequest).engineError, unmodelled(.badRequest), AuthClientError.unrecognisedServiceErrorSuggestion)
+            ("internal error", internalError.engineError, internalError, AmplifyCognitoClientError.serviceFaultSuggestion),
+            ("500", unmodelled(.internalServerError).engineError, unmodelled(.internalServerError), AmplifyCognitoClientError.serviceFaultSuggestion),
+            ("400", unmodelled(.badRequest).engineError, unmodelled(.badRequest), AmplifyCognitoClientError.unrecognisedServiceErrorSuggestion)
         ]
         for (label, engine, cause, plainSuggestion) in rows {
             let outcome = EngineSignOutOutcome(
@@ -1166,7 +1166,7 @@ final class EngineMappingTests: XCTestCase {
             XCTAssertEqual(outcome.firstError?.recoverySuggestion, plainSuggestion, label)
         }
 
-        let causeless = AuthClientError.revokeFailure(engine: internalError.engineError)
+        let causeless = AmplifyCognitoClientError.revokeFailure(engine: internalError.engineError)
         XCTAssertEqual(causeless.kind, .unknown)
         XCTAssertEqual(causeless.recoverySuggestion, internalError.engineError.recoverySuggestion)
     }
@@ -1178,7 +1178,7 @@ final class EngineMappingTests: XCTestCase {
 
     /// Each standard key's position in declaration order; `nil` for the two keys with no fixed name. No
     /// `default:`: a new case fails to compile here.
-    private static func standardKeyCaseIndex(_ key: AuthClientUserAttributeKey) -> Int? {
+    private static func standardKeyCaseIndex(_ key: AmplifyCognitoClientUserAttributeKey) -> Int? {
         switch key {
         case .address: return 0
         case .birthDate: return 1
@@ -1235,7 +1235,7 @@ final class EngineMappingTests: XCTestCase {
         }
     }
 
-    private static func signInStepCaseIndex(_ step: AuthClientSignInStep) -> Int {
+    private static func signInStepCaseIndex(_ step: AmplifyCognitoClientSignInStep) -> Int {
         switch step {
         case .confirmSignInWithSMSMFACode: return 0
         case .confirmSignInWithCustomChallenge: return 1
@@ -1274,7 +1274,7 @@ final class EngineMappingTests: XCTestCase {
         }
     }
 
-    private static func flowCaseIndex(_ flow: AuthClientAuthFlowType) -> Int {
+    private static func flowCaseIndex(_ flow: AmplifyCognitoClientAuthFlowType) -> Int {
         switch flow {
         case .userSRP: return 0
         case .customWithSRP: return 1
@@ -1333,7 +1333,7 @@ enum SignOutOutcomeFixtures {
                     )
                 ),
                 "Unexpected error occurred with message: boom",
-                AuthClientError.serviceFaultSuggestion
+                AmplifyCognitoClientError.serviceFaultSuggestion
             ),
             (
                 "global, network",
@@ -1346,8 +1346,8 @@ enum SignOutOutcomeFixtures {
                         cause: timedOut
                     )
                 ),
-                AuthClientError.networkFailureDescription,
-                AuthClientError.clientServiceSuggestion
+                AmplifyCognitoClientError.networkFailureDescription,
+                AmplifyCognitoClientError.clientServiceSuggestion
             ),
             (
                 "revoke, network",
@@ -1360,8 +1360,8 @@ enum SignOutOutcomeFixtures {
                     ),
                     globalSignOutFailure: nil
                 ),
-                AuthClientError.networkFailureDescription,
-                AuthClientError.clientServiceSuggestion
+                AmplifyCognitoClientError.networkFailureDescription,
+                AmplifyCognitoClientError.clientServiceSuggestion
             )
         ]
     }

@@ -28,7 +28,7 @@ final class EngineResourcesTests: XCTestCase {
     }
 
     private func resources(
-        configuration: AuthClientConfiguration = ClientFixtures.configuration
+        configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration
     ) throws -> EngineResources {
         let pinpointKeychain = keychain.itemStore(service: LazyUserPoolAnalytics.pinpointContextService)
         return try EngineResources(

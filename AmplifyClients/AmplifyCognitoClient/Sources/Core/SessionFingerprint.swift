@@ -13,7 +13,7 @@ struct SessionIdentity: Sendable {
     let namespace: SessionStorageNamespace
     let fingerprint: SessionFingerprint
 
-    init(configuration: AuthClientConfiguration, options: AmplifyCognitoClient.Options) {
+    init(configuration: AmplifyCognitoClientConfiguration, options: AmplifyCognitoClient.Options) {
         self.init(
             configuration: configuration,
             accessGroup: options.accessGroup,
@@ -21,7 +21,7 @@ struct SessionIdentity: Sendable {
         )
     }
 
-    init(configuration: AuthClientConfiguration, accessGroup: String?, customizesUserPoolClient: Bool) {
+    init(configuration: AmplifyCognitoClientConfiguration, accessGroup: String?, customizesUserPoolClient: Bool) {
         self.namespace = SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: accessGroup)
         self.fingerprint = SessionFingerprint(
             configuration: configuration,
@@ -49,7 +49,7 @@ struct SessionFingerprint: Equatable, Sendable {
     let engineInput: EngineConfigurationInput
     let customizesUserPoolClient: Bool
 
-    init(configuration: AuthClientConfiguration, customizesUserPoolClient: Bool) {
+    init(configuration: AmplifyCognitoClientConfiguration, customizesUserPoolClient: Bool) {
         self.engineInput = Self.sortingScopes(configuration.engineInput)
         self.customizesUserPoolClient = customizesUserPoolClient
     }

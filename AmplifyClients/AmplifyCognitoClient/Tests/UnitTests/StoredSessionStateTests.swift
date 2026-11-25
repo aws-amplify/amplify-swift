@@ -18,8 +18,8 @@ final class StoredSessionStateTests: XCTestCase {
     private var harness: ClientHarness!
     private let work = ClientFixtures.id("work")
     private let home = ClientFixtures.id("home")
-    private let alice = AuthClientUser(username: "alice", userId: "sub-alice")
-    private let step = AuthClientSignInStep.confirmSignInWithTOTPCode
+    private let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
+    private let step = AmplifyCognitoClientSignInStep.confirmSignInWithTOTPCode
     private var pluginAccount: String { SessionRecordKey.pluginSessionAccount(in: StorageFixtures.pools) }
 
     override func setUp() {
@@ -63,8 +63,8 @@ final class StoredSessionStateTests: XCTestCase {
     ///    - the rows are `.signedIn` with their user, with the kinds they had
     ///    - each is the state its client restores to
     func testASignedInRowIsSignedInWithOrWithoutAWSCredentials() async throws {
-        let bob = AuthClientUser(username: "bob", userId: "sub-bob")
-        let carol = AuthClientUser(username: "carol", userId: "sub-carol")
+        let bob = AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")
+        let carol = AmplifyCognitoClientUser(username: "carol", userId: "sub-carol")
         let old = ClientFixtures.id("old")
         try harness.signIn(work, .signedIn("alice"))
         try harness.signIn(home, .signedIn("bob", kind: .userPoolOnly))
@@ -360,7 +360,7 @@ final class StoredSessionStateTests: XCTestCase {
         let listed = try appStore.storedSessions(includingSignedOut: true)
 
         let states = Dictionary(uniqueKeysWithValues: listed.map { ($0.sessionId.stringValue, $0.state) })
-        let user = AuthClientUser(username: "fixture-user", userId: "fixture-sub")
+        let user = AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub")
         XCTAssertEqual(states.keys.sorted(), (payloads.map(\.0) + [SessionID.default.stringValue]).sorted())
         XCTAssertEqual(states["userPoolOnly"], .signedIn(user))
         XCTAssertEqual(states["userPoolAndIdentityPool"], .signedIn(user))
@@ -405,7 +405,7 @@ final class StoredSessionStateTests: XCTestCase {
         let restored = await client.currentSessionState()
         XCTAssertEqual(restored, .signedIn(alice))
         await assertThrowsAsync({ try await client.fetchAuthSession() }) { error in
-            guard case AuthClientError.sessionExpired = error else {
+            guard case AmplifyCognitoClientError.sessionExpired = error else {
                 return XCTFail("\(error)")
             }
         }
@@ -433,7 +433,7 @@ final class StoredSessionStateTests: XCTestCase {
             }
             for includingSignedOut in [false, true] {
                 await assertThrowsAsync({ try await self.rows(includingSignedOut: includingSignedOut) }) { error in
-                    XCTAssertEqual((error as? AuthClientError)?.storageUnavailableReason, .locked, "\(failure): \(error)")
+                    XCTAssertEqual((error as? AmplifyCognitoClientError)?.storageUnavailableReason, .locked, "\(failure): \(error)")
                 }
             }
         }

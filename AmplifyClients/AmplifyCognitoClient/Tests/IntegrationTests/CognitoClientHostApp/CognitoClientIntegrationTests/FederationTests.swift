@@ -29,7 +29,7 @@ final class FederationTests: ClientIntegrationTestCase {
         do {
             _ = try await client.federateToIdentityPool(withProviderToken: "someToken", for: .facebook)
             XCTFail("federating an invalid token should fail")
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             guard case .notAuthorized = error else {
                 return XCTFail("expected notAuthorized, got \(Self.caseName(of: error))")
             }
@@ -61,7 +61,7 @@ final class FederationTests: ClientIntegrationTestCase {
         do {
             _ = try await client.federateToIdentityPool(withProviderToken: "someToken", for: .facebook)
             XCTFail("federating an invalid token should fail")
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             guard case .notAuthorized = error else {
                 return XCTFail("expected notAuthorized, got \(Self.caseName(of: error))")
             }
@@ -75,7 +75,7 @@ final class FederationTests: ClientIntegrationTestCase {
     }
 
     /// The error's case name only: a service message can name the identity pool.
-    private static func caseName(of error: AuthClientError) -> String {
+    private static func caseName(of error: AmplifyCognitoClientError) -> String {
         Mirror(reflecting: error).children.first?.label ?? "unknown"
     }
 }

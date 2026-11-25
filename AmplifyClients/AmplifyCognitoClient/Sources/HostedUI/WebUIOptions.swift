@@ -64,7 +64,7 @@ public struct WebUIOptions {
     /// the request.
     ///
     /// Ignored when `idpIdentifier` is set, which is the plugin's precedence.
-    let provider: AuthClientProvider?
+    let provider: AmplifyCognitoClientProvider?
 
     /// Identifies one of several instances of the same kind of provider, for example one of two
     /// SAML providers. When set, the hosted UI asks only for an email address instead of listing
@@ -131,11 +131,11 @@ public struct WebUIOptions {
 
     /// These options with `provider`: what `signInWithWebUI(for:presentationAnchor:options:)` signs in with. The
     /// fields are `let`, so the overload builds a new value.
-    func with(provider: AuthClientProvider) -> WebUIOptions {
+    func with(provider: AmplifyCognitoClientProvider) -> WebUIOptions {
         WebUIOptions(copying: self, provider: provider)
     }
 
-    private init(copying options: WebUIOptions, provider: AuthClientProvider) {
+    private init(copying options: WebUIOptions, provider: AmplifyCognitoClientProvider) {
         self.identityExpectation = options.identityExpectation
         self.whenBrowserBusy = options.whenBrowserBusy
         self.prefersEphemeralSession = options.prefersEphemeralSession
@@ -174,7 +174,7 @@ public extension WebUIOptions {
             self.kind = kind
         }
 
-        /// Throw `AuthClientError.browserBusy` straight away, naming the session that holds the
+        /// Throw `AmplifyCognitoClientError.browserBusy` straight away, naming the session that holds the
         /// browser. The default: a second browser that appears unprompted once the first sign-in
         /// finishes reads as a bug, so the app is told and can say something useful.
         public static let fail = BrowserBusyPolicy(.fail)
@@ -185,7 +185,7 @@ public extension WebUIOptions {
         public static let maximumWaitTimeout: TimeInterval = 3_600
 
         /// Wait for the sign-ins ahead of this one to finish, first come first served, then proceed.
-        /// Throws `AuthClientError.browserBusy` if `timeout` seconds pass first, and
+        /// Throws `AmplifyCognitoClientError.browserBusy` if `timeout` seconds pass first, and
         /// `CancellationError` if the calling task is cancelled while waiting. Neither takes the
         /// browser. A hosted-UI sign-in that waits holds its session's place for sign-ins meanwhile: a
         /// password sign-in's challenge is still reported, but `confirmSignIn` queues behind it, and
@@ -249,7 +249,7 @@ public extension WebUIOptions {
     /// A browser can complete a sign-in without the user typing anything, from a cookie an earlier
     /// sign-in left, and then it returns *that* account. With several sessions, that is one session's
     /// user silently signing in to another. An expectation turns it into an error:
-    /// `AuthClientError.unexpectedIdentity`, with nobody signed in. Asking again with `prompt: [.login]`
+    /// `AmplifyCognitoClientError.unexpectedIdentity`, with nobody signed in. Asking again with `prompt: [.login]`
     /// makes the browser ask for credentials.
     ///
     /// May gain cases in a minor release: include `@unknown default` when you switch over it.

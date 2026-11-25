@@ -31,7 +31,7 @@ extension SessionCore {
     ///   session signed in to the user pool or waiting on a challenge, before any network call, or when a
     ///   user signed in to the session while it federated; `storageUnavailable`; the engine's mapped
     ///   failure (a rejected token is `notAuthorized`).
-    nonisolated func federateToIdentityPool(_ request: EngineFederationRequest) async throws -> AuthClientFederateToIdentityPoolResult {
+    nonisolated func federateToIdentityPool(_ request: EngineFederationRequest) async throws -> AmplifyCognitoClientFederateToIdentityPoolResult {
         try requireIdentityPool(for: "federate to the identity pool")
         _ = try await restoredSnapshot()
         // The refusal first, so a refused call neither queues nor reaches the network.
@@ -141,7 +141,7 @@ extension SessionCore {
                 let reread = try await store.load(sessionId)
                 guard mayReplace(reread, with: summary, replacing: replacing) else {
                     await apply(reread, event: nil)
-                    throw AuthClientError.invalidState(
+                    throw AmplifyCognitoClientError.invalidState(
                         "Another sign-in or federation completed for this session while this federation was in progress",
                         "That session is still stored. Sign it out, or clear its federation, then federate again."
                     )
@@ -180,18 +180,18 @@ extension SessionCore {
     private func federationBase() throws -> (SessionSnapshot, UInt64) {
         guard let snapshot = restoredSnapshotIfAny else {
             // `restoredSnapshot()` returned, so a snapshot is installed; nothing ever removes one.
-            throw AuthClientError.unknown("The session could not be restored.", "Retry the operation.")
+            throw AmplifyCognitoClientError.unknown("The session could not be restored.", "Retry the operation.")
         }
         switch snapshot.state(engine: engine, challenge: pendingChallenge) {
         case .signedOut, .guest, .federated:
             return (snapshot, signInEpoch)
         case .signedIn, .awaitingChallenge:
-            throw AuthClientError.invalidState(
+            throw AmplifyCognitoClientError.invalidState(
                 "Federation could not be completed.",
                 "Operation performed is not a valid operation for the current auth state"
             )
         case .unavailable(let reason):
-            throw AuthClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later. Do not treat this as signed out.")
+            throw AmplifyCognitoClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later. Do not treat this as signed out.")
         case .failed(let error):
             throw error
         }
@@ -203,7 +203,7 @@ extension SessionCore {
         case .federated(let identityId):
             return identityId
         case .unavailable(let reason):
-            throw AuthClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later. Do not treat this as signed out.")
+            throw AmplifyCognitoClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later. Do not treat this as signed out.")
         case .signedIn, .signedOut, .guest, .awaitingChallenge, .failed:
             throw Self.clearingFailed()
         }
@@ -224,18 +224,18 @@ extension SessionCore {
     static func federationResult(
         _ payload: Data,
         engine: any SessionEngine
-    ) throws -> (AuthClientFederateToIdentityPoolResult, CredentialSummary) {
+    ) throws -> (AmplifyCognitoClientFederateToIdentityPoolResult, CredentialSummary) {
         let summary = try engine.checkedDescribe(payload)
         guard summary.kind == .federated,
               let identityId = summary.identityId,
               let credentials = try engine.checkedAWSCredentials(in: payload) else {
-            throw AuthClientError.unknown(
+            throw AmplifyCognitoClientError.unknown(
                 "Unable to parse credentials to expected output",
                 "This is not expected. Retry the federation."
             )
         }
-        let result = AuthClientFederateToIdentityPoolResult(
-            credentials: AuthClientAWSCredentials(credentials),
+        let result = AmplifyCognitoClientFederateToIdentityPoolResult(
+            credentials: AmplifyCognitoClientAWSCredentials(credentials),
             identityId: identityId
         )
         return (result, summary)
@@ -243,14 +243,14 @@ extension SessionCore {
 
     // MARK: Errors
 
-    static func clearingFailed() -> AuthClientError {
+    static func clearingFailed() -> AmplifyCognitoClientError {
         .invalidState(
             "Clearing of federation failed.",
             "Operation performed is not a valid operation for the current auth state"
         )
     }
 
-    static func federationCancelled() -> AuthClientError {
+    static func federationCancelled() -> AmplifyCognitoClientError {
         .invalidState(
             "The federation was cancelled: the session was signed out, purged, deleted or cleared while it was in progress.",
             "Federate again."
@@ -259,7 +259,7 @@ extension SessionCore {
 
     nonisolated func requireIdentityPool(for operation: String) throws {
         guard configuration.identityPool != nil else {
-            throw AuthClientError.configuration(
+            throw AmplifyCognitoClientError.configuration(
                 "This session cannot \(operation): the configuration has no identity pool.",
                 "Add an identity pool to the configuration (the auth section of amplify_outputs.json)."
             )

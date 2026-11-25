@@ -16,7 +16,7 @@ final class SessionStreamsTests: XCTestCase {
     private var harness: ClientHarness!
     private let work = ClientFixtures.id("work")
     private let home = ClientFixtures.id("home")
-    private let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+    private let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
 
     override func setUp() {
         harness = ClientHarness()
@@ -143,7 +143,7 @@ final class SessionStreamsTests: XCTestCase {
 
         XCTAssertEqual(workEvents.received, [.signedOut])
         let homeState = await homeClient.currentSessionState()
-        XCTAssertEqual(homeState, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(homeState, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         // Home's subscribers received nothing of work's purge: once home is signed out, they hold only that.
         _ = await homeClient.signOut()
         await homeEvents.waitFor(1)
@@ -167,7 +167,7 @@ final class SessionStreamsTests: XCTestCase {
         await client.core.setPendingChallenge(.confirmSignInWithTOTPCode)
         await client.core.setPendingChallenge(.confirmSignInWithTOTPCode)
         await client.core.setPendingChallenge(.confirmSignInWithSMSMFACode(
-            AuthClientCodeDeliveryDetails(destination: .sms("+1***"), attributeKey: nil),
+            AmplifyCognitoClientCodeDeliveryDetails(destination: .sms("+1***"), attributeKey: nil),
             nil
         ))
         await client.core.setPendingChallenge(nil)

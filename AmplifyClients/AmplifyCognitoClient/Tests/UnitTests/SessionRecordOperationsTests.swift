@@ -121,7 +121,7 @@ final class SessionRecordOperationsTests: XCTestCase {
         let client = try harness.client(work)
 
         await assertThrowsAsync({ try await client.setSessionLabel("Work") }) { error in
-            guard case .unknown = error as? AuthClientError else {
+            guard case .unknown = error as? AmplifyCognitoClientError else {
                 return XCTFail("\(error)")
             }
         }
@@ -133,15 +133,15 @@ final class SessionRecordOperationsTests: XCTestCase {
     /// - Given: `.default` on a plugin record that is not the plugin's format, under the plugin's last configuration
     /// - When: a label is set
     /// - Then:
-    ///    - it throws `AuthClientError.unknown`, and nothing is written
+    ///    - it throws `AmplifyCognitoClientError.unknown`, and nothing is written
     func testLabelOnAnUnrecognisedDefaultRecordThrowsAndWritesNothing() async throws {
         harness.keychain.put(Data("opaque".utf8), pluginAccount)
         harness.keychain.recordPluginConfiguration()
         let client = try harness.client(.default)
 
         await assertThrowsAsync({ try await client.setSessionLabel("Main") }) { error in
-            guard case .unknown = error as? AuthClientError else {
-                return XCTFail("expected AuthClientError.unknown, got \(error)")
+            guard case .unknown = error as? AmplifyCognitoClientError else {
+                return XCTFail("expected AmplifyCognitoClientError.unknown, got \(error)")
             }
         }
         XCTAssertEqual(harness.keychain.writtenAccounts, [])
@@ -192,7 +192,7 @@ final class SessionRecordOperationsTests: XCTestCase {
         harness.keychain.afterEveryRead(of: harness.store().sessionAccount(for: work)) { rival.move() }
 
         await assertThrowsAsync({ try await client.setSessionLabel("Work") }) { error in
-            XCTAssertEqual((error as? AuthClientError)?.storageUnavailableReason, .interrupted, "\(error)")
+            XCTAssertEqual((error as? AmplifyCognitoClientError)?.storageUnavailableReason, .interrupted, "\(error)")
         }
         harness.keychain.afterEveryRead(of: harness.store().sessionAccount(for: work), nil)
         XCTAssertEqual(rival.commits, 2 * SessionCore.maximumRecordWriteAttempts)
@@ -437,7 +437,7 @@ final class SessionRecordOperationsTests: XCTestCase {
         XCTAssertEqual(first.sessionId.label, "First")
         XCTAssertEqual(second.sessionId.label, "Second")
         let state = await first.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 
     /// A guest and a federation save the ID's label, as a sign-in does.

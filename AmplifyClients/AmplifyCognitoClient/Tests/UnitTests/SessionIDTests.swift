@@ -27,7 +27,7 @@ final class SessionIDTests: XCTestCase {
     ///    - it throws `invalidSessionID`
     func testRejectsEmpty() {
         XCTAssertThrowsError(try SessionID.named("")) { error in
-            guard case AuthClientError.invalidSessionID = error else {
+            guard case AmplifyCognitoClientError.invalidSessionID = error else {
                 return XCTFail("Expected invalidSessionID, got \(error)")
             }
         }
@@ -55,7 +55,7 @@ final class SessionIDTests: XCTestCase {
         ]
         for (id, offender) in cases {
             XCTAssertThrowsError(try SessionID.named(id), id) { error in
-                guard case AuthClientError.invalidSessionID(let description, let suggestion, _) = error else {
+                guard case AmplifyCognitoClientError.invalidSessionID(let description, let suggestion, _) = error else {
                     return XCTFail("Expected invalidSessionID for \(id), got \(error)")
                 }
                 XCTAssertTrue(description.contains("\"\(offender)\""), "Message should name \(offender): \(description)")

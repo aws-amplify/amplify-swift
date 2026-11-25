@@ -29,15 +29,15 @@ extension LiveSessionEngine {
     /// - Returns: The secret and the payload's username, for `getSetupURI(appName:accountName:)`.
     /// - Throws: `SessionEngineError.notSignedIn` without a user; `.service` as Cognito answers, or with the
     ///   plugin's "Secret code cannot be retrieved" when it returns none.
-    nonisolated func setUpTOTP(_ payload: Data) async throws -> AuthClientTOTPSetupDetails {
+    nonisolated func setUpTOTP(_ payload: Data) async throws -> AmplifyCognitoClientTOTPSetupDetails {
         let call = try mfaCall(payload)
         let output = try await Self.mappingMFAErrors {
             try await call.userPool.associateSoftwareToken(input: AssociateSoftwareTokenInput(accessToken: call.accessToken))
         }
         guard let secretCode = output.secretCode else {
-            throw AuthClientError.service(nil, "Secret code cannot be retrieved", "")
+            throw AmplifyCognitoClientError.service(nil, "Secret code cannot be retrieved", "")
         }
-        return AuthClientTOTPSetupDetails(sharedSecret: secretCode, username: call.username)
+        return AmplifyCognitoClientTOTPSetupDetails(sharedSecret: secretCode, username: call.username)
     }
 
     /// Verifies a code from the authenticator app, which completes the TOTP setup
@@ -56,7 +56,7 @@ extension LiveSessionEngine {
             ))
         }
         guard let status = output.status else {
-            throw AuthClientError.service(
+            throw AmplifyCognitoClientError.service(
                 nil,
                 "Verify TOTP Result cannot be retrieved",
                 EngineErrorMessages.shouldNotHappenReportBugToAWS()
@@ -66,9 +66,9 @@ extension LiveSessionEngine {
         case .success:
             return
         case .error:
-            throw AuthClientError.service(nil, "Unknown service error occurred", EngineErrorMessages.reportBugToAWS())
+            throw AmplifyCognitoClientError.service(nil, "Unknown service error occurred", EngineErrorMessages.reportBugToAWS())
         case .sdkUnknown(let value):
-            throw AuthClientError.service(nil, value, EngineErrorMessages.reportBugToAWS())
+            throw AmplifyCognitoClientError.service(nil, value, EngineErrorMessages.reportBugToAWS())
         }
     }
 
@@ -76,7 +76,7 @@ extension LiveSessionEngine {
     /// `nil` when no type is on, and names Cognito does not map to a type are skipped.
     ///
     /// - Throws: `SessionEngineError.notSignedIn` without a user; `.service` as Cognito answers.
-    nonisolated func fetchMFAPreference(_ payload: Data) async throws -> AuthClientUserMFAPreference {
+    nonisolated func fetchMFAPreference(_ payload: Data) async throws -> AmplifyCognitoClientUserMFAPreference {
         let call = try mfaCall(payload)
         let output = try await Self.mappingMFAErrors {
             try await call.userPool.getUser(input: GetUserInput(accessToken: call.accessToken))
@@ -96,9 +96,9 @@ extension LiveSessionEngine {
     ///   (`invalidParameter` when two types are preferred).
     nonisolated func updateMFAPreference(
         _ payload: Data,
-        sms: AuthClientMFAPreference?,
-        totp: AuthClientMFAPreference?,
-        email: AuthClientMFAPreference?
+        sms: AmplifyCognitoClientMFAPreference?,
+        totp: AmplifyCognitoClientMFAPreference?,
+        email: AmplifyCognitoClientMFAPreference?
     ) async throws {
         let call = try mfaCall(payload)
         let current = try await Self.mappingMFAErrors {
@@ -150,7 +150,7 @@ extension LiveSessionEngine {
         do {
             return try await body()
         } catch let error as EngineAuthErrorConvertible {
-            throw AuthClientError(engineFailure: error)
+            throw AmplifyCognitoClientError(engineFailure: error)
         }
     }
 
@@ -160,17 +160,17 @@ extension LiveSessionEngine {
         settingList: [String]?,
         preferred: String?,
         logger: any EngineScopedLogger
-    ) -> AuthClientUserMFAPreference {
-        var enabled: Set<AuthClientMFAType>?
+    ) -> AmplifyCognitoClientUserMFAPreference {
+        var enabled: Set<AmplifyCognitoClientMFAType>?
         for name in settingList ?? [] {
             guard let type = EngineMFAType(rawValue: name, logger: logger) else {
                 continue
             }
-            enabled = (enabled ?? []).union([AuthClientMFAType(type)])
+            enabled = (enabled ?? []).union([AmplifyCognitoClientMFAType(type)])
         }
-        return AuthClientUserMFAPreference(
+        return AmplifyCognitoClientUserMFAPreference(
             enabled: enabled,
-            preferred: preferred.flatMap { EngineMFAType(rawValue: $0, logger: logger) }.map(AuthClientMFAType.init)
+            preferred: preferred.flatMap { EngineMFAType(rawValue: $0, logger: logger) }.map(AmplifyCognitoClientMFAType.init)
         )
     }
 }
@@ -181,7 +181,7 @@ private struct MFASetting: Equatable {
     let preferredMfa: Bool
 }
 
-private extension AuthClientMFAPreference {
+private extension AmplifyCognitoClientMFAPreference {
 
     /// `.enabled` keeps the type preferred if it `isCurrentlyPreferred`; `.preferred` and `.notPreferred`
     /// set it; `.disabled` turns the type off, with the SDK's default `preferredMfa` (`false`), as the

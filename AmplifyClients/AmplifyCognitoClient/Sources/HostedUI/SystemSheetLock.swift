@@ -225,7 +225,7 @@ actor SystemSheetLock {
     ///   whichever comes first, so a caller told its sign-in was cancelled finds the sheet free. The caller's own
     ///   cancellation, and `reset()`, which frees the lock at once, still answer at once. `false` by default:
     ///   the caller is answered at once, while the flow may still be unwinding.
-    /// - Throws: `AuthClientError.browserBusy(holder:)` if the lock could not be acquired under
+    /// - Throws: `AmplifyCognitoClientError.browserBusy(holder:)` if the lock could not be acquired under
     ///   `policy`; `CancellationError` as above; otherwise whatever `body` throws.
     nonisolated func withLease<T: Sendable>(
         for session: SessionID,
@@ -400,7 +400,7 @@ actor SystemSheetLock {
                 // otherwise be served straight after the first: a second browser nobody asked for. Queued behind
                 // its own sheet, the session is waiting for that sheet to close, which is what it is told.
                 guard !waiters.contains(where: { $0.session == session }) else {
-                    continuation.resume(throwing: AuthClientError.browserBusy(
+                    continuation.resume(throwing: AmplifyCognitoClientError.browserBusy(
                         heldBy: holding,
                         requestedBy: session,
                         reason: holding == session ? .stillClosingWithCallQueued : .alreadyQueued
@@ -412,7 +412,7 @@ actor SystemSheetLock {
                 // "Cancel, then Sign in again" can queue behind the closing browser.
                 let isClosing = current.isDraining
                 if holding == session, !isClosing {
-                    continuation.resume(throwing: AuthClientError.browserBusy(
+                    continuation.resume(throwing: AmplifyCognitoClientError.browserBusy(
                         heldBy: holding,
                         requestedBy: session,
                         reason: .alreadyInFlight
@@ -421,7 +421,7 @@ actor SystemSheetLock {
                 }
                 // A caller waiting only for its own closing sheet never queues behind another session.
                 if waitsOnlyForItself, holding != session {
-                    continuation.resume(throwing: AuthClientError.browserBusy(
+                    continuation.resume(throwing: AmplifyCognitoClientError.browserBusy(
                         heldBy: holding,
                         requestedBy: session,
                         reason: .heldByAnotherSession
@@ -429,7 +429,7 @@ actor SystemSheetLock {
                     return
                 }
                 guard let timeout = policy.timeoutNanoseconds, timeout > 0 else {
-                    continuation.resume(throwing: AuthClientError.browserBusy(
+                    continuation.resume(throwing: AmplifyCognitoClientError.browserBusy(
                         heldBy: holding,
                         requestedBy: session,
                         reason: holding == session ? .stillClosing : .heldByAnotherSession
@@ -510,7 +510,7 @@ actor SystemSheetLock {
         waiters.removeAll { $0.waitsOnlyForItself && $0.session != newHolder }
         for waiter in refused {
             waiter.timeout?.cancel()
-            waiter.continuation.resume(throwing: AuthClientError.browserBusy(
+            waiter.continuation.resume(throwing: AmplifyCognitoClientError.browserBusy(
                 heldBy: newHolder,
                 requestedBy: waiter.session,
                 reason: .heldByAnotherSession
@@ -534,7 +534,7 @@ actor SystemSheetLock {
             waiter.continuation.resume(returning: lease)
             return
         }
-        waiter.continuation.resume(throwing: AuthClientError.browserBusy(
+        waiter.continuation.resume(throwing: AmplifyCognitoClientError.browserBusy(
             heldBy: holding,
             requestedBy: waiter.session,
             reason: .timedOut

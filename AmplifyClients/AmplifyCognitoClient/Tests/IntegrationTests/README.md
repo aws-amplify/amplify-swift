@@ -172,7 +172,7 @@ only. The client is Gen2 only and refuses them. So the harness (`PluginTestConfi
 suites, the interop suite, the UI tests and the hosted-UI app) reads a role's Gen2 file when it is there, and
 otherwise translates the plugin's Gen1 file for the same backend into the equivalent Gen2 outputs, writes it under the
 Gen2 name into a directory of its own, and hands the client that directory as the bundle. The client then loads it
-with `AuthClientConfiguration(from:bundle:)`, as an app loads its outputs file; the interop suite configures the
+with `AmplifyCognitoClientConfiguration(from:bundle:)`, as an app loads its outputs file; the interop suite configures the
 plugin with the same translation. The mapping follows where the plugin's `ConfigurationHelper` reads each value in
 Gen1 and, for the settings the plugin reads only from Gen2, the Amplify CLI's `Auth.Default` keys:
 
@@ -558,7 +558,7 @@ Simulator builds are signed ad hoc with these entitlements, so no team or provis
 
 | Suite | What it covers |
 |---|---|
-| `AuthClientConfigurationIntegrationTests` | The default backend's outputs file loads, and its pools and namespace match the ids the file names, read as raw JSON; for that namespace, `.default`'s session record is the plugin's key, its sidecar and challenge record are `amplify.1.<ns>.$default.meta` and `.challenge` (the sidecar never parses as a session record), and a named session's v1 key round-trips |
+| `AmplifyCognitoClientConfigurationIntegrationTests` | The default backend's outputs file loads, and its pools and namespace match the ids the file names, read as raw JSON; for that namespace, `.default`'s session record is the plugin's key, its sidecar and challenge record are `amplify.1.<ns>.$default.meta` and `.challenge` (the sidecar never parses as a session record), and a named session's v1 key round-trips |
 | `DataProtectionKeychainProbeTests` | Raw `SecItem` behaviour that the keychain module depends on, including enumeration, access groups, and write statuses, over the plugin's service's full sibling set: the plugin's records (one of them `.default`'s), named sessions' records, `.default`'s sidecar and challenge record, and a development leftover `$default.session` |
 | `CognitoBackendSmokeTests` | Guest `GetId` + `GetCredentialsForIdentity` against the default backend's identity pool, and the fixtures the suites cannot make: every role's outputs file and code API, and the credentials file's custom-auth answer and new-password users |
 | `SandboxParityProvisioningTests` | Each role's backend, through the SDK or HTTPS directly: every outputs file loads (seven distinct pools; the hosted-UI client on the default pool or on one of its own); `default` auto-confirms and tracks devices; custom auth completes with the stored answer; a `ccit-confirm-` sign-up code reaches the code sink and confirms; email MFA and SMS MFA codes (`mfa-req-email`, `mfa-req-totp-sms`) and `EMAIL_OTP` and `SMS_OTP` codes (`passwordless`) reach the sink and complete sign-in; `passwordless` offers choice-based sign-in; the MFA-required pools challenge a fresh user; `email-alias` signs in by email with 5-minute tokens; the hosted-UI login page answers; the identity-only role vends guest credentials; the third keychain group works. On the plugin's CI backends they check what those backends promise (SRP sign-ins, users confirmed with their code, the first code sent after a request); what only the sandbox provisions is a sandbox check ("Sandbox checks", above), which skips elsewhere |

@@ -36,7 +36,7 @@ final class PluginRotationTests: XCTestCase {
 
     static let outputsResource = "AmplifyCognitoClientRotationIntegrationTests-amplify_outputs"
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
     private var outputsData = Data()
     /// The test's own user, signed up in `setUp` and deleted at teardown.
     private var alice: InteropUser?
@@ -48,9 +48,9 @@ final class PluginRotationTests: XCTestCase {
             return
         }
         outputsData = try Data(contentsOf: url)
-        configuration = try AuthClientConfiguration(from: Self.outputsResource, bundle: InteropEnvironment.bundle)
+        configuration = try AmplifyCognitoClientConfiguration(from: Self.outputsResource, bundle: InteropEnvironment.bundle)
         let baseResource = InteropEnvironment.rotationBaseResource
-        let base = try AuthClientConfiguration(from: baseResource, bundle: InteropEnvironment.outputsBundle(baseResource))
+        let base = try AmplifyCognitoClientConfiguration(from: baseResource, bundle: InteropEnvironment.outputsBundle(baseResource))
         guard InteropEnvironment.signsUpOnTheRotationPool(
             rotationPoolId: configuration.userPool?.poolId,
             basePoolId: base.userPool?.poolId
@@ -104,7 +104,7 @@ final class PluginRotationTests: XCTestCase {
                 return XCTFail("alice did not sign in through the client")
             }
             let first = try await client.fetchAuthSession().requireUserPoolTokens().refreshToken
-            let tokens: AuthClientUserPoolTokens
+            let tokens: AmplifyCognitoClientUserPoolTokens
             do {
                 tokens = try await client.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens()
             } catch {
@@ -159,7 +159,7 @@ final class PluginRotationTests: XCTestCase {
             }
             let held = try await client.fetchAuthSession().requireUserPoolTokens().refreshToken
             XCTAssertTrue(held == pluginRotated, "`.default` does not hold the plugin's rotated token")
-            let tokens: AuthClientUserPoolTokens
+            let tokens: AmplifyCognitoClientUserPoolTokens
             do {
                 tokens = try await client.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens()
             } catch {
@@ -242,7 +242,7 @@ final class PluginRotationTests: XCTestCase {
 
     /// A client token result's error by its case name only, never its text or payload.
     private static func caseName(of error: Error) -> String {
-        guard let error = error as? AuthClientError else {
+        guard let error = error as? AmplifyCognitoClientError else {
             return String(describing: type(of: error))
         }
         let described = String(describing: error.kind)

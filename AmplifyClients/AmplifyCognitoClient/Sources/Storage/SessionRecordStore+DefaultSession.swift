@@ -112,7 +112,7 @@ extension SessionRecordStore {
     /// The shared record's bytes, `nil` if there is no item. With `rereadsAbsentSharedRecord`, an absent item is
     /// read once more before answering `nil`, so another process's delete-then-add is not taken for a sign-out.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be read.
     func fetchSharedRecord(operation: String) throws -> Data? {
         try fetchRereadingAbsent(sharedRecordAccount, operation: operation)
     }
@@ -121,7 +121,7 @@ extension SessionRecordStore {
     /// read once more first. For `.default`'s shared record, and the previous configuration's record that the
     /// plugin's configuration-change rule copies or deletes.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be read.
     func fetchRereadingAbsent(_ account: String, operation: String) throws -> Data? {
         if let data = try fetch(account, operation: operation) {
             return data
@@ -134,14 +134,14 @@ extension SessionRecordStore {
 
     /// `.default`'s sidecar.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be read.
     func readSidecar() throws -> SidecarRead {
         try readSidecar(at: sidecarAccount)
     }
 
     /// The sidecar at `account`: this namespace's, or another's (`SessionRecordStore+PluginConfiguration.swift`).
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be read.
     func readSidecar(at account: String) throws -> SidecarRead {
         guard let data = try fetch(account, operation: "read the default session's sidecar") else {
             return .absent
@@ -166,7 +166,7 @@ extension SessionRecordStore {
     ///   its bytes, which stay as they are.
     /// - Bytes that are not the plugin's format: `.corrupt`.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the record or the sidecar could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the record or the sidecar could not be read.
     func readDefault() throws -> ReadResult {
         let bytes = try fetchSharedRecord(operation: "read the default session's saved login")
         let sidecar = try readSidecar().meta
@@ -337,7 +337,7 @@ extension SessionRecordStore {
     /// record still holds the bytes `expected` names. The shared record is never rewritten for it. A lost sidecar race
     /// re-reads and tries once more; a newer schema's sidecar is never overwritten (`.discarded`).
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage could not be read or written.
     func saveDefaultDeadToken(_ deadToken: DeadToken, expecting expected: RecordVersion?) throws -> CommitOutcome {
         guard let bytes = try fetchSharedRecord(operation: "read the default session's saved login"),
               expected == .storedBytes(bytes) else {
@@ -383,7 +383,7 @@ extension SessionRecordStore {
     /// shared record holds (or, signed out or absent, to the last user the sidecar names). The shared record is never
     /// rewritten for a label.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage could not be read or written.
     func setDefaultLabel(_ label: String?) throws -> DefaultLabelOutcome {
         let bytes = try fetchSharedRecord(operation: "read the default session's saved login")
         let stored = try readSidecar()

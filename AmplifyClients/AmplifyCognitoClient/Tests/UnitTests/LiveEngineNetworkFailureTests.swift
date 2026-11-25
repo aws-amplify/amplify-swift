@@ -64,10 +64,10 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
                 do {
                     try await body()
                     XCTFail("\(label): expected an error")
-                } catch let error as AuthClientError {
+                } catch let error as AmplifyCognitoClientError {
                     assertNetworkFailure(error, failure, label)
                 } catch {
-                    XCTFail("\(label): expected an AuthClientError, got \(error)")
+                    XCTFail("\(label): expected an AmplifyCognitoClientError, got \(error)")
                 }
             }
             let state = await client.currentSessionState()
@@ -87,8 +87,8 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
     ///      suggestion, the refusal "The service request failed." with the network-or-service suggestion; no
     ///      suggestion asks for a bug report, and the session stays signed out
     func testASignInThatReachesSomethingUnreadableIsAReadableServiceError() async throws {
-        let unreadable = (AuthClientError.unreadableResponseDescription, AuthClientError.unreadableServiceResponseSuggestion)
-        let failed = (AuthClientError.emptyServiceFailureDescription, AuthClientError.clientServiceSuggestion)
+        let unreadable = (AmplifyCognitoClientError.unreadableResponseDescription, AmplifyCognitoClientError.unreadableServiceResponseSuggestion)
+        let failed = (AmplifyCognitoClientError.emptyServiceFailureDescription, AmplifyCognitoClientError.clientServiceSuggestion)
         let cases: [(String, Error, (String, String))] = [
             ("-1011", URLError(.badServerResponse), unreadable),
             ("-1017", URLError(.cannotParseResponse), unreadable),
@@ -103,7 +103,7 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
             do {
                 _ = try await client.signIn(username: "alice", password: "password")
                 XCTFail("\(name): expected an error")
-            } catch AuthClientError.service(nil, let description, let suggestion, _) {
+            } catch AmplifyCognitoClientError.service(nil, let description, let suggestion, _) {
                 XCTAssertEqual(description, expected.0, name)
                 XCTAssertEqual(suggestion, expected.1, name)
                 XCTAssertFalse(suggestion.contains("bug"), name)
@@ -217,8 +217,8 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
             for (operation, body) in operations {
                 let label = "\(operation), \(name)"
                 await assertThrowsAsync(body) { error in
-                    guard let error = error as? AuthClientError else {
-                        return XCTFail("\(label): expected an AuthClientError, got \(error)")
+                    guard let error = error as? AmplifyCognitoClientError else {
+                        return XCTFail("\(label): expected an AmplifyCognitoClientError, got \(error)")
                     }
                     self.assertNetworkFailure(error, failure, label)
                 }
@@ -247,12 +247,12 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
         harness.cognito.always("RevokeToken") { (_: RevokeTokenInput) -> RevokeTokenOutput in throw notJSON }
 
         await assertThrowsAsync({ _ = try await engine.refresh(payload, force: true) }) { error in
-            let mapped: AuthClientError? = if case SessionEngineError.service(let mapped) = error { mapped } else { error as? AuthClientError }
+            let mapped: AmplifyCognitoClientError? = if case SessionEngineError.service(let mapped) = error { mapped } else { error as? AmplifyCognitoClientError }
             guard case .service(nil, let description, let suggestion, _) = mapped else {
                 return XCTFail("expected a service error with no code, got \(error)")
             }
-            XCTAssertEqual(description, AuthClientError.unreadableResponseDescription)
-            XCTAssertEqual(suggestion, AuthClientError.unreadableServiceResponseSuggestion)
+            XCTAssertEqual(description, AmplifyCognitoClientError.unreadableResponseDescription)
+            XCTAssertEqual(suggestion, AmplifyCognitoClientError.unreadableServiceResponseSuggestion)
         }
 
         let outcome = try await engine.revoke(payload, global: false)
@@ -260,12 +260,12 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
         guard case .service(nil, let description, let suggestion, _) = outcome.revokeError else {
             return XCTFail("expected a service error with no code, got \(String(describing: outcome.revokeError))")
         }
-        XCTAssertEqual(description, AuthClientError.unreadableResponseDescription)
+        XCTAssertEqual(description, AmplifyCognitoClientError.unreadableResponseDescription)
         XCTAssertEqual(suggestion, SignOutTexts.revokeNotRetried)
     }
 
     private func assertNetworkFailure(
-        _ error: AuthClientError,
+        _ error: AmplifyCognitoClientError,
         _ failure: Error,
         _ label: String,
         file: StaticString = #filePath,
@@ -275,13 +275,13 @@ final class LiveEngineNetworkFailureTests: XCTestCase {
             return XCTFail("\(label): expected a service error with no code, got \(error)", file: file, line: line)
         }
         XCTAssertEqual(description, "A network problem stopped the request. It may not have reached the service.", label, file: file, line: line)
-        XCTAssertEqual(suggestion, AuthClientError.clientServiceSuggestion, label, file: file, line: line)
+        XCTAssertEqual(suggestion, AmplifyCognitoClientError.clientServiceSuggestion, label, file: file, line: line)
         XCTAssertFalse(suggestion.contains("bug"), label, file: file, line: line)
         assertIsTheNetworkError(underlying, failure, label, file: file, line: line)
     }
 
     /// Asserts `underlying` is the network error `failure` itself, as an app matches it
-    /// (`AuthClientError.service(nil, _, _, let error as URLError)`), never the engine's error over it.
+    /// (`AmplifyCognitoClientError.service(nil, _, _, let error as URLError)`), never the engine's error over it.
     private func assertIsTheNetworkError(
         _ underlying: Error?,
         _ failure: Error,

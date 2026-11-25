@@ -133,7 +133,7 @@ final class SystemSheetLockTests: XCTestCase {
         do {
             let value = try await task.value(within: 10)
             XCTFail("Expected browserBusy, got \(value)", file: file, line: line)
-        } catch AuthClientError.browserBusy(let holder, _, _, _) {
+        } catch AmplifyCognitoClientError.browserBusy(let holder, _, _, _) {
             XCTAssertEqual(holder, expected, file: file, line: line)
         } catch {
             XCTFail("Expected browserBusy, got \(error)", file: file, line: line)
@@ -200,8 +200,8 @@ final class SystemSheetLockTests: XCTestCase {
     /// - Then:
     ///    - both carry the holder, and their descriptions differ
     func testBrowserBusyNamesTheHolderAndDistinguishesARepeatCall() {
-        let clash = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob)
-        let repeated = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice)
+        let clash = AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob)
+        let repeated = AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice)
 
         guard case .browserBusy(let clashHolder, _, _, _) = clash,
               case .browserBusy(let repeatHolder, _, _, _) = repeated else {
@@ -283,7 +283,7 @@ final class SystemSheetLockTests: XCTestCase {
     ///      and none names a browser sign-in, since the sheet may be a passkey sheet or a sign-out page
     func testAlreadyQueuedMessageNamesTheQueuedSession() {
         let reasons: [BrowserBusyReason] = [.heldByAnotherSession, .alreadyInFlight, .alreadyQueued, .stillClosing, .timedOut]
-        let errors = reasons.map { AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob, reason: $0) }
+        let errors = reasons.map { AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob, reason: $0) }
 
         for error in errors {
             guard case .browserBusy(let holder, _, _, _) = error else {
@@ -388,8 +388,8 @@ final class SystemSheetLockTests: XCTestCase {
         do {
             _ = try await bob.value
             XCTFail("Expected browserBusy")
-        } catch let error as AuthClientError {
-            let timedOut = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob, reason: .timedOut)
+        } catch let error as AmplifyCognitoClientError {
+            let timedOut = AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob, reason: .timedOut)
             XCTAssertEqual(error.errorDescription, timedOut.errorDescription)
             XCTAssertTrue(error.errorDescription.contains("until its timeout"), error.errorDescription)
         } catch {
@@ -554,8 +554,8 @@ final class SystemSheetLockTests: XCTestCase {
         do {
             let value = try await failingRetry.value
             XCTFail("Expected browserBusy, got \(value)")
-        } catch let error as AuthClientError {
-            let closingError = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice, reason: .stillClosing)
+        } catch let error as AmplifyCognitoClientError {
+            let closingError = AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice, reason: .stillClosing)
             XCTAssertEqual(error.errorDescription, closingError.errorDescription)
         }
 
@@ -597,13 +597,13 @@ final class SystemSheetLockTests: XCTestCase {
         let retry = Self.start(lock, Self.alice, .wait(timeout: 3_600)) { $0.holder }
         await waitUntil("the retry is queued behind the closing flow") { await lock.waiterCount == 1 }
 
-        let closingError = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice, reason: .stillClosing)
+        let closingError = AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice, reason: .stillClosing)
         for policy in [WebUIOptions.BrowserBusyPolicy.wait(timeout: 3_600), .fail] {
             let again = Self.start(lock, Self.alice, policy) { $0.holder }
             do {
                 let value = try await again.value(within: 10)
                 XCTFail("Expected browserBusy, got \(value)")
-            } catch let error as AuthClientError {
+            } catch let error as AmplifyCognitoClientError {
                 XCTAssertEqual(error.kind, .browserBusy(holder: Self.alice), "\(policy)")
                 XCTAssertEqual(error.errorDescription, closingError.errorDescription, "\(policy)")
                 XCTAssertNotEqual(error.recoverySuggestion, closingError.recoverySuggestion, "\(policy)")
@@ -686,8 +686,8 @@ final class SystemSheetLockTests: XCTestCase {
         do {
             let value = try await bob.value
             XCTFail("Expected browserBusy, got \(value)")
-        } catch let error as AuthClientError {
-            let expected = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob, reason: .heldByAnotherSession)
+        } catch let error as AmplifyCognitoClientError {
+            let expected = AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob, reason: .heldByAnotherSession)
             XCTAssertEqual(error.kind, .browserBusy(holder: Self.alice))
             XCTAssertEqual(error.errorDescription, expected.errorDescription)
         }
@@ -729,8 +729,8 @@ final class SystemSheetLockTests: XCTestCase {
         do {
             let value = try await retry.value(within: 10)
             XCTFail("Expected browserBusy, got \(value)")
-        } catch let error as AuthClientError {
-            let expected = AuthClientError.browserBusy(heldBy: Self.bob, requestedBy: Self.alice, reason: .heldByAnotherSession)
+        } catch let error as AmplifyCognitoClientError {
+            let expected = AmplifyCognitoClientError.browserBusy(heldBy: Self.bob, requestedBy: Self.alice, reason: .heldByAnotherSession)
             XCTAssertEqual(error.kind, .browserBusy(holder: Self.bob))
             XCTAssertEqual(error.errorDescription, expected.errorDescription)
         }

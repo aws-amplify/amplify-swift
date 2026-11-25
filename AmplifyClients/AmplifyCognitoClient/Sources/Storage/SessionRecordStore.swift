@@ -15,7 +15,7 @@ import InternalAmplifyKeychain
 /// entitled access group, and an unscoped operation reaches all of the copies.
 ///
 /// **A keychain failure is never "absent".** Every read distinguishes "nothing is stored" from "storage
-/// could not be read", and the second always throws `AuthClientError.storageUnavailable`. A failed read
+/// could not be read", and the second always throws `AmplifyCognitoClientError.storageUnavailable`. A failed read
 /// must never be answered with sign-in, and must never be answered by writing over the record.
 ///
 /// This type does not serialize callers. Exclusion is per session record and belongs to the session that
@@ -170,7 +170,7 @@ struct SessionRecordStore: Sendable {
 
     /// Reads a session's record: for `.default`, the shared record and its sidecar (`readDefault()`).
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the record (or `.default`'s sidecar) could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the record (or `.default`'s sidecar) could not be read.
     func read(_ sessionId: SessionID) throws -> ReadResult {
         if sessionId == .default {
             return try readDefault()
@@ -226,7 +226,7 @@ struct SessionRecordStore: Sendable {
     /// **`.default`** writes the Auth plugin's record instead, guarded on its stored bytes, and then its sidecar
     /// (`writeDefault`, `SessionRecordStore+DefaultSession.swift`). No namespace marker is written for it.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the record could not be read or written.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the record could not be read or written.
     ///
     /// Creating a record with credentials, or writing one over a signed-out row, also records, in the session's
     /// namespace marker, that the session is kept here (`SessionRecordStore+CopyForward.swift`). Writing one over a
@@ -297,7 +297,7 @@ struct SessionRecordStore: Sendable {
     /// as they are. A named session's envelope is written one generation on, through the commit guard; `.default`'s
     /// marker goes in its sidecar, and the Auth plugin's record is left alone (`saveDefaultDeadToken`).
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage could not be read or written.
     func saveDeadToken(_ deadToken: DeadToken, for sessionId: SessionID, expecting expected: RecordVersion?) throws -> CommitOutcome {
         if sessionId == .default {
             return try saveDefaultDeadToken(deadToken, expecting: expected)
@@ -356,7 +356,7 @@ struct SessionRecordStore: Sendable {
     /// bounded number of times; otherwise leave the new user signed in and report that another sign-in
     /// replaced the session. `SessionSignOut` is that caller.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage could not be read or written.
     func signOut(_ sessionId: SessionID) throws -> SignOutOutcome {
         try signOut(sessionId, expecting: .firstRead)
     }
@@ -369,7 +369,7 @@ struct SessionRecordStore: Sendable {
     /// the access group can sign a different user in, and the plain form would then erase that user, whose
     /// tokens nobody revoked.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage could not be read or written.
     func signOut(_ sessionId: SessionID, removing credentials: Data) throws -> SignOutOutcome {
         try signOut(sessionId, expecting: .credentials(credentials))
     }
@@ -517,7 +517,7 @@ struct SessionRecordStore: Sendable {
     /// Local only: nothing is revoked, so the refresh token stays valid server-side until it expires.
     /// Idempotent; deleting an absent record succeeds.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if a record could not be read or deleted, or the namespace
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if a record could not be read or deleted, or the namespace
     ///   marker read, rewritten or deleted last.
     func purge(_ sessionId: SessionID) throws {
         if sessionId == .default {
@@ -636,7 +636,7 @@ struct SessionRecordStore: Sendable {
         do {
             return try body()
         } catch {
-            throw AuthClientError.storageUnavailable(from: error, operation: operation)
+            throw AmplifyCognitoClientError.storageUnavailable(from: error, operation: operation)
         }
     }
 }

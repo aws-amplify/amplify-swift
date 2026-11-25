@@ -172,7 +172,7 @@ final class LiveEngineSignInTests: XCTestCase {
                 return XCTFail("expected a service error with no code, got \(error)")
             }
             XCTAssertTrue(description.contains("boom"), description)
-            XCTAssertEqual(suggestion, AuthClientError.serviceFaultSuggestion)
+            XCTAssertEqual(suggestion, AmplifyCognitoClientError.serviceFaultSuggestion)
         }
 
         let pending = await engine.pendingChallenge

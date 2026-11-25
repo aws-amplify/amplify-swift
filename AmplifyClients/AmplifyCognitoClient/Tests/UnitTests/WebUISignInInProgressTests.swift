@@ -21,7 +21,7 @@ final class WebUISignInInProgressTests: XCTestCase {
     private var harness: ClientHarness!
     /// The window to anchor sheets to, made on first use: a process's first `UIWindow()` can block for minutes on a
     /// just-booted simulator.
-    private var window: AuthClientPresentationAnchor {
+    private var window: AmplifyCognitoClientPresentationAnchor {
         get async { await HostedUIFixtures.window() }
     }
     private let work = ClientFixtures.id("work")
@@ -56,7 +56,7 @@ final class WebUISignInInProgressTests: XCTestCase {
     private func startSignIn(
         _ client: AmplifyCognitoClient,
         options: WebUIOptions = WebUIOptions()
-    ) async -> Task<AuthClientSignInResult, Error> {
+    ) async -> Task<AmplifyCognitoClientSignInResult, Error> {
         let window = await window
         return Task { try await client.signInWithWebUI(presentationAnchor: window, options: options) }
     }
@@ -145,8 +145,8 @@ final class WebUISignInInProgressTests: XCTestCase {
         let alice = ClientFixtures.id("alice")
         let bob = ClientFixtures.id("bob")
 
-        let other = AuthClientError.browserBusy(heldBy: alice, requestedBy: bob, reason: .signInInProgress)
-        let itself = AuthClientError.browserBusy(heldBy: bob, requestedBy: bob, reason: .signInInProgress)
+        let other = AmplifyCognitoClientError.browserBusy(heldBy: alice, requestedBy: bob, reason: .signInInProgress)
+        let itself = AmplifyCognitoClientError.browserBusy(heldBy: bob, requestedBy: bob, reason: .signInInProgress)
 
         XCTAssertEqual(other.kind, .browserBusy(holder: alice))
         XCTAssertEqual(itself.kind, .browserBusy(holder: bob))

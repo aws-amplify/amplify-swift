@@ -1,0 +1,110 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+#if os(iOS) || os(macOS) || os(visionOS)
+import Foundation
+
+/// Why a call that needs the system sheet was refused, which decides the wording of `browserBusy`.
+///
+/// The sheet may be a hosted-UI sign-in, a hosted-UI sign-out page or a passkey sheet, so the texts name
+/// none of them.
+enum BrowserBusyReason: Equatable {
+
+    /// Another session holds the sheet.
+    case heldByAnotherSession
+
+    /// The asking session already holds the sheet.
+    case alreadyInFlight
+
+    /// The asking session is already queued for the sheet, which another session holds.
+    case alreadyQueued
+
+    /// The asking session's previous flow was cancelled and its sheet is still closing.
+    case stillClosing
+
+    /// As `stillClosing`, with the session's earlier call already queued behind that sheet: the earlier call starts
+    /// by itself once the sheet has closed, so the suggestion is to wait for it, not to retry.
+    case stillClosingWithCallQueued
+
+    /// The asking session's previous hosted-UI sign-in call is still in progress, and is neither holding the sheet
+    /// nor queued for it: before its lease (waiting for the sign-in lock, or listing the other sessions), or after it,
+    /// committing. The holder is another session, named, or, when none holds the sheet, the asking session itself.
+    /// The one text that names the hosted UI: it is about the call, not the sheet.
+    case signInInProgress
+
+    /// The asking session waited with `whenBrowserBusy: .wait(timeout:)`, and the timeout expired first.
+    case timedOut
+}
+
+extension AmplifyCognitoClientError {
+
+    /// `browserBusy`, naming `holder` so an app can tell the user which sign-in to finish first.
+    static func browserBusy(
+        heldBy holder: SessionID,
+        requestedBy requester: SessionID,
+        reason: BrowserBusyReason
+    ) -> AmplifyCognitoClientError {
+        switch reason {
+        case .alreadyInFlight:
+            return .browserBusy(
+                holder: holder,
+                "Session \"\(holder)\" already has a system sheet in progress.",
+                "Wait for it to finish, or cancel it, before starting another for the same session."
+            )
+        case .alreadyQueued:
+            return .browserBusy(
+                holder: holder,
+                "Session \"\(requester)\" is already waiting for the system sheet, which session \"\(holder)\" holds.",
+                "Wait for the earlier call to finish, or cancel it. One session queues for the sheet at most once."
+            )
+        case .signInInProgress:
+            let held = holder == requester ? "" : ", and session \"\(holder)\" holds the system sheet"
+            return .browserBusy(
+                holder: holder,
+                "Session \"\(requester)\" already has a hosted-UI sign-in in progress\(held).",
+                "Wait for it to finish, or cancel it, before starting another for the same session."
+            )
+        case .stillClosing:
+            return .browserBusy(
+                holder: holder,
+                "Session \"\(holder)\"'s previous system sheet is still closing.",
+                "Retry once it has closed, or pass `whenBrowserBusy: .wait(timeout:)` to start as soon as it has."
+            )
+        case .stillClosingWithCallQueued:
+            return .browserBusy(
+                holder: holder,
+                "Session \"\(holder)\"'s previous system sheet is still closing.",
+                "The earlier call is queued and starts by itself once the sheet has closed: wait for it to finish, "
+                    + "or cancel it. One session queues for the sheet at most once."
+            )
+        case .heldByAnotherSession:
+            return .browserBusy(
+                holder: holder,
+                "Session \"\(holder)\" is showing a system sheet, and only one can be shown at a time.",
+                "Ask the user to finish with that session's sheet first, or cancel it. "
+                    + "To queue behind it instead, pass `whenBrowserBusy: .wait(timeout:)`."
+            )
+        case .timedOut:
+            return .browserBusy(
+                holder: holder,
+                "Session \"\(requester)\" waited for the system sheet until its timeout, and session \"\(holder)\" still holds it.",
+                "Retry later, or wait longer with `whenBrowserBusy: .wait(timeout:)`. "
+                    + "To free a sheet that has stopped responding, call `AmplifyCognitoClient.resetSystemSheet()`."
+            )
+        }
+    }
+
+    /// `browserBusy` with the reason inferred: the holder itself asking, or another session.
+    static func browserBusy(heldBy holder: SessionID, requestedBy requester: SessionID) -> AmplifyCognitoClientError {
+        browserBusy(
+            heldBy: holder,
+            requestedBy: requester,
+            reason: holder == requester ? .alreadyInFlight : .heldByAnotherSession
+        )
+    }
+}
+#endif

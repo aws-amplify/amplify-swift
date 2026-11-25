@@ -29,7 +29,7 @@ extension LiveSessionEngine {
     ///
     /// - Throws: `notSignedIn` for a payload with no user pool tokens; the runner's own errors unchanged
     ///   (`.browserBusy(holder:)`); `CancellationError` if the calling task was cancelled; otherwise Cognito's
-    ///   answer or the ceremony's failure as `AuthClientError(engine:)` maps it (`mappingSignedInFailures`).
+    ///   answer or the ceremony's failure as `AmplifyCognitoClientError(engine:)` maps it (`mappingSignedInFailures`).
     nonisolated func associateWebAuthnCredential(_ payload: Data, context: EngineCeremonyContext) async throws {
         #if os(iOS) || os(macOS) || os(visionOS)
         guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
@@ -58,10 +58,10 @@ extension LiveSessionEngine {
     ///
     /// - Parameter pageSize: `MaxResults`; the facade has checked it is 1…20.
     /// - Throws: `notSignedIn` for a payload with no user pool tokens; `CancellationError` if the call was
-    ///   cancelled; otherwise Cognito's answer as `AuthClientError(engine:)` maps it (`mappingSignedInFailures`).
+    ///   cancelled; otherwise Cognito's answer as `AmplifyCognitoClientError(engine:)` maps it (`mappingSignedInFailures`).
     nonisolated func listWebAuthnCredentials(_ payload: Data, pageSize: Int, nextToken: String?) async throws -> EngineWebAuthnCredentialPage {
         guard let maxResults = UInt(exactly: pageSize) else {
-            throw AuthClientError.webAuthnPageSizeOutOfRange
+            throw AmplifyCognitoClientError.webAuthnPageSizeOutOfRange
         }
         let accessToken = try webAuthnAccessToken(in: payload, for: "listWebAuthnCredentials")
         let userPool = webAuthnUserPool
@@ -96,7 +96,7 @@ extension LiveSessionEngine {
     private nonisolated func webAuthnAccessToken(in payload: Data, for operation: String) throws -> String {
         try requireUserPool()
         guard let accessToken = try Self.credentials(in: payload).userPoolTokens?.accessToken else {
-            throw AuthClientError.notSignedIn(
+            throw AmplifyCognitoClientError.notSignedIn(
                 "There is no user signed in to \(operation)",
                 "Call signIn to sign in a user, then \(operation)."
             )

@@ -30,7 +30,7 @@ import XCTest
 /// `sidecar`, `leftover`), never by account name, because account names carry the pool identifiers.
 final class PluginSharedLoginTests: XCTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
     /// The plugin's record, `amplify.<ns>.session`: `.default`'s session record.
     private var pluginAccount = ""
     /// `.default`'s sidecar, `amplify.1.<ns>.$default.meta`, which only the client writes.
@@ -45,7 +45,7 @@ final class PluginSharedLoginTests: XCTestCase {
     override func setUp() async throws {
         try await super.setUp()
         try InteropEnvironment.requireProvisioned()
-        configuration = try AuthClientConfiguration(
+        configuration = try AmplifyCognitoClientConfiguration(
             from: InteropEnvironment.outputsResource,
             bundle: InteropEnvironment.outputsBundle()
         )

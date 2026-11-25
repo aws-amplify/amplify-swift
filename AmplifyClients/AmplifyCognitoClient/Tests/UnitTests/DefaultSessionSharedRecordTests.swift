@@ -28,7 +28,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
     private var leftoverAccount: String { SessionRecordKey.account(for: .default, in: pools, kind: .session) }
     private var leftoverMarker: String { SessionRecordKey.markerAccount(for: .default, scope: TestKeychain.markerScope) }
 
-    private let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+    private let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
 
     override func setUp() {
         harness = ClientHarness()
@@ -53,7 +53,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
 
         let state = await client.currentSessionState()
 
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice@corp", userId: "1234567890")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice@corp", userId: "1234567890")))
         XCTAssertFalse(harness.keychain.hasMutations)
     }
 
@@ -186,7 +186,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertEqual(first?.isUnknown, true, "\(String(describing: first))")
         for (name, error) in [("second", second), ("third", third), ("fourth", fourth)] {
             XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
-            XCTAssertEqual((error?.underlyingError as? AuthClientError)?.errorDescription, Self.refreshTokenAlreadyUsed, name)
+            XCTAssertEqual((error?.underlyingError as? AmplifyCognitoClientError)?.errorDescription, Self.refreshTokenAlreadyUsed, name)
         }
         XCTAssertEqual(engine.refreshCalls.count, 2)
         // Ends with a known event, so an extra `.sessionExpired` still in the recorder's buffer is counted too.
@@ -224,7 +224,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         for (name, error) in [("first", first), ("second", second)] {
             XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
             XCTAssertEqual(
-                (error?.underlyingError as? AuthClientError)?.errorDescription,
+                (error?.underlyingError as? AmplifyCognitoClientError)?.errorDescription,
                 "Session \"$default\"'s refresh token has expired or been revoked.",
                 name
             )
@@ -265,7 +265,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
 
         for (name, error) in [("third", third), ("fourth", fourth)] {
             XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
-            XCTAssertEqual((error?.underlyingError as? AuthClientError)?.errorDescription, Self.refreshTokenAlreadyUsed, name)
+            XCTAssertEqual((error?.underlyingError as? AmplifyCognitoClientError)?.errorDescription, Self.refreshTokenAlreadyUsed, name)
         }
         XCTAssertEqual(engine.refreshCalls.count, 2)
         XCTAssertEqual(harness.keychain.value(pluginAccount), resaved)
@@ -341,7 +341,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertEqual(error?.kind, .sessionExpired, "the plugin's flagged re-save is not a new login: \(String(describing: error))")
         XCTAssertEqual(error?.errorDescription, Self.refreshTokenAlreadyUsed)
         XCTAssertEqual(aws?.isSessionExpired, true, "\(String(describing: aws))")
-        XCTAssertEqual((aws?.underlyingError as? AuthClientError)?.errorDescription, Self.refreshTokenAlreadyUsed)
+        XCTAssertEqual((aws?.underlyingError as? AmplifyCognitoClientError)?.errorDescription, Self.refreshTokenAlreadyUsed)
         XCTAssertEqual(live.cognito.operations.count(where: { $0 == "GetTokensFromRefreshToken" }), 2)
     }
 
@@ -457,7 +457,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         let meta = try XCTUnwrap(sidecar())
         XCTAssertEqual([meta.label, meta.username, meta.userId], ["Home", "alice", "sub-alice"])
         XCTAssertEqual(try harness.store().storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: "Home", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)
+            StoredSession(sessionId: .default, label: "Home", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)
         ])
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedOut)
@@ -578,7 +578,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         )
 
         XCTAssertEqual(restored, .signedOut)
-        XCTAssertEqual(listed, [StoredSession(sessionId: .default, label: "Home", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)])
+        XCTAssertEqual(listed, [StoredSession(sessionId: .default, label: "Home", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)])
         XCTAssertEqual(userIds, [.default: "sub-alice"])
         XCTAssertFalse(touched().contains(leftoverAccount))
         XCTAssertFalse(touched().contains(leftoverMarker))
@@ -1059,10 +1059,10 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertNil(try harness.storedRecord(.default)?.label)
         XCTAssertEqual(try harness.storedRecord(.default)?.username, "bob")
         XCTAssertEqual(try harness.store().storedSessions(), [
-            StoredSession(sessionId: .default, label: nil, user: AuthClientUser(username: "bob", userId: "sub-bob"), kind: .userPoolAndIdentityPool, state: .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+            StoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "bob", userId: "sub-bob"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         ])
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
     }
 
     // MARK: Helpers

@@ -57,9 +57,9 @@ final class LiveEngineAttributesTests: XCTestCase {
         let attributes = try await engine.fetchUserAttributes(payload)
 
         XCTAssertEqual(attributes, [
-            AuthClientUserAttribute(.email, value: "alice@example.com"),
-            AuthClientUserAttribute(.custom("team"), value: "blue"),
-            AuthClientUserAttribute(.unknown("zoneinfo_extra"), value: "x")
+            AmplifyCognitoClientUserAttribute(.email, value: "alice@example.com"),
+            AmplifyCognitoClientUserAttribute(.custom("team"), value: "blue"),
+            AmplifyCognitoClientUserAttribute(.unknown("zoneinfo_extra"), value: "x")
         ])
         XCTAssertEqual(harness.cognito.inputs("GetUser", as: GetUserInput.self).map(\.accessToken), [try accessToken(payload)])
         XCTAssertEqual(harness.cognito.operations, ["GetUser"])
@@ -120,25 +120,25 @@ final class LiveEngineAttributesTests: XCTestCase {
         let results = try await engine.updateUserAttributes(
             payload,
             attributes: [
-                AuthClientUserAttribute(.email, value: "new@example.com"),
-                AuthClientUserAttribute(.name, value: "Alice"),
-                AuthClientUserAttribute(.custom("team"), value: "blue")
+                AmplifyCognitoClientUserAttribute(.email, value: "new@example.com"),
+                AmplifyCognitoClientUserAttribute(.name, value: "Alice"),
+                AmplifyCognitoClientUserAttribute(.custom("team"), value: "blue")
             ],
             clientMetadata: ["app": "test"]
         )
         let second = try await engine.updateUserAttributes(
             payload,
-            attributes: [AuthClientUserAttribute(.name, value: "Alice")],
+            attributes: [AmplifyCognitoClientUserAttribute(.name, value: "Alice")],
             clientMetadata: [:]
         )
 
-        let emailDetails = AuthClientCodeDeliveryDetails(destination: .email("a***@e***"), attributeKey: .email)
+        let emailDetails = AmplifyCognitoClientCodeDeliveryDetails(destination: .email("a***@e***"), attributeKey: .email)
         XCTAssertEqual(results, [
-            .email: AuthClientUpdateAttributeResult(isUpdated: false, nextStep: .confirmAttributeWithCode(emailDetails, nil)),
-            .name: AuthClientUpdateAttributeResult(isUpdated: true, nextStep: .done),
-            .custom("team"): AuthClientUpdateAttributeResult(isUpdated: true, nextStep: .done)
+            .email: AmplifyCognitoClientUpdateAttributeResult(isUpdated: false, nextStep: .confirmAttributeWithCode(emailDetails, nil)),
+            .name: AmplifyCognitoClientUpdateAttributeResult(isUpdated: true, nextStep: .done),
+            .custom("team"): AmplifyCognitoClientUpdateAttributeResult(isUpdated: true, nextStep: .done)
         ])
-        XCTAssertEqual(second, [.name: AuthClientUpdateAttributeResult(isUpdated: true, nextStep: .done)])
+        XCTAssertEqual(second, [.name: AmplifyCognitoClientUpdateAttributeResult(isUpdated: true, nextStep: .done)])
         let inputs = harness.cognito.inputs("UpdateUserAttributes", as: UpdateUserAttributesInput.self)
         let token = try accessToken(payload)
         XCTAssertEqual(inputs.map(\.accessToken), [token, token])
@@ -212,7 +212,7 @@ final class LiveEngineAttributesTests: XCTestCase {
             }
         }
 
-        XCTAssertEqual(details, AuthClientCodeDeliveryDetails(destination: .email("a***@e***"), attributeKey: .email))
+        XCTAssertEqual(details, AmplifyCognitoClientCodeDeliveryDetails(destination: .email("a***@e***"), attributeKey: .email))
         let inputs = harness.cognito.inputs("GetUserAttributeVerificationCode", as: GetUserAttributeVerificationCodeInput.self)
         let token = try accessToken(payload)
         XCTAssertEqual(inputs.map(\.accessToken), [token, token, token])
@@ -448,8 +448,8 @@ final class LiveEngineAttributesTests: XCTestCase {
         try await client.confirm(userAttribute: .email, confirmationCode: "123456")
         try await client.update(oldPassword: "password", to: "New-password1")
 
-        XCTAssertEqual(attributes, [AuthClientUserAttribute(.email, value: "alice@example.com")])
-        XCTAssertEqual(updated, AuthClientUpdateAttributeResult(
+        XCTAssertEqual(attributes, [AmplifyCognitoClientUserAttribute(.email, value: "alice@example.com")])
+        XCTAssertEqual(updated, AmplifyCognitoClientUpdateAttributeResult(
             isUpdated: false,
             nextStep: .confirmAttributeWithCode(.init(destination: .email("a***@e***"), attributeKey: .email), nil)
         ))

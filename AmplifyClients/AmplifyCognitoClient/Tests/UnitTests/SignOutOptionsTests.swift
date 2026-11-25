@@ -81,8 +81,8 @@ final class SignOutOptionsTests: XCTestCase {
     func testAFailedGlobalSignOutIsPartial() async throws {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
-        let global = AuthClientError.service(.network, "global sign-out failed", "retry")
-        let placeholder = AuthClientError.service(nil, "", "")
+        let global = AmplifyCognitoClientError.service(.network, "global sign-out failed", "retry")
+        let placeholder = AmplifyCognitoClientError.service(nil, "", "")
         harness.engine(for: work)?.scriptRevokeOutcome { _, _ in
             EngineSignOutOutcome(revokeError: placeholder, globalSignOutError: global)
         }
@@ -144,7 +144,7 @@ final class SignOutOptionsTests: XCTestCase {
     func testAFailedPurgeCarriesThePartialSignOut() async throws {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
-        let revoke = AuthClientError.service(.network, "revoke failed", "retry")
+        let revoke = AmplifyCognitoClientError.service(.network, "revoke failed", "retry")
         harness.engine(for: work)?.scriptRevokeOutcome { _, _ in EngineSignOutOutcome(revokeError: revoke) }
         harness.keychain.failingRemovals(of: harness.store().sessionAccount(for: work), with: errSecInteractionNotAllowed)
 
@@ -220,7 +220,7 @@ final class SignOutOptionsTests: XCTestCase {
         _ = await workClient.signOut(options: .init(globalSignOut: true))
 
         let homeState = await homeClient.currentSessionState()
-        XCTAssertEqual(homeState, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(homeState, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(homeEvents.received, [])
         XCTAssertEqual(try harness.store().read(home), .record(homeRecord))
         XCTAssertEqual(harness.storedBytes(home), homeBytes)
@@ -233,9 +233,9 @@ final class SignOutOptionsTests: XCTestCase {
 extension SignOutOptionsTests {
 
     private func signOutStored(
-        _ options: AuthClientSignOutOptions,
+        _ options: AmplifyCognitoClientSignOutOptions,
         sessionId: SessionID = ClientFixtures.id("work")
-    ) async -> AuthClientSignOutResult {
+    ) async -> AmplifyCognitoClientSignOutResult {
         await AmplifyCognitoClient.signOutStoredSession(
             sessionId: sessionId,
             configuration: ClientFixtures.configuration,
@@ -338,7 +338,7 @@ extension SignOutOptionsTests {
     ///      as the instance's is; the row is kept, signed out
     func testAStaticPurgeThatFailsCarriesThePartialSignOut() async throws {
         try harness.signIn(work, .signedIn("alice"))
-        let revoke = AuthClientError.service(.network, "revoke failed", "retry")
+        let revoke = AmplifyCognitoClientError.service(.network, "revoke failed", "retry")
         harness.revoker.scriptRevokeOutcome { _ in EngineSignOutOutcome(revokeError: revoke) }
         harness.keychain.failingRemovals(of: harness.store().sessionAccount(for: work), with: errSecInteractionNotAllowed)
 

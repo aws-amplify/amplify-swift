@@ -78,7 +78,7 @@ struct SessionSignOut: Sendable {
         ///   if any, as its underlying error.
         /// - `.unreadable` is `.failed(.unknown)`, saying what was found, with the first
         ///   server-side failure, if any, as its underlying error.
-        func result() -> AuthClientSignOutResult {
+        func result() -> AmplifyCognitoClientSignOutResult {
             switch self {
             case .nothingToSignOut:
                 return .complete
@@ -127,10 +127,10 @@ struct SessionSignOut: Sendable {
         case credentials(Data, CredentialSummary)
     }
 
-    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written. A failed
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage could not be read or written. A failed
     ///   revoke does not throw; it is reported in the outcome. A revoke that throws `CancellationError` before any
     ///   attempt has revoked (after one has, it is a failed revoke and the record is cleared),
-    ///   `AuthClientError.userCancelled` (the user closed the hosted UI's logout page), or a `SignOutRefusal`
+    ///   `AmplifyCognitoClientError.userCancelled` (the user closed the hosted UI's logout page), or a `SignOutRefusal`
     ///   (no hosted UI to sign out of), rethrows it before anything is cleared, so the session stays signed in,
     ///   as the plugin's does. The caller maps every throw to `.failed` with `failure(_:)`.
     ///
@@ -208,7 +208,7 @@ struct SessionSignOut: Sendable {
                 // with its caller: the engine runs it in a task of its own and returns its outcome
                 // (`LiveSessionEngine.revokeSkippingHostedUI` and `revokePresenting`, `SessionCore.afterInterruptedLogout`).
                 throw CancellationError()
-            } catch let error as AuthClientError where error.isUserCancelled && !revokedOnce {
+            } catch let error as AmplifyCognitoClientError where error.isUserCancelled && !revokedOnce {
                 // The user closed the logout page: they chose not to sign out. Clear nothing. (Only a first attempt
                 // shows the page; after a revoke this is a failed revoke like any other, and the record is cleared.)
                 throw error
@@ -315,13 +315,13 @@ struct SessionSignOut: Sendable {
 
     /// The `.failed` result's error for a sign-out that threw before it cleared anything, so the session is
     /// still signed in: a `CancellationError` before any revoke is `.unknown`, verbatim.
-    static func failure(_ error: Error) -> AuthClientError {
+    static func failure(_ error: Error) -> AmplifyCognitoClientError {
         switch error {
         case is CancellationError:
             return cancelledError()
         case let refusal as SignOutRefusal:
             return refusal.error
-        case let error as AuthClientError:
+        case let error as AmplifyCognitoClientError:
             return error
         case SessionEngineError.service(let error):
             return error
@@ -335,7 +335,7 @@ struct SessionSignOut: Sendable {
     }
 
     /// The task was cancelled before anything was revoked.
-    static func cancelledError() -> AuthClientError {
+    static func cancelledError() -> AmplifyCognitoClientError {
         .unknown(
             "The sign-out was cancelled before anything was revoked; the session is still signed in.",
             "Retry the sign-out.",
@@ -345,7 +345,7 @@ struct SessionSignOut: Sendable {
 
     /// The record held something this build cannot read after the revoke, so it was left as it is. `underlying` is
     /// the sign-out's first server-side failure, if any.
-    static func unreadableError(_ unreadable: SessionSnapshot.Unreadable, underlying: Error? = nil) -> AuthClientError {
+    static func unreadableError(_ unreadable: SessionSnapshot.Unreadable, underlying: Error? = nil) -> AmplifyCognitoClientError {
         let revoked = underlying == nil
             ? "Its tokens were revoked."
             : "Its tokens could not all be revoked; the underlying error says why."
@@ -368,7 +368,7 @@ struct SessionSignOut: Sendable {
 
     /// The revoke failure a sign-out reports after replacing a newer schema's record, which it could not read, and so
     /// could not revoke.
-    static func unrevokedNewerRecordError(version: Int) -> AuthClientError {
+    static func unrevokedNewerRecordError(version: Int) -> AmplifyCognitoClientError {
         .unknown(
             "A newer version of the app saved this session (record schema \(version)), so its tokens could not be read or "
                 + "revoked. The record was replaced with a signed-out row; a refresh token it held stays valid until it expires.",
@@ -377,7 +377,7 @@ struct SessionSignOut: Sendable {
     }
 
     /// Another sign-in replaced the session while it was signing out.
-    static func supersededError() -> AuthClientError {
+    static func supersededError() -> AmplifyCognitoClientError {
         .invalidState(
             "Another sign-in replaced this session while it was signing out; that user is still signed in.",
             "Check the session's state, then sign out again if needed."
@@ -392,20 +392,20 @@ struct SessionSignOut: Sendable {
 
     /// A revoke attempt that threw, under a sign-out that cleared the session: the session is signed out on this device,
     /// and nothing retries the revoke.
-    static func revokeFailure(_ error: Error) -> AuthClientError {
+    static func revokeFailure(_ error: Error) -> AmplifyCognitoClientError {
         switch error {
-        case let error as AuthClientError:
+        case let error as AmplifyCognitoClientError:
             return error
         case SessionEngineError.service(let error):
             return error
         default:
-            if AuthClientError.isNetworkFailure(error) {
-                return AuthClientError.revokeNetworkFailure(error)
+            if AmplifyCognitoClientError.isNetworkFailure(error) {
+                return AmplifyCognitoClientError.revokeNetworkFailure(error)
             }
             return .unknown(
                 "The session's tokens could not be revoked, so its refresh token stays valid until it expires, unless a "
                     + "global sign-out succeeded.",
-                AuthClientError.revokeNotRetriedSuggestion,
+                AmplifyCognitoClientError.revokeNotRetriedSuggestion,
                 error
             )
         }
@@ -414,9 +414,9 @@ struct SessionSignOut: Sendable {
     /// `revokeFailure(_:)` without the sign-out's context, for a sign-out that could not finish: the session is still
     /// signed in on this device, and a retried sign-out revokes again. A transport failure reads as in any other call;
     /// a retry cancelled before it was sent, after an earlier attempt revoked, says so.
-    static func plainRevokeFailure(_ error: Error) -> AuthClientError {
+    static func plainRevokeFailure(_ error: Error) -> AmplifyCognitoClientError {
         switch error {
-        case let error as AuthClientError:
+        case let error as AmplifyCognitoClientError:
             return error
         case SessionEngineError.service(let error):
             return error
@@ -427,7 +427,7 @@ struct SessionSignOut: Sendable {
                 error
             )
         default:
-            return AuthClientError.transportFailure(error) ?? .unknown(
+            return AmplifyCognitoClientError.transportFailure(error) ?? .unknown(
                 "The session's tokens could not be revoked.",
                 "Retry the sign-out.",
                 error
@@ -441,5 +441,5 @@ struct SessionSignOut: Sendable {
 /// URI, the browser busy, the window gone, or the browser step failing. `SessionSignOut.run()` rethrows
 /// it, unlike a failed revoke, which it reports and clears past.
 struct SignOutRefusal: Error, Sendable {
-    let error: AuthClientError
+    let error: AmplifyCognitoClientError
 }

@@ -174,13 +174,13 @@ final class WebUIOptionsTests: XCTestCase {
     /// Each provider reaches the engine as the engine's provider of the same case, whose `userPoolProviderName` is
     /// the plugin's own: the authorize request's `identity_provider` (`LiveEngineWebUITests`).
     ///
-    /// - Given: one `AuthClientProvider` of every case
+    /// - Given: one `AmplifyCognitoClientProvider` of every case
     /// - When:
     ///    - it is mapped to the engine's provider
     /// - Then:
     ///    - each is the same case, and the three named cases pass their name through
     func testProvidersMapToTheEnginesCaseForCase() {
-        let expected: [(AuthClientProvider, EngineAuthProvider)] = [
+        let expected: [(AmplifyCognitoClientProvider, EngineAuthProvider)] = [
             (.amazon, .amazon),
             (.apple, .apple),
             (.facebook, .facebook),

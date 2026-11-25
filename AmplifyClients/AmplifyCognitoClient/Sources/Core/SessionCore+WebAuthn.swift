@@ -132,7 +132,7 @@ extension SessionCore {
     /// factor, or a `"WEB_AUTHN"` selection, with no `presentationAnchorForWebAuthn` in either call's options.
     /// Refused before anything is sent. The engine's description for the same refusal (a WebAuthn step Cognito
     /// started), with a recovery that names both options.
-    static func presentationAnchorRequired() -> AuthClientError {
+    static func presentationAnchorRequired() -> AmplifyCognitoClientError {
         .validation(
             field: WebAuthnCredentialOperations.signInPresentationAnchorField,
             WebAuthnCredentialOperations.presentationAnchorMissingDescription,
@@ -149,7 +149,7 @@ extension SessionCore {
     /// sheet is its busy check, so another session's sheet refuses it with nothing stopped. It may
     /// still leave the session signed in: the user may close the page, or the registration's own sheet may not
     /// close within `passkeySheetClosingTimeout` (the busy refusal). Worded for both outcomes.
-    static func passkeyRegistrationEnded() -> AuthClientError {
+    static func passkeyRegistrationEnded() -> AmplifyCognitoClientError {
         .invalidState(
             "The passkey registration was cancelled by a sign-out, purge or deletion of this session.",
             "If the session is still signed in, register the passkey again; otherwise sign in first."
@@ -158,7 +158,7 @@ extension SessionCore {
 
     /// A passkey sheet `cancelWebUISignIn()` or `resetSystemSheet()` closed: the app's own close, reported as the
     /// user's, as the hosted UI's browser is.
-    static func passkeySheetClosed() -> AuthClientError {
+    static func passkeySheetClosed() -> AmplifyCognitoClientError {
         .userCancelled(
             "The passkey sheet was closed before the ceremony finished.",
             "Try again when the user is ready."
@@ -166,7 +166,7 @@ extension SessionCore {
     }
 
     /// WebAuthn on a platform without the passkey sheet (tvOS, watchOS).
-    static func webAuthnUnavailable() -> AuthClientError {
+    static func webAuthnUnavailable() -> AmplifyCognitoClientError {
         .configuration(
             "WebAuthn is not available on this platform.",
             "Use WebAuthn on iOS 17.4, macOS 13.5 or visionOS 1.0 and later."

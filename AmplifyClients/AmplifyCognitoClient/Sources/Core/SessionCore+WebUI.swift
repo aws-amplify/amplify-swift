@@ -79,7 +79,7 @@ extension SessionCore {
         /// The attempt ran: the outcome `firstSignOutAttempt`'s table gives. Its refusals and failures are thrown.
         case finished(EngineSignOutOutcome)
         /// The lease was refused because this session holds the sheet. Nothing ran.
-        case heldByThisSession(AuthClientError)
+        case heldByThisSession(AmplifyCognitoClientError)
     }
 
     /// One attempt at the logout page, under the sheet's lease taken with `policy` (and `waitsOnlyForItself`, the
@@ -123,7 +123,7 @@ extension SessionCore {
                 }
             }
             return .finished(shown)
-        } catch let error as AuthClientError where error.isBrowserBusy {
+        } catch let error as AmplifyCognitoClientError where error.isBrowserBusy {
             // Refused before the body began: the lock's own refusal, so nothing was stopped. This session's own
             // sheet is for `logoutAfterOwnSheet`; another session's is the busy row.
             if case .browserBusy(let holder, _, _, _) = error, holder == sessionId, body.abandonIfNotBegun() {
@@ -131,7 +131,7 @@ extension SessionCore {
             }
             // The user asked for the page and it cannot be shown: they stay signed in.
             throw SignOutRefusal(error: Self.signOutBrowserBusy(error))
-        } catch let error as AuthClientError where error.isUserCancelled {
+        } catch let error as AmplifyCognitoClientError where error.isUserCancelled {
             return try await .finished(afterClosedLogout(payload, global: global, error))
         } catch is CancellationError {
             // The caller's own cancellation too: the engine's sign-out runs in a task of its own and may go on
@@ -153,7 +153,7 @@ extension SessionCore {
         _ payload: Data,
         global: Bool,
         box: EnginePresentationAnchorBox,
-        busy: AuthClientError
+        busy: AmplifyCognitoClientError
     ) async throws -> EngineSignOutOutcome {
         guard await stopPasskeyRegistrations() else {
             switch try await logoutUnderLease(payload, global: global, box: box, policy: .fail) {
@@ -203,14 +203,14 @@ extension SessionCore {
         body: LeaseBodyResult<EngineSignOutOutcome>,
         byCaller: Bool
     ) async throws -> EngineSignOutOutcome {
-        let closedPage: AuthClientError
+        let closedPage: AmplifyCognitoClientError
         if body.abandonIfNotBegun() {
             closedPage = Self.logoutClosed()
         } else {
             switch await body.value {
             case .success(let outcome):
                 return outcome
-            case .failure(let error as AuthClientError) where error.isUserCancelled:
+            case .failure(let error as AmplifyCognitoClientError) where error.isUserCancelled:
                 closedPage = error
             case .failure(is CancellationError):
                 closedPage = Self.logoutClosed()
@@ -239,7 +239,7 @@ extension SessionCore {
     /// `payload` with the refresh token proved dead is signed out here: compared by refresh token, not by whole
     /// credentials, since the plugin saves the same dead tokens again with its expired flag set. A new login keeps
     /// the closed page's `.userCancelled`, and stays signed in.
-    private nonisolated func afterClosedLogout(_ payload: Data, global: Bool, _ error: AuthClientError) async throws -> EngineSignOutOutcome {
+    private nonisolated func afterClosedLogout(_ payload: Data, global: Bool, _ error: AmplifyCognitoClientError) async throws -> EngineSignOutOutcome {
         guard let dead = await expiredCredentials, (try? sameRefreshToken(payload, dead)) == true else {
             throw error
         }
@@ -249,7 +249,7 @@ extension SessionCore {
     private nonisolated func skippingHostedUI(
         _ payload: Data,
         global: Bool,
-        reporting error: AuthClientError
+        reporting error: AmplifyCognitoClientError
     ) async throws -> EngineSignOutOutcome {
         var outcome = try await engine.revoke(payload, global: global)
         outcome.hostedUIError = outcome.hostedUIError ?? error
@@ -260,7 +260,7 @@ extension SessionCore {
 
     /// The hosted UI's cookie could not be cleared: no window was given to show its logout page in. Reported once
     /// the session is signed out on this device, so signing it out again finds nothing to sign out, and shows no page.
-    static func noSignOutWindow() -> AuthClientError {
+    static func noSignOutWindow() -> AmplifyCognitoClientError {
         .validation(
             field: "presentationAnchor",
             noSignOutWindowDescription,
@@ -279,7 +279,7 @@ extension SessionCore {
     /// The hosted UI's sign-out cannot run: the configuration has no hosted UI, or no sign-out redirect URI. The
     /// sign-out is `.failed` and the session stays signed in, as with the plugin. One value whether the core
     /// or the engine finds it; the engine's own error, when it found it, is `underlying`.
-    static func noHostedUIForSignOut(_ underlying: Error? = nil) -> AuthClientError {
+    static func noHostedUIForSignOut(_ underlying: Error? = nil) -> AmplifyCognitoClientError {
         .configuration(
             "The session is still signed in: its sign-in shared the browser's cookies, and the configuration has no "
                 + "hosted UI, with a sign-out redirect URI, to sign it out of.",
@@ -290,8 +290,8 @@ extension SessionCore {
     }
 
     /// The sheet lock's `browserBusy`, with a suggestion for a sign-out: the lock's own suggestions name
-    /// `whenBrowserBusy`, which `AuthClientSignOutOptions` does not have. The holder and description are kept.
-    static func signOutBrowserBusy(_ busy: AuthClientError) -> AuthClientError {
+    /// `whenBrowserBusy`, which `AmplifyCognitoClientSignOutOptions` does not have. The holder and description are kept.
+    static func signOutBrowserBusy(_ busy: AmplifyCognitoClientError) -> AmplifyCognitoClientError {
         guard case .browserBusy(let holder, let description, _, let underlying) = busy else {
             return busy
         }
@@ -302,7 +302,7 @@ extension SessionCore {
         "Retry the sign-out when the other sheet has closed; the session is still signed in."
 
     /// The logout page was closed, and the session is still signed in: the sign-out is `.failed` with this error.
-    static func logoutClosed() -> AuthClientError {
+    static func logoutClosed() -> AmplifyCognitoClientError {
         .userCancelled(
             "The hosted UI's sign-out page was closed before it finished.",
             "Sign out again to clear the browser's sign-in."
@@ -312,7 +312,7 @@ extension SessionCore {
     /// The logout page of an expired session was closed, `closed` the page's error: the session was signed out on
     /// this device anyway, so signing it out again finds nothing to sign out, and shows no page. Reported in the
     /// `.partial` result's `hostedUIError`, with `closed`'s underlying error.
-    static func expiredLogoutClosed(_ closed: AuthClientError) -> AuthClientError {
+    static func expiredLogoutClosed(_ closed: AmplifyCognitoClientError) -> AmplifyCognitoClientError {
         .userCancelled(expiredLogoutClosedDescription, noSignOutWindowSuggestion, closed.underlyingError)
     }
 
@@ -368,7 +368,7 @@ extension SessionCore {
     /// **A sign-out during the code exchange** stops the engine's machine, which then drops the token
     /// response. The engine shows the exchange's refresh token to the operation's issued-token tap first
     /// (`HostedUIEnvironment.issuedRefreshTokenObserver`), and the tap of a cancelled operation revokes it, once.
-    nonisolated func signInWithWebUI(anchor: EnginePresentationAnchorBox, options: WebUIOptions) async throws -> AuthClientSignInResult {
+    nonisolated func signInWithWebUI(anchor: EnginePresentationAnchorBox, options: WebUIOptions) async throws -> AmplifyCognitoClientSignInResult {
         try requireUserPool(for: "sign in with the hosted UI")
         guard configuration.hasHostedUI else {
             throw LiveSessionEngine.hostedUINotConfigured()
@@ -378,7 +378,7 @@ extension SessionCore {
             throw await webUISignInInProgress()
         }
         let caller = SystemSheetFlow()
-        let outcome: Result<AuthClientSignInResult, Error>
+        let outcome: Result<AmplifyCognitoClientSignInResult, Error>
         do {
             outcome = try await .success(withTaskCancellationHandler {
                 try await webUISignInStep(anchor: anchor, options: options, caller: caller)
@@ -404,7 +404,7 @@ extension SessionCore {
                 throw Self.signInCancelled()
             }
             throw Self.webUISignInCancelled()
-        case .failure(let error as AuthClientError):
+        case .failure(let error as AmplifyCognitoClientError):
             if Task.isCancelled, error.isBrowserBusy {
                 // Refused a sheet the caller had already given up on: the cancellation is the answer.
                 throw CancellationError()
@@ -421,7 +421,7 @@ extension SessionCore {
         anchor: EnginePresentationAnchorBox,
         options: WebUIOptions,
         caller: SystemSheetFlow
-    ) async throws -> AuthClientSignInResult {
+    ) async throws -> AmplifyCognitoClientSignInResult {
         let endings = await sessionEndings
         return try await withSignInLock(endedSince: endings) { [self] in
             // The step runs in a task of its own, which the caller's cancellation does not reach: check it.
@@ -445,7 +445,7 @@ extension SessionCore {
             guard await registerWebUIFlow(epoch: registered, endedSince: endings, cancel: { caller.cancel(.sessionEnded) }) else {
                 throw Self.signInCancelled()
             }
-            let result: Result<AuthClientSignInResult, Error>
+            let result: Result<AmplifyCognitoClientSignInResult, Error>
             do {
                 result = try await .success(leasedWebUISignIn(request, options: options, endings: endings, caller: caller))
             } catch {
@@ -469,7 +469,7 @@ extension SessionCore {
         options: WebUIOptions,
         endings: UInt64,
         caller: SystemSheetFlow
-    ) async throws -> AuthClientSignInResult {
+    ) async throws -> AmplifyCognitoClientSignInResult {
         let engine = engine
         let lock = sheetLock
         let sessionId = sessionId
@@ -611,7 +611,7 @@ extension SessionCore {
                 return
             }
             caller.record(holders)
-            throw AuthClientError(hostedUIMismatch: HostedUIIdentityMismatch(
+            throw AmplifyCognitoClientError(hostedUIMismatch: HostedUIIdentityMismatch(
                 reason: .signedInToAnotherSession,
                 returnedUsername: summary.username,
                 returnedUserId: userId
@@ -692,7 +692,7 @@ extension SessionCore {
 
     /// `.unexpectedIdentity` for a user signed in to another session, with a description naming that session.
     /// Every other error is returned as it is.
-    static func namingHolder(_ error: AuthClientError, subjects: [String: SessionID]) -> AuthClientError {
+    static func namingHolder(_ error: AmplifyCognitoClientError, subjects: [String: SessionID]) -> AmplifyCognitoClientError {
         guard case .unexpectedIdentity(let expected, let returned, _, let suggestion, let underlying) = error,
               expected == nil,
               let holder = subjects[returned.userId] else {
@@ -726,7 +726,7 @@ extension SessionCore {
     /// | queued behind this session's own closing sheet (a retry after a cancel) | `.stillClosingWithCallQueued` | this session |
     /// | holding the sheet (this session holds it) | `.alreadyInFlight` | this session |
     /// | neither: before its lease, or committing after it | `.signInInProgress` | the session holding the sheet, else this session |
-    private nonisolated func webUISignInInProgress() async -> AuthClientError {
+    private nonisolated func webUISignInInProgress() async -> AmplifyCognitoClientError {
         let (holder, queued) = await sheetLock.holderAndQueue(for: sessionId)
         if let holder, queued, holder != sessionId {
             return .browserBusy(heldBy: holder, requestedBy: sessionId, reason: .alreadyQueued)
@@ -738,7 +738,7 @@ extension SessionCore {
         return .browserBusy(heldBy: holder ?? sessionId, requestedBy: sessionId, reason: .signInInProgress)
     }
 
-    static func webUISignInCancelled() -> AuthClientError {
+    static func webUISignInCancelled() -> AmplifyCognitoClientError {
         .userCancelled(
             "The hosted UI sign-in was cancelled before it finished.",
             "Sign in again when the user is ready."
@@ -855,7 +855,7 @@ final class LateSignInClaim: @unchecked Sendable {
 
 #endif
 
-extension AuthClientConfiguration {
+extension AmplifyCognitoClientConfiguration {
 
     /// Whether the configuration has a hosted UI the engine can use: `auth.oauth` with a sign-in and a sign-out
     /// redirect URI (the engine's `hostedUIConfig`).
@@ -867,7 +867,7 @@ extension AuthClientConfiguration {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     var isBrowserBusy: Bool {
         if case .browserBusy = self {

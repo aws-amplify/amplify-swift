@@ -29,7 +29,7 @@ final class RawSDKWebAuthnDriver: WebAuthnHarnessDriver {
     private var refreshToken: String?
     private var ceremony: PasskeyCeremony?
 
-    init(configuration: AuthClientConfiguration) throws {
+    init(configuration: AmplifyCognitoClientConfiguration) throws {
         guard let userPool = configuration.userPool else {
             throw HarnessAppError("The WebAuthn pool outputs have no user pool")
         }

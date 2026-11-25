@@ -35,7 +35,7 @@ extension DefaultSessionConfigurationChangeTests {
 
         let rows = try await listed(ChangeConfigs.both)
 
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: "Work", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))])
+        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
         XCTAssertEqual(harness.keychain.writtenAccounts, [])
     }
 
@@ -46,7 +46,7 @@ extension DefaultSessionConfigurationChangeTests {
     ///    - `.default` is listed as the carried record will be read, a signed-out row, awaiting the challenge
     ///    - the client restores to the same state
     func testListingBeforeRestore_withAPendingChallenge_listsTheCarriedRowAwaitingIt() async throws {
-        let step = AuthClientSignInStep.confirmSignInWithTOTPCode
+        let step = AmplifyCognitoClientSignInStep.confirmSignInWithTOTPCode
         try pluginSaves(ChangePayloads.guest(), under: ChangeConfigs.both)
         let challenge = ChallengeRecord(createdAt: TestClock.start, state: try XCTUnwrap(.fake(step)))
         try harness.store(configuration: ChangeConfigs.userPoolOnly).putChallenge(challenge, for: .default)
@@ -165,7 +165,7 @@ extension DefaultSessionConfigurationChangeTests {
         let appConfiguration = ChangeConfigs.userPoolOnly
         let carryingConfiguration = ChangeConfigs.both
         let before = try await pluginSignsIn("alice", under: appConfiguration)
-        let failure = AuthClientError.service(.network, "RevokeToken failed", "Retry later.")
+        let failure = AmplifyCognitoClientError.service(.network, "RevokeToken failed", "Retry later.")
         harness.revoker.scriptRevokeOutcome { _ in EngineSignOutOutcome(revokeError: failure) }
 
         let result = await AmplifyCognitoClient.signOutStoredSession(
@@ -484,7 +484,7 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertEqual(harness.keychain.value(account(appConfiguration)), before)
         XCTAssertEqual(harness.keychain.value(appSidecar), sidecarBefore)
         XCTAssertEqual(restored, .signedIn(alice))
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: "Work", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))])
+        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
     }
 
     #if os(iOS) || os(macOS) || os(visionOS)

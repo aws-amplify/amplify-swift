@@ -87,7 +87,7 @@ extension CredentialsError {
         switch error {
         case let error as CredentialsError:
             self = error
-        case let error as AuthClientError:
+        case let error as AmplifyCognitoClientError:
             switch error {
             case .notSignedIn(let description, let suggestion, _):
                 self = .notSignedIn(description, suggestion, error)

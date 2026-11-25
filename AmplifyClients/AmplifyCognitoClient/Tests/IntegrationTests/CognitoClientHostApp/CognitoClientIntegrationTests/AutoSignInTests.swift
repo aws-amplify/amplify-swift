@@ -30,7 +30,7 @@ final class AutoSignInTests: ClientSignUpTestCase {
         do {
             _ = try await client.autoSignIn()
             XCTFail("auto sign-in without a sign-up should not succeed")
-        } catch AuthClientError.invalidState {
+        } catch AmplifyCognitoClientError.invalidState {
             // Expected.
         } catch {
             XCTFail("expected invalidState, got \(error)")
@@ -106,7 +106,7 @@ final class AutoSignInTests: ClientSignUpTestCase {
         do {
             _ = try await client.autoSignIn()
             XCTFail("a second auto sign-in with the same session should not succeed")
-        } catch AuthClientError.notAuthorized {
+        } catch AmplifyCognitoClientError.notAuthorized {
             // Expected.
         } catch {
             XCTFail("expected notAuthorized, got \(error)")

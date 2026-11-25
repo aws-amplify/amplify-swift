@@ -160,7 +160,7 @@ final class SystemSheetFlow: @unchecked Sendable {
                         return try await sheetLock.withLease(for: session, policy: .fail, waitsForReleaseWhenInterrupted: true) { _ in
                             try await body()
                         }
-                    } catch let busy as AuthClientError where busy.isBrowserBusy {
+                    } catch let busy as AmplifyCognitoClientError where busy.isBrowserBusy {
                         throw Self.passkeyBrowserBusy(busy)
                     }
                 }
@@ -172,7 +172,7 @@ final class SystemSheetFlow: @unchecked Sendable {
     /// The sheet lock's `browserBusy`, with a suggestion for a passkey ceremony, which always asks with `.fail`:
     /// one that fits a sheet still showing and one of this session's still closing (`.stillClosing`). The holder and
     /// description are kept.
-    static func passkeyBrowserBusy(_ busy: AuthClientError) -> AuthClientError {
+    static func passkeyBrowserBusy(_ busy: AmplifyCognitoClientError) -> AmplifyCognitoClientError {
         guard case .browserBusy(let holder, let description, _, let underlying) = busy else {
             return busy
         }

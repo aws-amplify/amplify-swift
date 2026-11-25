@@ -14,7 +14,7 @@ extension TestKeychain {
     /// Records `configuration` as the Auth plugin's last configuration (`authConfiguration`), as the plugin, or a
     /// `.default` restore, leaves it: a `.default` restore under that configuration then changes nothing. Records no
     /// mutation.
-    func recordPluginConfiguration(_ configuration: AuthClientConfiguration = ClientFixtures.configuration, accessGroup: String? = nil) {
+    func recordPluginConfiguration(_ configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration, accessGroup: String? = nil) {
         recordPluginConfiguration(AuthConfiguration(client: configuration), accessGroup: accessGroup)
     }
 

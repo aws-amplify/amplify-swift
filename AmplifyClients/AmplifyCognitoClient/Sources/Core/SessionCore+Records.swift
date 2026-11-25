@@ -35,14 +35,14 @@ extension SessionCore {
     }
 
     /// `.default`'s label is kept in a sidecar written by a newer version, which this one never overwrites.
-    static func labelUnreadable(_ sessionId: SessionID) -> AuthClientError {
+    static func labelUnreadable(_ sessionId: SessionID) -> AmplifyCognitoClientError {
         .unknown(
             "Session \"\(sessionId)\" cannot be labelled: its saved label was written by a newer version of the app, which this version cannot read.",
             "Update the app. A purge would reset the label, but for this session it also deletes the Auth plugin's saved login, which signs the user out."
         )
     }
 
-    static func unlabellable(_ sessionId: SessionID) -> AuthClientError {
+    static func unlabellable(_ sessionId: SessionID) -> AmplifyCognitoClientError {
         .unknown(
             "Session \"\(sessionId)\" cannot be labelled: its saved record is one this version cannot read.",
             "Sign the session out to reset it, or update the app."
@@ -103,7 +103,7 @@ extension SessionCore {
         global: Bool = false,
         purge: Bool = false,
         window: SignOutWindow = .none
-    ) async -> AuthClientSignOutResult {
+    ) async -> AmplifyCognitoClientSignOutResult {
         do {
             _ = try await restoredSnapshot()
             return try await withRecord { [self] store in
@@ -168,16 +168,16 @@ extension SessionCore {
 
     /// What a purging sign-out reports as its `storageError` when the session was signed out but its row was not
     /// removed.
-    static func rowNotRemoved(_ sessionId: SessionID, _ error: Error) -> AuthClientError {
+    static func rowNotRemoved(_ sessionId: SessionID, _ error: Error) -> AmplifyCognitoClientError {
         .storageUnavailable(
-            (error as? AuthClientError).flatMap(\.storageUnavailableReason) ?? .interrupted,
+            (error as? AmplifyCognitoClientError).flatMap(\.storageUnavailableReason) ?? .interrupted,
             "Session \"\(sessionId)\" was signed out, but its saved row could not be removed.",
             "Purge the session to remove the row.",
             error
         )
     }
 
-    static func contended(_ operation: String) -> AuthClientError {
+    static func contended(_ operation: String) -> AmplifyCognitoClientError {
         .storageUnavailable(
             .interrupted,
             "The session's saved record kept changing, so the \(operation) could not be saved.",

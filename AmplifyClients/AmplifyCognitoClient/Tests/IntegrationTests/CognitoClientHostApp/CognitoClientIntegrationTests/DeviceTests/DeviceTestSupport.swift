@@ -55,14 +55,14 @@ extension ClientIntegrationTestCase {
     func signInToDone(
         _ client: AmplifyCognitoClient,
         _ user: FreshUser,
-        flow: AuthClientAuthFlowType? = nil,
+        flow: AmplifyCognitoClientAuthFlowType? = nil,
         file: StaticString = #filePath,
         line: UInt = #line
     ) async throws {
         let result = try await client.signIn(
             username: user.username,
             password: user.password,
-            options: AuthClientSignInOptions(authFlowType: flow)
+            options: AmplifyCognitoClientSignInOptions(authFlowType: flow)
         )
         XCTAssertEqual(result.nextStep, .done, "the sign-in did not complete", file: file, line: line)
     }
@@ -87,13 +87,13 @@ extension ClientIntegrationTestCase {
         _ description: String,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) async throws -> AuthClientUserPoolTokens {
+    ) async throws -> AmplifyCognitoClientUserPoolTokens {
         let before = try await client.fetchAuthSession().requireUserPoolTokens()
-        let tokens: AuthClientUserPoolTokens
+        let tokens: AmplifyCognitoClientUserPoolTokens
         do {
             tokens = try await client.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens()
         } catch {
-            let kind = (error as? AuthClientError).map { "\($0.kind)" } ?? "\(type(of: error))"
+            let kind = (error as? AmplifyCognitoClientError).map { "\($0.kind)" } ?? "\(type(of: error))"
             XCTFail("\(description): the refresh failed (\(kind))", file: file, line: line)
             throw error
         }
@@ -127,7 +127,7 @@ extension ClientIntegrationTestCase {
 
     /// Checks that `devices` is exactly one device, this session's.
     func assertOnlyThisDevice(
-        _ devices: [AuthClientDevice],
+        _ devices: [AmplifyCognitoClientDevice],
         _ deviceKey: String,
         _ description: String,
         file: StaticString = #filePath,

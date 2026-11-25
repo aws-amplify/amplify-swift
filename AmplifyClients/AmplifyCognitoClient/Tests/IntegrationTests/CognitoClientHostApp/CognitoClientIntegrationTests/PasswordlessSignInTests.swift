@@ -90,7 +90,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
     /// - Given: a fresh user with a password, and the recorder installed
     /// - When:
     ///    - the user signs in with `userAuth(preferredFirstFactor: nil)` and the password
-    ///    - selects `AuthClientFactorType.passwordSRP.challengeResponse`
+    ///    - selects `AmplifyCognitoClientFactorType.passwordSRP.challengeResponse`
     ///    - and confirms with the password
     /// - Then:
     ///    - the sign-in returns `.continueSignInWithFirstFactorSelection` offering `.passwordSRP`, after an
@@ -109,7 +109,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
         XCTAssertTrue(factors.contains(.passwordSRP), "passwordSRP should be offered")
         assertInitiated(recorder, preferring: nil)
 
-        let selected = try await client.confirmSignIn(challengeResponse: AuthClientFactorType.passwordSRP.challengeResponse)
+        let selected = try await client.confirmSignIn(challengeResponse: AmplifyCognitoClientFactorType.passwordSRP.challengeResponse)
         XCTAssertStep(selected.nextStep, .confirmSignInWithPassword)
 
         let confirmed = try await client.confirmSignIn(challengeResponse: password)
@@ -138,7 +138,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
         let (client, recorder) = try makeRecordedClient("pl-4")
         let first = try await client.signIn(username: user.username, password: password, options: Self.userAuth(nil))
         XCTAssertTrue(try firstFactors(of: first.nextStep).contains(.passwordSRP), "passwordSRP should be offered")
-        let selected = try await client.confirmSignIn(challengeResponse: AuthClientFactorType.passwordSRP.challengeResponse)
+        let selected = try await client.confirmSignIn(challengeResponse: AmplifyCognitoClientFactorType.passwordSRP.challengeResponse)
         XCTAssertStep(selected.nextStep, .confirmSignInWithPassword)
 
         let wrong = await Expect.authClientError("confirming a wrong password") {
@@ -157,7 +157,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
 
         let again = try await client.signIn(username: user.username, password: password, options: Self.userAuth(nil))
         XCTAssertTrue(try firstFactors(of: again.nextStep).contains(.passwordSRP), "passwordSRP should be offered")
-        let reselected = try await client.confirmSignIn(challengeResponse: AuthClientFactorType.passwordSRP.challengeResponse)
+        let reselected = try await client.confirmSignIn(challengeResponse: AmplifyCognitoClientFactorType.passwordSRP.challengeResponse)
         XCTAssertStep(reselected.nextStep, .confirmSignInWithPassword)
         let confirmed = try await client.confirmSignIn(challengeResponse: password)
 
@@ -170,7 +170,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
     /// - Given: a fresh user with a password, and the recorder installed
     /// - When:
     ///    - the user signs in with `userAuth(preferredFirstFactor: nil)` and the password
-    ///    - selects `AuthClientFactorType.password.challengeResponse`
+    ///    - selects `AmplifyCognitoClientFactorType.password.challengeResponse`
     ///    - and confirms with the password
     /// - Then:
     ///    - the sign-in returns `.continueSignInWithFirstFactorSelection` offering `.password`
@@ -185,7 +185,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
         let result = try await client.signIn(username: user.username, password: password, options: Self.userAuth(nil))
 
         XCTAssertTrue(try firstFactors(of: result.nextStep).contains(.password), "password should be offered")
-        let selected = try await client.confirmSignIn(challengeResponse: AuthClientFactorType.password.challengeResponse)
+        let selected = try await client.confirmSignIn(challengeResponse: AmplifyCognitoClientFactorType.password.challengeResponse)
         XCTAssertStep(selected.nextStep, .confirmSignInWithPassword)
 
         let confirmed = try await client.confirmSignIn(challengeResponse: password)
@@ -264,7 +264,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
     /// - Given: a fresh user with a password and a verified email, and the recorder installed
     /// - When:
     ///    - the user signs in with `userAuth(preferredFirstFactor: nil)` and the password
-    ///    - selects `AuthClientFactorType.emailOTP.challengeResponse`
+    ///    - selects `AmplifyCognitoClientFactorType.emailOTP.challengeResponse`
     ///    - and confirms with the code the sink captured
     /// - Then:
     ///    - the sign-in returns `.continueSignInWithFirstFactorSelection` offering `.emailOTP`
@@ -279,7 +279,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
         XCTAssertTrue(try firstFactors(of: result.nextStep).contains(.emailOTP), "emailOTP should be offered")
 
         let (selected, code) = try await sink.code(for: user, .otp) {
-            try await client.confirmSignIn(challengeResponse: AuthClientFactorType.emailOTP.challengeResponse)
+            try await client.confirmSignIn(challengeResponse: AmplifyCognitoClientFactorType.emailOTP.challengeResponse)
         }
         assertOTPStep(selected.nextStep, .email)
 
@@ -296,7 +296,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
     /// - Given: a fresh user with a password and a verified phone number, and the recorder installed
     /// - When:
     ///    - the user signs in with `userAuth(preferredFirstFactor: nil)` and the password
-    ///    - selects `AuthClientFactorType.smsOTP.challengeResponse`
+    ///    - selects `AmplifyCognitoClientFactorType.smsOTP.challengeResponse`
     ///    - and confirms with the code the sink captured
     /// - Then:
     ///    - the sign-in returns `.continueSignInWithFirstFactorSelection` offering `.smsOTP`
@@ -311,7 +311,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
         XCTAssertTrue(try firstFactors(of: result.nextStep).contains(.smsOTP), "smsOTP should be offered")
 
         let (selected, code) = try await sink.code(for: user, .otp) {
-            try await client.confirmSignIn(challengeResponse: AuthClientFactorType.smsOTP.challengeResponse)
+            try await client.confirmSignIn(challengeResponse: AmplifyCognitoClientFactorType.smsOTP.challengeResponse)
         }
         assertOTPStep(selected.nextStep, .sms)
 
@@ -673,8 +673,8 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
         return (client, recorder)
     }
 
-    private static func userAuth(_ factor: AuthClientFactorType?) -> AuthClientSignInOptions {
-        AuthClientSignInOptions(authFlowType: .userAuth(preferredFirstFactor: factor))
+    private static func userAuth(_ factor: AmplifyCognitoClientFactorType?) -> AmplifyCognitoClientSignInOptions {
+        AmplifyCognitoClientSignInOptions(authFlowType: .userAuth(preferredFirstFactor: factor))
     }
 
     /// A code of the same length that differs from `code` in every digit, so it can never be the one sent.
@@ -690,7 +690,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
 
     /// Asserts `.confirmSignInWithOTP` delivered over `channel`, printing no destination.
     private func assertOTPStep(
-        _ step: AuthClientSignInStep,
+        _ step: AmplifyCognitoClientSignInStep,
         _ channel: Channel,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -709,10 +709,10 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
 
     /// The factors of a `.continueSignInWithFirstFactorSelection` step; fails the test for any other step.
     private func firstFactors(
-        of step: AuthClientSignInStep,
+        of step: AmplifyCognitoClientSignInStep,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) throws -> Set<AuthClientFactorType> {
+    ) throws -> Set<AmplifyCognitoClientFactorType> {
         guard case .continueSignInWithFirstFactorSelection(let factors) = step else {
             XCTFail("the step is \(step.caseName), expected continueSignInWithFirstFactorSelection", file: file, line: line)
             throw HarnessError.malformedFixture("no first-factor selection")
@@ -740,7 +740,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
     private func assertWrongPasswordFails(
         _ client: AmplifyCognitoClient,
         _ user: FreshUser,
-        _ factor: AuthClientFactorType,
+        _ factor: AmplifyCognitoClientFactorType,
         file: StaticString = #filePath,
         line: UInt = #line
     ) async throws {
@@ -761,7 +761,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
     private func assertWrongCodeKeepsTheStep(
         _ client: AmplifyCognitoClient,
         code: String,
-        step: AuthClientSignInStep,
+        step: AmplifyCognitoClientSignInStep,
         file: StaticString = #filePath,
         line: UInt = #line
     ) async throws {

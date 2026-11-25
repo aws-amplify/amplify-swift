@@ -94,7 +94,7 @@ extension ChallengeRecord.State {
     /// credential slot (`confirmSignIn`'s reseed), as for a sign-in that never stopped.
     ///
     /// - Parameter logger: the engine's, which a spelling this build does not know is logged through.
-    func resumedState(logger: any EngineScopedLogger) -> (AuthState, AuthClientSignInStep)? {
+    func resumedState(logger: any EngineScopedLogger) -> (AuthState, AmplifyCognitoClientSignInStep)? {
         switch self {
         case .challenge(let saved):
             guard let method = SignInMethod(saved.signInMethod, logger: logger),
@@ -114,7 +114,7 @@ extension ChallengeRecord.State {
                 challenge.challenge.authChallengeType,
                 method
             )
-            return (.configured(.signingIn(signIn), .configured, .notStarted), AuthClientSignInStep(step))
+            return (.configured(.signingIn(signIn), .configured, .notStarted), AmplifyCognitoClientSignInStep(step))
         case .totpSetup(let saved):
             guard let method = SignInMethod(saved.signInMethod, logger: logger) else {
                 return nil
@@ -122,7 +122,7 @@ extension ChallengeRecord.State {
             let setup = SignInTOTPSetupData(secretCode: saved.secretCode, session: saved.session, username: saved.username)
             let eventData = SignInEventData(username: saved.signInUsername, password: nil, signInMethod: method)
             let signIn = SignInState.resolvingTOTPSetup(.waitingForAnswer(setup), eventData)
-            let step = AuthClientSignInStep.continueSignInWithTOTPSetup(AuthClientTOTPSetupDetails(
+            let step = AmplifyCognitoClientSignInStep.continueSignInWithTOTPSetup(AmplifyCognitoClientTOTPSetupDetails(
                 sharedSecret: saved.secretCode,
                 username: saved.username
             ))

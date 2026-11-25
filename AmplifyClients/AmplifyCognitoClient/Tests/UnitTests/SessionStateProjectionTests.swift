@@ -19,7 +19,7 @@ final class SessionStateProjectionTests: XCTestCase {
 
     private var harness: ClientHarness!
     private let work = ClientFixtures.id("work")
-    private let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+    private let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
 
     override func setUp() {
         harness = ClientHarness()
