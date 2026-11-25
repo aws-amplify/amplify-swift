@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSPluginsCore
+import InternalAmplifyCredentials
 import XCTest
 @testable import Amplify
 @testable import AWSPluginsTestCommon
@@ -161,6 +163,34 @@ class AWSS3StoragePluginStorageBucketTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(storagePlugin.storageServicesByBucket.count, 1)
         _ = try storagePlugin.storageService(for: .fromBucketInfo(additionalBucketInfo))
         XCTAssertEqual(storagePlugin.storageServicesByBucket.count, 2)
+    }
+
+    /// Regression test for #4426: concurrent first uses of a bucket each created a storage service, and all but the one
+    /// stored last were released while their uploads were still running.
+    ///
+    /// - Given: A configured AWSS3StoragePlugin
+    /// - When:
+    ///    - storageService(for:) is invoked concurrently for a bucket that was not accessed before
+    /// - Then:
+    ///    - every call returns the same service, and only that one is stored for the bucket
+    ///
+    func testStorageService_withNewBucketConcurrently_shouldCreateOneService() throws {
+        // MockAWSAuthService records calls without a lock, so concurrent service creation would corrupt it.
+        storagePlugin.authService = AWSAuthService()
+        // Start the transfer database's one-time recovery on a kept service, so a released duplicate can't trap in it.
+        _ = try storagePlugin.storageService(for: .fromBucketInfo(.init(bucketName: "warmUpBucket", region: "us-east-1")))
+        let services = AtomicValue<[AWSS3StorageService]>(initialValue: [])
+        DispatchQueue.concurrentPerform(iterations: 8) { _ in
+            if let service = try? storagePlugin.storageService(for: .fromBucketInfo(additionalBucketInfo)) as? AWSS3StorageService {
+                services.append(service)
+            }
+        }
+
+        let returned = services.get()
+        XCTAssertEqual(returned.count, 8)
+        let stored = try XCTUnwrap(storagePlugin.storageServicesByBucket[additionalBucketInfo.bucketName] as? AWSS3StorageService)
+        XCTAssertTrue(returned.allSatisfy { $0 === stored })
+        XCTAssertEqual(storagePlugin.storageServicesByBucket.count, 3)
     }
 
     /// Given: A configured AWSS3StoragePlugin

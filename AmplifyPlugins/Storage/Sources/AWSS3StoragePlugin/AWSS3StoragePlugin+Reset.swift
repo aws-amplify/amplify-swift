@@ -22,10 +22,12 @@ public extension AWSS3StoragePlugin {
             defaultBucket = nil
         }
 
-        for storageService in storageServicesByBucket.values {
-            storageService.reset()
+        storageServicesLock.execute {
+            for storageService in storageServicesByBucket.values {
+                storageService.reset()
+            }
+            storageServicesByBucket.removeAll()
         }
-        storageServicesByBucket.removeAll()
 
         if additionalBucketsByName != nil {
             additionalBucketsByName = nil

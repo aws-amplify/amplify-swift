@@ -32,6 +32,9 @@ public final class AWSS3StoragePlugin: StorageCategoryPlugin, @unchecked Sendabl
     /// A dictionary of S3 storage service instances grouped by a specific bucket
     var storageServicesByBucket: AtomicDictionary<String, AWSS3StorageServiceBehavior> = [:]
 
+    /// Makes looking up, or creating, a bucket's storage service atomic.
+    let storageServicesLock = NSLock()
+
     /// A dictionary of additional Outputs-based buckets, grouped by their names
     var additionalBucketsByName: [String: AmplifyOutputsData.Storage.Bucket]?
 
