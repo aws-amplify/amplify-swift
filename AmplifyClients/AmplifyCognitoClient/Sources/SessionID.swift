@@ -56,7 +56,8 @@ public struct SessionID: Hashable, Sendable {
     /// their label are equal, and name one session. When two clients of one live session were built with different
     /// labels, the session uses the label of the ID that built it, the first client's, until every client and
     /// provider of the session is released. Only a client's sign-in reads it: the static calls ignore it, and an ID
-    /// that was decoded, rebuilt from its `stringValue` or listed by `storedSessions` has none.
+    /// that was decoded, rebuilt from its `stringValue` or listed by `storedSessions` has none. So a listed row's
+    /// `StoredSession.sessionId.label` is always `nil`: the saved label is `StoredSession.label`.
     public let label: String?
 
     private init(unchecked value: String, label: String? = nil) {

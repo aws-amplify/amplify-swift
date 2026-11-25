@@ -150,9 +150,9 @@ public struct AmplifyCognitoClientGlobalSignOutError: Sendable, Equatable {
 /// (`WebUIOptions.prefersEphemeralSession` off). **The hosted UI's cookie survives in the browser**, so the next
 /// hosted-UI sign-in may silently return the same account: sign in next time with `prompt: [.login]`, or with
 /// `prefersEphemeralSession: true`. `error` is `validation` for a sign-out given no window
-/// (`signOut(options:)`); `userCancelled` when the user closed the page of a session whose refresh token was
-/// already dead, which signs out anyway. A page that was asked for and could not be shown or completed is
-/// `.failed` instead.
+/// (`signOut(options:)`, `signOutStoredSession`); `userCancelled` when the user closed the page of a session a
+/// refresh had found expired, while the login signed out still has that refresh token, which signs out anyway.
+/// A page that was asked for and could not be shown or completed is `.failed` instead.
 @_spi(AmplifyExperimental)
 public struct AmplifyCognitoClientHostedUIError: Sendable, Equatable {
 

@@ -8,7 +8,7 @@
 `AmplifyClients/AmplifyCognitoClient/Sources` for its exact surface. This document records the design and the
 decisions behind it ([auth-client-DECISIONS.md](auth-client-DECISIONS.md)).
 
-Review date: 2026-09-03. Last revised: 2026-11-03.
+Review date: 2026-09-03. Last revised: 2026-11-24.
 
 ---
 
@@ -17,6 +17,15 @@ NOTE: Swift is used throughout the design doc showcasing API changes and a per p
 > **The design in one paragraph.** Amplify auth is reachable only as a configured plugin behind a process-global (`Amplify.Auth`). This design proposes **`AmplifyCognitoClient`** - the **Auth Client** - a self-contained client you construct and hold, built the same way as the standalone clients already shipping. Because it is an ordinary object rather than a registry singleton, an app can hold **more than one**, which is what makes concurrent signed-in sessions possible. The Cognito protocol logic (SRP, MFA, device tracking, refresh, OAuth) is **not rewritten**.
 
 ## Changes since the previous revision
+
+**Revision 2026-11-24: [API follow-ups](auth-client-DECISIONS.md#api-follow-ups-2026-11-24).** What changed in this
+revision, with each follow-up's number:
+
+- **The API**: `fetchAuthSession` throws (10); an expired session keeps `sessionExpired` through a challenge (13);
+  `init(from:bundle:options:)` is removed (14); the `AuthClient…` types are renamed `AmplifyCognitoClient…` (16);
+  `StoredSession` has `user` (17) and `state` (21); `signOutStoredSession` takes options (18); a static
+  `setSessionLabel` (19); a label on `SessionID` (20); Kinesis and Firehose `Options.cacheIdentifier` (12).
+  → [§4.2](#42-account-picker-on-cold-launch) · [§4.6](#46-adding-an-account-while-already-signed-in) · [§6](#6-storage-model) · [§13.1](#131-two-same-region-record-caching-clients-can-attribute-one-users-data-to-another) · [§14](#14-api-surface) · [§15.2](#152-the-credential-provider-contract)
 
 **Revision 2026-11-03: record corrections.** What changed in this revision:
 
@@ -34,7 +43,8 @@ NOTE: Swift is used throughout the design doc showcasing API changes and a per p
   same way. → [§4.8](#48-migrating-an-existing-app)
 - **Limits** add side by side in one process, Gen2 configuration only, and the beta's scope. → [§11](#11-limits)
 - **API text checked against the code**: `.federated(identityId:)` in the samples and §14.2,
-  `AmplifyCognitoClientSignInStep` where the text said `AuthSignInStep`, `identityIdResult`, `signInWithWebUI`'s signature,
+  `AmplifyCognitoClientSignInStep` where the text said `AuthSignInStep`, `identityIdResult` (now `identityId`,
+  2026-11-24), `signInWithWebUI`'s signature,
   `cancelWebUISignIn()` and `resetSystemSheet()`, §14.1's class, escape-hatch type and `sessionId`, §14.5's list,
   and the challenge record's key. → [§4.2](#42-account-picker-on-cold-launch) · [§4.10](#410-reading-a-sessions-state) · [§7](#7-credential-providers) · [§9.1](#91-one-browser-sign-in-at-a-time-and-how-the-api-says-so) · [§14](#14-api-surface)
 - **The decisions record** now covers the decisions taken after 2026-09-22 (its #9–#19). → [auth-client-DECISIONS.md](auth-client-DECISIONS.md)
@@ -445,7 +455,7 @@ _ = added.sessionId   // the durable handle, if the app wants to deep-link into 
 
 Note what this rules out: **keying a session by user id cannot work**, because there is no user id until sign-in succeeds, and the session must exist in memory before that. This is why a session ID is an opaque identifier chosen by the app or minted by the library, never derived from an identity.
 
-**A label given with the ID** (added 2026-11-24, API follow-up 20; review thread 34TJ2r). An app adding an account often knows the label when it creates the session, so `SessionID.named(_:label:)` and `SessionID.new(label:)` take an optional one, readable as `SessionID.label`. The rules:
+**A label given with the ID** (added 2026-11-24, API follow-up 20). An app adding an account often knows the label when it creates the session, so `SessionID.named(_:label:)` and `SessionID.new(label:)` take an optional one, readable as `SessionID.label`. The rules:
 
 - **It is metadata, not identity.** `==` and `hash(into:)` use the string value only, and `Codable` encodes and decodes the string value only. So two IDs that differ only in label are equal, persisted IDs are unchanged, and the session registry and the per-session gates, which are keyed by the ID, are unaffected. `.default` has no label; `named("$default", label:)` equals `.default` and carries one.
 - **It is saved when a sign-in saves the row and the row keeps no label**: a sign-in (hosted UI included), a federation or a guest. Constructing the client still does no keychain I/O, and a session that is created but never signed in writes no row (one waiting on a challenge is listed, without the label).
@@ -485,7 +495,7 @@ await work.signOut(options: .init(purgeStoredSession: true))
 // Signing out a session the app is not currently holding, straight from the picker.
 // named(_:label:) throws for an invalid ID, so it needs `try`.
 let workID = try SessionID.named("work")
-_ = await AmplifyCognitoClient.signOutStoredSession(sessionId: workID, configuration: config)
+await AmplifyCognitoClient.signOutStoredSession(sessionId: workID, configuration: config)
 
 // Removing a saved row entirely, without contacting Cognito. The refresh token stays
 // valid server-side until it expires, so where you can, call signOutStoredSession
@@ -739,7 +749,7 @@ That single sentence answers every "can I be X and Y at once?" question: not in 
 Three clarifications, stated plainly because the rule above implies them without saying them:
 
 - **One user at a time per session. You can sign out and back in as a different user within one session** - the session is the container, not the person.
-- **The same human can be signed into two sessions at once.** Nothing dedupes by identity: if an app constructs two clients with different session IDs and signs the same user into both, that is two independent sessions with two independent token sets and two sign-out paths. A design where that matters should reconcile by reading `StoredSession.username`.
+- **The same human can be signed into two sessions at once.** Nothing dedupes by identity: if an app constructs two clients with different session IDs and signs the same user into both, that is two independent sessions with two independent token sets and two sign-out paths. A design where that matters should reconcile by reading `StoredSession.user`.
 - **The app owns session-ID uniqueness.** A session ID is a namespace the app chooses, not a value the library validates for meaning. Reusing one is not an error and does not create a second session - per decision 4 you get the existing session back.
 
 It also explains why **federation needs no new concept.** A federated session is just one of the five kinds. A session is either signed in or federated, never both, which every platform already enforces. What changes is that a federated session and a user-pool session can now coexist.
@@ -1427,6 +1437,7 @@ extension AmplifyCognitoClient {
 
     // Never throws: .complete, .partial(...) or .failed(error), as signOut (4.7, 14.8).
     // The same options as signOut(options:), with or without a live client for the session.
+    @discardableResult
     public static func signOutStoredSession(
         sessionId: SessionID,
         configuration: AmplifyCognitoClientConfiguration,
@@ -1587,8 +1598,8 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
   `AuthSignOutResult` (14.3). The client does not depend on Amplify core, so it owns the type. §4.7 has the
   full list of outcomes.
   - **No throw.** `signOut(options:)`, `signOutWithWebUI(presentationAnchor:options:)` and
-    `signOutStoredSession(sessionId:configuration:accessGroup:options:)` are `async`, not `async throws`. `signOut(options:)`
-    and `signOutWithWebUI` are `@discardableResult`, as the plugin's `signOut` is. `purgeStoredSession` still throws: the plugin
+    `signOutStoredSession(sessionId:configuration:accessGroup:options:)` are `async`, not `async throws`. All three
+    are `@discardableResult`, as the plugin's `signOut` is. `purgeStoredSession` still throws: the plugin
     has no such call.
   - **Cases.** `.complete`, `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` and
     `.failed(AmplifyCognitoClientError)`. `signedOutLocally` is false only for `.failed`. `.partial`'s first three values
@@ -1605,7 +1616,7 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
     in.", "Retry the sign-out.", CancellationError()))`.
   - **A sign-out given no window** (`signOut(options:)`, `signOutStoredSession`) shows no hosted-UI sign-out page,
     so none of the hosted-UI `.failed` cases above apply: after a sign-in that shared the browser's cookies it returns
-    `.partial` with `hostedUIError` `.validation(field: "presentationAnchor")`.
+    `.partial`, whose `hostedUIError?.error` is `.validation(field: "presentationAnchor")`.
   - **A purge that fails after the local sign-out succeeded** returns `.partial` with `storageError` set, and
     `signedOutLocally == true`.
   - **As the plugin does:** a failed global sign-out adds the plugin's placeholder `revokeTokenError`.

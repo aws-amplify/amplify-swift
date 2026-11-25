@@ -130,6 +130,7 @@ public extension AmplifyCognitoClient {
     ///   with a different user pool or identity pool, whose records this call would change (sign it out through that
     ///   client); `invalidState` if a different user signed in meanwhile; `unknown` with an underlying
     ///   `CancellationError` if the calling task was cancelled before anything was revoked.
+    @discardableResult
     static func signOutStoredSession(
         sessionId: SessionID,
         configuration: AmplifyCognitoClientConfiguration,

@@ -47,6 +47,9 @@ public struct AmplifyCognitoClientListWebAuthnCredentialsOptions: Sendable, Equa
     /// Where to resume a listing: the `nextToken` of the previous page's result, or `nil` for the first page.
     public let nextToken: String?
 
+    /// - Parameters:
+    ///   - pageSize: How many credentials to return, from 1 to 20. 20 by default.
+    ///   - nextToken: The previous page's `nextToken`, or `nil` for the first page.
     public init(pageSize: UInt = 20, nextToken: String? = nil) {
         self.pageSize = pageSize
         self.nextToken = nextToken
@@ -80,6 +83,7 @@ public struct AmplifyCognitoClientListWebAuthnCredentialsResult: Sendable, Equat
 @_spi(AmplifyExperimental)
 public struct AmplifyCognitoClientAssociateWebAuthnCredentialOptions {
 
+    /// No options yet.
     public init() {}
 }
 
@@ -96,6 +100,7 @@ extension AmplifyCognitoClientAssociateWebAuthnCredentialOptions: Sendable {}
 @_spi(AmplifyExperimental)
 public struct AmplifyCognitoClientDeleteWebAuthnCredentialOptions {
 
+    /// No options yet.
     public init() {}
 }
 

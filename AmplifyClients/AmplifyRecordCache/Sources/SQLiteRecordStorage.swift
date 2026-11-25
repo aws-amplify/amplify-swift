@@ -335,12 +335,14 @@ package actor SQLiteRecordStorage: RecordStorage {
         }
     }
 
+    /// See `RecordStorage.maxRecordId()`.
     package func maxRecordId() throws -> Int64? {
         try Self.wrapDatabaseError {
             try database.scalar(Self.records.select(Self.id.max))
         }
     }
 
+    /// See `RecordStorage.deleteRecords(upTo:)`.
     package func deleteRecords(upTo id: Int64) throws {
         try Self.wrapDatabaseError {
             _ = try database.run(Self.records.filter(Self.id <= id).delete())

@@ -22,7 +22,9 @@ public enum KinesisError {
   case validation(ErrorDescription, RecoverySuggestion, Error? = nil)
   /// The credentials provider threw AmplifyFoundation's `CredentialsError`, which stopped the flush. The
   /// description and recovery suggestion are the provider's, and the underlying error is that error. No retry
-  /// is counted against the records left in the cache; see `flush()` for what happens to them.
+  /// is counted against the records left in the cache; see `flush()` for what happens to them. To read the
+  /// error's `disposition`, cast `underlyingError` to `CredentialsError`, which is experimental SPI and needs
+  /// `@_spi(AmplifyExperimental) import AmplifyFoundation`.
   case credentials(ErrorDescription, RecoverySuggestion, Error? = nil)
   /// An error that doesn't fall into the known categories above.
   case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)

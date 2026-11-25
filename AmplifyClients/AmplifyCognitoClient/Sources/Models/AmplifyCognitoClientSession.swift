@@ -43,10 +43,11 @@ extension AmplifyCognitoClientFetchSessionOptions: Sendable {}
 @_spi(AmplifyExperimental)
 public struct AmplifyCognitoClientSession {
 
-    /// The identity pool identity ID, or `nil` without an identity pool.
+    /// The identity pool identity ID, or `nil` without an identity pool, or for a login made to the user pool only.
     public let identityId: String?
 
-    /// The identity pool's temporary AWS credentials, or `nil` without an identity pool.
+    /// The identity pool's temporary AWS credentials, or `nil` without an identity pool, or for a login made to the
+    /// user pool only.
     public let awsCredentials: AmplifyCognitoClientAWSCredentials?
 
     /// The signed-in user's `sub`, or `nil` for a guest or a federated session.

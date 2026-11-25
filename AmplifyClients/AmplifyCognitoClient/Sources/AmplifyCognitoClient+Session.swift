@@ -186,9 +186,11 @@ public extension AmplifyCognitoClient {
     ///   - the refresh's or the guest fetch's own failure (`.service` for the network or Cognito, say), and
     ///     `.unknown` when the credentials could not be refreshed;
     ///   - the identity pool step's failure, even when the user pool tokens are valid, as the plugin does
-    ///     (`userPoolTokenProvider` still vends the token). For a session carried from a configuration without
-    ///     an identity pool, while the client holds that step back the call rethrows its last failure: for 30
-    ///     seconds after a transient failure, or until the tokens next need a refresh after a refusal.
+    ///     (a `userPoolTokenProvider` call that needs the same refresh fails with it, except for a session waiting
+    ///     for its first identity in this identity pool, whose token it still vends: one carried from a
+    ///     configuration without that pool, or `.default` when its saved login has no identity yet). For such a
+    ///     session, while the client holds that step back the call rethrows its last failure: for 30 seconds after
+    ///     a transient failure, or until the tokens next need a refresh after a refusal.
     ///     `forceRefresh: true` retries at once;
     ///   - `CancellationError` if the calling task is cancelled while it waits (a refresh it joined carries on
     ///     for the session), or the request itself was cancelled.

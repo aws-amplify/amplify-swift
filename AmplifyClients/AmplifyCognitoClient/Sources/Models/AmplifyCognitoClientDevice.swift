@@ -62,6 +62,7 @@ extension AmplifyCognitoClientDevice: Sendable {}
 @_spi(AmplifyExperimental)
 public struct AmplifyCognitoClientFetchDevicesOptions {
 
+    /// No options yet.
     public init() {}
 }
 
@@ -77,6 +78,7 @@ extension AmplifyCognitoClientFetchDevicesOptions: Sendable {}
 @_spi(AmplifyExperimental)
 public struct AmplifyCognitoClientRememberDeviceOptions {
 
+    /// No options yet.
     public init() {}
 }
 
@@ -92,6 +94,7 @@ extension AmplifyCognitoClientRememberDeviceOptions: Sendable {}
 @_spi(AmplifyExperimental)
 public struct AmplifyCognitoClientForgetDeviceOptions {
 
+    /// No options yet.
     public init() {}
 }
 

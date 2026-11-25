@@ -98,6 +98,7 @@ extension AmplifyCognitoClientUpdateAttributeStep: Sendable {}
 @_spi(AmplifyExperimental)
 public struct AmplifyCognitoClientFetchUserAttributesOptions {
 
+    /// No options yet.
     public init() {}
 }
 
@@ -113,6 +114,7 @@ extension AmplifyCognitoClientFetchUserAttributesOptions: Sendable {}
 @_spi(AmplifyExperimental)
 public struct AmplifyCognitoClientConfirmUserAttributeOptions {
 
+    /// No options yet.
     public init() {}
 }
 

@@ -15,7 +15,7 @@ import Foundation
 @_spi(AmplifyExperimental)
 public struct StoredSession: Sendable, Equatable {
 
-    /// The ID to construct the Auth Client the user picked.
+    /// The ID to build the client the user picked.
     public let sessionId: SessionID
 
     /// The app-supplied display name, the only name a user recognises. `nil` until the app sets one with

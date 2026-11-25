@@ -48,8 +48,8 @@ private let maxPartitionKeyLength = 256
 /// // Record data
 /// let result = try await kinesis.record(
 ///     data: "Hello Kinesis".data(using: .utf8)!,
-///     streamName: "my-stream",
-///     partitionKey: "partition-1"
+///     partitionKey: "partition-1",
+///     streamName: "my-stream"
 /// )
 ///
 /// // Flush cached records
@@ -87,7 +87,7 @@ public class AmplifyKinesisClient {
         public let cacheMaxBytes: Int64
 
         /// How many failed sends a cached record survives before it is removed. A flush whose credentials
-        /// provider throws AmplifyFoundation's `CredentialsError` counts no retry: see `flush()`.
+        /// provider throws AmplifyFoundation's `CredentialsError` (experimental SPI) counts no retry: see `flush()`.
         public let maxRetries: Int
         public let flushStrategy: FlushStrategy
 
@@ -104,7 +104,8 @@ public class AmplifyKinesisClient {
         /// A cache holds the records of every client of the region with the same identifier, and a flush sends
         /// them all with the flushing client's credentials. So when clients are given different sessions'
         /// credentials, give each session its own identifier (an `AmplifyCognitoClient` session's
-        /// `sessionId.stringValue`, say): otherwise one session's flush sends another's records as itself.
+        /// `sessionId.stringValue`, say; that client is experimental SPI): otherwise one session's flush sends
+        /// another's records as itself.
         ///
         /// - Any non-empty string. Its UTF-8 bytes are hashed into the cache's file name, so identifiers that
         ///   differ only in case, or only in Unicode normalization form, are different caches. An empty string
@@ -115,11 +116,22 @@ public class AmplifyKinesisClient {
         ///   clears them.
         /// - A cache outlives its session's sign-out: its records stay until a flush sends them, a flush finds
         ///   the session signed out and discards them (below), or a client with that identifier calls
-        ///   `clearCache()`. The emptied file is never removed.
+        ///   `clearCache()`. The emptied file is never removed: it is
+        ///   `kinesis_records_<region>_<SHA-256 of the identifier, lowercase hex>.db` in the Application Support
+        ///   directory, so delete it yourself once no client uses that identifier.
         /// - Only a cache with an identifier is discarded when the credentials provider says so (`flush()`'s
         ///   `KinesisError.credentials`): the region's shared cache holds every session's records, so it is kept.
+        ///   The discard needs a flush while the session is signed out (once the session is a guest, or another
+        ///   user has signed in to it, a flush sends the records with those credentials), so call `flush()` before,
+        ///   or `clearCache()` at, sign-out when records must not go out under another principal.
         public let cacheIdentifier: String?
 
+        /// - Parameters:
+        ///   - cacheMaxBytes: The offline cache's size limit, in bytes. 5 MB by default.
+        ///   - maxRetries: See `maxRetries`. 5 by default.
+        ///   - flushStrategy: When cached records are flushed automatically. Every 30 seconds by default.
+        ///   - cacheIdentifier: See `cacheIdentifier`. `nil` by default: the region's shared cache.
+        ///   - configureClient: See `configureClient`. `nil` by default.
         public init(
             cacheMaxBytes: Int64 = 5 * 1_024 * 1_024, // 5MB
             maxRetries: Int = 5,
@@ -264,9 +276,9 @@ public class AmplifyKinesisClient {
     /// Records that exceed ``Options/maxRetries`` are removed from the cache.
     ///
     /// **When the credentials provider throws AmplifyFoundation's `CredentialsError`** (an `AmplifyCognitoClient`
-    /// session's provider does), the flush stops there and throws ``KinesisError/credentials(_:_:_:)``, with that
-    /// error underneath, and counts no retry against the records it did not send. They follow the error's
-    /// `disposition`:
+    /// session's provider does; both are experimental SPI), the flush stops there and throws
+    /// ``KinesisError/credentials(_:_:_:)``, with that error underneath, and counts no retry against the records it
+    /// did not send. They follow the error's `disposition`:
     /// - `.retryAfterReauthentication` (the session expired), `.retryWithBackoff` and `.failLoudly`: the records
     ///   are kept, and sent by a later flush once the provider vends credentials again. Kept this way they do
     ///   not expire through ``Options/maxRetries``, so the cache can fill to ``Options/cacheMaxBytes``, after

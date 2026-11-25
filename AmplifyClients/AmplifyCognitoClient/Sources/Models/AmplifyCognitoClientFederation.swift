@@ -56,6 +56,7 @@ extension AmplifyCognitoClientFederateToIdentityPoolResult: Sendable {}
 @_spi(AmplifyExperimental)
 public struct AmplifyCognitoClientClearFederationToIdentityPoolOptions {
 
+    /// No options yet.
     public init() {}
 }
 

@@ -96,6 +96,7 @@ extension AmplifyCognitoClientResetPasswordStep: Sendable {}
 @_spi(AmplifyExperimental)
 public struct AmplifyCognitoClientChangePasswordOptions {
 
+    /// No options yet.
     public init() {}
 }
 

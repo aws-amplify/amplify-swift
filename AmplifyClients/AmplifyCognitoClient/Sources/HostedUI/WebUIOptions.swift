@@ -104,6 +104,8 @@ public struct WebUIOptions {
     /// `nil` or empty). When the check fails nobody is signed in and nothing is stored.
     public let identityExpectation: IdentityExpectation
 
+    /// Each parameter defaults to its field's default. The provider is not a parameter: pass it to
+    /// `signInWithWebUI(for:presentationAnchor:options:)`.
     public init(
         whenBrowserBusy: BrowserBusyPolicy = .fail,
         prefersEphemeralSession: Bool = true,

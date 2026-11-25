@@ -76,7 +76,9 @@ so the pin also sets the version of the Auth plugin and the other Amplify librar
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/aws-amplify/amplify-swift", exact: "2.63.0")
+    // Replace <version> with the release this guide describes: the first after 2.64.0.
+    // 2.64.0 and earlier have the older `AuthClient…` API.
+    .package(url: "https://github.com/aws-amplify/amplify-swift", exact: "<version>")
 ],
 targets: [
     .target(
@@ -407,7 +409,7 @@ if !result.signedOutLocally {
 }
 
 // The same options as signOut(options:): sign the user out of every device, and remove the row too.
-_ = await AmplifyCognitoClient.signOutStoredSession(
+await AmplifyCognitoClient.signOutStoredSession(
     sessionId: id,
     configuration: configuration,
     options: .init(globalSignOut: true, purgeStoredSession: true)
@@ -424,19 +426,21 @@ see the change at once. `signOutStoredSession` takes the same `options:` as `sig
 fails). A global sign-out sends the saved access token as it is, as the plugin's does, and a saved session nobody
 holds has often outlived it: Cognito then refuses the global sign-out, the refresh token is not revoked either
 (`.partial` with a `globalSignOutError`), and the session is still cleared on this device. Sign such a session out
-without `globalSignOut` to revoke its refresh token. It never throws. It never signs out a user who signs in while the call runs: if someone else signs in to that session
-meanwhile, it returns `.failed(.invalidState)` and they stay signed in. A client for that session live with other
-pools in the same access group makes it `.failed(.sessionConfigurationMismatch)` (a purge throws it); a client live
-in another access group holds a different saved session, and is left alone. With no client for the session live in
-the process, `signOutStoredSession` revokes through SDK clients built from `configuration` alone, so a
+without `globalSignOut` to revoke its refresh token.
+
+`signOutStoredSession` never throws. It never signs out a user who signs in while the call runs: if someone else signs
+in to that session meanwhile, it returns `.failed(.invalidState)` and they stay signed in. A client for that session
+live with other pools in the same access group makes it `.failed(.sessionConfigurationMismatch)` (a purge throws it); a
+client live in another access group holds a different saved session, and is left alone. With no client for the session
+live in the process, `signOutStoredSession` revokes through SDK clients built from `configuration` alone, so a
 `configureUserPoolClient` your clients pass (a custom endpoint, a proxy, certificate pinning) isn't applied: hold a
-client for the session to sign out through it. A purge leaves the refresh token valid on the server until it expires,
-so prefer `signOutStoredSession`. A named session's purge deletes the session's small configuration marker last, or
+client for the session to sign out through it. A purge leaves the refresh token valid on the server until it expires, so
+prefer `signOutStoredSession`. A named session's purge deletes the session's small configuration marker last, or
 rewrites it so it carries nothing when it still lists other users' copies. An app terminated just before that step
-leaves the marker as it was. A leftover marker that names the purge's own configuration holds no credentials and
-carries nothing. One that names an earlier configuration (a purge under a new configuration, before the session's
-first restore there) makes the next restore under this configuration carry the session from the earlier one again:
-purge the session again before building a client for it.
+leaves the marker as it was. A leftover marker that names the purge's own configuration holds no credentials and carries
+nothing. One that names an earlier configuration (a purge under a new configuration, before the session's first restore
+there) makes the next restore under this configuration carry the session from the earlier one again: purge the session
+again before building a client for it.
 
 There is no "sign out of every session" call. Loop over the listing, once per configuration and access group the
 app has used:
@@ -1127,9 +1131,12 @@ let accessToken = try await client.userPoolTokenProvider.accessToken()
   recovery suggestion: follow it. Any other error (the network, Cognito, a cancellation) leaves the user pool
   sign-in intact, and the call can be retried.
 - With an identity pool, a failed identity pool step fails the call even when the user pool tokens are valid, as the
-  plugin does; `userPoolTokenProvider` still vends the token. For a session carried from a configuration without an
-  identity pool, while the client holds that step back the call rethrows its last failure: for 30 seconds after a
-  transient failure, or until the tokens next need a refresh after a refusal. `forceRefresh: true` retries at once.
+  plugin does, and a `userPoolTokenProvider` call that needs the same refresh fails with it. The exception is a
+  session still waiting for its first identity in this identity pool (one carried from a configuration without that
+  pool, or `.default` when its saved login has no identity yet): `userPoolTokenProvider` still vends its token, and
+  while the client holds that step back the call rethrows its last failure: for 30 seconds after a transient failure,
+  or until the tokens next need a refresh after a refusal.
+  `forceRefresh: true` retries at once.
 - A signed-out session whose identity pool allows guests becomes `.guest` here, and only here. If the pool allows
   none, or there is no identity pool, the call throws `notSignedIn`: where you call it to become a guest, use `try?`
   or handle the error.
@@ -1196,6 +1203,9 @@ records it did not send. They follow the error's `disposition`:
 
 - `.discard` (the session signed out): a client with a `cacheIdentifier` drops the records cached when the flush
   began, since their user is gone. A client without one keeps them: the region's cache holds every session's records.
+  The discard takes a flush while the session is signed out: once it is a guest (after `fetchAuthSession()`), or
+  another user has signed in to it, a flush sends those records with the new credentials, so call `flush()` before,
+  or `clearCache()` at, sign-out when records must not go out under another principal.
 - `.retryAfterReauthentication` (the session expired), `.retryWithBackoff` and `.failLoudly`: the records are kept,
   and sent once the session can vend credentials again. Kept this way they don't expire through `maxRetries`, so
   the cache can fill to `cacheMaxBytes`, after which `record` throws `cacheLimitExceeded`.
@@ -1211,7 +1221,7 @@ to the session, not to a user. If a different user may sign in to an expired ses
 In Swift 6, calling `record(…)` on an `AmplifyKinesisClient` or `AmplifyFirehoseClient` from a `@MainActor` type (a
 SwiftUI view model, say) or an actor that holds the client fails to compile with "sending '…' risks causing data
 races": neither client is `Sendable`. Use `@preconcurrency import AmplifyKinesisClient` (or `AmplifyFirehoseClient`),
-or create and use the client in one nonisolated function.
+which turns the error into a warning, or create and use the client in one nonisolated function.
 
 The provider:
 
@@ -1222,13 +1232,13 @@ The provider:
 - vends nothing while a sign-in on the session waits on a challenge, a guest's credentials included: it throws
   `notSignedIn` (`.discard`), so a consumer that follows it drops what it has buffered so far. An expired session
   keeps throwing `sessionExpired` (`.retryAfterReauthentication`) there, so the consumer keeps what it buffered,
-  and sends it as whoever signs in. With no identity pool it throws `notConfigured` (`.failLoudly`) instead. `.discard` marks the change of principal
-  only when the sign-in stops on a challenge. A sign-in that completes at once (one that needs no challenge, or a
-  hosted-UI sign-in) moves the session to the new login with no `notSignedIn` in between, and so hands the user's
-  credentials to a consumer still holding a guest's buffer, which is then sent as the user. Flush a guest's buffered
-  work before any sign-in: without a challenge it is sent as the user, and with one the provider answers `.discard`.
-  `fetchAuthSession()` still reports what the session holds. The Auth plugin keeps vending a guest's credentials
-  here;
+  and sends it as whoever signs in. With no identity pool it throws `notConfigured` (`.failLoudly`) instead. `.discard`
+  marks the change of principal only when the sign-in stops on a challenge. A sign-in that completes at once (one that
+  needs no challenge, or a hosted-UI sign-in) moves the session to the new login with no `notSignedIn` in between, and
+  so hands the user's credentials to a consumer still holding a guest's buffer, which is then sent as the user. Flush a
+  guest's buffered work before any sign-in: without a challenge it is sent as the user, and with one the provider
+  answers `.discard`. `fetchAuthSession()` still reports what the session holds. The Auth plugin keeps vending a guest's
+  credentials here;
 - holds no credentials of its own: each call resolves through the live session, refreshing if needed.
 
 `userPoolTokenProvider` does the same for the user pool access token. It conforms to AmplifyFoundation's
@@ -1386,8 +1396,8 @@ Device records on this device are kept per user, at the plugin's keys, so two se
 them. `rememberDevice()` and `forgetDevice()` for this device throw `.unknown` ("Unable to get device metadata")
 when this device has no device record for the user, as the plugin does, which is always the case on a user pool
 that doesn't track devices: no request is sent. On such a pool only the calls that reach Cognito, `fetchDevices()`
-and `forgetDevice(_:)` of another device, throw `.configuration` ("Device tracking not currently enabled for this
-pool.").
+and `forgetDevice(_:options:)` of another device, throw `.configuration` ("Device tracking not currently enabled for
+this pool.").
 
 `forgetDevice()` keeps this device's record, as the plugin does. The next sign-in in any flow but the hosted UI, auto
 sign-in included, sends its device key, finds that Cognito no longer knows it, drops the record and starts again
@@ -2077,7 +2087,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | Hosted UI private session | `preferPrivateSession` defaults to `false` | `prefersEphemeralSession` defaults to `true` |
 | Hosted UI while another is up | Queues silently | `.browserBusy` by default; `.wait(timeout:)` to queue |
 | Hosted UI returned user | No expectation | Optional `identityExpectation`; the returned ID token is always checked |
-| Hosted-UI sign-in window | Optional; falls back to a window of its own | Required: `signInWithWebUI(presentationAnchor:)` |
+| Hosted-UI sign-in window | Optional; falls back to a window of its own | Required: `signInWithWebUI(presentationAnchor:options:)` |
 | Passkey registration window | Optional; falls back to a window of its own | Required |
 | Passkey sign-in without a window | Window optional (`presentationAnchorForWebAuthn` in the options) | The same option, required for a passkey: without it a passkey is refused with `.validation(field: "presentationAnchorForWebAuthn")` |
 | Passkey registration token | Fetched again after the sheet | One token for the whole registration |

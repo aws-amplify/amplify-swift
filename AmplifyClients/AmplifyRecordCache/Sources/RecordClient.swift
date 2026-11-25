@@ -27,6 +27,7 @@ package actor RecordClient {
     /// cancellation, ends the streak, manual or scheduled. A flush that fails reading the cache leaves it.
     package private(set) var credentialsFailureStreak = 0
 
+    /// - Parameter ownsCache: See `ownsCache`. `false` by default: the region's shared cache.
     package init(
         sender: RecordSender,
         storage: RecordStorage,
