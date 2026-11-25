@@ -12,7 +12,7 @@ import Foundation
 /// **The states are the plugin's.** Federation starts only from a signed-out, guest or already federated
 /// session (`AWSAuthFederateToIdentityPoolTask.swift:87-94`), and clearing needs a federated one
 /// (`ClearFederationOperationHelper`), each refused before any network call with the plugin's strings. A
-/// federated session reports `AuthSessionState.federated(identityId:)`.
+/// federated session reports `AmplifyCognitoClientSessionState.federated(identityId:)`.
 ///
 /// **A federation commits a record, so it has sign-in's guards**: it runs under the
 /// session's `signInLock`, so it never interleaves with a sign-in step; a federation queued before a

@@ -105,7 +105,7 @@ struct SessionSignOut: Sendable {
     static let copyRevokeFailedWarning =
         "A copy of the session under a previous configuration could not be revoked. It is deleted anyway; its refresh token stays valid until it expires."
 
-    let sessionId: SessionID
+    let sessionId: AmplifyCognitoClientSessionID
     let store: SessionRecordIO
     /// Who a credentials payload belongs to, when the record's own metadata does not say.
     let describe: @Sendable (Data) -> CredentialSummary?

@@ -113,7 +113,7 @@ final class SignOutUnreadableRecordTests: XCTestCase {
     /// is `.failed`.
     private let withoutCredentials = SessionRecord(label: "Work", username: "alice", userId: "sub-alice", kind: .userPoolOnly, credentials: nil)
 
-    private func listedStates() async throws -> [AuthSessionState] {
+    private func listedStates() async throws -> [AmplifyCognitoClientSessionState] {
         try await AmplifyCognitoClient.storedSessions(
             configuration: ClientFixtures.configuration,
             accessGroup: nil,
@@ -358,7 +358,7 @@ final class SignOutUnreadableRecordTests: XCTestCase {
         await waitUntil("the session sends .signedOut") { events.received == [.signedOut] }
     }
 
-    private func signOutStored(_ sessionId: SessionID) async -> AmplifyCognitoClientSignOutResult {
+    private func signOutStored(_ sessionId: AmplifyCognitoClientSessionID) async -> AmplifyCognitoClientSignOutResult {
         await AmplifyCognitoClient.signOutStoredSession(
             sessionId: sessionId,
             configuration: ClientFixtures.configuration,

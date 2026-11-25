@@ -159,7 +159,7 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.both)), harness.keychain.value(account(ChangeConfigs.userPoolOnly)))
         XCTAssertNotNil(harness.keychain.value(oldSidecar))
         XCTAssertNil(harness.keychain.value(newSidecar))
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
+        XCTAssertEqual(rows, [AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
         XCTAssertEqual(restored, .signedIn(alice))
         XCTAssertNil(try harness.storedRecord(.default)?.label)
     }

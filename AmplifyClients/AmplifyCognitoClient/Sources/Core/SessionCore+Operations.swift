@@ -84,7 +84,7 @@ extension SessionCore {
 
     /// A federated session has no user pool user, and a sign-in is refused over it (`signInSeed`) until the
     /// federation is cleared or the session signed out.
-    static func federatedHasNoUser(_ sessionId: SessionID) -> AmplifyCognitoClientError {
+    static func federatedHasNoUser(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .notSignedIn(
             "Session \"\(sessionId)\" has no user pool user: it is federated to the identity pool.",
             "Call clearFederationToIdentityPool() or sign the session out, then sign in through the user pool."

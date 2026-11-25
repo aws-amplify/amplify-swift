@@ -194,7 +194,7 @@ public extension AmplifyCognitoClient {
     ///     `forceRefresh: true` retries at once;
     ///   - `CancellationError` if the calling task is cancelled while it waits (a refresh it joined carries on
     ///     for the session), or the request itself was cancelled.
-    func fetchAuthSession(options: AmplifyCognitoClientFetchSessionOptions = AmplifyCognitoClientFetchSessionOptions()) async throws -> AmplifyCognitoClientSession {
+    func fetchAuthSession(options: AmplifyCognitoClientFetchAuthSessionOptions = AmplifyCognitoClientFetchAuthSessionOptions()) async throws -> AmplifyCognitoClientAuthSession {
         let core = core
         return try await core.fetchAuthSession(forceRefresh: options.forceRefresh)
     }

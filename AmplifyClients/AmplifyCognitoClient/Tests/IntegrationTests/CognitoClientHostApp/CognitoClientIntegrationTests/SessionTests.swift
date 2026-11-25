@@ -157,7 +157,7 @@ final class SessionTests: ClientIntegrationTestCase {
             return XCTFail("the expired record was not planted: the record moved under the test")
         }
 
-        let events: StreamRecorder<AuthEvent>
+        let events: StreamRecorder<AmplifyCognitoClientEvent>
         do {
             let reloaded = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
             events = StreamRecorder(reloaded.listenToAuthEvents())

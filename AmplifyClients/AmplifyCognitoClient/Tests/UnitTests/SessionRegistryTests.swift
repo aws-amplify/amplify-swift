@@ -22,7 +22,7 @@ final class SessionRegistryTests: XCTestCase {
     ///    - the existing instance is returned and `make` is not called again
     func testSameIDAndConfigurationSharesOneSession() throws {
         let registry = Registry()
-        let id = try SessionID.named("work")
+        let id = try AmplifyCognitoClientSessionID.named("work")
         var makes = 0
         let make = { () -> FakeSession in
             makes += 1
@@ -43,7 +43,7 @@ final class SessionRegistryTests: XCTestCase {
     ///    - it throws `sessionConfigurationMismatch` naming the session, and no second session exists
     func testSameIDDifferentNamespaceThrows() throws {
         let registry = Registry()
-        let id = try SessionID.named("work")
+        let id = try AmplifyCognitoClientSessionID.named("work")
         let live = try registry.session(for: id, namespace: "pool-a", fingerprint: 1) { FakeSession() }
 
         XCTAssertThrowsError(try registry.session(for: id, namespace: "pool-b", fingerprint: 1) { FakeSession() }) { error in
@@ -61,7 +61,7 @@ final class SessionRegistryTests: XCTestCase {
     ///    - it throws `sessionConfigurationMismatch`
     func testSameIDSameNamespaceDifferentFingerprintThrows() throws {
         let registry = Registry()
-        let id = try SessionID.named("work")
+        let id = try AmplifyCognitoClientSessionID.named("work")
         let live = try registry.session(for: id, namespace: "pool-a", fingerprint: 1) { FakeSession() }
         XCTAssertThrowsError(try registry.session(for: id, namespace: "pool-a", fingerprint: 2) { FakeSession() })
         withExtendedLifetime(live) {}
@@ -87,7 +87,7 @@ final class SessionRegistryTests: XCTestCase {
     ///    - a fresh session is built rather than throwing or returning a dead one
     func testReleasedSessionIsRebuiltAndNoLongerConstrains() throws {
         let registry = Registry()
-        let id = try SessionID.named("work")
+        let id = try AmplifyCognitoClientSessionID.named("work")
         weak var released: FakeSession?
         do {
             let session = try registry.session(for: id, namespace: "pool-a", fingerprint: 1) { FakeSession() }
@@ -110,8 +110,8 @@ final class SessionRegistryTests: XCTestCase {
     ///    - only the released entry is removed
     func testPruneRemovesOnlyReleasedEntries() throws {
         let registry = Registry()
-        let liveID = try SessionID.named("live")
-        let deadID = try SessionID.named("dead")
+        let liveID = try AmplifyCognitoClientSessionID.named("live")
+        let deadID = try AmplifyCognitoClientSessionID.named("dead")
         let live = try registry.session(for: liveID, namespace: "pool-a", fingerprint: 1) { FakeSession() }
         do { _ = try registry.session(for: deadID, namespace: "pool-a", fingerprint: 1) { FakeSession() } }
 
@@ -135,7 +135,7 @@ final class SessionRegistryTests: XCTestCase {
     ///    - `make` ran exactly once and every caller received the same instance
     func testConcurrentConstructionBuildsExactlyOneSession() throws {
         let registry = Registry()
-        let id = try SessionID.named("work")
+        let id = try AmplifyCognitoClientSessionID.named("work")
         let tally = Tally()
 
         DispatchQueue.concurrentPerform(iterations: 64) { _ in
@@ -190,7 +190,7 @@ final class SessionRegistryTests: XCTestCase {
     func testThrowingMakeLeavesNoEntry() throws {
         struct Boom: Error {}
         let registry = Registry()
-        let id = try SessionID.named("work")
+        let id = try AmplifyCognitoClientSessionID.named("work")
         XCTAssertThrowsError(try registry.session(for: id, namespace: "pool-a", fingerprint: 1) { throw Boom() })
         XCTAssertTrue(registry.liveSessionIDs.isEmpty)
     }

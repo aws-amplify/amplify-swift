@@ -60,7 +60,7 @@ enum RollbackMatrixBytes {
     @discardableResult
     static func writeClientRecord(
         _ payload: Data,
-        for sessionId: SessionID = .default,
+        for sessionId: AmplifyCognitoClientSessionID = .default,
         label: String? = nil,
         in keychain: InMemoryKeychain,
         pools: PoolNamespace

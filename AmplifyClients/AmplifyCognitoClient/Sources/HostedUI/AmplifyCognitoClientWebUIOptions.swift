@@ -33,7 +33,7 @@ import Foundation
 /// Available on iOS, macOS and visionOS only, the platforms the plugin's hosted UI supports:
 /// tvOS and watchOS have no `ASWebAuthenticationSession`.
 @_spi(AmplifyExperimental)
-public struct WebUIOptions {
+public struct AmplifyCognitoClientWebUIOptions {
 
     /// What to do when another session already holds the system sheet. `.fail` by default.
     ///
@@ -133,11 +133,11 @@ public struct WebUIOptions {
 
     /// These options with `provider`: what `signInWithWebUI(for:presentationAnchor:options:)` signs in with. The
     /// fields are `let`, so the overload builds a new value.
-    func with(provider: AmplifyCognitoClientProvider) -> WebUIOptions {
-        WebUIOptions(copying: self, provider: provider)
+    func with(provider: AmplifyCognitoClientProvider) -> AmplifyCognitoClientWebUIOptions {
+        AmplifyCognitoClientWebUIOptions(copying: self, provider: provider)
     }
 
-    private init(copying options: WebUIOptions, provider: AmplifyCognitoClientProvider) {
+    private init(copying options: AmplifyCognitoClientWebUIOptions, provider: AmplifyCognitoClientProvider) {
         self.identityExpectation = options.identityExpectation
         self.whenBrowserBusy = options.whenBrowserBusy
         self.prefersEphemeralSession = options.prefersEphemeralSession
@@ -152,12 +152,12 @@ public struct WebUIOptions {
     }
 }
 
-extension WebUIOptions: Sendable {}
+extension AmplifyCognitoClientWebUIOptions: Sendable {}
 
-extension WebUIOptions: Equatable {}
+extension AmplifyCognitoClientWebUIOptions: Equatable {}
 
 @_spi(AmplifyExperimental)
-public extension WebUIOptions {
+public extension AmplifyCognitoClientWebUIOptions {
 
     /// What a hosted-UI sign-in does when another session's browser sign-in is already in flight.
     ///
@@ -276,16 +276,16 @@ public extension WebUIOptions {
     }
 }
 
-extension WebUIOptions.BrowserBusyPolicy: Sendable {}
+extension AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy: Sendable {}
 
-extension WebUIOptions.BrowserBusyPolicy: Equatable {}
+extension AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy: Equatable {}
 
-extension WebUIOptions.Prompt: Sendable {}
+extension AmplifyCognitoClientWebUIOptions.Prompt: Sendable {}
 
-extension WebUIOptions.Prompt: CaseIterable {}
+extension AmplifyCognitoClientWebUIOptions.Prompt: CaseIterable {}
 
-extension WebUIOptions.IdentityExpectation: Sendable {}
+extension AmplifyCognitoClientWebUIOptions.IdentityExpectation: Sendable {}
 
-extension WebUIOptions.IdentityExpectation: Equatable {}
+extension AmplifyCognitoClientWebUIOptions.IdentityExpectation: Equatable {}
 
 #endif

@@ -258,7 +258,7 @@ final class FakeSessionEngineTests: XCTestCase {
         let browser = FakeBrowser()
         let request = EngineWebUISignInRequest(
             anchor: .empty(),
-            options: EngineWebUIOptions(WebUIOptions(), nonce: "n"),
+            options: EngineWebUIOptions(AmplifyCognitoClientWebUIOptions(), nonce: "n"),
             identity: .none
         )
         let done = EngineStepResult.done(payload: FakePayload.signedIn("web-user").data)
@@ -294,7 +294,7 @@ final class FakeSessionEngineTests: XCTestCase {
         _ = try await engine.signIn(Self.request("alice"), current: nil, epoch: 2)
         let request = EngineWebUISignInRequest(
             anchor: .empty(),
-            options: EngineWebUIOptions(WebUIOptions(), nonce: "n"),
+            options: EngineWebUIOptions(AmplifyCognitoClientWebUIOptions(), nonce: "n"),
             identity: .none
         )
 

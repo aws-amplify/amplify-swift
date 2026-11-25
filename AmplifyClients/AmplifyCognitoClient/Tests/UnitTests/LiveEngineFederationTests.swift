@@ -440,7 +440,7 @@ final class LiveEngineFederationTests: XCTestCase {
         XCTAssertNil(record?.username)
 
         try await client.clearFederationToIdentityPool()
-        XCTAssertEqual(try clientHarness.storedRecord(work)?.kind, SessionKind.signedOut)
+        XCTAssertEqual(try clientHarness.storedRecord(work)?.kind, AmplifyCognitoClientSessionKind.signedOut)
         let cleared = await client.currentSessionState()
         XCTAssertEqual(cleared, .signedOut)
 

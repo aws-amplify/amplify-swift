@@ -444,9 +444,9 @@ enum IntegrationTestEnvironment {
     // MARK: - Session IDs
 
     /// A session ID no other test, and no earlier run, uses: `<tag>-<8 hex digits>`.
-    static func uniqueSessionID(_ tag: String) throws -> SessionID {
+    static func uniqueSessionID(_ tag: String) throws -> AmplifyCognitoClientSessionID {
         let suffix = UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(8).lowercased()
-        return try SessionID.named("\(tag)-\(suffix)")
+        return try AmplifyCognitoClientSessionID.named("\(tag)-\(suffix)")
     }
 
     // MARK: - Keychain
@@ -884,7 +884,7 @@ enum HarnessError: Error, CustomStringConvertible {
 
 /// A fetched session's fields, for a test that expects them: each throws when the session holds none, where the
 /// field itself is `nil`.
-extension AmplifyCognitoClientSession {
+extension AmplifyCognitoClientAuthSession {
 
     func requireUserPoolTokens() throws -> AmplifyCognitoClientUserPoolTokens {
         guard let userPoolTokens else {

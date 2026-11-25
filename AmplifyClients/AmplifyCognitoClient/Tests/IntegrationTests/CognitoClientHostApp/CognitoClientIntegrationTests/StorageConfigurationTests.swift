@@ -253,7 +253,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     /// The carried record under `pools` holds user pool tokens only (the plugin's stored format
     /// `{"userPoolOnly": …}`, no identity ID and no AWS credentials), and the record under `old` is kept.
     private static func assertCarriedTokensOnly(
-        _ sessionId: SessionID,
+        _ sessionId: AmplifyCognitoClientSessionID,
         under pools: AmplifyCognitoClientConfiguration,
         keptUnder old: AmplifyCognitoClientConfiguration,
         file: StaticString = #filePath,
@@ -355,7 +355,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
 
     /// A session ID whose records are signed out and purged at teardown under each of `configurations`,
     /// since the base class's cleanup knows only the base sandbox and parity pools.
-    private func tracked(_ tag: String, in configurations: [AmplifyCognitoClientConfiguration]) throws -> SessionID {
+    private func tracked(_ tag: String, in configurations: [AmplifyCognitoClientConfiguration]) throws -> AmplifyCognitoClientSessionID {
         let sessionId = try IntegrationTestEnvironment.uniqueSessionID(tag)
         let session = CreatedSession(sessionId: sessionId, accessGroup: nil)
         addTeardownBlock {
@@ -379,7 +379,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
         let identityId: String
         let accessKeyId: String
 
-        init(_ session: AmplifyCognitoClientSession) throws {
+        init(_ session: AmplifyCognitoClientAuthSession) throws {
             self.identityId = try session.requireIdentityId()
             self.accessKeyId = try session.requireAWSCredentials().accessKeyId
         }
@@ -387,7 +387,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
 
     /// Makes `sessionId` a guest over `configuration`, returns its identity and credentials, and releases
     /// the session.
-    private func guest(_ sessionId: SessionID, over configuration: AmplifyCognitoClientConfiguration) async throws -> AWSGuest {
+    private func guest(_ sessionId: AmplifyCognitoClientSessionID, over configuration: AmplifyCognitoClientConfiguration) async throws -> AWSGuest {
         let guest: AWSGuest
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
@@ -403,7 +403,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     /// identity ID, and releases the session.
     private func signInWithIdentity(
         _ user: TestUser,
-        on sessionId: SessionID,
+        on sessionId: AmplifyCognitoClientSessionID,
         over configuration: AmplifyCognitoClientConfiguration
     ) async throws -> (AmplifyCognitoClientUser, String) {
         let signedIn: (AmplifyCognitoClientUser, String)
@@ -420,7 +420,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     /// Signs `user` in on `sessionId`, returns the signed-in user, and releases the session.
     private func signIn(
         _ user: TestUser,
-        on sessionId: SessionID,
+        on sessionId: AmplifyCognitoClientSessionID,
         over configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String? = nil
     ) async throws -> AmplifyCognitoClientUser {
@@ -443,7 +443,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     /// never falls back to guest), and the listing has no row for the session. Nothing it does writes a
     /// record, and it is released on return.
     private func assertSignedOutWithNoRow(
-        _ sessionId: SessionID,
+        _ sessionId: AmplifyCognitoClientSessionID,
         over configuration: AmplifyCognitoClientConfiguration,
         accessGroup: String? = nil,
         _ context: String,

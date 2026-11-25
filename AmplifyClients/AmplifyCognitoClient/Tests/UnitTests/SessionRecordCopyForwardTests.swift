@@ -43,7 +43,7 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         keychain.recordStore(for: SessionStorageNamespace(pools: pools, accessGroup: nil), markerScope: scope)
     }
 
-    private func account(_ pools: PoolNamespace, _ sessionId: SessionID? = nil) -> String {
+    private func account(_ pools: PoolNamespace, _ sessionId: AmplifyCognitoClientSessionID? = nil) -> String {
         SessionRecordKey.account(for: sessionId ?? work, in: pools, kind: .session)
     }
 
@@ -66,7 +66,7 @@ final class SessionRecordCopyForwardTests: XCTestCase {
     /// Stores `payload` for `sessionId` under `pools` without touching any marker: a record this app did not
     /// write (another app's, or an earlier build's). Returns the stored bytes.
     @discardableResult
-    private func plant(_ payload: FakePayload, label: String? = nil, for sessionId: SessionID? = nil, under pools: PoolNamespace) throws -> Data {
+    private func plant(_ payload: FakePayload, label: String? = nil, for sessionId: AmplifyCognitoClientSessionID? = nil, under pools: PoolNamespace) throws -> Data {
         let data = try SessionRecordEnvelope(generation: 1, lastWriteTimestamp: Date(), record: payload.record(label: label)).encoded()
         keychain.put(data, account(pools, sessionId))
         return data
@@ -174,7 +174,7 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         let envelope = try XCTUnwrap(carriedRecord(try store(Self.bothPools).readCarryingForward(work)))
 
         let payload = try XCTUnwrap(FakePayload.decode(try XCTUnwrap(envelope.record.credentials)))
-        XCTAssertEqual(payload.kind, SessionKind.userPoolOnly.storedValue)
+        XCTAssertEqual(payload.kind, AmplifyCognitoClientSessionKind.userPoolOnly.storedValue)
         XCTAssertNil(payload.identityId, "no identity crosses a changed identity pool")
         XCTAssertFalse(payload.aws, "no AWS credentials cross a changed identity pool")
         XCTAssertTrue(envelope.record.identityPending)
@@ -1244,7 +1244,7 @@ final class SessionRecordCopyForwardTests: XCTestCase {
     /// token rotated to `refresh-alice-R2`. Returns the bytes left under `earlier` (the untouched copy) and those under
     /// `later` after the refresh.
     private func carriedThenRefreshed(from earlier: PoolNamespace, into later: PoolNamespace) throws -> (copy: Data, refreshed: Data) {
-        let kind: SessionKind = earlier.hasIdentityPool ? .userPoolAndIdentityPool : .userPoolOnly
+        let kind: AmplifyCognitoClientSessionKind = earlier.hasIdentityPool ? .userPoolAndIdentityPool : .userPoolOnly
         let copyBytes = try ran(.signedIn("alice", kind: kind, identityId: kind == .userPoolOnly ? nil : "us-east-1:alice"), under: earlier)
         let carried = try XCTUnwrap(carriedRecord(try store(later).readCarryingForward(work)))
         var refreshed = FakePayload.signedIn(
@@ -1285,7 +1285,7 @@ final class SessionRecordCopyForwardTests: XCTestCase {
             let payload = try XCTUnwrap(FakePayload.decode(try XCTUnwrap(envelope.record.credentials)), name)
             XCTAssertEqual(payload.version, 2, name)
             XCTAssertEqual(payload.refreshToken, "refresh-alice-R2", name)
-            XCTAssertEqual(payload.kind, SessionKind.userPoolOnly.storedValue, name)
+            XCTAssertEqual(payload.kind, AmplifyCognitoClientSessionKind.userPoolOnly.storedValue, name)
             XCTAssertNil(payload.identityId, name)
             XCTAssertEqual(envelope.record.identityPending, earlier.hasIdentityPool, name)
             XCTAssertEqual(envelope.record.label, "Work", name)
@@ -1695,8 +1695,8 @@ final class SessionRecordCopyForwardTests: XCTestCase {
 
         let (alice, bob) = (AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), AmplifyCognitoClientUser(username: "bob", userId: "sub-bob"))
         XCTAssertEqual(listing.sessions.dropFirst(), [
-            StoredSession(sessionId: home, label: "Home", user: bob, kind: .userPoolAndIdentityPool, state: .signedIn(bob)),
-            StoredSession(sessionId: work, label: "Work", user: alice, kind: .userPoolOnly, state: .signedIn(alice))
+            AmplifyCognitoClientStoredSession(sessionId: home, label: "Home", user: bob, kind: .userPoolAndIdentityPool, state: .signedIn(bob)),
+            AmplifyCognitoClientStoredSession(sessionId: work, label: "Work", user: alice, kind: .userPoolOnly, state: .signedIn(alice))
         ])
         XCTAssertEqual(listing.sessions.first?.sessionId, bad)
         XCTAssertNil(listing.sessions.first?.user, "not dave, whose record a carry would bring")

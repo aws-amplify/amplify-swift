@@ -43,7 +43,7 @@ final class ChallengeRecordStoreTests: XCTestCase {
         keychain.recordStore(for: SessionStorageNamespace(pools: pools, accessGroup: nil))
     }
 
-    private func challengeAccount(_ pools: PoolNamespace, _ sessionId: SessionID? = nil) -> String {
+    private func challengeAccount(_ pools: PoolNamespace, _ sessionId: AmplifyCognitoClientSessionID? = nil) -> String {
         SessionRecordKey.account(for: sessionId ?? work, in: pools, kind: .challenge)
     }
 
@@ -458,8 +458,8 @@ final class ChallengeRecordStoreTests: XCTestCase {
         keychain.resetLogs()
 
         XCTAssertEqual(try store.storedSessions(), [
-            StoredSession(sessionId: home, label: nil, user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice)),
-            StoredSession(sessionId: work, label: nil, user: nil, kind: .signedOut, state: .awaitingChallenge(.confirmSignInWithPassword))
+            AmplifyCognitoClientStoredSession(sessionId: home, label: nil, user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice)),
+            AmplifyCognitoClientStoredSession(sessionId: work, label: nil, user: nil, kind: .signedOut, state: .awaitingChallenge(.confirmSignInWithPassword))
         ])
         XCTAssertFalse(keychain.readAccounts.contains(store.challengeAccount(for: home)))
     }

@@ -26,7 +26,7 @@ import Foundation
 /// keys they do not know.
 ///
 /// **It is bound to a user** (`applies(toRecordUser:recordIsSignedOut:)`), so a label set for one user never passes
-/// to another (the session ID's own label, `SessionID.label`, is saved for each). `deadToken` is bound to the token it names instead (`DeadToken`): the plugin saving a new login
+/// to another (the session ID's own label, `AmplifyCognitoClientSessionID.label`, is saved for each). `deadToken` is bound to the token it names instead (`DeadToken`): the plugin saving a new login
 /// leaves the sidecar as it was, and the marker then no longer applies.
 struct DefaultSessionMeta: Equatable, Sendable {
 

@@ -24,7 +24,7 @@ struct SessionRecord: Equatable, Sendable {
     var userId: String?
 
     /// What the record holds. `.signedOut` for a signed-out row.
-    var kind: SessionKind
+    var kind: AmplifyCognitoClientSessionKind
 
     /// The serialized credentials, opaque to this layer. `nil` once signed out.
     var credentials: Data?
@@ -66,7 +66,7 @@ struct SessionRecord: Equatable, Sendable {
 /// and `deadToken` were added to version 1 as purely additive keys.
 ///
 /// **Any change a version-1 reader cannot interpret bumps `schemaVersion`** — including a new
-/// `SessionKind` value. A reader classifies a higher version as `unsupportedSchema`, which is neither
+/// `AmplifyCognitoClientSessionKind` value. A reader classifies a higher version as `unsupportedSchema`, which is neither
 /// corrupt nor absent, so a newer binary's record is skipped, and an older one never overwrites or deletes
 /// it except by an explicit sign-out, which replaces it with a version-1 signed-out row, or a purge, which
 /// deletes it. Purely additive keys do not need a bump: readers ignore keys they do not know.
@@ -127,7 +127,7 @@ extension SessionRecordEnvelope: Codable {
         let milliseconds = try container.decode(Int64.self, forKey: .lastWriteTimestamp)
 
         let kindValue = try container.decode(String.self, forKey: .kind)
-        guard let kind = SessionKind(storedValue: kindValue) else {
+        guard let kind = AmplifyCognitoClientSessionKind(storedValue: kindValue) else {
             throw DecodingError.dataCorruptedError(
                 forKey: .kind,
                 in: container,
@@ -182,7 +182,7 @@ extension SessionRecordEnvelope: Codable {
     }
 }
 
-extension SessionKind {
+extension AmplifyCognitoClientSessionKind {
 
     /// The stored spelling of each kind. Frozen: it is part of the record format.
     var storedValue: String {

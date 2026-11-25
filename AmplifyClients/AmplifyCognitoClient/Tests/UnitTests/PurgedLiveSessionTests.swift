@@ -34,7 +34,7 @@ final class PurgedLiveSessionTests: XCTestCase {
     // MARK: Helpers
 
     private static func purge(
-        _ sessionId: SessionID,
+        _ sessionId: AmplifyCognitoClientSessionID,
         configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration,
         dependencies: SessionCoreDependencies
     ) async throws {
@@ -47,7 +47,7 @@ final class PurgedLiveSessionTests: XCTestCase {
     }
 
     /// A restored, signed-in client for `sessionId`, whose session is then purged through the static call.
-    private func purgedClient(_ sessionId: SessionID) async throws -> AmplifyCognitoClient {
+    private func purgedClient(_ sessionId: AmplifyCognitoClientSessionID) async throws -> AmplifyCognitoClient {
         try harness.signIn(sessionId, .signedIn("alice"))
         let client = try harness.client(sessionId)
         _ = await client.currentSessionState()

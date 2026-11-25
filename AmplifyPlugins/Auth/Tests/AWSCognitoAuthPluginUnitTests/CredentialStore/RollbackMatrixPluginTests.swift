@@ -96,7 +96,7 @@ final class RollbackMatrixPluginTests: XCTestCase, @unchecked Sendable {
     ///
     func testMatrixBytes_clientRecordsAreTheFrozenFormats() throws {
         let payload = try RollbackMatrixBytes.pluginPayload("userPoolAndIdentityPool")
-        let work = try SessionID.named("work")
+        let work = try AmplifyCognitoClientSessionID.named("work")
 
         let named = try RollbackMatrixBytes.writeClientRecord(payload, for: work, label: "Work", in: keychain, pools: pools)
         let shared = try RollbackMatrixBytes.writeClientRecord(payload, in: keychain, pools: pools)
@@ -211,7 +211,7 @@ final class RollbackMatrixPluginTests: XCTestCase, @unchecked Sendable {
         let aliceRefreshed = try RollbackMatrixBytes.replacingRefreshToken(in: alice, with: "rotated-by-the-plugin")
         try makeStore(.released).saveCredential(decoded(aliceRefreshed))
         XCTAssertEqual(try client.storedSessions(), [
-            StoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub")))
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub")))
         ])
 
         let bob = AmplifyCredentials.userPoolAndIdentityPool(
@@ -226,7 +226,7 @@ final class RollbackMatrixPluginTests: XCTestCase, @unchecked Sendable {
         try makeStore(.released).saveCredential(bob)
 
         XCTAssertEqual(try client.storedSessions(), [
-            StoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "bob", userId: "bob-sub"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "bob-sub")))
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "bob", userId: "bob-sub"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "bob-sub")))
         ])
         guard case .record(let held) = try client.read(.default) else {
             return XCTFail("The client should read bob")
@@ -267,7 +267,7 @@ final class RollbackMatrixPluginTests: XCTestCase, @unchecked Sendable {
         try RollbackMatrixBytes.put(alice, pluginAccount, in: keychain)
 
         XCTAssertEqual(try RollbackMatrixBytes.clientStore(in: keychain, pools: pools).storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub")))
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub")))
         ])
         for binary in RollbackPluginBinary.allCases {
             XCTAssertEqual(try makeStore(binary).retrieveCredential(), try decoded(alice), "\(binary)")
@@ -349,7 +349,7 @@ final class RollbackMatrixPluginTests: XCTestCase, @unchecked Sendable {
     ///      under A finds no record
     ///
     func testMatrix_uncarriedChange_deletesUnderDefault_keepsUnderANamedSession() throws {
-        let work = try SessionID.named("work")
+        let work = try AmplifyCognitoClientSessionID.named("work")
         let configurationA = ConfigurationChangeCase.both()
         let configurationB = ConfigurationChangeCase.userPool(poolId: "us-east-1_PoolB")
         let alice = try RollbackMatrixBytes.pluginPayload("userPoolAndIdentityPool")
@@ -434,7 +434,7 @@ final class RollbackMatrixPluginTests: XCTestCase, @unchecked Sendable {
     // MARK: - Helpers
 
     /// Signs `payload`'s user in to `sessionId` through the client's store, over whatever it holds.
-    func signIn(_ payload: Data, for sessionId: SessionID = .default, through store: SessionRecordStore) throws {
+    func signIn(_ payload: Data, for sessionId: AmplifyCognitoClientSessionID = .default, through store: SessionRecordStore) throws {
         let version: RecordVersion? = if case .record(let held) = try store.read(sessionId) { held.version } else { nil }
         let summary = PluginRecordSummary.peek(payload)
         let record = SessionRecord(label: nil, username: summary.username, userId: summary.userId, kind: summary.kind, credentials: payload)

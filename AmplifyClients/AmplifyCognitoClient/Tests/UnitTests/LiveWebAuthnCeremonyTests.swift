@@ -57,7 +57,7 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
         let before = try clientHarness.storedRecord(work)
         let window = await WebAuthnFixtures.window()
         let lock = clientHarness.sheetLock
-        let holder = TestBox<SessionID?>(nil)
+        let holder = TestBox<AmplifyCognitoClientSessionID?>(nil)
         sheet.answer { [lock] in
             let current = await lock.currentHolder
             holder.with { $0 = current }
@@ -221,7 +221,7 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
         let client = try liveClient()
         let window = await WebAuthnFixtures.window()
         let lock = clientHarness.sheetLock
-        let holder = TestBox<SessionID?>(nil)
+        let holder = TestBox<AmplifyCognitoClientSessionID?>(nil)
         sheet.answer { [lock] in
             let current = await lock.currentHolder
             holder.with { $0 = current }
@@ -295,7 +295,7 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
         let windowA = await WebAuthnFixtures.window()
         let windowB = await WebAuthnFixtures.window()
         let lock = clientHarness.sheetLock
-        let holders = TestBox<[SessionID?]>([])
+        let holders = TestBox<[AmplifyCognitoClientSessionID?]>([])
         sheet.answer { [lock] in
             let current = await lock.currentHolder
             holders.with { $0.append(current) }

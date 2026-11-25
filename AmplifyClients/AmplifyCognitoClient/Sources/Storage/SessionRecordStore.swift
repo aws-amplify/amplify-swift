@@ -139,17 +139,17 @@ struct SessionRecordStore: Sendable {
 
     /// The account of a session's record: for `.default` the Auth plugin's own (`pluginSessionAccount(for:)`), for a
     /// named session its envelope's.
-    func sessionAccount(for sessionId: SessionID) -> String {
+    func sessionAccount(for sessionId: AmplifyCognitoClientSessionID) -> String {
         pluginSessionAccount(for: sessionId) ?? SessionRecordKey.account(for: sessionId, in: namespace.pools, kind: .session)
     }
 
-    func challengeAccount(for sessionId: SessionID) -> String {
+    func challengeAccount(for sessionId: AmplifyCognitoClientSessionID) -> String {
         SessionRecordKey.account(for: sessionId, in: namespace.pools, kind: .challenge)
     }
 
     /// The Auth plugin's own record, `amplify.<poolNamespace>.session`: `.default`'s session record, and no other
     /// session's. `nil` for named sessions, which never read, write or delete it.
-    func pluginSessionAccount(for sessionId: SessionID) -> String? {
+    func pluginSessionAccount(for sessionId: AmplifyCognitoClientSessionID) -> String? {
         sessionId == .default ? SessionRecordKey.pluginSessionAccount(in: namespace.pools) : nil
     }
 
@@ -171,7 +171,7 @@ struct SessionRecordStore: Sendable {
     /// Reads a session's record: for `.default`, the shared record and its sidecar (`readDefault()`).
     ///
     /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the record (or `.default`'s sidecar) could not be read.
-    func read(_ sessionId: SessionID) throws -> ReadResult {
+    func read(_ sessionId: AmplifyCognitoClientSessionID) throws -> ReadResult {
         if sessionId == .default {
             return try readDefault()
         }
@@ -234,11 +234,11 @@ struct SessionRecordStore: Sendable {
     /// `recordingMarker: false` leaves both to the caller.
     ///
     /// `labelIfNone` is the label to save when the record keeps none: the one a sign-in's session ID was created
-    /// with (`SessionID.label`). For `.default` the sidecar decides whether one is kept (`updateSidecar`).
+    /// with (`AmplifyCognitoClientSessionID.label`). For `.default` the sidecar decides whether one is kept (`updateSidecar`).
     @discardableResult
     func write(
         _ record: SessionRecord,
-        for sessionId: SessionID,
+        for sessionId: AmplifyCognitoClientSessionID,
         expecting expected: RecordVersion?,
         recordingMarker: Bool = true,
         labelIfNone: String? = nil
@@ -298,7 +298,7 @@ struct SessionRecordStore: Sendable {
     /// marker goes in its sidecar, and the Auth plugin's record is left alone (`saveDefaultDeadToken`).
     ///
     /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage could not be read or written.
-    func saveDeadToken(_ deadToken: DeadToken, for sessionId: SessionID, expecting expected: RecordVersion?) throws -> CommitOutcome {
+    func saveDeadToken(_ deadToken: DeadToken, for sessionId: AmplifyCognitoClientSessionID, expecting expected: RecordVersion?) throws -> CommitOutcome {
         if sessionId == .default {
             return try saveDefaultDeadToken(deadToken, expecting: expected)
         }
@@ -357,7 +357,7 @@ struct SessionRecordStore: Sendable {
     /// replaced the session. `SessionSignOut` is that caller.
     ///
     /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage could not be read or written.
-    func signOut(_ sessionId: SessionID) throws -> SignOutOutcome {
+    func signOut(_ sessionId: AmplifyCognitoClientSessionID) throws -> SignOutOutcome {
         try signOut(sessionId, expecting: .firstRead)
     }
 
@@ -370,7 +370,7 @@ struct SessionRecordStore: Sendable {
     /// tokens nobody revoked.
     ///
     /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage could not be read or written.
-    func signOut(_ sessionId: SessionID, removing credentials: Data) throws -> SignOutOutcome {
+    func signOut(_ sessionId: AmplifyCognitoClientSessionID, removing credentials: Data) throws -> SignOutOutcome {
         try signOut(sessionId, expecting: .credentials(credentials))
     }
 
@@ -382,7 +382,7 @@ struct SessionRecordStore: Sendable {
         case credentials(Data)
     }
 
-    private func signOut(_ sessionId: SessionID, expecting removing: Removing) throws -> SignOutOutcome {
+    private func signOut(_ sessionId: AmplifyCognitoClientSessionID, expecting removing: Removing) throws -> SignOutOutcome {
         var removed: SessionRecord?
         var legacyLoginsCleared = false
         let outcome = try signOutRecord(
@@ -421,7 +421,7 @@ struct SessionRecordStore: Sendable {
     }
 
     private func signOutRecord(
-        _ sessionId: SessionID,
+        _ sessionId: AmplifyCognitoClientSessionID,
         removing expected: Removing,
         removed: inout SessionRecord?,
         legacyLoginsCleared: inout Bool
@@ -482,7 +482,7 @@ struct SessionRecordStore: Sendable {
     /// write of the signed-out record, so that a write that fails, or an app stopped right after it, leaves no login a
     /// plugin build would migrate back. A sign-out that another writer then supersedes has cleared them too: the user
     /// asked to sign out, so no login that should be kept is lost.
-    private func clearLegacyLoginsBeforeSigningOut(_ sessionId: SessionID, cleared: inout Bool) {
+    private func clearLegacyLoginsBeforeSigningOut(_ sessionId: AmplifyCognitoClientSessionID, cleared: inout Bool) {
         guard sessionId == .default, !cleared else {
             return
         }
@@ -519,7 +519,7 @@ struct SessionRecordStore: Sendable {
     ///
     /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if a record could not be read or deleted, or the namespace
     ///   marker read, rewritten or deleted last.
-    func purge(_ sessionId: SessionID) throws {
+    func purge(_ sessionId: AmplifyCognitoClientSessionID) throws {
         if sessionId == .default {
             return try purgeDefault()
         }
@@ -564,7 +564,7 @@ struct SessionRecordStore: Sendable {
 
     /// Sign-out's last resort after repeated lost races: replaces the record unguarded, but only if it
     /// still holds the credentials being removed, carrying forward its current label and username.
-    private func forceSignOut(_ sessionId: SessionID, removing credentials: Data?) throws -> SignOutOutcome {
+    private func forceSignOut(_ sessionId: AmplifyCognitoClientSessionID, removing credentials: Data?) throws -> SignOutOutcome {
         if sessionId == .default {
             return try forceSignOutDefault(removing: credentials)
         }
@@ -591,7 +591,7 @@ struct SessionRecordStore: Sendable {
 
     /// Replaces a record this build cannot read with a signed-out row, unless it has meanwhile become
     /// one it can read — another writer's, which is left alone.
-    private func replaceUnreadable(_ sessionId: SessionID) throws -> SignOutOutcome {
+    private func replaceUnreadable(_ sessionId: AmplifyCognitoClientSessionID) throws -> SignOutOutcome {
         if sessionId == .default {
             return try replaceUnreadableDefault()
         }

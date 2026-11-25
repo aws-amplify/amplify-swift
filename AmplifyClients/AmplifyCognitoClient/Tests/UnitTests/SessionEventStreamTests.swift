@@ -26,9 +26,9 @@ final class SessionEventStreamTests: XCTestCase {
     /// - Then:
     ///    - every subscriber received every event, in the order sent
     func testEverySubscriberReceivesEveryEventInOrder() async {
-        let broadcaster = SessionEventStream<AuthEvent>()
+        let broadcaster = SessionEventStream<AmplifyCognitoClientEvent>()
         let streams = (0 ..< 3).map { _ in broadcaster.events() }
-        let sent: [AuthEvent] = [.signedIn, .sessionExpired, .signedIn, .signedOut, .userDeleted]
+        let sent: [AmplifyCognitoClientEvent] = [.signedIn, .sessionExpired, .signedIn, .signedOut, .userDeleted]
 
         for event in sent {
             broadcaster.send(event)
@@ -74,7 +74,7 @@ final class SessionEventStreamTests: XCTestCase {
     /// - Then:
     ///    - the subscriber receives only the second event
     func testEventsSentBeforeSubscribingAreNotReplayed() async {
-        let broadcaster = SessionEventStream<AuthEvent>()
+        let broadcaster = SessionEventStream<AmplifyCognitoClientEvent>()
         broadcaster.send(.signedIn)
 
         let stream = broadcaster.events()
@@ -92,14 +92,14 @@ final class SessionEventStreamTests: XCTestCase {
     ///    - the cancelled subscriber is removed from the broadcaster and receives nothing more, and
     ///      the other subscriber still receives both events
     func testTerminatedSubscriberIsDropped() async {
-        let broadcaster = SessionEventStream<AuthEvent>()
+        let broadcaster = SessionEventStream<AmplifyCognitoClientEvent>()
         let kept = broadcaster.events()
         let cancelled = broadcaster.events()
         XCTAssertEqual(broadcaster.subscriberCount, 2)
 
         let receivedOne = Gate(isOpen: true)
         let reader = Task {
-            var received: [AuthEvent] = []
+            var received: [AmplifyCognitoClientEvent] = []
             for await event in cancelled {
                 received.append(event)
                 await receivedOne.pass()
@@ -128,7 +128,7 @@ final class SessionEventStreamTests: XCTestCase {
     ///    - both streams end, the late subscriber's stream is already finished, the later send is
     ///      ignored, and nothing stays registered
     func testFinishEndsEveryStreamAndIsFinal() async {
-        let broadcaster = SessionEventStream<AuthEvent>()
+        let broadcaster = SessionEventStream<AmplifyCognitoClientEvent>()
         let first = broadcaster.events()
         let second = broadcaster.events()
 
@@ -153,10 +153,10 @@ final class SessionEventStreamTests: XCTestCase {
     /// - Then:
     ///    - the broadcaster is deallocated, and the stream delivers the event it buffered and ends
     func testReleasingTheBroadcasterEndsItsStreams() async {
-        weak var released: SessionEventStream<AuthEvent>?
-        let stream: AsyncStream<AuthEvent>
+        weak var released: SessionEventStream<AmplifyCognitoClientEvent>?
+        let stream: AsyncStream<AmplifyCognitoClientEvent>
         do {
-            let broadcaster = SessionEventStream<AuthEvent>()
+            let broadcaster = SessionEventStream<AmplifyCognitoClientEvent>()
             released = broadcaster
             stream = broadcaster.events()
             broadcaster.send(.signedIn)
@@ -176,8 +176,8 @@ final class SessionEventStreamTests: XCTestCase {
     ///    - each subscriber received only its own session's events, and finishing one session did
     ///      not end the other
     func testTwoBroadcastersAreIndependent() async {
-        let work = SessionEventStream<AuthEvent>()
-        let home = SessionEventStream<AuthEvent>()
+        let work = SessionEventStream<AmplifyCognitoClientEvent>()
+        let home = SessionEventStream<AmplifyCognitoClientEvent>()
         let workStream = work.events()
         let homeStream = home.events()
 

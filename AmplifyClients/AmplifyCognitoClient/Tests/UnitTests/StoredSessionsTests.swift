@@ -23,12 +23,12 @@ final class StoredSessionsTests: XCTestCase {
         store = keychain.recordStore(for: StorageFixtures.namespace)
     }
 
-    private func id(_ name: String) throws -> SessionID {
-        try SessionID.named(name)
+    private func id(_ name: String) throws -> AmplifyCognitoClientSessionID {
+        try AmplifyCognitoClientSessionID.named(name)
     }
 
     /// Whether a row's state is the `.failed(.unknown)` a restore reports for a record it cannot use.
-    private func isFailed(_ state: AuthSessionState?) -> Bool {
+    private func isFailed(_ state: AmplifyCognitoClientSessionState?) -> Bool {
         if case .failed(.unknown)? = state {
             return true
         }
@@ -37,7 +37,7 @@ final class StoredSessionsTests: XCTestCase {
 
     /// The state a restore reports for `record`, its credentials decoded by the live engine's own decode
     /// (`LiveSessionEngine.describe`).
-    private func restoredByTheEngine(_ record: SessionRecord) -> AuthSessionState {
+    private func restoredByTheEngine(_ record: SessionRecord) -> AmplifyCognitoClientSessionState {
         SessionSnapshot.state(of: .own(record), challenge: nil) { try CredentialSummary(LiveSessionEngine.credentials(in: $0)) }
     }
 
@@ -102,9 +102,9 @@ final class StoredSessionsTests: XCTestCase {
         try store.write(federated, for: id("partner"), expecting: nil)
 
         XCTAssertEqual(try store.storedSessions(), [
-            StoredSession(sessionId: try id("browse"), label: nil, user: nil, kind: .guest, state: .guest),
-            StoredSession(sessionId: try id("partner"), label: nil, user: nil, kind: .federated, state: .federated(identityId: "identityId")),
-            StoredSession(sessionId: try id("work"), label: "Acme Corp", user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice))
+            AmplifyCognitoClientStoredSession(sessionId: try id("browse"), label: nil, user: nil, kind: .guest, state: .guest),
+            AmplifyCognitoClientStoredSession(sessionId: try id("partner"), label: nil, user: nil, kind: .federated, state: .federated(identityId: "identityId")),
+            AmplifyCognitoClientStoredSession(sessionId: try id("work"), label: "Acme Corp", user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice))
         ])
     }
 
@@ -121,8 +121,8 @@ final class StoredSessionsTests: XCTestCase {
 
         XCTAssertEqual(try store.storedSessions().map(\.sessionId), [try id("home")])
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: try id("home"), label: nil, user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice)),
-            StoredSession(sessionId: try id("work"), label: "Acme Corp", user: alice, kind: .signedOut, state: .signedOut)
+            AmplifyCognitoClientStoredSession(sessionId: try id("home"), label: nil, user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice)),
+            AmplifyCognitoClientStoredSession(sessionId: try id("work"), label: "Acme Corp", user: alice, kind: .signedOut, state: .signedOut)
         ])
     }
 
@@ -232,7 +232,7 @@ final class StoredSessionsTests: XCTestCase {
     ///    - there is one `.default` row with the mapped kind and state, the signed-in user for the user-pool
     ///      shapes and none otherwise, no label, and nothing is written
     func testPluginOnlyRecordIsListedAsTheDefaultSession() throws {
-        let cases: [(Data, SessionKind, AmplifyCognitoClientUser?, AuthSessionState)] = [
+        let cases: [(Data, AmplifyCognitoClientSessionKind, AmplifyCognitoClientUser?, AmplifyCognitoClientSessionState)] = [
             (PluginRecordFixtures.userPoolOnly, .userPoolOnly, pluginUser, .signedIn(pluginUser)),
             (PluginRecordFixtures.userPoolAndIdentityPool, .userPoolAndIdentityPool, pluginUser, .signedIn(pluginUser)),
             (PluginRecordFixtures.identityPoolOnly, .guest, nil, .guest),
@@ -243,7 +243,7 @@ final class StoredSessionsTests: XCTestCase {
 
             XCTAssertEqual(
                 try store.storedSessions(),
-                [StoredSession(sessionId: .default, label: nil, user: user, kind: kind, state: state)],
+                [AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: user, kind: kind, state: state)],
                 "\(kind)"
             )
         }
@@ -270,7 +270,7 @@ final class StoredSessionsTests: XCTestCase {
         try putSidecar(label: "Home", username: pluginUsername, userId: pluginUserId)
 
         XCTAssertEqual(try store.storedSessions(), [
-            StoredSession(sessionId: .default, label: "Home", user: pluginUser, kind: .userPoolAndIdentityPool, state: .signedIn(pluginUser))
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: "Home", user: pluginUser, kind: .userPoolAndIdentityPool, state: .signedIn(pluginUser))
         ])
         XCTAssertFalse(keychain.hasMutations)
     }
@@ -287,7 +287,7 @@ final class StoredSessionsTests: XCTestCase {
         let sidecar = keychain.value(sidecarAccount)
 
         XCTAssertEqual(try store.storedSessions(), [
-            StoredSession(sessionId: .default, label: nil, user: pluginUser, kind: .userPoolAndIdentityPool, state: .signedIn(pluginUser))
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: pluginUser, kind: .userPoolAndIdentityPool, state: .signedIn(pluginUser))
         ])
         XCTAssertEqual(keychain.value(sidecarAccount), sidecar)
     }
@@ -302,7 +302,7 @@ final class StoredSessionsTests: XCTestCase {
 
         XCTAssertEqual(try store.storedSessions(), [])
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: "Home", user: pluginUser, kind: .signedOut, state: .signedOut)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: "Home", user: pluginUser, kind: .signedOut, state: .signedOut)
         ])
     }
 
@@ -317,7 +317,7 @@ final class StoredSessionsTests: XCTestCase {
         try putSidecar(label: "Home", username: pluginUsername, userId: nil)
 
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: "Home", user: nil, kind: .signedOut, state: .signedOut)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: "Home", user: nil, kind: .signedOut, state: .signedOut)
         ])
     }
 
@@ -333,7 +333,7 @@ final class StoredSessionsTests: XCTestCase {
 
         XCTAssertEqual(try store.storedSessions(), [])
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: "Home", user: pluginUser, kind: .signedOut, state: .signedOut)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: "Home", user: pluginUser, kind: .signedOut, state: .signedOut)
         ])
     }
 
@@ -368,7 +368,7 @@ final class StoredSessionsTests: XCTestCase {
         let listing = try store.listing()
 
         XCTAssertEqual(listing.sessions, [
-            StoredSession(sessionId: .default, label: nil, user: pluginUser, kind: .userPoolAndIdentityPool, state: .signedIn(pluginUser))
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: pluginUser, kind: .userPoolAndIdentityPool, state: .signedIn(pluginUser))
         ])
         XCTAssertEqual(listing.unreadable, [:])
     }
@@ -382,7 +382,7 @@ final class StoredSessionsTests: XCTestCase {
 
         XCTAssertEqual(try store.storedSessions(), [])
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: nil, user: nil, kind: .signedOut, state: .signedOut)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: nil, kind: .signedOut, state: .signedOut)
         ])
     }
 

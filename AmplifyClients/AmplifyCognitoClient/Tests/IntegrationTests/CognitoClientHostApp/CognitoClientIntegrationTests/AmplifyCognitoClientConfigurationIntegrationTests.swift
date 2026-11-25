@@ -89,7 +89,7 @@ final class AmplifyCognitoClientConfigurationIntegrationTests: XCTestCase {
         XCTAssertEqual(parsedChallenge.sessionId, .default)
         XCTAssertEqual(parsedChallenge.kind, .challenge)
 
-        let work = try SessionID.named("work")
+        let work = try AmplifyCognitoClientSessionID.named("work")
         let named = SessionRecordKey.account(for: work, in: namespace, kind: .session)
         XCTAssertTrue(named == "amplify.1.\(component).work.session", "the named session's key")
         let parsed = try XCTUnwrap(SessionRecordKey.parse(named))

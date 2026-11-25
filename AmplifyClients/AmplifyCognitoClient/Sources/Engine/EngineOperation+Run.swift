@@ -31,8 +31,7 @@ extension EngineOperation {
         _ configuration: AuthConfiguration,
         boundNanoseconds: UInt64 = configureBoundNanoseconds
     ) async throws -> (AuthenticationState, AuthorizationState) {
-        // `InternalAWSCognitoAuth.AuthEvent`: the client has a public `AuthEvent` of its own.
-        await authMachine.send(InternalAWSCognitoAuth.AuthEvent(eventType: .configureAuth(configuration)))
+        await authMachine.send(AuthEvent(eventType: .configureAuth(configuration)))
         let operation = self
         return try await Self.bounded(boundNanoseconds, "Configuring the session's Cognito engine") {
             try await operation.firstState { state in

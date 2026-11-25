@@ -27,8 +27,8 @@ extension MultiSessionFlowTests {
         let users = try XCTUnwrap(users)
         let aliceId = try makeSessionID("alice")
         let bobId = try makeSessionID("bob")
-        let aliceEvents: StreamRecorder<AuthEvent>
-        let bobEvents: StreamRecorder<AuthEvent>
+        let aliceEvents: StreamRecorder<AmplifyCognitoClientEvent>
+        let bobEvents: StreamRecorder<AmplifyCognitoClientEvent>
         do {
             let alice = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: aliceId))
             let bob = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: bobId))

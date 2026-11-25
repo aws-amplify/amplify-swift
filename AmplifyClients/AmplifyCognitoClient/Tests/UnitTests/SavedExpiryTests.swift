@@ -386,7 +386,7 @@ final class SavedExpiryTests: XCTestCase {
 
     /// Proves `sessionId`'s refresh token dead in `harness` with two reuse refusals, `RefreshTokenReuse.minimumGap`
     /// apart, then releases the client and waits for its core to go.
-    private func expireByReuse(_ sessionId: SessionID, in harness: ClientHarness, file: StaticString = #filePath, line: UInt = #line) async throws {
+    private func expireByReuse(_ sessionId: AmplifyCognitoClientSessionID, in harness: ClientHarness, file: StaticString = #filePath, line: UInt = #line) async throws {
         var client: AmplifyCognitoClient? = try harness.client(sessionId)
         harness.engine(for: sessionId)?.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
         let first = await credentialsError { try await XCTUnwrap(client).credentialsProvider.resolve() }
@@ -414,7 +414,7 @@ final class SavedExpiryTests: XCTestCase {
     /// Asserts `error` is the dead token after a reuse for `sessionId`.
     private func assertAlreadyUsed(
         _ error: AmplifyCognitoClientError?,
-        _ sessionId: SessionID,
+        _ sessionId: AmplifyCognitoClientSessionID,
         _ name: String,
         file: StaticString = #filePath,
         line: UInt = #line

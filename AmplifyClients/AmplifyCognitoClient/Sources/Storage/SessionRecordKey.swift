@@ -86,19 +86,19 @@ enum SessionRecordKey {
 
     struct Parsed: Equatable, Sendable {
         let namespaceComponent: String
-        let sessionId: SessionID
+        let sessionId: AmplifyCognitoClientSessionID
         let kind: Kind
     }
 
     static let schemaVersion = "1"
     private static let versionedPrefix = "amplify.\(schemaVersion)."
 
-    static func account(for sessionId: SessionID, in namespace: PoolNamespace, kind: Kind) -> String {
+    static func account(for sessionId: AmplifyCognitoClientSessionID, in namespace: PoolNamespace, kind: Kind) -> String {
         account(for: sessionId, namespaceComponent: namespace.keyComponent, kind: kind)
     }
 
     /// The same account, for a namespace known only by its rendered component, as a listing parses it.
-    static func account(for sessionId: SessionID, namespaceComponent: String, kind: Kind) -> String {
+    static func account(for sessionId: AmplifyCognitoClientSessionID, namespaceComponent: String, kind: Kind) -> String {
         "\(versionedPrefix)\(namespaceComponent).\(sessionId.stringValue).\(kind.rawValue)"
     }
 
@@ -130,7 +130,7 @@ enum SessionRecordKey {
         }
         let namespaceComponent = String(body[..<sessionDot])
         guard !namespaceComponent.isEmpty,
-              let sessionId = SessionID(storageComponent: String(body[body.index(after: sessionDot)...])) else {
+              let sessionId = AmplifyCognitoClientSessionID(storageComponent: String(body[body.index(after: sessionDot)...])) else {
             return nil
         }
         return Parsed(namespaceComponent: namespaceComponent, sessionId: sessionId, kind: kind)
@@ -148,7 +148,7 @@ enum SessionRecordKey {
     /// (`SessionRecordAccount.isDefaultSessionItem`): the plugin's access-group transition wipe removes them,
     /// and its migration moves them.
     static func metaAccount(in namespace: PoolNamespace) -> String {
-        "\(versionedPrefix)\(namespace.keyComponent).\(SessionID.default.stringValue).\(metaSuffix)"
+        "\(versionedPrefix)\(namespace.keyComponent).\(AmplifyCognitoClientSessionID.default.stringValue).\(metaSuffix)"
     }
 
     // MARK: Namespace markers
@@ -160,17 +160,17 @@ enum SessionRecordKey {
     /// The account of a session's namespace marker for one app: `amplify.1.<sessionId>.<scope>.configuration`
     /// (`SessionRecordStore+CopyForward.swift`). `scope` names the app (a digest of its bundle identifier),
     /// so an app and its extension sharing an access group each keep their own.
-    static func markerAccount(for sessionId: SessionID, scope: String) -> String {
+    static func markerAccount(for sessionId: AmplifyCognitoClientSessionID, scope: String) -> String {
         "\(versionedPrefix)\(sessionId.stringValue).\(scope).\(markerSuffix)"
     }
 
     /// The session a namespace marker account of `scope` belongs to, or `nil` for any other account.
-    static func parseMarker(_ account: String, scope: String) -> SessionID? {
+    static func parseMarker(_ account: String, scope: String) -> AmplifyCognitoClientSessionID? {
         let suffix = ".\(scope).\(markerSuffix)"
         guard account.hasPrefix(versionedPrefix), account.hasSuffix(suffix) else {
             return nil
         }
         let body = account.dropFirst(versionedPrefix.count).dropLast(suffix.count)
-        return body.contains(".") ? nil : SessionID(storageComponent: String(body))
+        return body.contains(".") ? nil : AmplifyCognitoClientSessionID(storageComponent: String(body))
     }
 }

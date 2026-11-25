@@ -556,12 +556,12 @@ private struct ProbeAccounts {
         let configuration = try? IntegrationTestEnvironment.configuration()
         let userPoolId = configuration?.userPool?.poolId ?? "us-west-2_PROBE0000"
         let identityPoolId = configuration?.identityPool?.poolId ?? "us-west-2:00000000-0000-0000-0000-000000000000"
-        let work = SessionID.namedForProbe("work")
+        let work = AmplifyCognitoClientSessionID.namedForProbe("work")
 
         let userPoolOnly = PoolNamespace.userPool(userPoolId)
         let bothPools = PoolNamespace.userPoolAndIdentityPool(userPoolId: userPoolId, identityPoolId: identityPoolId)
 
-        let v1: [(PoolNamespace, SessionID, SessionRecordKey.Kind)] = [
+        let v1: [(PoolNamespace, AmplifyCognitoClientSessionID, SessionRecordKey.Kind)] = [
             (userPoolOnly, work, .session),
             (userPoolOnly, .default, .session),
             (bothPools, work, .session),
@@ -600,9 +600,9 @@ private struct ProbeAccounts {
     }
 }
 
-private extension SessionID {
-    static func namedForProbe(_ id: String) -> SessionID {
+private extension AmplifyCognitoClientSessionID {
+    static func namedForProbe(_ id: String) -> AmplifyCognitoClientSessionID {
         // swiftlint:disable:next force_try
-        try! SessionID.named(id)
+        try! AmplifyCognitoClientSessionID.named(id)
     }
 }

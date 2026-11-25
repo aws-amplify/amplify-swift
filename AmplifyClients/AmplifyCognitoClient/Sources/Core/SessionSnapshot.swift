@@ -128,7 +128,7 @@ struct SessionSnapshot: Sendable, Equatable {
     /// refresh that proved the refresh token dead does not change the state: the session stays
     /// `.signedIn(user)`, so an app knows which user to re-authenticate, and its operations throw
     /// `sessionExpired`.
-    func state(engine: any SessionEngine, challenge: AmplifyCognitoClientSignInStep?) -> AuthSessionState {
+    func state(engine: any SessionEngine, challenge: AmplifyCognitoClientSignInStep?) -> AmplifyCognitoClientSessionState {
         Self.state(of: source, challenge: challenge, describe: engine.describe)
     }
 
@@ -139,17 +139,17 @@ struct SessionSnapshot: Sendable, Equatable {
         of source: Source,
         challenge: AmplifyCognitoClientSignInStep?,
         describe: (Data) throws -> CredentialSummary
-    ) -> AuthSessionState {
+    ) -> AmplifyCognitoClientSessionState {
         let base = baseState(of: source, describe: describe)
         switch base {
         case .unavailable, .failed:
             return base
         case .signedIn, .federated, .signedOut, .guest, .awaitingChallenge:
-            return challenge.map(AuthSessionState.awaitingChallenge) ?? base
+            return challenge.map(AmplifyCognitoClientSessionState.awaitingChallenge) ?? base
         }
     }
 
-    private static func baseState(of source: Source, describe: (Data) throws -> CredentialSummary) -> AuthSessionState {
+    private static func baseState(of source: Source, describe: (Data) throws -> CredentialSummary) -> AmplifyCognitoClientSessionState {
         switch source {
         case .absent:
             return .signedOut
@@ -188,7 +188,7 @@ struct SessionSnapshot: Sendable, Equatable {
         }
     }
 
-    private static func state(for summary: CredentialSummary) -> AuthSessionState {
+    private static func state(for summary: CredentialSummary) -> AmplifyCognitoClientSessionState {
         switch summary.kind {
         case .signedOut:
             return .signedOut

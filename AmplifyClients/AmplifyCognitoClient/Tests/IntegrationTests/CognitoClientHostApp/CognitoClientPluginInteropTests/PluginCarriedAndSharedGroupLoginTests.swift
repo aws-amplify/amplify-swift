@@ -284,7 +284,7 @@ final class PluginCarriedAndSharedGroupLoginTests: XCTestCase {
             includingSignedOut: true
         )
         let defaultRow = try XCTUnwrap(listed.first { $0.sessionId == .default }, "`.default`'s signed-out row is not listed on S")
-        XCTAssertEqual(defaultRow.kind, SessionKind.signedOut)
+        XCTAssertEqual(defaultRow.kind, AmplifyCognitoClientSessionKind.signedOut)
         XCTAssertTrue(defaultRow.user?.username == alice.username, "`.default`'s signed-out row does not name alice")
 
         try await relaunchPlugin(accessGroup: sharedGroup)

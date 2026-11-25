@@ -42,7 +42,7 @@ final class FetchAuthSessionTests: XCTestCase {
 
         let session = try await client.fetchAuthSession()
 
-        XCTAssertEqual(session, AmplifyCognitoClientSession(
+        XCTAssertEqual(session, AmplifyCognitoClientAuthSession(
             identityId: "us-east-1:alice",
             awsCredentials: AmplifyCognitoClientAWSCredentials(payload.awsCredentials),
             userSub: "sub-alice",
@@ -693,7 +693,7 @@ final class FetchAuthSessionTests: XCTestCase {
 
             if guestAccess {
                 let session = try await client.fetchAuthSession()
-                XCTAssertEqual(session, AmplifyCognitoClientSession(
+                XCTAssertEqual(session, AmplifyCognitoClientAuthSession(
                     identityId: "us-east-1:guest",
                     awsCredentials: AmplifyCognitoClientAWSCredentials(FakePayload.guest().awsCredentials)
                 ))

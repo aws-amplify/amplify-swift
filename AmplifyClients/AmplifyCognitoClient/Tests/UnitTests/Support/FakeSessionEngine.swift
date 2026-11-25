@@ -57,7 +57,7 @@ struct FakePayload: Codable, Equatable {
     static func signedIn(
         _ username: String = "alice",
         userId: String? = nil,
-        kind: SessionKind = .userPoolAndIdentityPool,
+        kind: AmplifyCognitoClientSessionKind = .userPoolAndIdentityPool,
         version: Int = 1,
         stale: Bool = false,
         identityId: String? = nil
@@ -77,7 +77,7 @@ struct FakePayload: Codable, Equatable {
         FakePayload(
             username: nil,
             userId: nil,
-            kind: SessionKind.guest.storedValue,
+            kind: AmplifyCognitoClientSessionKind.guest.storedValue,
             version: version,
             stale: stale,
             aws: true,
@@ -90,7 +90,7 @@ struct FakePayload: Codable, Equatable {
         FakePayload(
             username: nil,
             userId: nil,
-            kind: SessionKind.federated.storedValue,
+            kind: AmplifyCognitoClientSessionKind.federated.storedValue,
             version: version,
             stale: stale,
             aws: true,
@@ -126,7 +126,7 @@ struct FakePayload: Codable, Equatable {
             label: label,
             username: username,
             userId: includeUserId ? userId : nil,
-            kind: SessionKind(storedValue: kind) ?? .signedOut,
+            kind: AmplifyCognitoClientSessionKind(storedValue: kind) ?? .signedOut,
             credentials: data
         )
     }
@@ -144,7 +144,7 @@ struct FakePayload: Codable, Equatable {
 
     /// The access token the fake vends for this payload.
     var accessToken: String? {
-        guard let username, kind != SessionKind.guest.storedValue, kind != SessionKind.federated.storedValue else {
+        guard let username, kind != AmplifyCognitoClientSessionKind.guest.storedValue, kind != AmplifyCognitoClientSessionKind.federated.storedValue else {
             return nil
         }
         return "access-\(username)-v\(version)"
@@ -430,7 +430,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
 
     func describe(_ payload: Data) throws -> CredentialSummary {
         withLock { describes += 1 }
-        guard let decoded = FakePayload.decode(payload), let kind = SessionKind(storedValue: decoded.kind) else {
+        guard let decoded = FakePayload.decode(payload), let kind = AmplifyCognitoClientSessionKind(storedValue: decoded.kind) else {
             throw FakeEngineError.unreadablePayload
         }
         return CredentialSummary(kind: kind, username: decoded.username, userId: decoded.userId, identityId: decoded.identityId)
@@ -518,7 +518,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     /// maps the login to, as for the plugin. With no guest, the payload names the fixtures' default identity for the
     /// user, as their signed-in payloads do.
     static func signedIn(_ username: String, from current: Data?) -> FakePayload {
-        let wasGuest = current.flatMap(FakePayload.decode)?.kind == SessionKind.guest.storedValue
+        let wasGuest = current.flatMap(FakePayload.decode)?.kind == AmplifyCognitoClientSessionKind.guest.storedValue
         return FakePayload.signedIn(username, identityId: wasGuest ? loginIdentityId(for: username) : nil)
     }
 

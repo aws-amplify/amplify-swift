@@ -46,7 +46,7 @@ final class AmplifyCognitoClientOperationTypesTests: XCTestCase {
         XCTAssertEqual(code, .codeMismatch)
     }
 
-    /// Equality of `AuthSessionState.failed` (and of partial sign-outs) compares the structured payload,
+    /// Equality of `AmplifyCognitoClientSessionState.failed` (and of partial sign-outs) compares the structured payload,
     /// so two service errors that differ only by code must not compare equal.
     ///
     /// - Given: service errors with the same strings and different codes, and the other new cases
@@ -60,7 +60,7 @@ final class AmplifyCognitoClientOperationTypesTests: XCTestCase {
         XCTAssertFalse(mismatch.isEquivalent(to: .service(nil, "d", "s")))
         XCTAssertFalse(AmplifyCognitoClientError.notAuthorized("d", "s").isEquivalent(to: .invalidState("d", "s")))
         XCTAssertFalse(AmplifyCognitoClientError.invalidState("d", "s").isEquivalent(to: .unknown("d", "s")))
-        XCTAssertNotEqual(AuthSessionState.failed(mismatch), .failed(.service(.userNotFound, "d", "s")))
+        XCTAssertNotEqual(AmplifyCognitoClientSessionState.failed(mismatch), .failed(.service(.userNotFound, "d", "s")))
     }
 
     /// - Given: one error of each new case: `.service` (with the `.network` code), `.notAuthorized` and
@@ -330,7 +330,7 @@ final class AmplifyCognitoClientOperationTypesTests: XCTestCase {
         XCTAssertNil(confirm.friendlyDeviceName)
 
         XCTAssertEqual(AmplifyCognitoClientSignOutOptions(), AmplifyCognitoClientSignOutOptions(globalSignOut: false, purgeStoredSession: false))
-        XCTAssertFalse(AmplifyCognitoClientFetchSessionOptions().forceRefresh)
+        XCTAssertFalse(AmplifyCognitoClientFetchAuthSessionOptions().forceRefresh)
     }
 
     /// The design has no `isSignedIn` anywhere in the client's API: a sign-in is complete when its next
@@ -362,16 +362,16 @@ final class AmplifyCognitoClientOperationTypesTests: XCTestCase {
     func testSessionEqualityComparesEveryField() {
         let tokens = AmplifyCognitoClientUserPoolTokens(idToken: "i", accessToken: "a", refreshToken: "r")
         let credentials = AmplifyCognitoClientAWSCredentials(accessKeyId: "k", secretAccessKey: "s", sessionToken: "t", expiration: TestClock.start)
-        func session(identity: String? = "id-1", tokens sessionTokens: AmplifyCognitoClientUserPoolTokens? = tokens) -> AmplifyCognitoClientSession {
-            AmplifyCognitoClientSession(identityId: identity, awsCredentials: credentials, userSub: "sub", userPoolTokens: sessionTokens)
+        func session(identity: String? = "id-1", tokens sessionTokens: AmplifyCognitoClientUserPoolTokens? = tokens) -> AmplifyCognitoClientAuthSession {
+            AmplifyCognitoClientAuthSession(identityId: identity, awsCredentials: credentials, userSub: "sub", userPoolTokens: sessionTokens)
         }
         XCTAssertEqual(session(), session())
-        XCTAssertEqual(AmplifyCognitoClientSession(), AmplifyCognitoClientSession())
+        XCTAssertEqual(AmplifyCognitoClientAuthSession(), AmplifyCognitoClientAuthSession())
         XCTAssertNotEqual(session(), session(identity: "id-2"))
         XCTAssertNotEqual(session(), session(identity: nil))
         XCTAssertNotEqual(session(), session(tokens: AmplifyCognitoClientUserPoolTokens(idToken: "i", accessToken: "other", refreshToken: "r")))
         XCTAssertNotEqual(session(), session(tokens: nil))
-        XCTAssertNotEqual(session(), AmplifyCognitoClientSession())
+        XCTAssertNotEqual(session(), AmplifyCognitoClientAuthSession())
     }
 
     /// - Given: user pool tokens and AWS credentials, alone, in a session and in an optional
@@ -386,7 +386,7 @@ final class AmplifyCognitoClientOperationTypesTests: XCTestCase {
             sessionToken: "SESSION-SECRET",
             expiration: TestClock.start
         ))
-        let session = AmplifyCognitoClientSession(identityId: "id-1", awsCredentials: credentials, userSub: "sub", userPoolTokens: tokens)
+        let session = AmplifyCognitoClientAuthSession(identityId: "id-1", awsCredentials: credentials, userSub: "sub", userPoolTokens: tokens)
         for value in [tokens, credentials, session, Optional(tokens) as Any] as [Any] {
             var dumped = ""
             dump(value, to: &dumped)

@@ -49,13 +49,13 @@ final class WebUISignInInProgressTests: XCTestCase {
         harness = nil
     }
 
-    private func client(_ sessionId: SessionID) throws -> AmplifyCognitoClient {
+    private func client(_ sessionId: AmplifyCognitoClientSessionID) throws -> AmplifyCognitoClient {
         try harness.client(sessionId, configuration: HostedUIFixtures.configuration)
     }
 
     private func startSignIn(
         _ client: AmplifyCognitoClient,
-        options: WebUIOptions = WebUIOptions()
+        options: AmplifyCognitoClientWebUIOptions = AmplifyCognitoClientWebUIOptions()
     ) async -> Task<AmplifyCognitoClientSignInResult, Error> {
         let window = await window
         return Task { try await client.signInWithWebUI(presentationAnchor: window, options: options) }
@@ -75,9 +75,9 @@ final class WebUISignInInProgressTests: XCTestCase {
         let holder = await harness.sheetLock.currentHolder
         XCTAssertNil(holder)
 
-        for policy in [WebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
+        for policy in [AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
             let error = await authClientError {
-                try await startSignIn(client, options: WebUIOptions(whenBrowserBusy: policy)).value(within: 10)
+                try await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: policy)).value(within: 10)
             }
             XCTAssertEqual(error?.kind, .browserBusy(holder: work), "\(policy)")
             XCTAssertEqual(error?.errorDescription, "Session \"work\" already has a hosted-UI sign-in in progress.", "\(policy)")
@@ -108,7 +108,7 @@ final class WebUISignInInProgressTests: XCTestCase {
         let homeSignIn = await startSignIn(homeClient)
         try await homeBrowser.shown.arrivals(1, within: 10)
         let carolClient = try client(carol)
-        let carolSignIn = await startSignIn(carolClient, options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let carolSignIn = await startSignIn(carolClient, options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
         let lock = harness.sheetLock
         await waitUntil("carol is queued for the sheet") { await lock.waiterCount == 1 }
         let client = try client(work)

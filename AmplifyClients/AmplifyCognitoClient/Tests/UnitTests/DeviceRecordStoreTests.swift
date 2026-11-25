@@ -401,7 +401,7 @@ final class DeviceRecordStoreTests: XCTestCase {
     ///
     func testSignOutAndPurgeKeepDeviceRecords() throws {
         let records = keychain.recordStore(for: StorageFixtures.namespace)
-        let work = try SessionID.named("work")
+        let work = try AmplifyCognitoClientSessionID.named("work")
         try store.saveDeviceMetadata(metadata, for: "alice")
         try store.saveASFDeviceId("asf-id", for: "alice")
         XCTAssertTrue(try records.write(StorageFixtures.signedIn(), for: .default, expecting: nil).didCommit)
@@ -431,7 +431,7 @@ final class DeviceRecordStoreTests: XCTestCase {
     ///
     func testListingIgnoresDeviceRecords() throws {
         let records = keychain.recordStore(for: StorageFixtures.namespace)
-        let work = try SessionID.named("work")
+        let work = try AmplifyCognitoClientSessionID.named("work")
         try store.saveDeviceMetadata(metadata, for: "alice")
         try store.saveASFDeviceId("asf-id", for: "alice")
         XCTAssertTrue(try records.write(StorageFixtures.signedIn(), for: work, expecting: nil).didCommit)

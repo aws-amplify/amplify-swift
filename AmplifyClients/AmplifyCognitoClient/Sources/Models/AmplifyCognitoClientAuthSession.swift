@@ -13,7 +13,7 @@ import InternalAWSCognitoAuth
 ///
 /// Mirrors Amplify core's `AuthFetchSessionRequest.Options`.
 @_spi(AmplifyExperimental)
-public struct AmplifyCognitoClientFetchSessionOptions {
+public struct AmplifyCognitoClientFetchAuthSessionOptions {
 
     /// Refreshes the session's credentials even if they are still valid. A forced refresh joins only
     /// another forced refresh in flight for this session; it runs after a normal refresh in flight, so it
@@ -26,9 +26,9 @@ public struct AmplifyCognitoClientFetchSessionOptions {
     }
 }
 
-extension AmplifyCognitoClientFetchSessionOptions: Equatable {}
+extension AmplifyCognitoClientFetchAuthSessionOptions: Equatable {}
 
-extension AmplifyCognitoClientFetchSessionOptions: Sendable {}
+extension AmplifyCognitoClientFetchAuthSessionOptions: Sendable {}
 
 /// What `fetchAuthSession` found: the session's credentials, as it holds them now.
 ///
@@ -41,7 +41,7 @@ extension AmplifyCognitoClientFetchSessionOptions: Sendable {}
 /// Without the plugin's `isSignedIn`: whether a user is signed in is the session's state,
 /// `currentSessionState()`, which also tells a guest and a storage failure apart.
 @_spi(AmplifyExperimental)
-public struct AmplifyCognitoClientSession {
+public struct AmplifyCognitoClientAuthSession {
 
     /// The identity pool identity ID, or `nil` without an identity pool, or for a login made to the user pool only.
     public let identityId: String?
@@ -70,9 +70,9 @@ public struct AmplifyCognitoClientSession {
     }
 }
 
-extension AmplifyCognitoClientSession: Sendable {}
+extension AmplifyCognitoClientAuthSession: Sendable {}
 
-extension AmplifyCognitoClientSession: Equatable {}
+extension AmplifyCognitoClientAuthSession: Equatable {}
 
 /// A signed-in session's user pool tokens.
 ///

@@ -440,7 +440,7 @@ extension SessionEngine {
 
 /// What a credentials payload holds, read without the network.
 struct CredentialSummary: Sendable, Equatable {
-    let kind: SessionKind
+    let kind: AmplifyCognitoClientSessionKind
     let username: String?
     let userId: String?
     /// The identity pool identity, for payloads that have one. What tells two user-less (guest or
@@ -605,7 +605,7 @@ enum SessionEngineError: Error, Sendable {
 
 /// What an engine is built with.
 struct SessionEngineContext: Sendable {
-    let sessionId: SessionID
+    let sessionId: AmplifyCognitoClientSessionID
     let configuration: AmplifyCognitoClientConfiguration
     /// The engine keeps device and advanced-security records at the plugin's per-user keys.
     let namespace: SessionStorageNamespace

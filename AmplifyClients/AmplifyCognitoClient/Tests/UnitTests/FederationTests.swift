@@ -597,7 +597,7 @@ final class FederationTests: XCTestCase {
         try await client.clearFederationToIdentityPool()
 
         let record = try XCTUnwrap(harness.storedRecord(work))
-        XCTAssertEqual(record.kind, SessionKind.signedOut)
+        XCTAssertEqual(record.kind, AmplifyCognitoClientSessionKind.signedOut)
         XCTAssertNil(record.credentials)
         XCTAssertEqual(record.label, "Tablet")
         let state = await client.currentSessionState()

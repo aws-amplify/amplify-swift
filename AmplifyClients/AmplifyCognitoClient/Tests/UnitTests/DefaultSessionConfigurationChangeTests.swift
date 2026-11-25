@@ -366,7 +366,7 @@ final class DefaultSessionConfigurationChangeTests: XCTestCase {
     ///    - `.default` is listed as `.guest` (or `.federated`) both times, and restores as `.guest` (or
     ///      `.federated(identityId:)`); the copy holds the old bytes
     func testIdentityPoolChangedUnderTheSameUserPool_keepsAGuestOrFederatedCopy() async throws {
-        let cases: [(name: String, payload: Data, kind: SessionKind, state: AuthSessionState)] = try [
+        let cases: [(name: String, payload: Data, kind: AmplifyCognitoClientSessionKind, state: AmplifyCognitoClientSessionState)] = try [
             ("guest", ChangePayloads.guest(), .guest, .guest),
             ("federated", Self.federatedPayload(), .federated, .federated(identityId: "us-east-1:federated-identity"))
         ]

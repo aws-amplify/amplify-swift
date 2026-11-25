@@ -42,10 +42,10 @@ public enum AmplifyCognitoClientError {
     /// The client's system sheet is held, so nothing was presented. It is held by a hosted-UI sign-in,
     /// a hosted-UI sign-out page or a passkey ceremony (sign-in or registration), of another session or of
     /// this one. Also thrown when this session already has a hosted-UI sign-in in progress or queued, and when
-    /// a `WebUIOptions.whenBrowserBusy` `.wait(timeout:)` expired before the sheet was free. `holder` is the
+    /// an `AmplifyCognitoClientWebUIOptions.whenBrowserBusy` `.wait(timeout:)` expired before the sheet was free. `holder` is the
     /// session holding the sheet when the call was refused; for a hosted-UI sign-in refused because this session's
     /// previous one is still in progress while no session holds the sheet, it is the requesting session itself.
-    case browserBusy(holder: SessionID, ErrorDescription, RecoverySuggestion, Error? = nil)
+    case browserBusy(holder: AmplifyCognitoClientSessionID, ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// A client was constructed with a session ID that is already live in this process under a different
     /// configuration: a different user pool, identity pool or keychain access group, or different settings
@@ -53,7 +53,7 @@ public enum AmplifyCognitoClientError {
     /// session must agree, so the second construction throws rather than silently attaching. Also thrown by
     /// `purgeStoredSession` and the static `setSessionLabel`, and returned in `.failed` by `signOutStoredSession`, when a client for the session is
     /// live in this process with a different user pool or identity pool: its records are that client's to change.
-    case sessionConfigurationMismatch(SessionID, ErrorDescription, RecoverySuggestion, Error? = nil)
+    case sessionConfigurationMismatch(AmplifyCognitoClientSessionID, ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// A value supplied by the caller was invalid. `field` names it. The counterpart of Amplify
     /// core's `AuthError.validation`, thrown for example by
@@ -100,7 +100,7 @@ public enum AmplifyCognitoClientError {
     case webAuthnCeremonyFailed(AmplifyCognitoClientWebAuthnCeremonyFailure, ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// A hosted-UI sign-in returned a different user than the one asked for
-    /// (`WebUIOptions.identityExpectation`), so nobody was signed in and nothing was stored. `expected` is
+    /// (`AmplifyCognitoClientWebUIOptions.identityExpectation`), so nobody was signed in and nothing was stored. `expected` is
     /// the expectation that was not met (`nil` for `.distinctFromOtherSessions`); `returned` is the user
     /// that came back. Sign in again with `prompt: [.login]`, so the browser asks for credentials instead
     /// of reusing a saved sign-in.

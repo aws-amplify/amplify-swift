@@ -335,7 +335,7 @@ extension RollbackMatrixClientTests {
         client = nil
         await harness.waitForBaseline()
 
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
+        XCTAssertEqual(rows, [AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
         XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(signedOut, .complete)
         XCTAssertEqual(harness.keychain.value(pluginAccount), try JSONEncoder().encode(AmplifyCredentials.noCredentials))
@@ -397,7 +397,7 @@ extension RollbackMatrixClientTests {
             case .released:
                 XCTAssertNotNil(harness.keychain.value(sidecarAccount), "\(binary)")
                 XCTAssertEqual(listed, [
-                    StoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)
+                    AmplifyCognitoClientStoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)
                 ], "\(binary)")
             case .current:
                 XCTAssertNil(harness.keychain.value(sidecarAccount), "\(binary)")

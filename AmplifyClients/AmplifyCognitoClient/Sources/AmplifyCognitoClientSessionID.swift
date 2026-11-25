@@ -10,7 +10,7 @@ import Foundation
 
 /// The identifier a session is saved under.
 ///
-/// Two `AmplifyCognitoClient` instances built with the same `SessionID` are two handles onto
+/// Two `AmplifyCognitoClient` instances built with the same `AmplifyCognitoClientSessionID` are two handles onto
 /// the same session. The app owns uniqueness: reusing an ID is not an error, it returns the
 /// existing session.
 ///
@@ -34,7 +34,7 @@ import Foundation
 /// `"$default"` back into `.default`; or encode the ID itself: it is `Codable` as its `stringValue`, and
 /// decoding accepts exactly what `named(_:label:)` accepts. Neither keeps the `label`, which is not part of the ID.
 @_spi(AmplifyExperimental)
-public struct SessionID: Hashable, Sendable {
+public struct AmplifyCognitoClientSessionID: Hashable, Sendable {
 
     /// The value to persist in app storage in order to construct the same session later.
     public let stringValue: String
@@ -44,7 +44,7 @@ public struct SessionID: Hashable, Sendable {
     ///
     /// **Saved at sign-in.** When a client built with this ID saves the session's row for a sign-in (hosted UI
     /// included), a federation or a guest, and the row keeps no label, this one is saved as the row's label
-    /// (`StoredSession.label`). A label the row keeps always wins: the same user's, or one set before any user signed
+    /// (`AmplifyCognitoClientStoredSession.label`). A label the row keeps always wins: the same user's, or one set before any user signed
     /// in. When a different user signs in, the previous user's label is dropped, as before, and this one labels the new
     /// user's row. Nothing is saved before that: a session that never signs in has no row (one waiting on a
     /// challenge is listed without this label), and a sign-in interrupted on a challenge and finished in a later
@@ -57,7 +57,7 @@ public struct SessionID: Hashable, Sendable {
     /// labels, the session uses the label of the ID that built it, the first client's, until every client and
     /// provider of the session is released. Only a client's sign-in reads it: the static calls ignore it, and an ID
     /// that was decoded, rebuilt from its `stringValue` or listed by `storedSessions` has none. So a listed row's
-    /// `StoredSession.sessionId.label` is always `nil`: the saved label is `StoredSession.label`.
+    /// `AmplifyCognitoClientStoredSession.sessionId.label` is always `nil`: the saved label is `AmplifyCognitoClientStoredSession.label`.
     public let label: String?
 
     private init(unchecked value: String, label: String? = nil) {
@@ -66,7 +66,7 @@ public struct SessionID: Hashable, Sendable {
     }
 
     /// Whether two IDs name the same session: their `stringValue` only, never their `label`.
-    public static func == (lhs: SessionID, rhs: SessionID) -> Bool {
+    public static func == (lhs: AmplifyCognitoClientSessionID, rhs: AmplifyCognitoClientSessionID) -> Bool {
         lhs.stringValue == rhs.stringValue
     }
 
@@ -105,7 +105,7 @@ public struct SessionID: Hashable, Sendable {
     /// the previous app client, and otherwise stays valid until it expires. A change of the app client alone keeps it,
     /// and its next refresh fails with `sessionExpired`. So `.default` keeps one backend's login at a time: for runtime
     /// switching between backends, use named sessions.
-    public static let `default` = SessionID(unchecked: "$default")
+    public static let `default` = AmplifyCognitoClientSessionID(unchecked: "$default")
 
     /// An app-chosen session ID.
     ///
@@ -124,11 +124,11 @@ public struct SessionID: Hashable, Sendable {
     ///     equals `.default` and carries the label.
     /// - Throws: `AmplifyCognitoClientError.invalidSessionID` for an empty or overlong ID, or one naming the first
     ///   character outside the charset. The message never repeats the ID itself.
-    public static func named(_ id: String, label: String? = nil) throws -> SessionID {
-        if id != SessionID.default.stringValue {
+    public static func named(_ id: String, label: String? = nil) throws -> AmplifyCognitoClientSessionID {
+        if id != AmplifyCognitoClientSessionID.default.stringValue {
             try validate(id)
         }
-        return SessionID(unchecked: id, label: label)
+        return AmplifyCognitoClientSessionID(unchecked: id, label: label)
     }
 
     /// A library-minted session ID, for when the app has no stable identifier of its own.
@@ -138,14 +138,14 @@ public struct SessionID: Hashable, Sendable {
     ///
     /// - Parameter label: The picker label a sign-in saves for the session when its row keeps none; `nil`, the
     ///   default, for none. See `label`.
-    public static func new(label: String? = nil) -> SessionID {
-        SessionID(unchecked: UUID().uuidString.lowercased(), label: label)
+    public static func new(label: String? = nil) -> AmplifyCognitoClientSessionID {
+        AmplifyCognitoClientSessionID(unchecked: UUID().uuidString.lowercased(), label: label)
     }
 
     static let maximumLength = 64
 
     private static let sentinels: Set<String> = [
-        SessionID.default.stringValue
+        AmplifyCognitoClientSessionID.default.stringValue
     ]
 
     private static func isPermitted(_ scalar: Unicode.Scalar) -> Bool {
@@ -161,7 +161,7 @@ public struct SessionID: Hashable, Sendable {
         guard !id.isEmpty else {
             throw AmplifyCognitoClientError.invalidSessionID(
                 "A session ID cannot be empty.",
-                "Pass a non-empty identifier, or use SessionID.new() to let the library mint one."
+                "Pass a non-empty identifier, or use AmplifyCognitoClientSessionID.new() to let the library mint one."
             )
         }
         guard id.unicodeScalars.count <= maximumLength else {
@@ -193,12 +193,12 @@ public struct SessionID: Hashable, Sendable {
     }
 }
 
-extension SessionID: Codable {
+extension AmplifyCognitoClientSessionID: Codable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let value = try container.decode(String.self)
-        guard let id = SessionID(storageComponent: value) else {
+        guard let id = AmplifyCognitoClientSessionID(storageComponent: value) else {
             // The rejected value is not repeated: it may be an identifier the app would not log.
             throw DecodingError.dataCorruptedError(
                 in: container,
@@ -214,6 +214,6 @@ extension SessionID: Codable {
     }
 }
 
-extension SessionID: CustomStringConvertible {
+extension AmplifyCognitoClientSessionID: CustomStringConvertible {
     public var description: String { stringValue }
 }

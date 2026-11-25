@@ -3,7 +3,7 @@
 `AmplifyCognitoClient` is a standalone Amazon Cognito client. You construct it and hold it, like the other
 clients in `AmplifyClients`. It needs no `Amplify.configure()` and no Auth plugin.
 
-Each client is a handle onto one **session**, named by a `SessionID`. Several sessions can be signed in at the
+Each client is a handle onto one **session**, named by an `AmplifyCognitoClientSessionID`. Several sessions can be signed in at the
 same time, each with its own user, tokens, state and events. Every session can hand its AWS credentials to other
 `AmplifyClients` (Kinesis, Firehose, Connect and the rest).
 
@@ -176,9 +176,9 @@ let client = try AmplifyCognitoClient(
 
 | | |
 |---|---|
-| `SessionID.default` | The single-account session. It is also the only session that uses the Auth plugin's saved login: it reads and writes the plugin's own record (see [Moving from the Auth plugin](#moving-from-the-auth-plugin)) |
-| `SessionID.named(_:label:)` | An ID your app chooses: 1 to 64 characters from `A-Z a-z 0-9 _ -`, case-sensitive. Throws `AmplifyCognitoClientError.invalidSessionID` otherwise |
-| `SessionID.new(label:)` | An ID the library mints. Each call returns a new one, so save it |
+| `AmplifyCognitoClientSessionID.default` | The single-account session. It is also the only session that uses the Auth plugin's saved login: it reads and writes the plugin's own record (see [Moving from the Auth plugin](#moving-from-the-auth-plugin)) |
+| `AmplifyCognitoClientSessionID.named(_:label:)` | An ID your app chooses: 1 to 64 characters from `A-Z a-z 0-9 _ -`, case-sensitive. Throws `AmplifyCognitoClientError.invalidSessionID` otherwise |
+| `AmplifyCognitoClientSessionID.new(label:)` | An ID the library mints. Each call returns a new one, so save it |
 
 Use an opaque ID (`.new()`, or a tenant or workspace ID), not a username or `sub`: session IDs appear in error
 descriptions.
@@ -187,8 +187,8 @@ descriptions.
 part of the ID. Two IDs that differ only in label are equal and name the same session, and `.default` has none.
 
 To save an ID, store its `stringValue` and rebuild it with `named(_:label:)`. `named("$default")` gives `.default`,
-so a saved `.default` comes back too. `SessionID` is also `Codable`, as its `stringValue`. Neither way saves the
-label: the saved row has it (`StoredSession.label`) once a sign-in has saved it. Until then, pass the label again
+so a saved `.default` comes back too. `AmplifyCognitoClientSessionID` is also `Codable`, as its `stringValue`. Neither way saves the
+label: the saved row has it (`AmplifyCognitoClientStoredSession.label`) once a sign-in has saved it. Until then, pass the label again
 when you rebuild the ID.
 
 Saved sessions, `.default` and named ones alike, live in the keychain, so on iOS they survive the app's uninstall and
@@ -196,7 +196,7 @@ reinstall, as the Auth plugin's saved login does: a reinstalled app finds them a
 you saved in `UserDefaults` doesn't survive, so list the saved sessions (`storedSessions`) to find them again.
 
 ```swift
-let id = SessionID.new()
+let id = AmplifyCognitoClientSessionID.new()
 UserDefaults.standard.set(id.stringValue, forKey: "lastSessionId")
 
 // A later launch:
@@ -274,7 +274,7 @@ A label is bound to the session's user:
   plugin's record holds another user, for example because the plugin signed bob in over alice's session. See
   [Labels and the signed-out row after a plugin action](#labels-and-the-signed-out-row-after-a-plugin-action).
 
-The label a session ID was created with (`SessionID.named(_:label:)`, `SessionID.new(label:)`) is saved when a
+The label a session ID was created with (`AmplifyCognitoClientSessionID.named(_:label:)`, `AmplifyCognitoClientSessionID.new(label:)`) is saved when a
 sign-in through that client saves the row and the row keeps no label; a hosted-UI sign-in, a federation and a guest
 count as sign-ins here. Building the client saves nothing, so a session that never signs in has no row, except
 while a sign-in is waiting on a challenge, when it is listed without the label.
@@ -373,7 +373,7 @@ if let picked = rows.first {
   that sign-in completes or a new one replaces it, the session is signed out or purged, or 15 minutes pass. A
   `.failed` row stays until the session is signed out, which resets it to a signed-out row, or purged. If your app
   shows sign-in when the list is empty, test for the states it treats as an account instead: an abandoned first
-  sign-in keeps the list non-empty for up to 15 minutes, also under a `SessionID.new()` the app never saved.
+  sign-in keeps the list non-empty for up to 15 minutes, also under an `AmplifyCognitoClientSessionID.new()` the app never saved.
 - In two cases a restore changes what is saved, so the client reports another state than its row did. After a
   rollback to an earlier pool configuration, a session that was signed out or purged under the later one is still
   listed from the copy the earlier configuration kept, as it was saved; its restore removes that copy and
@@ -403,7 +403,7 @@ if let picked = rows.first {
 ### Signing out or purging a saved session without a client
 
 ```swift
-let id = try SessionID.named("work")
+let id = try AmplifyCognitoClientSessionID.named("work")
 
 // Revokes the tokens, then clears them from this device. Keeps the row. Never throws.
 let result = await AmplifyCognitoClient.signOutStoredSession(sessionId: id, configuration: configuration)
@@ -1000,7 +1000,7 @@ An app client with a secret works too: an `AmplifyCognitoClientConfiguration.Use
 and `oauth` sends the secret with the hosted UI's token exchange (`Authorization: Basic`), as the plugin does.
 `amplify_outputs` carries no secret.
 
-### WebUIOptions
+### AmplifyCognitoClientWebUIOptions
 
 | Option | Default | Plugin equivalent |
 |---|---|---|
@@ -1635,7 +1635,7 @@ optional `underlyingError`.
 | `invalidSessionID` | Empty, too long, or a character outside `A-Z a-z 0-9 _ -` | Use a valid ID |
 | `challengeExpired` | Cognito no longer accepts the challenge | Call `signIn` again |
 | `browserBusy(holder:)` | The one system sheet is held, or a `.wait(timeout:)` expired, or this session already has a hosted-UI sign-in in progress | Finish or cancel the holder's sheet. When `holder` is this session and none of its sheets is up, there is no sheet to finish: wait for the earlier call, or cancel its task |
-| `sessionConfigurationMismatch(SessionID)` | The session is live under a different configuration | Release its handles and providers, or use the same configuration |
+| `sessionConfigurationMismatch(AmplifyCognitoClientSessionID)` | The session is live under a different configuration | Release its handles and providers, or use the same configuration |
 | `validation(field:)` | An argument was invalid; `field` names it | Fix the argument |
 | `service(AmplifyCognitoClientServiceErrorCode?)` | Cognito rejected the request, with the code if the client recognises it; with no code, a Cognito internal error (`InternalErrorException`) or an error status the SDK doesn't model (the description has the status and message), in every call, or a network problem stopped the request, which may or may not have reached Cognito (offline, a failed DNS or host lookup, a refused or lost connection, a timeout, or a failed secure connection), or its answer couldn't be read | Depends on the code; with no code, read the suggestion: retry later, or check the request against the service's message (a 4xx status). In a `.partial` sign-out, the revoke's or global sign-out's failure is not retried |
 | `notAuthorized` | Wrong password, disabled user, revoked token | Ask the user again, or sign in |
@@ -1718,7 +1718,7 @@ checks: `confirmSignUp` without a code throws `.validation(field: "confirmationC
 
 ### The default session uses the plugin's saved login
 
-`SessionID.default` reads and writes the Auth plugin's own saved login: the same keychain item, in the plugin's
+`AmplifyCognitoClientSessionID.default` reads and writes the Auth plugin's own saved login: the same keychain item, in the plugin's
 format. An app moving from the plugin keeps its signed-in user, with nothing to migrate, and an app rolled back to
 the plugin finds the newest login, a signed-out one included. Named sessions keep their own records, which the
 plugin never reads.
@@ -2076,7 +2076,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
 | Area | Auth plugin | AmplifyCognitoClient |
 |---|---|---|
 | Configuration | Gen1 and Gen2 | Gen2 `amplify_outputs` only; Gen1 refused |
-| Sessions | One, in `Amplify.Auth` | Many, one per `SessionID`, each with its own state and events |
+| Sessions | One, in `Amplify.Auth` | Many, one per `AmplifyCognitoClientSessionID`, each with its own state and events |
 | Saved login | One record | `.default` uses the plugin's own record; named sessions keep their own, which the plugin never reads |
 | Session label and signed-out row | None | Kept beside the plugin's record for `.default`, bound to its user |
 | Second sign-in | Refused while signed in | Refused only on the same session, and allowed there once its refresh token is known dead: the session reported `sessionExpired`, or was restored with that expiry saved by an earlier launch |

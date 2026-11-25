@@ -568,7 +568,7 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
         )
 
         XCTAssertEqual(sessions, [
-            StoredSession(sessionId: work, label: nil, user: nil, kind: .signedOut, state: .awaitingChallenge(.confirmSignInWithTOTPCode))
+            AmplifyCognitoClientStoredSession(sessionId: work, label: nil, user: nil, kind: .signedOut, state: .awaitingChallenge(.confirmSignInWithTOTPCode))
         ])
         XCTAssertEqual(try store.readChallenge(orphan), .absent)
         XCTAssertNotEqual(try store.readChallenge(work), .absent)

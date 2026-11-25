@@ -294,7 +294,7 @@ final class LiveEngineWiringTests: XCTestCase {
         XCTAssertEqual(harness.cognito.inputs("RevokeToken", as: RevokeTokenInput.self).first?.token, "refresh-alice-v1")
         harness.cognito.assertConsumed()
         XCTAssertNotNil(afterSignOut)
-        XCTAssertEqual(afterSignOut?.kind, SessionKind.signedOut)
+        XCTAssertEqual(afterSignOut?.kind, AmplifyCognitoClientSessionKind.signedOut)
         let finalState = await client.currentSessionState()
         XCTAssertEqual(finalState, .signedOut)
     }

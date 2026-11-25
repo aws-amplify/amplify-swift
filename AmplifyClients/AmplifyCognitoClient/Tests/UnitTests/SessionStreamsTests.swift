@@ -28,7 +28,7 @@ final class SessionStreamsTests: XCTestCase {
         harness = nil
     }
 
-    private func purge(_ sessionId: SessionID) async throws {
+    private func purge(_ sessionId: AmplifyCognitoClientSessionID) async throws {
         try await AmplifyCognitoClient.purgeStoredSession(
             sessionId: sessionId,
             configuration: ClientFixtures.configuration,

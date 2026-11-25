@@ -11,7 +11,7 @@ import InternalAWSCognitoAuth
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// Pins `WebUIOptions` to the plugin's hosted-UI options.
+/// Pins `AmplifyCognitoClientWebUIOptions` to the plugin's hosted-UI options.
 ///
 /// This target cannot import Amplify, so the plugin's values are transcribed, citing the file they
 /// came from:
@@ -22,11 +22,11 @@ import XCTest
 /// The engine builds the authorize request from the options the client hands it
 /// (`HostedUIOptions(_:anchor:configuredScopes:)`), with its own `HostedUIRequestHelper.createSignInURL` and
 /// `userPoolProviderName`, the plugin's; `LiveEngineWebUITests` pins the resulting query items end to end.
-final class WebUIOptionsTests: XCTestCase {
+final class AmplifyCognitoClientWebUIOptionsTests: XCTestCase {
 
     /// The engine's hosted-UI options for `options`, as the live engine builds them: the core's request, with the
     /// options' own nonce (the core mints one when they have none).
-    private static func engineOptions(_ options: WebUIOptions, configuredScopes: [String]) -> HostedUIOptions {
+    private static func engineOptions(_ options: AmplifyCognitoClientWebUIOptions, configuredScopes: [String]) -> HostedUIOptions {
         HostedUIOptions(
             EngineWebUIOptions(options, nonce: options.nonce ?? "minted-nonce"),
             anchor: nil,
@@ -38,14 +38,14 @@ final class WebUIOptionsTests: XCTestCase {
 
     /// The design's two new defaults, and nothing else set.
     ///
-    /// - Given: `WebUIOptions()`
+    /// - Given: `AmplifyCognitoClientWebUIOptions()`
     /// - When:
     ///    - its fields are read
     /// - Then:
     ///    - `whenBrowserBusy` is `.fail` and `prefersEphemeralSession` is `true`
     ///    - every parity field is `nil`, so the configuration's scopes and Cognito's defaults apply
     func testDefaultsAreFailAndEphemeralWithNoParityFieldsSet() {
-        let options = WebUIOptions()
+        let options = AmplifyCognitoClientWebUIOptions()
 
         XCTAssertEqual(options.whenBrowserBusy, .fail)
         XCTAssertTrue(options.prefersEphemeralSession)
@@ -61,13 +61,13 @@ final class WebUIOptionsTests: XCTestCase {
 
     /// Defaults ask the engine for the configured scopes and nothing else.
     ///
-    /// - Given: `WebUIOptions()`
+    /// - Given: `AmplifyCognitoClientWebUIOptions()`
     /// - When:
     ///    - the engine's hosted-UI options are built from it against configured scopes `["openid", "email"]`
     /// - Then:
     ///    - the scopes are the configured ones, and no provider, language, login hint, prompt or resource is set
     func testDefaultsAskForTheConfiguredScopesOnly() {
-        let options = Self.engineOptions(WebUIOptions(), configuredScopes: ["openid", "email"])
+        let options = Self.engineOptions(AmplifyCognitoClientWebUIOptions(), configuredScopes: ["openid", "email"])
 
         XCTAssertEqual(options.scopes, ["openid", "email"])
         XCTAssertEqual(options.providerInfo, HostedUIProviderInfo(authProvider: nil, idpIdentifier: nil))
@@ -92,7 +92,7 @@ final class WebUIOptionsTests: XCTestCase {
     ///    - each other field is carried: the request's scopes, the engine's provider of the same case, the nonce,
     ///      the language, the login hint, the prompt space-separated in order, the resource, and the privacy
     func testEveryFieldReachesTheEnginesOptions() {
-        let options = WebUIOptions(
+        let options = AmplifyCognitoClientWebUIOptions(
             whenBrowserBusy: .wait(timeout: 5),
             prefersEphemeralSession: false,
             scopes: ["profile", "openid"],
@@ -127,7 +127,7 @@ final class WebUIOptionsTests: XCTestCase {
     /// - Then:
     ///    - the provider info holds both
     func testIdpIdentifierAndProviderBothReachTheEngine() {
-        let options = WebUIOptions(idpIdentifier: "corp.example.com").with(provider: .saml("Okta"))
+        let options = AmplifyCognitoClientWebUIOptions(idpIdentifier: "corp.example.com").with(provider: .saml("Okta"))
 
         let engine = Self.engineOptions(options, configuredScopes: ["openid"])
 
@@ -142,7 +142,7 @@ final class WebUIOptionsTests: XCTestCase {
     /// - Then:
     ///    - the scopes are empty, as `request.options.scopes ?? configured` produces in the plugin
     func testExplicitScopesReplaceTheConfiguredScopes() {
-        XCTAssertEqual(Self.engineOptions(WebUIOptions(scopes: []), configuredScopes: ["openid"]).scopes, [])
+        XCTAssertEqual(Self.engineOptions(AmplifyCognitoClientWebUIOptions(scopes: []), configuredScopes: ["openid"]).scopes, [])
     }
 
     /// An empty prompt list sends nothing, the one documented divergence from the plugin.
@@ -153,22 +153,22 @@ final class WebUIOptionsTests: XCTestCase {
     /// - Then:
     ///    - there is no prompt, so the authorize request has no `prompt` item
     func testEmptyPromptSendsNoPromptItem() {
-        XCTAssertNil(Self.engineOptions(WebUIOptions(prompt: []), configuredScopes: ["openid"]).prompt)
+        XCTAssertNil(Self.engineOptions(AmplifyCognitoClientWebUIOptions(prompt: []), configuredScopes: ["openid"]).prompt)
     }
 
     // MARK: - Transcribed values
 
     /// `Prompt` has the plugin's cases and raw values.
     ///
-    /// - Given: every `WebUIOptions.Prompt` case
+    /// - Given: every `AmplifyCognitoClientWebUIOptions.Prompt` case
     /// - When:
     ///    - their raw values are read
     /// - Then:
     ///    - they are exactly `none`, `login`, `select_account` and `consent`, the plugin's
     ///      `AWSAuthWebUISignInOptions.Prompt` raw values
     func testPromptRawValuesMatchThePlugin() {
-        XCTAssertEqual(WebUIOptions.Prompt.allCases.map(\.rawValue), ["none", "login", "select_account", "consent"])
-        XCTAssertEqual(WebUIOptions.Prompt(rawValue: "select_account"), .selectAccount)
+        XCTAssertEqual(AmplifyCognitoClientWebUIOptions.Prompt.allCases.map(\.rawValue), ["none", "login", "select_account", "consent"])
+        XCTAssertEqual(AmplifyCognitoClientWebUIOptions.Prompt(rawValue: "select_account"), .selectAccount)
     }
 
     /// Each provider reaches the engine as the engine's provider of the same case, whose `userPoolProviderName` is
@@ -214,7 +214,7 @@ final class WebUIOptionsTests: XCTestCase {
     ///    - huge and infinite timeouts clamp to `maximumWaitTimeout`, one hour
     ///    - only the package-level `waitWithoutBound` has no bound
     func testWaitTimeoutIsNormalisedWhenThePolicyIsMade() {
-        typealias Policy = WebUIOptions.BrowserBusyPolicy
+        typealias Policy = AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy
 
         XCTAssertNil(Policy.fail.timeoutNanoseconds)
         XCTAssertEqual(Policy.wait(timeout: 1.5).timeoutNanoseconds, 1_500_000_000)
@@ -232,7 +232,7 @@ final class WebUIOptionsTests: XCTestCase {
         XCTAssertNotEqual(Policy.waitWithoutBound, .wait(timeout: .infinity))
     }
 
-    /// Equality is reflexive for every policy, NaN included, so `WebUIOptions` equality is too.
+    /// Equality is reflexive for every policy, NaN included, so `AmplifyCognitoClientWebUIOptions` equality is too.
     ///
     /// - Given: options built with `.wait(timeout: .nan)`
     /// - When:
@@ -240,9 +240,9 @@ final class WebUIOptionsTests: XCTestCase {
     /// - Then:
     ///    - they are equal
     func testOptionsWithANaNTimeoutEqualThemselves() {
-        let options = WebUIOptions(whenBrowserBusy: .wait(timeout: .nan))
+        let options = AmplifyCognitoClientWebUIOptions(whenBrowserBusy: .wait(timeout: .nan))
 
-        XCTAssertEqual(options, WebUIOptions(whenBrowserBusy: .wait(timeout: .nan)))
+        XCTAssertEqual(options, AmplifyCognitoClientWebUIOptions(whenBrowserBusy: .wait(timeout: .nan)))
         XCTAssertEqual(options.whenBrowserBusy, options.whenBrowserBusy)
     }
 }

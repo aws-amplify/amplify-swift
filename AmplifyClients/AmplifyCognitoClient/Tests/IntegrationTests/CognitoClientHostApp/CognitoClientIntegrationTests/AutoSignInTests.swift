@@ -115,8 +115,8 @@ final class AutoSignInTests: ClientSignUpTestCase {
     }
 
     /// The first event `events` delivers, within 10 seconds.
-    private static func firstEvent(of events: AsyncStream<AuthEvent>) async throws -> AuthEvent? {
-        try await withThrowingTaskGroup(of: AuthEvent?.self) { group in
+    private static func firstEvent(of events: AsyncStream<AmplifyCognitoClientEvent>) async throws -> AmplifyCognitoClientEvent? {
+        try await withThrowingTaskGroup(of: AmplifyCognitoClientEvent?.self) { group in
             group.addTask {
                 for await event in events {
                     return event

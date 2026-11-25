@@ -34,7 +34,7 @@ extension SessionCore {
     ///     stored new user pool tokens, as the plugin does (`FetchAuthSessionOperationHelper`); and, while that
     ///     step may not be tried again (`PendingIdentityRetry`), its last failure;
     ///   - `unknown` when the saved credentials lack what they should hold, or still need a refresh.
-    nonisolated func fetchAuthSession(forceRefresh: Bool) async throws -> AmplifyCognitoClientSession {
+    nonisolated func fetchAuthSession(forceRefresh: Bool) async throws -> AmplifyCognitoClientAuthSession {
         do {
             return try await fetchSession(forceRefresh: forceRefresh)
         } catch let error as CredentialsError {
@@ -45,7 +45,7 @@ extension SessionCore {
     /// - Parameter adopted: this call has already gone round once, so it goes round no more, and a second pass
     ///   answers from the record: it took credentials as a signed-out session (`acquireGuest`), or its refresh
     ///   found the session signed out (the last step below).
-    private nonisolated func fetchSession(forceRefresh: Bool, adopted: Bool = false) async throws -> AmplifyCognitoClientSession {
+    private nonisolated func fetchSession(forceRefresh: Bool, adopted: Bool = false) async throws -> AmplifyCognitoClientAuthSession {
         _ = try await restoredSnapshot()
         try await rereadIfExpired()
         let (snapshot, expired) = await snapshotAndExpiry
@@ -118,7 +118,7 @@ extension SessionCore {
     /// session again: after it had already taken some (another writer signed the session out meanwhile, and saved
     /// credentials again), or after its refresh found the session signed out. The record's, as they are, unless
     /// they need a refresh, which is never reported. The call does not go round again.
-    private nonisolated func acquiredSession() async throws -> AmplifyCognitoClientSession {
+    private nonisolated func acquiredSession() async throws -> AmplifyCognitoClientAuthSession {
         let snapshot = await restoredSnapshotIfAny ?? .absent
         if let payload = snapshot.credentials, try needsRefresh(payload, of: snapshot) {
             throw Self.notRefreshed(sessionId)
@@ -126,7 +126,7 @@ extension SessionCore {
         return try session(of: snapshot)
     }
 
-    static func notRefreshed(_ sessionId: SessionID) -> AmplifyCognitoClientError {
+    static func notRefreshed(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .unknown(
             "Session \"\(sessionId)\"'s credentials could not be refreshed.",
             "Retry the operation."
@@ -237,7 +237,7 @@ extension SessionCore {
     ///   for a carried session still waiting for its identity, its identity step's last failure while the step may
     ///   not be tried again, else `identityNotFetched`; `missing` when the credentials lack a field they should
     ///   hold; the record's own errors.
-    private nonisolated func session(of snapshot: SessionSnapshot) throws -> AmplifyCognitoClientSession {
+    private nonisolated func session(of snapshot: SessionSnapshot) throws -> AmplifyCognitoClientAuthSession {
         switch snapshot.state(engine: engine, challenge: nil) {
         case .unavailable(let reason):
             throw AmplifyCognitoClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later.")
@@ -282,7 +282,7 @@ extension SessionCore {
             }
             userPoolTokens = tokens
         }
-        return AmplifyCognitoClientSession(
+        return AmplifyCognitoClientAuthSession(
             identityId: identityId,
             awsCredentials: awsCredentials,
             userSub: summary.user?.userId,
@@ -290,14 +290,14 @@ extension SessionCore {
         )
     }
 
-    static func identityNotFetched(_ sessionId: SessionID) -> AmplifyCognitoClientError {
+    static func identityNotFetched(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .unknown(
             "Session \"\(sessionId)\" was carried forward from a previous configuration and has not fetched its identity yet.",
             "Retry the operation."
         )
     }
 
-    static func missing(_ what: String, in sessionId: SessionID) -> AmplifyCognitoClientError {
+    static func missing(_ what: String, in sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .unknown(
             "Session \"\(sessionId)\"'s saved credentials hold no \(what).",
             "Sign the session out and sign in again."

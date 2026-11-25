@@ -43,7 +43,7 @@ final class LiveEngineWebUITests: XCTestCase {
     }
 
     private func request(
-        _ options: WebUIOptions = WebUIOptions(),
+        _ options: AmplifyCognitoClientWebUIOptions = AmplifyCognitoClientWebUIOptions(),
         identity: EngineIdentityPolicy = .none,
         nonce: String = "flow-nonce"
     ) async -> EngineWebUISignInRequest {
@@ -72,7 +72,7 @@ final class LiveEngineWebUITests: XCTestCase {
     func testAHostedUISignInReachesDoneWithTheChosenPrivacy() async throws {
         for ephemeral in [true, false] {
             let engine = try harness.engine()
-            let request = await request(WebUIOptions(prefersEphemeralSession: ephemeral))
+            let request = await request(AmplifyCognitoClientWebUIOptions(prefersEphemeralSession: ephemeral))
 
             let result = try await engine.signInWithWebUI(request, current: nil, epoch: 0)
 
@@ -99,7 +99,7 @@ final class LiveEngineWebUITests: XCTestCase {
     ///      sorted, the nonce, `lang`, `login_hint` and `resource`, and no `prompt` item
     func testTheAuthorizeRequestCarriesTheOptions() async throws {
         let engine = try harness.engine()
-        let options = WebUIOptions(
+        let options = AmplifyCognitoClientWebUIOptions(
             idpIdentifier: "corp",
             language: "fr",
             loginHint: "alice@example.com",
@@ -133,7 +133,7 @@ final class LiveEngineWebUITests: XCTestCase {
     func testTheRequestsScopesReplaceTheConfiguredOnes() async throws {
         for (scopes, expected) in [(["profile", "aws.cognito.signin.user.admin"], "aws.cognito.signin.user.admin profile"), ([], "")] {
             let engine = try harness.engine()
-            let request = await request(WebUIOptions(scopes: scopes))
+            let request = await request(AmplifyCognitoClientWebUIOptions(scopes: scopes))
 
             _ = try await engine.signInWithWebUI(request, current: nil, epoch: 0)
 
@@ -148,7 +148,7 @@ final class LiveEngineWebUITests: XCTestCase {
     ///    - the authorize URL sends the provider's `identity_provider` and the prompt, space-separated
     func testAProviderAndAPromptReachTheAuthorizeRequest() async throws {
         let engine = try harness.engine()
-        let request = await request(WebUIOptions(prompt: [.login, .selectAccount]).with(provider: .apple))
+        let request = await request(AmplifyCognitoClientWebUIOptions(prompt: [.login, .selectAccount]).with(provider: .apple))
 
         _ = try await engine.signInWithWebUI(request, current: nil, epoch: 0)
 
@@ -262,7 +262,7 @@ final class LiveEngineWebUITests: XCTestCase {
         let engine = try harness.engine()
         let request = EngineWebUISignInRequest(
             anchor: gone,
-            options: EngineWebUIOptions(WebUIOptions(), nonce: "n"),
+            options: EngineWebUIOptions(AmplifyCognitoClientWebUIOptions(), nonce: "n"),
             identity: .none
         )
 
@@ -607,7 +607,7 @@ final class LiveEngineWebUITests: XCTestCase {
 
     private func sharedCookiePayload() async throws -> Data {
         let engine = try harness.engine()
-        let sharedRequest = await request(WebUIOptions(prefersEphemeralSession: false))
+        let sharedRequest = await request(AmplifyCognitoClientWebUIOptions(prefersEphemeralSession: false))
         guard case .done(let payload) = try await engine.signInWithWebUI(sharedRequest, current: nil, epoch: 0) else {
             throw FixtureError(description: "the hosted-UI sign-in did not finish")
         }

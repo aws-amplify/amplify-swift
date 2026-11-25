@@ -129,17 +129,17 @@ extension ChallengeRecord.State {
 extension SessionRecordStore {
 
     /// Stores `record` as `sessionId`'s challenge record, as bytes, bypassing `writeChallenge`'s `createdAt` rule.
-    func putChallenge(_ record: ChallengeRecord, for sessionId: SessionID) throws {
+    func putChallenge(_ record: ChallengeRecord, for sessionId: AmplifyCognitoClientSessionID) throws {
         try keychain.set(record.encoded(), key: challengeAccount(for: sessionId))
     }
 
     /// Stores raw bytes as `sessionId`'s challenge record.
-    func putChallengeBytes(_ data: Data, for sessionId: SessionID) throws {
+    func putChallengeBytes(_ data: Data, for sessionId: AmplifyCognitoClientSessionID) throws {
         try keychain.set(data, key: challengeAccount(for: sessionId))
     }
 
     /// `sessionId`'s challenge record, if readable.
-    func storedChallenge(_ sessionId: SessionID) throws -> ChallengeRecord? {
+    func storedChallenge(_ sessionId: AmplifyCognitoClientSessionID) throws -> ChallengeRecord? {
         guard case .record(let record) = try readChallenge(sessionId) else {
             return nil
         }

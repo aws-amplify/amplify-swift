@@ -36,7 +36,7 @@ final class StoredSessionLabelTests: XCTestCase {
 
     private func setLabel(
         _ label: String?,
-        _ sessionId: SessionID,
+        _ sessionId: AmplifyCognitoClientSessionID,
         configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration
     ) async throws {
         try await AmplifyCognitoClient.setSessionLabel(

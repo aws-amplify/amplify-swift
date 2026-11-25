@@ -1309,7 +1309,7 @@ final class EngineMappingTests: XCTestCase {
 
 /// Sign-out outcomes built through the engine's mapping, for the tests of a sign-out that could not finish
 /// (`StoredSessionManagementTests`, which can't import the engine's module beside the client's: both declare
-/// `AuthEvent`).
+/// `AmplifyCognitoClientEvent`).
 enum SignOutOutcomeFixtures {
 
     /// Each row: a label, whether the sign-out is global, the outcome every attempt returns, and the underlying

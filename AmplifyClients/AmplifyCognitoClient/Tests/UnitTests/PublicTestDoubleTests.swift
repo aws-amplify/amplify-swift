@@ -27,7 +27,7 @@ final class PublicTestDoubleTests: XCTestCase {
             sessionToken: "token",
             expiration: Date(timeIntervalSince1970: 0)
         )
-        let session = AmplifyCognitoClientSession(
+        let session = AmplifyCognitoClientAuthSession(
             identityId: "identity",
             awsCredentials: credentials,
             userSub: "sub",

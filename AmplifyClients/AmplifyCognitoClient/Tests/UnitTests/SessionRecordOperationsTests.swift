@@ -29,7 +29,7 @@ final class SessionRecordOperationsTests: XCTestCase {
         harness = nil
     }
 
-    private func envelope(_ sessionId: SessionID) throws -> VersionedSessionRecord? {
+    private func envelope(_ sessionId: AmplifyCognitoClientSessionID) throws -> VersionedSessionRecord? {
         guard case .record(let envelope) = try harness.store().read(sessionId) else {
             return nil
         }

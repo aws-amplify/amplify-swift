@@ -40,7 +40,7 @@ struct SessionRecordIO: Sendable {
     /// Told of every record this I/O reads, with the session it was read for: `.default`'s re-reads under its gate
     /// (`SessionCore.recordIO()`), which `SessionCore+SharedRecordWarning.swift` compares with what the core holds.
     /// `nil` everywhere else. TEMPORARY: goes with the plugin bridge, with the warning.
-    var observeRead: (@Sendable (SessionID, SessionRecordStore.ReadResult) async -> Void)?
+    var observeRead: (@Sendable (AmplifyCognitoClientSessionID, SessionRecordStore.ReadResult) async -> Void)?
 
     /// Runs `work` against the store on the I/O queue; the caller suspends until it returns.
     func perform<T: Sendable>(_ work: @escaping @Sendable (SessionRecordStore) throws -> T) async throws -> T {
@@ -48,25 +48,25 @@ struct SessionRecordIO: Sendable {
         return try await runBlocking(on: queue) { try work(store) }
     }
 
-    func read(_ sessionId: SessionID) async throws -> SessionRecordStore.ReadResult {
+    func read(_ sessionId: AmplifyCognitoClientSessionID) async throws -> SessionRecordStore.ReadResult {
         let result = try await perform { try $0.read(sessionId) }
         await observeRead?(sessionId, result)
         return result
     }
 
-    func load(_ sessionId: SessionID) async throws -> SessionSnapshot {
+    func load(_ sessionId: AmplifyCognitoClientSessionID) async throws -> SessionSnapshot {
         try await SessionSnapshot(read(sessionId))
     }
 
     /// `load`, carrying the session's record forward from a previous configuration's namespace when this
     /// one holds none (`SessionRecordStore.readCarryingForward`). What a restore reads.
-    func loadCarryingForward(_ sessionId: SessionID, heldSource: PoolNamespace?? = nil) async throws -> SessionSnapshot {
+    func loadCarryingForward(_ sessionId: AmplifyCognitoClientSessionID, heldSource: PoolNamespace?? = nil) async throws -> SessionSnapshot {
         try await SessionSnapshot(perform { try $0.readCarryingForward(sessionId, heldSource: heldSource) })
     }
 
     func write(
         _ record: SessionRecord,
-        for sessionId: SessionID,
+        for sessionId: AmplifyCognitoClientSessionID,
         expecting version: RecordVersion?,
         labelIfNone: String? = nil
     ) async throws -> SessionRecordStore.CommitOutcome {
@@ -75,21 +75,21 @@ struct SessionRecordIO: Sendable {
 
     func saveDeadToken(
         _ deadToken: DeadToken,
-        for sessionId: SessionID,
+        for sessionId: AmplifyCognitoClientSessionID,
         expecting version: RecordVersion?
     ) async throws -> SessionRecordStore.CommitOutcome {
         try await perform { try $0.saveDeadToken(deadToken, for: sessionId, expecting: version) }
     }
 
-    func signOut(_ sessionId: SessionID) async throws -> SessionRecordStore.SignOutOutcome {
+    func signOut(_ sessionId: AmplifyCognitoClientSessionID) async throws -> SessionRecordStore.SignOutOutcome {
         try await perform { try $0.signOut(sessionId) }
     }
 
-    func signOut(_ sessionId: SessionID, removing credentials: Data) async throws -> SessionRecordStore.SignOutOutcome {
+    func signOut(_ sessionId: AmplifyCognitoClientSessionID, removing credentials: Data) async throws -> SessionRecordStore.SignOutOutcome {
         try await perform { try $0.signOut(sessionId, removing: credentials) }
     }
 
-    func purge(_ sessionId: SessionID) async throws {
+    func purge(_ sessionId: AmplifyCognitoClientSessionID) async throws {
         try await perform { try $0.purge(sessionId) }
     }
 
@@ -106,7 +106,7 @@ struct SessionRecordIO: Sendable {
         includingSignedOut: Bool,
         sweepingChallengesAt now: Date? = nil,
         pluginConfiguration: AuthConfiguration? = nil
-    ) async throws -> [StoredSession] {
+    ) async throws -> [AmplifyCognitoClientStoredSession] {
         try await perform {
             try $0.storedSessions(includingSignedOut: includingSignedOut, sweepingChallengesAt: now, pluginConfiguration: pluginConfiguration)
         }
@@ -114,23 +114,23 @@ struct SessionRecordIO: Sendable {
 
     // MARK: The challenge record
 
-    func readChallenge(_ sessionId: SessionID) async throws -> SessionRecordStore.ChallengeRead {
+    func readChallenge(_ sessionId: AmplifyCognitoClientSessionID) async throws -> SessionRecordStore.ChallengeRead {
         try await perform { try $0.readChallenge(sessionId) }
     }
 
     @discardableResult
-    func writeChallenge(_ record: ChallengeRecord, for sessionId: SessionID) async throws -> ChallengeRecord {
+    func writeChallenge(_ record: ChallengeRecord, for sessionId: AmplifyCognitoClientSessionID) async throws -> ChallengeRecord {
         try await perform { try $0.writeChallenge(record, for: sessionId) }
     }
 
-    func deleteChallenge(_ sessionId: SessionID) async throws {
+    func deleteChallenge(_ sessionId: AmplifyCognitoClientSessionID) async throws {
         try await perform { try $0.deleteChallenge(sessionId) }
     }
 
     func signedInUserIds(
         describe: @escaping @Sendable (Data) -> CredentialSummary?,
         pluginConfiguration: AuthConfiguration? = nil
-    ) async throws -> [SessionID: String] {
+    ) async throws -> [AmplifyCognitoClientSessionID: String] {
         try await perform { try $0.signedInUserIds(describe: describe, pluginConfiguration: pluginConfiguration) }
     }
 }
@@ -145,7 +145,7 @@ extension SessionRecordIO {
     /// - Returns: The record as written, or `nil` if nothing was: clearing the label of a session with no record.
     /// - Throws: `storageUnavailable` if storage failed, or if every attempt lost its race; `.unknown` if the
     ///   record is one this build cannot read, which is never overwritten.
-    func setLabel(_ label: String?, for sessionId: SessionID) async throws -> SessionSnapshot? {
+    func setLabel(_ label: String?, for sessionId: AmplifyCognitoClientSessionID) async throws -> SessionSnapshot? {
         for _ in 1 ... SessionCore.maximumRecordWriteAttempts {
             if sessionId == .default {
                 switch try await setDefaultLabel(label) {

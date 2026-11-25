@@ -35,7 +35,7 @@ extension DefaultSessionConfigurationChangeTests {
 
         let rows = try await listed(ChangeConfigs.both)
 
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
+        XCTAssertEqual(rows, [AmplifyCognitoClientStoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
         XCTAssertEqual(harness.keychain.writtenAccounts, [])
     }
 
@@ -54,7 +54,7 @@ extension DefaultSessionConfigurationChangeTests {
         let rows = try await listed(ChangeConfigs.userPoolOnly)
         let restored = await makeClient(ChangeConfigs.userPoolOnly).currentSessionState()
 
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: nil, user: nil, kind: .signedOut, state: .awaitingChallenge(step))])
+        XCTAssertEqual(rows, [AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: nil, kind: .signedOut, state: .awaitingChallenge(step))])
         XCTAssertEqual(restored, .awaitingChallenge(step))
     }
 
@@ -300,7 +300,7 @@ extension DefaultSessionConfigurationChangeTests {
         let appConfiguration = ChangeConfigs.identityPoolOnly
         let carryingConfiguration = ChangeConfigs.both
         let guest = try pluginSaves(ChangePayloads.guest(), under: appConfiguration)
-        let guestRow = StoredSession(sessionId: .default, label: nil, user: nil, kind: .guest, state: .guest)
+        let guestRow = AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: nil, kind: .guest, state: .guest)
 
         let result = await AmplifyCognitoClient.signOutStoredSession(
             sessionId: .default,
@@ -484,7 +484,7 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertEqual(harness.keychain.value(account(appConfiguration)), before)
         XCTAssertEqual(harness.keychain.value(appSidecar), sidecarBefore)
         XCTAssertEqual(restored, .signedIn(alice))
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
+        XCTAssertEqual(rows, [AmplifyCognitoClientStoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
     }
 
     #if os(iOS) || os(macOS) || os(visionOS)
@@ -574,7 +574,7 @@ extension DefaultSessionConfigurationChangeTests {
         )
         let rows = try await listed(ChangeConfigs.otherUserPool, includingSignedOut: true)
 
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: "Work", user: nil, kind: .signedOut, state: .signedOut)])
+        XCTAssertEqual(rows, [AmplifyCognitoClientStoredSession(sessionId: .default, label: "Work", user: nil, kind: .signedOut, state: .signedOut)])
         XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.both)), old)
         XCTAssertNil(harness.keychain.value(account(ChangeConfigs.otherUserPool)))
         XCTAssertEqual(harness.revoker.revokeCalls, [])

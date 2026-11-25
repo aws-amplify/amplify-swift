@@ -139,7 +139,7 @@ final class RollbackMatrixClientTests: XCTestCase {
 
         let afterAliceRefreshed = try await listed()
         XCTAssertEqual(afterAliceRefreshed, [
-            StoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         ])
 
         let bob = try await live.signedInPayload("bob", on: engine)
@@ -147,7 +147,7 @@ final class RollbackMatrixClientTests: XCTestCase {
 
         let afterBob = try await listed()
         XCTAssertEqual(afterBob, [
-            StoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "bob", userId: "sub-bob"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "bob", userId: "sub-bob"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         ])
         XCTAssertNil(try harness.storedRecord(.default)?.label)
         let restored = try makeClient()
@@ -220,7 +220,7 @@ final class RollbackMatrixClientTests: XCTestCase {
 
         let rows = try await listed(includingSignedOut: true)
         XCTAssertEqual(rows, [
-            StoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         ])
     }
 
@@ -395,7 +395,7 @@ final class RollbackMatrixClientTests: XCTestCase {
         XCTAssertEqual(result.nextStep, .done)
     }
 
-    func listed(includingSignedOut: Bool = false) async throws -> [StoredSession] {
+    func listed(includingSignedOut: Bool = false) async throws -> [AmplifyCognitoClientStoredSession] {
         try await AmplifyCognitoClient.storedSessions(
             configuration: ClientFixtures.configuration,
             accessGroup: nil,
@@ -427,7 +427,7 @@ final class RollbackMatrixClientTests: XCTestCase {
     }
 
     func makeClient(
-        _ sessionId: SessionID = .default,
+        _ sessionId: AmplifyCognitoClientSessionID = .default,
         configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration
     ) throws -> AmplifyCognitoClient {
         try AmplifyCognitoClient(

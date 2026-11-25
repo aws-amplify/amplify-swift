@@ -131,7 +131,7 @@ final class RefreshTests: ClientIntegrationTestCase {
             )
         }
         let signOutResult: AmplifyCognitoClientSignOutResult
-        let events: StreamRecorder<AuthEvent>
+        let events: StreamRecorder<AmplifyCognitoClientEvent>
         do {
             let a = try AmplifyCognitoClient(configuration: poolConfiguration, options: .init(sessionId: sessionA))
             let b = try AmplifyCognitoClient(configuration: poolConfiguration, options: .init(sessionId: sessionB))

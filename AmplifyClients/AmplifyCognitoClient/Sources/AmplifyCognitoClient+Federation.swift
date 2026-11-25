@@ -9,7 +9,7 @@ import Foundation
 
 /// Federation to the identity pool, with the plugin's semantics, for this session only.
 ///
-/// A federated session reports `AuthSessionState.federated(identityId:)`: it holds an identity pool
+/// A federated session reports `AmplifyCognitoClientSessionState.federated(identityId:)`: it holds an identity pool
 /// identity and its AWS credentials, and no user pool user. Its credentials provider vends those
 /// credentials, refreshed with the stored provider token when they expire; its access-token provider has
 /// none to give. `signIn` refuses it (`invalidState`): clear the federation, or sign it out, first. When the

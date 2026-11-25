@@ -22,10 +22,10 @@ extension SessionRecordStore {
         }
 
         /// One row per saved session, signed-out rows included, ordered by session ID.
-        let sessions: [StoredSession]
+        let sessions: [AmplifyCognitoClientStoredSession]
 
         /// The named sessions whose record this build cannot read. Each is a `.failed` row.
-        let unreadable: [SessionID: Unreadable]
+        let unreadable: [AmplifyCognitoClientSessionID: Unreadable]
     }
 
     /// The saved sessions a picker renders, with no network call.
@@ -47,7 +47,7 @@ extension SessionRecordStore {
         includingSignedOut: Bool = false,
         sweepingChallengesAt now: Date? = nil,
         pluginConfiguration: AuthConfiguration? = nil
-    ) throws -> [StoredSession] {
+    ) throws -> [AmplifyCognitoClientStoredSession] {
         let accounts = try listAccounts()
         let sessions = try listing(accounts: accounts, pluginConfiguration: pluginConfiguration, challengesAt: now).sessions
         if let now {
@@ -73,7 +73,7 @@ extension SessionRecordStore {
     /// the session as a restore's snapshot holds it, and never from a session live in the process. Where a record
     /// does not itself name its principal (a federated record, or one saved with no user ID), `.default`'s included,
     /// its credentials are decoded as its engine decodes them (`describeCredentials`); no other row's are read. A
-    /// restore differs in the two cases `StoredSession.state` names: a copy a rollback's restore would sweep, and a
+    /// restore differs in the two cases `AmplifyCognitoClientStoredSession.state` names: a copy a rollback's restore would sweep, and a
     /// `.default` login the plugin's rule would carry that this build cannot read. **An interrupted sign-in is listed
     /// as a restore would resume it** (`SessionCore.pendingOrResumedChallenge`): over a signed-out or guest row, and
     /// as a row of its own for a session with nothing else saved. Its record is read only for those; a failed read
@@ -108,7 +108,7 @@ extension SessionRecordStore {
         challengesAt now: Date? = nil
     ) throws -> Listing {
         let accounts = try listed ?? listAccounts()
-        let sessionIds = Set(accounts.compactMap { account -> SessionID? in
+        let sessionIds = Set(accounts.compactMap { account -> AmplifyCognitoClientSessionID? in
             guard let parsed = SessionRecordKey.parse(account),
                   parsed.kind == .session,
                   // A `$default` session record is a development build's leftover, never a row.
@@ -119,7 +119,7 @@ extension SessionRecordStore {
             return parsed.sessionId
         }).sorted { $0.stringValue < $1.stringValue }
         // The sessions with an interrupted sign-in saved, `.default` included.
-        let challenged = Set(accounts.compactMap { account -> SessionID? in
+        let challenged = Set(accounts.compactMap { account -> AmplifyCognitoClientSessionID? in
             guard let parsed = SessionRecordKey.parse(account),
                   parsed.kind == .challenge,
                   parsed.namespaceComponent == namespace.pools.keyComponent else {
@@ -129,8 +129,8 @@ extension SessionRecordStore {
         })
 
         // What is saved for each session, as a restore's snapshot holds it.
-        var saved: [SessionID: SessionSnapshot.Source] = [:]
-        var unreadable: [SessionID: Listing.Unreadable] = [:]
+        var saved: [AmplifyCognitoClientSessionID: SessionSnapshot.Source] = [:]
+        var unreadable: [AmplifyCognitoClientSessionID: Listing.Unreadable] = [:]
 
         for sessionId in sessionIds {
             guard let data = try fetch(sessionAccount(for: sessionId), operation: "read a saved session") else {
@@ -176,11 +176,11 @@ extension SessionRecordStore {
     ///
     /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the interrupted sign-in's record could not be read.
     private func row(
-        _ sessionId: SessionID,
+        _ sessionId: AmplifyCognitoClientSessionID,
         _ source: SessionSnapshot.Source,
         challenged: Bool,
         at now: Date?
-    ) throws -> StoredSession? {
+    ) throws -> AmplifyCognitoClientStoredSession? {
         var state = SessionSnapshot.state(of: source, challenge: nil, describe: describeCredentials)
         // Resumed only over a session that can be signing in, as a restore resumes it.
         if challenged, state == .signedOut || state == .guest, let step = try resumableChallenge(sessionId, at: now) {
@@ -189,10 +189,10 @@ extension SessionRecordStore {
         switch source {
         case .absent:
             // No credentials are saved, as for a signed-out row: the closest kind.
-            return state == .signedOut ? nil : StoredSession(sessionId: sessionId, label: nil, user: nil, kind: .signedOut, state: state)
+            return state == .signedOut ? nil : AmplifyCognitoClientStoredSession(sessionId: sessionId, label: nil, user: nil, kind: .signedOut, state: state)
         case .unreadable:
             // As `.default`'s unrecognised record is listed: a record is there, and nothing says what it holds.
-            return StoredSession(sessionId: sessionId, label: nil, user: nil, kind: PluginRecordSummary.unrecognisedKind, state: state)
+            return AmplifyCognitoClientStoredSession(sessionId: sessionId, label: nil, user: nil, kind: PluginRecordSummary.unrecognisedKind, state: state)
         case .own(let record):
             // The signed-in user, else the last one a signed-out row kept. A guest or federated row names none,
             // whatever its record holds.
@@ -202,14 +202,14 @@ extension SessionRecordStore {
             } else if Self.isSignedIn(record.kind) || record.kind == .signedOut {
                 user = CredentialSummary(kind: record.kind, username: record.username, userId: record.userId).user
             }
-            return StoredSession(sessionId: sessionId, label: record.label, user: user, kind: record.kind, state: state)
+            return AmplifyCognitoClientStoredSession(sessionId: sessionId, label: record.label, user: user, kind: record.kind, state: state)
         }
     }
 
     /// The step of the session's interrupted sign-in, if a restore at `now` would resume it: `nil` with no record,
     /// one past its ceiling, a newer schema's, corrupt bytes, or one this build cannot resume. Nothing is deleted
     /// here: a restore deletes most of those, and a listing sweeps the expired (`sweepExpiredChallenges`).
-    private func resumableChallenge(_ sessionId: SessionID, at now: Date?) throws -> AmplifyCognitoClientSignInStep? {
+    private func resumableChallenge(_ sessionId: AmplifyCognitoClientSessionID, at now: Date?) throws -> AmplifyCognitoClientSignInStep? {
         guard case .record(let record) = try readChallenge(sessionId), now.map(record.isPastCeiling(at:)) != true else {
             return nil
         }
@@ -232,9 +232,9 @@ extension SessionRecordStore {
     /// With `pluginConfiguration`, `.default` counts as the user a restore under it would read after the Auth plugin's
     /// configuration-change rule (`pendingPluginCarry(current:)`): a login the rule would carry here holds its user
     /// before `.default` is restored.
-    func signedInUserIds(describe: (Data) -> CredentialSummary?, pluginConfiguration: AuthConfiguration? = nil) throws -> [SessionID: String] {
+    func signedInUserIds(describe: (Data) -> CredentialSummary?, pluginConfiguration: AuthConfiguration? = nil) throws -> [AmplifyCognitoClientSessionID: String] {
         let accounts = try listAccounts()
-        var userIds: [SessionID: String] = [:]
+        var userIds: [AmplifyCognitoClientSessionID: String] = [:]
         for account in accounts {
             guard let parsed = SessionRecordKey.parse(account),
                   parsed.kind == .session,
@@ -281,13 +281,13 @@ extension SessionRecordStore {
         return userIds
     }
 
-    private static func isSignedIn(_ kind: SessionKind) -> Bool {
+    private static func isSignedIn(_ kind: AmplifyCognitoClientSessionKind) -> Bool {
         kind == .userPoolOnly || kind == .userPoolAndIdentityPool
     }
 
     /// The named sessions of this app with a namespace marker among `accounts`. A `$default` marker is a development
     /// build's leftover: `.default` keeps none.
-    private func pendingMarkerSessions(in accounts: [String]) -> Set<SessionID> {
+    private func pendingMarkerSessions(in accounts: [String]) -> Set<AmplifyCognitoClientSessionID> {
         Set(accounts.compactMap { SessionRecordKey.parseMarker($0, scope: markerScope) }).subtracting([.default])
     }
 

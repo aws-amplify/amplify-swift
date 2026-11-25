@@ -24,7 +24,7 @@ extension SessionCore {
     /// Only `.default`'s I/O calls it (`recordIO()`): a named session never hops here.
     ///
     /// - Parameter sessionId: The session the record was read for. Only this core's own record counts.
-    nonisolated func noteReread(_ reread: SessionSnapshot, of sessionId: SessionID) async {
+    nonisolated func noteReread(_ reread: SessionSnapshot, of sessionId: AmplifyCognitoClientSessionID) async {
         // A core that has already warned never hops onto the actor again.
         guard sessionId == self.sessionId, !sharedRecordWarning.hasWarned else {
             return

@@ -27,7 +27,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         users = try await (makeSignInUser(), makeSignInUser())
     }
 
-    private func account(_ sessionId: SessionID) -> String {
+    private func account(_ sessionId: AmplifyCognitoClientSessionID) -> String {
         SessionRecordKey.account(for: sessionId, in: configuration.poolNamespace, kind: .session)
     }
 
@@ -118,7 +118,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         XCTAssertEqual(aliceState, .signedOut)
         let withSignedOut = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         let aliceRow = try XCTUnwrap(withSignedOut.first { $0.sessionId == aliceId })
-        XCTAssertEqual(aliceRow.kind, SessionKind.signedOut)
+        XCTAssertEqual(aliceRow.kind, AmplifyCognitoClientSessionKind.signedOut)
         XCTAssertTrue(aliceRow.user?.username == users.alice.username, "the signed-out row names alice")
         let withoutSignedOut = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
         XCTAssertFalse(withoutSignedOut.contains { $0.sessionId == aliceId }, "a signed-out row is hidden by default")
@@ -161,7 +161,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         let bobId = try makeSessionID("bob")
         let recorder = RecordingHTTPClient()
         try await signIn(aliceId, as: users.alice, label: "Work", recorder: recorder)
-        try await signIn(SessionID.named(bobId.stringValue, label: "Home"), as: users.bob, label: nil, recorder: recorder)
+        try await signIn(AmplifyCognitoClientSessionID.named(bobId.stringValue, label: "Home"), as: users.bob, label: nil, recorder: recorder)
         try await SessionCleanup.waitUntilReleased([aliceId, bobId])
         recorder.reset()
         let pluginAccount = SessionRecordKey.pluginSessionAccount(in: configuration.poolNamespace)
@@ -190,7 +190,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         XCTAssertEqual(byId[bobId]?.label, "Home")
         // A `$default.session` record is a development build's leftover, never `.default`'s record. A session with
         // nothing saved but an interrupted sign-in is listed from its `.challenge` record.
-        let v1Ids = try Set(IntegrationTestEnvironment.rawKeychainAccounts().compactMap { account -> SessionID? in
+        let v1Ids = try Set(IntegrationTestEnvironment.rawKeychainAccounts().compactMap { account -> AmplifyCognitoClientSessionID? in
             guard let parsed = SessionRecordKey.parse(account),
                   parsed.kind == .challenge || (parsed.kind == .session && parsed.sessionId != .default),
                   parsed.namespaceComponent == configuration.poolNamespace.keyComponent else {
@@ -230,7 +230,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
     }
 
     /// Signs `user` in on `sessionId`, labels it, and releases the client on return.
-    private func signIn(_ sessionId: SessionID, as user: TestUser, label: String?, recorder: RecordingHTTPClient) async throws {
+    private func signIn(_ sessionId: AmplifyCognitoClientSessionID, as user: TestUser, label: String?, recorder: RecordingHTTPClient) async throws {
         let client = try AmplifyCognitoClient(
             configuration: configuration,
             options: .init(sessionId: sessionId, configureUserPoolClient: recorder.configureUserPoolClient)

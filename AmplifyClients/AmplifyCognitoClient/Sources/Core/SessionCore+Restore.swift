@@ -118,7 +118,7 @@ extension SessionCore {
 
     /// The session's state. Never throws: a storage failure is `.unavailable(reason)`, anything else
     /// unrecoverable is `.failed`. Answers from memory after the restore, without re-reading storage.
-    nonisolated func sessionState() async -> AuthSessionState {
+    nonisolated func sessionState() async -> AmplifyCognitoClientSessionState {
         do {
             _ = try await restoredSnapshot()
         } catch let error as AmplifyCognitoClientError {

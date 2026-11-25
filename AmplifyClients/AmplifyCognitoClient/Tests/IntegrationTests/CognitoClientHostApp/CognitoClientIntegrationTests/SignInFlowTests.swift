@@ -50,7 +50,7 @@ final class SignInFlowTests: ClientIntegrationTestCase {
         let defaultRecordAccount = SessionRecordKey.pluginSessionAccount(in: pools)
         let defaultRecordBefore = try IntegrationTestEnvironment.rawKeychainAccounts().contains(defaultRecordAccount)
         let recorder = RecordingHTTPClient()
-        let events: StreamRecorder<AuthEvent>
+        let events: StreamRecorder<AmplifyCognitoClientEvent>
         do {
             let client = try AmplifyCognitoClient(
                 configuration: configuration,
@@ -113,10 +113,10 @@ final class SignInFlowTests: ClientIntegrationTestCase {
 
     /// Signs alice in, forces a refresh with the recorder and the event stream watching, asserts RF-1's
     /// in-session half, and returns the new access token's fingerprint. The client is released on return.
-    private func refreshAndDrop(_ sessionId: SessionID) async throws -> String {
+    private func refreshAndDrop(_ sessionId: AmplifyCognitoClientSessionID) async throws -> String {
         let alice = try await makeSignInUser()
         let recorder = RecordingHTTPClient()
-        let events: StreamRecorder<AuthEvent>
+        let events: StreamRecorder<AmplifyCognitoClientEvent>
         let after: String
         do {
             let client = try AmplifyCognitoClient(
@@ -258,8 +258,8 @@ final class SignInFlowTests: ClientIntegrationTestCase {
     /// return.
     @discardableResult
     private func assertRestores(
-        _ sessionId: SessionID,
-        as stored: AmplifyCognitoClientSession,
+        _ sessionId: AmplifyCognitoClientSessionID,
+        as stored: AmplifyCognitoClientAuthSession,
         user alice: TestUser,
         through outputs: AmplifyCognitoClientConfiguration,
         then: (AmplifyCognitoClient) async throws -> Void = { _ in }
@@ -305,7 +305,7 @@ final class SignInFlowTests: ClientIntegrationTestCase {
 
     /// Signs alice in on `sessionId` through a client that is released when this returns, and returns her
     /// session, which holds an identity ID and AWS credentials.
-    private func signInAndDrop(_ sessionId: SessionID, as alice: TestUser) async throws -> AmplifyCognitoClientSession {
+    private func signInAndDrop(_ sessionId: AmplifyCognitoClientSessionID, as alice: TestUser) async throws -> AmplifyCognitoClientAuthSession {
         let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
         _ = try await client.signIn(username: alice.username, password: alice.password)
         let session = try await client.fetchAuthSession()

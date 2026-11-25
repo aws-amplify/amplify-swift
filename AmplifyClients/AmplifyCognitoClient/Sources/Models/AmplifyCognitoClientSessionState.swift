@@ -17,7 +17,7 @@
 ///
 /// Every case compares its payload, including `.failed`, even though `AmplifyCognitoClientError` is not
 /// `Equatable`. Two `.failed` states are equal when their errors are the same case with the same
-/// structured payload (the `StorageUnavailableReason`, the `SessionID`, the validation `field`),
+/// structured payload (the `StorageUnavailableReason`, the `AmplifyCognitoClientSessionID`, the validation `field`),
 /// the same `errorDescription`, and the same `recoverySuggestion`. The `underlyingError` is not
 /// compared, because `any Error` cannot be. That is as close to payload-aware as the error allows,
 /// and deliberately not the plugin's payload-blind `AuthError ==`: a session moving from one
@@ -29,7 +29,7 @@
 /// consumer reads) is AmplifyFoundation's experimental SPI, like this client. To match `.unavailable(.locked)`
 /// or read `disposition`, import it with the SPI: `@_spi(AmplifyExperimental) import AmplifyFoundation`.
 @_spi(AmplifyExperimental)
-public enum AuthSessionState: Sendable {
+public enum AmplifyCognitoClientSessionState: Sendable {
 
     /// Signed in to the user pool, by any means: password, passwordless, hosted UI.
     case signedIn(AmplifyCognitoClientUser)
@@ -68,9 +68,9 @@ public enum AuthSessionState: Sendable {
     case failed(AmplifyCognitoClientError)
 }
 
-extension AuthSessionState: Equatable {
+extension AmplifyCognitoClientSessionState: Equatable {
 
-    public static func == (lhs: AuthSessionState, rhs: AuthSessionState) -> Bool {
+    public static func == (lhs: AmplifyCognitoClientSessionState, rhs: AmplifyCognitoClientSessionState) -> Bool {
         // Switch on `lhs` with no `default`, so a new case cannot silently compare unequal.
         switch lhs {
         case .signedIn(let user):
@@ -109,8 +109,8 @@ extension AmplifyCognitoClientError {
         case notSignedIn
         case invalidSessionID
         case challengeExpired
-        case browserBusy(holder: SessionID)
-        case sessionConfigurationMismatch(SessionID)
+        case browserBusy(holder: AmplifyCognitoClientSessionID)
+        case sessionConfigurationMismatch(AmplifyCognitoClientSessionID)
         case validation(field: String)
         case service(AmplifyCognitoClientServiceErrorCode?)
         case notAuthorized
@@ -143,7 +143,7 @@ extension AmplifyCognitoClientError {
         }
     }
 
-    /// The equality `AuthSessionState.failed` uses: same case, same structured payload, same
+    /// The equality `AmplifyCognitoClientSessionState.failed` uses: same case, same structured payload, same
     /// description and suggestion. The underlying error is not compared, because it cannot be.
     ///
     /// Deliberately not an `Equatable` conformance on `AmplifyCognitoClientError` itself: an `==` that

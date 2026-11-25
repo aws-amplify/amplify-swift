@@ -564,7 +564,7 @@ extension SessionCore {
         error is CancellationError || (error as? AmplifyCognitoClientError)?.underlyingError is CancellationError
     }
 
-    static func notSignedIn(_ sessionId: SessionID) -> AmplifyCognitoClientError {
+    static func notSignedIn(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .notSignedIn(
             "Session \"\(sessionId)\" is not signed in.",
             "Sign in to this session first."
@@ -573,14 +573,14 @@ extension SessionCore {
 
     /// `notSignedIn(_:)` for the AWS credentials of a signed-out session, which never fall back to guest credentials,
     /// unlike the plugin's provider.
-    static func signedOutHasNoGuestCredentials(_ sessionId: SessionID) -> AmplifyCognitoClientError {
+    static func signedOutHasNoGuestCredentials(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .notSignedIn(
             "Session \"\(sessionId)\" is not signed in.",
             "Sign in to this session first. A signed-out session never falls back to guest credentials."
         )
     }
 
-    static func sessionExpired(_ sessionId: SessionID) -> AmplifyCognitoClientError {
+    static func sessionExpired(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .sessionExpired(
             "Session \"\(sessionId)\"'s refresh token has expired or been revoked.",
             "Sign in to this session again. Other sessions are unaffected.",
@@ -590,7 +590,7 @@ extension SessionCore {
 
     /// The dead token after a reuse (`refreshOnce`, step 3): Cognito said the refresh token was used, and nobody saved
     /// the refresh that used it, so the session cannot get new tokens with it.
-    static func refreshTokenAlreadyUsed(_ sessionId: SessionID) -> AmplifyCognitoClientError {
+    static func refreshTokenAlreadyUsed(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .sessionExpired(
             "Session \"\(sessionId)\"'s refresh token was already used, and no refreshed tokens were saved, so the session cannot be renewed.",
             "Sign in to this session again. Other sessions are unaffected.",
@@ -601,7 +601,7 @@ extension SessionCore {
     /// A federated session whose provider token the identity pool no longer accepts (the engine's
     /// `refreshTokenInvalid` for a federated payload): it has no refresh token, and a sign-in is refused over it, so
     /// it federates again.
-    static func providerTokenRefused(_ sessionId: SessionID) -> AmplifyCognitoClientError {
+    static func providerTokenRefused(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .sessionExpired(
             "Session \"\(sessionId)\"'s provider token is no longer accepted by the identity pool.",
             "Call federateToIdentityPool with a new provider token for this session. Other sessions are unaffected.",

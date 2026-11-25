@@ -63,7 +63,7 @@ public enum AmplifyCognitoClientSignOutResult: Sendable, Equatable {
         return true
     }
 
-    /// Errors compare as `AuthSessionState.failed` does: same case, structured payload, description and
+    /// Errors compare as `AmplifyCognitoClientSessionState.failed` does: same case, structured payload, description and
     /// suggestion. The underlying error is not compared.
     public static func == (lhs: AmplifyCognitoClientSignOutResult, rhs: AmplifyCognitoClientSignOutResult) -> Bool {
         switch (lhs, rhs) {
@@ -147,7 +147,7 @@ public struct AmplifyCognitoClientGlobalSignOutError: Sendable, Equatable {
 /// Why the hosted UI's sign-out did not run, in a `.partial` sign-out. The plugin's `AWSCognitoHostedUIError`.
 ///
 /// Needed only after a hosted-UI sign-in that shared the browser's cookies
-/// (`WebUIOptions.prefersEphemeralSession` off). **The hosted UI's cookie survives in the browser**, so the next
+/// (`AmplifyCognitoClientWebUIOptions.prefersEphemeralSession` off). **The hosted UI's cookie survives in the browser**, so the next
 /// hosted-UI sign-in may silently return the same account: sign in next time with `prompt: [.login]`, or with
 /// `prefersEphemeralSession: true`. `error` is `validation` for a sign-out given no window
 /// (`signOut(options:)`, `signOutStoredSession`); `userCancelled` when the user closed the page of a session a

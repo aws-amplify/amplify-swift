@@ -478,7 +478,7 @@ extension SessionCore {
     /// over an expired session, or a different user, a guest or a federated identity taking a signed-out row
     /// left by another user. A guest or federated identity names no user, so it never matches one.
     ///
-    /// Where none is kept, the write saves the label the session's ID was created with (`SessionID.label`), passed
+    /// Where none is kept, the write saves the label the session's ID was created with (`AmplifyCognitoClientSessionID.label`), passed
     /// to the store as `labelIfNone`: this core's ID, which is the ID of the client that built the session.
     static func label(keptFrom replaced: SessionRecord?, for signedIn: CredentialSummary) -> String? {
         guard let replaced, let label = replaced.label else {

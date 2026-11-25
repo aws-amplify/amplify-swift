@@ -11,7 +11,7 @@ import Security
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// `StoredSession.state`: the state a row reports for each thing a session can have saved, read offline, and the
+/// `AmplifyCognitoClientStoredSession.state`: the state a row reports for each thing a session can have saved, read offline, and the
 /// same state a client built for the session restores to.
 final class StoredSessionStateTests: XCTestCase {
 
@@ -34,7 +34,7 @@ final class StoredSessionStateTests: XCTestCase {
 
     // MARK: Fixtures
 
-    private func rows(includingSignedOut: Bool = true) async throws -> [StoredSession] {
+    private func rows(includingSignedOut: Bool = true) async throws -> [AmplifyCognitoClientStoredSession] {
         try await AmplifyCognitoClient.storedSessions(
             configuration: ClientFixtures.configuration,
             accessGroup: nil,
@@ -44,12 +44,12 @@ final class StoredSessionStateTests: XCTestCase {
     }
 
     /// The state a client built for the session reports once it has restored.
-    private func restoredState(_ sessionId: SessionID) async throws -> AuthSessionState {
+    private func restoredState(_ sessionId: AmplifyCognitoClientSessionID) async throws -> AmplifyCognitoClientSessionState {
         try await harness.client(sessionId).currentSessionState()
     }
 
     /// Saves an interrupted sign-in waiting on `step` for the session, `age` seconds before the harness's clock.
-    private func saveChallenge(for sessionId: SessionID, age: TimeInterval = 0) throws {
+    private func saveChallenge(for sessionId: AmplifyCognitoClientSessionID, age: TimeInterval = 0) throws {
         let record = ChallengeRecord(createdAt: TestClock.start.addingTimeInterval(-age), state: .fake(step)!)
         try harness.store().putChallenge(record, for: sessionId)
     }
@@ -73,9 +73,9 @@ final class StoredSessionStateTests: XCTestCase {
         let listed = try await rows()
 
         XCTAssertEqual(listed, [
-            StoredSession(sessionId: home, label: nil, user: bob, kind: .userPoolOnly, state: .signedIn(bob)),
-            StoredSession(sessionId: old, label: nil, user: carol, kind: .userPoolAndIdentityPool, state: .signedIn(carol)),
-            StoredSession(sessionId: work, label: nil, user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice))
+            AmplifyCognitoClientStoredSession(sessionId: home, label: nil, user: bob, kind: .userPoolOnly, state: .signedIn(bob)),
+            AmplifyCognitoClientStoredSession(sessionId: old, label: nil, user: carol, kind: .userPoolAndIdentityPool, state: .signedIn(carol)),
+            AmplifyCognitoClientStoredSession(sessionId: work, label: nil, user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice))
         ])
         for row in listed {
             let restored = try await restoredState(row.sessionId)
@@ -95,8 +95,8 @@ final class StoredSessionStateTests: XCTestCase {
         let listed = try await rows()
 
         XCTAssertEqual(listed, [
-            StoredSession(sessionId: home, label: nil, user: nil, kind: .federated, state: .federated(identityId: "us-east-1:federated")),
-            StoredSession(sessionId: work, label: nil, user: nil, kind: .guest, state: .guest)
+            AmplifyCognitoClientStoredSession(sessionId: home, label: nil, user: nil, kind: .federated, state: .federated(identityId: "us-east-1:federated")),
+            AmplifyCognitoClientStoredSession(sessionId: work, label: nil, user: nil, kind: .guest, state: .guest)
         ])
         for row in listed {
             let restored = try await restoredState(row.sessionId)
@@ -115,7 +115,7 @@ final class StoredSessionStateTests: XCTestCase {
         let all = try await rows()
         let byDefault = try await rows(includingSignedOut: false)
 
-        XCTAssertEqual(all, [StoredSession(sessionId: work, label: "Work", user: alice, kind: .signedOut, state: .signedOut)])
+        XCTAssertEqual(all, [AmplifyCognitoClientStoredSession(sessionId: work, label: "Work", user: alice, kind: .signedOut, state: .signedOut)])
         XCTAssertEqual(byDefault, [])
     }
 
@@ -136,8 +136,8 @@ final class StoredSessionStateTests: XCTestCase {
         let listed = try await rows(includingSignedOut: false)
 
         XCTAssertEqual(listed, [
-            StoredSession(sessionId: home, label: nil, user: nil, kind: .guest, state: .awaitingChallenge(step)),
-            StoredSession(sessionId: work, label: "Work", user: alice, kind: .signedOut, state: .awaitingChallenge(step))
+            AmplifyCognitoClientStoredSession(sessionId: home, label: nil, user: nil, kind: .guest, state: .awaitingChallenge(step)),
+            AmplifyCognitoClientStoredSession(sessionId: work, label: "Work", user: alice, kind: .signedOut, state: .awaitingChallenge(step))
         ])
         for row in listed {
             let restored = try await restoredState(row.sessionId)
@@ -161,8 +161,8 @@ final class StoredSessionStateTests: XCTestCase {
         let listed = try await rows(includingSignedOut: false)
 
         XCTAssertEqual(listed, [
-            StoredSession(sessionId: .default, label: nil, user: nil, kind: .signedOut, state: .awaitingChallenge(step)),
-            StoredSession(sessionId: work, label: nil, user: nil, kind: .signedOut, state: .awaitingChallenge(step))
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: nil, kind: .signedOut, state: .awaitingChallenge(step)),
+            AmplifyCognitoClientStoredSession(sessionId: work, label: nil, user: nil, kind: .signedOut, state: .awaitingChallenge(step))
         ])
         XCTAssertFalse(harness.keychain.hasMutations)
         for row in listed {
@@ -195,7 +195,7 @@ final class StoredSessionStateTests: XCTestCase {
         let listed = try await rows()
 
         XCTAssertEqual(listed, [
-            StoredSession(sessionId: work, label: nil, user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice))
+            AmplifyCognitoClientStoredSession(sessionId: work, label: nil, user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice))
         ])
         XCTAssertEqual(try store.readChallenge(expired), .absent)
         XCTAssertEqual(try store.readChallenge(corrupt), .corrupt)
@@ -216,9 +216,9 @@ final class StoredSessionStateTests: XCTestCase {
     ///    - each is the state its client restores to
     func testTheDefaultRowWithAPendingChallengeIsAwaitingChallenge() async throws {
         let sidecar = try DefaultSessionMeta(lastWriteTimestamp: TestClock.start, label: "Home", username: "alice", userId: "sub-alice").encoded()
-        let cases: [(String, Data?, Data?, StoredSession)] = [
+        let cases: [(String, Data?, Data?, AmplifyCognitoClientStoredSession)] = [
             ("signed out", PluginRecordFixtures.noCredentials, nil, row(.default, kind: .signedOut)),
-            ("no record", nil, sidecar, StoredSession(sessionId: .default, label: "Home", user: alice, kind: .signedOut, state: .awaitingChallenge(step))),
+            ("no record", nil, sidecar, AmplifyCognitoClientStoredSession(sessionId: .default, label: "Home", user: alice, kind: .signedOut, state: .awaitingChallenge(step))),
             ("a guest", FakePayload.guest().data, nil, row(.default, kind: .guest))
         ]
         for (name, record, meta, expected) in cases {
@@ -241,8 +241,8 @@ final class StoredSessionStateTests: XCTestCase {
     }
 
     /// An `.awaitingChallenge` row with nothing but its kind.
-    private func row(_ sessionId: SessionID, kind: SessionKind) -> StoredSession {
-        StoredSession(sessionId: sessionId, label: nil, user: nil, kind: kind, state: .awaitingChallenge(step))
+    private func row(_ sessionId: AmplifyCognitoClientSessionID, kind: AmplifyCognitoClientSessionKind) -> AmplifyCognitoClientStoredSession {
+        AmplifyCognitoClientStoredSession(sessionId: sessionId, label: nil, user: nil, kind: kind, state: .awaitingChallenge(step))
     }
 
     /// A row a picker used to drop silently: it can now offer to sign the session out, which resets it.
@@ -313,7 +313,7 @@ final class StoredSessionStateTests: XCTestCase {
     // MARK: The engine's own decode
 
     /// A client of this harness's records, over a live engine in place of the fake.
-    private func liveClient(_ sessionId: SessionID) throws -> AmplifyCognitoClient {
+    private func liveClient(_ sessionId: AmplifyCognitoClientSessionID) throws -> AmplifyCognitoClient {
         let base = harness.dependencies
         let dependencies = SessionCoreDependencies(
             registry: base.registry,
@@ -361,14 +361,14 @@ final class StoredSessionStateTests: XCTestCase {
 
         let states = Dictionary(uniqueKeysWithValues: listed.map { ($0.sessionId.stringValue, $0.state) })
         let user = AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub")
-        XCTAssertEqual(states.keys.sorted(), (payloads.map(\.0) + [SessionID.default.stringValue]).sorted())
+        XCTAssertEqual(states.keys.sorted(), (payloads.map(\.0) + [AmplifyCognitoClientSessionID.default.stringValue]).sorted())
         XCTAssertEqual(states["userPoolOnly"], .signedIn(user))
         XCTAssertEqual(states["userPoolAndIdentityPool"], .signedIn(user))
         XCTAssertEqual(states["identityPoolOnly"], .guest)
         XCTAssertEqual(states["identityPoolWithFederation"], .federated(identityId: "us-east-1:fixture-federated-identity-id"))
         XCTAssertEqual(states["noCredentials"], .signedOut)
         for row in listed {
-            if ["unknownProvider", "noSignedInData", SessionID.default.stringValue].contains(row.sessionId.stringValue) {
+            if ["unknownProvider", "noSignedInData", AmplifyCognitoClientSessionID.default.stringValue].contains(row.sessionId.stringValue) {
                 guard case .failed(.unknown) = row.state else {
                     XCTFail("\(row.sessionId) is \(row.state)")
                     continue
@@ -399,7 +399,7 @@ final class StoredSessionStateTests: XCTestCase {
         let listed = try await rows()
 
         XCTAssertEqual(listed, [
-            StoredSession(sessionId: work, label: nil, user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice))
+            AmplifyCognitoClientStoredSession(sessionId: work, label: nil, user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice))
         ])
         let client = try harness.client(work)
         let restored = await client.currentSessionState()

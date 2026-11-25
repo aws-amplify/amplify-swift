@@ -101,7 +101,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         let windowA = await WebAuthnFixtures.window()
         let windowB = await WebAuthnFixtures.window()
         let lock = harness.sheetLock
-        let holders = TestBox<[SessionID?]>([])
+        let holders = TestBox<[AmplifyCognitoClientSessionID?]>([])
         engine.scriptSignIn { _, _ in .challenge(.continueSignInWithFirstFactorSelection([.password, .webAuthn])) }
         engine.scriptConfirmSignIn { request in
             _ = try await engine.runCeremony(request.webAuthn, anchor: engine.webAuthnAnchor(for: request))
@@ -496,7 +496,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let window = await WebAuthnFixtures.window()
         let latch = Gate()
-        let holders = TestBox<[SessionID?]>([])
+        let holders = TestBox<[AmplifyCognitoClientSessionID?]>([])
         let lock = harness.sheetLock
         engine.holdSignIns(on: latch)
         engine.scriptSignIn { request, _ in
@@ -773,7 +773,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await up.arrivals(1)
         let lock = harness.sheetLock
-        let answered = Task { () -> (AmplifyCognitoClientError?, SessionID?) in
+        let answered = Task { () -> (AmplifyCognitoClientError?, AmplifyCognitoClientSessionID?) in
             let error = await authClientError { try await associate.value(within: 10) }
             return (error, await lock.currentHolder)
         }

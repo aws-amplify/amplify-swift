@@ -33,7 +33,7 @@ final class DeleteUserTests: ClientIntegrationTestCase {
         let fresh = try await makeFreshUser(on: pool)
         let credentials = fresh.testUser
         let sessionId = try makeSessionID("delete", pool: pool)
-        let events: StreamRecorder<AuthEvent>
+        let events: StreamRecorder<AmplifyCognitoClientEvent>
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
             _ = try await client.signIn(username: credentials.username, password: credentials.password)

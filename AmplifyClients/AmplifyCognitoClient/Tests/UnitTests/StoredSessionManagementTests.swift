@@ -30,7 +30,7 @@ final class StoredSessionManagementTests: XCTestCase {
 
     // MARK: Calls under test
 
-    private func storedSessions(accessGroup: String? = nil, includingSignedOut: Bool = false) async throws -> [StoredSession] {
+    private func storedSessions(accessGroup: String? = nil, includingSignedOut: Bool = false) async throws -> [AmplifyCognitoClientStoredSession] {
         try await AmplifyCognitoClient.storedSessions(
             configuration: ClientFixtures.configuration,
             accessGroup: accessGroup,
@@ -39,7 +39,7 @@ final class StoredSessionManagementTests: XCTestCase {
         )
     }
 
-    private func purge(_ sessionId: SessionID, accessGroup: String? = nil) async throws {
+    private func purge(_ sessionId: AmplifyCognitoClientSessionID, accessGroup: String? = nil) async throws {
         try await AmplifyCognitoClient.purgeStoredSession(
             sessionId: sessionId,
             configuration: ClientFixtures.configuration,
@@ -48,7 +48,7 @@ final class StoredSessionManagementTests: XCTestCase {
         )
     }
 
-    private func signOut(_ sessionId: SessionID, accessGroup: String? = nil) async -> AmplifyCognitoClientSignOutResult {
+    private func signOut(_ sessionId: AmplifyCognitoClientSessionID, accessGroup: String? = nil) async -> AmplifyCognitoClientSignOutResult {
         await AmplifyCognitoClient.signOutStoredSession(
             sessionId: sessionId,
             configuration: ClientFixtures.configuration,
@@ -789,10 +789,10 @@ final class StoredSessionManagementTests: XCTestCase {
 private final class ReaderBox: @unchecked Sendable {
     private let lock = NSLock()
     private var client: AmplifyCognitoClient?
-    private var task: Task<AuthSessionState, Never>?
-    private var recorder: StreamRecorder<AuthEvent>?
+    private var task: Task<AmplifyCognitoClientSessionState, Never>?
+    private var recorder: StreamRecorder<AmplifyCognitoClientEvent>?
 
-    var events: StreamRecorder<AuthEvent> {
+    var events: StreamRecorder<AmplifyCognitoClientEvent> {
         lock.lock()
         defer { lock.unlock() }
         return recorder!
@@ -808,14 +808,14 @@ private final class ReaderBox: @unchecked Sendable {
         lock.unlock()
     }
 
-    func state() async throws -> AuthSessionState {
+    func state() async throws -> AmplifyCognitoClientSessionState {
         guard let task = startedTask() else {
             throw FixtureError(description: "the hook never constructed a client")
         }
         return await task.value
     }
 
-    private func startedTask() -> Task<AuthSessionState, Never>? {
+    private func startedTask() -> Task<AmplifyCognitoClientSessionState, Never>? {
         lock.lock()
         defer { lock.unlock() }
         return task

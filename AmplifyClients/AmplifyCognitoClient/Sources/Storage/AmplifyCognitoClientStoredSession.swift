@@ -13,14 +13,14 @@ import Foundation
 /// belonged to and what state it is in; it cannot say the session still works, because refresh-token expiry is
 /// only discovered by using it.
 @_spi(AmplifyExperimental)
-public struct StoredSession: Sendable, Equatable {
+public struct AmplifyCognitoClientStoredSession: Sendable, Equatable {
 
     /// The ID to build the client the user picked.
-    public let sessionId: SessionID
+    public let sessionId: AmplifyCognitoClientSessionID
 
     /// The app-supplied display name, the only name a user recognises. `nil` until the app sets one with
     /// `setSessionLabel(_:)` or the static `setSessionLabel(_:sessionId:configuration:accessGroup:)`, or a sign-in
-    /// saves the one its session ID was created with (`SessionID.label`). It survives sign-out. When a different
+    /// saves the one its session ID was created with (`AmplifyCognitoClientSessionID.label`). It survives sign-out. When a different
     /// user signs in to the session through a client it is cleared, or replaced by that ID's label if it has
     /// one. For `.default`, a different user signed in by the Auth plugin, which never
     /// writes the label, only hides it: it is listed again once that user is signed out or the labelled user
@@ -28,7 +28,7 @@ public struct StoredSession: Sendable, Equatable {
     public let label: String?
 
     /// Who the row belongs to: the signed-in user, or a signed-out row's last user. The same value as
-    /// `getCurrentUser()` and `AuthSessionState.signedIn(_:)`, so `userId` matches a row to a live client, or to
+    /// `getCurrentUser()` and `AmplifyCognitoClientSessionState.signedIn(_:)`, so `userId` matches a row to a live client, or to
     /// another row of the same user. `nil` for a guest or federated row, for a row that never had a user, and for a
     /// row saved before records kept the user's ID, unless it is signed in and its saved credentials still name
     /// the user. On an `.awaitingChallenge` row over a signed-out row, `user` and `label` are the signed-out
@@ -39,7 +39,7 @@ public struct StoredSession: Sendable, Equatable {
     public let user: AmplifyCognitoClientUser?
 
     /// What the saved record is, for rendering or filtering rows.
-    public let kind: SessionKind
+    public let kind: AmplifyCognitoClientSessionKind
 
     /// What the session is: the state a client built with `sessionId` reports once it has restored
     /// (`currentSessionState()`), read from what is saved, with no network call.
@@ -69,10 +69,10 @@ public struct StoredSession: Sendable, Equatable {
     ///   login to the new configuration: if that login is one this version cannot read, the row is whatever the new
     ///   configuration already holds (often no row). Its restore copies the login and is `.failed`, as the row then
     ///   is.
-    public let state: AuthSessionState
+    public let state: AmplifyCognitoClientSessionState
 
     /// Public so an app can build one for a test double; the client builds its own.
-    public init(sessionId: SessionID, label: String?, user: AmplifyCognitoClientUser?, kind: SessionKind, state: AuthSessionState) {
+    public init(sessionId: AmplifyCognitoClientSessionID, label: String?, user: AmplifyCognitoClientUser?, kind: AmplifyCognitoClientSessionKind, state: AmplifyCognitoClientSessionState) {
         self.sessionId = sessionId
         self.label = label
         self.user = user
@@ -82,11 +82,11 @@ public struct StoredSession: Sendable, Equatable {
 }
 
 /// What a *saved* session is: which pools its credentials are for, and how it signed in. Distinct from the
-/// session's state (`AuthSessionState`), which a row reports beside it (`StoredSession.state`).
+/// session's state (`AmplifyCognitoClientSessionState`), which a row reports beside it (`AmplifyCognitoClientStoredSession.state`).
 ///
 /// May gain cases in a minor release: include `@unknown default` when you switch over it.
 @_spi(AmplifyExperimental)
-public enum SessionKind: Sendable, Equatable {
+public enum AmplifyCognitoClientSessionKind: Sendable, Equatable {
 
     /// A user signed in to the user pool, with no identity pool credentials: user pool tokens only. Also a
     /// session carried forward from a configuration without this identity pool, until its identity is

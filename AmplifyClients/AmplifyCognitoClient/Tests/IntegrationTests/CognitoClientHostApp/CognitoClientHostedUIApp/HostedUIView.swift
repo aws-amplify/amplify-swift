@@ -131,7 +131,7 @@ struct HostedUIView: View {
     private func signIn(_ client: AmplifyCognitoClient, presentationAnchor: UIWindow) async throws -> String {
         let result = try await client.signInWithWebUI(
             presentationAnchor: presentationAnchor,
-            options: WebUIOptions(prefersEphemeralSession: true)
+            options: AmplifyCognitoClientWebUIOptions(prefersEphemeralSession: true)
         )
         guard case .done = result.nextStep else {
             return "Sign In returned an unexpected next step"

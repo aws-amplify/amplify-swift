@@ -14,7 +14,7 @@ final class SessionRecordStoreTests: XCTestCase {
 
     private var keychain: TestKeychain!
     private var store: SessionRecordStore!
-    private var work: SessionID!
+    private var work: AmplifyCognitoClientSessionID!
 
     private var workAccount: String { store.sessionAccount(for: work) }
     private var pluginAccount: String { SessionRecordKey.pluginSessionAccount(in: StorageFixtures.pools) }
@@ -22,7 +22,7 @@ final class SessionRecordStoreTests: XCTestCase {
     override func setUpWithError() throws {
         keychain = TestKeychain()
         store = keychain.recordStore(for: StorageFixtures.namespace)
-        work = try SessionID.named("work")
+        work = try AmplifyCognitoClientSessionID.named("work")
     }
 
     private func assertStorageUnavailable(
@@ -47,7 +47,7 @@ final class SessionRecordStoreTests: XCTestCase {
         return envelope
     }
 
-    private func storedEnvelope(_ sessionId: SessionID) throws -> VersionedSessionRecord {
+    private func storedEnvelope(_ sessionId: AmplifyCognitoClientSessionID) throws -> VersionedSessionRecord {
         let result = try store.read(sessionId)
         guard case .record(let envelope) = result else {
             throw UnexpectedResult("expected a readable record for \(sessionId), got \(result)")
@@ -133,7 +133,7 @@ final class SessionRecordStoreTests: XCTestCase {
     ///    - they are `unsupportedSchema` and `corrupt` respectively — distinguishable, neither absent,
     ///      and neither rewritten or deleted
     func testFutureSchemaAndCorruptRecordsArePresentAndDistinct() throws {
-        let home = try SessionID.named("home")
+        let home = try AmplifyCognitoClientSessionID.named("home")
         keychain.put(StorageFixtures.futureSchemaRecord, workAccount)
         keychain.put(StorageFixtures.corruptRecord, store.sessionAccount(for: home))
 
@@ -209,7 +209,7 @@ final class SessionRecordStoreTests: XCTestCase {
         try store.write(StorageFixtures.signedIn(), for: work, expecting: nil)
         let intruder = keychain.recordStore(for: StorageFixtures.namespace)
         let intruderCommitted = Flag()
-        let sessionId: SessionID = work
+        let sessionId: AmplifyCognitoClientSessionID = work
         keychain.onceAfterReading(workAccount) {
             if (try? intruder.write(StorageFixtures.signedIn(credentials: "intruder"), for: sessionId, expecting: .generation(1)))?.didCommit == true {
                 intruderCommitted.raise()
@@ -236,7 +236,7 @@ final class SessionRecordStoreTests: XCTestCase {
         try store.write(StorageFixtures.signedIn(), for: work, expecting: nil)
         let intruder = keychain.recordStore(for: StorageFixtures.namespace)
         let intruderCommitted = Flag()
-        let sessionId: SessionID = work
+        let sessionId: AmplifyCognitoClientSessionID = work
         keychain.onceAfterReading(workAccount, occurrence: 2) {
             if (try? intruder.write(StorageFixtures.signedIn(credentials: "intruder"), for: sessionId, expecting: .generation(1)))?.didCommit == true {
                 intruderCommitted.raise()
@@ -258,7 +258,7 @@ final class SessionRecordStoreTests: XCTestCase {
     func testFirstWriteIsDiscardedWhenAnotherWriterAddsFirst() throws {
         let intruder = keychain.recordStore(for: StorageFixtures.namespace)
         let intruderCommitted = Flag()
-        let sessionId: SessionID = work
+        let sessionId: AmplifyCognitoClientSessionID = work
         keychain.onceAfterReading(workAccount, occurrence: 2) {
             if (try? intruder.write(StorageFixtures.signedIn(credentials: "intruder"), for: sessionId, expecting: nil))?.didCommit == true {
                 intruderCommitted.raise()
@@ -278,7 +278,7 @@ final class SessionRecordStoreTests: XCTestCase {
     /// - Then:
     ///    - both are discarded, and neither creates nor replaces anything
     func testWriteIsDiscardedWhenPresenceDiffersFromExpectation() throws {
-        let home = try SessionID.named("home")
+        let home = try AmplifyCognitoClientSessionID.named("home")
         try store.write(StorageFixtures.signedIn(), for: work, expecting: nil)
         keychain.resetLogs()
 
@@ -293,7 +293,7 @@ final class SessionRecordStoreTests: XCTestCase {
     /// - Then:
     ///    - both are discarded and the stored bytes are untouched
     func testWriteNeverOverwritesARecordItCannotRead() throws {
-        let home = try SessionID.named("home")
+        let home = try AmplifyCognitoClientSessionID.named("home")
         keychain.put(StorageFixtures.futureSchemaRecord, workAccount)
         keychain.put(StorageFixtures.corruptRecord, store.sessionAccount(for: home))
 
@@ -342,7 +342,7 @@ final class SessionRecordStoreTests: XCTestCase {
     /// - Then:
     ///    - its own challenge record is deleted and the other session's is not
     func testSignOutDeletesOnlyThisSessionsChallengeRecord() throws {
-        let home = try SessionID.named("home")
+        let home = try AmplifyCognitoClientSessionID.named("home")
         try store.write(StorageFixtures.signedIn(), for: work, expecting: nil)
         keychain.put(Data("challenge".utf8), store.challengeAccount(for: work))
         keychain.put(Data("challenge".utf8), store.challengeAccount(for: home))
@@ -387,7 +387,7 @@ final class SessionRecordStoreTests: XCTestCase {
         let sidecarAccount = SessionRecordKey.metaAccount(in: StorageFixtures.pools)
         let sidecar = try DefaultSessionMeta(lastWriteTimestamp: TestClock.start, label: "Home", username: nil, userId: nil).encoded()
         keychain.put(sidecar, sidecarAccount)
-        for sessionId in [work!, try SessionID.named("home")] {
+        for sessionId in [work!, try AmplifyCognitoClientSessionID.named("home")] {
             try store.write(StorageFixtures.signedIn(), for: sessionId, expecting: nil)
             _ = try store.read(sessionId)
             XCTAssertEqual(try store.signOut(sessionId), .signedOut)
@@ -408,7 +408,7 @@ final class SessionRecordStoreTests: XCTestCase {
     /// - Then:
     ///    - nothing is written: no row is invented, and a signed-out row is not rewritten
     func testSignOutWritesNothingWhenThereIsNothingToSignOut() throws {
-        let home = try SessionID.named("home")
+        let home = try AmplifyCognitoClientSessionID.named("home")
         try store.write(StorageFixtures.signedIn(), for: work, expecting: nil)
         XCTAssertEqual(try store.signOut(work), .signedOut)
         keychain.resetLogs()
@@ -432,7 +432,7 @@ final class SessionRecordStoreTests: XCTestCase {
     func testSignOutWinsARaceAndKeepsAConcurrentlySetLabel() throws {
         try store.write(StorageFixtures.signedIn(label: "Old"), for: work, expecting: nil)
         let intruder = keychain.recordStore(for: StorageFixtures.namespace)
-        let sessionId: SessionID = work
+        let sessionId: AmplifyCognitoClientSessionID = work
         keychain.onceAfterReading(workAccount) {
             _ = try? intruder.write(StorageFixtures.signedIn(label: "New"), for: sessionId, expecting: .generation(1))
         }
@@ -456,7 +456,7 @@ final class SessionRecordStoreTests: XCTestCase {
         try store.write(StorageFixtures.signedIn(username: "alice", credentials: "alice-tokens"), for: work, expecting: nil)
         keychain.put(Data("challenge".utf8), store.challengeAccount(for: work))
         let otherProcess = keychain.recordStore(for: StorageFixtures.namespace)
-        let sessionId: SessionID = work
+        let sessionId: AmplifyCognitoClientSessionID = work
         keychain.onceAfterReading(workAccount) {
             _ = try? otherProcess.write(StorageFixtures.signedIn(username: "bob", credentials: "bob-tokens"), for: sessionId, expecting: .generation(1))
         }
@@ -591,7 +591,7 @@ final class SessionRecordStoreTests: XCTestCase {
     func testSignOutDoesNotRecreateARecordPurgedConcurrently() throws {
         keychain.put(StorageFixtures.corruptRecord, workAccount)
         let purger = keychain.recordStore(for: StorageFixtures.namespace)
-        let sessionId: SessionID = work
+        let sessionId: AmplifyCognitoClientSessionID = work
         keychain.onceAfterReading(workAccount, occurrence: 2) {
             try? purger.purge(sessionId)
         }
@@ -615,7 +615,7 @@ final class SessionRecordStoreTests: XCTestCase {
             StorageFixtures.signedIn(label: "rival-\(envelope.generation)")
         }
         let purger = keychain.recordStore(for: StorageFixtures.namespace)
-        let sessionId: SessionID = work
+        let sessionId: AmplifyCognitoClientSessionID = work
         let purged = Flag()
         keychain.afterEveryRead(of: workAccount) {
             if rival.commits < rival.budget {
@@ -720,7 +720,7 @@ final class SessionRecordStoreTests: XCTestCase {
     /// - Then:
     ///    - its record and challenge record are gone, and the other session is untouched
     func testPurgeRemovesTheRowAndChallengeRecord() throws {
-        let home = try SessionID.named("home")
+        let home = try AmplifyCognitoClientSessionID.named("home")
         try store.write(StorageFixtures.signedIn(), for: work, expecting: nil)
         try store.write(StorageFixtures.signedIn(), for: home, expecting: nil)
         keychain.put(Data("challenge".utf8), store.challengeAccount(for: work))
@@ -985,14 +985,14 @@ private final class BytesRival: @unchecked Sendable {
 private final class RivalWriter: @unchecked Sendable {
     let budget: Int
     private let store: SessionRecordStore
-    private let sessionId: SessionID
+    private let sessionId: AmplifyCognitoClientSessionID
     private let change: @Sendable (VersionedSessionRecord) -> SessionRecord
     private let lock = NSLock()
     private var moving = false
     private var committed: UInt64 = 0
     private var commitCount = 0
 
-    init(store: SessionRecordStore, sessionId: SessionID, budget: Int, change: @escaping @Sendable (VersionedSessionRecord) -> SessionRecord) {
+    init(store: SessionRecordStore, sessionId: AmplifyCognitoClientSessionID, budget: Int, change: @escaping @Sendable (VersionedSessionRecord) -> SessionRecord) {
         self.store = store
         self.sessionId = sessionId
         self.budget = budget

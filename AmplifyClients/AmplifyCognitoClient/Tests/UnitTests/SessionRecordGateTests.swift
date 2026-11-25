@@ -178,8 +178,8 @@ final class SessionRecordGateTests: XCTestCase {
     ///    - B's body runs to completion while A is still held
     func testHoldingOneRecordDoesNotDelayAnother() async throws {
         let gates = SessionRecordGates()
-        let gateA = gates.gate(for: StorageFixtures.namespace, sessionId: try SessionID.named("a"))
-        let gateB = gates.gate(for: StorageFixtures.namespace, sessionId: try SessionID.named("b"))
+        let gateA = gates.gate(for: StorageFixtures.namespace, sessionId: try AmplifyCognitoClientSessionID.named("a"))
+        let gateB = gates.gate(for: StorageFixtures.namespace, sessionId: try AmplifyCognitoClientSessionID.named("b"))
         let latch = Gate()
         let holder = hold(gateA, until: latch)
         await latch.waitForArrivals(1)
@@ -202,7 +202,7 @@ final class SessionRecordGateTests: XCTestCase {
     ///    - the table holds gates weakly and returns to empty once nobody holds them
     func testGateTableSharesPerRecordAndReturnsToBaseline() throws {
         let gates = SessionRecordGates()
-        let work = try SessionID.named("work")
+        let work = try AmplifyCognitoClientSessionID.named("work")
         let shared = SessionStorageNamespace(pools: StorageFixtures.pools, accessGroup: "group.shared")
         var first: SessionRecordGate? = gates.gate(for: StorageFixtures.namespace, sessionId: work)
         var second: SessionRecordGate? = gates.gate(for: StorageFixtures.namespace, sessionId: work)
@@ -259,7 +259,7 @@ final class SessionRecordGateTests: XCTestCase {
     ///    - once the third is released, the body runs holding all five, and afterwards none is held
     func testHoldingTakesSeveralGatesInTheGlobalOrder() async throws {
         let gates = SessionRecordGates()
-        let work = try SessionID.named("work")
+        let work = try AmplifyCognitoClientSessionID.named("work")
         let namespaces = (1 ... 5).map {
             SessionStorageNamespace(pools: .userPool("us-east-1_Pool\($0)"), accessGroup: nil)
         }

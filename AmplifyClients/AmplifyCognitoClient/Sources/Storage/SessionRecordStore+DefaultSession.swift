@@ -591,7 +591,7 @@ extension SessionRecordStore {
         isUserKind(summary.kind) ? summary.userId : nil
     }
 
-    static func isUserKind(_ kind: SessionKind) -> Bool {
+    static func isUserKind(_ kind: AmplifyCognitoClientSessionKind) -> Bool {
         kind == .userPoolOnly || kind == .userPoolAndIdentityPool
     }
 

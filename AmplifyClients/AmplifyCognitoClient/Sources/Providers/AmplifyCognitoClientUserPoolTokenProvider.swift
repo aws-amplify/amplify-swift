@@ -10,7 +10,7 @@ import Foundation
 
 /// Vends one session's user pool access token.
 ///
-/// The same contract as `CognitoCredentialsProvider`: bound to its session for life, fails rather than
+/// The same contract as `AmplifyCognitoClientCredentialsProvider`: bound to its session for life, fails rather than
 /// falls back (a signed-out or guest session throws `notSignedIn`), holds no token of its own, shares
 /// the session's one refresh, and keeps its session alive. A federated session has no user pool tokens,
 /// so it throws `notConfigured`. Failures are `CredentialsError`; `CancellationError` passes through
@@ -19,7 +19,7 @@ import Foundation
 /// Conforms to AmplifyFoundation's `AccessTokenProvider`, so a client that needs tokens can take
 /// `any AccessTokenProvider` without importing this module.
 @_spi(AmplifyExperimental)
-public struct CognitoUserPoolTokenProvider: AccessTokenProvider {
+public struct AmplifyCognitoClientUserPoolTokenProvider: AccessTokenProvider {
 
     /// Strong: a provider keeps its session alive.
     let core: SessionCore
@@ -30,7 +30,7 @@ public struct CognitoUserPoolTokenProvider: AccessTokenProvider {
 
     /// The session this provider resolves. Its `label` is that of the handle that built the session, which may not
     /// be the handle this provider came from.
-    public var sessionId: SessionID {
+    public var sessionId: AmplifyCognitoClientSessionID {
         core.sessionId
     }
 

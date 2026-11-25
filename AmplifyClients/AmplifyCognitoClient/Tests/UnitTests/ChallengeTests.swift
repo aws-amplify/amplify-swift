@@ -34,7 +34,7 @@ final class ChallengeTests: XCTestCase {
     }
 
     private func challengedClient(
-        _ sessionId: SessionID,
+        _ sessionId: AmplifyCognitoClientSessionID,
         step: AmplifyCognitoClientSignInStep = .confirmSignInWithTOTPCode
     ) async throws -> (AmplifyCognitoClient, FakeSessionEngine) {
         let client = try harness.client(sessionId)

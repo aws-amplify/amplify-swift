@@ -215,7 +215,7 @@ enum InteropEnvironment {
         let hex = UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(12).lowercased()
         let user = InteropUser(username: "ccit-\(hex)", password: "Ccit-\(UUID().uuidString)-1!", outputsResource: resource)
         let configuration = try AmplifyCognitoClientConfiguration(from: resource, bundle: outputsBundle(resource))
-        let sessionId = try SessionID.named("interop-signup-\(hex.prefix(8))")
+        let sessionId = try AmplifyCognitoClientSessionID.named("interop-signup-\(hex.prefix(8))")
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
             let result: AmplifyCognitoClientSignUpResult
@@ -254,7 +254,7 @@ enum InteropEnvironment {
             from: user.outputsResource,
             bundle: outputsBundle(user.outputsResource)
         ),
-              let sessionId = try? SessionID.named("interop-cleanup-\(UUID().uuidString.prefix(8).lowercased())") else {
+              let sessionId = try? AmplifyCognitoClientSessionID.named("interop-cleanup-\(UUID().uuidString.prefix(8).lowercased())") else {
             return
         }
         do {
@@ -313,7 +313,7 @@ enum InteropEnvironment {
 
     /// Waits until the registry holds no live session for `sessionId`, as the client target's
     /// `SessionCleanup.waitUntilReleased` does. The bound only stops a leaked handle from hanging the run.
-    static func waitUntilReleased(_ sessionId: SessionID, timeout: TimeInterval = 10) async throws {
+    static func waitUntilReleased(_ sessionId: AmplifyCognitoClientSessionID, timeout: TimeInterval = 10) async throws {
         let deadline = Date().addingTimeInterval(timeout)
         while SessionCoreRegistry.shared.liveSession(for: sessionId) != nil {
             guard Date() < deadline else {
@@ -416,7 +416,7 @@ struct InteropError: Error, CustomStringConvertible {
     }
 }
 
-extension AmplifyCognitoClientSession {
+extension AmplifyCognitoClientAuthSession {
 
     /// The user pool tokens, for a test that expects a signed-in user; throws when the session holds none.
     func requireUserPoolTokens() throws -> AmplifyCognitoClientUserPoolTokens {

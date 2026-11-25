@@ -57,7 +57,7 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 /// A named session's credentials are saved in the keychain under its session ID, scoped to the configuration's
 /// pools (the user pool ID, the identity pool ID, or both) and to the keychain access group
 /// (`Options.accessGroup`). `.default`'s are the Auth plugin's own saved login, under the plugin's key for the same
-/// pools and access group, with no session ID in it (see `SessionID.default`). Constructing a client restores the
+/// pools and access group, with no session ID in it (see `AmplifyCognitoClientSessionID.default`). Constructing a client restores the
 /// session saved there, in this launch or a later one. `storedSessions(configuration:accessGroup:includingSignedOut:)`
 /// lists the sessions saved under one configuration and access group, for an account picker. Signing out keeps a
 /// session's row, with its label, until it is purged.
@@ -68,7 +68,7 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 /// configuration reads a different set of them, and `storedSessions` lists only that configuration's. When
 /// the pools change, a named session is carried forward the first time it is restored, as the plugin carries its
 /// record, from the configuration this app last kept that session under (`.default`, the plugin's own record,
-/// follows the plugin's rule instead: see `SessionID.default`):
+/// follows the plugin's rule instead: see `AmplifyCognitoClientSessionID.default`):
 ///
 /// - an identity pool only, then a user pool added beside it: the guest or federated identity, as it was;
 /// - a user pool only, then an identity pool added: signed in, with the identity fetched on first use;
@@ -99,11 +99,11 @@ public final class AmplifyCognitoClient: Sendable {
         /// only one that uses `AWSCognitoAuthPlugin`'s saved login: it reads and writes the plugin's own record.
         ///
         /// Running the plugin and this client side by side over `.default` in one app is not supported: each keeps
-        /// its tokens in memory. See `SessionID.default`.
+        /// its tokens in memory. See `AmplifyCognitoClientSessionID.default`.
         ///
-        /// An ID created with a label (`SessionID.named(_:label:)`, `SessionID.new(label:)`) labels the session's
-        /// row at sign-in, with no keychain call when the client is built. See `SessionID.label`.
-        public let sessionId: SessionID
+        /// An ID created with a label (`AmplifyCognitoClientSessionID.named(_:label:)`, `AmplifyCognitoClientSessionID.new(label:)`) labels the session's
+        /// row at sign-in, with no keychain call when the client is built. See `AmplifyCognitoClientSessionID.label`.
+        public let sessionId: AmplifyCognitoClientSessionID
 
         /// The keychain access group to store the session in, to share it between apps and extensions,
         /// as the plugin does today. Part of which record the session reads, so every handle on a
@@ -140,7 +140,7 @@ public final class AmplifyCognitoClient: Sendable {
         ///   - accessGroup: The keychain access group to store the session in; the app's default if `nil`.
         ///   - configureUserPoolClient: Customizes the user pool SDK client's configuration.
         public init(
-            sessionId: SessionID = .default,
+            sessionId: AmplifyCognitoClientSessionID = .default,
             accessGroup: String? = nil,
             configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider? = nil
         ) {
@@ -151,8 +151,8 @@ public final class AmplifyCognitoClient: Sendable {
     }
 
     /// The session this handle is bound to, as given: its `label` is this handle's own, which the session uses only
-    /// if this handle built it (`SessionID.label`).
-    public let sessionId: SessionID
+    /// if this handle built it (`AmplifyCognitoClientSessionID.label`).
+    public let sessionId: AmplifyCognitoClientSessionID
 
     /// The session. Strong: a handle keeps its session alive.
     let core: SessionCore
@@ -161,9 +161,9 @@ public final class AmplifyCognitoClient: Sendable {
     ///
     /// Switching configuration under one **named** session ID (release the handles of one, then build one with
     /// another) keeps each configuration's saved record: switching back finds that configuration's session as it
-    /// was, unless it was signed out there. See `SessionID`. `.default`, the default `options.sessionId`, follows
+    /// was, unless it was signed out there. See `AmplifyCognitoClientSessionID`. `.default`, the default `options.sessionId`, follows
     /// the Auth plugin's rule instead and keeps one backend's login at a time: a move to another user pool deletes
-    /// the old login, so switching back finds it signed out. See `SessionID.default`, and use named sessions to
+    /// the old login, so switching back finds it signed out. See `AmplifyCognitoClientSessionID.default`, and use named sessions to
     /// switch between backends.
     ///
     /// - Throws: `AmplifyCognitoClientError.sessionConfigurationMismatch` if that session is already live in this
@@ -240,12 +240,12 @@ public final class AmplifyCognitoClient: Sendable {
     /// Passing it to a client in the `AmplifyClients` family is how AWS calls are made as this session.
     /// Amplify's category plugins (Storage, Analytics, API and the rest) cannot take it: they always use the
     /// Auth plugin's session in `Amplify.Auth`, whichever session this is.
-    public var credentialsProvider: CognitoCredentialsProvider {
-        CognitoCredentialsProvider(core: core)
+    public var credentialsProvider: AmplifyCognitoClientCredentialsProvider {
+        AmplifyCognitoClientCredentialsProvider(core: core)
     }
 
     /// This session's user pool access token. Bound to this session for life, and keeps it alive.
-    public var userPoolTokenProvider: CognitoUserPoolTokenProvider {
-        CognitoUserPoolTokenProvider(core: core)
+    public var userPoolTokenProvider: AmplifyCognitoClientUserPoolTokenProvider {
+        AmplifyCognitoClientUserPoolTokenProvider(core: core)
     }
 }

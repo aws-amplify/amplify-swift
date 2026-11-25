@@ -86,7 +86,7 @@ final class SignOutTests: ClientIntegrationTestCase {
         XCTAssertSignOutComplete(result)
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         let row = try XCTUnwrap(listed.first { $0.sessionId == sessionId }, "the signed-out row is kept")
-        XCTAssertEqual(row.kind, SessionKind.signedOut)
+        XCTAssertEqual(row.kind, AmplifyCognitoClientSessionKind.signedOut)
         XCTAssertState(row.state, .signedOut)
         XCTAssertTrue(row.user == user, "the signed-out row names alice")
         let visible = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
@@ -179,7 +179,7 @@ final class SignOutTests: ClientIntegrationTestCase {
     /// Signs alice in on `sessionId` through a client that is released when this returns, and returns
     /// the session's refresh token and device key (nil on a pool that tracks no devices), and the signed-in user.
     private func signInAndDrop(
-        _ sessionId: SessionID
+        _ sessionId: AmplifyCognitoClientSessionID
     ) async throws -> (refreshToken: String, deviceKey: String?, user: AmplifyCognitoClientUser) {
         let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
         _ = try await client.signIn(username: alice.username, password: alice.password)

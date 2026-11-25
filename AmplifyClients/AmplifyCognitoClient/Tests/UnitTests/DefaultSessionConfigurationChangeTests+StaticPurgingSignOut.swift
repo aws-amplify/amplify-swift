@@ -46,6 +46,6 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertNil(harness.keychain.value(account(ChangeConfigs.both)))
         XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.userPoolOnly)), PluginRecordSummary.signedOutPayload)
         XCTAssertEqual(harness.keychain.recordedPluginConfiguration(), AuthConfiguration(client: ChangeConfigs.userPoolOnly))
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)])
+        XCTAssertEqual(rows, [AmplifyCognitoClientStoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)])
     }
 }

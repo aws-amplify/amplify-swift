@@ -557,7 +557,7 @@ final class SessionCopyForwardTests: XCTestCase {
 
             if call == "fetchAuthSession" {
                 let session = try await client.fetchAuthSession()
-                XCTAssertEqual(session, AmplifyCognitoClientSession(
+                XCTAssertEqual(session, AmplifyCognitoClientAuthSession(
                     identityId: "us-east-1:guest",
                     awsCredentials: AmplifyCognitoClientAWSCredentials(FakePayload.guest().awsCredentials)
                 ), call)
@@ -1277,7 +1277,7 @@ final class SessionCopyForwardTests: XCTestCase {
     /// - Then: before the call, the memory blocks alice and holds the reused token; after it, it does neither
     func testEveryEndOfTheSessionForgetsTheRecordsMemory() async throws {
         let namespace = SessionStorageNamespace(pools: ClientFixtures.configuration.poolNamespace, accessGroup: nil)
-        let ends: [(String, @Sendable (AmplifyCognitoClient?, ClientHarness, SessionID) async throws -> Void)] = [
+        let ends: [(String, @Sendable (AmplifyCognitoClient?, ClientHarness, AmplifyCognitoClientSessionID) async throws -> Void)] = [
             ("sign-out", { client, _, _ in _ = await client?.signOut() }),
             ("purge through a live client", { _, harness, work in
                 try await AmplifyCognitoClient.purgeStoredSession(
@@ -1480,7 +1480,7 @@ final class SessionCopyForwardTests: XCTestCase {
             dependencies: harness.dependencies
         )
 
-        XCTAssertEqual(listed, [StoredSession(sessionId: work, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
+        XCTAssertEqual(listed, [AmplifyCognitoClientStoredSession(sessionId: work, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
         XCTAssertEqual(try harness.store().read(work), .absent)
     }
 

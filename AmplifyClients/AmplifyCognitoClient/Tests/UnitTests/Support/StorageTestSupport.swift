@@ -83,7 +83,7 @@ final class TestKeychain: @unchecked Sendable {
     @Sendable
     static func summarizeSharedRecord(_ payload: Data) -> PluginRecordSummary {
         let summary = PluginRecordSummary.peek(payload)
-        guard !summary.isRecognised, let fake = FakePayload.decode(payload), let kind = SessionKind(storedValue: fake.kind) else {
+        guard !summary.isRecognised, let fake = FakePayload.decode(payload), let kind = AmplifyCognitoClientSessionKind(storedValue: fake.kind) else {
             return summary
         }
         let hasUser = kind == .userPoolOnly || kind == .userPoolAndIdentityPool
@@ -100,7 +100,7 @@ final class TestKeychain: @unchecked Sendable {
     /// them. Any other payload is the engine's format, decoded as the live store decodes it.
     @Sendable
     static func describeCredentials(_ payload: Data) throws -> CredentialSummary {
-        guard let fake = FakePayload.decode(payload), let kind = SessionKind(storedValue: fake.kind) else {
+        guard let fake = FakePayload.decode(payload), let kind = AmplifyCognitoClientSessionKind(storedValue: fake.kind) else {
             return try CredentialSummary(CredentialSlot.decode(payload))
         }
         return CredentialSummary(kind: kind, username: fake.username, userId: fake.userId, identityId: fake.identityId)
@@ -117,10 +117,10 @@ final class TestKeychain: @unchecked Sendable {
         guard var fake = FakePayload.decode(payload) else {
             return try CredentialSlot.userPoolTokensOnly(payload)
         }
-        guard fake.kind == SessionKind.userPoolOnly.storedValue || fake.kind == SessionKind.userPoolAndIdentityPool.storedValue else {
+        guard fake.kind == AmplifyCognitoClientSessionKind.userPoolOnly.storedValue || fake.kind == AmplifyCognitoClientSessionKind.userPoolAndIdentityPool.storedValue else {
             return nil
         }
-        fake.kind = SessionKind.userPoolOnly.storedValue
+        fake.kind = AmplifyCognitoClientSessionKind.userPoolOnly.storedValue
         fake.aws = false
         fake.identityId = nil
         return fake.data
@@ -142,7 +142,7 @@ final class TestKeychain: @unchecked Sendable {
         guard let fake = FakePayload.decode(payload) else {
             return CredentialSlot.refreshToken(payload)
         }
-        guard fake.kind == SessionKind.userPoolOnly.storedValue || fake.kind == SessionKind.userPoolAndIdentityPool.storedValue else {
+        guard fake.kind == AmplifyCognitoClientSessionKind.userPoolOnly.storedValue || fake.kind == AmplifyCognitoClientSessionKind.userPoolAndIdentityPool.storedValue else {
             return nil
         }
         return fake.refreshToken ?? "refresh-\(fake.username ?? "none")"
@@ -156,7 +156,7 @@ final class TestKeychain: @unchecked Sendable {
         guard let fake = FakePayload.decode(payload) else {
             return CredentialSlot.tokensIssuedAt(payload)
         }
-        guard fake.kind == SessionKind.userPoolOnly.storedValue || fake.kind == SessionKind.userPoolAndIdentityPool.storedValue else {
+        guard fake.kind == AmplifyCognitoClientSessionKind.userPoolOnly.storedValue || fake.kind == AmplifyCognitoClientSessionKind.userPoolAndIdentityPool.storedValue else {
             return nil
         }
         return Date(timeIntervalSince1970: TimeInterval(fake.version))

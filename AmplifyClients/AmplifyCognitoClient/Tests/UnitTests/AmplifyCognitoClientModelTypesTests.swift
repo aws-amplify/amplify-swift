@@ -325,7 +325,7 @@ final class AmplifyCognitoClientModelTypesTests: XCTestCase {
     // MARK: - AmplifyCognitoClientSignInStep equality
 
     /// Amplify core's `AuthSignInStep` synthesises `Equatable`, so equality looks at payloads. The
-    /// mirror must do the same, or `AuthSessionState.awaitingChallenge` would treat two different
+    /// mirror must do the same, or `AmplifyCognitoClientSessionState.awaitingChallenge` would treat two different
     /// challenges as one.
     ///
     /// - Given: pairs of sign-in steps that share a case but differ in payload

@@ -18,7 +18,7 @@ import XCTest
 final class ChallengeResumeTests: ClientMFATestCase {
 
     /// A fresh U-DEF user with TOTP enrolled and enabled, signed out, and the session ID the test signs in on.
-    private func totpUser(_ tag: String) async throws -> (user: FreshUser, secret: TOTPSecret, sessionId: SessionID) {
+    private func totpUser(_ tag: String) async throws -> (user: FreshUser, secret: TOTPSecret, sessionId: AmplifyCognitoClientSessionID) {
         let (client, user) = try await signedInFreshUser(tag)
         let secret = try await enrollTOTP(client, user)
         try await client.updateMFAPreference(sms: nil, totp: .enabled)
@@ -27,20 +27,20 @@ final class ChallengeResumeTests: ClientMFATestCase {
     }
 
     /// The session's challenge record, read from the real keychain.
-    private func challengeRecord(_ sessionId: SessionID, pool: SandboxPool = .standard) throws -> SessionRecordStore.ChallengeRead {
+    private func challengeRecord(_ sessionId: AmplifyCognitoClientSessionID, pool: SandboxPool = .standard) throws -> SessionRecordStore.ChallengeRead {
         let configuration = try IntegrationTestEnvironment.configuration(pool)
         let store = SessionRecordStore(namespace: SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: nil))
         return try store.readChallenge(sessionId)
     }
 
     /// The session's row in the default listing, read from the real keychain.
-    private func storedRow(_ sessionId: SessionID, pool: SandboxPool = .standard) async throws -> StoredSession {
+    private func storedRow(_ sessionId: AmplifyCognitoClientSessionID, pool: SandboxPool = .standard) async throws -> AmplifyCognitoClientStoredSession {
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: IntegrationTestEnvironment.configuration(pool))
         return try XCTUnwrap(listed.first { $0.sessionId == sessionId }, "the session is not listed")
     }
 
     /// "The app was closed": waits until no client holds `sessionId`, then builds a new one over the same keychain.
-    private func relaunch(_ sessionId: SessionID, pool: SandboxPool = .standard) async throws -> AmplifyCognitoClient {
+    private func relaunch(_ sessionId: AmplifyCognitoClientSessionID, pool: SandboxPool = .standard) async throws -> AmplifyCognitoClient {
         try await SessionCleanup.waitUntilReleased([sessionId])
         return try AmplifyCognitoClient(
             configuration: IntegrationTestEnvironment.configuration(pool),
@@ -51,7 +51,7 @@ final class ChallengeResumeTests: ClientMFATestCase {
     /// Signs `user` in on a client for `sessionId`, which is released when this returns: the app closed mid-sign-in.
     private func signInThenClose(
         _ user: FreshUser,
-        on sessionId: SessionID,
+        on sessionId: AmplifyCognitoClientSessionID,
         pool: SandboxPool = .standard
     ) async throws -> AmplifyCognitoClientSignInStep {
         let client = try AmplifyCognitoClient(
@@ -87,7 +87,7 @@ final class ChallengeResumeTests: ClientMFATestCase {
         }
         let waiting = try await storedRow(sessionId)
         XCTAssertState(waiting.state, .awaitingChallenge(.confirmSignInWithTOTPCode), "the waiting session's row")
-        XCTAssertEqual(waiting.kind, SessionKind.signedOut)
+        XCTAssertEqual(waiting.kind, AmplifyCognitoClientSessionKind.signedOut)
         let client = try await relaunch(sessionId)
         let resumed = await client.currentSessionState()
         XCTAssertState(resumed, .awaitingChallenge(.confirmSignInWithTOTPCode))

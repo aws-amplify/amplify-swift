@@ -234,7 +234,7 @@ extension SignOutOptionsTests {
 
     private func signOutStored(
         _ options: AmplifyCognitoClientSignOutOptions,
-        sessionId: SessionID = ClientFixtures.id("work")
+        sessionId: AmplifyCognitoClientSessionID = ClientFixtures.id("work")
     ) async -> AmplifyCognitoClientSignOutResult {
         await AmplifyCognitoClient.signOutStoredSession(
             sessionId: sessionId,

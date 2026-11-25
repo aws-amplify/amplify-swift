@@ -10,7 +10,7 @@ import Security
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// The projection from a stored record to `AuthSessionState`, and `currentSessionState()`.
+/// The projection from a stored record to `AmplifyCognitoClientSessionState`, and `currentSessionState()`.
 ///
 /// There is deliberately no `isSignedIn` in the API: it would answer `false` for `.guest` and for
 /// `.unavailable`, conflating "no usable credentials" with "could not look". These tests switch over
@@ -30,16 +30,16 @@ final class SessionStateProjectionTests: XCTestCase {
         harness = nil
     }
 
-    private func state(of sessionId: SessionID) async throws -> AuthSessionState {
+    private func state(of sessionId: AmplifyCognitoClientSessionID) async throws -> AmplifyCognitoClientSessionState {
         try await harness.client(sessionId).currentSessionState()
     }
 
-    private func put(_ record: SessionRecord, for sessionId: SessionID) throws {
+    private func put(_ record: SessionRecord, for sessionId: AmplifyCognitoClientSessionID) throws {
         try harness.store().write(record, for: sessionId, expecting: nil)
         harness.keychain.resetLogs()
     }
 
-    private func assertFailed(_ state: AuthSessionState, mentioning fragment: String, file: StaticString = #filePath, line: UInt = #line) {
+    private func assertFailed(_ state: AmplifyCognitoClientSessionState, mentioning fragment: String, file: StaticString = #filePath, line: UInt = #line) {
         guard case .failed(let error) = state else {
             return XCTFail("expected .failed, got \(state)", file: file, line: line)
         }
@@ -230,7 +230,7 @@ final class SessionStateProjectionTests: XCTestCase {
     func testProjectionTable() throws {
         let engine = try harness.client(work).core.engine
         let signedIn = FakePayload.signedIn("alice").record()
-        let rows: [(SessionSnapshot, AuthSessionState)] = [
+        let rows: [(SessionSnapshot, AmplifyCognitoClientSessionState)] = [
             (.absent, .signedOut),
             (SessionSnapshot(version: .generation(1), source: .own(.signedOut(label: nil, username: nil))), .signedOut),
             (SessionSnapshot(version: .generation(1), source: .own(signedIn)), .signedIn(alice)),

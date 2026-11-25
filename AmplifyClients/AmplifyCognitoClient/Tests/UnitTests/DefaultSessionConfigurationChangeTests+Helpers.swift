@@ -67,7 +67,7 @@ extension DefaultSessionConfigurationChangeTests {
         return payload
     }
 
-    func listed(_ configuration: AmplifyCognitoClientConfiguration, includingSignedOut: Bool = false) async throws -> [StoredSession] {
+    func listed(_ configuration: AmplifyCognitoClientConfiguration, includingSignedOut: Bool = false) async throws -> [AmplifyCognitoClientStoredSession] {
         try await AmplifyCognitoClient.storedSessions(
             configuration: configuration,
             accessGroup: nil,
@@ -121,7 +121,7 @@ extension DefaultSessionConfigurationChangeTests {
 
     // MARK: The client
 
-    func makeClient(_ configuration: AmplifyCognitoClientConfiguration, _ sessionId: SessionID = .default) -> AmplifyCognitoClient {
+    func makeClient(_ configuration: AmplifyCognitoClientConfiguration, _ sessionId: AmplifyCognitoClientSessionID = .default) -> AmplifyCognitoClient {
         do {
             return try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId), dependencies: dependencies)
         } catch {

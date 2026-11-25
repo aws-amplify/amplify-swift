@@ -44,8 +44,8 @@ extension AmplifyCognitoClientError {
 
     /// `browserBusy`, naming `holder` so an app can tell the user which sign-in to finish first.
     static func browserBusy(
-        heldBy holder: SessionID,
-        requestedBy requester: SessionID,
+        heldBy holder: AmplifyCognitoClientSessionID,
+        requestedBy requester: AmplifyCognitoClientSessionID,
         reason: BrowserBusyReason
     ) -> AmplifyCognitoClientError {
         switch reason {
@@ -99,7 +99,7 @@ extension AmplifyCognitoClientError {
     }
 
     /// `browserBusy` with the reason inferred: the holder itself asking, or another session.
-    static func browserBusy(heldBy holder: SessionID, requestedBy requester: SessionID) -> AmplifyCognitoClientError {
+    static func browserBusy(heldBy holder: AmplifyCognitoClientSessionID, requestedBy requester: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         browserBusy(
             heldBy: holder,
             requestedBy: requester,

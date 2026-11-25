@@ -1088,7 +1088,7 @@ final class CredentialProviderTests: XCTestCase {
     func testProviderOutlivingEveryHandleKeepsTheSessionAlive() async throws {
         try harness.signIn(work, .signedIn("alice"))
         var client: AmplifyCognitoClient? = try harness.client(work)
-        var provider: CognitoCredentialsProvider? = client?.credentialsProvider
+        var provider: AmplifyCognitoClientCredentialsProvider? = client?.credentialsProvider
         weak let probe = client?.core
 
         client = nil

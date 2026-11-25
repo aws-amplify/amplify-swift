@@ -306,7 +306,7 @@ final class SignOutResultShapeTests: XCTestCase {
 
     // MARK: Helpers
 
-    func signOutStored(_ sessionId: SessionID) async -> AmplifyCognitoClientSignOutResult {
+    func signOutStored(_ sessionId: AmplifyCognitoClientSessionID) async -> AmplifyCognitoClientSignOutResult {
         await AmplifyCognitoClient.signOutStoredSession(
             sessionId: sessionId,
             configuration: ClientFixtures.configuration,

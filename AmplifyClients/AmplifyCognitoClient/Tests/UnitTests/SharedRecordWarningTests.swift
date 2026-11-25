@@ -433,7 +433,7 @@ final class SharedRecordWarningTests: XCTestCase {
         )
         XCTAssertEqual(logged.level, .warn, file: file, line: line)
         XCTAssertEqual(logged.name, Self.category, file: file, line: line)
-        for identifier in identifiers + [SessionID.default.stringValue, "amplify."] {
+        for identifier in identifiers + [AmplifyCognitoClientSessionID.default.stringValue, "amplify."] {
             XCTAssertFalse(logged.content.contains(identifier), "The warning names \(identifier)", file: file, line: line)
         }
     }
@@ -541,7 +541,7 @@ final class SharedRecordWarningTests: XCTestCase {
         return dependencies
     }
 
-    private func makeClient(_ sessionId: SessionID = .default) throws -> AmplifyCognitoClient {
+    private func makeClient(_ sessionId: AmplifyCognitoClientSessionID = .default) throws -> AmplifyCognitoClient {
         try AmplifyCognitoClient(
             configuration: ClientFixtures.configuration,
             options: .init(sessionId: sessionId),

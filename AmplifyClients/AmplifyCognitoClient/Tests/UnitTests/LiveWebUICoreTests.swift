@@ -52,7 +52,7 @@ final class LiveWebUICoreTests: XCTestCase {
 
     /// A client whose session core runs the live engine.
     private func client(
-        _ sessionId: SessionID,
+        _ sessionId: AmplifyCognitoClientSessionID,
         configuration: AmplifyCognitoClientConfiguration = HostedUIFixtures.configuration
     ) throws -> AmplifyCognitoClient {
         let engine = try live.engine()
@@ -251,8 +251,8 @@ final class LiveWebUICoreTests: XCTestCase {
 
     /// Signs `sessionId` in through the hosted UI, expecting the identity check to refuse the response.
     private func assertRefusalRevokesTheIssuedTokenOnce(
-        _ sessionId: SessionID,
-        options: WebUIOptions = WebUIOptions(),
+        _ sessionId: AmplifyCognitoClientSessionID,
+        options: AmplifyCognitoClientWebUIOptions = AmplifyCognitoClientWebUIOptions(),
         expecting kind: AmplifyCognitoClientError.Kind,
         suggesting suggestion: String? = nil,
         _ context: String,
@@ -287,7 +287,7 @@ final class LiveWebUICoreTests: XCTestCase {
         let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
         try await assertRefusalRevokesTheIssuedTokenOnce(
             ClientFixtures.id("expects-bob"),
-            options: WebUIOptions(identityExpectation: .matches("bob")),
+            options: AmplifyCognitoClientWebUIOptions(identityExpectation: .matches("bob")),
             expecting: .unexpectedIdentity(expected: "bob", returned: alice),
             suggesting: HostedUIIdentityMismatch.recoverySuggestion,
             ".matches(\"bob\")"
@@ -296,7 +296,7 @@ final class LiveWebUICoreTests: XCTestCase {
         _ = try harness.signIn(ClientFixtures.id("home"), .signedIn("alice"))
         try await assertRefusalRevokesTheIssuedTokenOnce(
             ClientFixtures.id("distinct"),
-            options: WebUIOptions(identityExpectation: .distinctFromOtherSessions),
+            options: AmplifyCognitoClientWebUIOptions(identityExpectation: .distinctFromOtherSessions),
             expecting: .unexpectedIdentity(expected: nil, returned: alice),
             suggesting: HostedUIIdentityMismatch.recoverySuggestion,
             ".distinctFromOtherSessions"
@@ -353,7 +353,7 @@ final class LiveWebUICoreTests: XCTestCase {
     private func signedInSharingCookies() async throws -> AmplifyCognitoClient {
         let client = try client(work)
         let window = await window
-        _ = try await client.signInWithWebUI(presentationAnchor: window, options: WebUIOptions(prefersEphemeralSession: false))
+        _ = try await client.signInWithWebUI(presentationAnchor: window, options: AmplifyCognitoClientWebUIOptions(prefersEphemeralSession: false))
         live.cognito.clearCalls()
         return client
     }
@@ -489,7 +489,7 @@ final class LiveWebUICoreTests: XCTestCase {
         live.scriptSignOut()
         let client = try client(work, configuration: configuration)
         let window = await window
-        _ = try await client.signInWithWebUI(presentationAnchor: window, options: WebUIOptions(prefersEphemeralSession: false))
+        _ = try await client.signInWithWebUI(presentationAnchor: window, options: AmplifyCognitoClientWebUIOptions(prefersEphemeralSession: false))
         live.cognito.clearCalls()
 
         let result = await client.signOutWithWebUI(presentationAnchor: window)

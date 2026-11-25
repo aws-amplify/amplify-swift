@@ -26,7 +26,7 @@ final class ClientHarness: @unchecked Sendable {
     var sheetLock = SystemSheetLock()
     /// Runs inside a sign-out's logout-page lease body, once it has stopped the passkey registrations
     /// (`SessionCoreDependencies.afterLogoutStop`). A test may replace it before it makes its clients.
-    var afterLogoutStop: @Sendable (SessionID) async -> Void = { _ in }
+    var afterLogoutStop: @Sendable (AmplifyCognitoClientSessionID) async -> Void = { _ in }
     #endif
 
     // `@unchecked Sendable`: the properties below are only touched while holding `lock`.
@@ -124,7 +124,7 @@ final class ClientHarness: @unchecked Sendable {
     // MARK: Construction
 
     func client(
-        _ sessionId: SessionID = .default,
+        _ sessionId: AmplifyCognitoClientSessionID = .default,
         configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration,
         accessGroup: String? = nil,
         configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider? = nil
@@ -143,7 +143,7 @@ final class ClientHarness: @unchecked Sendable {
     }
 
     /// The most recently made engine for `sessionId`.
-    func engine(for sessionId: SessionID) -> FakeSessionEngine? {
+    func engine(for sessionId: AmplifyCognitoClientSessionID) -> FakeSessionEngine? {
         engines.last { $0.context.sessionId == sessionId }
     }
 
@@ -158,7 +158,7 @@ final class ClientHarness: @unchecked Sendable {
     /// Stores `payload` as a signed-in record for `sessionId`, then clears the keychain logs.
     @discardableResult
     func signIn(
-        _ sessionId: SessionID,
+        _ sessionId: AmplifyCognitoClientSessionID,
         _ payload: FakePayload = .signedIn(),
         label: String? = nil,
         accessGroup: String? = nil
@@ -172,7 +172,7 @@ final class ClientHarness: @unchecked Sendable {
     }
 
     /// The stored record for `sessionId`, if readable.
-    func storedRecord(_ sessionId: SessionID, accessGroup: String? = nil) throws -> SessionRecord? {
+    func storedRecord(_ sessionId: AmplifyCognitoClientSessionID, accessGroup: String? = nil) throws -> SessionRecord? {
         guard case .record(let envelope) = try store(accessGroup: accessGroup).read(sessionId) else {
             return nil
         }
@@ -182,12 +182,12 @@ final class ClientHarness: @unchecked Sendable {
     /// The bytes stored under `sessionId`'s own record key, if any (for `.default`, the Auth plugin's record): what a
     /// test compares with an envelope's `encoded()` to check every field of it, the schema version and timestamp
     /// included.
-    func storedBytes(_ sessionId: SessionID, accessGroup: String? = nil) -> Data? {
+    func storedBytes(_ sessionId: AmplifyCognitoClientSessionID, accessGroup: String? = nil) -> Data? {
         keychain.value(store(accessGroup: accessGroup).sessionAccount(for: sessionId), accessGroup: accessGroup)
     }
 
     /// Reads of `sessionId`'s own record key since the logs were last cleared.
-    func recordReads(_ sessionId: SessionID, accessGroup: String? = nil) -> Int {
+    func recordReads(_ sessionId: AmplifyCognitoClientSessionID, accessGroup: String? = nil) -> Int {
         let account = store(accessGroup: accessGroup).sessionAccount(for: sessionId)
         return keychain.readAccounts.count(where: { $0 == account })
     }
@@ -234,9 +234,9 @@ enum ClientFixtures {
         }
     }
 
-    static func id(_ name: String) -> SessionID {
+    static func id(_ name: String) -> AmplifyCognitoClientSessionID {
         do {
-            return try SessionID.named(name)
+            return try AmplifyCognitoClientSessionID.named(name)
         } catch {
             preconditionFailure("fixture session ID is invalid: \(error)")
         }
@@ -308,7 +308,7 @@ final class Stall: @unchecked Sendable {
 final class ConcurrentWriter: @unchecked Sendable {
 
     private let store: SessionRecordStore
-    private let sessionId: SessionID
+    private let sessionId: AmplifyCognitoClientSessionID
     private let budget: Int
     private let change: @Sendable (VersionedSessionRecord) -> SessionRecord
     private let lock = NSLock()
@@ -317,7 +317,7 @@ final class ConcurrentWriter: @unchecked Sendable {
 
     init(
         store: SessionRecordStore,
-        sessionId: SessionID,
+        sessionId: AmplifyCognitoClientSessionID,
         budget: Int = 1,
         change: @escaping @Sendable (VersionedSessionRecord) -> SessionRecord
     ) {
@@ -422,7 +422,7 @@ final class StreamRecorder<Element: Sendable>: @unchecked Sendable {
 extension AmplifyCognitoClientError {
 
     /// Whether this is `sessionConfigurationMismatch` for `sessionId`.
-    func isMismatch(for sessionId: SessionID) -> Bool {
+    func isMismatch(for sessionId: AmplifyCognitoClientSessionID) -> Bool {
         guard case .sessionConfigurationMismatch(let id, _, _, _) = self else { return false }
         return id == sessionId
     }

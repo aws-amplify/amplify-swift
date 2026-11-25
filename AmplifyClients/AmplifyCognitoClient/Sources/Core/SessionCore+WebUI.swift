@@ -93,7 +93,7 @@ extension SessionCore {
         _ payload: Data,
         global: Bool,
         box: EnginePresentationAnchorBox,
-        policy: WebUIOptions.BrowserBusyPolicy,
+        policy: AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy,
         waitsOnlyForItself: Bool = false
     ) async throws -> LogoutAttempt {
         let engine = engine
@@ -368,7 +368,7 @@ extension SessionCore {
     /// **A sign-out during the code exchange** stops the engine's machine, which then drops the token
     /// response. The engine shows the exchange's refresh token to the operation's issued-token tap first
     /// (`HostedUIEnvironment.issuedRefreshTokenObserver`), and the tap of a cancelled operation revokes it, once.
-    nonisolated func signInWithWebUI(anchor: EnginePresentationAnchorBox, options: WebUIOptions) async throws -> AmplifyCognitoClientSignInResult {
+    nonisolated func signInWithWebUI(anchor: EnginePresentationAnchorBox, options: AmplifyCognitoClientWebUIOptions) async throws -> AmplifyCognitoClientSignInResult {
         try requireUserPool(for: "sign in with the hosted UI")
         guard configuration.hasHostedUI else {
             throw LiveSessionEngine.hostedUINotConfigured()
@@ -419,7 +419,7 @@ extension SessionCore {
     /// the lease (`leasedWebUISignIn`).
     private nonisolated func webUISignInStep(
         anchor: EnginePresentationAnchorBox,
-        options: WebUIOptions,
+        options: AmplifyCognitoClientWebUIOptions,
         caller: SystemSheetFlow
     ) async throws -> AmplifyCognitoClientSignInResult {
         let endings = await sessionEndings
@@ -466,7 +466,7 @@ extension SessionCore {
     /// | granted | the body begins the attempt, then runs the engine's step; its result goes to `runStep`, which commits it or reports it |
     private nonisolated func leasedWebUISignIn(
         _ request: EngineWebUISignInRequest,
-        options: WebUIOptions,
+        options: AmplifyCognitoClientWebUIOptions,
         endings: UInt64,
         caller: SystemSheetFlow
     ) async throws -> AmplifyCognitoClientSignInResult {
@@ -547,7 +547,7 @@ extension SessionCore {
     /// A test seam in a hosted-UI sign-in's lease body, given the session: runs once the attempt has checked that the
     /// session has not ended, before it begins. `nil` in the app; a test sets it for its own call with `withValue`, and
     /// holds the body there to end the session at that moment.
-    @TaskLocal static var webUIAttemptSeam: (@Sendable (SessionID) async -> Void)?
+    @TaskLocal static var webUIAttemptSeam: (@Sendable (AmplifyCognitoClientSessionID) async -> Void)?
 
     /// A hosted-UI attempt begun under the lease: what its commit expects, its seed, and its epoch.
     private struct WebUIAttempt: Sendable {
@@ -598,7 +598,7 @@ extension SessionCore {
             guard let userId = summary.userId else {
                 return
             }
-            let holders: [String: SessionID]
+            let holders: [String: AmplifyCognitoClientSessionID]
             do {
                 (_, holders) = try await identityPolicy(for: .distinctFromOtherSessions)
             } catch is CancellationError {
@@ -669,8 +669,8 @@ extension SessionCore {
     /// read through `describe` where a record has none, and always for `.default`, the plugin's record.
     /// This session's own user is never excluded.
     nonisolated func identityPolicy(
-        for expectation: WebUIOptions.IdentityExpectation
-    ) async throws -> (EngineIdentityPolicy, [String: SessionID]) {
+        for expectation: AmplifyCognitoClientWebUIOptions.IdentityExpectation
+    ) async throws -> (EngineIdentityPolicy, [String: AmplifyCognitoClientSessionID]) {
         switch expectation {
         case .none:
             return (.none, [:])
@@ -681,7 +681,7 @@ extension SessionCore {
             let io = SessionRecordIO(store: store, queue: SessionRecordIO.listingQueue)
             // `.default`'s login as its restore would read it, after the Auth plugin's configuration-change rule.
             let userIds = try await io.signedInUserIds(describe: { try? engine.describe($0) }, pluginConfiguration: pluginConfiguration)
-            var holders: [String: SessionID] = [:]
+            var holders: [String: AmplifyCognitoClientSessionID] = [:]
             for (holder, userId) in userIds.sorted(by: { $0.key.stringValue < $1.key.stringValue })
                 where holder != sessionId && holders[userId] == nil {
                 holders[userId] = holder
@@ -692,7 +692,7 @@ extension SessionCore {
 
     /// `.unexpectedIdentity` for a user signed in to another session, with a description naming that session.
     /// Every other error is returned as it is.
-    static func namingHolder(_ error: AmplifyCognitoClientError, subjects: [String: SessionID]) -> AmplifyCognitoClientError {
+    static func namingHolder(_ error: AmplifyCognitoClientError, subjects: [String: AmplifyCognitoClientSessionID]) -> AmplifyCognitoClientError {
         guard case .unexpectedIdentity(let expected, let returned, _, let suggestion, let underlying) = error,
               expected == nil,
               let holder = subjects[returned.userId] else {

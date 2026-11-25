@@ -101,7 +101,7 @@ public enum KinesisError: AmplifyError {
 May gain cases in a minor release (`@unknown default`). `.credentials` is a flush whose credentials provider failed:
 `RecordClient` (shared with Firehose) stops the flush, counts no retry, and acts on the provider's
 `CredentialsError.disposition`. So these two GA clients depend on that experimental-SPI property, and on
-`CognitoCredentialsProvider`'s mapping to it (`Sources/Providers/CognitoCredentialsProvider.swift`): changing either
+`AmplifyCognitoClientCredentialsProvider`'s mapping to it (`Sources/Providers/AmplifyCognitoClientCredentialsProvider.swift`): changing either
 changes what a GA client does with cached records. Treat it as a GA behaviour change, with a release-notes line.
 
 ## Building a New Amplify Client

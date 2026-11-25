@@ -40,7 +40,7 @@ final class WebUISignOutTests: XCTestCase {
     }
 
     private func client(
-        _ sessionId: SessionID,
+        _ sessionId: AmplifyCognitoClientSessionID,
         configuration: AmplifyCognitoClientConfiguration = HostedUIFixtures.configuration
     ) throws -> AmplifyCognitoClient {
         try harness.client(sessionId, configuration: configuration)

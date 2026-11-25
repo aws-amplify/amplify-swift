@@ -143,7 +143,7 @@ final class StreamRecorder<Element: Sendable>: @unchecked Sendable {
     }
 }
 
-extension AuthSessionState {
+extension AmplifyCognitoClientSessionState {
 
     /// For failure messages: never a sub, a fresh user's generated username, or a step's payload (a TOTP
     /// setup secret, a delivery destination). A shared sandbox user's fixed name is kept.
@@ -199,8 +199,8 @@ func XCTAssertStep(
 
 /// Asserts a session's state, printing neither side's sub on failure.
 func XCTAssertState(
-    _ state: AuthSessionState,
-    _ expected: AuthSessionState,
+    _ state: AmplifyCognitoClientSessionState,
+    _ expected: AmplifyCognitoClientSessionState,
     _ message: String = "",
     file: StaticString = #filePath,
     line: UInt = #line
@@ -328,7 +328,7 @@ extension AmplifyCognitoClientSignInStep {
     }
 }
 
-extension AuthSessionState {
+extension AmplifyCognitoClientSessionState {
 
     /// The step, if this session waits on a challenge.
     var pendingStep: AmplifyCognitoClientSignInStep? {

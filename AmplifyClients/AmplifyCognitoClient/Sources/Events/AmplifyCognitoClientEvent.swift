@@ -15,7 +15,7 @@ import Foundation
 ///
 /// May gain cases in a minor release: include `@unknown default` when you switch over it.
 @_spi(AmplifyExperimental)
-public enum AuthEvent: Sendable, Equatable {
+public enum AmplifyCognitoClientEvent: Sendable, Equatable {
 
     /// A user signed in to the session, by any means. Federating to the identity pool sends none.
     case signedIn

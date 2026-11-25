@@ -9,7 +9,7 @@ import Foundation
 import InternalAWSCognitoAuth
 
 // The hosted-UI requests as the engine receives them. Defined on every
-// platform, so the seam has one shape; only iOS, macOS and visionOS build them, from `WebUIOptions`.
+// platform, so the seam has one shape; only iOS, macOS and visionOS build them, from `AmplifyCognitoClientWebUIOptions`.
 
 /// A hosted-UI sign-in, as the engine receives it.
 struct EngineWebUISignInRequest: Sendable, Equatable {
@@ -20,7 +20,7 @@ struct EngineWebUISignInRequest: Sendable, Equatable {
     let identity: EngineIdentityPolicy
 }
 
-/// The eight `WebUIOptions` fields the engine's `HostedUIOptions` carries. `whenBrowserBusy` and
+/// The eight `AmplifyCognitoClientWebUIOptions` fields the engine's `HostedUIOptions` carries. `whenBrowserBusy` and
 /// `identityExpectation` are the core's, not the engine's.
 struct EngineWebUIOptions: Sendable, Equatable {
     /// `nil` requests the configuration's scopes.
@@ -34,7 +34,7 @@ struct EngineWebUIOptions: Sendable, Equatable {
     let language: String?
     let loginHint: String?
     /// Space-separated, in the caller's order; `nil` for none, and for an empty list, which sends no `prompt`
-    /// item, where the plugin sends an empty one (documented on `WebUIOptions.prompt`).
+    /// item, where the plugin sends an empty one (documented on `AmplifyCognitoClientWebUIOptions.prompt`).
     let prompt: String?
     let resource: String?
 }
@@ -62,7 +62,7 @@ enum EngineHostedUISignOut: Sendable, Equatable {
 extension EngineWebUIOptions {
 
     /// `options` as the engine takes them, with `nonce` for the flow: the caller's, else a minted one.
-    init(_ options: WebUIOptions, nonce: String) {
+    init(_ options: AmplifyCognitoClientWebUIOptions, nonce: String) {
         self.init(
             scopes: options.scopes,
             provider: options.provider,

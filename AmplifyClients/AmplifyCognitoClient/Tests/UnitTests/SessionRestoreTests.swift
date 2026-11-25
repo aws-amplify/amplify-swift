@@ -114,11 +114,11 @@ final class SessionRestoreTests: XCTestCase {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
 
-        let states = await withTaskGroup(of: AuthSessionState.self) { group in
+        let states = await withTaskGroup(of: AmplifyCognitoClientSessionState.self) { group in
             for _ in 0 ..< 50 {
                 group.addTask { await client.currentSessionState() }
             }
-            var states: [AuthSessionState] = []
+            var states: [AmplifyCognitoClientSessionState] = []
             for await state in group {
                 states.append(state)
             }

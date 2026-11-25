@@ -21,7 +21,7 @@ import Foundation
 /// Failures are `CredentialsError`, whose `disposition` tells a consumer holding buffered work what to
 /// do. `CancellationError` passes through unwrapped.
 @_spi(AmplifyExperimental)
-public struct CognitoCredentialsProvider: AWSCredentialsProvider, Sendable {
+public struct AmplifyCognitoClientCredentialsProvider: AWSCredentialsProvider, Sendable {
 
     /// Strong: a provider keeps its session alive.
     let core: SessionCore
@@ -32,7 +32,7 @@ public struct CognitoCredentialsProvider: AWSCredentialsProvider, Sendable {
 
     /// The session this provider resolves. Its `label` is that of the handle that built the session, which may not
     /// be the handle this provider came from.
-    public var sessionId: SessionID {
+    public var sessionId: AmplifyCognitoClientSessionID {
         core.sessionId
     }
 
