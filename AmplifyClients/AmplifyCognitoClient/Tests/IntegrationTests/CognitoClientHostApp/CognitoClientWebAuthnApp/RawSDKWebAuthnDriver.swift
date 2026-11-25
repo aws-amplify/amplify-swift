@@ -107,7 +107,12 @@ final class RawSDKWebAuthnDriver: WebAuthnHarnessDriver {
             accessToken: signedIn(),
             maxResults: 20
         ))
-        return (result.credentials ?? []).compactMap(\.credentialId)
+        let credentials = result.credentials ?? []
+        // What Cognito stored is what it sends in `allowCredentials` at sign-in.
+        if let stored = credentials.first(where: { Set($0.authenticatorTransports ?? []) != ["hybrid", "internal"] }) {
+            throw HarnessAppError("Cognito stored transports \(stored.authenticatorTransports ?? []), not [hybrid, internal]")
+        }
+        return credentials.compactMap(\.credentialId)
     }
 
     func deleteWebAuthnCredential(credentialId: String) async throws {

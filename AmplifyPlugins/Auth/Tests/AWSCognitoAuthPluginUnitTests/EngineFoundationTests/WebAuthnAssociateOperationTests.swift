@@ -86,6 +86,33 @@ final class WebAuthnAssociateOperationTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(fixture.userPoolCalls.get(), 2)
     }
 
+    /// Associate, the credential complete sends
+    ///
+    /// - Given: Cognito starts and completes the registration, and the ceremony creates a platform passkey
+    /// - When:
+    ///    - `associate` runs
+    /// - Then:
+    ///    - complete's credential has `authenticatorAttachment` `platform` and `response.transports`
+    ///      `["hybrid", "internal"]`, which Cognito returns in `allowCredentials` at sign-in
+    ///
+    func testAssociate_withSuccess_completesWithHybridAndInternalTransports() async throws {
+        let completed = TestBox<[CompletedCredential]>([])
+        identityProvider.mockCompleteWebAuthnRegistrationResponse = { input in
+            let credential = try input.credential?.asStringMap()
+            completed.with {
+                $0.append(CompletedCredential(
+                    authenticatorAttachment: try? credential?["authenticatorAttachment"]?.asString(),
+                    transports: try? credential?["response"]?.asStringMap()["transports"]?.asList().map { try $0.asString() }
+                ))
+            }
+            return .init()
+        }
+
+        try await associate()
+
+        XCTAssertEqual(completed.get(), [CompletedCredential(authenticatorAttachment: "platform", transports: ["hybrid", "internal"])])
+    }
+
     /// Associate, the ceremony fails
     ///
     /// - Given: the registrant throws `WebAuthnError.creationFailed(.failed)`
@@ -390,5 +417,11 @@ final class WebAuthnAssociateOperationTests: XCTestCase, @unchecked Sendable {
             "excludeCredentials": []
         ])
     }
+}
+
+/// The parts of complete's credential that tell a browser how to reach the passkey.
+private struct CompletedCredential: Equatable {
+    let authenticatorAttachment: String?
+    let transports: [String]?
 }
 #endif

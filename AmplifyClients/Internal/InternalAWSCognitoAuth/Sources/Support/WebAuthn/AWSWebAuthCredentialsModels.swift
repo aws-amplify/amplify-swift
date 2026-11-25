@@ -191,6 +191,9 @@ package struct CredentialRegistrationPayload: Codable {
         let transports: [String]
     }
 
+    /// Safari's `getTransports()` for a platform passkey, sorted. Without `hybrid`, browsers on other devices offer no QR sign-in.
+    private static let platformTransports = ["hybrid", "internal"]
+
     private let id: String
     private let rawId: String
     private let type: String
@@ -201,16 +204,17 @@ package struct CredentialRegistrationPayload: Codable {
     package init(
         credentialId: String,
         attestationObject: String,
-        clientDataJSON: String
+        clientDataJSON: String,
+        attachment: ASAuthorizationPublicKeyCredentialAttachment = .platform
     ) {
         self.id = credentialId
         self.rawId = credentialId
-        self.authenticatorAttachment = "platform"
+        self.authenticatorAttachment = attachment == .crossPlatform ? "cross-platform" : "platform"
         self.type = "public-key"
         self.response = Response(
             attestationObject: attestationObject,
             clientDataJSON: clientDataJSON,
-            transports: ["internal"]
+            transports: Self.platformTransports
         )
     }
 
@@ -221,10 +225,13 @@ package struct CredentialRegistrationPayload: Codable {
             throw WebAuthnCredentialError.missingValue("attestationObject", type: Self.self)
         }
 
+        // The platform provider answers with platform registrations; anything else keeps `.platform`.
+        let attachment = (credential as? ASAuthorizationPlatformPublicKeyCredentialRegistration)?.attachment
         self.init(
             credentialId: credential.credentialID.toBase64Url(),
             attestationObject: attestationObject,
-            clientDataJSON: credential.rawClientDataJSON.toBase64Url()
+            clientDataJSON: credential.rawClientDataJSON.toBase64Url(),
+            attachment: attachment ?? .platform
         )
     }
 
