@@ -117,7 +117,7 @@ AmplifyClients/Amplify<Service>Client/
 │   └── UnitTests/
 ```
 
-Integration tests are not co-located per client. `AmplifyConnectClient` has its own host app under `Tests/ConnectClientHostApp/`, Kinesis and Firehose share `AmplifyClients/Tests/IntegrationTests/KinesisFirehoseClientHostApp/`, and `AmplifyEventEnrichmentClient` has unit tests only.
+Integration tests are not co-located per client. `AmplifyConnectClient` has its own host app under `Tests/ConnectClientHostApp/`, `AmplifyCognitoClient` has its own under `Tests/IntegrationTests/CognitoClientHostApp/`, `AmplifyCloudWatchClient` has its own under `Tests/IntegrationTests/CloudWatchLoggingClientHostApp/`, Kinesis and Firehose share `AmplifyClients/Tests/IntegrationTests/KinesisFirehoseClientHostApp/`, and `AmplifyEventEnrichmentClient` has unit tests only.
 
 ### Package.swift target
 

@@ -621,16 +621,17 @@ same scheme builds for whichever destination it is given. On watchOS the host ap
 | `CognitoClientWebAuthnApp`, `CognitoClientWebAuthnUITests` | runs | no passkeys | no passkeys | not built | not built |
 
 - **Compiled out, never skipped.** A test that needs an API a platform lacks is inside `#if`, so the CI jobs'
-  no-skip gate holds everywhere. Today that is PL-11 (a passkey preference) on tvOS and watchOS. No pull-request or
-  push job builds the other platforms, so when you add a test, run `build-for-testing` for
-  `generic/platform=tvOS Simulator` and `generic/platform=watchOS Simulator` too.
+  no-skip gate holds everywhere. Today that is PL-11 (a passkey preference) on tvOS and watchOS. A run that runs the
+  client suite on iOS also builds the suites for the other platforms ("Running in CI", below), so a test that does
+  not compile on one fails there; to see it sooner, run `build-for-testing` for `generic/platform=tvOS Simulator`
+  and `generic/platform=watchOS Simulator` before you push.
 - **One entitlements file, the same keychain groups everywhere.** The host app's three access groups ("Running the
   tests", above) apply on every platform; `KeychainModuleRealKeychainTests` writes to the shared and the default
   group on each.
 - **macOS builds, and is not run.** The suites need the data-protection keychain and its access groups, which on
-  macOS need an app signed with a provisioning profile. CI has no such certificate, so there is no macOS job. Build
-  the client suite for macOS by hand to keep it compiling there, and the interop suite the same way with
-  `-scheme CognitoClientPluginInteropTests`:
+  macOS need an app signed with a provisioning profile. CI has no such certificate, so no macOS job runs tests: CI
+  only builds both suites there. To build the client suite for macOS yourself, and the interop suite the same way
+  with `-scheme CognitoClientPluginInteropTests`:
   `xcodebuild build-for-testing -project CognitoClientHostApp.xcodeproj -scheme CognitoClientIntegrationTests -destination 'generic/platform=macOS' -skipPackagePluginValidation CODE_SIGNING_ALLOWED=NO`.
   The product lands in `Debug/`: the targets set `SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO`, so `My Mac` is the
   native destination, not the iPad build. Without `CODE_SIGNING_ALLOWED=NO`, and from Xcode with My Mac selected,
@@ -695,7 +696,12 @@ the default branch, it can also be started by hand from the Actions tab, with a 
 tvOS, watchOS and visionOS, as the iOS client job does (same overlay, same no-skip gate), and one hosted-UI test on
 visionOS, as its iOS job does. The interop suite has no toggle for them. They are not part of a pull request's
 or a push's run: each is another whole pass over the same backend, and CH-1's new-password users are a limited
-pool. There is no macOS job ("Other platforms", above).
+pool. No macOS job runs tests ("Other platforms", above).
+
+**What a pull request's or a push's run does for them is compile.** Wherever the client suite runs on iOS,
+`auth-client-build-other-platforms` builds the client and interop suites for tvOS, watchOS, visionOS and macOS, and
+the hosted-UI suite for visionOS, with no backend and no secrets. A pull request that changes only the Auth plugin
+runs the interop suite on iOS and skips this job. A manual start has a toggle for it, on by default.
 
 **The client suite's time limit.** `run_integration_tests.yml` runs an unscoped suite with `-test-iterations`
 and `-retry-tests-on-failure`, then, if it failed, once more in its retry step. After a failure each iteration runs
