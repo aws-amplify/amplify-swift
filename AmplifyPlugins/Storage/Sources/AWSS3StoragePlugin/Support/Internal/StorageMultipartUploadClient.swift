@@ -254,9 +254,13 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
 
     // MARK: - Private -
 
-    // `serviceProxy` is weak: a plugin reset, or a storage service replaced mid-upload, releases or resets it (#4426).
+    // `serviceProxy` is weak: resetting or reconfiguring Amplify mid-upload releases or resets it (#4426).
     private static var serviceUnavailable: StorageError {
-        .unknown("The storage service that started this multipart upload is no longer available", nil)
+        .configuration(
+            "The storage service that started this multipart upload is no longer available",
+            "If Amplify was reset or reconfigured during the upload, call Amplify.configure() and start the upload again.",
+            nil
+        )
     }
 
     private static var sessionUnavailable: StorageError {

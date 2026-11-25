@@ -108,7 +108,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
     func testCreateMultipartUpload_withoutServiceProxy_shouldThrowStorageError() throws {
         serviceProxy = nil
         let error = try errorThrown { try self.client.createMultipartUpload() }
-        XCTAssertTrue(error is StorageError)
+        assertServiceUnavailable(error)
         XCTAssertEqual(awss3Behavior.createMultipartUploadCount, 0)
         XCTAssertEqual(session.handleMultipartUploadCount, 0)
     }
@@ -124,7 +124,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
     func testCreateMultipartUpload_afterServiceReset_shouldThrowStorageError() throws {
         serviceProxy.awsS3 = nil
         let error = try errorThrown { try self.client.createMultipartUpload() }
-        XCTAssertTrue(error is StorageError)
+        assertServiceUnavailable(error)
         XCTAssertEqual(awss3Behavior.createMultipartUploadCount, 0)
         XCTAssertEqual(session.handleMultipartUploadCount, 0)
     }
@@ -228,7 +228,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
                 )
             )
         }
-        XCTAssertTrue(error is StorageError)
+        assertServiceUnavailable(error)
         XCTAssertEqual(fileSystem.createPartialFileCount.get(), 0)
     }
 
@@ -262,7 +262,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
                 subTask: .init(transferType: .multiPartUploadPart(uploadId: "uploadId", partNumber: 1), bucket: "bucket", key: "key")
             )
         }
-        XCTAssertTrue(error is StorageError)
+        assertServiceUnavailable(error)
         XCTAssertEqual(fileSystem.createPartialFileCount.get(), 0)
     }
 
@@ -301,7 +301,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
 
         await fulfillment(of: [session.failExpectation!], timeout: 1)
         XCTAssertEqual(session.failCount, 1)
-        XCTAssertTrue(session.lastError is StorageError)
+        assertServiceUnavailable(session.lastError)
         XCTAssertEqual(session.handleUploadPartCount, 0)
     }
 
@@ -391,7 +391,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
                     )
                 )
             }
-            XCTAssertTrue(error is StorageError, "part \(partNumber)")
+            assertUnknownStorageError(error, "part \(partNumber)")
         }
         XCTAssertEqual(fileSystem.createPartialFileCount.get(), 0)
     }
@@ -442,7 +442,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
     func testCompleteMultipartUpload_withoutServiceProxy_shouldThrowStorageError() throws {
         serviceProxy = nil
         let error = try errorThrown { try self.client.completeMultipartUpload(uploadId: "uploadId") }
-        XCTAssertTrue(error is StorageError)
+        assertServiceUnavailable(error)
         XCTAssertEqual(awss3Behavior.completeMultipartUploadCount, 0)
         XCTAssertEqual(session.handleMultipartUploadCount, 0)
         XCTAssertEqual(session.failCount, 0)
@@ -459,7 +459,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
     func testCompleteMultipartUpload_afterServiceReset_shouldThrowStorageError() throws {
         serviceProxy.awsS3 = nil
         let error = try errorThrown { try self.client.completeMultipartUpload(uploadId: "uploadId") }
-        XCTAssertTrue(error is StorageError)
+        assertServiceUnavailable(error)
         XCTAssertEqual(awss3Behavior.completeMultipartUploadCount, 0)
         XCTAssertEqual(session.handleMultipartUploadCount, 0)
         XCTAssertEqual(session.failCount, 0)
@@ -530,7 +530,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
             return XCTFail("Expected .aborted, got \(String(describing: session.lastMultipartUploadEvent))")
         }
         XCTAssertEqual(uploadId, "uploadId")
-        XCTAssertTrue(abortError is StorageError)
+        assertServiceUnavailable(abortError)
     }
 
     /// A plugin reset sets the service's S3 client to nil while a closure can still hold the service (#4426).
@@ -578,7 +578,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
             ]
             for (name, call) in calls {
                 let error = try errorThrown(by: call)
-                XCTAssertTrue(error is StorageError, name)
+                assertUnknownStorageError(error, name)
             }
         }
         XCTAssertEqual(awss3Behavior.createMultipartUploadCount, 0)
@@ -1028,6 +1028,25 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
 
         XCTAssertEqual(awsS3.completeMultipartUploadCount, 0)
         XCTAssertEqual(recorder.names, ["initiated", "inProcess", "inProcess", "inProcess", "failed"])
+    }
+
+    /// Checks for the error the client throws when its storage service was released or reset.
+    private func assertServiceUnavailable(_ error: Error?, file: StaticString = #filePath, line: UInt = #line) {
+        guard case .configuration? = error as? StorageError else {
+            return XCTFail("Expected StorageError.configuration, got \(String(describing: error))", file: file, line: line)
+        }
+    }
+
+    /// Checks for an internal error: a missing session, or a part number outside the upload.
+    private func assertUnknownStorageError(
+        _ error: Error?,
+        _ message: String = "",
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        guard case .unknown? = error as? StorageError else {
+            return XCTFail("Expected StorageError.unknown, got \(String(describing: error)) \(message)", file: file, line: line)
+        }
     }
 
     /// Runs `call`, failing the test if it hits a fatal error, and returns what it threw.

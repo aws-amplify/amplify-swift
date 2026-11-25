@@ -22,6 +22,14 @@ extension AWSS3StoragePlugin {
             if let storageService = storageServicesByBucket[bucketInfo.bucketName] {
                 return storageService
             }
+            // reset() clears this under the same lock.
+            guard let authService else {
+                throw StorageError.configuration(
+                    "The Storage plugin is not configured",
+                    "Call Amplify.configure() before using Storage, and again after Amplify.reset().",
+                    nil
+                )
+            }
 
             // If no service was found for the bucket, create one
             let storageService = try createStorageService(

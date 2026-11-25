@@ -9,6 +9,7 @@ import AWSPluginsCore
 import InternalAmplifyCredentials
 import XCTest
 @testable import Amplify
+@testable import func AmplifyTestCommon.XCTAssertNoThrowFatalError
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
 
@@ -196,6 +197,32 @@ class AWSS3StoragePluginStorageBucketTests: XCTestCase, @unchecked Sendable {
             XCTAssertEqual(distinct, [ObjectIdentifier(stored)], "\(bucketInfo.bucketName): \(distinct.count) services returned")
         }
         XCTAssertEqual(storagePlugin.storageServicesByBucket.count, 6)
+    }
+
+    /// A first use of a bucket after reset() trapped on the nil authService (#4426).
+    ///
+    /// - Given: An AWSS3StoragePlugin that has been reset
+    /// - When:
+    ///    - storageService(for:) is invoked for a bucket that was not accessed before
+    /// - Then:
+    ///    - a StorageError.configuration is thrown, and no service is stored
+    ///
+    func testStorageService_withNewBucketAfterReset_shouldThrowConfigurationError() async throws {
+        await storagePlugin.reset()
+
+        var thrownError: Error?
+        try XCTAssertNoThrowFatalError {
+            do {
+                _ = try self.storagePlugin.storageService(for: .fromBucketInfo(self.additionalBucketInfo))
+            } catch {
+                thrownError = error
+            }
+        }
+
+        guard case .configuration? = thrownError as? StorageError else {
+            return XCTFail("Expected StorageError.configuration, got \(String(describing: thrownError))")
+        }
+        XCTAssertEqual(storagePlugin.storageServicesByBucket.count, 0)
     }
 
     /// Given: A configured AWSS3StoragePlugin
