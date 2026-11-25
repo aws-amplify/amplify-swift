@@ -295,14 +295,14 @@ struct SessionSignOut: Sendable {
             return .unreadable(.corrupt)
         case .record(let stored):
             let record = stored.record
-            guard record.kind != .signedOut else {
-                return .nothing
-            }
             guard let credentials = record.credentials else {
-                // A kind that holds credentials, and none: no build saves that, and a restore of it is `.failed`.
-                // Nothing in it can be revoked, so it is reset like a record this build cannot read.
-                return .unreadable(.corrupt)
+                // A signed-out row holds none. A kind that holds credentials, and none: no build saves that, and a
+                // restore of it is `.failed`. Nothing in it can be revoked, so it is reset like a record this build
+                // cannot read.
+                return record.kind == .signedOut ? .nothing : .unreadable(.corrupt)
             }
+            // Credentials are signed out as a login's are whatever the kind beside them: a signed-out row that holds
+            // some (no build saves that) is revoked and cleared, not reported signed out with them still saved.
             let described = record.userId == nil ? describe(credentials) : nil
             return .credentials(credentials, CredentialSummary(
                 kind: record.kind,
