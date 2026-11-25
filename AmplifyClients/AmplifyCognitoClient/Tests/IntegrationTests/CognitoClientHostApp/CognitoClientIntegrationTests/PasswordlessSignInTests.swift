@@ -344,6 +344,8 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
         XCTAssertState(pending, .awaitingChallenge(result.nextStep))
     }
 
+    // tvOS and watchOS have no passkeys: the factor and the window option do not exist there.
+    #if !os(tvOS) && !os(watchOS)
     /// A WebAuthn preference the pool does not support becomes the first-factor selection
     /// (PL-11).
     ///
@@ -379,6 +381,7 @@ final class PasswordlessSignInTests: ClientIntegrationTestCase {
         let pending = await client.currentSessionState()
         XCTAssertState(pending, .awaitingChallenge(result.nextStep))
     }
+    #endif
 
     // MARK: - The one-time-code step
 

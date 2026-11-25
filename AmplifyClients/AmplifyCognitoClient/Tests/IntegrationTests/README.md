@@ -456,8 +456,8 @@ above still redact any `Type '…' into` line and delete the logs and the result
 
 ## Running the tests
 
-The tests live in an iOS host app, `CognitoClientHostApp/`, following `AuthHostApp` and the other
-`AmplifyClients` host apps. They run inside a signed app on a simulator, because that is the only way to
+The tests live in a host app, `CognitoClientHostApp/`, following `AuthHostApp` and the other
+`AmplifyClients` host apps. It is an iOS app first; "Other platforms" (below) covers tvOS, watchOS, visionOS and macOS. They run inside a signed app on a simulator, because that is the only way to
 reach the real data-protection keychain: under `swift test` on macOS the runner is unsigned and every keychain
 call fails with `errSecMissingEntitlement`.
 
@@ -606,6 +606,73 @@ Simulator builds are signed ad hoc with these entitlements, so no team or provis
 | `PluginRotationTests` (interop target) | RT-1, RT-2: refresh-token rotation across the plugin and `.default` on live Cognito, the shared login's rollback claim. The client rotates and a relaunched plugin refreshes with the rotated token (no `RefreshTokenReuseException`); the plugin rotates and `.default` restores and refreshes with it (no `sessionExpired`), and a plugin relaunched after that reads the client's newest token. Needs the default pool's `rotation` app client (rotation on, no grace period, `infra/pools/default.json`) and `AmplifyCognitoClientRotationIntegrationTests-amplify_outputs.json`, which `infra/plugin-configs.py` writes once `provision.sh` has made the client; the build phase copies it when present. On CI the overlaid `extended` role brings it (`infra/ci`). Without it, it **skips** on any backend that is not the sandbox (the outputs' sandbox marker), such as the plugin's own files, and **fails** on the sandbox, asking for `provision.sh`. Wipes the plugin's unshared service before and after |
 | `AccessGroupRemovalRealKeychainTests` (interop target) | IO-4: after the plugin's access group is removed, the moved session keeps its group and a group-less read (plugin, client listing, and a group-less `.default` restoring it as `.signedIn`) still finds it. Signs a fresh user of the test's own in through the plugin |
 
+## Other platforms: tvOS, watchOS, visionOS and macOS
+
+The host app and the two suites that run inside it are one target each for every platform (`SDKROOT = auto`): the
+same scheme builds for whichever destination it is given. On watchOS the host app is a watch-only app
+(`WKApplication`, `WKWatchOnly`), so there is no separate watch target or scheme.
+
+| Target | iOS | tvOS | watchOS | visionOS | macOS |
+|---|---|---|---|---|---|
+| `CognitoClientHostApp`, `CognitoClientIntegrationTests` | runs | runs | runs | runs | builds only |
+| `CognitoClientPluginInteropTests` | runs | builds; its offline keychain tests run | builds; its offline keychain tests run | builds; its offline keychain tests run | builds only |
+| `CognitoClientHostedUIApp`, `CognitoClientUITests` | runs | no hosted UI | no hosted UI | builds; not yet run | not built |
+| `CognitoClientWebAuthnApp`, `CognitoClientWebAuthnUITests` | runs | no passkeys | no passkeys | not built | not built |
+
+- **Compiled out, never skipped.** A test that needs an API a platform lacks is inside `#if`, so the CI jobs'
+  no-skip gate holds everywhere. Today that is PL-11 (a passkey preference) on tvOS and watchOS. No pull-request or
+  push job builds the other platforms, so when you add a test, run `build-for-testing` for
+  `generic/platform=tvOS Simulator` and `generic/platform=watchOS Simulator` too.
+- **One entitlements file, the same keychain groups everywhere.** The host app's three access groups ("Running the
+  tests", above) apply on every platform; `KeychainModuleRealKeychainTests` writes to the shared and the default
+  group on each.
+- **macOS builds, and is not run.** The suites need the data-protection keychain and its access groups, which on
+  macOS need an app signed with a provisioning profile. CI has no such certificate, so there is no macOS job. Build
+  the client suite for macOS by hand to keep it compiling there, and the interop suite the same way with
+  `-scheme CognitoClientPluginInteropTests`:
+  `xcodebuild build-for-testing -project CognitoClientHostApp.xcodeproj -scheme CognitoClientIntegrationTests -destination 'generic/platform=macOS' -skipPackagePluginValidation CODE_SIGNING_ALLOWED=NO`.
+  The product lands in `Debug/`: the targets set `SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO`, so `My Mac` is the
+  native destination, not the iPad build. Without `CODE_SIGNING_ALLOWED=NO`, and from Xcode with My Mac selected,
+  the build stops at *"CognitoClientHostApp" has entitlements that require signing with a development certificate*.
+- **The hosted-UI app is UIKit.** It builds for visionOS; macOS would need an AppKit harness, which nothing could
+  run without the signing above, so it is not built there. `HostedUISignInTests` looks for the sign-in sheet in
+  SpringBoard and AuthenticationServicesUI, the iOS simulator's hosts, and CI turns the hardware keyboard off only
+  on iOS: on visionOS the test builds, and its first run there decides whether either needs a visionOS counterpart
+  (the visionOS simulator's shell is `com.apple.SurfBoard`, which the test does not search). The hosted-UI targets
+  set `SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO`, so a visionOS destination is the native build, never the iPad one.
+- **Passkey end to end stays on the iOS simulator.** The plugin's simulator server enrolls and matches Face ID on an
+  iOS simulator; nothing enrolls Optic ID on a visionOS simulator or Touch ID on a CI Mac, so the WebAuthn app and
+  its UI tests are not built for those platforms either.
+
+Run a suite on another platform as on iOS, with one of that platform's available simulators as the destination
+(the names below are CI's, for Xcode 26.5):
+
+```bash
+cd AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/CognitoClientHostApp
+COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test -project CognitoClientHostApp.xcodeproj \
+  -scheme CognitoClientIntegrationTests -destination 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation)' \
+  -derivedDataPath "$DD" -skipPackagePluginValidation -parallel-testing-enabled NO
+# watchOS: 'platform=watchOS Simulator,name=Apple Watch Series 11 (46mm)'
+# visionOS: 'platform=visionOS Simulator,name=Apple Vision Pro'
+```
+
+**Verified 2026-11-24** (Xcode 27.2, simulators 27.2), on the default backend alone ("Only the files in your home
+directory", above):
+
+- The client suite gives the same result, test for test, on the iOS, tvOS, watchOS and visionOS simulators: 154
+  tests pass on each, against real Cognito and the real keychain (sign-up, sign-in and its challenges, sign-out,
+  sessions and refresh, guests, federation, several sessions at once, devices, the credentials providers, MFA
+  preference and TOTP setup, password reset, user attributes, delete user). The tests that need another backend's
+  file fail naming it (93, and PL-11 on iOS and visionOS) or skip (11, with
+  `TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS=1`), the same ones on every platform; PL-11 is the one difference,
+  compiled out on tvOS and watchOS.
+- So the tests on the other backends (MFA required, passwordless, the device alias, the code API, the sandbox
+  checks) have run on iOS only. Their first run elsewhere is the manual CI start ("Running in CI", below) or a local
+  run on CI's file set.
+- The interop suite builds for the tvOS, watchOS and visionOS simulators, and `CredentialStoreTransitionRealKeychainTests`
+  (no backend) passes on each. Its backend tests have not run off iOS, and CI has no toggle for them.
+- Both suites build for macOS, and `CognitoClientUITests` builds for the visionOS simulator.
+
 ## Running in CI
 
 `.github/workflows/integ_test_auth_client.yml` runs every suite on iOS, one job each: `CognitoClientIntegrationTests`,
@@ -622,6 +689,12 @@ It runs from `integ_test.yml`: on pull requests to `main` when the client, its h
 shared internals, `AmplifyFoundation`, `AmplifyFoundationBridge` or the WebAuthn LocalServer change (the
 `auth_client` group in `scripts/python/integ_test_groups.json`), and on every push to `main`. Once the workflow is on
 the default branch, it can also be started by hand from the Actions tab, with a toggle per suite.
+
+**The other platforms run only from that manual start.** Four more toggles, off by default, run the client suite on
+tvOS, watchOS and visionOS, as the iOS client job does (same overlay, same no-skip gate), and one hosted-UI test on
+visionOS, as its iOS job does. The interop suite has no toggle for them. They are not part of a pull request's
+or a push's run: each is another whole pass over the same backend, and CH-1's new-password users are a limited
+pool. There is no macOS job ("Other platforms", above).
 
 **The client suite's time limit.** `run_integration_tests.yml` runs an unscoped suite with `-test-iterations`
 and `-retry-tests-on-failure`, then, if it failed, once more in its retry step. After a failure each iteration runs

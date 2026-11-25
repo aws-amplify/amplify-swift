@@ -46,7 +46,7 @@ plugin uses.
 |---|---|
 | Stage | Beta, for feedback |
 | API | Behind `@_spi(AmplifyExperimental)`. Any release may change or remove it |
-| Platforms | iOS first: tested end to end on iOS only. It also builds for macOS, visionOS, tvOS and watchOS, which are untested in this beta. The hosted UI and passkeys are on iOS, macOS and visionOS only |
+| Platforms | iOS first: the whole integration suite runs on iOS. On tvOS, watchOS and visionOS the suite's default-backend tests run on simulators with the same results; the tests on the other backends, the hosted UI and passkeys are untested there. macOS is built, not run (see the [integration tests' README](Tests/IntegrationTests/README.md), "Other platforms"). The hosted UI and passkeys are on iOS, macOS and visionOS only |
 | Passkeys | iOS 17.4, macOS 13.5, visionOS 1.0 or later. On visionOS, registering can't detect a passkey the device already holds for the user (see [Passkeys (WebAuthn credentials)](#passkeys-webauthn-credentials)) |
 | Configuration | Gen2 `amplify_outputs.json` only. A Gen1 `amplifyconfiguration.json` is refused with `AuthClientError.configuration` |
 | Amplify categories | Storage, API, Analytics and the other category plugins do **not** use these sessions. See [Tokens, sessions and credentials](#tokens-sessions-and-credentials) |

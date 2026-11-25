@@ -22,9 +22,32 @@ on:
         required: true
         default: true
         type: boolean
+      # The other platforms run only when asked for, here: each runs the whole client suite on the same backend,
+      # and CH-1's new-password users are a limited pool the iOS job already draws on. macOS has no job: its keychain
+      # groups need a signed app, so it is only built, by hand.
+      integration-tvos:
+        description: '📺 Client suite tvOS'
+        required: true
+        default: false
+        type: boolean
+      integration-watchos:
+        description: '⌚️ Client suite watchOS'
+        required: true
+        default: false
+        type: boolean
+      integration-visionos:
+        description: '🥽 Client suite visionOS'
+        required: true
+        default: false
+        type: boolean
+      hostedui-visionos:
+        description: '🌵 HostedUI visionOS'
+        required: true
+        default: false
+        type: boolean
   # integ_test.yml calls this when the auth_client group is selected, or the auth_client_interop group, which adds
   # the Auth plugin's sources: a plugin-only change runs the interop suite, which checks the login the plugin and
-  # the client share, and skips the rest. A call without inputs runs every job.
+  # the client share, and skips the rest. A call without inputs runs every iOS job.
   workflow_call:
     inputs:
       skip-client-suites:
@@ -70,6 +93,57 @@ jobs:
       allowed_skips: 0
     secrets: inherit
 
+  # One job per platform rather than a matrix: a job-level `if` cannot read `matrix`. Each runs only from a manual
+  # dispatch that ticks its box: on `workflow_call` the input is absent, so the job is skipped. Never add a
+  # `workflow_call` input with one of these names: a manual run of integ_test.yml would then start the job.
+  auth-client-integration-tests-tvOS:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.integration-tvos }}
+    uses: ./.github/workflows/run_integration_tests.yml
+    with:
+      scheme: CognitoClientIntegrationTests
+      platform: tvOS
+      project_path: ./AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/CognitoClientHostApp/
+      resource_subfolder: auth
+      test_iterations: 2
+      timeout-minutes: 180
+      uninstall_before_retry: com.aws.amplify.cognitoclient.CognitoClientHostApp
+      cognito_client_ci_overlay: 'email-alias extended mfa-req-totp-sms'
+      enforce_no_skips: true
+      allowed_skips: 0
+    secrets: inherit
+
+  auth-client-integration-tests-watchOS:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.integration-watchos }}
+    uses: ./.github/workflows/run_integration_tests.yml
+    with:
+      scheme: CognitoClientIntegrationTests
+      platform: watchOS
+      project_path: ./AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/CognitoClientHostApp/
+      resource_subfolder: auth
+      test_iterations: 2
+      timeout-minutes: 180
+      uninstall_before_retry: com.aws.amplify.cognitoclient.CognitoClientHostApp
+      cognito_client_ci_overlay: 'email-alias extended mfa-req-totp-sms'
+      enforce_no_skips: true
+      allowed_skips: 0
+    secrets: inherit
+
+  auth-client-integration-tests-visionOS:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.integration-visionos }}
+    uses: ./.github/workflows/run_integration_tests.yml
+    with:
+      scheme: CognitoClientIntegrationTests
+      platform: visionOS
+      project_path: ./AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/CognitoClientHostApp/
+      resource_subfolder: auth
+      test_iterations: 2
+      timeout-minutes: 180
+      uninstall_before_retry: com.aws.amplify.cognitoclient.CognitoClientHostApp
+      cognito_client_ci_overlay: 'email-alias extended mfa-req-totp-sms'
+      enforce_no_skips: true
+      allowed_skips: 0
+    secrets: inherit
+
   auth-client-plugin-interop-tests:
     if: ${{ github.event.inputs.plugin-interop-ios != 'false' }}
     uses: ./.github/workflows/run_integration_tests.yml
@@ -109,6 +183,20 @@ jobs:
       xcode_version: 'latest'
       only_testing: ${{ matrix.test }}
       job_name_suffix: ' | ${{ matrix.name }}'
+    secrets: inherit
+
+  auth-client-ui-integration-test-visionOS:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.hostedui-visionos }}
+    uses: ./.github/workflows/run_integration_tests.yml
+    with:
+      scheme: CognitoClientUITests
+      platform: visionOS
+      project_path: ./AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/CognitoClientHostApp/
+      resource_subfolder: auth
+      timeout-minutes: 60
+      xcode_version: 'latest'
+      only_testing: CognitoClientUITests/HostedUISignInTests/testSignInSuccess
+      job_name_suffix: ' | SignIn'
     secrets: inherit
 
   auth-client-webauthn-integration-tests:
