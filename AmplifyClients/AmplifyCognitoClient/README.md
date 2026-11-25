@@ -73,11 +73,14 @@ or logging.
 Pin the release exactly: any release may change or remove this beta API. One version applies to the whole package,
 so the pin also sets the version of the Auth plugin and the other Amplify libraries your app uses.
 
+At a release tag the snippet names that release: the release process writes it. On the `main` branch, and at an
+unstable tag, the guide can be ahead of the release the snippet names, and `<version>` means no release has this API
+yet: read the guide at the tag you install, and install that tag. 2.64.0 and earlier have the older `AuthClient…`
+names.
+
 ```swift
 // Package.swift
 dependencies: [
-    // Replace <version> with the release this guide describes: the first after 2.64.0.
-    // 2.64.0 and earlier have the older `AuthClient…` API.
     .package(url: "https://github.com/aws-amplify/amplify-swift", exact: "<version>")
 ],
 targets: [
