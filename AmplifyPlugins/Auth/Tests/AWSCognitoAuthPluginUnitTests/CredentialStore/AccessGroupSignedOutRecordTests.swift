@@ -317,7 +317,7 @@ final class AccessGroupSignedOutRecordTests: XCTestCase, @unchecked Sendable {
     /// - Then:
     ///    - `.default` is `.signedOut`, its token provider throws `notSignedIn`, and the record is unchanged
     ///    - the default listing shows no `.default` row; with signed-out rows, `.default` is a signed-out row with no
-    ///      label or username, as after the client's own sign-out without a sidecar
+    ///      label or user, as after the client's own sign-out without a sidecar
     ///
     func testTheClientsDefaultSessionReadsThePluginsSignedOutRecordAsSignedOut() async throws {
         try makeStore(accessGroup: accessGroup).saveCredential(LongLivedCredentials.userPoolAndIdentityPool())
@@ -355,7 +355,7 @@ final class AccessGroupSignedOutRecordTests: XCTestCase, @unchecked Sendable {
         let row = try XCTUnwrap(withSignedOut.first { $0.sessionId == .default })
         XCTAssertEqual(row.kind, .signedOut)
         XCTAssertNil(row.label)
-        XCTAssertNil(row.username)
+        XCTAssertNil(row.user)
         XCTAssertEqual(sharedRecord(), signedOutRecord)
     }
 

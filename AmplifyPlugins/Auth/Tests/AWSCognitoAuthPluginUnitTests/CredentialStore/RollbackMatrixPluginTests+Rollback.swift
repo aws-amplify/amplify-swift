@@ -255,7 +255,7 @@ extension RollbackMatrixPluginTests {
         }
         XCTAssertNil(held.record.label)
         XCTAssertEqual(try client.storedSessions(), [
-            StoredSession(sessionId: .default, label: nil, username: "fixture-user", kind: .userPoolAndIdentityPool)
+            StoredSession(sessionId: .default, label: nil, user: AuthClientUser(username: "fixture-user", userId: "fixture-sub"), kind: .userPoolAndIdentityPool)
         ])
         guard case .unreadableSidecar = try client.setDefaultLabel("Mine") else {
             return XCTFail("A newer sidecar must not be labelled over")
@@ -331,7 +331,7 @@ extension RollbackMatrixPluginTests {
             case .released:
                 XCTAssertNotNil(keychain.value(service: pluginKeychainService, account: sidecarC), "\(binary)")
                 XCTAssertEqual(listed, [
-                    StoredSession(sessionId: .default, label: "Work", username: "fixture-user", kind: .signedOut)
+                    StoredSession(sessionId: .default, label: "Work", user: AuthClientUser(username: "fixture-user", userId: "fixture-sub"), kind: .signedOut)
                 ], "\(binary)")
             case .current:
                 XCTAssertNil(keychain.value(service: pluginKeychainService, account: sidecarC), "\(binary)")

@@ -122,7 +122,7 @@ final class AccessGroupRemovalRealKeychainTests: XCTestCase {
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
         let defaultRow = listed.first { $0.sessionId == .default }
         RealKeychain.report(self, "the client lists \(listed)")
-        XCTAssertTrue(defaultRow?.username == alice.username, "the client's listing is \(listed)")
+        XCTAssertTrue(defaultRow?.user?.username == alice.username, "the client's listing is \(listed)")
         XCTAssertEqual(defaultRow?.kind, .userPoolAndIdentityPool, "the client's listing is \(listed)")
 
         do {

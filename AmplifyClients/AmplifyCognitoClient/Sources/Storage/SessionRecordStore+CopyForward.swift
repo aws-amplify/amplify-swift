@@ -821,9 +821,7 @@ extension SessionRecordStore {
 
     /// `pendingCarriedRecord` as a listing row.
     func pendingCarryRow(for sessionId: SessionID) throws -> StoredSession? {
-        try pendingCarriedRecord(for: sessionId).map {
-            StoredSession(sessionId: sessionId, label: $0.label, username: $0.username, kind: $0.kind)
-        }
+        try pendingCarriedRecord(for: sessionId).map { row(sessionId, $0) }
     }
 
     private func performStorage<Value>(_ operation: String, _ body: () throws -> Value) throws -> Value {

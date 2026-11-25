@@ -86,7 +86,7 @@ final class SignOutTests: ClientIntegrationTestCase {
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         let row = try XCTUnwrap(listed.first { $0.sessionId == sessionId }, "the signed-out row is kept")
         XCTAssertEqual(row.kind, SessionKind.signedOut)
-        XCTAssertTrue(row.username == alice.username, "the signed-out row names alice")
+        XCTAssertTrue(row.user?.username == alice.username, "the signed-out row names alice")
         let visible = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
         XCTAssertFalse(visible.contains { $0.sessionId == sessionId }, "a signed-out row is hidden by default")
         assertNotAuthorized(await raw.refresh(refreshToken, deviceKey: deviceKey))

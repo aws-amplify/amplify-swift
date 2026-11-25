@@ -1479,7 +1479,7 @@ final class SessionCopyForwardTests: XCTestCase {
             dependencies: harness.dependencies
         )
 
-        XCTAssertEqual(listed, [StoredSession(sessionId: work, label: "Work", username: "alice", kind: .userPoolOnly)])
+        XCTAssertEqual(listed, [StoredSession(sessionId: work, label: "Work", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly)])
         XCTAssertEqual(try harness.store().read(work), .absent)
     }
 

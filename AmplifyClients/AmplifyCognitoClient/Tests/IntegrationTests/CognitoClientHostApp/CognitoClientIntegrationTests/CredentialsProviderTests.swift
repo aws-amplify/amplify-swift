@@ -113,7 +113,7 @@ final class CredentialsProviderTests: ClientIntegrationTestCase {
         let row = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
             .first { $0.sessionId == sessionId }
         XCTAssertEqual(row?.kind, .userPoolAndIdentityPool)
-        XCTAssertTrue(row?.username == aliceCredentials.username, "the row names another user")
+        XCTAssertTrue(row?.user?.username == aliceCredentials.username, "the row names another user")
         // As the plugin case ends: a signed-in fetch returns the user's tokens, identity and credentials.
         let session = try await client.fetchAuthSession()
         let tokens = try session.requireUserPoolTokens()

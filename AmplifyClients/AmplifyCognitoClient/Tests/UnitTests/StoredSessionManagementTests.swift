@@ -76,7 +76,7 @@ final class StoredSessionManagementTests: XCTestCase {
         XCTAssertEqual(signedIn.map(\.sessionId), [work])
         XCTAssertEqual(all.map(\.sessionId), [home, work])
         XCTAssertEqual(all.first?.label, "Home")
-        XCTAssertEqual(shared.map(\.username), ["carol"])
+        XCTAssertEqual(shared.map(\.user), [AuthClientUser(username: "carol", userId: "sub-carol")])
     }
 
     /// - Given: saved sessions, and a keychain whose listing fails as if locked

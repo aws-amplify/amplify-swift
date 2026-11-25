@@ -1694,8 +1694,8 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         let listing = try store(Self.bothPools).listing()
 
         XCTAssertEqual(listing.sessions, [
-            StoredSession(sessionId: home, label: "Home", username: "bob", kind: .userPoolAndIdentityPool),
-            StoredSession(sessionId: work, label: "Work", username: "alice", kind: .userPoolOnly)
+            StoredSession(sessionId: home, label: "Home", user: AuthClientUser(username: "bob", userId: "sub-bob"), kind: .userPoolAndIdentityPool),
+            StoredSession(sessionId: work, label: "Work", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly)
         ])
         XCTAssertEqual(listing.unreadable, [bad: .corrupt])
         XCTAssertEqual(try store(Self.bothPools).read(work), .absent, "listing carries nothing")

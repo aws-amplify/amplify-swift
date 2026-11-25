@@ -140,7 +140,7 @@ final class PluginSharedLoginTests: XCTestCase {
         XCTAssertEqual(records(), "plugin: present, sidecar: absent, leftover: absent", "restoring wrote a record")
         XCTAssertTrue(row(pluginAccount) == pluginRecord, "restoring changed the plugin's record")
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
-        XCTAssertTrue(listed.first { $0.sessionId == .default }?.username == alice.username, "`.default` is not listed as alice")
+        XCTAssertTrue(listed.first { $0.sessionId == .default }?.user?.username == alice.username, "`.default` is not listed as alice")
         try await InteropEnvironment.waitUntilReleased(.default)
 
         // A later plugin write, a forced refresh, is read by the next `.default` load.
@@ -204,7 +204,7 @@ final class PluginSharedLoginTests: XCTestCase {
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         XCTAssertFalse(listed.contains { $0.sessionId == sessionId }, "the named session is listed")
         let defaultRow = listed.first { $0.sessionId == .default }
-        XCTAssertTrue(defaultRow?.username == alice.username, "`.default` is not listed as alice from the plugin's record")
+        XCTAssertTrue(defaultRow?.user?.username == alice.username, "`.default` is not listed as alice from the plugin's record")
     }
 
     /// AD-3. The client's `.default` signs alice in, and the plugin's `fetchAuthSession` sees her after a relaunch.
@@ -324,7 +324,7 @@ final class PluginSharedLoginTests: XCTestCase {
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         let defaultRow = try XCTUnwrap(listed.first { $0.sessionId == .default }, "`.default`'s signed-out row is not listed")
         XCTAssertEqual(defaultRow.kind, SessionKind.signedOut)
-        XCTAssertTrue(defaultRow.username == alice.username, "`.default`'s signed-out row does not name alice")
+        XCTAssertTrue(defaultRow.user?.username == alice.username, "`.default`'s signed-out row does not name alice")
 
         try await relaunchPlugin()
 
@@ -455,7 +455,7 @@ final class PluginSharedLoginTests: XCTestCase {
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         let defaultRow = try XCTUnwrap(listed.first { $0.sessionId == .default }, "`.default`'s signed-out row is not listed")
         XCTAssertEqual(defaultRow.kind, SessionKind.signedOut)
-        XCTAssertTrue(defaultRow.username == alice.username, "`.default`'s signed-out row does not name alice")
+        XCTAssertTrue(defaultRow.user?.username == alice.username, "`.default`'s signed-out row does not name alice")
     }
 
     /// AD-8. The client's `.default` signs out a login the plugin signed in, and a relaunched plugin is signed out.
@@ -489,7 +489,7 @@ final class PluginSharedLoginTests: XCTestCase {
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         let defaultRow = listed.first { $0.sessionId == .default }
         XCTAssertTrue(defaultRow?.kind == .signedOut, "`.default` is not listed as a signed-out row")
-        XCTAssertTrue(defaultRow?.username == alice.username, "the sidecar does not name alice")
+        XCTAssertTrue(defaultRow?.user?.username == alice.username, "the sidecar does not name alice")
 
         try await relaunchPlugin()
 

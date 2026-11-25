@@ -612,7 +612,7 @@ It ships in the plugin release after 2.63.0; releases up to 2.63.0 delete the re
 AWSMobileClient migration, until a guest replaces the record: the plugin's own guest, or an app extension's, clears
 nothing, and a guest the client's `.default` fetches over it clears the old logins first, as over the client's own
 signed-out record. The client's `storedSessions(…, includingSignedOut: true)` in that access group lists `.default`
-as a signed-out row after such a sign-out, with no label or username unless the client saved them beside the record.
+as a signed-out row after such a sign-out, with no label or user unless the client saved them beside the record.
 After a configuration carry, such a sign-out survives a rollback to the build with the earlier configuration, since
 that build's rule carries the signed-out record over the earlier copy (the caveat in §18 remains without an access
 group). Under an access group, the transition without migration also counts the record, as it counts a login, so an

@@ -305,7 +305,8 @@ let rows = try await AmplifyCognitoClient.storedSessions(
     includingSignedOut: true
 )
 for row in rows {
-    let title = row.label ?? row.username ?? "Guest"
+    // `label` is the row's title. `user?.username` is Cognito's username, not a display name.
+    let title = row.label ?? row.user?.username ?? "Guest"
     let subtitle: String
     switch row.kind {
     case .userPoolOnly, .userPoolAndIdentityPool:
@@ -333,6 +334,12 @@ if let picked = rows.first {
 
 - A row says a session was saved. It cannot say the session still works: an expired refresh token is only found
   by using it.
+- `row.user` is the signed-in user, or a signed-out row's last user: the same `AuthClientUser` as `getCurrentUser()`
+  and `.signedIn(user)`. Match a row to a live client, or find one person signed in to two sessions, by
+  `user.userId`. It is `nil` for a guest or federated row, and for a row saved before rows kept the user's ID,
+  unless that row is signed in and its saved credentials still name the user.
+- `user.username` is Cognito's username, not a display name: often a UUID (a pool whose users sign in with an email
+  or phone number) or `<Provider>_<id>` (a user of another identity provider). Title rows with `label`.
 - Signed-out rows are listed only with `includingSignedOut: true`.
 - A session whose first sign-in stopped on a challenge is not listed until that sign-in completes.
 - `.default`'s row comes from the Auth plugin's saved login, with its label while the label belongs to the user the
@@ -341,7 +348,7 @@ if let picked = rows.first {
   writes the session itself. So if the plugin signs bob in over alice's session and then signs out, without the client
   running in between, the row still names alice, with alice's label. With an access group, the plugin's sign-out of a
   login saves the signed-out record (plugin releases after 2.63.0; earlier ones delete it), so with no such name beside
-  it `.default` is still listed with `includingSignedOut: true`, as a signed-out row without a label or username.
+  it `.default` is still listed with `includingSignedOut: true`, as a signed-out row without a label or user.
 - A row's kind follows the current configuration: after a change that removes the identity pool, `.default`'s copied
   login is listed as `.userPoolOnly`, and a copied guest or federated identity as signed out, as a named session is,
   although its saved bytes are the plugin's as they were.
@@ -1782,7 +1789,7 @@ current one:
 - A label goes with a copied login, and is deleted with a deleted one: no signed-out row is left under the old
   configuration for a login the user never signed out of. Two exceptions. When a plugin build applies a copying
   change first (a rollback to a plugin build that also changes the configuration), the plugin copies only the
-  login, so under the new configuration the session has no label, and a signed-out row has no label or username.
+  login, so under the new configuration the session has no label, and a signed-out row has no label or user.
   And a plugin release from before this client deletes the login but not the label, so after a rollback to one
   built with another configuration, and a roll-forward, the client can list a signed-out row for that login until
   it writes the session again.

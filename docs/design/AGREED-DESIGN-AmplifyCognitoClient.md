@@ -287,8 +287,9 @@ The app lists the saved sessions, renders a row each, and resumes the one the us
 ```swift
 // No network. Throws rather than returning [] if storage is unreadable.
 let rows = try await AmplifyCognitoClient.storedSessions(configuration: config)
-//  -> [ StoredSession(sessionId: "work", label: "Acme Corp", username: "alice@corp",     kind: .userPoolAndIdentityPool),
-//       StoredSession(sessionId: "home", label: nil,         username: "alice@personal", kind: .userPoolAndIdentityPool) ]
+//  -> [ StoredSession(sessionId: "work", label: "Acme Corp", user: AuthClientUser(username: "alice@corp", userId: "…"),     kind: .userPoolAndIdentityPool),
+//       StoredSession(sessionId: "home", label: nil,         user: AuthClientUser(username: "alice@personal", userId: "…"), kind: .userPoolAndIdentityPool) ]
+//  (Amended 2026-11-24, API follow-up 17: a row has `user`, not `username`; 14.6.)
 
 let client = try AmplifyCognitoClient(configuration: config, options: .init(sessionId: rows[0].sessionId))
 
@@ -339,7 +340,7 @@ func showAccountPicker() async throws {
     //    to the username, fall back to the session ID, which always exists.
     let rows = saved.map { session in
         AccountRow(id: session.sessionId,
-                   title: session.label ?? session.username ?? session.sessionId.stringValue,
+                   title: session.label ?? session.user?.username ?? session.sessionId.stringValue,
                    isGuest: session.kind == .guest)
     }
 
@@ -1503,11 +1504,11 @@ Every type this design adds, except the construction types 14.1 accounts for and
 public struct StoredSession: Sendable, Equatable {   // one row of the picker
     public let sessionId: SessionID         // to construct the Auth Client the user picked
     public let label: String?               // the only name a user recognises
-    public let username: String?            // fallback row title; nil for a guest row
+    public let user: AuthClientUser?        // the signed-in user, or a signed-out row's last user; nil for guest and federated rows
     public let kind: SessionKind            // to render or filter rows
 
     // For an app's test doubles.
-    public init(sessionId: SessionID, label: String?, username: String?, kind: SessionKind)
+    public init(sessionId: SessionID, label: String?, user: AuthClientUser?, kind: SessionKind)
 }
 
 // The client depends only on AmplifyFoundation and AmplifyFoundationBridge - never on
@@ -1622,6 +1623,12 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
 - **`SessionID.named("$default")` returns `.default`** (14.6), so a persisted `stringValue` always rebuilds its
   ID; every other spelling with a `$` is still refused.
 - **`StoredSession` has a public initializer**, for an app's test doubles, like the client's other result types.
+- **`StoredSession.user: AuthClientUser?` replaces `username: String?`** (14.6; API follow-up 17, 2026-11-24). It is
+  the signed-in user, or a signed-out row's last user, the same value as `getCurrentUser()` and `.signedIn(user)`,
+  so a row can be matched to a live client, or to another row of the same user, by `userId`. `nil` for guest and
+  federated rows, and for a row saved before records kept the user's ID, unless it is signed in and its saved
+  credentials still name the user (they are read offline). `user.username` is Cognito's username, often a UUID or
+  `<Provider>_<id>`, not a display name: the row's title is `label`. `signIn(username:)` stays required.
 - **`WebUIOptions` has `prompt` and `identityExpectation`** (9, 9.1), both off by default: `prompt` is `nil`, and
   `identityExpectation` is `.none`, `.matches(_:)` or `.distinctFromOtherSessions`. A returned user that doesn't
   meet the expectation is `unexpectedIdentity`, with nobody signed in.

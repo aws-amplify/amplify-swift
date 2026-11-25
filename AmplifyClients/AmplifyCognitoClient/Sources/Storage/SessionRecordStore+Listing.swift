@@ -28,7 +28,7 @@ extension SessionRecordStore {
         let unreadable: [SessionID: Unreadable]
     }
 
-    /// The saved sessions a picker renders, with no network call and without decoding credentials.
+    /// The saved sessions a picker renders, with no network call.
     ///
     /// `includingSignedOut: false` hides rows that were signed out and kept.
     ///
@@ -74,9 +74,9 @@ extension SessionRecordStore {
     /// disappears between the phases is simply gone.
     ///
     /// **`.default` is listed from the Auth plugin's record, its session record, and its sidecar**: its kind and
-    /// username are peeked from the plugin's stored format (`PluginRecordSummary`), its label is the sidecar's while
+    /// user are peeked from the plugin's stored format (`PluginRecordSummary`), its label is the sidecar's while
     /// the sidecar applies, and a signed-out or absent record beside a sidecar is a signed-out row with the sidecar's
-    /// label and last username. A plugin record of unrecognised shape is still listed, conservatively, and logged.
+    /// label and last user. A plugin record of unrecognised shape is still listed, conservatively, and logged.
     /// An `amplify.1.<ns>.$default.session` item, left by development builds, is never read or listed. A failed read
     /// of the plugin's record or the sidecar throws, like any row.
     ///
@@ -111,12 +111,7 @@ extension SessionRecordStore {
             }
             switch SessionRecordEnvelope.decode(data) {
             case .envelope(let envelope):
-                sessions.append(StoredSession(
-                    sessionId: sessionId,
-                    label: envelope.record.label,
-                    username: envelope.record.username,
-                    kind: envelope.record.kind
-                ))
+                sessions.append(row(sessionId, envelope.record))
             case .unsupportedSchema(let version):
                 unreadable[sessionId] = .unsupportedSchema(version: version)
             case .corrupt:
@@ -125,7 +120,7 @@ extension SessionRecordStore {
         }
 
         if let pending = try pluginConfiguration.flatMap({ try pendingPluginCarry(current: $0) }) {
-            sessions.append(StoredSession(sessionId: .default, label: pending.label, username: pending.username, kind: pending.kind))
+            sessions.append(row(.default, pending))
         } else if let defaultRow = try defaultRow(listedAccounts: accounts) {
             sessions.append(defaultRow)
         }
@@ -205,6 +200,23 @@ extension SessionRecordStore {
         kind == .userPoolOnly || kind == .userPoolAndIdentityPool
     }
 
+    /// The row of a record this build can read.
+    func row(_ sessionId: SessionID, _ record: SessionRecord) -> StoredSession {
+        StoredSession(sessionId: sessionId, label: record.label, user: user(of: record), kind: record.kind)
+    }
+
+    /// The user a record names: as stored, or, for a signed-in record saved before records kept a `userId`, as its
+    /// credentials name them, read offline from their stored format (`summarizeSharedRecord`). `nil` if neither
+    /// names one completely.
+    private func user(of record: SessionRecord) -> AuthClientUser? {
+        var (username, userId) = (record.username, record.userId)
+        if username == nil || userId == nil, Self.isSignedIn(record.kind), let credentials = record.credentials {
+            let saved = summarizeSharedRecord(credentials)
+            (username, userId) = (username ?? saved.username, userId ?? saved.userId)
+        }
+        return CredentialSummary(kind: record.kind, username: username, userId: userId).user
+    }
+
     /// One row per session of this app that has no record here but one a restore would carry forward, from
     /// the namespace its marker records.
     private func previousConfigurationRows(listedAccounts accounts: [String], excluding present: Set<SessionID>) throws -> [StoredSession] {
@@ -229,15 +241,15 @@ extension SessionRecordStore {
         let data = readsRecord ? try fetchSharedRecord(operation: "read the default session's saved login") : nil
         let sidecar = try readSidecar().meta
         guard let data else {
-            return sidecar.map { StoredSession(sessionId: .default, label: $0.label, username: $0.username, kind: .signedOut) }
+            return sidecar.map { row(.default, Self.signedOutRow($0)) }
         }
         guard let record = defaultRecord(holding: data, sidecar: sidecar) else {
             ClientLog.logger(ClientLog.sessionRecordStore).warn(
                 "The Auth plugin's session record has a shape this version does not recognise. Listing it as "
-                    + "the default session with kind \(PluginRecordSummary.unrecognisedKind) and no username."
+                    + "the default session with kind \(PluginRecordSummary.unrecognisedKind) and no user."
             )
-            return StoredSession(sessionId: .default, label: nil, username: nil, kind: PluginRecordSummary.unrecognisedKind)
+            return StoredSession(sessionId: .default, label: nil, user: nil, kind: PluginRecordSummary.unrecognisedKind)
         }
-        return StoredSession(sessionId: .default, label: record.label, username: record.username, kind: record.kind)
+        return row(.default, record)
     }
 }

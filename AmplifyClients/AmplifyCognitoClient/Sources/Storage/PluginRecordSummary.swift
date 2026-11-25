@@ -29,7 +29,8 @@ struct PluginRecordSummary: Equatable, Sendable {
     let kind: SessionKind
     let username: String?
 
-    /// The user pool `sub`, for the signed-in kinds. Not listed; it tells two users apart.
+    /// The user pool `sub`, for the signed-in kinds: listed in `.default`'s row (`StoredSession.user`), and what tells
+    /// two users apart.
     var userId: String?
 
     /// The identity pool identity, when the record has one. Not listed; it tells two guests apart.

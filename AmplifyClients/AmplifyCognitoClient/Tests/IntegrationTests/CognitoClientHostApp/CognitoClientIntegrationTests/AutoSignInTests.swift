@@ -68,7 +68,7 @@ final class AutoSignInTests: ClientSignUpTestCase {
         let firstEvent = try await Self.firstEvent(of: events)
         XCTAssertEqual(firstEvent, .signedIn)
         let stored = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
-        XCTAssertTrue(stored.first { $0.sessionId == client.sessionId }?.username == user.username, "the row names the user")
+        XCTAssertTrue(stored.first { $0.sessionId == client.sessionId }?.user?.username == user.username, "the row names the user")
         XCTAssertFalse(stored.contains { $0.sessionId == other.sessionId }, "the other session stores nothing")
         let otherState = await other.currentSessionState()
         XCTAssertEqual(otherState, .signedOut)

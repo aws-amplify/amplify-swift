@@ -276,7 +276,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
         try await assertSignedOutWithNoRow(sessionId, over: standard, accessGroup: IntegrationTestEnvironment.sharedAccessGroup(), "from the shared group")
 
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: standard)
-        XCTAssertTrue(listed.first { $0.sessionId == sessionId }?.username == aliceCredentials.username, "the default group keeps it")
+        XCTAssertTrue(listed.first { $0.sessionId == sessionId }?.user?.username == aliceCredentials.username, "the default group keeps it")
     }
 
     /// A session in the shared access group is not visible from the default group (CS-5; the
@@ -298,7 +298,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
         try await assertSignedOutWithNoRow(sessionId, over: standard, "from the default group")
 
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: standard, accessGroup: shared)
-        XCTAssertTrue(listed.first { $0.sessionId == sessionId }?.username == bob.username, "the shared group keeps it")
+        XCTAssertTrue(listed.first { $0.sessionId == sessionId }?.user?.username == bob.username, "the shared group keeps it")
     }
 
     /// A session in one shared access group is not visible from another (CS-6; the plugin's
@@ -325,7 +325,7 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
         )
 
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: standard, accessGroup: shared)
-        XCTAssertTrue(listed.first { $0.sessionId == sessionId }?.username == bob.username, "the shared group keeps it")
+        XCTAssertTrue(listed.first { $0.sessionId == sessionId }?.user?.username == bob.username, "the shared group keeps it")
     }
 
     // MARK: - Helpers

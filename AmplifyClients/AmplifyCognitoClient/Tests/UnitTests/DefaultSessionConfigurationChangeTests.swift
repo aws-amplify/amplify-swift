@@ -318,7 +318,7 @@ final class DefaultSessionConfigurationChangeTests: XCTestCase {
         for (name, listing) in [("before the restore", beforeRestore), ("after the restore", afterRestore)] {
             let row = listing.first { $0.sessionId == .default }
             XCTAssertEqual(row?.kind, .userPoolOnly, name)
-            XCTAssertEqual(row?.username, "alice", name)
+            XCTAssertEqual(row?.user?.username, "alice", name)
         }
         XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.userPoolOnly)), old)
         XCTAssertEqual((credentials as? CredentialsError)?.isNotConfigured, true, "\(String(describing: credentials))")

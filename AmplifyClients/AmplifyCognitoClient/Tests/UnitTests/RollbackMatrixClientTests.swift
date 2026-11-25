@@ -139,7 +139,7 @@ final class RollbackMatrixClientTests: XCTestCase {
 
         let afterAliceRefreshed = try await listed()
         XCTAssertEqual(afterAliceRefreshed, [
-            StoredSession(sessionId: .default, label: "Work", username: "alice", kind: .userPoolAndIdentityPool)
+            StoredSession(sessionId: .default, label: "Work", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolAndIdentityPool)
         ])
 
         let bob = try await live.signedInPayload("bob", on: engine)
@@ -147,7 +147,7 @@ final class RollbackMatrixClientTests: XCTestCase {
 
         let afterBob = try await listed()
         XCTAssertEqual(afterBob, [
-            StoredSession(sessionId: .default, label: nil, username: "bob", kind: .userPoolAndIdentityPool)
+            StoredSession(sessionId: .default, label: nil, user: AuthClientUser(username: "bob", userId: "sub-bob"), kind: .userPoolAndIdentityPool)
         ])
         XCTAssertNil(try harness.storedRecord(.default)?.label)
         let restored = try makeClient()
@@ -220,7 +220,7 @@ final class RollbackMatrixClientTests: XCTestCase {
 
         let rows = try await listed(includingSignedOut: true)
         XCTAssertEqual(rows, [
-            StoredSession(sessionId: .default, label: nil, username: "alice", kind: .userPoolAndIdentityPool)
+            StoredSession(sessionId: .default, label: nil, user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolAndIdentityPool)
         ])
     }
 

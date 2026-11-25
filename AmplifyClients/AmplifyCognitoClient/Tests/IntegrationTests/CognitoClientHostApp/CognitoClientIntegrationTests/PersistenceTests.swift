@@ -105,7 +105,7 @@ final class PersistenceTests: ClientIntegrationTestCase {
         let sharedListing = try await AmplifyCognitoClient.storedSessions(configuration: configuration, accessGroup: shared)
         let defaultListing = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
 
-        XCTAssertTrue(sharedListing.first { $0.sessionId == sessionId }?.username == bob.username, "the shared listing names bob")
+        XCTAssertTrue(sharedListing.first { $0.sessionId == sessionId }?.user?.username == bob.username, "the shared listing names bob")
         XCTAssertFalse(defaultListing.contains { $0.sessionId == sessionId }, "the default group does not list a shared-group session")
 
         let recorder = RecordingHTTPClient()

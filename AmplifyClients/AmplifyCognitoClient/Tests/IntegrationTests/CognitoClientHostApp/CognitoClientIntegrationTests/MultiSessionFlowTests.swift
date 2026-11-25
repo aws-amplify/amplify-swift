@@ -119,7 +119,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         let withSignedOut = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         let aliceRow = try XCTUnwrap(withSignedOut.first { $0.sessionId == aliceId })
         XCTAssertEqual(aliceRow.kind, SessionKind.signedOut)
-        XCTAssertTrue(aliceRow.username == users.alice.username, "the signed-out row names alice")
+        XCTAssertTrue(aliceRow.user?.username == users.alice.username, "the signed-out row names alice")
         let withoutSignedOut = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
         XCTAssertFalse(withoutSignedOut.contains { $0.sessionId == aliceId }, "a signed-out row is hidden by default")
         _ = try await bob.credentialsProvider.resolve()
@@ -163,7 +163,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         let pluginRecordWritten = try !IntegrationTestEnvironment.rawKeychainAccounts().contains(pluginAccount)
         if pluginRecordWritten {
             let status = RealKeychain.add(
-                #"{"userPoolOnly":{"signedInData":{"username":"plugin-probe"}}}"#,
+                #"{"userPoolOnly":{"signedInData":{"username":"plugin-probe","userId":"plugin-probe-sub"}}}"#,
                 account: pluginAccount,
                 service: IntegrationTestEnvironment.sessionService
             )
@@ -179,9 +179,9 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
 
         XCTAssertEqual(recorder.requests, [], "listing sessions makes no network call")
         let byId = Dictionary(uniqueKeysWithValues: stored.map { ($0.sessionId, $0) })
-        XCTAssertTrue(byId[aliceId]?.username == users.alice.username, "alice's row names another user")
+        XCTAssertTrue(byId[aliceId]?.user?.username == users.alice.username, "alice's row names another user")
         XCTAssertEqual(byId[aliceId]?.label, "Work")
-        XCTAssertTrue(byId[bobId]?.username == users.bob.username, "bob's row names another user")
+        XCTAssertTrue(byId[bobId]?.user?.username == users.bob.username, "bob's row names another user")
         XCTAssertNil(byId[bobId]?.label)
         // A `$default.session` record is a development build's leftover, never `.default`'s record.
         let v1Ids = try Set(IntegrationTestEnvironment.rawKeychainAccounts().compactMap { account -> SessionID? in
@@ -198,7 +198,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
             )
         }
         if pluginRecordWritten {
-            XCTAssertEqual(byId[.default]?.username, "plugin-probe", "`.default` is not listed from the plugin's record")
+            XCTAssertEqual(byId[.default]?.user?.username, "plugin-probe", "`.default` is not listed from the plugin's record")
         }
     }
 

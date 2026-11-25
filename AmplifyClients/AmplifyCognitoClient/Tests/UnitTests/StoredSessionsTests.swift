@@ -75,34 +75,68 @@ final class StoredSessionsTests: XCTestCase {
         XCTAssertFalse(keychain.hasMutations)
     }
 
-    /// - Given: a signed-in session with a label and a guest session
+    /// - Given: a signed-in session with a label, a guest session and a federated session
     /// - When: saved sessions are listed
     /// - Then:
-    ///    - each row carries the stored label, username and kind, and the guest row has no username
+    ///    - each row carries the stored label and kind
+    ///    - the signed-in row's user is the record's username and user ID; the guest and federated rows have none
     func testRowsCarryTheListingMetadata() throws {
-        try store.write(StorageFixtures.signedIn(label: "Acme Corp", username: "alice@corp"), for: id("work"), expecting: nil)
+        try store.write(StorageFixtures.signedIn(label: "Acme Corp", username: "alice@corp", userId: "sub-alice"), for: id("work"), expecting: nil)
         try store.write(StorageFixtures.guest, for: id("browse"), expecting: nil)
+        let federated = SessionRecord(label: nil, username: nil, kind: .federated, credentials: PluginRecordFixtures.identityPoolWithFederation)
+        try store.write(federated, for: id("partner"), expecting: nil)
 
         XCTAssertEqual(try store.storedSessions(), [
-            StoredSession(sessionId: try id("browse"), label: nil, username: nil, kind: .guest),
-            StoredSession(sessionId: try id("work"), label: "Acme Corp", username: "alice@corp", kind: .userPoolAndIdentityPool)
+            StoredSession(sessionId: try id("browse"), label: nil, user: nil, kind: .guest),
+            StoredSession(sessionId: try id("partner"), label: nil, user: nil, kind: .federated),
+            StoredSession(
+                sessionId: try id("work"),
+                label: "Acme Corp",
+                user: AuthClientUser(username: "alice@corp", userId: "sub-alice"),
+                kind: .userPoolAndIdentityPool
+            )
         ])
     }
 
     /// - Given: two signed-in sessions, one of which is then signed out
     /// - When: saved sessions are listed with and without `includingSignedOut`
     /// - Then:
-    ///    - the default hides the signed-out row; `includingSignedOut: true` shows it with its label
+    ///    - the default hides the signed-out row; `includingSignedOut: true` shows it with its label and its last
+    ///      user
     func testSignedOutRowsAreHiddenByDefault() throws {
-        try store.write(StorageFixtures.signedIn(label: "Acme Corp"), for: id("work"), expecting: nil)
-        try store.write(StorageFixtures.signedIn(), for: id("home"), expecting: nil)
+        let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+        try store.write(StorageFixtures.signedIn(label: "Acme Corp", userId: alice.userId), for: id("work"), expecting: nil)
+        try store.write(StorageFixtures.signedIn(userId: alice.userId), for: id("home"), expecting: nil)
         XCTAssertEqual(try store.signOut(id("work")), .signedOut)
 
         XCTAssertEqual(try store.storedSessions().map(\.sessionId), [try id("home")])
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: try id("home"), label: nil, username: "alice", kind: .userPoolAndIdentityPool),
-            StoredSession(sessionId: try id("work"), label: "Acme Corp", username: "alice", kind: .signedOut)
+            StoredSession(sessionId: try id("home"), label: nil, user: alice, kind: .userPoolAndIdentityPool),
+            StoredSession(sessionId: try id("work"), label: "Acme Corp", user: alice, kind: .signedOut)
         ])
+    }
+
+    /// A record saved before records kept the user's ID names its user only in its credentials.
+    ///
+    /// - Given: three records with a username and no user ID: one signed in whose credentials name the user, one
+    ///   signed in whose credentials cannot be read offline, and one signed out
+    /// - When: saved sessions are listed
+    /// - Then:
+    ///    - the first row's user is read from its credentials
+    ///    - the other two rows have no user, and nothing is written
+    func testARecordWithoutAUserIdNamesTheUserItsCredentialsHold() throws {
+        let readable = SessionRecord(label: nil, username: pluginUsername, kind: .userPoolOnly, credentials: PluginRecordFixtures.userPoolOnly)
+        try store.write(readable, for: id("readable"), expecting: nil)
+        try store.write(StorageFixtures.signedIn(), for: id("opaque"), expecting: nil)
+        try store.write(.signedOut(label: nil, username: "alice"), for: id("gone"), expecting: nil)
+        keychain.resetLogs()
+
+        XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
+            StoredSession(sessionId: try id("gone"), label: nil, user: nil, kind: .signedOut),
+            StoredSession(sessionId: try id("opaque"), label: nil, user: nil, kind: .userPoolAndIdentityPool),
+            StoredSession(sessionId: try id("readable"), label: nil, user: pluginUser, kind: .userPoolOnly)
+        ])
+        XCTAssertFalse(keychain.hasMutations)
     }
 
     // MARK: The plugin's record, listed as `.default`
@@ -123,6 +157,9 @@ final class StoredSessionsTests: XCTestCase {
     /// The plugin fixtures' user.
     private let pluginUserId = "1234567890"
     private let pluginUsername = "alice@corp"
+    private var pluginUser: AuthClientUser {
+        AuthClientUser(username: pluginUsername, userId: pluginUserId)
+    }
 
     private func putSidecar(label: String?, username: String?, userId: String?) throws {
         let meta = DefaultSessionMeta(lastWriteTimestamp: TestClock.start, label: label, username: username, userId: userId)
@@ -135,21 +172,21 @@ final class StoredSessionsTests: XCTestCase {
     /// - Given: only the plugin's record, in each of its signed-in shapes as the plugin writes them
     /// - When: saved sessions are listed
     /// - Then:
-    ///    - there is one `.default` row with the mapped kind, the signed-in username for the user-pool
+    ///    - there is one `.default` row with the mapped kind, the signed-in user for the user-pool
     ///      shapes and none otherwise, no label, and nothing is written
     func testPluginOnlyRecordIsListedAsTheDefaultSession() throws {
-        let cases: [(Data, SessionKind, String?)] = [
-            (PluginRecordFixtures.userPoolOnly, .userPoolOnly, "alice@corp"),
-            (PluginRecordFixtures.userPoolAndIdentityPool, .userPoolAndIdentityPool, "alice@corp"),
+        let cases: [(Data, SessionKind, AuthClientUser?)] = [
+            (PluginRecordFixtures.userPoolOnly, .userPoolOnly, pluginUser),
+            (PluginRecordFixtures.userPoolAndIdentityPool, .userPoolAndIdentityPool, pluginUser),
             (PluginRecordFixtures.identityPoolOnly, .guest, nil),
             (PluginRecordFixtures.identityPoolWithFederation, .federated, nil)
         ]
-        for (record, kind, username) in cases {
+        for (record, kind, user) in cases {
             keychain.put(record, pluginAccount)
 
             XCTAssertEqual(
                 try store.storedSessions(),
-                [StoredSession(sessionId: .default, label: nil, username: username, kind: kind)],
+                [StoredSession(sessionId: .default, label: nil, user: user, kind: kind)],
                 "\(kind)"
             )
         }
@@ -176,7 +213,7 @@ final class StoredSessionsTests: XCTestCase {
         try putSidecar(label: "Home", username: pluginUsername, userId: pluginUserId)
 
         XCTAssertEqual(try store.storedSessions(), [
-            StoredSession(sessionId: .default, label: "Home", username: pluginUsername, kind: .userPoolAndIdentityPool)
+            StoredSession(sessionId: .default, label: "Home", user: pluginUser, kind: .userPoolAndIdentityPool)
         ])
         XCTAssertFalse(keychain.hasMutations)
     }
@@ -193,7 +230,7 @@ final class StoredSessionsTests: XCTestCase {
         let sidecar = keychain.value(sidecarAccount)
 
         XCTAssertEqual(try store.storedSessions(), [
-            StoredSession(sessionId: .default, label: nil, username: pluginUsername, kind: .userPoolAndIdentityPool)
+            StoredSession(sessionId: .default, label: nil, user: pluginUser, kind: .userPoolAndIdentityPool)
         ])
         XCTAssertEqual(keychain.value(sidecarAccount), sidecar)
     }
@@ -208,7 +245,22 @@ final class StoredSessionsTests: XCTestCase {
 
         XCTAssertEqual(try store.storedSessions(), [])
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: "Home", username: pluginUsername, kind: .signedOut)
+            StoredSession(sessionId: .default, label: "Home", user: pluginUser, kind: .signedOut)
+        ])
+    }
+
+    /// A user needs both names: a sidecar saved before it kept the user's ID gives the row no user.
+    ///
+    /// - Given: the plugin's record signed out, and a sidecar with a label and alice's username but no user ID
+    /// - When: saved sessions are listed with `includingSignedOut`
+    /// - Then:
+    ///    - the signed-out row keeps the label and has no user
+    func testASignedOutDefaultRowWhoseSidecarHasNoUserIdHasNoUser() throws {
+        keychain.put(PluginRecordFixtures.noCredentials, pluginAccount)
+        try putSidecar(label: "Home", username: pluginUsername, userId: nil)
+
+        XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
+            StoredSession(sessionId: .default, label: "Home", user: nil, kind: .signedOut, state: .signedOut)
         ])
     }
 
@@ -224,7 +276,7 @@ final class StoredSessionsTests: XCTestCase {
 
         XCTAssertEqual(try store.storedSessions(), [])
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: "Home", username: pluginUsername, kind: .signedOut)
+            StoredSession(sessionId: .default, label: "Home", user: pluginUser, kind: .signedOut)
         ])
     }
 
@@ -259,7 +311,7 @@ final class StoredSessionsTests: XCTestCase {
         let listing = try store.listing()
 
         XCTAssertEqual(listing.sessions, [
-            StoredSession(sessionId: .default, label: nil, username: pluginUsername, kind: .userPoolAndIdentityPool)
+            StoredSession(sessionId: .default, label: nil, user: pluginUser, kind: .userPoolAndIdentityPool)
         ])
         XCTAssertEqual(listing.unreadable, [:])
     }
@@ -273,7 +325,7 @@ final class StoredSessionsTests: XCTestCase {
 
         XCTAssertEqual(try store.storedSessions(), [])
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: nil, username: nil, kind: .signedOut)
+            StoredSession(sessionId: .default, label: nil, user: nil, kind: .signedOut)
         ])
     }
 
@@ -283,7 +335,7 @@ final class StoredSessionsTests: XCTestCase {
     ///   and that is not JSON
     /// - When: saved sessions are listed
     /// - Then:
-    ///    - each is still a `.default` row, as `.userPoolOnly` with no username
+    ///    - each is still a `.default` row, as `.userPoolOnly` with no user
     func testUnrecognisedPluginRecordIsListedConservatively() throws {
         let shapes = [
             #"{"userPoolWithPasskey":{"signedInData":{"username":"alice"}}}"#,
@@ -296,7 +348,7 @@ final class StoredSessionsTests: XCTestCase {
 
             XCTAssertEqual(
                 try store.storedSessions(),
-                [StoredSession(sessionId: .default, label: nil, username: nil, kind: .userPoolOnly)],
+                [StoredSession(sessionId: .default, label: nil, user: nil, kind: .userPoolOnly)],
                 shape
             )
         }

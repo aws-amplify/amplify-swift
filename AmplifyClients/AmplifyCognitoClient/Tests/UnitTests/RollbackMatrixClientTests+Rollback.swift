@@ -335,7 +335,7 @@ extension RollbackMatrixClientTests {
         client = nil
         await harness.waitForBaseline()
 
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: nil, username: "alice", kind: .userPoolAndIdentityPool)])
+        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: nil, user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolAndIdentityPool)])
         XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(signedOut, .complete)
         XCTAssertEqual(harness.keychain.value(pluginAccount), try JSONEncoder().encode(AmplifyCredentials.noCredentials))
@@ -397,7 +397,7 @@ extension RollbackMatrixClientTests {
             case .released:
                 XCTAssertNotNil(harness.keychain.value(sidecarAccount), "\(binary)")
                 XCTAssertEqual(listed, [
-                    StoredSession(sessionId: .default, label: "Work", username: "alice", kind: .signedOut)
+                    StoredSession(sessionId: .default, label: "Work", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut)
                 ], "\(binary)")
             case .current:
                 XCTAssertNil(harness.keychain.value(sidecarAccount), "\(binary)")

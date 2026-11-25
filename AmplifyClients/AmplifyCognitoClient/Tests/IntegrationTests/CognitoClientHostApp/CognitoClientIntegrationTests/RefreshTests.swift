@@ -153,7 +153,7 @@ final class RefreshTests: ClientIntegrationTestCase {
             let state = await b.currentSessionState()
             XCTAssertState(state, .signedIn(user), "an expired session stays signed in as its user")
             let listed = try await AmplifyCognitoClient.storedSessions(configuration: poolConfiguration)
-            XCTAssertTrue(listed.first { $0.sessionId == sessionB }?.username == fresh.username, "the expired session's row is kept")
+            XCTAssertTrue(listed.first { $0.sessionId == sessionB }?.user?.username == fresh.username, "the expired session's row is kept")
             let credentialsError = await Expect.credentialsError("an expired session's AWS credentials") {
                 try await b.credentialsProvider.resolve()
             }

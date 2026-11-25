@@ -9,9 +9,9 @@ import Foundation
 
 /// One row of an account picker: a session saved on this device.
 ///
-/// Built from the saved record's listing metadata alone, with no network call and without decoding
-/// credentials. A row says a session was saved and who it belonged to; it cannot say the session still
-/// works, because refresh-token expiry is only discovered by using it.
+/// Built from the saved record alone, with no network call. A row says a session was saved and who it
+/// belonged to; it cannot say the session still works, because refresh-token expiry is only discovered by
+/// using it.
 @_spi(AmplifyExperimental)
 public struct StoredSession: Sendable, Equatable {
 
@@ -27,17 +27,24 @@ public struct StoredSession: Sendable, Equatable {
     /// signs back in, unless a client wrote the session for the other user meanwhile, which clears it.
     public let label: String?
 
-    /// A fallback row title. `nil` for a guest row, and for a record that never had a user.
-    public let username: String?
+    /// Who the row belongs to: the signed-in user, or a signed-out row's last user. The same value as
+    /// `getCurrentUser()` and `AuthSessionState.signedIn(_:)`, so `userId` matches a row to a live client, or to
+    /// another row of the same user. `nil` for a guest or federated row, for a row that never had a user, and for a
+    /// row saved before records kept the user's ID, unless it is signed in and its saved credentials still name
+    /// the user.
+    ///
+    /// `user.username` is Cognito's username, not a display name: often a UUID, or `<Provider>_<id>` for a user
+    /// of another identity provider. The row's title is `label`.
+    public let user: AuthClientUser?
 
     /// What the saved record is, for rendering or filtering rows.
     public let kind: SessionKind
 
     /// Public so an app can build one for a test double; the client builds its own.
-    public init(sessionId: SessionID, label: String?, username: String?, kind: SessionKind) {
+    public init(sessionId: SessionID, label: String?, user: AuthClientUser?, kind: SessionKind) {
         self.sessionId = sessionId
         self.label = label
-        self.username = username
+        self.user = user
         self.kind = kind
     }
 }

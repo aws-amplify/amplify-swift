@@ -510,8 +510,13 @@ enum StorageFixtures {
     /// Stand-in for the plugin's serialized `AmplifyCredentials`: this layer treats it as opaque bytes.
     static let pluginCredentials = Data(#"{"userPoolAndIdentityPool":{"signedInData":{"username":"alice"}}}"#.utf8)
 
-    static func signedIn(label: String? = nil, username: String = "alice", credentials: String = "tokens-v1") -> SessionRecord {
-        SessionRecord(label: label, username: username, kind: .userPoolAndIdentityPool, credentials: Data(credentials.utf8))
+    static func signedIn(
+        label: String? = nil,
+        username: String = "alice",
+        userId: String? = nil,
+        credentials: String = "tokens-v1"
+    ) -> SessionRecord {
+        SessionRecord(label: label, username: username, userId: userId, kind: .userPoolAndIdentityPool, credentials: Data(credentials.utf8))
     }
 
     static let guest = SessionRecord(label: nil, username: nil, kind: .guest, credentials: Data("guest-credentials".utf8))
@@ -524,11 +529,13 @@ enum StorageFixtures {
 
 /// The Auth plugin's stored record in each of its shapes. Captured by encoding the plugin's own
 /// `AmplifyCredentials` with `JSONEncoder` (as `AWSCognitoAuthCredentialStore` stores it) on
-/// 2026-09-24; nesting and key spellings are verbatim, token and credential values are shortened.
+/// 2026-09-24; nesting and key spellings are verbatim, token and credential values are shortened. The signed-in
+/// data's `"deviceMetadata":{"noData":{}}` was added by hand on 2026-11-24, spelled as in the plugin's frozen
+/// payloads (`amplifyCredentials/*.payload.json`): the capture lacked it, and the engine decodes none without it.
 enum PluginRecordFixtures {
     private static let signedInData = #"""
     {"isRefreshTokenExpired":false,"signedInDate":811967964.567444,"userId":"1234567890",\#
-    "signInMethod":{"apiBased":{"_0":{"type":"USER_SRP_AUTH"}}},"username":"alice@corp",\#
+    "signInMethod":{"apiBased":{"_0":{"type":"USER_SRP_AUTH"}}},"username":"alice@corp","deviceMetadata":{"noData":{}},\#
     "cognitoUserPoolTokens":{"idToken":"id","accessToken":"access","refreshToken":"refresh","expiration":811968085.5}}
     """#
     private static let awsCredentials =

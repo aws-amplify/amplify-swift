@@ -216,7 +216,7 @@ final class PluginCarriedAndSharedGroupLoginTests: XCTestCase {
         XCTAssertNotNil(value(sidecar, service: sharedService, group: sharedGroup), "the client wrote no sidecar on S")
         XCTAssertNil(value(login), "the client wrote a login to the unshared service")
         let onTheGroup = try await AmplifyCognitoClient.storedSessions(configuration: configuration, accessGroup: sharedGroup)
-        XCTAssertTrue(onTheGroup.first { $0.sessionId == .default }?.username == alice.username, "`.default` is not listed as alice on S")
+        XCTAssertTrue(onTheGroup.first { $0.sessionId == .default }?.user?.username == alice.username, "`.default` is not listed as alice on S")
         let groupLess = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         XCTAssertFalse(groupLess.contains { $0.sessionId == .default }, "`.default` is listed with no access group")
 
@@ -285,7 +285,7 @@ final class PluginCarriedAndSharedGroupLoginTests: XCTestCase {
         )
         let defaultRow = try XCTUnwrap(listed.first { $0.sessionId == .default }, "`.default`'s signed-out row is not listed on S")
         XCTAssertEqual(defaultRow.kind, SessionKind.signedOut)
-        XCTAssertTrue(defaultRow.username == alice.username, "`.default`'s signed-out row does not name alice")
+        XCTAssertTrue(defaultRow.user?.username == alice.username, "`.default`'s signed-out row does not name alice")
 
         try await relaunchPlugin(accessGroup: sharedGroup)
 
