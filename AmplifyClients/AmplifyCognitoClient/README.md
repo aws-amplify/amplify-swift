@@ -172,14 +172,19 @@ let client = try AmplifyCognitoClient(
 | | |
 |---|---|
 | `SessionID.default` | The single-account session. It is also the only session that uses the Auth plugin's saved login: it reads and writes the plugin's own record (see [Moving from the Auth plugin](#moving-from-the-auth-plugin)) |
-| `SessionID.named(_:)` | An ID your app chooses: 1 to 64 characters from `A-Z a-z 0-9 _ -`, case-sensitive. Throws `AuthClientError.invalidSessionID` otherwise |
-| `SessionID.new()` | An ID the library mints. Each call returns a new one, so save it |
+| `SessionID.named(_:label:)` | An ID your app chooses: 1 to 64 characters from `A-Z a-z 0-9 _ -`, case-sensitive. Throws `AuthClientError.invalidSessionID` otherwise |
+| `SessionID.new(label:)` | An ID the library mints. Each call returns a new one, so save it |
 
 Use an opaque ID (`.new()`, or a tenant or workspace ID), not a username or `sub`: session IDs appear in error
 descriptions.
 
-To save an ID, store its `stringValue` and rebuild it with `named(_:)`. `named("$default")` gives `.default`, so a
-saved `.default` comes back too. `SessionID` is also `Codable`.
+`label` is optional: the picker label the session's row gets at a sign-in, when the row has none (see [Labels](#labels)). It is not
+part of the ID. Two IDs that differ only in label are equal and name the same session, and `.default` has none.
+
+To save an ID, store its `stringValue` and rebuild it with `named(_:label:)`. `named("$default")` gives `.default`,
+so a saved `.default` comes back too. `SessionID` is also `Codable`, as its `stringValue`. Neither way saves the
+label: the saved row has it (`StoredSession.label`) once a sign-in has saved it. Until then, pass the label again
+when you rebuild the ID.
 
 Saved sessions, `.default` and named ones alike, live in the keychain, so on iOS they survive the app's uninstall and
 reinstall, as the Auth plugin's saved login does: a reinstalled app finds them as they were, signed in or not. An ID
@@ -235,6 +240,23 @@ Rules:
 A label is the text your account picker shows for a session. The library cannot invent it. It survives sign-out,
 and is cleared when a different user signs in to the session.
 
+There are three ways to set one, each for its own moment:
+
+```swift
+// When the session is created, before anyone has signed in: saved with the row at a sign-in, when it has no label.
+let work = try AmplifyCognitoClient(
+    configuration: configuration,
+    options: .init(sessionId: .new(label: "Work"))
+)
+
+// Later, through the session's client.
+try await work.setSessionLabel("Work")
+try await work.setSessionLabel(nil) // clear it
+
+// From an account picker, for any saved session, without building a client for it.
+try await AmplifyCognitoClient.setSessionLabel("Work", sessionId: row.sessionId, configuration: configuration)
+```
+
 A label is bound to the session's user:
 
 - It is kept when the same user signs in again after a sign-out.
@@ -242,18 +264,27 @@ A label is bound to the session's user:
   signs in. A label set on a signed-out row belongs to the user who signed out: another user's sign-in drops it.
 - It is dropped when another user, or a guest, takes the session. For example, alice's session is labelled "Work";
   alice signs out and bob signs in to the same session: the label is gone, and bob's row has no label until the app
-  sets one.
+  sets one, unless the session ID was created with one (below).
 - For `.default` the label is kept beside the plugin's record, which has no room for it. It is hidden while the
   plugin's record holds another user, for example because the plugin signed bob in over alice's session. See
   [Labels and the signed-out row after a plugin action](#labels-and-the-signed-out-row-after-a-plugin-action).
 
-```swift
-try await work.setSessionLabel("Work")
-try await work.setSessionLabel(nil) // clear it
+The label a session ID was created with (`SessionID.named(_:label:)`, `SessionID.new(label:)`) is saved when a
+sign-in through that client saves the row and the row keeps no label; a hosted-UI sign-in, a federation and a guest
+count as sign-ins here. Building the client saves nothing, so a session that never signs in has no row.
 
-// From an account picker, for any saved session, without building a client for it.
-try await AmplifyCognitoClient.setSessionLabel("Work", sessionId: row.sessionId, configuration: configuration)
-```
+- A label the row keeps always wins: the same user's, or one set before anyone signed in.
+- When a different user signs in, the previous user's label is dropped and the ID's label is saved for the new user.
+  For example, a session is built as `.named("ipad", label: "Shared iPad")`; alice signs in, renames her row "Alice"
+  and signs out; bob signs in: bob's row is labelled "Shared iPad".
+- `setSessionLabel` replaces it afterwards. Once `setSessionLabel(nil)` clears the label, the next sign-in through
+  an ID created with a label saves that label again; a refresh never does.
+- The label is not part of the ID. Two clients built with IDs that differ only in label are two handles onto one
+  session, and the session uses the label of the client that built it, the first one, until every client and
+  credentials provider for it is released.
+- `named("$default", label:)` is `.default` with a label; `.default` itself has none.
+- Only a client's sign-in reads it. The static calls ignore the label of the ID they are given, and the IDs
+  `storedSessions` lists have none: read the row's `label`.
 
 The static call writes the saved row directly, with no network call. If a client for that session is live in the
 process, the label is set through it, so the client and the listing agree at once; a client live with other pools
@@ -965,6 +996,17 @@ Whatever the expectation, the client checks that the returned ID token belongs t
 `unexpectedIdentity`'s strings name no user (unless your session IDs do: the description can name the session that
 holds the returned user), but its fields do. Log `errorDescription`, not the error itself,
 where user identifiers must not appear.
+
+An app that knows the new account's picker label can give it with the session ID. It is saved with the row when the
+sign-in completes, with no `setSessionLabel` call (see [Labels](#labels)):
+
+```swift
+let added = try AmplifyCognitoClient(
+    configuration: configuration,
+    options: .init(sessionId: .new(label: "Work"))
+)
+try await addAccount(client: added, window: window)
+```
 
 ### Cancelling and recovering
 

@@ -820,6 +820,21 @@ final class SessionCopyForwardTests: XCTestCase {
         XCTAssertEqual(recovered, .signedIn(alice))
     }
 
+    /// A carry is not a sign-in: it never saves the label the session ID was created with.
+    ///
+    /// - Given: alice under the user pool alone, with no label
+    /// - When: a client over both pools, built with an ID created with a label, restores and carries her session
+    /// - Then: she is signed in under both pools, and the carried row still has no label
+    func testACarryNeverSavesTheIDsLabel() async throws {
+        try userPoolOnlyStore.write(FakePayload.signedIn("alice", kind: .userPoolOnly).record(label: nil), for: work, expecting: nil)
+        let client = try harness.client(.named(work.stringValue, label: "Office"))
+
+        let state = await client.currentSessionState()
+
+        XCTAssertEqual(state, .signedIn(alice))
+        XCTAssertNil(try XCTUnwrap(currentRecord()).label)
+    }
+
     // MARK: Stored-session calls
 
     /// A label written where nothing is saved yet would stop the carry, and the session would restore signed out.

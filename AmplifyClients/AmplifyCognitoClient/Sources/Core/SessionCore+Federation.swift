@@ -133,7 +133,8 @@ extension SessionCore {
                     kind: summary.kind,
                     credentials: payload
                 )
-                if case .committed(let committed) = try await store.write(record, for: sessionId, expecting: current.version) {
+                let outcome = try await store.write(record, for: sessionId, expecting: current.version, labelIfNone: sessionId.label)
+                if case .committed(let committed) = outcome {
                     await apply(SessionSnapshot(committed), event: nil, newLogin: true)
                     return
                 }

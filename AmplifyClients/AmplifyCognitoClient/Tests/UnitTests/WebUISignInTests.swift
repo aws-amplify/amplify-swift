@@ -94,6 +94,26 @@ final class WebUISignInTests: XCTestCase {
         XCTAssertEqual(events.received, [.signedIn])
     }
 
+    /// A hosted-UI sign-in saves the label its session ID was created with, as a password sign-in does
+    ///
+    /// - Given: a signed-out session whose ID was created with a label
+    /// - When:
+    ///    - a hosted-UI sign-in completes
+    /// - Then:
+    ///    - the saved row has that label
+    func testAHostedUISignInSavesTheIDsLabel() async throws {
+        let client = try client(.named("work", label: "Work"))
+        let browser = FakeBrowser()
+        try XCTUnwrap(harness.engine(for: work)).showWebUISignIns(in: browser)
+
+        let signIn = await startSignIn(client)
+        await browser.shown.waitForArrivals(1)
+        browser.finishWithDefault()
+        _ = try await signIn.value
+
+        XCTAssertEqual(try harness.storedRecord(work)?.label, "Work")
+    }
+
     /// A late `.done` after an interrupt is revoked, not committed
     ///
     /// - Given: a hosted-UI sign-in whose code exchange keeps running after its browser is cancelled

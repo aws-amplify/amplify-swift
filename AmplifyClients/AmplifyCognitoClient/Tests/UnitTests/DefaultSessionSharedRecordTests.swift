@@ -706,6 +706,68 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertNil(sidecar()?.label)
     }
 
+    /// `named("$default", label:)` is `.default` with a label, which a sign-in saves in the sidecar when it keeps
+    /// none.
+    ///
+    /// - Given: nothing stored, and a client of `.default` built with `named("$default", label: "Home")`
+    /// - When: alice signs in; she renames the row and signs out; bob signs in
+    /// - Then:
+    ///    - alice's row has the ID's label, in the sidecar, bound to her
+    ///    - bob's sign-in drops alice's label, and his row has the ID's, bound to him
+    func testASignInOnDefaultSavesTheIDsLabelWhenTheSidecarKeepsNone() async throws {
+        let client = try harness.client(.named("$default", label: "Home"))
+
+        try await client.signInForTest("alice")
+
+        XCTAssertEqual(try harness.storedRecord(.default)?.label, "Home")
+        XCTAssertEqual(sidecar()?.label, "Home")
+        XCTAssertEqual(sidecar()?.userId, "sub-alice")
+        try await client.setSessionLabel("Alice's")
+        let signedOut = await client.signOut()
+        XCTAssertEqual(signedOut, .complete, "\(signedOut)")
+        XCTAssertEqual(sidecar()?.label, "Alice's")
+
+        try await client.signInForTest("bob")
+
+        XCTAssertEqual(try harness.storedRecord(.default)?.label, "Home")
+        XCTAssertEqual(sidecar()?.userId, "sub-bob")
+        XCTAssertEqual(sidecar()?.label, "Home")
+    }
+
+    /// On `.default` too, only a sign-in saves the ID's label, and the sidecar's own label wins over it.
+    ///
+    /// - Given: the plugin's login for alice, needing a refresh, with no label, and a client of `.default` built
+    ///   with `named("$default", label: "Home")`
+    /// - When: the session refreshes; alice signs out and in again; she renames the row, signs out and in again
+    /// - Then:
+    ///    - the refresh saves no label
+    ///    - her first sign-in, over her own row with no label, saves the ID's
+    ///    - her second keeps the label she set
+    func testDefaultKeepsItsSidecarsLabelOverTheIDsAndARefreshSavesNone() async throws {
+        harness.keychain.put(FakePayload.signedIn("alice", stale: true).data, pluginAccount)
+        let client = try harness.client(.named("$default", label: "Home"))
+
+        _ = try await client.credentialsProvider.resolve()
+
+        XCTAssertEqual(sidecar()?.userId, "sub-alice")
+        XCTAssertNil(sidecar()?.label)
+        XCTAssertNil(try harness.storedRecord(.default)?.label)
+
+        var signedOut = await client.signOut()
+        XCTAssertEqual(signedOut, .complete, "\(signedOut)")
+        try await client.signInForTest("alice")
+
+        XCTAssertEqual(sidecar()?.label, "Home")
+
+        try await client.setSessionLabel("Mine")
+        signedOut = await client.signOut()
+        XCTAssertEqual(signedOut, .complete, "\(signedOut)")
+        try await client.signInForTest("alice")
+
+        XCTAssertEqual(try harness.storedRecord(.default)?.label, "Mine")
+        XCTAssertEqual(sidecar()?.label, "Mine")
+    }
+
     /// The sidecar is cosmetic: failing to write it never fails the session.
     ///
     /// - Given: every write of the sidecar failing

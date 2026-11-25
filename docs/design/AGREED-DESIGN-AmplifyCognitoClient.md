@@ -60,7 +60,8 @@ NOTE: Swift is used throughout the design doc showcasing API changes and a per p
 - **Concern 13.1**: Storage and Pinpoint are closed; the Kinesis and Firehose cache is closed by `Options.cacheIdentifier` (2026-11-24), which an app sets per session. → [§13.1](#131-two-same-region-record-caching-clients-can-attribute-one-users-data-to-another)
 - **`CredentialsError`** lists `.notConfigured`. → [§15.2](#152-the-credential-provider-contract)
 - **The sidecar, the challenge record and the label**: the sidecar and challenge keys, and the sidecar's rules. A
-  signed-out row's label survives a sign-in only by the same user, or when no one had signed in yet. `.default`'s
+  signed-out row's label survives a sign-in only by the same user, or when no one had signed in yet; a sign-in that
+  keeps no label saves the one its session ID was created with (API follow-up 20). `.default`'s
   sidecar and challenge record are the plugin session's items everywhere: the access-group transition wipe, the
   access-group migration, the public `KeychainStoreMigrator` and the migration's destination clear remove or move
   them, and the "does the shared service already hold items?" check ignores them. → [§4.8](#48-migrating-an-existing-app) · [§6](#6-storage-model)
@@ -109,7 +110,7 @@ Also stated in the doc: one user at a time per session, the same human *can* hol
 
 - **The registry is keyed by session ID alone**, with the storage namespace and a configuration fingerprint checked beside it. Keying by configuration would make the different-pool case a silent miss instead of a throw. → D.1
 
-- **The key format is `amplify.1.<poolNamespace>.<sessionId>.session`**, because apps with only one pool type have one fewer segment. **The default session is stored as `$default`**, which `named(_:)` cannot produce, so it cannot be spoofed. **It is also the session that adopts the plugin's record** - there is no separate adoption session ID, so the plugin, the bridge and the client all read one key. → §6 key *(Superseded 2026-10-02: `.default` is the plugin's own record, `amplify.<ns>.session`, and there is no `$default` session record; `.default`'s challenge record and sidecar stay under `$default`. `named("$default")` now returns `.default` itself, so a persisted `stringValue` round-trips; no other name can produce it (§6, §14.8). The "one key" claim was also not true of the code: the plugin read `$default` only as a fallback.)*
+- **The key format is `amplify.1.<poolNamespace>.<sessionId>.session`**, because apps with only one pool type have one fewer segment. **The default session is stored as `$default`**, which `named(_:label:)` cannot produce, so it cannot be spoofed. **It is also the session that adopts the plugin's record** - there is no separate adoption session ID, so the plugin, the bridge and the client all read one key. → §6 key *(Superseded 2026-10-02: `.default` is the plugin's own record, `amplify.<ns>.session`, and there is no `$default` session record; `.default`'s challenge record and sidecar stay under `$default`. `named("$default")` now returns `.default` itself, so a persisted `stringValue` round-trips; no other name can produce it (§6, §14.8). The "one key" claim was also not true of the code: the plugin read `$default` only as a fallback.)*
 
 - **The providers are concrete `Sendable` types**, `CognitoCredentialsProvider` and `CognitoUserPoolTokenProvider`, not existentials. AmplifyFoundation's `AWSCredentialsProvider` is not `Sendable` and changing that would break every existing conformer; the token provider conforms to AmplifyFoundation's `AccessTokenProvider` (experimental SPI, `Sendable`), added for it so a token consumer needs AmplifyFoundation alone. → 14.4
 
@@ -425,20 +426,33 @@ Connect is used in this example rather than Kinesis for a reason that is a genui
 
 *The user is signed in as Alice, taps "Add account", and signs in as Bob, without losing Alice.*
 
-The most common multi-account flow, and the one that forces a real design question: **the app must name the session before it knows who will occupy it.** So the library mints the ID and hands it back, and the app may attach a display label afterwards.
+The most common multi-account flow, and the one that forces a real design question: **the app must name the session before it knows who will occupy it.** So the library mints the ID and hands it back, and the app may give a display label with it, or attach one afterwards.
 
 ```swift
 // The library mints the ID; the app does not have to invent or remember one.
-let added = try AmplifyCognitoClient(configuration: config, options: .init(sessionId: .new()))
-_ = try await added.signIn(username: entered, password: pw)   // the session is saved here, not before
-try await added.setSessionLabel("Acme Corp")              // optional; see below
+// A label the app already knows goes with the ID (optional; API follow-up 20).
+let added = try AmplifyCognitoClient(configuration: config, options: .init(sessionId: .new(label: "Acme Corp")))
+_ = try await added.signIn(username: entered, password: pw)   // the session is saved here, not before, with the label
+try await added.setSessionLabel("Acme Corp (EU)")         // optional, for a label only known after sign-in; see below
 
 _ = added.sessionId   // the durable handle, if the app wants to deep-link into this session
 ```
 
-**New API:** `SessionID.new()`, `SessionID.named(_:)`, and `setSessionLabel(_:)`. `new()` exists because of the ordering problem above. `setSessionLabel` is separate from construction because the label is usually only knowable after sign-in has told you which tenant you got. Declared in 14.6 (`SessionID`) and 14.3 (`setSessionLabel`). A static `setSessionLabel(_:sessionId:configuration:accessGroup:)` labels any saved session from a picker, without a client for it (added 2026-11-24, API follow-up 19).
+**New API:** `SessionID.new(label:)`, `SessionID.named(_:label:)`, and `setSessionLabel(_:)`. `new()` exists because of the ordering problem above. `setSessionLabel` is separate from construction for when the label is only knowable after sign-in has told you which tenant you got. Declared in 14.6 (`SessionID`) and 14.3 (`setSessionLabel`). A static `setSessionLabel(_:sessionId:configuration:accessGroup:)` labels any saved session from a picker, without a client for it (added 2026-11-24, API follow-up 19).
 
 Note what this rules out: **keying a session by user id cannot work**, because there is no user id until sign-in succeeds, and the session must exist in memory before that. This is why a session ID is an opaque identifier chosen by the app or minted by the library, never derived from an identity.
+
+**A label given with the ID** (added 2026-11-24, API follow-up 20; review thread 34TJ2r). An app adding an account often knows the label when it creates the session, so `SessionID.named(_:label:)` and `SessionID.new(label:)` take an optional one, readable as `SessionID.label`. The rules:
+
+- **It is metadata, not identity.** `==` and `hash(into:)` use the string value only, and `Codable` encodes and decodes the string value only. So two IDs that differ only in label are equal, persisted IDs are unchanged, and the session registry and the per-session gates, which are keyed by the ID, are unaffected. `.default` has no label; `named("$default", label:)` equals `.default` and carries one.
+- **It is saved when a sign-in saves the row and the row keeps no label**: a sign-in (hosted UI included), a federation or a guest. Constructing the client still does no keychain I/O, and a session that is created but never signed in writes no row.
+- **A label the row keeps always wins**: the same user's, or one set before anyone signed in. When a different user signs in, the previous user's label is dropped (§6) and the ID's label is saved for the new user's row.
+- **`setSessionLabel`, instance or static, replaces it.** Once it clears the label with `nil`, the next sign-in through an ID created with a label saves that label again; a refresh never saves it.
+- **Two live handles on one session whose IDs carry different labels are one session.** The session keeps the ID of the handle that built it, so that handle's label is the one used, until every handle and provider of the session is released.
+- **Only a client's sign-in reads it.** The static calls ignore the label of the ID they are given, and the IDs the listing returns have none: a row's label is `StoredSession.label`.
+- **`.default`** keeps its label in the sidecar, whose own rule decides whether a label is kept (§6); the ID's label is saved there when it keeps none.
+
+That makes three ways to set a label, each for its own moment: with the ID when the session is created (add-account), `setSessionLabel(_:)` on the session's own client, and the static `setSessionLabel` for any row of a picker.
 
 **What `setSessionLabel` is for.** It is display text for a picker row, chosen by the app, and it exists because the library cannot invent it. The library knows the username (`alice@corp`) and the user id (a UUID). Neither is what a user recognises: in a multi-tenant app the same person may hold two accounts whose usernames are identical apart from the tenant, and a picker showing `alice@corp` twice is useless. The app knows the tenant name, the workspace, the store number. Slack shows workspace names, not email addresses. `setSessionLabel` is where that goes, so it can be read back later without the app maintaining its own ID-to-name map. It is deliberately one string rather than a `tags` dictionary with a predicate query: richer metadata and a `findStoredSessions(where:)` lookup are both purely additive later, so nothing is foreclosed by starting simple.
 
@@ -466,7 +480,7 @@ _ = try await home.getCurrentUser()   // still alice@personal
 await work.signOut(options: .init(purgeStoredSession: true))
 
 // Signing out a session the app is not currently holding, straight from the picker.
-// named(_:) throws for an invalid ID, so it needs `try`.
+// named(_:label:) throws for an invalid ID, so it needs `try`.
 let workID = try SessionID.named("work")
 _ = await AmplifyCognitoClient.signOutStoredSession(sessionId: workID, configuration: config)
 
@@ -789,7 +803,8 @@ Both families live in the plugin's keychain service, `com.amplify.awsCognitoAuth
   - **while the shared record holds that user**, the label is used;
   - **while the shared record is signed out** (`noCredentials`) **or absent**, the picker shows a signed-out row with the sidecar's label and last username;
   - **when the shared record holds a different user**, the sidecar's label is hidden. The sidecar is rewritten for the new user, without the label, only at the client's next write of the record: a plugin sign-in leaves it as it is, so after a later plugin sign-out the row names the sidecar's user and label again;
-  - **a sign-in over a signed-out row keeps its label only for the same user**, or when the sidecar has no user yet (a label set before anyone signed in). A different user drops it.
+  - **a sign-in over a signed-out row keeps its label only for the same user**, or when the sidecar has no user yet (a label set before anyone signed in). A different user drops it;
+  - **a sign-in, federation or guest that keeps no label saves the one its session ID was created with** (`SessionID.label`, §4.6; API follow-up 20), in the sidecar for `.default` and in the envelope for a named session. The store is given it apart from the record's own label, so `.default`'s sidecar still decides what is kept from the bytes it holds at the write, and a refresh never saves it.
 - **A dead refresh token's expiry is saved beside the record** (`DeadToken`): `{"cause":"reused"|"invalid","token":"<SHA-256 hex>"}`, under `deadToken`, in a named session's envelope and in `.default`'s sidecar, both additive keys written only when set. `token` names the refresh token proved dead (SHA-256 of `refreshToken:<token>`), or, for credentials without one, the credentials' bytes. A core that installs a record whose credentials still hold that token starts expired, with no event, and a refresh re-reads first and never refreshes such a record. It is bound to the token, not to the record: the plugin saving a new login over `.default` leaves the sidecar, and the marker no longer applies. The client's own writes of other credentials and its sign-outs drop it; a label write keeps it. Best effort: a failed save leaves the expiry the core's only. A marker with a cause this build can't read is ignored. The plugin's `isRefreshTokenExpired` is not read: the plugin sets it on whatever record is stored after its own refusal, which may be a newer writer's valid login.
 - **The commit guard on `.default` compares the stored bytes.** `setIfUnchanged` already does this, so the default session has no generation number. The plugin itself writes unguarded. That is one reason running both in one process is not supported (§4.9). Whether another writer changed the *credentials* is decided on the decoded value, not on the bytes, because the plugin may save the same credentials again with other bytes.
 - **macOS: absent once is not signed out.** There the keychain's `set` deletes the item and adds it again, so a reader in another process can find it absent in between. A `.default` read that finds the shared record absent reads it once more before concluding "signed out".
@@ -970,7 +985,7 @@ CS-1 … CS-3 (`StorageConfigurationTests`).
 
 **Proposed session is saved under a session ID, and the ID is part of the storage key.** The naming rule is universal, with no exceptions and no unnamed fallback:
 
-- **Every session has an ID.** `.default` when the app supplies nothing, `.named(_:)` when it has its own stable identifier, `.new()` for a minted UUID. Guest and federated sessions are named exactly the same way as signed-in ones, so there is no separate case to reason about.
+- **Every session has an ID.** `.default` when the app supplies nothing, `.named(_:label:)` when it has its own stable identifier, `.new()` for a minted UUID. Guest and federated sessions are named exactly the same way as signed-in ones, so there is no separate case to reason about.
 
 - **A session record is written atomically**, or at least becomes visible atomically. Free where a session is one blob; needs an explicit write-set where a session is many discrete keys.
 
@@ -1509,11 +1524,13 @@ public struct AuthClientUser: Sendable, Equatable {
 /// selection, ...), with client-owned payload types in place of Amplify core's.
 public enum AuthClientSignInStep: Sendable, Equatable { /* case-for-case mirror */ }
 
+// `==`, `hash(into:)` and `Codable` use `stringValue` only: the label is metadata, not identity (4.6; API follow-up 20).
 public struct SessionID: Hashable, Sendable, Codable {
     public var stringValue: String { get }                        // for app-side persistence
-    public static let `default`: SessionID                        // stable; stringValue "$default", which named(_:) maps back to .default; the plugin's saved login (4.8)
-    public static func named(_ id: String) throws -> SessionID     // [A-Za-z0-9_-]{1,64}, or "$default" for .default
-    public static func new() -> SessionID                          // library-minted
+    public var label: String? { get }                             // the picker label it was created with: saved at a sign-in whose row keeps none
+    public static let `default`: SessionID                        // stable; stringValue "$default", which named(_:label:) maps back to .default; no label; the plugin's saved login (4.8)
+    public static func named(_ id: String, label: String? = nil) throws -> SessionID   // [A-Za-z0-9_-]{1,64}, or "$default" for .default
+    public static func new(label: String? = nil) -> SessionID     // library-minted
 }
 
 /// What a *saved* row is - the five combinations in Section 5. Distinct from

@@ -210,14 +210,14 @@ extension SessionCore {
             }
             let record = SessionRecord(
                 // A signed-out row left by a user keeps that user's label, which the guest must not take:
-                // only a label that names no user yet passes to the guest.
+                // only a label that names no user yet passes to the guest. With none, the session ID's.
                 label: Self.label(keptFrom: current.ownRecord, for: summary),
                 username: summary.username,
                 userId: summary.userId,
                 kind: summary.kind,
                 credentials: guest
             )
-            switch try await store.write(record, for: sessionId, expecting: current.version) {
+            switch try await store.write(record, for: sessionId, expecting: current.version, labelIfNone: sessionId.label) {
             case .committed(let committed):
                 await apply(SessionSnapshot(committed), event: nil)
                 return .fetched

@@ -30,7 +30,8 @@ public struct CognitoCredentialsProvider: AWSCredentialsProvider, Sendable {
         self.core = core
     }
 
-    /// The session this provider resolves.
+    /// The session this provider resolves. Its `label` is that of the handle that built the session, which may not
+    /// be the handle this provider came from.
     public var sessionId: SessionID {
         core.sessionId
     }

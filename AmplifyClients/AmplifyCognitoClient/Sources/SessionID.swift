@@ -30,31 +30,62 @@ import Foundation
 /// category plugins (Storage, Analytics, API and the rest) do not see them: they silently use the Auth
 /// plugin's session in `Amplify.Auth`, whichever session ID you pick, `.default` included.
 ///
-/// **Persisting one.** Save `stringValue` and rebuild the ID with `named(_:)`, which also turns `.default`'s
+/// **Persisting one.** Save `stringValue` and rebuild the ID with `named(_:label:)`, which also turns `.default`'s
 /// `"$default"` back into `.default`; or encode the ID itself: it is `Codable` as its `stringValue`, and
-/// decoding accepts exactly what `named(_:)` accepts.
+/// decoding accepts exactly what `named(_:label:)` accepts. Neither keeps the `label`, which is not part of the ID.
 @_spi(AmplifyExperimental)
 public struct SessionID: Hashable, Sendable {
 
     /// The value to persist in app storage in order to construct the same session later.
     public let stringValue: String
 
-    private init(unchecked value: String) {
+    /// The picker label this ID was created with (`named(_:label:)`, `new(label:)`), or `nil`: for an app adding an
+    /// account, which knows the label before anyone has signed in.
+    ///
+    /// **Saved at sign-in.** When a client built with this ID saves the session's row for a sign-in (hosted UI
+    /// included), a federation or a guest, and the row keeps no label, this one is saved as the row's label
+    /// (`StoredSession.label`). A label the row keeps always wins: the same user's, or one set before any user signed
+    /// in. When a different user signs in, the previous user's label is dropped, as before, and this one labels the new
+    /// user's row. Nothing is saved before that: a session that never signs in has no row, and a sign-in interrupted
+    /// on a challenge and finished in a later launch saves the label only if the ID is rebuilt with it
+    /// (`named(_:label:)`). `setSessionLabel` changes
+    /// the saved label afterwards, whatever the ID was created with; once it clears the label, the next sign-in
+    /// through an ID created with one saves that one again.
+    ///
+    /// **Not part of the ID.** `==`, hashing and `Codable` use `stringValue` only, so two IDs that differ only in
+    /// their label are equal, and name one session. When two clients of one live session were built with different
+    /// labels, the session uses the label of the ID that built it, the first client's, until every client and
+    /// provider of the session is released. Only a client's sign-in reads it: the static calls ignore it, and an ID
+    /// that was decoded, rebuilt from its `stringValue` or listed by `storedSessions` has none.
+    public let label: String?
+
+    private init(unchecked value: String, label: String? = nil) {
         self.stringValue = value
+        self.label = label
+    }
+
+    /// Whether two IDs name the same session: their `stringValue` only, never their `label`.
+    public static func == (lhs: SessionID, rhs: SessionID) -> Bool {
+        lhs.stringValue == rhs.stringValue
+    }
+
+    /// Hashes the `stringValue` only, as `==` compares it.
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(stringValue)
     }
 
     /// The single-account session, stable across launches.
     ///
-    /// Its `stringValue` is `$default`. `$` is outside the charset `named(_:)` accepts for a name of the app's own
-    /// (`named("$default")` is this ID, read back), so no app-chosen name can land on this session, not even
-    /// `"default"`.
+    /// Its `stringValue` is `$default`. `$` is outside the charset `named(_:label:)` accepts for a name of the app's
+    /// own (`named("$default")` is this ID, read back), so no app-chosen name can land on this session, not even
+    /// `"default"`. It has no `label`: `named("$default", label:)` is this session with one.
     ///
     /// **It uses the `AWSCognitoAuthPlugin`'s saved login.** Its session record is the plugin's own keychain item,
     /// holding the plugin's stored format, so an app moving from the plugin keeps its signed-in user, and an app
     /// rolled back to the plugin finds the newest login, signed out included. It is the only session that does, so
     /// one plugin record is never read by two session IDs. What the plugin's format has no room for — the label and,
-    /// for a signed-out row, the last user — is kept beside it, bound to that user: a label never passes to a
-    /// different user.
+    /// for a signed-out row, the last user — is kept beside it, bound to that user: a label set for one user never
+    /// passes to a different user (a label the ID itself carries is saved for each).
     ///
     /// **Side by side with the plugin is not supported.** The two share one saved login, but each keeps its tokens
     /// in memory and reads the keychain only at times of its own (the plugin at configuration), so a sign-in, a
@@ -85,22 +116,29 @@ public struct SessionID: Hashable, Sendable {
     /// The one exception is `"$default"`, `.default`'s `stringValue`, which returns `.default`, so a persisted
     /// `stringValue` always rebuilds its ID.
     ///
+    /// - Parameters:
+    ///   - id: The session ID.
+    ///   - label: The picker label a sign-in saves for the session when its row keeps none; `nil`, the default, for
+    ///     none. See `label`. Any text: it is not validated, and is not part of the ID. With `"$default"`, the result
+    ///     equals `.default` and carries the label.
     /// - Throws: `AuthClientError.invalidSessionID` for an empty or overlong ID, or one naming the first
     ///   character outside the charset. The message never repeats the ID itself.
-    public static func named(_ id: String) throws -> SessionID {
-        if id == SessionID.default.stringValue {
-            return .default
+    public static func named(_ id: String, label: String? = nil) throws -> SessionID {
+        if id != SessionID.default.stringValue {
+            try validate(id)
         }
-        try validate(id)
-        return SessionID(unchecked: id)
+        return SessionID(unchecked: id, label: label)
     }
 
     /// A library-minted session ID, for when the app has no stable identifier of its own.
     ///
     /// Each call mints a different ID, so persist the result (see "Persisting one" above): an ID not saved
     /// cannot find its session again in a later launch.
-    public static func new() -> SessionID {
-        SessionID(unchecked: UUID().uuidString.lowercased())
+    ///
+    /// - Parameter label: The picker label a sign-in saves for the session when its row keeps none; `nil`, the
+    ///   default, for none. See `label`.
+    public static func new(label: String? = nil) -> SessionID {
+        SessionID(unchecked: UUID().uuidString.lowercased(), label: label)
     }
 
     static let maximumLength = 64
@@ -140,7 +178,7 @@ public struct SessionID: Hashable, Sendable {
     }
 
     /// Reconstructs a session ID read back from storage, accepting the library's own sentinels.
-    /// Returns `nil` for anything `named(_:)` would reject, so a malformed record is skipped rather
+    /// Returns `nil` for anything `named(_:label:)` would reject, so a malformed record is skipped rather
     /// than crashing a listing.
     init?(storageComponent value: String) {
         if Self.sentinels.contains(value) {

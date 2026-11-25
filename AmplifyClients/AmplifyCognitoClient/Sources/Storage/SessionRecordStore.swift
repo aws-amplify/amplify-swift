@@ -191,7 +191,9 @@ struct SessionRecordStore: Sendable {
         case discarded
 
         var didCommit: Bool {
-            if case .committed = self { return true }
+            if case .committed = self {
+                return true
+            }
             return false
         }
     }
@@ -223,16 +225,22 @@ struct SessionRecordStore: Sendable {
     /// namespace marker, that the session is kept here (`SessionRecordStore+CopyForward.swift`). Writing one over a
     /// record of another user (`userKey`) records the new user as the marker's user for this namespace.
     /// `recordingMarker: false` leaves both to the caller.
+    ///
+    /// `labelIfNone` is the label to save when the record keeps none: the one a sign-in's session ID was created
+    /// with (`SessionID.label`). For `.default` the sidecar decides whether one is kept (`updateSidecar`).
     @discardableResult
     func write(
         _ record: SessionRecord,
         for sessionId: SessionID,
         expecting expected: RecordVersion?,
-        recordingMarker: Bool = true
+        recordingMarker: Bool = true,
+        labelIfNone: String? = nil
     ) throws -> CommitOutcome {
         if sessionId == .default {
-            return try writeDefault(record, expecting: expected)
+            return try writeDefault(record, expecting: expected, labelIfNone: labelIfNone)
         }
+        var record = record
+        record.label = record.label ?? labelIfNone
         let account = sessionAccount(for: sessionId)
         let current = try fetch(account, operation: "read the session record before writing it")
 

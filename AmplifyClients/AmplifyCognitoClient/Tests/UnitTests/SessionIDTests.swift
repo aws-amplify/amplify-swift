@@ -11,7 +11,7 @@ import XCTest
 final class SessionIDTests: XCTestCase {
 
     /// - Given: identifiers built only from the permitted charset, at both length bounds
-    /// - When: passed to `named(_:)`
+    /// - When: passed to `named(_:label:)`
     /// - Then:
     ///    - each is accepted and round-trips through `stringValue`
     func testAcceptsPermittedIdentifiers() throws {
@@ -22,7 +22,7 @@ final class SessionIDTests: XCTestCase {
     }
 
     /// - Given: an empty string
-    /// - When: passed to `named(_:)`
+    /// - When: passed to `named(_:label:)`
     /// - Then:
     ///    - it throws `invalidSessionID`
     func testRejectsEmpty() {
@@ -34,7 +34,7 @@ final class SessionIDTests: XCTestCase {
     }
 
     /// - Given: an identifier one character over the limit
-    /// - When: passed to `named(_:)`
+    /// - When: passed to `named(_:label:)`
     /// - Then:
     ///    - it throws `invalidSessionID`
     func testRejectsOverlong() {
@@ -46,7 +46,7 @@ final class SessionIDTests: XCTestCase {
     /// particular must never get through.
     ///
     /// - Given: identifiers containing `.`, `/`, `$`, a space, and a non-ASCII letter
-    /// - When: passed to `named(_:)`
+    /// - When: passed to `named(_:label:)`
     /// - Then:
     ///    - each throws, and the message names the offending character but never repeats the ID
     func testRejectsForbiddenCharactersAndNamesThem() {
@@ -82,7 +82,7 @@ final class SessionIDTests: XCTestCase {
     /// A persisted `stringValue` always rebuilds its ID, `.default`'s included.
     ///
     /// - Given: `.default`'s `stringValue`, `"$default"`, and a named ID's `stringValue`
-    /// - When: each is passed to `named(_:)`
+    /// - When: each is passed to `named(_:label:)`
     /// - Then:
     ///    - `"$default"` is `.default`, and the named ID is itself
     func testNamedRebuildsAPersistedStringValue() throws {
@@ -118,7 +118,7 @@ final class SessionIDTests: XCTestCase {
     /// - Given: two library-minted IDs
     /// - When: inspected
     /// - Then:
-    ///    - both are distinct and both would pass `named(_:)`, so a minted ID is always storable
+    ///    - both are distinct and both would pass `named(_:label:)`, so a minted ID is always storable
     func testNewIsUniqueAndValid() throws {
         let first = SessionID.new()
         let second = SessionID.new()
@@ -137,7 +137,7 @@ final class SessionIDTests: XCTestCase {
         }
     }
 
-    /// Decoding is the one path that bypasses `named(_:)`, so it must apply the same rule.
+    /// Decoding is the one path that bypasses `named(_:label:)`, so it must apply the same rule.
     ///
     /// - Given: a JSON string containing a forbidden character
     /// - When: decoded as a `SessionID`
@@ -152,5 +152,62 @@ final class SessionIDTests: XCTestCase {
         }
         let data = Data("\"a.b\"".utf8)
         XCTAssertThrowsError(try JSONDecoder().decode(SessionID.self, from: data))
+    }
+
+    // MARK: Label
+
+    /// The label is metadata, not identity: the session registry and the per-session gates are keyed by the ID.
+    ///
+    /// - Given: IDs with one name, created with different labels and with none
+    /// - When: compared and hashed
+    /// - Then:
+    ///    - they are equal and hash the same, so they are one key; each keeps the label it was created with
+    func testIDsThatDifferOnlyInLabelAreEqualAndHashTheSame() throws {
+        let plain = try SessionID.named("work")
+        let work = try SessionID.named("work", label: "Work")
+        let office = try SessionID.named("work", label: "Office")
+
+        XCTAssertEqual(work, office)
+        XCTAssertEqual(work, plain)
+        XCTAssertEqual(work.hashValue, office.hashValue)
+        XCTAssertEqual(work.hashValue, plain.hashValue)
+        XCTAssertEqual(Set([plain, work, office]).count, 1)
+        XCTAssertEqual([plain: 1][office], 1)
+        XCTAssertNil(plain.label)
+        XCTAssertEqual(work.label, "Work")
+        XCTAssertEqual(office.label, "Office")
+        XCTAssertEqual(SessionID.new(label: "Added").label, "Added")
+        XCTAssertNil(SessionID.new().label)
+    }
+
+    /// - Given: `.default`, and `"$default"` named with a label
+    /// - When: compared
+    /// - Then:
+    ///    - `.default` has no label; the named one is `.default`, carrying its label
+    func testDefaultHasNoLabelAndNamingItWithOneCarriesIt() throws {
+        let labelled = try SessionID.named("$default", label: "Home")
+
+        XCTAssertNil(SessionID.default.label)
+        XCTAssertNil(try SessionID.named("$default").label)
+        XCTAssertEqual(labelled, .default)
+        XCTAssertEqual(labelled.hashValue, SessionID.default.hashValue)
+        XCTAssertEqual(labelled.label, "Home")
+    }
+
+    /// A persisted ID is its `stringValue` alone, so saved IDs are unchanged.
+    ///
+    /// - Given: an ID created with a label
+    /// - When: encoded, and decoded again
+    /// - Then:
+    ///    - the encoding is the string value alone; the decoded ID is equal, and has no label
+    func testEncodingDropsTheLabel() throws {
+        let id = try SessionID.named("work", label: "Work")
+
+        let data = try JSONEncoder().encode(id)
+
+        XCTAssertEqual(String(decoding: data, as: UTF8.self), #""work""#)
+        let decoded = try JSONDecoder().decode(SessionID.self, from: data)
+        XCTAssertEqual(decoded, id)
+        XCTAssertNil(decoded.label)
     }
 }

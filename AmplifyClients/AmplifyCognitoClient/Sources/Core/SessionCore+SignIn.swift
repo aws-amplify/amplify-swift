@@ -438,7 +438,8 @@ extension SessionCore {
                     kind: summary.kind,
                     credentials: payload
                 )
-                if case .committed(let committed) = try await store.write(record, for: sessionId, expecting: current.version) {
+                let outcome = try await store.write(record, for: sessionId, expecting: current.version, labelIfNone: sessionId.label)
+                if case .committed(let committed) = outcome {
                     // The sign-in is complete, so its challenge record goes, under the same gate. Best effort: a
                     // record left beside a signed-in session is deleted by the next restore, never resumed.
                     await deleteChallengeRecord(in: store)
@@ -476,6 +477,9 @@ extension SessionCore {
     /// never had one) or the same user, and cleared when it names someone else: a different user signing in
     /// over an expired session, or a different user, a guest or a federated identity taking a signed-out row
     /// left by another user. A guest or federated identity names no user, so it never matches one.
+    ///
+    /// Where none is kept, the write saves the label the session's ID was created with (`SessionID.label`), passed
+    /// to the store as `labelIfNone`: this core's ID, which is the ID of the client that built the session.
     static func label(keptFrom replaced: SessionRecord?, for signedIn: CredentialSummary) -> String? {
         guard let replaced, let label = replaced.label else {
             return nil

@@ -100,6 +100,9 @@ public final class AmplifyCognitoClient: Sendable {
         ///
         /// Running the plugin and this client side by side over `.default` in one app is not supported: each keeps
         /// its tokens in memory. See `SessionID.default`.
+        ///
+        /// An ID created with a label (`SessionID.named(_:label:)`, `SessionID.new(label:)`) labels the session's
+        /// row at sign-in, with no keychain call when the client is built. See `SessionID.label`.
         public let sessionId: SessionID
 
         /// The keychain access group to store the session in, to share it between apps and extensions,
@@ -147,7 +150,8 @@ public final class AmplifyCognitoClient: Sendable {
         }
     }
 
-    /// The session this handle is bound to.
+    /// The session this handle is bound to, as given: its `label` is this handle's own, which the session uses only
+    /// if this handle built it (`SessionID.label`).
     public let sessionId: SessionID
 
     /// The session. Strong: a handle keeps its session alive.

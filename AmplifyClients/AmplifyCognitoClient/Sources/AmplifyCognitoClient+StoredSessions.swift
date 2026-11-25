@@ -19,6 +19,9 @@ public extension AmplifyCognitoClient {
     /// session through a client; for `.default`, a different user's sign-in through the Auth plugin only
     /// hides it (see `StoredSession.label`).
     ///
+    /// It replaces whatever label the session's ID was created with (`SessionID.label`), which a sign-in saves only
+    /// when the session's row keeps none.
+    ///
     /// - Throws: `AuthClientError.storageUnavailable` if storage could not be written;
     ///   `AuthClientError.unknown` if the saved record is one this version cannot read; `CancellationError` if
     ///   the calling task is cancelled while it waits for the session's restore or record.
@@ -176,7 +179,8 @@ public extension AmplifyCognitoClient {
 
     /// Sets the display text a picker shows for a saved session, or clears it with `nil`, without building a
     /// client for it. The label follows the rules of the instance `setSessionLabel(_:)`: it survives sign-out, and
-    /// is cleared when a different user signs in (see `StoredSession.label`).
+    /// is cleared when a different user signs in (see `StoredSession.label`). A label `sessionId` was created with
+    /// (`SessionID.label`) is ignored here: only a client's sign-in saves it.
     ///
     /// If a client for that session is live in this process, the label is set through it, as its own
     /// `setSessionLabel(_:)` sets it (after its restore), so the client and the listing agree at once. Otherwise
