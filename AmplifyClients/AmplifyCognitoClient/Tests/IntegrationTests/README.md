@@ -617,7 +617,7 @@ same scheme builds for whichever destination it is given. On watchOS the host ap
 |---|---|---|---|---|---|
 | `CognitoClientHostApp`, `CognitoClientIntegrationTests` | runs | runs | runs | runs | builds only |
 | `CognitoClientPluginInteropTests` | runs | builds; its offline keychain tests run | builds; its offline keychain tests run | builds; its offline keychain tests run | builds only |
-| `CognitoClientHostedUIApp`, `CognitoClientUITests` | runs | no hosted UI | no hosted UI | builds; not yet run | not built |
+| `CognitoClientHostedUIApp`, `CognitoClientUITests` | runs | no hosted UI | no hosted UI | builds; its test does not pass | not built |
 | `CognitoClientWebAuthnApp`, `CognitoClientWebAuthnUITests` | runs | no passkeys | no passkeys | not built | not built |
 
 - **Compiled out, never skipped.** A test that needs an API a platform lacks is inside `#if`, so the CI jobs'
@@ -639,8 +639,10 @@ same scheme builds for whichever destination it is given. On watchOS the host ap
 - **The hosted-UI app is UIKit.** It builds for visionOS; macOS would need an AppKit harness, which nothing could
   run without the signing above, so it is not built there. `HostedUISignInTests` looks for the sign-in sheet in
   SpringBoard and AuthenticationServicesUI, the iOS simulator's hosts, and CI turns the hardware keyboard off only
-  on iOS: on visionOS the test builds, and its first run there decides whether either needs a visionOS counterpart
-  (the visionOS simulator's shell is `com.apple.SurfBoard`, which the test does not search). The hosted-UI targets
+  on iOS. On visionOS the test builds and does not pass: run on CI (2026-11-25), it reached the sign-in page and
+  stopped at "The hosted UI's Username field is not hittable", so XCUITest sees the field and cannot tap it in the
+  visionOS simulator (whose shell is `com.apple.SurfBoard`, which the test does not search). Hosted UI is built for
+  visionOS and not verified there until the test can drive the sheet. The hosted-UI targets
   set `SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO`, so a visionOS destination is the native build, never the iPad one.
 - **Passkey end to end stays on the iOS simulator.** The plugin's simulator server enrolls and matches Face ID on an
   iOS simulator; nothing enrolls Optic ID on a visionOS simulator or Touch ID on a CI Mac, so the WebAuthn app and
@@ -668,12 +670,17 @@ directory", above):
   file fail naming it (93, and PL-11 on iOS and visionOS) or skip (11, with
   `TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS=1`), the same ones on every platform; PL-11 is the one difference,
   compiled out on tvOS and watchOS.
-- So the tests on the other backends (MFA required, passwordless, the device alias, the code API, the sandbox
-  checks) have run on iOS only. Their first run elsewhere is the manual CI start ("Running in CI", below) or a local
-  run on CI's file set.
+- The tests on the other backends (MFA required, passwordless, the device alias, the code API, the sandbox
+  checks) need CI's file set: off iOS they run from the manual CI start ("Running in CI", below), next.
 - The interop suite builds for the tvOS, watchOS and visionOS simulators, and `CredentialStoreTransitionRealKeychainTests`
   (no backend) passes on each. Its backend tests have not run off iOS, and CI has no toggle for them.
 - Both suites build for macOS, and `CognitoClientUITests` builds for the visionOS simulator.
+
+**Verified on CI 2026-11-25** (Xcode 26.5), from the manual start: the whole client suite, on every backend and
+under the no-skip gate, passes on tvOS (258 tests), watchOS (258) and visionOS (260, with two tests added since),
+with no skip. tvOS and visionOS passed on their first pass; watchOS on its second, after
+`testSuccessfulEmailMFASetupStep` timed out waiting for its emailed code. The one hosted-UI test on visionOS fails
+("Other platforms", above).
 
 ## Running in CI
 
@@ -694,7 +701,8 @@ the default branch, it can also be started by hand from the Actions tab, with a 
 
 **The other platforms run only from that manual start.** Four more toggles, off by default, run the client suite on
 tvOS, watchOS and visionOS, as the iOS client job does (same overlay, same no-skip gate), and one hosted-UI test on
-visionOS, as its iOS job does. The interop suite has no toggle for them. They are not part of a pull request's
+visionOS, as its iOS job does. That test does not pass yet, and its job was green all the same on 2026-11-25: read
+the job's log for the test's result. The interop suite has no toggle for them. They are not part of a pull request's
 or a push's run: each is another whole pass over the same backend, and CH-1's new-password users are a limited
 pool. No macOS job runs tests ("Other platforms", above).
 
