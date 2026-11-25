@@ -42,22 +42,28 @@ public extension AmplifyCognitoClient {
     /// configuration-change rule will leave it at its next restore: a login that rule carries here is listed, and one
     /// it deletes is not.
     ///
-    /// An interrupted sign-in is not a row: a session whose first sign-in stopped on a challenge is not listed
-    /// until that sign-in completes, though a client built with its ID reports `.awaitingChallenge`. The listing
-    /// also deletes interrupted sign-ins saved more than 15 minutes ago, which Cognito can no longer answer.
+    /// Each row's `state` is the state a client built with its `sessionId` would restore to, read from what is
+    /// saved (`StoredSession.state`). A sign-in that stopped on a challenge is listed as `.awaitingChallenge(step)`,
+    /// also when nothing else is saved for the session (a first sign-in interrupted at MFA): build a client with the
+    /// row's ID and answer the step its `currentSessionState()` reports with `confirmSignIn`. A saved record this
+    /// version cannot read is a `.failed` row. The listing is what is saved: a client live in this process is not
+    /// consulted. It also deletes interrupted sign-ins saved more than 15 minutes ago, which Cognito can no longer
+    /// answer, and lists none of them.
     ///
     /// `signOut` keeps a session's row, so a signed-out session is still resumable; pass
-    /// `includingSignedOut: true` to list those rows too, with `kind == .signedOut`.
+    /// `includingSignedOut: true` to list those rows too, with `state == .signedOut`. A signed-out row whose
+    /// sign-in is waiting on a challenge is `.awaitingChallenge`, and is listed either way.
     ///
     /// - Parameters:
     ///   - configuration: The configuration whose sessions to list; the same one the clients are built with.
     ///   - accessGroup: The keychain access group the sessions are stored in; the same value passed in
     ///     `Options.accessGroup`.
-    ///   - includingSignedOut: Whether to list signed-out rows too. `false` by default.
-    /// - Returns: One row per saved session, ordered by session ID. A record this version cannot read is left
-    ///   out.
-    /// - Throws: `AuthClientError.storageUnavailable` if the saved sessions could not be read. Never an
-    ///   empty list for a failure.
+    ///   - includingSignedOut: Whether to list `.signedOut` rows too. `false` by default.
+    /// - Returns: One row per saved session, ordered by session ID. A record this version cannot read is a row
+    ///   whose `state` is `.failed`.
+    /// - Throws: `AuthClientError.storageUnavailable` if the saved sessions could not be read, a saved interrupted
+    ///   sign-in the listing has to read among them (one beside a signed-out or guest row, or with nothing else
+    ///   saved). Never an empty list for a failure.
     static func storedSessions(
         configuration: AuthClientConfiguration,
         accessGroup: String? = nil,
@@ -352,17 +358,7 @@ extension AmplifyCognitoClient {
             let outcome = try await SessionSignOut(
                 sessionId: sessionId,
                 store: store,
-                describe: { payload in
-                    let summary = PluginRecordSummary.peek(payload)
-                    return summary.isRecognised
-                        ? CredentialSummary(
-                            kind: summary.kind,
-                            username: summary.username,
-                            userId: summary.userId,
-                            identityId: summary.identityId
-                        )
-                        : nil
-                },
+                describe: { PluginRecordSummary.peek($0).credentialSummary },
                 global: options.globalSignOut,
                 revoke: { payload, firstAttempt in
                     // No window here, so the hosted UI's sign-out never runs; when it would have, the cookie

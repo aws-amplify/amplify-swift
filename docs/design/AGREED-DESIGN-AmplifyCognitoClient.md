@@ -287,9 +287,11 @@ The app lists the saved sessions, renders a row each, and resumes the one the us
 ```swift
 // No network. Throws rather than returning [] if storage is unreadable.
 let rows = try await AmplifyCognitoClient.storedSessions(configuration: config)
-//  -> [ StoredSession(sessionId: "work", label: "Acme Corp", user: AuthClientUser(username: "alice@corp", userId: "…"),     kind: .userPoolAndIdentityPool),
-//       StoredSession(sessionId: "home", label: nil,         user: AuthClientUser(username: "alice@personal", userId: "…"), kind: .userPoolAndIdentityPool) ]
-//  (Amended 2026-11-24, API follow-up 17: a row has `user`, not `username`; 14.6.)
+//  -> [ StoredSession(sessionId: "work", label: "Acme Corp", user: work, kind: .userPoolAndIdentityPool, state: .signedIn(work)),
+//       StoredSession(sessionId: "home", label: nil,         user: home, kind: .userPoolAndIdentityPool, state: .signedIn(home)) ]
+//  where work is AuthClientUser(username: "alice@corp", userId: "…") and home is
+//  AuthClientUser(username: "alice@personal", userId: "…").
+//  (Amended 2026-11-24, API follow-ups 17 and 21: a row has `user`, not `username`, and `state`; 14.6.)
 
 let client = try AmplifyCognitoClient(configuration: config, options: .init(sessionId: rows[0].sessionId))
 
@@ -319,7 +321,7 @@ case .guest, .signedOut:
 
 **New API:** `AmplifyCognitoClient.storedSessions(configuration:)`, the `StoredSession` row type, and `currentSessionState()`. `storedSessions` is static because a picker has to render before any session is chosen, so there is no Auth Client to call it on yet. Declared in 14.3 (`storedSessions`), 14.6 (`StoredSession`) and 14.2 (`currentSessionState()`).
 
-**What a row can and cannot tell you.** A row tells you a session was saved and who it belonged to. **It cannot tell you the session still works.** Access- and id-token expiry can be checked offline, but refresh-token expiry cannot: the refresh token is never parsed.
+**What a row can and cannot tell you.** A row tells you a session was saved and who it belonged to, and its `state` is the `AuthSessionState` a client built with its ID restores to, read offline from what is saved (amended 2026-11-24, API follow-up 21; 14.6): a picker can say "Signed in", "Finish signing in", "Guest", "Signed out" or "Can't read this account" without building a client per row. **It cannot tell you the session still works.** Access- and id-token expiry can be checked offline, but refresh-token expiry cannot: the refresh token is never parsed.
 
 **Refresh happens on use, and only on use.** Listing never refreshes and never makes a network call. Reading a session refreshes expired tokens as part of the call, exactly as the plugin does today. There is no background timer and no refresh of sessions you are not using. If the refresh token has expired or been revoked, that call throws `sessionExpired` and the app sends the user to sign-in for that session only. The others are untouched.
 
@@ -446,7 +448,7 @@ Note what this rules out: **keying a session by user id cannot work**, because t
 **A label given with the ID** (added 2026-11-24, API follow-up 20; review thread 34TJ2r). An app adding an account often knows the label when it creates the session, so `SessionID.named(_:label:)` and `SessionID.new(label:)` take an optional one, readable as `SessionID.label`. The rules:
 
 - **It is metadata, not identity.** `==` and `hash(into:)` use the string value only, and `Codable` encodes and decodes the string value only. So two IDs that differ only in label are equal, persisted IDs are unchanged, and the session registry and the per-session gates, which are keyed by the ID, are unaffected. `.default` has no label; `named("$default", label:)` equals `.default` and carries one.
-- **It is saved when a sign-in saves the row and the row keeps no label**: a sign-in (hosted UI included), a federation or a guest. Constructing the client still does no keychain I/O, and a session that is created but never signed in writes no row.
+- **It is saved when a sign-in saves the row and the row keeps no label**: a sign-in (hosted UI included), a federation or a guest. Constructing the client still does no keychain I/O, and a session that is created but never signed in writes no row (one waiting on a challenge is listed, without the label).
 - **A label the row keeps always wins**: the same user's, or one set before anyone signed in. When a different user signs in, the previous user's label is dropped (§6) and the ID's label is saved for the new user's row.
 - **`setSessionLabel`, instance or static, replaces it.** Once it clears the label with `nil`, the next sign-in through an ID created with a label saves that label again; a refresh never saves it.
 - **Two live handles on one session whose IDs carry different labels are one session.** The session keeps the ID of the handle that built it, so that handle's label is the one used, until every handle and provider of the session is released.
@@ -700,7 +702,7 @@ The user-visible case is specific and common: they switch to their authenticator
 - **Leftover records.** A record found next to a signed-in or federated session is a leftover and is deleted. So is one this build cannot resume, and so are corrupt bytes. A record with a newer schema is left alone.
 - **Unreadable storage.** For a signed-out, absent or guest session, a failed read fails the restore (`storageUnavailable`). A signed-in or federated session never reads its record to decide anything: a leftover there is read and deleted best effort, so an unreadable one cannot make the session unavailable.
 - **Failed writes and deletes.** These are logged and never fail the sign-in.
-- **Listing.** `storedSessions()` sweeps, best effort, this namespace's records that are past the ceiling. A session whose only record is a challenge is not listed.
+- **Listing.** `storedSessions()` sweeps, best effort, this namespace's records that are past the ceiling. A record a restore would resume is listed as `.awaitingChallenge(step)`: over a signed-out or guest row, and as a row of its own for a session whose only record is a challenge (amended 2026-11-24, API follow-up 21; such a session was not listed before). The listing only reads the record: one past the ceiling, one this build cannot resume, corrupt bytes and a newer schema's are not listed, and a leftover next to a signed-in or federated row is ignored.
 
 The record and its lifecycle are implemented in `ChallengeRecord.swift` and `SessionRecordStore+Challenge.swift`
 (`AmplifyClients/AmplifyCognitoClient/Sources/Storage/`).
@@ -1415,7 +1417,8 @@ extension AmplifyCognitoClient {
     //
     // signOut() keeps the row, so a signed-out session is still listed and resumable.
     // Pass includingSignedOut: true to see those rows; the default hides them, matching
-    // MSAL's returnOnlySignedInAccounts.
+    // MSAL's returnOnlySignedInAccounts. Each row has the session's state, read offline
+    // (14.6); a row whose sign-in is waiting on a challenge is listed either way.
     public static func storedSessions(
         configuration: AuthClientConfiguration,
         accessGroup: String? = nil,
@@ -1505,10 +1508,11 @@ public struct StoredSession: Sendable, Equatable {   // one row of the picker
     public let sessionId: SessionID         // to construct the Auth Client the user picked
     public let label: String?               // the only name a user recognises
     public let user: AuthClientUser?        // the signed-in user, or a signed-out row's last user; nil for guest and federated rows
-    public let kind: SessionKind            // to render or filter rows
+    public let kind: SessionKind            // what the saved record holds
+    public let state: AuthSessionState      // what a client built with sessionId restores to, read offline (14.8)
 
     // For an app's test doubles.
-    public init(sessionId: SessionID, label: String?, user: AuthClientUser?, kind: SessionKind)
+    public init(sessionId: SessionID, label: String?, user: AuthClientUser?, kind: SessionKind, state: AuthSessionState)
 }
 
 // The client depends only on AmplifyFoundation and AmplifyFoundationBridge - never on
@@ -1629,6 +1633,32 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
   federated rows, and for a row saved before records kept the user's ID, unless it is signed in and its saved
   credentials still name the user (they are read offline). `user.username` is Cognito's username, often a UUID or
   `<Provider>_<id>`, not a display name: the row's title is `label`. `signIn(username:)` stays required.
+- **`StoredSession` has `state: AuthSessionState`**, beside `kind` (14.6; API follow-up 21, 2026-11-24): the state
+  a client built with the row's `sessionId` restores to, read offline through the same mapping a live session
+  uses. Per saved row:
+  - signed in to the user pool, with or without AWS credentials: `.signedIn(user)`, also when a refresh already
+    proved the refresh token dead (the record's `deadToken`), as a live client reports it;
+  - guest: `.guest`; federated: `.federated(identityId:)`; a signed-out row: `.signedOut`;
+  - a signed-out or guest row with a pending challenge: `.awaitingChallenge(step)`;
+  - no row, only a pending challenge (a first sign-in interrupted at MFA): a new row, `.awaitingChallenge(step)`,
+    with no label or user and `kind == .signedOut`, the closest kind (no credentials are saved);
+  - a record this build cannot read (a newer schema, corrupt bytes): a new row, `.failed(.unknown)` with the error
+    a live client restores to, no label or user, and `kind == .userPoolOnly`, the kind `.default`'s unrecognised
+    record already lists with (its row is `.failed` too);
+  - a readable record that does not itself name its user (saved before records kept the user's ID, or federated)
+    and whose credentials cannot be decoded, or name no user or identity: `.failed` too, with its label and `kind`
+    as saved. A record that names its user is `.signedIn` without its credentials being decoded, as a restore
+    reports it.
+
+  Where a record does not itself name its principal, the listing decodes its credentials as the engine does, so a
+  row's state is its client's, with two exceptions where a restore changes what is saved: a copy left by a
+  rollback, which is listed as it was saved and which a restore treats as swept (the client restores as a session
+  with nothing saved), and `.default`'s pending configuration-change carry of bytes this build cannot read (the
+  listing shows whatever the new configuration already holds, often no row, until the restore, which is `.failed`).
+
+  `includingSignedOut: false` hides only `.signedOut` rows, so `.awaitingChallenge` rows are shown: they need
+  action. A locked keychain still throws `storageUnavailable`, so no row is ever `.unavailable`. The listing stays
+  a snapshot of what is saved, not overlaid with live clients. `kind` is unchanged for every row listed before.
 - **`WebUIOptions` has `prompt` and `identityExpectation`** (9, 9.1), both off by default: `prompt` is `nil`, and
   `identityExpectation` is `.none`, `.matches(_:)` or `.distinctFromOtherSessions`. A returned user that doesn't
   meet the expectation is `unexpectedIdentity`, with nobody signed in.

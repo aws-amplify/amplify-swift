@@ -548,12 +548,13 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
         ])
     }
 
-    /// Through the public listing: expired records are swept, by the client's clock.
+    /// Through the public listing: expired records are swept, by the client's clock, and a fresh one is a row.
     ///
     /// - Given: an expired record for a session the app never saved, and a fresh one
     /// - When: `storedSessions` runs
     /// - Then:
-    ///    - neither session is listed; the expired record is gone and the fresh one kept
+    ///    - the session with the fresh record is listed, awaiting its step; the other is not
+    ///    - the expired record is gone and the fresh one kept
     func testStoredSessionsSweepsExpiredRecords() async throws {
         let orphan = ClientFixtures.id("orphan")
         try store.putChallenge(ChallengeRecord(createdAt: TestClock.start.addingTimeInterval(-901), state: .fake(.confirmSignInWithTOTPCode)!), for: orphan)
@@ -566,7 +567,9 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
             dependencies: harness.dependencies
         )
 
-        XCTAssertEqual(sessions, [])
+        XCTAssertEqual(sessions, [
+            StoredSession(sessionId: work, label: nil, user: nil, kind: .signedOut, state: .awaitingChallenge(.confirmSignInWithTOTPCode))
+        ])
         XCTAssertEqual(try store.readChallenge(orphan), .absent)
         XCTAssertNotEqual(try store.readChallenge(work), .absent)
     }

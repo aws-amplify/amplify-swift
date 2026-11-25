@@ -60,6 +60,7 @@ final class TestKeychain: @unchecked Sendable {
             tokensIssuedAtOf: Self.tokensIssuedAt,
             markerScope: markerScope,
             summarizeSharedRecord: Self.summarizeSharedRecord,
+            describeCredentials: Self.describeCredentials,
             rereadsAbsentSharedRecord: rereadsAbsentSharedRecord,
             sameCredentials: Self.sameCredentials
         )
@@ -93,6 +94,16 @@ final class TestKeychain: @unchecked Sendable {
             identityId: fake.identityId,
             isRecognised: true
         )
+    }
+
+    /// The fake engine's `describe`: a `FakePayload`'s kind, user and identity, as `FakeSessionEngine.describe` reports
+    /// them. Any other payload is the engine's format, decoded as the live store decodes it.
+    @Sendable
+    static func describeCredentials(_ payload: Data) throws -> CredentialSummary {
+        guard let fake = FakePayload.decode(payload), let kind = SessionKind(storedValue: fake.kind) else {
+            return try CredentialSummary(CredentialSlot.decode(payload))
+        }
+        return CredentialSummary(kind: kind, username: fake.username, userId: fake.userId, identityId: fake.identityId)
     }
 
     /// The marker scope of the app under test.

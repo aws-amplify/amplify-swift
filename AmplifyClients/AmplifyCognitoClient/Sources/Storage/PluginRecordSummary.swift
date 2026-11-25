@@ -40,6 +40,12 @@ struct PluginRecordSummary: Equatable, Sendable {
     /// conservative default below.
     let isRecognised: Bool
 
+    /// The summary as an engine's `describe` reports a payload, or `nil` for a shape this build does not recognise:
+    /// who a saved payload belongs to, read without an engine.
+    var credentialSummary: CredentialSummary? {
+        isRecognised ? CredentialSummary(kind: kind, username: username, userId: userId, identityId: identityId) : nil
+    }
+
     /// The kind reported for a plugin record whose shape is not recognised.
     ///
     /// Not `.signedOut`: a plugin record is present, so hiding the row could show

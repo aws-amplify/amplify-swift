@@ -271,7 +271,8 @@ A label is bound to the session's user:
 
 The label a session ID was created with (`SessionID.named(_:label:)`, `SessionID.new(label:)`) is saved when a
 sign-in through that client saves the row and the row keeps no label; a hosted-UI sign-in, a federation and a guest
-count as sign-ins here. Building the client saves nothing, so a session that never signs in has no row.
+count as sign-ins here. Building the client saves nothing, so a session that never signs in has no row, except
+while a sign-in is waiting on a challenge, when it is listed without the label.
 
 - A label the row keeps always wins: the same user's, or one set before anyone signed in.
 - When a different user signs in, the previous user's label is dropped and the ID's label is saved for the new user.
@@ -306,17 +307,21 @@ let rows = try await AmplifyCognitoClient.storedSessions(
 )
 for row in rows {
     // `label` is the row's title. `user?.username` is Cognito's username, not a display name.
-    let title = row.label ?? row.user?.username ?? "Guest"
+    let title = row.label ?? row.user?.username ?? row.sessionId.stringValue
     let subtitle: String
-    switch row.kind {
-    case .userPoolOnly, .userPoolAndIdentityPool:
+    switch row.state {
+    case .signedIn:
         subtitle = "Signed in"
+    case .awaitingChallenge:
+        subtitle = "Finish signing in"
     case .guest:
         subtitle = "Guest"
     case .federated:
-        subtitle = "Federated"
+        subtitle = "Signed in with another provider"
     case .signedOut:
         subtitle = "Signed out"
+    case .unavailable, .failed:
+        subtitle = "Can't read this account"
     @unknown default:
         subtitle = ""
     }
@@ -329,19 +334,54 @@ if let picked = rows.first {
         configuration: configuration,
         options: .init(sessionId: picked.sessionId)
     )
+    // A sign-in the app was closed in the middle of (at the MFA prompt, say): answer the step it stopped on.
+    // Read the step from the client, not the row: the challenge may have expired since the list was read.
+    if case .awaitingChallenge(let step) = await client.currentSessionState() {
+        try await completeSignIn(client: client, startingAt: step)
+    }
 }
 ```
 
+- A row's `state` is the state a client built with its `sessionId` reports once restored (`currentSessionState()`),
+  read from what is saved, without building a client: `.signedIn(user)`, `.guest`, `.federated(identityId:)`,
+  `.signedOut`, `.awaitingChallenge(step)` or `.failed`. It is never `.unavailable`: the call throws instead. The
+  list is what is saved, so a client live in the process may have moved on since.
 - A row says a session was saved. It cannot say the session still works: an expired refresh token is only found
-  by using it.
+  by using it. A session whose refresh token a refresh already found dead is still `.signedIn(user)`, as its client
+  reports it, and its calls throw `sessionExpired`.
+- A sign-in that stopped on a challenge is listed as `.awaitingChallenge(step)`, with or without
+  `includingSignedOut`, for up to 15 minutes after it was saved. Over a signed-out or guest row, the row keeps its
+  `kind`, and its label and `user` are still the signed-out user's, not those of whoever is signing in. That
+  includes a session with nothing else saved, such as a first sign-in interrupted at MFA: its row has no label or
+  user, and its `kind` is `.signedOut`.
+  See [Resuming an interrupted sign-in](#resuming-an-interrupted-sign-in).
+- A saved session this version can't read (saved by a newer version of the app, or damaged) is a `.failed` row with
+  no label or user; its `kind` is `.userPoolOnly`. `signOutStoredSession` replaces it with a signed-out row, and
+  `purgeStoredSession` removes it. A readable row that doesn't itself name its user (one saved before rows kept the
+  user's ID, or a federated one) is `.failed` too, with its label and `kind` as saved, when its credentials can't
+  be read, or name no user or identity. A row that names its user is `.signedIn` without its credentials being
+  read.
+- `row.kind` still says what the saved record holds (user pool only, user pool and identity pool, guest, federated,
+  signed out), as before, except for a row this version can't read (above).
+- So the listing without `includingSignedOut` can hold rows that are not sessions to use: an `.awaitingChallenge`
+  row whose `kind` is `.signedOut`, and a `.failed` row. A row with nothing but an interrupted sign-in stays until
+  that sign-in completes or a new one replaces it, the session is signed out or purged, or 15 minutes pass. A
+  `.failed` row stays until the session is signed out, which resets it to a signed-out row, or purged. If your app
+  shows sign-in when the list is empty, test for the states it treats as an account instead: an abandoned first
+  sign-in keeps the list non-empty for up to 15 minutes, also under a `SessionID.new()` the app never saved.
+- In two cases a restore changes what is saved, so the client reports another state than its row did. After a
+  rollback to an earlier pool configuration, a session that was signed out or purged under the later one is still
+  listed from the copy the earlier configuration kept, as it was saved; its restore removes that copy and
+  restores as a session with nothing saved. And `.default`, before its first restore after a configuration change
+  that copies the plugin's saved login: if this version can't read that login, the row is whatever the new
+  configuration already holds (often none); the restore copies the login and is `.failed`.
 - `row.user` is the signed-in user, or a signed-out row's last user: the same `AuthClientUser` as `getCurrentUser()`
   and `.signedIn(user)`. Match a row to a live client, or find one person signed in to two sessions, by
   `user.userId`. It is `nil` for a guest or federated row, and for a row saved before rows kept the user's ID,
   unless that row is signed in and its saved credentials still name the user.
 - `user.username` is Cognito's username, not a display name: often a UUID (a pool whose users sign in with an email
   or phone number) or `<Provider>_<id>` (a user of another identity provider). Title rows with `label`.
-- Signed-out rows are listed only with `includingSignedOut: true`.
-- A session whose first sign-in stopped on a challenge is not listed until that sign-in completes.
+- Signed-out rows (`.signedOut`) are listed only with `includingSignedOut: true`.
 - `.default`'s row comes from the Auth plugin's saved login, with its label while the label belongs to the user the
   plugin's record holds. After the plugin signs out (or deletes its record), `.default` is a signed-out row naming the
   last user *the client* saved it for: the client keeps that name beside the plugin's record and updates it only when it
@@ -407,11 +447,29 @@ for row in try await AmplifyCognitoClient.storedSessions(configuration: configur
         sessionId: row.sessionId,
         configuration: configuration
     )
-    if case .failed(let error) = result {
+    switch result {
+    case .complete:
+        break
+    case .partial:
+        // Signed out on this device, but part of the work failed: see Sign-out.
+        print("Signed out \(row.sessionId), in part:", result)
+    case .failed(let error):
         print("Could not sign out \(row.sessionId):", error)
+    @unknown default:
+        break
     }
 }
 ```
+
+The listing holds more than signed-in sessions, and the loop signs each of them out:
+
+- An `.awaitingChallenge` row: `.complete`, and the interrupted sign-in is dropped.
+- A `.failed` row is reset to a signed-out row. A session saved by a newer version of the app, or one whose
+  credentials can't be decoded, returns `.partial`: its tokens can't be read, so they are not revoked. A damaged
+  record returns `.complete`.
+
+The static `setSessionLabel` throws `.unknown` for a row this version can't read, so a loop that labels every row
+should skip `.failed` rows, or catch per row, rather than stop at the first.
 
 ## Session state and events
 
@@ -901,6 +959,8 @@ if case .awaitingChallenge(let step) = await client.currentSessionState() {
 
 - A challenge whose Cognito session has expired fails the answer with `.challengeExpired`.
 - A challenge saved more than 15 minutes ago is discarded at launch.
+- `storedSessions` lists the session as `.awaitingChallenge(step)`, so an account picker can offer to finish the
+  sign-in: see [Listing saved sessions](#listing-saved-sessions).
 - The Auth plugin does not do this: its interrupted sign-in is lost when the app closes.
 
 ## Hosted UI

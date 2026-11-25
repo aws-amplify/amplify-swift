@@ -1676,8 +1676,8 @@ final class SessionRecordCopyForwardTests: XCTestCase {
     ///   `solo` under the user pool with no marker; `bad`, an unreadable record here with a marker naming the user
     ///   pool, which holds a record of it
     /// - When: the sessions under both pools are listed
-    /// - Then: `home` once, from its own record; `work` once, as user-pool-only; no `solo`; `bad` only as
-    ///   unreadable, not as a pending carry; nothing is carried
+    /// - Then: `home` once, from its own record; `work` once, as user-pool-only; no `solo`; `bad` once, as the
+    ///   unreadable record here (a `.failed` row), not as a pending carry; nothing is carried
     func testListingShowsAPendingCarryOnce() throws {
         let home = ClientFixtures.id("home")
         let solo = ClientFixtures.id("solo")
@@ -1693,10 +1693,16 @@ final class SessionRecordCopyForwardTests: XCTestCase {
 
         let listing = try store(Self.bothPools).listing()
 
-        XCTAssertEqual(listing.sessions, [
-            StoredSession(sessionId: home, label: "Home", user: AuthClientUser(username: "bob", userId: "sub-bob"), kind: .userPoolAndIdentityPool),
-            StoredSession(sessionId: work, label: "Work", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly)
+        let (alice, bob) = (AuthClientUser(username: "alice", userId: "sub-alice"), AuthClientUser(username: "bob", userId: "sub-bob"))
+        XCTAssertEqual(listing.sessions.dropFirst(), [
+            StoredSession(sessionId: home, label: "Home", user: bob, kind: .userPoolAndIdentityPool, state: .signedIn(bob)),
+            StoredSession(sessionId: work, label: "Work", user: alice, kind: .userPoolOnly, state: .signedIn(alice))
         ])
+        XCTAssertEqual(listing.sessions.first?.sessionId, bad)
+        XCTAssertNil(listing.sessions.first?.user, "not dave, whose record a carry would bring")
+        guard case .failed(.unknown)? = listing.sessions.first?.state else {
+            return XCTFail("\(listing.sessions)")
+        }
         XCTAssertEqual(listing.unreadable, [bad: .corrupt])
         XCTAssertEqual(try store(Self.bothPools).read(work), .absent, "listing carries nothing")
     }

@@ -11,7 +11,8 @@ import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
 /// A sign-out over a record this build cannot read replaces it with a signed-out row. A newer schema's record may hold
-/// tokens this build could neither read nor revoke, so that sign-out is `.partial`, never `.complete`.
+/// tokens this build could neither read nor revoke, so that sign-out is `.partial`, never `.complete`. A readable
+/// record with no credentials under a kind that holds them is reset the same way, keeping its label and user.
 final class SignOutUnreadableRecordTests: XCTestCase {
 
     private var harness: ClientHarness!
@@ -103,6 +104,139 @@ final class SignOutUnreadableRecordTests: XCTestCase {
         XCTAssertEqual(harness.revoker.revokeCalls, [])
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
         XCTAssertEqual(try harness.storedRecord(home)?.isSignedOut, true)
+    }
+
+    // MARK: A kind that holds credentials, and none
+
+    /// A record with a signed-in kind, a label and a user, and no credentials: no build saves one, and a restore of it
+    /// is `.failed`.
+    private let withoutCredentials = SessionRecord(label: "Work", username: "alice", userId: "sub-alice", kind: .userPoolOnly, credentials: nil)
+
+    private func listedStates() async throws -> [AuthSessionState] {
+        try await AmplifyCognitoClient.storedSessions(
+            configuration: ClientFixtures.configuration,
+            accessGroup: nil,
+            includingSignedOut: true,
+            dependencies: harness.dependencies
+        ).map(\.state)
+    }
+
+    /// A sign-out resets a record a restore cannot use, as the `.failed` state's own text says it does.
+    ///
+    /// - Given: a named session whose record has a signed-in kind and no credentials, restored `.failed` by its client
+    /// - When: it signs out through its client
+    /// - Then:
+    ///    - the result is `.complete`, and nothing was revoked
+    ///    - the record is a signed-out row that keeps the label and the user, listed `.signedOut`
+    ///    - the client is `.signedOut`
+    func testSigningOutARecordWithAKindAndNoCredentialsResetsIt() async throws {
+        try harness.store().write(withoutCredentials, for: work, expecting: nil)
+        let client = try harness.client(work)
+        let restored = await client.currentSessionState()
+
+        let result = await client.signOut()
+
+        guard case .failed(.unknown) = restored else {
+            return XCTFail("restored \(restored)")
+        }
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(harness.engine(for: work)?.revokeCalls, [])
+        XCTAssertEqual(try harness.storedRecord(work), .signedOut(label: "Work", username: "alice", userId: "sub-alice"))
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedOut)
+        let listed = try await listedStates()
+        XCTAssertEqual(listed, [.signedOut])
+    }
+
+    /// - Given: a named session whose record has a signed-in kind and no credentials, held by no client
+    /// - When: it is signed out with `signOutStoredSession`
+    /// - Then:
+    ///    - the result is `.complete`, and nothing was revoked
+    ///    - the record is a signed-out row that keeps the label and the user, listed `.signedOut`, and a client built
+    ///      for the session restores `.signedOut`
+    func testTheStaticSignOutResetsARecordWithAKindAndNoCredentials() async throws {
+        try harness.store().write(withoutCredentials, for: work, expecting: nil)
+        let before = try await listedStates()
+
+        let result = await signOutStored(work)
+
+        XCTAssertEqual(before.count, 1)
+        guard case .failed(.unknown)? = before.first else {
+            return XCTFail("listed \(before)")
+        }
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(harness.revoker.revokeCalls, [])
+        XCTAssertEqual(try harness.storedRecord(work), .signedOut(label: "Work", username: "alice", userId: "sub-alice"))
+        let listed = try await listedStates()
+        XCTAssertEqual(listed, [.signedOut])
+        let restored = try await harness.client(work).currentSessionState()
+        XCTAssertEqual(restored, .signedOut)
+    }
+
+    /// A record that turns up without credentials during the revoke is left, like one that turns up unreadable, and not
+    /// reported as signed out over a row that is still `.failed`.
+    ///
+    /// - Given: a signed-in session, and a revoke during which another writer replaces its record with one that has a
+    ///   signed-in kind and no credentials
+    /// - When: it signs out, then signs out again
+    /// - Then:
+    ///    - the first is `.failed(.unknown)`, saying the record became unreadable and was left as it is
+    ///    - the second is `.complete`, and resets it: the record is a signed-out row, and the client `.signedOut`
+    func testARecordLeftWithoutCredentialsDuringTheRevokeIsLeftThenReset() async throws {
+        try harness.signIn(work, .signedIn("alice"))
+        let client = try harness.client(work)
+        _ = await client.currentSessionState()
+        let store = harness.store()
+        harness.engine(for: work)?.scriptRevoke { [work, withoutCredentials] _ in
+            if case .record(let stored) = try store.read(work) {
+                try store.write(withoutCredentials, for: work, expecting: stored.version)
+            }
+        }
+
+        let first = await client.signOut()
+        let second = await client.signOut()
+
+        guard case .failed(let error) = first else {
+            return XCTFail("the first sign-out is \(first)")
+        }
+        XCTAssertEqual(error.errorDescription, SessionSignOut.unreadableError(.corrupt).errorDescription)
+        XCTAssertEqual(second, .complete)
+        XCTAssertEqual(harness.engine(for: work)?.revokeCalls.count, 1)
+        XCTAssertEqual(try harness.storedRecord(work), .signedOut(label: "Work", username: "alice", userId: "sub-alice"))
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedOut)
+    }
+
+    /// The same, when the record turns up without credentials after the revoke, under the store's own sign-out.
+    ///
+    /// - Given: a signed-in session, and another writer that replaces its record with one that has a signed-in kind
+    ///   and no credentials right after the sign-out's second read of it, which is after the revoke
+    /// - When: it signs out, then signs out again
+    /// - Then:
+    ///    - the first is `.failed(.unknown)`, saying the record became unreadable and was left as it is
+    ///    - the second is `.complete`, and resets it: the record is a signed-out row, and the client `.signedOut`
+    func testARecordLeftWithoutCredentialsAfterTheRevokeIsLeftThenReset() async throws {
+        try harness.signIn(work, .signedIn("alice"))
+        let client = try harness.client(work)
+        _ = await client.currentSessionState()
+        let store = harness.store()
+        harness.keychain.onceAfterReading(store.sessionAccount(for: work), occurrence: 2) { [work, withoutCredentials] in
+            if case .record(let stored)? = try? store.read(work) {
+                _ = try? store.write(withoutCredentials, for: work, expecting: stored.version)
+            }
+        }
+
+        let first = await client.signOut()
+        let second = await client.signOut()
+
+        guard case .failed(let error) = first else {
+            return XCTFail("the first sign-out is \(first)")
+        }
+        XCTAssertEqual(error.errorDescription, SessionSignOut.unreadableError(.corrupt).errorDescription)
+        XCTAssertEqual(second, .complete)
+        XCTAssertEqual(try harness.storedRecord(work), .signedOut(label: "Work", username: "alice", userId: "sub-alice"))
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedOut)
     }
 
     private func signOutStored(_ sessionId: SessionID) async -> AuthClientSignOutResult {

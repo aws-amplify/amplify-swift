@@ -211,7 +211,7 @@ final class RollbackMatrixPluginTests: XCTestCase, @unchecked Sendable {
         let aliceRefreshed = try RollbackMatrixBytes.replacingRefreshToken(in: alice, with: "rotated-by-the-plugin")
         try makeStore(.released).saveCredential(decoded(aliceRefreshed))
         XCTAssertEqual(try client.storedSessions(), [
-            StoredSession(sessionId: .default, label: "Work", user: AuthClientUser(username: "fixture-user", userId: "fixture-sub"), kind: .userPoolAndIdentityPool)
+            StoredSession(sessionId: .default, label: "Work", user: AuthClientUser(username: "fixture-user", userId: "fixture-sub"), kind: .userPoolAndIdentityPool, state: .signedIn(AuthClientUser(username: "fixture-user", userId: "fixture-sub")))
         ])
 
         let bob = AmplifyCredentials.userPoolAndIdentityPool(
@@ -226,7 +226,7 @@ final class RollbackMatrixPluginTests: XCTestCase, @unchecked Sendable {
         try makeStore(.released).saveCredential(bob)
 
         XCTAssertEqual(try client.storedSessions(), [
-            StoredSession(sessionId: .default, label: nil, user: AuthClientUser(username: "bob", userId: "bob-sub"), kind: .userPoolAndIdentityPool)
+            StoredSession(sessionId: .default, label: nil, user: AuthClientUser(username: "bob", userId: "bob-sub"), kind: .userPoolAndIdentityPool, state: .signedIn(AuthClientUser(username: "bob", userId: "bob-sub")))
         ])
         guard case .record(let held) = try client.read(.default) else {
             return XCTFail("The client should read bob")
@@ -267,7 +267,7 @@ final class RollbackMatrixPluginTests: XCTestCase, @unchecked Sendable {
         try RollbackMatrixBytes.put(alice, pluginAccount, in: keychain)
 
         XCTAssertEqual(try RollbackMatrixBytes.clientStore(in: keychain, pools: pools).storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: nil, user: AuthClientUser(username: "fixture-user", userId: "fixture-sub"), kind: .userPoolAndIdentityPool)
+            StoredSession(sessionId: .default, label: nil, user: AuthClientUser(username: "fixture-user", userId: "fixture-sub"), kind: .userPoolAndIdentityPool, state: .signedIn(AuthClientUser(username: "fixture-user", userId: "fixture-sub")))
         ])
         for binary in RollbackPluginBinary.allCases {
             XCTAssertEqual(try makeStore(binary).retrieveCredential(), try decoded(alice), "\(binary)")

@@ -36,8 +36,9 @@ struct SessionSignOut: Sendable {
         /// The same user's credentials kept changing, and every attempt lost its race. The session is
         /// still signed in locally, with credentials that may already be revoked.
         case contended(server: EngineSignOutOutcome)
-        /// After the revoke, the record held something this build cannot read: corrupt bytes, or a newer schema's
-        /// record. It was left as it is, since nothing shows whose it is.
+        /// After the revoke, the record held something this build cannot read: corrupt bytes, a newer schema's
+        /// record, or a record with no credentials under a kind that holds them. It was left as it is: it is not
+        /// the record the revoke was for.
         case unreadable(SessionSnapshot.Unreadable, server: EngineSignOutOutcome)
 
         /// The server-side failures the sign-out collected, if any.
@@ -163,7 +164,9 @@ struct SessionSignOut: Sendable {
             return .nothingToSignOut
         case .unreadable(let unreadable):
             // Nothing this build can read, so nothing to revoke. The store replaces it with a
-            // signed-out row, so no unreadable credentials outlive sign-out.
+            // signed-out row, so no unreadable credentials outlive sign-out. A record with no credentials under
+            // a kind that holds them is rewritten signed out the same way, keeping its label and user. Nothing is
+            // revoked on this path, the copies the store's sign-out sweeps from earlier configurations included.
             switch try await store.signOut(sessionId) {
             case .signedOut, .noRecord:
                 challengeDeleted = true
@@ -292,8 +295,13 @@ struct SessionSignOut: Sendable {
             return .unreadable(.corrupt)
         case .record(let stored):
             let record = stored.record
-            guard let credentials = record.credentials, record.kind != .signedOut else {
+            guard record.kind != .signedOut else {
                 return .nothing
+            }
+            guard let credentials = record.credentials else {
+                // A kind that holds credentials, and none: no build saves that, and a restore of it is `.failed`.
+                // Nothing in it can be revoked, so it is reset like a record this build cannot read.
+                return .unreadable(.corrupt)
             }
             let described = record.userId == nil ? describe(credentials) : nil
             return .credentials(credentials, CredentialSummary(

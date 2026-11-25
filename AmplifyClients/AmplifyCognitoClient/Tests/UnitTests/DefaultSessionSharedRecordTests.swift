@@ -457,7 +457,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         let meta = try XCTUnwrap(sidecar())
         XCTAssertEqual([meta.label, meta.username, meta.userId], ["Home", "alice", "sub-alice"])
         XCTAssertEqual(try harness.store().storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: "Home", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut)
+            StoredSession(sessionId: .default, label: "Home", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)
         ])
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedOut)
@@ -578,7 +578,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         )
 
         XCTAssertEqual(restored, .signedOut)
-        XCTAssertEqual(listed, [StoredSession(sessionId: .default, label: "Home", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut)])
+        XCTAssertEqual(listed, [StoredSession(sessionId: .default, label: "Home", user: AuthClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)])
         XCTAssertEqual(userIds, [.default: "sub-alice"])
         XCTAssertFalse(touched().contains(leftoverAccount))
         XCTAssertFalse(touched().contains(leftoverMarker))
@@ -1059,7 +1059,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertNil(try harness.storedRecord(.default)?.label)
         XCTAssertEqual(try harness.storedRecord(.default)?.username, "bob")
         XCTAssertEqual(try harness.store().storedSessions(), [
-            StoredSession(sessionId: .default, label: nil, user: AuthClientUser(username: "bob", userId: "sub-bob"), kind: .userPoolAndIdentityPool)
+            StoredSession(sessionId: .default, label: nil, user: AuthClientUser(username: "bob", userId: "sub-bob"), kind: .userPoolAndIdentityPool, state: .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
         ])
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))

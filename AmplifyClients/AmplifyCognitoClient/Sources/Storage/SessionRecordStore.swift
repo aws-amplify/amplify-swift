@@ -67,9 +67,13 @@ struct SessionRecordStore: Sendable {
     /// digest of the bundle identifier, so an app and an extension sharing the access group keep their own.
     let markerScope: String
     /// What `.default`'s shared record holds, read from its stored format without decoding the credentials
-    /// (`PluginRecordSummary.peek`). A named session's credentials are saved in the same format, so a listing reads
-    /// the user of a record that names none with it too. Injectable so tests can use their own payloads.
+    /// (`PluginRecordSummary.peek`). Injectable so tests can use their own payloads.
     let summarizeSharedRecord: @Sendable (Data) -> PluginRecordSummary
+    /// Who and what a credentials payload holds, decoded whole, as a restored client's engine decodes it
+    /// (`LiveSessionEngine.describe`): what a listing describes a record with when the record does not itself name
+    /// its principal (a federated record, or one saved with no user ID), so that row's state is the one its client
+    /// restores to (`SessionRecordStore+Listing.swift`). The engine's format; injectable for tests' payloads.
+    let describeCredentials: @Sendable (Data) throws -> CredentialSummary
     /// Whether a read that finds `.default`'s shared record absent reads it once more before answering "absent".
     /// On by default on macOS only, where the keychain's `set` deletes the item and adds it again, so a reader
     /// in another process can find it missing in between; a property so tests can drive it on every platform.
@@ -98,6 +102,7 @@ struct SessionRecordStore: Sendable {
         tokensIssuedAtOf: @escaping @Sendable (Data) -> Date? = CredentialSlot.tokensIssuedAt,
         markerScope: String = SessionRecordStore.appMarkerScope,
         summarizeSharedRecord: @escaping @Sendable (Data) -> PluginRecordSummary = PluginRecordSummary.peek,
+        describeCredentials: @escaping @Sendable (Data) throws -> CredentialSummary = { try CredentialSummary(CredentialSlot.decode($0)) },
         rereadsAbsentSharedRecord: Bool = SessionRecordStore.rereadsAbsentSharedRecordByDefault,
         sameCredentials: @escaping @Sendable (Data, Data) -> Bool = CredentialSlot.sameCredentials,
         legacyLoginStores: @escaping @Sendable () -> [any KeychainItemStoreBehavior] = { [] }
@@ -111,6 +116,7 @@ struct SessionRecordStore: Sendable {
         self.tokensIssuedAtOf = tokensIssuedAtOf
         self.markerScope = markerScope
         self.summarizeSharedRecord = summarizeSharedRecord
+        self.describeCredentials = describeCredentials
         self.rereadsAbsentSharedRecord = rereadsAbsentSharedRecord
         self.sameCredentials = sameCredentials
         self.legacyLoginStores = legacyLoginStores

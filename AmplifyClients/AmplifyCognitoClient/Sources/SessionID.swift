@@ -46,10 +46,10 @@ public struct SessionID: Hashable, Sendable {
     /// included), a federation or a guest, and the row keeps no label, this one is saved as the row's label
     /// (`StoredSession.label`). A label the row keeps always wins: the same user's, or one set before any user signed
     /// in. When a different user signs in, the previous user's label is dropped, as before, and this one labels the new
-    /// user's row. Nothing is saved before that: a session that never signs in has no row, and a sign-in interrupted
-    /// on a challenge and finished in a later launch saves the label only if the ID is rebuilt with it
-    /// (`named(_:label:)`). `setSessionLabel` changes
-    /// the saved label afterwards, whatever the ID was created with; once it clears the label, the next sign-in
+    /// user's row. Nothing is saved before that: a session that never signs in has no row (one waiting on a
+    /// challenge is listed without this label), and a sign-in interrupted on a challenge and finished in a later
+    /// launch saves the label only if the ID is rebuilt with it (`named(_:label:)`). `setSessionLabel` changes the
+    /// saved label afterwards, whatever the ID was created with; once it clears the label, the next sign-in
     /// through an ID created with one saves that one again.
     ///
     /// **Not part of the ID.** `==`, hashing and `Codable` use `stringValue` only, so two IDs that differ only in

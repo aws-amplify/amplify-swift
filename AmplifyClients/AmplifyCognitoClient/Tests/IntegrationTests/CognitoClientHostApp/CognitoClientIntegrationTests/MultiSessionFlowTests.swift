@@ -145,8 +145,9 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
     ///    - `storedSessions()` reads the keychain, with no live session for any of them
     /// - Then:
     ///    - both session IDs are listed, alice with the label `"Work"`, each naming its user
-    ///    - every listed ID is a named session's v1 `amplify.1.` record's, or `.default`, whose record is the
-    ///      plugin's; the plugin's account is never a session ID of its own
+    ///    - every listed ID is a named session's v1 `amplify.1.` record's, a session's with a sign-in waiting on a
+    ///      challenge (its `.challenge` record: one another test left less than 15 minutes ago is listed), or
+    ///      `.default`, whose record is the plugin's; the plugin's account is never a session ID of its own
     ///    - when the test wrote the plugin record, `.default` is listed from it, naming the probe user
     ///    - no request is sent: structurally, since no handle is live and the listing reads only the
     ///      keychain; the recorder the handles used confirms it saw nothing
@@ -183,9 +184,11 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         XCTAssertEqual(byId[aliceId]?.label, "Work")
         XCTAssertTrue(byId[bobId]?.user?.username == users.bob.username, "bob's row names another user")
         XCTAssertNil(byId[bobId]?.label)
-        // A `$default.session` record is a development build's leftover, never `.default`'s record.
+        // A `$default.session` record is a development build's leftover, never `.default`'s record. A session with
+        // nothing saved but an interrupted sign-in is listed from its `.challenge` record.
         let v1Ids = try Set(IntegrationTestEnvironment.rawKeychainAccounts().compactMap { account -> SessionID? in
-            guard let parsed = SessionRecordKey.parse(account), parsed.kind == .session, parsed.sessionId != .default,
+            guard let parsed = SessionRecordKey.parse(account),
+                  parsed.kind == .challenge || (parsed.kind == .session && parsed.sessionId != .default),
                   parsed.namespaceComponent == configuration.poolNamespace.keyComponent else {
                 return nil
             }
@@ -194,7 +197,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         for row in stored {
             XCTAssertTrue(
                 v1Ids.contains(row.sessionId) || row.sessionId == .default,
-                "a listed session came from neither a named session's v1 record nor the plugin's record"
+                "a listed session came from neither a named session's v1 record or interrupted sign-in nor the plugin's record"
             )
         }
         if pluginRecordWritten {
