@@ -170,27 +170,32 @@ class AWSS3StoragePluginStorageBucketTests: XCTestCase, @unchecked Sendable {
     ///
     /// - Given: A configured AWSS3StoragePlugin
     /// - When:
-    ///    - storageService(for:) is invoked concurrently for a bucket that was not accessed before
+    ///    - storageService(for:) is invoked concurrently for each of several buckets that were not accessed before
     /// - Then:
-    ///    - every call returns the same service, and only that one is stored for the bucket
+    ///    - every call for a bucket returns the one service stored for that bucket
     ///
     func testStorageService_withNewBucketConcurrently_shouldCreateOneService() throws {
         // MockAWSAuthService records calls without a lock, so concurrent service creation would corrupt it.
         storagePlugin.authService = AWSAuthService()
         // Start the transfer database's one-time recovery on a kept service, so a released duplicate can't trap in it.
         _ = try storagePlugin.storageService(for: .fromBucketInfo(.init(bucketName: "warmUpBucket", region: "us-east-1")))
-        let services = AtomicValue<[AWSS3StorageService]>(initialValue: [])
-        DispatchQueue.concurrentPerform(iterations: 8) { _ in
-            if let service = try? storagePlugin.storageService(for: .fromBucketInfo(additionalBucketInfo)) as? AWSS3StorageService {
-                services.append(service)
+        // Several buckets, so a reverted fix fails even where few threads overlap.
+        for index in 1 ... 4 {
+            let bucketInfo = BucketInfo(bucketName: "concurrentBucket\(index)", region: "us-east-2")
+            let services = AtomicValue<[AWSS3StorageService]>(initialValue: [])
+            DispatchQueue.concurrentPerform(iterations: 8) { _ in
+                if let service = try? storagePlugin.storageService(for: .fromBucketInfo(bucketInfo)) as? AWSS3StorageService {
+                    services.append(service)
+                }
             }
-        }
 
-        let returned = services.get()
-        XCTAssertEqual(returned.count, 8)
-        let stored = try XCTUnwrap(storagePlugin.storageServicesByBucket[additionalBucketInfo.bucketName] as? AWSS3StorageService)
-        XCTAssertTrue(returned.allSatisfy { $0 === stored })
-        XCTAssertEqual(storagePlugin.storageServicesByBucket.count, 3)
+            let returned = services.get()
+            XCTAssertEqual(returned.count, 8, bucketInfo.bucketName)
+            let stored = try XCTUnwrap(storagePlugin.storageServicesByBucket[bucketInfo.bucketName] as? AWSS3StorageService)
+            let distinct = Set(returned.map { ObjectIdentifier($0) })
+            XCTAssertEqual(distinct, [ObjectIdentifier(stored)], "\(bucketInfo.bucketName): \(distinct.count) services returned")
+        }
+        XCTAssertEqual(storagePlugin.storageServicesByBucket.count, 6)
     }
 
     /// Given: A configured AWSS3StoragePlugin

@@ -118,7 +118,8 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
         guard let part = multipartUpload.part(for: partNumber) else {
             throw StorageError.unknown("Part number \(partNumber) is not in this multipart upload", nil)
         }
-        guard let serviceProxy else { throw Self.serviceUnavailable }
+        // Fail before preparing the part, so a reset service fails the upload once rather than once per part.
+        guard let serviceProxy, serviceProxy.preSignedURLBuilder != nil else { throw Self.serviceUnavailable }
 
         // `@Sendable` because the result handler below captures this and calls it from a `Task`.
         let startUploadPart: @Sendable (URL, URL) async -> Void = { [weak self] partialFileURL, preSignedURL in

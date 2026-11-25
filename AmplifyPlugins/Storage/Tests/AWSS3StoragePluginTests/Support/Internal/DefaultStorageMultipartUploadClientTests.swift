@@ -232,6 +232,40 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
         XCTAssertEqual(fileSystem.createPartialFileCount.get(), 0)
     }
 
+    /// A plugin reset sets the service's presigner to nil; uploadPart fails before preparing the part (#4426).
+    ///
+    /// - Given: a DefaultStorageMultipartUploadClient whose service has been reset
+    /// - When:
+    ///    - uploadPart is invoked
+    /// - Then:
+    ///    - a StorageError is thrown, so the session fails the upload once, and no part is prepared
+    ///
+    func testUploadPart_afterServiceReset_shouldThrowStorageError() throws {
+        let fileSystem = HoldingPartialFileSystem()
+        let client = DefaultStorageMultipartUploadClient(
+            serviceProxy: serviceProxy,
+            fileSystem: fileSystem,
+            bucket: "bucket",
+            key: "key",
+            uploadFile: uploadFile
+        )
+        serviceProxy.preSignedURLBuilder = nil
+        let error = try errorThrown {
+            try client.uploadPart(
+                partNumber: 1,
+                multipartUpload: .parts(
+                    uploadId: "uploadId",
+                    uploadFile: self.uploadFile,
+                    partSize: .default,
+                    parts: [.pending(bytes: 10)]
+                ),
+                subTask: .init(transferType: .multiPartUploadPart(uploadId: "uploadId", partNumber: 1), bucket: "bucket", key: "key")
+            )
+        }
+        XCTAssertTrue(error is StorageError)
+        XCTAssertEqual(fileSystem.createPartialFileCount.get(), 0)
+    }
+
     /// A plugin reset sets the service's presigner to nil while a part is being prepared (#4426).
     ///
     /// - Given: a DefaultStorageMultipartUploadClient whose service has been reset after a part was queued
@@ -240,7 +274,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
     /// - Then:
     ///    - the failure is reported to the session once, instead of a fatal error
     ///
-    func testUploadPart_afterServiceReset_shouldReportFailure() async throws {
+    func testUploadPart_whenServiceIsResetWhilePreparingPart_shouldReportFailure() async throws {
         let fileSystem = HoldingPartialFileSystem()
         let client = DefaultStorageMultipartUploadClient(
             serviceProxy: serviceProxy,
@@ -470,12 +504,23 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable 
 
     /// Given: a DefaultStorageMultipartUploadClient
     /// When: serviceProxy is set to nil and abortMultipartUpload is invoked
-    /// Then: Nothing is thrown or sent, and an .aborted event is reported to the session, as S3's response would be
+    /// Then: Nothing is thrown or sent, a warning is logged, and an .aborted event is reported to the session, as
+    ///   S3's response would be
     func testAbortMultipartUpload_withoutServiceProxy_shouldReportAborted() async throws {
+        let logger = MockLogger()
+        let client = DefaultStorageMultipartUploadClient(
+            serviceProxy: serviceProxy,
+            bucket: "bucket",
+            key: "key",
+            uploadFile: uploadFile,
+            logger: logger
+        )
+        client.integrate(session: session)
         serviceProxy = nil
         session.handleMultipartUploadExpectation = expectation(description: "Aborted reported")
-        let error = try errorThrown { try self.client.abortMultipartUpload(uploadId: "uploadId") }
+        let error = try errorThrown { try client.abortMultipartUpload(uploadId: "uploadId", error: nil) }
         XCTAssertNil(error)
+        XCTAssertEqual(logger.warnCount, 1)
 
         await fulfillment(of: [session.handleMultipartUploadExpectation!], timeout: 1)
         XCTAssertEqual(awss3Behavior.abortMultipartUploadCount, 0)
