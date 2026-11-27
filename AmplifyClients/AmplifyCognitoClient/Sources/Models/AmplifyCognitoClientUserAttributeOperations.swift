@@ -79,7 +79,7 @@ extension AmplifyCognitoClientUpdateAttributeResult: Sendable {}
 @_spi(AmplifyExperimental)
 public enum AmplifyCognitoClientUpdateAttributeStep {
 
-    /// Call `confirm(userAttribute:confirmationCode:)` with the code sent to the destination.
+    /// Call `confirm(userAttribute:confirmationCode:options:)` with the code sent to the destination.
     case confirmAttributeWithCode(AmplifyCognitoClientCodeDeliveryDetails, [String: String]?)
 
     /// The update is complete.

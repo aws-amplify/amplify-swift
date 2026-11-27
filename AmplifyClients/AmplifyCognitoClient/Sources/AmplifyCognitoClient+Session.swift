@@ -60,8 +60,10 @@ public extension AmplifyCognitoClient {
     ///     first factor (`.userAuth(preferredFirstFactor: .webAuthn)`), before anything is sent, and for a
     ///     WebAuthn step Cognito starts on its own, without presenting anything; and when the window has gone by
     ///     the time the sheet would appear;
-    ///   - for a passkey step: `.browserBusy(holder:)` while another sheet is up; `.userCancelled` when the user
-    ///     closes the sheet, or `cancelWebUISignIn()` or `resetSystemSheet()` closes it;
+    ///   - for a passkey step: `.browserBusy(holder:)` while another session's sheet is up, or a sheet of this
+    ///     session's that is not a sign-in step in progress, such as its browser still closing after a cancel
+    ///     (behind this session's own hosted-UI sign-in in progress the call waits instead); `.userCancelled`
+    ///     when the user closes the sheet, or `cancelWebUISignIn()` or `resetSystemSheet()` closes it;
     ///     `.webAuthnCeremonyFailed` when the device cannot use a passkey; `.service` for Cognito's WebAuthn
     ///     answers; `CancellationError` if the calling task is cancelled while the sheet is up, or before it
     ///     would appear;

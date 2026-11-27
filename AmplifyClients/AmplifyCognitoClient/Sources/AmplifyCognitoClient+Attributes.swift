@@ -35,7 +35,7 @@ public extension AmplifyCognitoClient {
     /// Updates one of the signed-in user's attributes.
     ///
     /// - Returns: Whether it was updated, or the code to confirm it with.
-    /// - Throws: as `fetchUserAttributes()`.
+    /// - Throws: as `fetchUserAttributes(options:)`.
     func update(
         userAttribute: AmplifyCognitoClientUserAttribute,
         options: AmplifyCognitoClientUpdateUserAttributesOptions = AmplifyCognitoClientUpdateUserAttributesOptions()
@@ -53,7 +53,7 @@ public extension AmplifyCognitoClient {
     /// Updates several of the signed-in user's attributes at once.
     ///
     /// - Returns: For each attribute, whether it was updated, or the code to confirm it with.
-    /// - Throws: as `fetchUserAttributes()`.
+    /// - Throws: as `fetchUserAttributes(options:)`.
     func update(
         userAttributes: [AmplifyCognitoClientUserAttribute],
         options: AmplifyCognitoClientUpdateUserAttributesOptions = AmplifyCognitoClientUpdateUserAttributesOptions()
@@ -68,7 +68,7 @@ public extension AmplifyCognitoClient {
     /// Sends a code to verify one of the signed-in user's attributes, such as `email`.
     ///
     /// - Returns: Where the code was sent.
-    /// - Throws: as `fetchUserAttributes()`.
+    /// - Throws: as `fetchUserAttributes(options:)`.
     func sendVerificationCode(
         forUserAttributeKey userAttributeKey: AmplifyCognitoClientUserAttributeKey,
         options: AmplifyCognitoClientSendVerificationCodeOptions = AmplifyCognitoClientSendVerificationCodeOptions()
@@ -83,7 +83,7 @@ public extension AmplifyCognitoClient {
     /// Confirms one of the signed-in user's attributes with the code Cognito sent.
     ///
     /// - Parameter options: Nothing yet; here so the call keeps the plugin's shape.
-    /// - Throws: as `fetchUserAttributes()`; `.service(.codeMismatch, …)` for a wrong code.
+    /// - Throws: as `fetchUserAttributes(options:)`; `.service(.codeMismatch, …)` for a wrong code.
     func confirm(
         userAttribute: AmplifyCognitoClientUserAttributeKey,
         confirmationCode: String,
@@ -98,7 +98,7 @@ public extension AmplifyCognitoClient {
     /// Changes the signed-in user's password.
     ///
     /// - Parameter options: Nothing yet; here so the call keeps the plugin's shape.
-    /// - Throws: as `fetchUserAttributes()`; `.notAuthorized` for a wrong old password.
+    /// - Throws: as `fetchUserAttributes(options:)`; `.notAuthorized` for a wrong old password.
     func update(
         oldPassword: String,
         to newPassword: String,

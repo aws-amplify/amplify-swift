@@ -161,6 +161,11 @@ public extension AmplifyCognitoClientWebUIOptions {
 
     /// What a hosted-UI sign-in does when another session's browser sign-in is already in flight.
     ///
+    /// It applies once the call looks at the sheet. Two things come first, whatever the policy. A hosted-UI
+    /// sign-in of the same session that is still in progress refuses the call at once with `browserBusy`. A
+    /// sign-in step of the same session that is still in progress, a passkey sheet included, is waited for, and a
+    /// `wait(timeout:)` counts from when that step ends.
+    ///
     /// A struct with two constructors rather than an enum, so a timeout is checked when the policy is
     /// made: a policy never holds NaN, and every policy equals itself.
     struct BrowserBusyPolicy {

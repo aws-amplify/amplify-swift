@@ -12,7 +12,7 @@ import Foundation
 @_spi(AmplifyExperimental)
 public struct AmplifyCognitoClientWebAuthnCredential: Sendable, Equatable, Hashable {
 
-    /// The credential's identifier, as `deleteWebAuthnCredential(credentialId:)` takes it.
+    /// The credential's identifier, as `deleteWebAuthnCredential(credentialId:options:)` takes it.
     public let credentialId: String
 
     /// When the credential was registered.

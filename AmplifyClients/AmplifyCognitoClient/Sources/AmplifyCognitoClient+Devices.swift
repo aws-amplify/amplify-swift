@@ -38,7 +38,7 @@ public extension AmplifyCognitoClient {
     ///
     /// - Parameter options: Nothing yet; here so the call keeps the plugin's shape.
     /// - Throws: `AmplifyCognitoClientError.notSignedIn`, `.sessionExpired`, `.configuration`, `.notAuthorized` and
-    ///   `.service` as `fetchDevices()`; `.storageUnavailable` if storage, including this device's device
+    ///   `.service` as `fetchDevices(options:)`; `.storageUnavailable` if storage, including this device's device
     ///   record, could not be read; `.unknown` ("Unable to get device metadata") when this device holds no
     ///   device record for the user, as the plugin does (the pool does not track devices, or this device
     ///   has not signed in since tracking was enabled). No request is sent then.
@@ -52,11 +52,11 @@ public extension AmplifyCognitoClient {
     /// Forgets a device for the signed-in user.
     ///
     /// - Parameters:
-    ///   - device: The device to forget, from `fetchDevices()`; `nil` for this device.
+    ///   - device: The device to forget, from `fetchDevices(options:)`; `nil` for this device.
     ///   - options: Nothing yet; here so the call keeps the plugin's shape.
     /// - Throws: `AmplifyCognitoClientError.notSignedIn`, `.sessionExpired`, `.storageUnavailable`, `.configuration`,
-    ///   `.notAuthorized` and `.service` as `fetchDevices()`. For this device (`nil`), also as
-    ///   `rememberDevice()`: `.storageUnavailable` if its device record could not be read, and `.unknown`
+    ///   `.notAuthorized` and `.service` as `fetchDevices(options:)`. For this device (`nil`), also as
+    ///   `rememberDevice(options:)`: `.storageUnavailable` if its device record could not be read, and `.unknown`
     ///   ("Unable to get device metadata") when there is none. Forgetting keeps the record on this device,
     ///   as the plugin does.
     func forgetDevice(

@@ -46,7 +46,7 @@ plugin uses.
 |---|---|
 | Stage | Beta, for feedback |
 | API | Behind `@_spi(AmplifyExperimental)`. Any release may change or remove it |
-| Platforms | iOS first: the whole integration suite runs on iOS. On tvOS, watchOS and visionOS the suite's default-backend tests run on simulators with the same results; the tests on the other backends, the hosted UI and passkeys are untested there. macOS is built, not run (see the [integration tests' README](Tests/IntegrationTests/README.md), "Other platforms"). The hosted UI and passkeys are on iOS, macOS and visionOS only |
+| Platforms | iOS first: every integration suite runs on iOS on each pull request that touches the client, and on every push to `main`. The client suite also passes on every backend on the tvOS, watchOS and visionOS simulators, run on CI by hand. The hosted UI and passkeys are tested end to end on iOS only, and the hosted-UI test does not pass on visionOS yet. macOS is built, not run (see the [integration tests' README](Tests/IntegrationTests/README.md), "Other platforms"). The hosted UI and passkeys are on iOS, macOS and visionOS only |
 | Passkeys | iOS 17.4, macOS 13.5, visionOS 1.0 or later. On visionOS, registering can't detect a passkey the device already holds for the user (see [Passkeys (WebAuthn credentials)](#passkeys-webauthn-credentials)) |
 | Configuration | Gen2 `amplify_outputs.json` only. A Gen1 `amplifyconfiguration.json` is refused with `AmplifyCognitoClientError.configuration` |
 | Amplify categories | Storage, API, Analytics and the other category plugins do **not** use these sessions. See [Tokens, sessions and credentials](#tokens-sessions-and-credentials) |
@@ -411,12 +411,22 @@ if !result.signedOutLocally {
     print("Still signed in:", result)
 }
 
-// The same options as signOut(options:): sign the user out of every device, and remove the row too.
-await AmplifyCognitoClient.signOutStoredSession(
+// The same options as signOut(options:). Here: sign out, then remove the row too.
+let removed = await AmplifyCognitoClient.signOutStoredSession(
     sessionId: id,
     configuration: configuration,
-    options: .init(globalSignOut: true, purgeStoredSession: true)
+    options: .init(purgeStoredSession: true)
 )
+switch removed {
+case .complete:
+    break // Signed out, and the row is gone.
+case .partial(_, _, _, storageError: let storageError?):
+    print("Signed out, but the row could not be removed and is still saved:", storageError)
+case .partial:
+    print("Removed, but not everything was revoked:", removed)
+case .failed(let error):
+    print("Still signed in, and nothing was removed:", error)
+}
 
 // Local only: deletes the records without revoking anything.
 try await AmplifyCognitoClient.purgeStoredSession(sessionId: id, configuration: configuration)
@@ -649,7 +659,9 @@ challenge starts over.
 A session that reported `sessionExpired` may sign in again without signing out, in that launch or a later one: the
 expiry is saved with the session while its saved login keeps the refresh token found dead. A session whose refresh
 token was revoked elsewhere, and that no refresh has found dead yet, is still signed in as its user, so `signIn` is
-refused with `.invalidState` until a token request reports `sessionExpired`; sign out first, as with the plugin.
+refused with `.invalidState` until a token request reports `sessionExpired`. On that refusal, force a refresh
+(`fetchAuthSession(options: .init(forceRefresh: true))`) so that it reports `sessionExpired`, or sign the session
+out first, as with the plugin.
 
 The result's `nextStep` is `.done` when the user is signed in. Otherwise it is the step to present; see
 [Sign-in steps and confirmSignIn](#sign-in-steps-and-confirmsignin). In an SRP, `.userPassword` or custom-auth
@@ -795,7 +807,7 @@ Presentation anchor rules:
 | `signIn` or `confirmSignIn` with no window in the options, asking for a passkey (`.userAuth(preferredFirstFactor: .webAuthn)`, or a `"WEB_AUTHN"` answer with no window left: none in either call's options, or the sign-in's closed since) | `.validation(field: "presentationAnchorForWebAuthn")` before anything is sent. A pending selection stays pending |
 | The sign-in's window has closed when the sheet would appear | `.validation(field: "presentationAnchorForWebAuthn")`, nothing shown. The window is held weakly |
 | `associateWebAuthnCredential`'s window has closed when the sheet would appear | `.validation(field: "presentationAnchor")`, nothing shown. The window is held weakly |
-| Another sheet (hosted UI or passkey, any session) is up | `.browserBusy(holder:)` |
+| Another session's sheet (hosted UI or passkey) is up, or a sheet of this session's that is not a sign-in step in progress: its browser still closing after a cancel, an earlier `associateWebAuthnCredential`'s sheet, or its sign-out page | `.browserBusy(holder:)`. A passkey sign-in on a session whose own hosted-UI sign-in is in progress waits for it instead |
 | The user closes the sheet | `.userCancelled` |
 | The device cannot complete the ceremony | `.webAuthnCeremonyFailed(...)` |
 | The calling task is cancelled | The sheet closes and the call throws `CancellationError` |
@@ -1019,7 +1031,10 @@ and `oauth` sends the secret with the hosted UI's token exchange (`Authorization
 
 One system sheet (a hosted-UI sign-in, a hosted-UI sign-out page, or a passkey sheet) is shown at a time across the
 client's sessions: every session of every `AmplifyCognitoClient` in the process. By default a second request throws
-`.browserBusy(holder:)`, naming the session that holds it. For a second hosted-UI sign-in of a session whose first is
+`.browserBusy(holder:)`, naming the session that holds it. That is for a sheet another session holds. A sign-in
+request on a session whose own sign-in step is still in progress, its passkey sheet or hosted-UI browser included,
+waits for that step first, whatever `whenBrowserBusy` says, and a `.wait(timeout:)` counts from when it ends: the
+browser can then open once the passkey sheet closes. For a second hosted-UI sign-in of a session whose first is
 still in progress while no session holds the sheet, `holder` is the session itself: "Session "work" already has a
 hosted-UI sign-in in progress." A hosted-UI sign-in can queue with `.wait(timeout:)` instead, for at most one hour; a
 passkey sheet or the sign-out page fails at once while another session holds the sheet.
@@ -1142,7 +1157,9 @@ let accessToken = try await client.userPoolTokenProvider.accessToken()
   `forceRefresh: true` retries at once.
 - A signed-out session whose identity pool allows guests becomes `.guest` here, and only here. If the pool allows
   none, or there is no identity pool, the call throws `notSignedIn`: where you call it to become a guest, use `try?`
-  or handle the error.
+  or handle the error. A fetch whose refresh was waiting when this client signed the session out, purged it or
+  deleted its user answers the same way, so an account removed while a fetch is in flight can come back in
+  `storedSessions` as a guest row: cancel or await the session's fetches before you remove an account.
 - Concurrent refreshes of the same kind share one call. A forced refresh (`forceRefresh: true`) joins only other
   forced refreshes, and runs after a normal refresh already in flight, so it always calls Cognito. With an identity
   pool configured, that includes a session signed out in this process after an app extension or the Auth plugin saved
@@ -1200,7 +1217,10 @@ with its own credentials. The identifier is fixed when the client is created. Fl
 another identifier, or with one for the first time: records cached under the old identifier, or in the region's
 shared cache, stay there until a client with that identifier, or with none, flushes or clears them. A session's
 cache outlives its sign-out: its records stay until a flush sends them or discards them (below), or a client with
-that identifier calls `clearCache()`, and the emptied file is never removed.
+that identifier calls `clearCache()`, and the emptied file is never removed. Use one client per identifier in a
+process. A named session keeps a login per backend, and its `stringValue` is the same for all of them: an app that
+switches backends at run time should put the pool in the identifier too
+(`"\(userPoolId)-\(client.sessionId.stringValue)"`), or flush before it switches.
 
 With the Kinesis and Firehose pull request, when the provider can't vend credentials, a flush stops and throws
 `KinesisError.credentials` (`FirehoseError.credentials`), with the provider's `CredentialsError` underneath. What
@@ -1217,9 +1237,11 @@ happens to the records it did not send follows the error's `disposition`:
   with no retry counted, and sent once the session can vend credentials again. Kept this way they don't expire
   through `maxRetries`, so the cache can fill to `cacheMaxBytes`, after which `record` throws `cacheLimitExceeded`.
 
-While such failures repeat, the automatic flush backs off, doubling its interval up to 15 minutes, until a flush
-completes. A wait already under way isn't shortened, so call `enable()` after the session signs in again to restart
-the schedule.
+While failures of that second kind repeat, the automatic flush backs off, doubling its interval up to 15 minutes. A
+flush that completes ends the back-off, and so does one that fails for another reason than credentials or a
+cancellation, or with `.discard`. A wait already under way isn't shortened, so call `enable()` after the session
+signs in again to restart the schedule, but only for a client the app has not disabled: `enable()` also turns
+collection back on.
 
 An expired session keeps answering `sessionExpired` while a sign-in on it waits on a challenge (an MFA code, say),
 so a flush during the prompt keeps the records too. They are then sent as whoever signed in: the provider is bound
@@ -2171,8 +2193,11 @@ The client keeps the plugin's semantics except where listed here and in the sect
 - **A session whose refresh token was revoked elsewhere refuses `signIn` until a refresh finds it.** It is signed in
   as its user, and `signIn` throws `.invalidState` ("There is already a user in signedIn state") until the session
   signs out, or a refresh reports `sessionExpired`. From then on the expiry is saved with the session, so a later
-  launch lets it sign in again too. What to do: on `sessionExpired`, or on that refusal, sign the session out before
-  showing sign-in.
+  launch lets it sign in again too. What to do: on `sessionExpired`, show sign-in without signing out. On that
+  refusal, force a refresh (`fetchAuthSession(options: .init(forceRefresh: true))`) so that it reports
+  `sessionExpired`, or sign the session out first. Keep the sign-out for when the user is leaving: with
+  the Kinesis and Firehose pull request, it makes a Kinesis or Firehose client with a `cacheIdentifier` delete what
+  it has cached at its next flush.
 - **A second refresh-token reuse counts as a dead token after 30 seconds, in one launch.** Until then the failure,
   forced or not, is retryable. The count is kept in memory: after an app terminated in the middle of a refresh with
   refresh-token rotation on (Cognito rotated the token, and the new one was never saved), the saved, retired refresh
@@ -2182,8 +2207,10 @@ The client keeps the plugin's semantics except where listed here and in the sect
   were saved, with `refreshTokenReused` underneath, not the "expired or been revoked" of a refused refresh token. Once
   it is reported, the expiry is saved with the session: later launches, and new clients of the session, answer it at
   once without refreshing, until the session signs in again or signs out. Before that `sessionExpired`, the session is
-  signed in as its user, so `signIn` refuses it with `.invalidState`. What to do: after repeated refresh failures,
-  sign the session out, then show sign-in.
+  signed in as its user, so `signIn` refuses it with `.invalidState`. What to do: on `sessionExpired`, show sign-in
+  without signing out. On that refusal, force a refresh again, at least 30 seconds after the first failure, so that
+  it reports `sessionExpired`, or sign the session out first; keep the sign-out for when the user is leaving, as
+  above.
 - **A sign-in after an expired session can't be resumed after a relaunch.** This affects a session whose refresh
   token expired (it reported `sessionExpired`) when its user signs in again, that sign-in stops on a challenge
   (an MFA code, say), and the app is closed before the user answers. The saved login still holds the expired user, so

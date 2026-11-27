@@ -35,9 +35,14 @@ public extension AmplifyCognitoClient {
     /// - Throws:
     ///   - `invalidState` if this session is signed in or federated, or has no usable window (`invalidContext`);
     ///   - `configuration` without a user pool or a hosted UI (`auth.oauth`), or with a bad redirect URI;
-    ///   - `browserBusy(holder:)` if the system sheet is held (by a hosted-UI sign-in or sign-out page, or a
-    ///     passkey sheet, of another session or of this one), or this session already has a hosted-UI sign-in
-    ///     in progress, or a `.wait(timeout:)` expired first;
+    ///   - `browserBusy(holder:)` if another session holds the system sheet (its hosted-UI sign-in or sign-out
+    ///     page, or its passkey sheet); if this session holds it with a sheet that is not a sign-in step in
+    ///     progress, such as its browser still closing after a cancel (with `.fail`; a `.wait(timeout:)` queues
+    ///     behind a browser that is closing); if this session already has a hosted-UI sign-in in progress, which
+    ///     is refused at once, whatever the policy; or if a `.wait(timeout:)` expired first. A sign-in step of
+    ///     this session's own that is still in progress, its passkey sheet included, is not a refusal: this call
+    ///     waits for it before it looks at the sheet, so `.fail` and a `.wait(timeout:)` count from when that step
+    ///     ends. The browser then opens also when that step stopped on a challenge, and ends that challenge;
     ///   - `validation(field: "presentationAnchor")` if the window has closed, before anything is shown;
     ///   - `userCancelled` if the user closed the browser, or `cancelWebUISignIn()` or `resetSystemSheet()` ran;
     ///   - `CancellationError` if the calling task was cancelled, which also dismisses the browser;
