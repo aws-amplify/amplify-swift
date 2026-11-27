@@ -221,6 +221,19 @@ jobs:
           result_bundle_path: ${{ inputs.enforce_no_skips && format('{0}/integration-tests-retry.xcresult', runner.temp) || '' }}
           other_flags: -test-iterations ${{ inputs.test_iterations }} -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
 
+      # A scoped run (only_testing) has no retry, so its failure is the job's. The run step's continue-on-error is
+      # written to be off for a scoped run, and scoped runs were still seen green with their test failed (a hosted-UI
+      # job on main, 2026-11-18: "TEST FAILED", exit code 65, job passed). So the failure is stated here, where `if:`
+      # reads the input as the retry step's does.
+      - name: Fail when the scoped ${{ inputs.platform }} test run failed
+        if: ${{ !cancelled() && inputs.only_testing != '' && steps.run-tests.outcome == 'failure' }}
+        env:
+          ONLY_TESTING: ${{ inputs.only_testing }}
+        run: |
+          echo "::error::The scoped test run failed: $ONLY_TESTING"
+          exit 1
+        shell: bash
+
       # Only where enforce_no_skips is on (the Cognito client jobs): a test that skips there means a resource CI
       # should have is missing, so it fails the job, listing the skipped tests. It reads the last run's result bundle:
       # the retry's when there was one, else the first run's.
