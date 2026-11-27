@@ -93,9 +93,17 @@ public enum KinesisError: AmplifyError {
     case cache(ErrorDescription, RecoverySuggestion, Error?)
     case cacheLimitExceeded(ErrorDescription, RecoverySuggestion, Error?)
     case validation(ErrorDescription, RecoverySuggestion, Error?)
+    case credentials(ErrorDescription, RecoverySuggestion, Error?)
     case unknown(ErrorDescription, RecoverySuggestion, Error?)
 }
 ```
+
+May gain cases in a minor release (`@unknown default`). `.credentials` is a flush whose credentials provider threw
+AmplifyFoundation's `CredentialsError`: `RecordClient` (shared with Firehose) stops the flush and acts on the error's
+`disposition` (see `RecordClient.flush()`). So these two GA clients depend on that experimental-SPI property, and on
+how a provider maps its states to it (the Cognito client's credentials provider, in
+`AmplifyCognitoClient/Sources/Providers/`): changing either changes what a GA client does with cached records. Treat it
+as a GA behaviour change, with a release-notes line.
 
 ## Building a New Amplify Client
 
