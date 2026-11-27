@@ -212,9 +212,9 @@ final class LiveWebUICoreTests: XCTestCase {
             Dictionary(items.map { ($0.name, $0.value) }, uniquingKeysWith: { first, _ in first })
         }
         XCTAssertEqual(values(providerOnly)["identity_provider"], "Google")
-        XCTAssertNil(values(providerOnly)["idp_identifier"])
+        XCTAssertFalse(values(providerOnly).keys.contains("idp_identifier"))
         XCTAssertEqual(values(withIdentifier)["idp_identifier"], "corp")
-        XCTAssertNil(values(withIdentifier)["identity_provider"])
+        XCTAssertFalse(values(withIdentifier).keys.contains("identity_provider"))
     }
 
     /// A sign-out once the exchange has signed the machine in, while the identity pool step runs

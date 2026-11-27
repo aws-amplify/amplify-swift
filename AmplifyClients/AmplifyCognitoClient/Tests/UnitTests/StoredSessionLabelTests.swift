@@ -198,6 +198,39 @@ final class StoredSessionLabelTests: XCTestCase {
         }
     }
 
+    /// A locked device is reported as such, and nothing is written over a record that could not be read.
+    ///
+    /// - Given: a saved, signed-in named session, and `.default` on the plugin's record, with no client live, and
+    ///   a keychain whose read of each record fails as on a locked device
+    /// - When: each session's label is set through the static call
+    /// - Then:
+    ///    - each throws `storageUnavailable(.locked)`, and nothing is written to the keychain or removed from it
+    func testLabellingOnALockedKeychainThrowsAndWritesNothing() async throws {
+        try harness.signIn(work, .signedIn("alice"))
+        harness.keychain.put(FakePayload.signedIn("bob").data, pluginAccount)
+        harness.keychain.recordPluginConfiguration()
+        harness.keychain.failingReads(of: harness.store().sessionAccount(for: work), with: errSecInteractionNotAllowed)
+        harness.keychain.failingReads(of: pluginAccount, with: errSecInteractionNotAllowed)
+        let dependencies = harness.dependencies
+
+        for sessionId in [work, .default] {
+            harness.keychain.resetLogs()
+            await assertThrowsAsync({
+                try await AmplifyCognitoClient.setSessionLabel(
+                    "Work",
+                    sessionId: sessionId,
+                    configuration: ClientFixtures.configuration,
+                    accessGroup: nil,
+                    dependencies: dependencies
+                )
+            }) { error in
+                XCTAssertEqual((error as? AmplifyCognitoClientError)?.storageUnavailableReason, .locked, "\(sessionId): \(error)")
+            }
+            XCTAssertEqual(harness.keychain.writtenAccounts, [], "\(sessionId)")
+            XCTAssertFalse(harness.keychain.hasMutations, "\(sessionId): something was written or removed")
+        }
+    }
+
     /// A lost race is rebased, not forced, as the instance's is.
     ///
     /// - Given: saved, signed-in sessions no client holds, and for each another writer that refreshes its
