@@ -51,7 +51,7 @@ final class LiveSessionEngineTests: XCTestCase {
         XCTAssertNil(federated.user)
         XCTAssertEqual(
             try engine.describe(EnginePayloadFixtures.data("userPoolOnly")).user,
-            AuthClientUser(username: "fixture-user", userId: "fixture-sub")
+            AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub")
         )
     }
 
@@ -84,7 +84,7 @@ final class LiveSessionEngineTests: XCTestCase {
     ///      user pool kinds have the fixture's tokens, and the others none
     ///
     func testCredentialsAndTokensAreReadPerKind() throws {
-        let tokens = AuthClientUserPoolTokens(
+        let tokens = AmplifyCognitoClientUserPoolTokens(
             idToken: EnginePayloadFixtures.token,
             accessToken: EnginePayloadFixtures.token,
             refreshToken: EnginePayloadFixtures.refreshToken
@@ -135,7 +135,7 @@ final class LiveSessionEngineTests: XCTestCase {
     /// - When:
     ///    - the core reads them through each checked wrapper
     /// - Then:
-    ///    - each throws `AuthClientError.unknown`, with the decoding error underneath
+    ///    - each throws `AmplifyCognitoClientError.unknown`, with the decoding error underneath
     ///
     func testAnUnreadablePayloadIsTheClientsUnknown() {
         let payload = Data(#"{"notACase":{}}"#.utf8)
@@ -150,7 +150,7 @@ final class LiveSessionEngineTests: XCTestCase {
         ]
         for (name, read) in reads {
             XCTAssertThrowsError(try read(), name) { error in
-                guard case .unknown(_, _, let underlying) = error as? AuthClientError else {
+                guard case .unknown(_, _, let underlying) = error as? AmplifyCognitoClientError else {
                     return XCTFail("\(name) threw \(error)")
                 }
                 XCTAssertTrue(underlying is DecodingError, name)

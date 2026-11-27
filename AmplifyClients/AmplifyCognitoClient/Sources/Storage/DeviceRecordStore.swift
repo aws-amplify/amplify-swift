@@ -32,7 +32,7 @@ import InternalAmplifyKeychain
 /// needs no engine import.
 ///
 /// **A keychain failure is never "absent".** A read returns `.absent` only when no item is stored;
-/// every keychain failure throws `AuthClientError.storageUnavailable`. Bytes that do not decode are
+/// every keychain failure throws `AmplifyCognitoClientError.storageUnavailable`. Bytes that do not decode are
 /// `.undecodable`, which is present, and not an error of the keychain.
 ///
 /// Synchronous: each call blocks on the keychain. Async callers go through `DeviceRecordIO`, which runs
@@ -141,7 +141,7 @@ struct DeviceRecordStore: Sendable {
             data = try JSONEncoder().encode(value)
         } catch {
             // Not a storage failure: nothing was written, and retrying cannot help.
-            throw AuthClientError.unknown("Could not encode the value to \(operation).", "This is a bug; please report it.", error)
+            throw AmplifyCognitoClientError.unknown("Could not encode the value to \(operation).", "This is a bug; please report it.", error)
         }
         try perform(operation) { try keychain.set(data, key: account) }
     }
@@ -150,7 +150,7 @@ struct DeviceRecordStore: Sendable {
         do {
             return try body()
         } catch {
-            throw AuthClientError.storageUnavailable(from: error, operation: operation)
+            throw AmplifyCognitoClientError.storageUnavailable(from: error, operation: operation)
         }
     }
 }

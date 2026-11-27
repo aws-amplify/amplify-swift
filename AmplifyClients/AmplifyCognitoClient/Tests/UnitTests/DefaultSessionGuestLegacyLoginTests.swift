@@ -184,7 +184,7 @@ final class DefaultSessionGuestLegacyLoginTests: XCTestCase {
     }
 
     private func client(
-        _ sessionId: SessionID,
+        _ sessionId: AmplifyCognitoClientSessionID,
         failingWhile failing: FailingSwitch? = nil,
         observing order: ClearOrder? = nil
     ) throws -> AmplifyCognitoClient {
@@ -218,6 +218,7 @@ final class DefaultSessionGuestLegacyLoginTests: XCTestCase {
             refreshTokenOf: TestKeychain.refreshToken,
             markerScope: TestKeychain.markerScope,
             summarizeSharedRecord: TestKeychain.summarizeSharedRecord,
+            describeCredentials: TestKeychain.describeCredentials,
             rereadsAbsentSharedRecord: false,
             sameCredentials: TestKeychain.sameCredentials,
             legacyLoginStores: {

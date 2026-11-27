@@ -24,15 +24,14 @@ extension EngineOperation {
     /// engine's contract).
     ///
     /// - Returns: the authentication and authorization states the machine was configured into.
-    /// - Throws: `AuthClientError.unknown` if it does not configure in time; `CancellationError` if the task
+    /// - Throws: `AmplifyCognitoClientError.unknown` if it does not configure in time; `CancellationError` if the task
     ///   is cancelled meanwhile.
     @discardableResult
     func configure(
         _ configuration: AuthConfiguration,
         boundNanoseconds: UInt64 = configureBoundNanoseconds
     ) async throws -> (AuthenticationState, AuthorizationState) {
-        // `InternalAWSCognitoAuth.AuthEvent`: the client has a public `AuthEvent` of its own.
-        await authMachine.send(InternalAWSCognitoAuth.AuthEvent(eventType: .configureAuth(configuration)))
+        await authMachine.send(AuthEvent(eventType: .configureAuth(configuration)))
         let operation = self
         return try await Self.bounded(boundNanoseconds, "Configuring the session's Cognito engine") {
             try await operation.firstState { state in
@@ -68,7 +67,7 @@ extension EngineOperation {
             }
         }
         try Task.checkCancellation()
-        throw AuthClientError.unknown(
+        throw AmplifyCognitoClientError.unknown(
             "The session's Cognito engine stopped before the operation finished.",
             "This is not expected. Retry the operation."
         )
@@ -88,7 +87,7 @@ extension EngineOperation {
             }
         }
         try Task.checkCancellation()
-        throw AuthClientError.unknown(
+        throw AmplifyCognitoClientError.unknown(
             "The session's Cognito engine stopped before the operation finished.",
             "This is not expected. Retry the operation."
         )
@@ -102,7 +101,7 @@ extension EngineOperation {
     func payload(establishing credentials: AmplifyCredentials) throws -> Data {
         guard case .written(let written) = slot.current, written == credentials else {
             assertionFailure("The engine established credentials it did not store in the operation's slot")
-            throw AuthClientError.unknown(
+            throw AmplifyCognitoClientError.unknown(
                 "The session's Cognito engine established credentials it did not store.",
                 "This is not expected. Sign in again."
             )
@@ -127,7 +126,7 @@ extension EngineOperation {
             case .finished(let result):
                 return result
             case .timedOut, nil:
-                throw AuthClientError.unknown(
+                throw AmplifyCognitoClientError.unknown(
                     "\(what) did not finish in time.",
                     "This is not expected. Retry the operation."
                 )

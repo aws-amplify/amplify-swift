@@ -19,8 +19,8 @@ final class MFAPreferenceTests: ClientMFATestCase {
 
     private func assertPreference(
         _ client: AmplifyCognitoClient,
-        enabled: Set<AuthClientMFAType>?,
-        preferred: AuthClientMFAType?,
+        enabled: Set<AmplifyCognitoClientMFAType>?,
+        preferred: AmplifyCognitoClientMFAType?,
         _ step: String,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -142,7 +142,7 @@ final class MFAPreferenceTests: ClientMFATestCase {
             try await client.updateMFAPreference(sms: .preferred, totp: .preferred)
             XCTFail("two types cannot both be preferred")
         } catch {
-            guard case .service(.invalidParameter?, _, _, _) = error as? AuthClientError else {
+            guard case .service(.invalidParameter?, _, _, _) = error as? AmplifyCognitoClientError else {
                 return XCTFail("expected .service(.invalidParameter), got \(Self.describe(error))")
             }
         }

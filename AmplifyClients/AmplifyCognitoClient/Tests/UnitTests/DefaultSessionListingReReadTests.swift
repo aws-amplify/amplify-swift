@@ -37,7 +37,7 @@ final class DefaultSessionListingReReadTests: XCTestCase {
         let sessions = try store.storedSessions()
 
         XCTAssertEqual(sessions.map(\.sessionId), [.default])
-        XCTAssertEqual(sessions.first?.username, "alice")
+        XCTAssertEqual(sessions.first?.user?.username, "alice")
         XCTAssertNotEqual(sessions.first?.kind, .signedOut)
         XCTAssertEqual(reads(of: pluginAccount), 2)
 

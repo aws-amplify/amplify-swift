@@ -25,7 +25,7 @@ extension SessionCore {
     /// waits on a challenge the session vends nothing, whatever it holds (`usableCredentials`).
     ///
     /// - Throws: `CredentialsError.notConfigured` if the session has no identity pool, or holds only user
-    ///   pool tokens; otherwise `AuthClientError` (`notSignedIn`, `sessionExpired`, `storageUnavailable`,
+    ///   pool tokens; otherwise `AmplifyCognitoClientError` (`notSignedIn`, `sessionExpired`, `storageUnavailable`,
     ///   or `unknown`). A session carried forward from a previous configuration, waiting for its identity, throws
     ///   its identity step's last failure while that step may not be tried again: as `notConfigured` if it is a known
     ///   refusal (`providerIdentityFailure`).
@@ -35,7 +35,7 @@ extension SessionCore {
         }
         let payload = try await freshPayload(for: .awsCredentials)
         guard let credentials = try engine.checkedAWSCredentials(in: payload) else {
-            throw AuthClientError.unknown(
+            throw AmplifyCognitoClientError.unknown(
                 "Session \"\(sessionId)\" holds no AWS credentials.",
                 "Sign the session out and sign in again."
             )
@@ -50,7 +50,7 @@ extension SessionCore {
     /// identity step fails still hands out the refreshed token (`freshPayload(for:)`).
     ///
     /// - Throws: `CredentialsError.notConfigured` if the session has no user pool, or is federated (before any
-    ///   refresh); otherwise `AuthClientError` (`notSignedIn` for a signed-out or guest session, and while a sign-in
+    ///   refresh); otherwise `AmplifyCognitoClientError` (`notSignedIn` for a signed-out or guest session, and while a sign-in
     ///   waits on a challenge; `sessionExpired`, `storageUnavailable`, or `unknown`).
     nonisolated func accessToken() async throws -> String {
         guard configuration.userPool != nil else {
@@ -128,7 +128,7 @@ extension SessionCore {
         // What the flight left may be a re-read or adopted record rather than this refresh's result. Never hand
         // out credentials from one that are still expired: the provider contract is currently-valid credentials.
         guard try await !needsRefresh(refreshed, of: identity ? restoredSnapshotIfAny : nil) else {
-            throw AuthClientError.unknown(
+            throw AmplifyCognitoClientError.unknown(
                 "Session \"\(sessionId)\"'s credentials could not be refreshed.",
                 "Retry the operation."
             )
@@ -186,7 +186,7 @@ extension SessionCore {
     /// The engine's test, except that without an identity pool only a user's user pool tokens count. A login saved
     /// under a configuration that had one may still hold its AWS credentials (`.default`'s, which the plugin's rule
     /// copies as it is when the identity pool is removed), and nothing hands those out here: the AWS credentials
-    /// provider refuses, and `fetchAuthSession` reports them as not configured. Counted, once they expired every call
+    /// provider refuses, and `fetchAuthSession` reports no identity fields. Counted, once they expired every call
     /// would refresh, and rewrite the record, until the tokens next need a refresh.
     private nonisolated func credentialsNeedRefresh(_ payload: Data) throws -> Bool {
         if configuration.identityPool == nil, try engine.checkedDescribe(payload).kind == .userPoolAndIdentityPool {
@@ -211,7 +211,7 @@ extension SessionCore {
 
     /// The error that answers for the identity of the session holding `payload`, if it is a carried session
     /// waiting for its identity whose identity step may not be tried now: the step's last failure.
-    nonisolated func identityBlocked(_ payload: Data) async -> AuthClientError? {
+    nonisolated func identityBlocked(_ payload: Data) async -> AmplifyCognitoClientError? {
         guard let snapshot = await restoredSnapshotIfAny, snapshot.credentials == payload, isIdentityPending(snapshot) else {
             return nil
         }
@@ -220,21 +220,26 @@ extension SessionCore {
 
     /// The in-memory payload, if the session's state allows `purpose`.
     ///
-    /// **A sign-in waiting on a challenge answers `notSignedIn` first**, whatever the record holds: a guest's
-    /// credentials, or an expired user's tokens, which answer `notSignedIn` here, not `sessionExpired`. That is the
-    /// rule: the providers answer from the state the app sees, which is `.awaitingChallenge` until the challenge is
-    /// answered or the sign-in ends. So `notSignedIn` (`.discard`) marks the change of principal only when the sign-in
-    /// stops on a challenge. A provider is bound to a session, not to a user, and a sign-in that completes at once (no
+    /// **An expired session answers `sessionExpired` first**, a sign-in waiting on a challenge included: signing in
+    /// again is how its user recovers, so a consumer keeps what it buffered for the session
+    /// (`.retryAfterReauthentication`). A `notSignedIn` there (`.discard`) would make a record-caching client drop,
+    /// during an MFA prompt, the records it had kept for exactly this sign-in. Nothing checks that the user signing
+    /// in is the one who expired: what was kept is sent as whoever signs in.
+    ///
+    /// **Otherwise a sign-in waiting on a challenge answers `notSignedIn`**, whatever the record holds, a guest's
+    /// credentials included: the providers answer from the state the app sees, which is `.awaitingChallenge` until
+    /// the challenge is answered or the sign-in ends. So `notSignedIn` (`.discard`) marks the change of principal
+    /// only when the sign-in stops on a challenge. A provider is bound to a session, not to a user, and a sign-in that completes at once (no
     /// challenge, or a hosted-UI sign-in) goes straight to the new login's credentials, handing them to a consumer
     /// still holding a guest's buffer. The plugin keeps vending a guest's credentials here. Flush a guest's buffered
     /// work before any sign-in: without a challenge it is sent as the user, and with one the provider answers
     /// `.discard`. `fetchAuthSession()` still reports what the record holds.
     func usableCredentials(for purpose: CredentialPurpose) throws -> Data {
-        if pendingChallenge != nil {
-            throw Self.notSignedIn(sessionId)
-        }
         if let expiry {
             throw expiredError(expiry)
+        }
+        if pendingChallenge != nil {
+            throw Self.notSignedIn(sessionId)
         }
         guard let snapshot = restoredSnapshotIfAny else {
             throw Self.notSignedIn(sessionId)
@@ -245,7 +250,7 @@ extension SessionCore {
         case .failed(let error):
             throw error
         case .unavailable(let reason):
-            throw AuthClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later.")
+            throw AmplifyCognitoClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later.")
         case .guest:
             if purpose == .accessToken {
                 throw Self.notSignedIn(sessionId)
@@ -357,7 +362,7 @@ extension SessionCore {
                     await saveExpiry(of: reread, cause: .reused, store: store)
                     throw Self.refreshTokenAlreadyUsed(sessionId)
                 }
-                throw AuthClientError.unknown(
+                throw AmplifyCognitoClientError.unknown(
                     "Session \"\(sessionId)\"'s refresh token was used by another writer, and no refreshed credentials were saved.",
                     "Retry the operation.",
                     SessionEngineError.refreshTokenReused
@@ -517,9 +522,9 @@ extension SessionCore {
     /// Whether an identity-step failure may succeed on a later try. Only known refusals that repeat are
     /// permanent: `.notAuthorized` (an identity pool that does not federate the user pool), `.invalidParameter`,
     /// `.resourceNotFound` and `.configuration`. Everything else is transient: a 5xx, a service error with no code,
-    /// `.unknown`, the network, throttling, storage, a cancellation, and every other `AuthClientError` category.
+    /// `.unknown`, the network, throttling, storage, a cancellation, and every other `AmplifyCognitoClientError` category.
     static func isTransient(_ error: Error) -> Bool {
-        guard let error = error as? AuthClientError else {
+        guard let error = error as? AmplifyCognitoClientError else {
             return true
         }
         switch error {
@@ -533,8 +538,8 @@ extension SessionCore {
     }
 
     /// An identity-step failure as the error the identity fields and AWS credentials report.
-    static func identityStepError(_ error: Error) -> AuthClientError {
-        (error as? AuthClientError) ?? AuthClientError.transportFailure(error)
+    static func identityStepError(_ error: Error) -> AmplifyCognitoClientError {
+        (error as? AmplifyCognitoClientError) ?? AmplifyCognitoClientError.transportFailure(error)
             ?? .unknown("The identity pool step failed.", "Retry the operation.", error)
     }
 
@@ -543,10 +548,10 @@ extension SessionCore {
     /// is false), is `CredentialsError.notConfigured` (`.failLoudly`), with the refusal's description and recovery
     /// suggestion, and the refusal as its underlying error: the identity pool gives this user no identity, so a
     /// consumer's retries would only get the same answer until then, and a sign-in under the same configuration asks
-    /// the same pool. Anything else is returned unchanged. `fetchAuthSession`'s identity
-    /// fields and the access-token path keep the refusal itself.
+    /// the same pool. Anything else is returned unchanged. `fetchAuthSession` and the access-token path keep the
+    /// refusal itself.
     static func providerIdentityFailure(_ error: Error) -> Error {
-        guard !isTransient(error), let refusal = error as? AuthClientError else {
+        guard !isTransient(error), let refusal = error as? AmplifyCognitoClientError else {
             return error
         }
         return CredentialsError.notConfigured(refusal.errorDescription, refusal.recoverySuggestion, refusal)
@@ -556,10 +561,10 @@ extension SessionCore {
     /// service call cancelled mid-flight). A cancellation says nothing about the identity pool, so it starts no
     /// back-off.
     static func isCancellation(_ error: Error) -> Bool {
-        error is CancellationError || (error as? AuthClientError)?.underlyingError is CancellationError
+        error is CancellationError || (error as? AmplifyCognitoClientError)?.underlyingError is CancellationError
     }
 
-    static func notSignedIn(_ sessionId: SessionID) -> AuthClientError {
+    static func notSignedIn(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .notSignedIn(
             "Session \"\(sessionId)\" is not signed in.",
             "Sign in to this session first."
@@ -568,14 +573,14 @@ extension SessionCore {
 
     /// `notSignedIn(_:)` for the AWS credentials of a signed-out session, which never fall back to guest credentials,
     /// unlike the plugin's provider.
-    static func signedOutHasNoGuestCredentials(_ sessionId: SessionID) -> AuthClientError {
+    static func signedOutHasNoGuestCredentials(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .notSignedIn(
             "Session \"\(sessionId)\" is not signed in.",
             "Sign in to this session first. A signed-out session never falls back to guest credentials."
         )
     }
 
-    static func sessionExpired(_ sessionId: SessionID) -> AuthClientError {
+    static func sessionExpired(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .sessionExpired(
             "Session \"\(sessionId)\"'s refresh token has expired or been revoked.",
             "Sign in to this session again. Other sessions are unaffected.",
@@ -585,7 +590,7 @@ extension SessionCore {
 
     /// The dead token after a reuse (`refreshOnce`, step 3): Cognito said the refresh token was used, and nobody saved
     /// the refresh that used it, so the session cannot get new tokens with it.
-    static func refreshTokenAlreadyUsed(_ sessionId: SessionID) -> AuthClientError {
+    static func refreshTokenAlreadyUsed(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .sessionExpired(
             "Session \"\(sessionId)\"'s refresh token was already used, and no refreshed tokens were saved, so the session cannot be renewed.",
             "Sign in to this session again. Other sessions are unaffected.",
@@ -596,7 +601,7 @@ extension SessionCore {
     /// A federated session whose provider token the identity pool no longer accepts (the engine's
     /// `refreshTokenInvalid` for a federated payload): it has no refresh token, and a sign-in is refused over it, so
     /// it federates again.
-    static func providerTokenRefused(_ sessionId: SessionID) -> AuthClientError {
+    static func providerTokenRefused(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .sessionExpired(
             "Session \"\(sessionId)\"'s provider token is no longer accepted by the identity pool.",
             "Call federateToIdentityPool with a new provider token for this session. Other sessions are unaffected.",
@@ -607,7 +612,7 @@ extension SessionCore {
     /// What a session known to be expired (`isExpired`) answers with: the dead token after a reuse if that is what
     /// expired it; a federated session's refused provider token; else `sessionExpired(_:)`. The cause is the expiry's
     /// own, saved with it, so a new core answers as the core that proved it did.
-    nonisolated func expiredError(_ expiry: Expiry) -> AuthClientError {
+    nonisolated func expiredError(_ expiry: Expiry) -> AmplifyCognitoClientError {
         if expiry.cause == .reused {
             return Self.refreshTokenAlreadyUsed(sessionId)
         }
@@ -628,24 +633,24 @@ extension SessionCore {
 
     static func engineFailure(_ error: Error) -> Error {
         switch error {
-        case is AuthClientError, is CredentialsError, is CancellationError:
+        case is AmplifyCognitoClientError, is CredentialsError, is CancellationError:
             return error
         case SessionEngineError.service(let error):
             return error
         case SessionEngineError.notSignedIn:
-            return AuthClientError.notSignedIn("The session is not signed in.", "Sign in first.", error)
+            return AmplifyCognitoClientError.notSignedIn("The session is not signed in.", "Sign in first.", error)
         default:
-            if let network = AuthClientError.transportFailure(error) {
+            if let network = AmplifyCognitoClientError.transportFailure(error) {
                 return network
             }
-            return AuthClientError.unknown("The session's credentials could not be refreshed.", "Retry the operation.", error)
+            return AmplifyCognitoClientError.unknown("The session's credentials could not be refreshed.", "Retry the operation.", error)
         }
     }
 }
 
 /// A refresh of a carried session waiting for its identity stored new user pool tokens, then failed the identity
-/// step with `error`: callers that need no identity (an access token, a session's token fields) can still use the
-/// tokens.
+/// step with `error`: a caller that needs no identity (an access token) can still use the tokens.
+/// `fetchAuthSession` throws `error`.
 struct IdentityStepFailure: Error {
     let error: Error
     /// What the refresh left: the record it committed, or another writer's, adopted, that still waits for its
@@ -674,13 +679,13 @@ final class PendingIdentityRetry: @unchecked Sendable {
     private let lock = NSLock()
     private var notBefore: Date?
     private var refused = false
-    private var lastError: AuthClientError?
+    private var lastError: AmplifyCognitoClientError?
     private var userId: String?
 
     /// The identity step failed with `error` for the user `userId`: for good (`transient: false`), or for `interval`.
     /// A transient failure replaces an earlier refusal: the step was tried again (a refresh of expired tokens tries
     /// it), and its latest answer says to retry, so it may be tried once `interval` has passed.
-    func failed(_ error: AuthClientError, at now: Date, transient: Bool, userId: String?) {
+    func failed(_ error: AmplifyCognitoClientError, at now: Date, transient: Bool, userId: String?) {
         lock.withLock {
             if self.userId != userId {
                 refused = false
@@ -709,7 +714,7 @@ final class PendingIdentityRetry: @unchecked Sendable {
 
     /// The last failure, while the identity step may not be tried again for `userId`; `nil` once it may, or for another
     /// user than the one that failed (a later session carried into this record).
-    func blockingError(at now: Date, userId: String?) -> AuthClientError? {
+    func blockingError(at now: Date, userId: String?) -> AmplifyCognitoClientError? {
         lock.withLock {
             guard lastError != nil, self.userId == userId else {
                 return nil

@@ -13,7 +13,7 @@ import XCTest
 /// is never "signed out", and a session in a shared access group is scoped to that group.
 final class PersistenceTests: ClientIntegrationTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -73,7 +73,7 @@ final class PersistenceTests: ClientIntegrationTestCase {
 
         let aliceState = await alice.currentSessionState()
         XCTAssertState(aliceState, .signedIn(aliceUser))
-        _ = try await alice.fetchAuthSession().userPoolTokensResult.get()
+        _ = try await alice.fetchAuthSession().requireUserPoolTokens()
     }
 
     /// A session stored in a shared access group is listed, and restored, only through that group
@@ -91,7 +91,7 @@ final class PersistenceTests: ClientIntegrationTestCase {
         let bobCredentials = try await makeSignInUser()
         let shared = try IntegrationTestEnvironment.sharedAccessGroup()
         let sessionId = try makeSessionID("bob-shared", accessGroup: shared)
-        let bob: AuthClientUser
+        let bob: AmplifyCognitoClientUser
         do {
             let client = try AmplifyCognitoClient(
                 configuration: configuration,
@@ -105,7 +105,7 @@ final class PersistenceTests: ClientIntegrationTestCase {
         let sharedListing = try await AmplifyCognitoClient.storedSessions(configuration: configuration, accessGroup: shared)
         let defaultListing = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
 
-        XCTAssertTrue(sharedListing.first { $0.sessionId == sessionId }?.username == bob.username, "the shared listing names bob")
+        XCTAssertTrue(sharedListing.first { $0.sessionId == sessionId }?.user?.username == bob.username, "the shared listing names bob")
         XCTAssertFalse(defaultListing.contains { $0.sessionId == sessionId }, "the default group does not list a shared-group session")
 
         let recorder = RecordingHTTPClient()
@@ -116,7 +116,7 @@ final class PersistenceTests: ClientIntegrationTestCase {
         let state = await restored.currentSessionState()
         XCTAssertState(state, .signedIn(bob))
         XCTAssertEqual(recorder.operations, [], "restoring makes no request")
-        _ = try await restored.fetchAuthSession(options: .init(forceRefresh: true)).userPoolTokensResult.get()
+        _ = try await restored.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens()
         XCTAssertEqual(recorder.answeredOperations, ["GetTokensFromRefreshToken"])
     }
 }

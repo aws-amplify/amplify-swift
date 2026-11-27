@@ -18,9 +18,9 @@ final class ChallengeTests: XCTestCase {
     private var harness: ClientHarness!
     private let work = ClientFixtures.id("work")
     private let home = ClientFixtures.id("home")
-    private let alice = AuthClientUser(username: "alice", userId: "sub-alice")
-    private let smsCode = AuthClientSignInStep.confirmSignInWithSMSMFACode(
-        AuthClientCodeDeliveryDetails(destination: .sms("+1***"), attributeKey: .phoneNumber),
+    private let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
+    private let smsCode = AmplifyCognitoClientSignInStep.confirmSignInWithSMSMFACode(
+        AmplifyCognitoClientCodeDeliveryDetails(destination: .sms("+1***"), attributeKey: .phoneNumber),
         nil
     )
 
@@ -34,8 +34,8 @@ final class ChallengeTests: XCTestCase {
     }
 
     private func challengedClient(
-        _ sessionId: SessionID,
-        step: AuthClientSignInStep = .confirmSignInWithTOTPCode
+        _ sessionId: AmplifyCognitoClientSessionID,
+        step: AmplifyCognitoClientSignInStep = .confirmSignInWithTOTPCode
     ) async throws -> (AmplifyCognitoClient, FakeSessionEngine) {
         let client = try harness.client(sessionId)
         let engine = try XCTUnwrap(harness.engine(for: sessionId))
@@ -123,7 +123,7 @@ final class ChallengeTests: XCTestCase {
         let (client, engine) = try await challengedClient(work, step: smsCode)
         engine.scriptConfirmSignIn { request in
             guard request.challengeResponse == "111111" else {
-                throw FakeRetryable(error: AuthClientError.service(.codeMismatch, "wrong code", "retry"))
+                throw FakeRetryable(error: AmplifyCognitoClientError.service(.codeMismatch, "wrong code", "retry"))
             }
             return .done(payload: FakePayload.signedIn("alice").data)
         }
@@ -144,7 +144,7 @@ final class ChallengeTests: XCTestCase {
     /// - Then:
     ///    - a newer step replaces the older one, and both publish
     func testANewerStepReplacesTheOlderOne() async throws {
-        let setup = AuthClientSignInStep.continueSignInWithTOTPSetup(.init(sharedSecret: "S", username: "alice"))
+        let setup = AmplifyCognitoClientSignInStep.continueSignInWithTOTPSetup(.init(sharedSecret: "S", username: "alice"))
         let (client, engine) = try await challengedClient(work, step: setup)
         let states = StreamRecorder(client.listenToSessionStateChanges())
         engine.scriptConfirmSignIn { _ in .challenge(.confirmSignInWithTOTPCode) }
@@ -164,7 +164,7 @@ final class ChallengeTests: XCTestCase {
     func testAnExpiredChallengeIsDropped() async throws {
         let (client, engine) = try await challengedClient(work)
         engine.scriptConfirmSignIn { _ in
-            throw AuthClientError.challengeExpired("The sign-in challenge has expired.", "Sign in again.")
+            throw AmplifyCognitoClientError.challengeExpired("The sign-in challenge has expired.", "Sign in again.")
         }
 
         let expired = await authClientError { try await client.confirmSignIn(challengeResponse: "123456") }
@@ -208,7 +208,7 @@ final class ChallengeTests: XCTestCase {
 
         XCTAssertEqual(engine.supersededCount, 1)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "carol", userId: "sub-carol")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "carol", userId: "sub-carol")))
         let pending = await engine.pendingChallenge
         XCTAssertNil(pending)
     }
@@ -219,7 +219,7 @@ final class ChallengeTests: XCTestCase {
     ///    - the old challenge is gone too, since the engine dropped it, and the state is signed out
     func testAFailedSupersedingSignInLeavesNothingPending() async throws {
         let (client, engine) = try await challengedClient(work)
-        engine.scriptSignIn { _, _ in throw AuthClientError.notAuthorized("Incorrect username or password.", "Check them.") }
+        engine.scriptSignIn { _, _ in throw AmplifyCognitoClientError.notAuthorized("Incorrect username or password.", "Check them.") }
 
         _ = await authClientError { try await client.signInForTest("carol") }
 
@@ -323,15 +323,15 @@ final class ChallengeTests: XCTestCase {
     func testAGuestAcquiredDuringAChallengeIsHandedToTheEngineButTheLoginsIdentityIsKept() async throws {
         let (client, _) = try await challengedClient(work)
         let guest = try await client.fetchAuthSession()
-        XCTAssertEqual(try guest.identityIdResult.get(), "us-east-1:guest")
+        XCTAssertEqual(guest.identityId, "us-east-1:guest")
         let guestPayload = try harness.storedRecord(work)?.credentials
 
         _ = try await client.confirmSignIn(challengeResponse: "123456")
 
         let session = try await client.fetchAuthSession()
-        XCTAssertEqual(try session.identityIdResult.get(), FakeSessionEngine.loginIdentityId(for: "alice"))
-        XCTAssertNotEqual(try session.identityIdResult.get(), "us-east-1:guest")
-        XCTAssertEqual(try session.userSubResult.get(), "sub-alice")
+        XCTAssertEqual(session.identityId, FakeSessionEngine.loginIdentityId(for: "alice"))
+        XCTAssertNotEqual(session.identityId, "us-east-1:guest")
+        XCTAssertEqual(session.userSub, "sub-alice")
         XCTAssertEqual(harness.engine(for: work)?.confirmSignInCurrents, [guestPayload])
     }
 
@@ -344,10 +344,10 @@ final class ChallengeTests: XCTestCase {
     /// - When: it is answered with something that is not an MFA type, then with `sms_mfa`
     /// - Then:
     ///    - the first throws `validation(field: "challengeResponse")` naming all three Cognito MFA values
-    ///      (EMAIL_OTP included) and the client's `AuthClientMFAType.<type>.challengeResponse`, without
+    ///      (EMAIL_OTP included) and the client's `AmplifyCognitoClientMFAType.<type>.challengeResponse`, without
     ///      reaching the engine, and the challenge is still pending; the second (case-insensitive) is sent
     func testABadMFASelectionIsRefusedBeforeItIsSent() async throws {
-        let step = AuthClientSignInStep.continueSignInWithMFASelection([.sms, .totp])
+        let step = AmplifyCognitoClientSignInStep.continueSignInWithMFASelection([.sms, .totp])
         let (client, engine) = try await challengedClient(work, step: step)
 
         let bad = await authClientError { try await client.confirmSignIn(challengeResponse: "sms") }
@@ -361,7 +361,7 @@ final class ChallengeTests: XCTestCase {
         )
         XCTAssertEqual(bad?.recoverySuggestion, """
         Make sure that a valid challenge response is passed for confirmSignIn.
-        Try using `AuthClientMFAType.<type>.challengeResponse` as the challenge response.
+        Try using `AmplifyCognitoClientMFAType.<type>.challengeResponse` as the challenge response.
         """)
         XCTAssertFalse(bad?.recoverySuggestion.contains("MFAType.totp") ?? true, "names the plugin's type")
         XCTAssertEqual(state, .awaitingChallenge(step))
@@ -378,7 +378,7 @@ final class ChallengeTests: XCTestCase {
     ///      reaching the engine, and the challenge is still pending
     ///    - the third (case-insensitive) is sent
     func testABadMFASetupSelectionIsRefusedBeforeItIsSent() async throws {
-        let step = AuthClientSignInStep.continueSignInWithMFASetupSelection([.email, .totp])
+        let step = AmplifyCognitoClientSignInStep.continueSignInWithMFASetupSelection([.email, .totp])
         let (client, engine) = try await challengedClient(work, step: step)
 
         let code = await authClientError { try await client.confirmSignIn(challengeResponse: "000000") }
@@ -392,7 +392,7 @@ final class ChallengeTests: XCTestCase {
                 bad?.errorDescription,
                 "challengeResponse for MFA setup selection can only be EMAIL_OTP or SOFTWARE_TOKEN_MFA."
             )
-            XCTAssertTrue(bad?.recoverySuggestion.contains("`AuthClientMFAType.<type>.challengeResponse`") == true)
+            XCTAssertTrue(bad?.recoverySuggestion.contains("`AmplifyCognitoClientMFAType.<type>.challengeResponse`") == true)
             XCTAssertFalse(bad?.recoverySuggestion.contains("username") ?? true)
         }
         XCTAssertEqual(state, .awaitingChallenge(step))
@@ -455,10 +455,10 @@ final class ChallengeTests: XCTestCase {
     /// - When: it is answered with something that is not a factor, then with `EMAIL_OTP`
     /// - Then:
     ///    - the first throws `validation(field: "challengeResponse")` with the plugin's strings, naming the
-    ///      client's `AuthClientFactorType.<type>.challengeResponse` instead of Amplify's type, without
+    ///      client's `AmplifyCognitoClientFactorType.<type>.challengeResponse` instead of Amplify's type, without
     ///      reaching the engine; the second is sent
     func testABadFactorSelectionIsRefusedBeforeItIsSent() async throws {
-        let step = AuthClientSignInStep.continueSignInWithFirstFactorSelection([.password, .emailOTP])
+        let step = AmplifyCognitoClientSignInStep.continueSignInWithFirstFactorSelection([.password, .emailOTP])
         let (client, engine) = try await challengedClient(work, step: step)
 
         let bad = await authClientError { try await client.confirmSignIn(challengeResponse: "emailOTP") }
@@ -468,9 +468,9 @@ final class ChallengeTests: XCTestCase {
         XCTAssertEqual(bad?.kind, .validation(field: "challengeResponse"))
         XCTAssertEqual(
             bad?.errorDescription,
-            "challengeResponse for factor selection can only be one of the `AuthClientFactorType` values."
+            "challengeResponse for factor selection can only be one of the `AmplifyCognitoClientFactorType` values."
         )
-        XCTAssertTrue(bad?.recoverySuggestion.contains("`AuthClientFactorType.<type>.challengeResponse`") == true)
+        XCTAssertTrue(bad?.recoverySuggestion.contains("`AmplifyCognitoClientFactorType.<type>.challengeResponse`") == true)
         XCTAssertEqual(state, .awaitingChallenge(step))
         XCTAssertEqual(engine.confirmSignInCalls.map(\.challengeResponse), ["EMAIL_OTP"])
     }
@@ -485,7 +485,7 @@ final class ChallengeTests: XCTestCase {
     ///    - the first throws `validation(field: "challengeResponse")` naming the step's factors, without reaching the
     ///      engine, and the selection is still pending; the second is sent
     func testAWebAuthnAnswerTheStepDoesNotOfferIsRefusedBeforeItIsSent() async throws {
-        let step = AuthClientSignInStep.continueSignInWithFirstFactorSelection([.password, .emailOTP])
+        let step = AmplifyCognitoClientSignInStep.continueSignInWithFirstFactorSelection([.password, .emailOTP])
         let (client, engine) = try await challengedClient(work, step: step)
 
         let bad = await authClientError { try await client.confirmSignIn(challengeResponse: "WEB_AUTHN") }
@@ -497,7 +497,7 @@ final class ChallengeTests: XCTestCase {
             bad?.errorDescription,
             "challengeResponse WEB_AUTHN is not one of the factors this step offers: EMAIL_OTP or PASSWORD."
         )
-        XCTAssertTrue(bad?.recoverySuggestion.contains("`AuthClientFactorType.<type>.challengeResponse`") == true)
+        XCTAssertTrue(bad?.recoverySuggestion.contains("`AmplifyCognitoClientFactorType.<type>.challengeResponse`") == true)
         XCTAssertEqual(state, .awaitingChallenge(step))
         XCTAssertEqual(engine.ceremonyAnchorCalls.count, 0)
         XCTAssertEqual(engine.confirmSignInCalls.map(\.challengeResponse), ["EMAIL_OTP"])
@@ -508,20 +508,20 @@ final class ChallengeTests: XCTestCase {
     /// - Given: a sign-in, made without a window, waiting on a first-factor selection that offers WebAuthn; and a
     ///   signed-out session
     /// - When: the selection is answered with `WEB_AUTHN` without a window, and a sign-in asks for a WebAuthn
-    ///   first factor through the overload without one
+    ///   first factor with options that hold no window
     /// - Then:
-    ///    - both throw `.validation(field: "presentationAnchor")`; the selection is refused by the engine
-    ///      before any ceremony, and stays pending; the sign-in never reaches the engine
+    ///    - both throw `.validation(field: "presentationAnchorForWebAuthn")`; the selection is refused by the
+    ///      engine before any ceremony, and stays pending; the sign-in never reaches the engine
     func testWebAuthnWithoutAPresentationAnchorIsRefused() async throws {
         #if os(iOS) || os(macOS) || os(visionOS)
         if #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) {
-            let step = AuthClientSignInStep.continueSignInWithFirstFactorSelection([.password, .emailOTP, .webAuthn])
+            let step = AmplifyCognitoClientSignInStep.continueSignInWithFirstFactorSelection([.password, .emailOTP, .webAuthn])
             let (client, engine) = try await challengedClient(work, step: step)
             let other = try harness.client(home)
 
             let selection = await authClientError { try await client.confirmSignIn(challengeResponse: "WEB_AUTHN") }
             let state = await client.currentSessionState()
-            XCTAssertEqual(selection?.kind, .validation(field: "presentationAnchor"))
+            XCTAssertEqual(selection?.kind, .validation(field: "presentationAnchorForWebAuthn"))
             XCTAssertEqual(state, .awaitingChallenge(step))
             XCTAssertEqual(engine.ceremonyAnchorCalls.count, 0)
 
@@ -531,7 +531,7 @@ final class ChallengeTests: XCTestCase {
                     options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn))
                 )
             }
-            XCTAssertEqual(firstFactor?.kind, .validation(field: "presentationAnchor"))
+            XCTAssertEqual(firstFactor?.kind, .validation(field: "presentationAnchorForWebAuthn"))
             XCTAssertEqual(harness.engine(for: home)?.signInCalls.count, 0)
         }
         #endif
@@ -544,7 +544,7 @@ final class ChallengeTests: XCTestCase {
     func testAnEngineValidationFailureKeepsTheAttempt() async throws {
         let (client, engine) = try await challengedClient(work, step: .confirmSignInWithNewPassword(nil))
         engine.scriptConfirmSignIn { _ in
-            throw AuthClientError.validation(field: "password", "The password does not meet the policy.", "Choose another.")
+            throw AmplifyCognitoClientError.validation(field: "password", "The password does not meet the policy.", "Choose another.")
         }
 
         let error = await authClientError { try await client.confirmSignIn(challengeResponse: "short") }
@@ -563,7 +563,7 @@ final class ChallengeTests: XCTestCase {
     func testASignOutDuringTheChallengeReadLeavesNoStaleChallenge() async throws {
         let (client, engine) = try await challengedClient(work)
         engine.scriptConfirmSignIn { _ in
-            throw FakeRetryable(error: AuthClientError.service(.codeMismatch, "wrong code", "retry"))
+            throw FakeRetryable(error: AmplifyCognitoClientError.service(.codeMismatch, "wrong code", "retry"))
         }
         let reads = CallCounter()
         engine.duringPendingChallengeRead {

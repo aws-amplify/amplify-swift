@@ -15,7 +15,7 @@ import Foundation
 /// next refresh.
 ///
 /// **A storage failure is never reported as signed out.** An operation that cannot read secure storage
-/// throws `AuthClientError.storageUnavailable`.
+/// throws `AmplifyCognitoClientError.storageUnavailable`.
 @_spi(AmplifyExperimental)
 public extension AmplifyCognitoClient {
 
@@ -42,24 +42,37 @@ public extension AmplifyCognitoClient {
     /// `Task.isCancelled` true. A call cancelled while it still waits (for the session's restore, or behind
     /// another sign-in on this session) throws `CancellationError` and sends nothing.
     ///
-    /// This overload shows no passkey sheet: to sign in with a passkey, use
-    /// `signIn(username:password:presentationAnchor:options:)`.
+    /// **Passkeys** (iOS, macOS and visionOS). A passkey step shows its sheet over the window in
+    /// `options.presentationAnchorForWebAuthn`, and the client never picks one itself: with
+    /// `authFlowType: .userAuth(preferredFirstFactor: .webAuthn)` the result is `.done`, and a
+    /// `.continueSignInWithFirstFactorSelection` step that offers `.webAuthn` is answered with
+    /// `confirmSignIn(challengeResponse: "WEB_AUTHN")`. A failed passkey step ends the sign-in: call `signIn`
+    /// again to retry.
     ///
     /// - Parameters:
     ///   - username: The user's username or alias.
     ///   - password: The password, or `nil` for a passwordless first factor.
-    ///   - options: The flow and the client metadata.
+    ///   - options: The flow, the client metadata and, for a passkey, the window its sheet attaches to.
     /// - Returns: `.done` once signed in, which sends `.signedIn`; otherwise the step to present.
     /// - Throws:
-    ///   - `AuthClientError.validation(field: "username")` for an empty username, before anything is sent;
-    ///   - `.validation(field: "presentationAnchor")`, since this overload has no window: for a WebAuthn first
-    ///     factor (`.userAuth(preferredFirstFactor: .webAuthn)`), before anything is sent, and for a WebAuthn
-    ///     step Cognito starts on its own, without presenting anything;
+    ///   - `AmplifyCognitoClientError.validation(field: "username")` for an empty username, before anything is sent;
+    ///   - `.validation(field: "presentationAnchorForWebAuthn")` when the options hold no window: for a WebAuthn
+    ///     first factor (`.userAuth(preferredFirstFactor: .webAuthn)`), before anything is sent, and for a
+    ///     WebAuthn step Cognito starts on its own, without presenting anything; and when the window has gone by
+    ///     the time the sheet would appear;
+    ///   - for a passkey step: `.browserBusy(holder:)` while another session's sheet is up, or a sheet of this
+    ///     session's that is not a sign-in step in progress, such as its browser still closing after a cancel
+    ///     (behind this session's own hosted-UI sign-in in progress the call waits instead); `.userCancelled`
+    ///     when the user closes the sheet, or `cancelWebUISignIn()` or `resetSystemSheet()` closes it;
+    ///     `.webAuthnCeremonyFailed` when the device cannot use a passkey; `.service` for Cognito's WebAuthn
+    ///     answers; `CancellationError` if the calling task is cancelled while the sheet is up, or before it
+    ///     would appear;
     ///   - `.configuration` without a user pool;
-    ///   - `.invalidState` if this session is signed in (sign out first; a session whose refresh token is known
-    ///     dead may sign in again) or federated (clear the federation first); if a sign-out, purge or deletion of this session cancelled the sign-in while it was in
-    ///     progress; or if another sign-in completed for this session meanwhile, with a different user, who
-    ///     stays signed in;
+    ///   - `.invalidState` if this session is signed in (force a refresh if its refresh token may have been
+    ///     revoked elsewhere, so that it reports `sessionExpired`, or sign out first; a session whose refresh
+    ///     token is known dead may sign in again) or federated (clear the federation first); if a sign-out,
+    ///     purge or deletion of this session cancelled the sign-in while it was in progress; or if another
+    ///     sign-in completed for this session meanwhile, with a different user, who stays signed in;
     ///   - `.notAuthorized` or `.service` as Cognito answers (a wrong password is `.notAuthorized`);
     ///   - `.storageUnavailable` if storage could not be read, did not answer in time, or the result could not
     ///     be saved; never reported as signed out;
@@ -69,8 +82,8 @@ public extension AmplifyCognitoClient {
     func signIn(
         username: String,
         password: String? = nil,
-        options: AuthClientSignInOptions = AuthClientSignInOptions()
-    ) async throws -> AuthClientSignInResult {
+        options: AmplifyCognitoClientSignInOptions = AmplifyCognitoClientSignInOptions()
+    ) async throws -> AmplifyCognitoClientSignInResult {
         let core = core
         return try await core.signIn(username: username, password: password, options: options)
     }
@@ -81,20 +94,22 @@ public extension AmplifyCognitoClient {
     /// it, and this answers it the same way.
     ///
     /// Cancellation works as for `signIn(username:password:options:)`: once the answer is sent, the call runs
-    /// to its end. A `"WEB_AUTHN"` answer shows the passkey sheet over the window the sign-in was given, if
-    /// it was given one (`signIn(username:password:presentationAnchor:options:)`).
+    /// to its end. A `"WEB_AUTHN"` answer shows the passkey sheet over the window in
+    /// `options.presentationAnchorForWebAuthn`, else over the one the sign-in's options gave.
     ///
     /// - Parameters:
     ///   - challengeResponse: The code, new password, selection or custom answer the step asks for.
-    ///   - options: User attributes, client metadata and, for a TOTP setup, the device name.
+    ///   - options: User attributes, client metadata, for a TOTP setup the device name, and for a `"WEB_AUTHN"`
+    ///     answer a window of its own.
     /// - Returns: `.done` once signed in, which sends `.signedIn`; otherwise the next step.
     /// - Throws:
-    ///   - `AuthClientError.validation(field: "challengeResponse")` for an empty response, or a selection
-    ///     outside the step's choices (an MFA selection other than `AuthClientMFAType.<type>.challengeResponse`, an
+    ///   - `AmplifyCognitoClientError.validation(field: "challengeResponse")` for an empty response, or a selection
+    ///     outside the step's choices (an MFA selection other than `AmplifyCognitoClientMFAType.<type>.challengeResponse`, an
     ///     MFA setup selection other than one of the step's types, a first-factor selection other than
-    ///     `AuthClientFactorType.<type>.challengeResponse`, or `"WEB_AUTHN"` when the step does not offer it);
-    ///     `.validation(field: "presentationAnchor")` for a `"WEB_AUTHN"` answer when the sign-in was given no
-    ///     window; each before anything is sent, keeping the challenge;
+    ///     `AmplifyCognitoClientFactorType.<type>.challengeResponse`, or `"WEB_AUTHN"` when the step does not offer it);
+    ///     `.validation(field: "presentationAnchorForWebAuthn")` for a `"WEB_AUTHN"` answer when neither these
+    ///     options nor the sign-in's hold a window that is still there; each before anything is sent, keeping the
+    ///     challenge;
     ///   - `.configuration` without a user pool;
     ///   - `.invalidState` if no sign-in is in progress on this session; if it can no longer continue, so
     ///     sign-in must restart; if a sign-out, purge or deletion of this session cancelled it; or if another
@@ -103,8 +118,7 @@ public extension AmplifyCognitoClient {
     ///     whose Cognito session has since lapsed), so sign-in must restart;
     ///   - `.notAuthorized` or `.service` as Cognito answers. After a wrong code the challenge is still
     ///     pending, so the user can retry;
-    ///   - for a `"WEB_AUTHN"` answer, the passkey errors of
-    ///     `signIn(username:password:presentationAnchor:options:)`;
+    ///   - for a `"WEB_AUTHN"` answer, the passkey errors of `signIn(username:password:options:)`;
     ///   - `.storageUnavailable` if storage could not be read, did not answer in time, or the result could not
     ///     be saved;
     ///   - `.unknown` if the session's saved record cannot be read by this version, or for a failure the
@@ -112,8 +126,8 @@ public extension AmplifyCognitoClient {
     ///   - `CancellationError` if the calling task is cancelled before the answer is sent.
     func confirmSignIn(
         challengeResponse: String,
-        options: AuthClientConfirmSignInOptions = AuthClientConfirmSignInOptions()
-    ) async throws -> AuthClientSignInResult {
+        options: AmplifyCognitoClientConfirmSignInOptions = AmplifyCognitoClientConfirmSignInOptions()
+    ) async throws -> AmplifyCognitoClientSignInResult {
         let core = core
         return try await core.confirmSignIn(challengeResponse: challengeResponse, options: options)
     }
@@ -131,7 +145,7 @@ public extension AmplifyCognitoClient {
     ///
     /// After a hosted-UI sign-in that shared the browser's cookies, this sign-out has no window to clear the
     /// hosted UI's cookie in, and reports that in `.partial` as `hostedUIError`; use
-    /// `signOut(presentationAnchor:options:)` for such a session.
+    /// `signOutWithWebUI(presentationAnchor:options:)` for such a session.
     ///
     /// Never throws, as the plugin's `signOut` does not. Check `signedOutLocally`, or switch over the result.
     ///
@@ -147,33 +161,55 @@ public extension AmplifyCognitoClient {
     ///     task was cancelled before anything was revoked. Once a revoke has completed, cancellation never
     ///     stops the local clear.
     @discardableResult
-    func signOut(options: AuthClientSignOutOptions = AuthClientSignOutOptions()) async -> AuthClientSignOutResult {
+    func signOut(options: AmplifyCognitoClientSignOutOptions = AmplifyCognitoClientSignOutOptions()) async -> AmplifyCognitoClientSignOutResult {
         let core = core
         return await core.signOut(global: options.globalSignOut, purge: options.purgeStoredSession)
     }
 
-    /// This session's credentials, refreshed if they need it, each field with its own result.
+    /// This session's credentials, refreshed if they need it.
+    ///
+    /// It throws where the plugin reports a failure per field, so the fields are plain values: a field is `nil`
+    /// only when the session has nothing for it (no identity fields without an identity pool, no user fields
+    /// for a guest or a federated session).
     ///
     /// A signed-out session with an identity pool that allows guest access becomes `.guest` here, and
     /// only here. Concurrent refreshes of the same kind share one call: a normal fetch joins a normal
     /// refresh in flight, and a forced one (`forceRefresh`) joins only a forced one, running after a normal one.
     ///
-    /// - Throws: only for failures that are not per field: `AuthClientError.storageUnavailable`; `.unknown`
-    ///   when the session's saved record cannot be read by this version; `CancellationError` if the calling
-    ///   task is cancelled while it waits (a refresh it joined carries on for the session). A failed refresh
-    ///   is reported in the fields, as `sessionExpired` when the session needs a fresh sign-in.
-    func fetchAuthSession(options: AuthClientFetchSessionOptions = AuthClientFetchSessionOptions()) async throws -> AuthClientSession {
+    /// - Throws:
+    ///   - `AmplifyCognitoClientError.notSignedIn` for a signed-out session that cannot become a guest: there is no
+    ///     identity pool, or it allows no guest access;
+    ///   - `.sessionExpired` when the refresh token is dead, or the identity pool no longer accepts a federated
+    ///     session's provider token. The state stays signed in;
+    ///   - `.storageUnavailable` if storage could not be read or written; never reported as signed out;
+    ///   - `.unknown` when the session's saved record cannot be read by this version, or its saved credentials
+    ///     lack what they should hold.
+    ///
+    ///   Each of those carries its own recovery suggestion: follow it. Any other error leaves the user pool
+    ///   sign-in intact, and the call can be retried:
+    ///   - the refresh's or the guest fetch's own failure (`.service` for the network or Cognito, say), and
+    ///     `.unknown` when the credentials could not be refreshed;
+    ///   - the identity pool step's failure, even when the user pool tokens are valid, as the plugin does
+    ///     (a `userPoolTokenProvider` call that needs the same refresh fails with it, except for a session waiting
+    ///     for its first identity in this identity pool, whose token it still vends: one carried from a
+    ///     configuration without that pool, or `.default` when its saved login has no identity yet). For such a
+    ///     session, while the client holds that step back the call rethrows its last failure: for 30 seconds after
+    ///     a transient failure, or until the tokens next need a refresh after a refusal.
+    ///     `forceRefresh: true` retries at once;
+    ///   - `CancellationError` if the calling task is cancelled while it waits (a refresh it joined carries on
+    ///     for the session), or the request itself was cancelled.
+    func fetchAuthSession(options: AmplifyCognitoClientFetchAuthSessionOptions = AmplifyCognitoClientFetchAuthSessionOptions()) async throws -> AmplifyCognitoClientAuthSession {
         let core = core
         return try await core.fetchAuthSession(forceRefresh: options.forceRefresh)
     }
 
     /// The user signed in to this session, read from its saved credentials without the network.
     ///
-    /// - Throws: `AuthClientError.notSignedIn` for a signed-out, guest or federated session; `.invalidState`
+    /// - Throws: `AmplifyCognitoClientError.notSignedIn` for a signed-out, guest or federated session; `.invalidState`
     ///   while a sign-in waits on a challenge, as the plugin does; `.storageUnavailable` if storage could not
     ///   be read; `.unknown` if the saved record cannot be read by this version; `CancellationError` if the
     ///   calling task is cancelled while the session is restored.
-    func getCurrentUser() async throws -> AuthClientUser {
+    func getCurrentUser() async throws -> AmplifyCognitoClientUser {
         let core = core
         return try await core.currentUser()
     }
@@ -188,7 +224,7 @@ public extension AmplifyCognitoClient {
     /// Once Cognito is asked, the deletion runs to its end even if the calling task is cancelled.
     ///
     /// - Throws:
-    ///   - `AuthClientError.configuration` without a user pool;
+    ///   - `AmplifyCognitoClientError.configuration` without a user pool;
     ///   - `.notSignedIn` for a signed-out, guest or federated session, and while a sign-in waits on a
     ///     challenge; `.sessionExpired` if the refresh the session needed first found its refresh token dead;
     ///   - `.invalidState` if a different user signed in to the session meanwhile: nothing is deleted;

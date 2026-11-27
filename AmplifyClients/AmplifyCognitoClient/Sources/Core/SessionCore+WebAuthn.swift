@@ -114,17 +114,32 @@ extension SessionCore {
         }
     }
 
+    /// `box`, or `nil` if its window has gone, read on the main actor as a window is: what a confirmation's own
+    /// window is at the time of the call, and what the sign-in's kept one is when a later answer falls back to
+    /// it. A sign-in's keeps its box, and a window that has gone is refused when its own ceremony starts.
+    static func liveAnchor(_ box: EnginePresentationAnchorBox?) async -> EnginePresentationAnchorBox? {
+        #if os(iOS) || os(macOS) || os(visionOS)
+        guard let box else {
+            return nil
+        }
+        return await MainActor.run { box.anchor == nil ? nil : box }
+        #else
+        return box
+        #endif
+    }
+
     /// A WebAuthn step with no window to show the passkey sheet over: a sign-in asking for a WebAuthn first
-    /// factor, or a `"WEB_AUTHN"` selection, with no `presentationAnchor` anywhere. Refused before anything is
-    /// sent. The engine's description for the same refusal (a WebAuthn step Cognito started), with a recovery
-    /// that names the overloads.
-    static func presentationAnchorRequired() -> AuthClientError {
+    /// factor with no `presentationAnchorForWebAuthn` in its options, or a `"WEB_AUTHN"` selection with no live
+    /// window (none in either call's options, or what was given has gone). Refused before anything is sent. The
+    /// engine's description for the same refusal (a WebAuthn step Cognito started), with a recovery that names
+    /// both options.
+    static func presentationAnchorRequired() -> AmplifyCognitoClientError {
         .validation(
-            field: WebAuthnCredentialOperations.presentationAnchorField,
+            field: WebAuthnCredentialOperations.signInPresentationAnchorField,
             WebAuthnCredentialOperations.presentationAnchorMissingDescription,
             """
-            Pass the window the passkey sheet attaches to: signIn(username:password:presentationAnchor:options:), \
-            or confirmSignIn(challengeResponse:presentationAnchor:options:) for a WEB_AUTHN selection.
+            Set the window the passkey sheet attaches to as presentationAnchorForWebAuthn, in signIn's options, \
+            or in confirmSignIn's options for a WEB_AUTHN selection.
             """
         )
     }
@@ -135,7 +150,7 @@ extension SessionCore {
     /// sheet is its busy check, so another session's sheet refuses it with nothing stopped. It may
     /// still leave the session signed in: the user may close the page, or the registration's own sheet may not
     /// close within `passkeySheetClosingTimeout` (the busy refusal). Worded for both outcomes.
-    static func passkeyRegistrationEnded() -> AuthClientError {
+    static func passkeyRegistrationEnded() -> AmplifyCognitoClientError {
         .invalidState(
             "The passkey registration was cancelled by a sign-out, purge or deletion of this session.",
             "If the session is still signed in, register the passkey again; otherwise sign in first."
@@ -144,7 +159,7 @@ extension SessionCore {
 
     /// A passkey sheet `cancelWebUISignIn()` or `resetSystemSheet()` closed: the app's own close, reported as the
     /// user's, as the hosted UI's browser is.
-    static func passkeySheetClosed() -> AuthClientError {
+    static func passkeySheetClosed() -> AmplifyCognitoClientError {
         .userCancelled(
             "The passkey sheet was closed before the ceremony finished.",
             "Try again when the user is ready."
@@ -152,7 +167,7 @@ extension SessionCore {
     }
 
     /// WebAuthn on a platform without the passkey sheet (tvOS, watchOS).
-    static func webAuthnUnavailable() -> AuthClientError {
+    static func webAuthnUnavailable() -> AmplifyCognitoClientError {
         .configuration(
             "WebAuthn is not available on this platform.",
             "Use WebAuthn on iOS 17.4, macOS 13.5 or visionOS 1.0 and later."

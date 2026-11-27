@@ -1,0 +1,219 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import AmplifyFoundation
+import Foundation
+
+/// The identifier a session is saved under.
+///
+/// Two `AmplifyCognitoClient` instances built with the same `AmplifyCognitoClientSessionID` are two handles onto
+/// the same session. The app owns uniqueness: reusing an ID is not an error, it returns the
+/// existing session.
+///
+/// A session is saved per pool configuration. Switching configuration under one **named** session ID (an app that
+/// lets the user pick an organisation, say) keeps each configuration's record: switching back finds that
+/// configuration's session as it was, unless it was signed out there. Only the pool changes the Auth plugin carries
+/// forward (a pool added beside the same user pool or identity pool, or an identity pool changed or removed beside
+/// the same user pool) carry the session into the new configuration. So two configurations that share a user pool
+/// but differ in their identity pool are one carried session: a sign-out in either ends it in both. The rule
+/// compares pool IDs only, so a named session also carries across an identity pool change that comes with a change of
+/// app client, where the plugin's rule deletes the login; the carried session then reports `sessionExpired` at its
+/// first refresh, and signs in again. For runtime switching between backends, use named sessions.
+///
+/// `.default` follows the Auth plugin's own rule instead, since it uses the plugin's saved login: see `default`.
+///
+/// Sessions exist only in `AmplifyCognitoClient` and the clients it hands credentials to. Amplify's
+/// category plugins (Storage, Analytics, API and the rest) do not see them: they silently use the Auth
+/// plugin's session in `Amplify.Auth`, whichever session ID you pick, `.default` included.
+///
+/// **Persisting one.** Save `stringValue` and rebuild the ID with `named(_:label:)`, which also turns `.default`'s
+/// `"$default"` back into `.default`; or encode the ID itself: it is `Codable` as its `stringValue`, and
+/// decoding accepts exactly what `named(_:label:)` accepts. Neither keeps the `label`, which is not part of the ID.
+@_spi(AmplifyExperimental)
+public struct AmplifyCognitoClientSessionID: Hashable, Sendable {
+
+    /// The value to persist in app storage in order to construct the same session later.
+    public let stringValue: String
+
+    /// The picker label this ID was created with (`named(_:label:)`, `new(label:)`), or `nil`: for an app adding an
+    /// account, which knows the label before anyone has signed in.
+    ///
+    /// **Saved at sign-in.** When a client built with this ID saves the session's row for a sign-in (hosted UI
+    /// included), a federation or a guest, and the row keeps no label, this one is saved as the row's label
+    /// (`AmplifyCognitoClientStoredSession.label`). A label the row keeps always wins: the same user's, or one set before any user signed
+    /// in. When a different user signs in, the previous user's label is dropped, as before, and this one labels the new
+    /// user's row. Nothing is saved before that: a session that never signs in has no row (one waiting on a
+    /// challenge is listed without this label), and a sign-in interrupted on a challenge and finished in a later
+    /// launch saves the label only if the ID is rebuilt with it (`named(_:label:)`). `setSessionLabel` changes the
+    /// saved label afterwards, whatever the ID was created with; once it clears the label, the next sign-in
+    /// through an ID created with one saves that one again.
+    ///
+    /// **Not part of the ID.** `==`, hashing and `Codable` use `stringValue` only, so two IDs that differ only in
+    /// their label are equal, and name one session. When two clients of one live session were built with different
+    /// labels, the session uses the label of the ID that built it, the first client's, until every client and
+    /// provider of the session is released. Only a client's sign-in reads it: the static calls ignore it, and an ID
+    /// that was decoded, rebuilt from its `stringValue` or listed by `storedSessions` has none. So a listed row's
+    /// `AmplifyCognitoClientStoredSession.sessionId.label` is always `nil`: the saved label is `AmplifyCognitoClientStoredSession.label`.
+    public let label: String?
+
+    private init(unchecked value: String, label: String? = nil) {
+        self.stringValue = value
+        self.label = label
+    }
+
+    /// Whether two IDs name the same session: their `stringValue` only, never their `label`.
+    public static func == (lhs: AmplifyCognitoClientSessionID, rhs: AmplifyCognitoClientSessionID) -> Bool {
+        lhs.stringValue == rhs.stringValue
+    }
+
+    /// Hashes the `stringValue` only, as `==` compares it.
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(stringValue)
+    }
+
+    /// The single-account session, stable across launches.
+    ///
+    /// Its `stringValue` is `$default`. `$` is outside the charset `named(_:label:)` accepts for a name of the app's
+    /// own (`named("$default")` is this ID, read back), so no app-chosen name can land on this session, not even
+    /// `"default"`. It has no `label`: `named("$default", label:)` is this session with one.
+    ///
+    /// **It uses the `AWSCognitoAuthPlugin`'s saved login.** Its session record is the plugin's own keychain item,
+    /// holding the plugin's stored format, so an app moving from the plugin keeps its signed-in user, and an app
+    /// rolled back to the plugin finds the newest login, signed out included. It is the only session that does, so
+    /// one plugin record is never read by two session IDs. What the plugin's format has no room for — the label and,
+    /// for a signed-out row, the last user — is kept beside it, bound to that user: a label set for one user never
+    /// passes to a different user (a label the ID itself carries is saved for each).
+    ///
+    /// **Side by side with the plugin is not supported.** The two share one saved login, but each keeps its tokens
+    /// in memory and reads the keychain only at times of its own (the plugin at configuration), so a sign-in, a
+    /// sign-out or, with refresh-token rotation, a refresh through one can leave the other holding tokens that no
+    /// longer work until the app is relaunched. Use one or the other for the app's session.
+    ///
+    /// A user the plugin deletes (`deleteUser`) leaves the label and last user beside the record, so the picker can
+    /// show that user's signed-out row until the client writes the session again: a sign-in through the client, or
+    /// a client refresh of another user the plugin signed in. A sign-in through the plugin doesn't replace it.
+    ///
+    /// **A configuration change follows the plugin's rule**, and records the configuration as the plugin does, so a
+    /// plugin build started next never copies an older login over a newer one. The login is copied, as it is, when a
+    /// user pool is added beside the same identity pool, or an identity pool is added, changed or removed beside the
+    /// same user pool, app client and region; a changed identity pool keeps the old identity ID, as the plugin does.
+    /// Any other change of the pools deletes it; a deleted login of the same user pool is revoked, best effort, with
+    /// the previous app client, and otherwise stays valid until it expires. A change of the app client alone keeps it,
+    /// and its next refresh fails with `sessionExpired`. So `.default` keeps one backend's login at a time: for runtime
+    /// switching between backends, use named sessions.
+    public static let `default` = AmplifyCognitoClientSessionID(unchecked: "$default")
+
+    /// An app-chosen session ID.
+    ///
+    /// Must be 1 to 64 characters from `[A-Za-z0-9_-]`. The restriction is what keeps a `.` or `/`
+    /// out of the storage key, so the key has no delimiter ambiguity. Comparison is
+    /// case-sensitive: `"Work"` and `"work"` are different sessions, because merging them would
+    /// silently cross credentials.
+    ///
+    /// The one exception is `"$default"`, `.default`'s `stringValue`, which returns `.default`, so a persisted
+    /// `stringValue` always rebuilds its ID.
+    ///
+    /// - Parameters:
+    ///   - id: The session ID.
+    ///   - label: The picker label a sign-in saves for the session when its row keeps none; `nil`, the default, for
+    ///     none. See `label`. Any text: it is not validated, and is not part of the ID. With `"$default"`, the result
+    ///     equals `.default` and carries the label.
+    /// - Throws: `AmplifyCognitoClientError.invalidSessionID` for an empty or overlong ID, or one naming the first
+    ///   character outside the charset. The message never repeats the ID itself.
+    public static func named(_ id: String, label: String? = nil) throws -> AmplifyCognitoClientSessionID {
+        if id != AmplifyCognitoClientSessionID.default.stringValue {
+            try validate(id)
+        }
+        return AmplifyCognitoClientSessionID(unchecked: id, label: label)
+    }
+
+    /// A library-minted session ID, for when the app has no stable identifier of its own.
+    ///
+    /// Each call mints a different ID, so persist the result (see "Persisting one" above): an ID not saved
+    /// cannot find its session again in a later launch.
+    ///
+    /// - Parameter label: The picker label a sign-in saves for the session when its row keeps none; `nil`, the
+    ///   default, for none. See `label`.
+    public static func new(label: String? = nil) -> AmplifyCognitoClientSessionID {
+        AmplifyCognitoClientSessionID(unchecked: UUID().uuidString.lowercased(), label: label)
+    }
+
+    static let maximumLength = 64
+
+    private static let sentinels: Set<String> = [
+        AmplifyCognitoClientSessionID.default.stringValue
+    ]
+
+    private static func isPermitted(_ scalar: Unicode.Scalar) -> Bool {
+        switch scalar {
+        case "A" ... "Z", "a" ... "z", "0" ... "9", "_", "-":
+            return true
+        default:
+            return false
+        }
+    }
+
+    private static func validate(_ id: String) throws {
+        guard !id.isEmpty else {
+            throw AmplifyCognitoClientError.invalidSessionID(
+                "A session ID cannot be empty.",
+                "Pass a non-empty identifier, or use AmplifyCognitoClientSessionID.new() to let the library mint one."
+            )
+        }
+        guard id.unicodeScalars.count <= maximumLength else {
+            throw AmplifyCognitoClientError.invalidSessionID(
+                "A session ID can be at most \(maximumLength) characters; this one has \(id.unicodeScalars.count).",
+                "Use a shorter identifier, or hash a long one before passing it."
+            )
+        }
+        if let offender = id.unicodeScalars.first(where: { !isPermitted($0) }) {
+            throw AmplifyCognitoClientError.invalidSessionID(
+                "A session ID may only contain letters, digits, '_' and '-'; found \"\(offender)\".",
+                "Remove or replace the character. The restriction keeps session IDs safe to use in storage keys."
+            )
+        }
+    }
+
+    /// Reconstructs a session ID read back from storage, accepting the library's own sentinels.
+    /// Returns `nil` for anything `named(_:label:)` would reject, so a malformed record is skipped rather
+    /// than crashing a listing.
+    init?(storageComponent value: String) {
+        if Self.sentinels.contains(value) {
+            self.init(unchecked: value)
+            return
+        }
+        guard (try? Self.validate(value)) != nil else {
+            return nil
+        }
+        self.init(unchecked: value)
+    }
+}
+
+extension AmplifyCognitoClientSessionID: Codable {
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let value = try container.decode(String.self)
+        guard let id = AmplifyCognitoClientSessionID(storageComponent: value) else {
+            // The rejected value is not repeated: it may be an identifier the app would not log.
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "The value is not a valid session ID."
+            )
+        }
+        self = id
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(stringValue)
+    }
+}
+
+extension AmplifyCognitoClientSessionID: CustomStringConvertible {
+    public var description: String { stringValue }
+}

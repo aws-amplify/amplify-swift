@@ -37,7 +37,7 @@ final class UserAgentTests: ClientIntegrationTestCase {
         )
 
         _ = try await client.signIn(username: alice.username, password: alice.password)
-        _ = try await client.fetchAuthSession(options: .init(forceRefresh: true)).userPoolTokensResult.get()
+        _ = try await client.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens()
         let signOut = await client.signOut()
 
         XCTAssertSignOutComplete(signOut)

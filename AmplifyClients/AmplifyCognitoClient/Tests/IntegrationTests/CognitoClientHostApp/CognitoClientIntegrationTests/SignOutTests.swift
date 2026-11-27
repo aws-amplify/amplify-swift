@@ -13,7 +13,7 @@ import XCTest
 /// what Cognito itself thinks of the refresh token afterwards, through a plain SDK client.
 final class SignOutTests: ClientIntegrationTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
     /// This test's own user, a fresh one on the default backend (`makeSignInUser()`).
     private var alice: TestUser!
 
@@ -38,7 +38,7 @@ final class SignOutTests: ClientIntegrationTestCase {
         let sessionId = try makeSessionID("alice")
         let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
         _ = try await client.signIn(username: alice.username, password: alice.password)
-        let tokens = try await client.fetchAuthSession().userPoolTokensResult.get()
+        let tokens = try await client.fetchAuthSession().requireUserPoolTokens()
         let refreshToken = tokens.refreshToken
 
         let result = await client.signOut()
@@ -68,7 +68,8 @@ final class SignOutTests: ClientIntegrationTestCase {
     ///    - `signOutStoredSession(sessionId:configuration:)`
     /// - Then:
     ///    - it returns `.complete`
-    ///    - the row is kept, signed out (`kind == .signedOut`, still naming alice), and hidden by default
+    ///    - the row is kept, signed out (`kind == .signedOut`, `state == .signedOut`, still naming alice), and hidden
+    ///      by default
     ///    - Cognito rejects the captured refresh token, sent with the session's device key, with `NotAuthorizedException`
     ///    - the keychain holds the same items as before, in every service and group, and every item but
     ///      the session's own record has the modification date and data it had before
@@ -76,7 +77,7 @@ final class SignOutTests: ClientIntegrationTestCase {
     func testSignOutStoredSessionRevokesWithoutALiveClient() async throws {
         let raw = try RawUserPool()
         let sessionId = try makeSessionID("alice")
-        let (refreshToken, deviceKey) = try await signInAndDrop(sessionId)
+        let (refreshToken, deviceKey, user) = try await signInAndDrop(sessionId)
         try await SessionCleanup.waitUntilReleased([sessionId])
         let before = try KeychainSnapshot.versions()
 
@@ -85,8 +86,9 @@ final class SignOutTests: ClientIntegrationTestCase {
         XCTAssertSignOutComplete(result)
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         let row = try XCTUnwrap(listed.first { $0.sessionId == sessionId }, "the signed-out row is kept")
-        XCTAssertEqual(row.kind, SessionKind.signedOut)
-        XCTAssertTrue(row.username == alice.username, "the signed-out row names alice")
+        XCTAssertEqual(row.kind, AmplifyCognitoClientSessionKind.signedOut)
+        XCTAssertState(row.state, .signedOut)
+        XCTAssertTrue(row.user == user, "the signed-out row names alice")
         let visible = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
         XCTAssertFalse(visible.contains { $0.sessionId == sessionId }, "a signed-out row is hidden by default")
         assertNotAuthorized(await raw.refresh(refreshToken, deviceKey: deviceKey))
@@ -115,7 +117,7 @@ final class SignOutTests: ClientIntegrationTestCase {
     func testPurgeStoredSessionIsLocalOnly() async throws {
         let raw = try RawUserPool()
         let sessionId = try makeSessionID("alice")
-        let (refreshToken, deviceKey) = try await signInAndDrop(sessionId)
+        let (refreshToken, deviceKey, _) = try await signInAndDrop(sessionId)
         addTeardownBlock { try await raw.revoke(refreshToken) }
         try await SessionCleanup.waitUntilReleased([sessionId])
 
@@ -131,13 +133,59 @@ final class SignOutTests: ClientIntegrationTestCase {
         }
     }
 
+    /// The static sign-out's options, with no client live for the session: a global sign-out that also purges the row
+    /// (SO-5).
+    ///
+    /// A global sign-out revokes every refresh token the user holds, anywhere: alice is this test's own fresh user.
+    ///
+    /// - Given: alice signed in on sessions A and B, A's refresh token captured and every handle on A dropped, B's
+    ///   client held
+    /// - When:
+    ///    - `signOutStoredSession(sessionId:configuration:options:)` for A, with `globalSignOut` and
+    ///      `purgeStoredSession`
+    /// - Then:
+    ///    - it returns `.complete`
+    ///    - A's row is gone from the listing, signed-out rows included, and the keychain holds no account for it
+    ///    - Cognito rejects A's captured refresh token, sent with the session's device key, with `NotAuthorizedException`
+    ///    - B's forced `fetchAuthSession` throws `.sessionExpired`: the sign-out reached alice's other session
+    ///
+    func testSignOutStoredSessionGlobalAndPurging() async throws {
+        let raw = try RawUserPool()
+        let sessionA = try makeSessionID("alice-a")
+        let sessionB = try makeSessionID("alice-b")
+        let (refreshToken, deviceKey, _) = try await signInAndDrop(sessionA)
+        try await SessionCleanup.waitUntilReleased([sessionA])
+        let b = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionB))
+        _ = try await b.signIn(username: alice.username, password: alice.password)
+
+        let result = await AmplifyCognitoClient.signOutStoredSession(
+            sessionId: sessionA,
+            configuration: configuration,
+            options: .init(globalSignOut: true, purgeStoredSession: true)
+        )
+
+        XCTAssertSignOutComplete(result)
+        let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
+        XCTAssertFalse(listed.contains { $0.sessionId == sessionA }, "the purged row is gone")
+        let accounts = try IntegrationTestEnvironment.rawKeychainAccounts()
+        XCTAssertFalse(accounts.contains { $0.contains(".\(sessionA.stringValue).") }, "no keychain account is left for the session")
+        assertNotAuthorized(await raw.refresh(refreshToken, deviceKey: deviceKey))
+        let error = await Expect.authClientError("a refresh after a global sign-out elsewhere") {
+            try await b.fetchAuthSession(options: .init(forceRefresh: true))
+        }
+        XCTAssertEqual(error?.kind, .sessionExpired, "\(String(describing: error?.kind))")
+    }
+
     /// Signs alice in on `sessionId` through a client that is released when this returns, and returns
-    /// the session's refresh token and device key (nil on a pool that tracks no devices).
-    private func signInAndDrop(_ sessionId: SessionID) async throws -> (refreshToken: String, deviceKey: String?) {
+    /// the session's refresh token and device key (nil on a pool that tracks no devices), and the signed-in user.
+    private func signInAndDrop(
+        _ sessionId: AmplifyCognitoClientSessionID
+    ) async throws -> (refreshToken: String, deviceKey: String?, user: AmplifyCognitoClientUser) {
         let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
         _ = try await client.signIn(username: alice.username, password: alice.password)
-        let tokens = try await client.fetchAuthSession().userPoolTokensResult.get()
-        return (tokens.refreshToken, RawUserPool.deviceKey(of: tokens.accessToken))
+        let tokens = try await client.fetchAuthSession().requireUserPoolTokens()
+        let user = try await client.getCurrentUser()
+        return (tokens.refreshToken, RawUserPool.deviceKey(of: tokens.accessToken), user)
     }
 
     private func assertNotAuthorized(

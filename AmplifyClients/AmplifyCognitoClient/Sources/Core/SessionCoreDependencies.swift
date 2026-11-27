@@ -27,11 +27,11 @@ struct SessionCoreDependencies: Sendable {
     let gates: SessionRecordGates
     let makeStore: @Sendable (SessionStorageNamespace) -> SessionRecordStore
     let makeClients: @Sendable (
-        AuthClientConfiguration,
+        AmplifyCognitoClientConfiguration,
         AmplifyCognitoClientUserPoolConfigurationProvider?
     ) throws -> CognitoServiceClients
     let makeEngine: @Sendable (SessionEngineContext) throws -> any SessionEngine
-    let makeRevoker: @Sendable (AuthClientConfiguration) -> any SessionRevoker
+    let makeRevoker: @Sendable (AmplifyCognitoClientConfiguration) -> any SessionRevoker
     /// Revokes a login `.default` deleted on a configuration change, with the previous configuration's region and app
     /// client ID: `RevokeToken` refuses a token from another app client. `LiveSessionRevoker(previous:)` in
     /// `live`; inert by default, so dependencies a test builds never reach Cognito.
@@ -54,7 +54,7 @@ struct SessionCoreDependencies: Sendable {
     /// A test seam inside a sign-out's logout-page lease body, given the session: runs once the body has stopped
     /// the session's passkey registrations, before it checks for an interrupt and shows the page. Does nothing in
     /// the app. A test holds the body here to interrupt it at that moment.
-    var afterLogoutStop: @Sendable (SessionID) async -> Void = { _ in }
+    var afterLogoutStop: @Sendable (AmplifyCognitoClientSessionID) async -> Void = { _ in }
     #endif
 
     static let live: SessionCoreDependencies = {
@@ -82,7 +82,7 @@ struct SessionCoreDependencies: Sendable {
 /// A revoker that revokes nothing and reports success: the default of `makePreviousConfigurationRevoker` outside
 /// `live`.
 struct InertSessionRevoker: SessionRevoker {
-    func revoke(_ payload: Data) async throws -> EngineSignOutOutcome {
+    func revoke(_ payload: Data, global: Bool) async throws -> EngineSignOutOutcome {
         .complete
     }
 

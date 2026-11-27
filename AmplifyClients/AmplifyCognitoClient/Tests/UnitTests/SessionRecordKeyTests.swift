@@ -19,7 +19,7 @@ final class SessionRecordKeyTests: XCTestCase {
     ///    - it is `amplify.1.<poolNamespace>.<sessionId>.session`, with the namespace exactly as the
     ///      plugin renders it
     func testAccountFormatForEachConfigurationShape() throws {
-        let work = try SessionID.named("work")
+        let work = try AmplifyCognitoClientSessionID.named("work")
         XCTAssertEqual(
             SessionRecordKey.account(for: work, in: .userPool(userPoolId), kind: .session),
             "amplify.1.\(userPoolId).work.session"
@@ -56,7 +56,7 @@ final class SessionRecordKeyTests: XCTestCase {
         )
         let store = TestKeychain().recordStore(for: SessionStorageNamespace(pools: namespace, accessGroup: nil))
         XCTAssertEqual(store.sessionAccount(for: .default), "amplify.\(userPoolId).session")
-        XCTAssertNil(try store.pluginSessionAccount(for: SessionID.named("work")))
+        XCTAssertNil(try store.pluginSessionAccount(for: AmplifyCognitoClientSessionID.named("work")))
         XCTAssertEqual(
             SessionRecordKey.account(for: .default, in: namespace, kind: .session),
             "amplify.1.\(userPoolId).$default.session"
@@ -76,7 +76,7 @@ final class SessionRecordKeyTests: XCTestCase {
             .identityPool(identityPoolId),
             .userPoolAndIdentityPool(userPoolId: userPoolId, identityPoolId: identityPoolId)
         ]
-        let ids = [try SessionID.named("work"), try SessionID.named("a-b_c"), .new(), .default]
+        let ids = [try AmplifyCognitoClientSessionID.named("work"), try AmplifyCognitoClientSessionID.named("a-b_c"), .new(), .default]
         for namespace in namespaces {
             for id in ids {
                 for kind in SessionRecordKey.Kind.allCases {

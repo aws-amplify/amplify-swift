@@ -34,19 +34,19 @@ final class StorageErrorTextTests: XCTestCase {
             FixtureError(description: "no keychain text")
         ]
         for failure in failures {
-            let description = AuthClientError.storageUnavailable(from: failure, operation: "list the saved sessions").errorDescription
+            let description = AmplifyCognitoClientError.storageUnavailable(from: failure, operation: "list the saved sessions").errorDescription
             XCTAssertTrue(description.hasPrefix("Secure storage could not list the saved sessions"), description)
             XCTAssertFalse(description.contains("\n"), description)
             XCTAssertFalse(description.contains(".."), description)
             XCTAssertTrue(description.hasSuffix("."), description)
         }
         XCTAssertEqual(
-            AuthClientError.storageUnavailable(from: twoLines, operation: "list the saved sessions").errorDescription,
+            AmplifyCognitoClientError.storageUnavailable(from: twoLines, operation: "list the saved sessions").errorDescription,
             "Secure storage could not list the saved sessions: Unexpected error occurred with message: Internal error when a "
                 + "required entitlement isn't present, client has neither application-identifier nor keychain-access-groups entitlements."
         )
         XCTAssertEqual(
-            AuthClientError.storageUnavailable(from: FixtureError(description: "x"), operation: "read the session").errorDescription,
+            AmplifyCognitoClientError.storageUnavailable(from: FixtureError(description: "x"), operation: "read the session").errorDescription,
             "Secure storage could not read the session."
         )
     }

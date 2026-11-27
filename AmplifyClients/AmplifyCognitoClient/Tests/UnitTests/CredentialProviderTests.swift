@@ -66,8 +66,8 @@ final class CredentialProviderTests: XCTestCase {
     /// - Then:
     ///    - the signed-out AWS credentials' `notSignedIn` says a signed-out session never falls back to guest
     ///      credentials
-    ///    - the signed-out access token, the guest's access token, and the guest's fetched tokens and sub, say only
-    ///      "Sign in to this session first."
+    ///    - the signed-out access token and the guest's access token say only "Sign in to this session first."
+    ///    - the guest's fetched session has no tokens and no sub
     func testOnlyASignedOutSessionsAWSCredentialsMentionTheGuestFallback() async throws {
         try harness.signIn(home, FakePayload.guest())
         let signedOut = try harness.client(work)
@@ -86,15 +86,8 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(signedOutToken?.recoverySuggestion, "Sign in to this session first.")
         XCTAssertEqual(token?.isNotSignedIn, true, "\(String(describing: token))")
         XCTAssertEqual(token?.recoverySuggestion, "Sign in to this session first.")
-        for (field, result) in [("userPoolTokens", session.userPoolTokensResult.map { _ in () }),
-                                ("userSub", session.userSubResult.map { _ in () })] {
-            guard case .failure(let error) = result else {
-                XCTFail("\(field) should fail")
-                continue
-            }
-            XCTAssertEqual(error.kind, .notSignedIn, field)
-            XCTAssertEqual(error.recoverySuggestion, "Sign in to this session first.", field)
-        }
+        XCTAssertNil(session.userPoolTokens)
+        XCTAssertNil(session.userSub)
     }
 
     /// - Given: a guest session
@@ -117,6 +110,7 @@ final class CredentialProviderTests: XCTestCase {
     /// - When: both providers are asked
     /// - Then:
     ///    - both vend the session's credentials and token, bound to its session ID
+    ///    - the token provider vends the same token through AmplifyFoundation's `AccessTokenProvider`
     func testSignedInVendsBoth() async throws {
         let alice = FakePayload.signedIn("alice")
         try harness.signIn(work, alice)
@@ -129,10 +123,13 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(token, alice.accessToken)
         XCTAssertEqual(client.credentialsProvider.sessionId, work)
         XCTAssertEqual(client.userPoolTokenProvider.sessionId, work)
+        let foundationProvider: any AccessTokenProvider = client.userPoolTokenProvider
+        let foundationToken = try await foundationProvider.accessToken()
+        XCTAssertEqual(foundationToken, alice.accessToken)
     }
 
     /// The credentials `credentialsProvider` resolves never print their secret or session token, as
-    /// `fetchAuthSession()`'s `AuthClientAWSCredentials` don't.
+    /// `fetchAuthSession()`'s `AmplifyCognitoClientAWSCredentials` don't.
     ///
     /// - Given: a signed-in session with an identity pool
     /// - When: its resolved credentials are rendered by interpolation, `String(describing:)`,
@@ -456,7 +453,7 @@ final class CredentialProviderTests: XCTestCase {
         }
         _ = try await other.fetchAuthSession()
 
-        XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, copied.accessToken)
+        XCTAssertEqual(session.userPoolTokens?.accessToken, copied.accessToken)
         XCTAssertEqual(harness.engine(for: work)?.refreshCalls.count, 0)
         XCTAssertEqual(harness.engine(for: home)?.refreshCalls, [expiring.data])
     }
@@ -489,7 +486,7 @@ final class CredentialProviderTests: XCTestCase {
 
         XCTAssertEqual(credentials as? CognitoAWSCredentials, otherProcess.awsCredentials)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         // Ends with a known event: the recorder appends on its own task, so an empty list alone could miss an event
         // still in flight.
         _ = await client.signOut()
@@ -504,8 +501,8 @@ final class CredentialProviderTests: XCTestCase {
     /// - Given: a signed-in session with valid tokens, whose refresh is refused as reused, with nothing saved meanwhile
     /// - When: the session is fetched with `forceRefresh`, then without it
     /// - Then:
-    ///    - the forced fetch's fields fail with the retryable `unknown` "…refresh token was used by another writer…",
-    ///      not the old tokens; no `.sessionExpired` is sent
+    ///    - the forced fetch throws the retryable `unknown` "…refresh token was used by another writer…", and never
+    ///      answers with the old tokens; no `.sessionExpired` is sent
     ///    - the unforced fetch returns the saved tokens with no refresh
     func testAForcedRefreshRefusedAsReusedFailsInsteadOfReturningTheOldTokens() async throws {
         let fresh = FakePayload.signedIn("alice")
@@ -515,15 +512,12 @@ final class CredentialProviderTests: XCTestCase {
         engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
         let events = StreamRecorder(client.listenToAuthEvents())
 
-        let forced = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+        let forced = await authClientError { try await client.fetchAuthSession(options: .init(forceRefresh: true)) }
         let unforced = try await client.fetchAuthSession()
 
-        guard case .failure(let error) = forced.userPoolTokensResult else {
-            return XCTFail("the forced refresh answered with the old tokens")
-        }
-        XCTAssertEqual(error.kind, .unknown)
-        XCTAssertTrue(error.errorDescription.contains("refresh token was used by another writer"), error.errorDescription)
-        XCTAssertEqual(try unforced.userPoolTokensResult.get().accessToken, fresh.accessToken)
+        XCTAssertEqual(forced?.kind, .unknown)
+        XCTAssertEqual(forced?.errorDescription.contains("refresh token was used by another writer"), true, "\(String(describing: forced))")
+        XCTAssertEqual(unforced.userPoolTokens?.accessToken, fresh.accessToken)
         XCTAssertEqual(engine.refreshCalls.count, 1)
         _ = await client.signOut()
         await events.waitFor(1)
@@ -538,9 +532,9 @@ final class CredentialProviderTests: XCTestCase {
     ///   saved, in turn, new AWS credentials alone, and a refresh of the tokens
     /// - When: the session is fetched with `forceRefresh`
     /// - Then:
-    ///    - after new AWS credentials alone, the fields fail with the retryable `unknown` "…refresh token was used by
-    ///      another writer…", not the tokens sent
-    ///    - after a refresh of the tokens, the fields report the other writer's tokens and AWS credentials
+    ///    - after new AWS credentials alone, it throws the retryable `unknown` "…refresh token was used by another
+    ///      writer…", and never answers with the tokens sent
+    ///    - after a refresh of the tokens, it returns the other writer's tokens and AWS credentials
     func testAForcedRefreshRefusedAsReusedAdoptsOnlyANewRefreshToken() async throws {
         let fresh = FakePayload.signedIn("alice")
         var newAWSCredentials = fresh
@@ -562,19 +556,19 @@ final class CredentialProviderTests: XCTestCase {
                 throw SessionEngineError.refreshTokenReused
             }
 
-            let forced = try await client.fetchAuthSession(options: .init(forceRefresh: true))
-
             if adopted {
-                XCTAssertEqual(try forced.userPoolTokensResult.get().accessToken, otherWriter.accessToken, name)
-                XCTAssertEqual(try forced.awsCredentialsResult.get(), AuthClientAWSCredentials(otherWriter.awsCredentials), name)
+                let forced = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+                XCTAssertEqual(forced.userPoolTokens?.accessToken, otherWriter.accessToken, name)
+                XCTAssertEqual(forced.awsCredentials, AmplifyCognitoClientAWSCredentials(otherWriter.awsCredentials), name)
                 continue
             }
-            guard case .failure(let error) = forced.userPoolTokensResult else {
-                XCTFail("\(name): the forced refresh answered with the tokens it sent")
-                continue
-            }
-            XCTAssertEqual(error.kind, .unknown, name)
-            XCTAssertTrue(error.errorDescription.contains("refresh token was used by another writer"), "\(name): \(error)")
+            let error = await authClientError { try await client.fetchAuthSession(options: .init(forceRefresh: true)) }
+            XCTAssertEqual(error?.kind, .unknown, name)
+            XCTAssertEqual(
+                error?.errorDescription.contains("refresh token was used by another writer"),
+                true,
+                "\(name): \(String(describing: error))"
+            )
         }
     }
 
@@ -593,7 +587,7 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(error?.isUnknown, true, "\(String(describing: error))")
         XCTAssertEqual(error?.disposition, .retryWithBackoff)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 
     /// A reused refresh token, twice in a row with the record's credentials still exactly the ones sent, the second
@@ -628,20 +622,20 @@ final class CredentialProviderTests: XCTestCase {
         harness.advanceClock(by: 10)
         let third = await credentialsError { try await client.credentialsProvider.resolve() }
         let fourth = await credentialsError { try await client.credentialsProvider.resolve() }
-        let session = try await client.fetchAuthSession()
+        let fetched = await authClientError { try await client.fetchAuthSession() }
 
         XCTAssertEqual(first?.isUnknown, true, "\(String(describing: first))")
         XCTAssertEqual(tooSoon?.isUnknown, true, "\(String(describing: tooSoon))")
         XCTAssertEqual(third?.isSessionExpired, true, "\(String(describing: third))")
         XCTAssertEqual(fourth?.isSessionExpired, true, "\(String(describing: fourth))")
-        assertRefreshTokenAlreadyUsed(third?.underlyingError as? AuthClientError, "the third")
-        assertRefreshTokenAlreadyUsed(fourth?.underlyingError as? AuthClientError, "the fourth")
+        assertRefreshTokenAlreadyUsed(third?.underlyingError as? AmplifyCognitoClientError, "the third")
+        assertRefreshTokenAlreadyUsed(fourth?.underlyingError as? AmplifyCognitoClientError, "the fourth")
         XCTAssertEqual(third?.errorDescription, Self.refreshTokenAlreadyUsed)
-        assertEveryField(of: session, isRefreshTokenAlreadyUsed: "the unforced fetch")
+        assertRefreshTokenAlreadyUsed(fetched, "the unforced fetch")
         XCTAssertEqual(engine.refreshCalls.count, 3)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, stale.data)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         // Ends with a known event, so an extra `.sessionExpired` still in the recorder's buffer is counted too.
         _ = await client.signOut()
         await events.waitFor(2)
@@ -657,10 +651,10 @@ final class CredentialProviderTests: XCTestCase {
     /// - When: the session is fetched with `forceRefresh`; again once the gap has passed; then without it, and both
     ///   providers are asked
     /// - Then:
-    ///    - the first forced fetch's fields fail with the retryable `unknown`, with no event
-    ///    - the second's fail with `sessionExpired` saying the refresh token was already used, with
+    ///    - the first forced fetch throws the retryable `unknown`, with no event
+    ///    - the second throws `sessionExpired` saying the refresh token was already used, with
     ///      `refreshTokenReused` underneath, and one `.sessionExpired` event is sent
-    ///    - the unforced fetch's fields and both providers fail with the same error, with no other refresh
+    ///    - the unforced fetch and both providers fail with the same error, with no other refresh
     ///    - the record is kept, and the state stays signed in as the user
     func testTwoForcedRefreshesRefusedAsReusedExpireTheSession() async throws {
         let fresh = FakePayload.signedIn("alice")
@@ -670,29 +664,26 @@ final class CredentialProviderTests: XCTestCase {
         engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenReused }
         let events = StreamRecorder(client.listenToAuthEvents())
 
-        let first = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+        let first = await authClientError { try await client.fetchAuthSession(options: .init(forceRefresh: true)) }
         XCTAssertEqual(events.received, [], "no event while another writer may still be saving")
         harness.advanceClock(by: RefreshTokenReuse.minimumGap)
-        let second = try await client.fetchAuthSession(options: .init(forceRefresh: true))
-        let unforced = try await client.fetchAuthSession()
+        let second = await authClientError { try await client.fetchAuthSession(options: .init(forceRefresh: true)) }
+        let unforced = await authClientError { try await client.fetchAuthSession() }
         let aws = await credentialsError { try await client.credentialsProvider.resolve() }
         let token = await credentialsError { try await client.userPoolTokenProvider.accessToken() }
 
-        guard case .failure(let firstError) = first.userPoolTokensResult else {
-            return XCTFail("the first forced refresh answered with the old tokens")
-        }
-        XCTAssertEqual(firstError.kind, .unknown, "\(firstError)")
-        assertEveryField(of: second, isRefreshTokenAlreadyUsed: "the second forced fetch")
-        assertEveryField(of: unforced, isRefreshTokenAlreadyUsed: "the unforced fetch")
+        XCTAssertEqual(first?.kind, .unknown, "\(String(describing: first))")
+        assertRefreshTokenAlreadyUsed(second, "the second forced fetch")
+        assertRefreshTokenAlreadyUsed(unforced, "the unforced fetch")
         for (name, error) in [("the AWS credentials provider", aws), ("the token provider", token)] {
             XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
             XCTAssertEqual(error?.disposition, .retryAfterReauthentication, name)
-            assertRefreshTokenAlreadyUsed(error?.underlyingError as? AuthClientError, name)
+            assertRefreshTokenAlreadyUsed(error?.underlyingError as? AmplifyCognitoClientError, name)
         }
         XCTAssertEqual(engine.refreshCalls, [fresh.data, fresh.data])
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, fresh.data)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         // Ends with a known event, so an extra `.sessionExpired` still in the recorder's buffer is counted too.
         _ = await client.signOut()
         await events.waitFor(2)
@@ -706,7 +697,7 @@ final class CredentialProviderTests: XCTestCase {
     /// Asserts `error` is the dead token after a reuse: `sessionExpired` with its own texts, never a refused refresh
     /// token's, and `refreshTokenReused` underneath.
     private func assertRefreshTokenAlreadyUsed(
-        _ error: AuthClientError?,
+        _ error: AmplifyCognitoClientError?,
         _ name: String,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -719,28 +710,6 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(error.recoverySuggestion, "Sign in to this session again. Other sessions are unaffected.", name, file: file, line: line)
         guard case SessionEngineError.refreshTokenReused? = error.underlyingError as? SessionEngineError else {
             return XCTFail("\(name): expected refreshTokenReused underneath, got \(String(describing: error.underlyingError))", file: file, line: line)
-        }
-    }
-
-    /// Asserts every field of `session` fails with the dead token after a reuse.
-    private func assertEveryField(
-        of session: AuthClientSession,
-        isRefreshTokenAlreadyUsed name: String,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) {
-        let fields: [(String, Result<Void, AuthClientError>)] = [
-            ("userPoolTokens", session.userPoolTokensResult.map { _ in () }),
-            ("userSub", session.userSubResult.map { _ in () }),
-            ("identityId", session.identityIdResult.map { _ in () }),
-            ("awsCredentials", session.awsCredentialsResult.map { _ in () })
-        ]
-        for (field, result) in fields {
-            guard case .failure(let error) = result else {
-                XCTFail("\(name): \(field) should fail", file: file, line: line)
-                continue
-            }
-            assertRefreshTokenAlreadyUsed(error, "\(name), \(field)", file: file, line: line)
         }
     }
 
@@ -803,7 +772,7 @@ final class CredentialProviderTests: XCTestCase {
         let afterwards = await credentialsError { try await next.credentialsProvider.resolve() }
 
         XCTAssertEqual(invalid?.isSessionExpired, true, "\(String(describing: invalid))")
-        let underlying = invalid?.underlyingError as? AuthClientError
+        let underlying = invalid?.underlyingError as? AmplifyCognitoClientError
         XCTAssertEqual(underlying?.errorDescription, "Session \"work\"'s refresh token has expired or been revoked.")
         guard case SessionEngineError.refreshTokenInvalid? = underlying?.underlyingError as? SessionEngineError else {
             return XCTFail("expected refreshTokenInvalid underneath, got \(String(describing: underlying?.underlyingError))")
@@ -842,8 +811,8 @@ final class CredentialProviderTests: XCTestCase {
         let third = await credentialsError { try await client.credentialsProvider.resolve() }
 
         XCTAssertEqual(first?.isUnknown, true, "\(String(describing: first))")
-        assertRefreshTokenAlreadyUsed(second?.underlyingError as? AuthClientError, "the second")
-        assertRefreshTokenAlreadyUsed(third?.underlyingError as? AuthClientError, "the third")
+        assertRefreshTokenAlreadyUsed(second?.underlyingError as? AmplifyCognitoClientError, "the second")
+        assertRefreshTokenAlreadyUsed(third?.underlyingError as? AmplifyCognitoClientError, "the third")
         XCTAssertEqual(engine.refreshCalls, [saved.data, saved.data])
         // Ends with a known event, so an extra `.sessionExpired` still in the recorder's buffer is counted too.
         _ = await client.signOut()
@@ -884,7 +853,7 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(second?.isUnknown, true, "\(String(describing: second))")
         XCTAssertEqual(engine.refreshCalls, [stale.data, stale.data])
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         // Ends with a known event: the recorder appends on its own task, so an empty list alone could miss an event
         // still in flight.
         _ = await client.signOut()
@@ -924,7 +893,7 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(first?.isUnknown, true, "\(String(describing: first))")
         XCTAssertEqual(credentials as? CognitoAWSCredentials, otherProcess.awsCredentials)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         // Ends with a known event: the recorder appends on its own task, so an empty list alone could miss an event
         // still in flight.
         _ = await client.signOut()
@@ -957,7 +926,7 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(engine.refreshCalls.count, 1)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, stale.data)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         // Ends with a known event, so an extra `.sessionExpired` still in the recorder's buffer is counted too.
         _ = await client.signOut()
         await events.waitFor(2)
@@ -1119,7 +1088,7 @@ final class CredentialProviderTests: XCTestCase {
     func testProviderOutlivingEveryHandleKeepsTheSessionAlive() async throws {
         try harness.signIn(work, .signedIn("alice"))
         var client: AmplifyCognitoClient? = try harness.client(work)
-        var provider: CognitoCredentialsProvider? = client?.credentialsProvider
+        var provider: AmplifyCognitoClientCredentialsProvider? = client?.credentialsProvider
         weak let probe = client?.core
 
         client = nil
@@ -1137,28 +1106,28 @@ final class CredentialProviderTests: XCTestCase {
 
     // MARK: Error mapping
 
-    /// - Given: each `AuthClientError` case and a foreign error
+    /// - Given: each `AmplifyCognitoClientError` case and a foreign error
     /// - When: each is mapped onto the provider contract
     /// - Then:
     ///    - `notSignedIn`, `sessionExpired` and `storageUnavailable` keep their meaning and dispositions;
     ///      a `CredentialsError` passes through; everything else is `unknown`, which retries
     func testErrorMappingAndDispositions() {
         let cases: [(Error, CredentialsError.Disposition)] = [
-            (AuthClientError.notSignedIn("d", "s"), .discard),
-            (AuthClientError.sessionExpired("d", "s"), .retryAfterReauthentication),
-            (AuthClientError.storageUnavailable(.locked, "d", "s"), .retryWithBackoff),
-            (AuthClientError.storageUnavailable(.interrupted, "d", "s"), .retryWithBackoff),
-            (AuthClientError.storageUnavailable(.denied, "d", "s"), .failLoudly),
+            (AmplifyCognitoClientError.notSignedIn("d", "s"), .discard),
+            (AmplifyCognitoClientError.sessionExpired("d", "s"), .retryAfterReauthentication),
+            (AmplifyCognitoClientError.storageUnavailable(.locked, "d", "s"), .retryWithBackoff),
+            (AmplifyCognitoClientError.storageUnavailable(.interrupted, "d", "s"), .retryWithBackoff),
+            (AmplifyCognitoClientError.storageUnavailable(.denied, "d", "s"), .failLoudly),
             (CredentialsError.notConfigured("d", "s"), .failLoudly),
-            (AuthClientError.configuration("d", "s"), .retryWithBackoff),
-            (AuthClientError.unknown("d", "s"), .retryWithBackoff),
+            (AmplifyCognitoClientError.configuration("d", "s"), .retryWithBackoff),
+            (AmplifyCognitoClientError.unknown("d", "s"), .retryWithBackoff),
             (FixtureError(description: "foreign"), .retryWithBackoff)
         ]
         for (error, disposition) in cases {
             XCTAssertEqual(CredentialsError(authClientError: error).disposition, disposition, "\(error)")
         }
-        let mapped = CredentialsError(authClientError: AuthClientError.storageUnavailable(.denied, "d", "s"))
+        let mapped = CredentialsError(authClientError: AmplifyCognitoClientError.storageUnavailable(.denied, "d", "s"))
         XCTAssertEqual(mapped.storageUnavailableReason, .denied)
-        XCTAssertTrue(mapped.underlyingError is AuthClientError)
+        XCTAssertTrue(mapped.underlyingError is AmplifyCognitoClientError)
     }
 }

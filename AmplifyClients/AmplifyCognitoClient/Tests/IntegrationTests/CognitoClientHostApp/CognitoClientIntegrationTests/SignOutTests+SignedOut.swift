@@ -29,7 +29,7 @@ extension SignOutTests {
         let configuration = try IntegrationTestEnvironment.configuration()
         let recorder = RecordingHTTPClient()
         let sessionId = try makeSessionID("signed-out")
-        let events: StreamRecorder<AuthEvent>
+        let events: StreamRecorder<AmplifyCognitoClientEvent>
         do {
             let client = try AmplifyCognitoClient(
                 configuration: configuration,

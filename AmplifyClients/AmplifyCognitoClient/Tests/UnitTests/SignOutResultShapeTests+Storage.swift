@@ -254,7 +254,7 @@ extension SignOutResultShapeTests {
         let payload = FakePayload.signedIn("alice")
         try harness.signIn(work, payload)
         let client = try harness.client(work)
-        harness.engine(for: work)?.scriptRevoke { _ in throw AuthClientError.userCancelled("closed", "retry") }
+        harness.engine(for: work)?.scriptRevoke { _ in throw AmplifyCognitoClientError.userCancelled("closed", "retry") }
 
         let result = await client.signOut()
 

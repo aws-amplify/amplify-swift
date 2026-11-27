@@ -33,7 +33,7 @@ final class AutoSignInRoutingTests: XCTestCase {
         username: String = "carol"
     ) async throws {
         engine.scriptAccountOperation(.signUp) { _ in
-            AuthClientSignUpResult(.completeAutoSignIn("session-\(username)"), userId: "sub-\(username)")
+            AmplifyCognitoClientSignUpResult(.completeAutoSignIn("session-\(username)"), userId: "sub-\(username)")
         }
         _ = try await client.signUp(username: username)
     }
@@ -59,14 +59,14 @@ final class AutoSignInRoutingTests: XCTestCase {
         try await signUpForAutoSignIn(client, engine: engine)
         let result = try await client.autoSignIn()
 
-        XCTAssertEqual(result, AuthClientSignInResult(nextStep: .done))
+        XCTAssertEqual(result, AmplifyCognitoClientSignInResult(nextStep: .done))
         XCTAssertEqual(engine.accountOperationCalls.map(\.operation), [.signUp, .autoSignIn])
         // The engine gets the core's epoch for the attempt, as `signIn` does.
         let epoch = await client.core.signInEpoch
         XCTAssertEqual(engine.accountOperationCalls.last, .autoSignIn(current: nil, epoch: epoch))
         XCTAssertEqual(try harness.storedRecord(work)?.username, "carol")
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "carol", userId: "sub-carol")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "carol", userId: "sub-carol")))
         await events.waitFor(1)
         XCTAssertEqual(events.received, [.signedIn])
         await assertThrowsAsync({ try await homeClient.autoSignIn() }) { error in
@@ -139,7 +139,7 @@ final class AutoSignInRoutingTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         try await signUpForAutoSignIn(client, engine: engine)
         engine.scriptAccountOperation(.autoSignIn) { _ in
-            throw AuthClientError.notAuthorized("Invalid session for the user.", "")
+            throw AmplifyCognitoClientError.notAuthorized("Invalid session for the user.", "")
         }
 
         await assertThrowsAsync({ try await client.autoSignIn() }) { error in
@@ -160,13 +160,13 @@ final class AutoSignInRoutingTests: XCTestCase {
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
 
-        engine.scriptAccountOperation(.signUp) { _ in AuthClientSignUpResult(.confirmUser()) }
+        engine.scriptAccountOperation(.signUp) { _ in AmplifyCognitoClientSignUpResult(.confirmUser()) }
         _ = try await client.signUp(username: "carol")
         await assertThrowsAsync({ try await client.autoSignIn() }) { error in
             XCTAssertEqual(authError(error)?.errorDescription, Self.notSignedUp)
         }
 
-        engine.scriptAccountOperation(.signUp) { _ in throw AuthClientError.service(.usernameExists, "exists", "") }
+        engine.scriptAccountOperation(.signUp) { _ in throw AmplifyCognitoClientError.service(.usernameExists, "exists", "") }
         await assertThrowsAsync { try await client.signUp(username: "carol") }
         await assertThrowsAsync({ try await client.autoSignIn() }) { error in
             XCTAssertEqual(authError(error)?.errorDescription, Self.notSignedUp)
@@ -184,7 +184,7 @@ final class AutoSignInRoutingTests: XCTestCase {
     func testTheAutoSignInSessionSurvivesSignInAndSignOut() async throws {
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        engine.scriptAccountOperation(.confirmSignUp) { _ in AuthClientSignUpResult(.completeAutoSignIn("session")) }
+        engine.scriptAccountOperation(.confirmSignUp) { _ in AmplifyCognitoClientSignUpResult(.completeAutoSignIn("session")) }
         _ = try await client.confirmSignUp(for: "carol", confirmationCode: "123456")
 
         _ = try await client.autoSignIn()
@@ -195,7 +195,7 @@ final class AutoSignInRoutingTests: XCTestCase {
         XCTAssertEqual(engine.accountOperationCalls.map(\.operation), [.confirmSignUp, .autoSignIn, .autoSignIn])
         XCTAssertEqual(engine.cancelPendingSignInCount, 1)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "carol", userId: "sub-carol")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "carol", userId: "sub-carol")))
     }
 
     /// `autoSignIn` is a sign-in step: a sign-out while it waits on Cognito cancels it.

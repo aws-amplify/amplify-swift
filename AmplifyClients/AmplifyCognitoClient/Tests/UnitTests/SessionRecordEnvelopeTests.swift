@@ -153,7 +153,7 @@ final class SessionRecordEnvelopeTests: XCTestCase {
     /// - Then:
     ///    - the spelling is the frozen literal and parses to the same kind
     func testEveryKindHasAFrozenSpelling() {
-        let expected: [(SessionKind, String)] = [
+        let expected: [(AmplifyCognitoClientSessionKind, String)] = [
             (.userPoolOnly, "userPoolOnly"),
             (.userPoolAndIdentityPool, "userPoolAndIdentityPool"),
             (.guest, "guest"),
@@ -162,16 +162,16 @@ final class SessionRecordEnvelopeTests: XCTestCase {
         ]
         for (kind, spelling) in expected {
             XCTAssertEqual(kind.storedValue, spelling)
-            XCTAssertEqual(SessionKind(storedValue: spelling), kind)
+            XCTAssertEqual(AmplifyCognitoClientSessionKind(storedValue: spelling), kind)
         }
-        XCTAssertNil(SessionKind(storedValue: "UserPoolOnly"), "spellings are case-sensitive")
+        XCTAssertNil(AmplifyCognitoClientSessionKind(storedValue: "UserPoolOnly"), "spellings are case-sensitive")
     }
 
     /// A v1 reader classifies an unknown `kind` as corrupt — hidden from listing, overwritten by sign-out —
     /// so a new kind must come with a schema bump. This stops the file compiling until whoever adds a
     /// case records the schema version that introduced it.
     ///
-    /// **The compile error is the whole check.** `SessionKind` is not `CaseIterable` (that would add `allCases` to
+    /// **The compile error is the whole check.** `AmplifyCognitoClientSessionKind` is not `CaseIterable` (that would add `allCases` to
     /// its API), so the assertions below run over the five kinds listed here, not over every case: a new case is
     /// caught only by the exhaustive switch, and whoever adds its row must also bump
     /// `SessionRecordEnvelope.currentSchemaVersion` to the version it returns.
@@ -181,13 +181,13 @@ final class SessionRecordEnvelopeTests: XCTestCase {
     /// - Then:
     ///    - each is a version this build reads, and their spellings are exactly the five pinned ones
     func testAddingASessionKindRequiresRecordingItsSchemaVersion() {
-        func introducedIn(_ kind: SessionKind) -> Int {
+        func introducedIn(_ kind: AmplifyCognitoClientSessionKind) -> Int {
             switch kind {
             case .userPoolOnly, .userPoolAndIdentityPool, .guest, .federated, .signedOut:
                 return 1
             }
         }
-        let pinned: [SessionKind] = [.userPoolOnly, .userPoolAndIdentityPool, .guest, .federated, .signedOut]
+        let pinned: [AmplifyCognitoClientSessionKind] = [.userPoolOnly, .userPoolAndIdentityPool, .guest, .federated, .signedOut]
         for kind in pinned {
             XCTAssertLessThanOrEqual(introducedIn(kind), SessionRecordEnvelope.currentSchemaVersion)
         }

@@ -84,8 +84,8 @@ class GuestFirstAccessGroupMigrationTests: XCTestCase {
         let fetched = try await XCTUnwrap(client).fetchAuthSession()
         client = nil
         await widget.waitForBaseline()
-        XCTAssertNoThrow(try fetched.awsCredentialsResult.get())
-        XCTAssertThrowsError(try fetched.userPoolTokensResult.get())
+        XCTAssertNotNil(fetched.awsCredentials)
+        XCTAssertNil(fetched.userPoolTokens)
         try assertSharedSessionIsAGuests()
 
         let store = makeStore(accessGroup: accessGroup, migrate: true)

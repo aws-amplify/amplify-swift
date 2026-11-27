@@ -33,12 +33,12 @@ extension KeychainAttributeParityTests {
     ///
     @available(*, deprecated, message: "Cross-checks against the deprecated public flow types, on purpose")
     func testMatrix_clientWrittenBytes_decodeWithTheReleasedPluginTypes() async throws {
-        let userPool = AuthClientConfiguration.UserPool(poolId: "us-east-1_FixturePool", appClientId: "fixture-client-id", region: "us-east-1")
-        let identityPool = AuthClientConfiguration.IdentityPool(poolId: "us-east-1:00000000-0000-4000-8000-00000000ffff", region: "us-east-1")
-        let configurations: [(golden: String, configuration: AuthClientConfiguration)] = try [
-            ("authConfiguration-userPoolsAndIdentityPools-minimal", AuthClientConfiguration(userPool: userPool, identityPool: identityPool)),
-            ("authConfiguration-userPools-minimal", AuthClientConfiguration(userPool: userPool)),
-            ("authConfiguration-identityPools", AuthClientConfiguration(identityPool: identityPool))
+        let userPool = AmplifyCognitoClientConfiguration.UserPool(poolId: "us-east-1_FixturePool", appClientId: "fixture-client-id", region: "us-east-1")
+        let identityPool = AmplifyCognitoClientConfiguration.IdentityPool(poolId: "us-east-1:00000000-0000-4000-8000-00000000ffff", region: "us-east-1")
+        let configurations: [(golden: String, configuration: AmplifyCognitoClientConfiguration)] = try [
+            ("authConfiguration-userPoolsAndIdentityPools-minimal", AmplifyCognitoClientConfiguration(userPool: userPool, identityPool: identityPool)),
+            ("authConfiguration-userPools-minimal", AmplifyCognitoClientConfiguration(userPool: userPool)),
+            ("authConfiguration-identityPools", AmplifyCognitoClientConfiguration(identityPool: identityPool))
         ]
 
         var shapes: Set<String> = []
@@ -57,7 +57,7 @@ extension KeychainAttributeParityTests {
                     _ = await client.signOut()
                 })
             } else {
-                for provider in [AuthClientProvider.google, .oidc("acme")] {
+                for provider in [AmplifyCognitoClientProvider.google, .oidc("acme")] {
                     written.append(try await clientRecord(configuration) { client in
                         _ = try await client.federateToIdentityPool(withProviderToken: "provider-token", for: provider)
                     })
@@ -98,7 +98,7 @@ extension KeychainAttributeParityTests {
     /// What the client's `.default` leaves under `configuration` after `body`, run on a new client over a new keychain:
     /// its record and its `authConfiguration`.
     private func clientRecord(
-        _ configuration: AuthClientConfiguration,
+        _ configuration: AmplifyCognitoClientConfiguration,
         _ body: (AmplifyCognitoClient) async throws -> Void
     ) async throws -> (record: Data, authConfiguration: Data) {
         let keychain = InMemoryKeychain()

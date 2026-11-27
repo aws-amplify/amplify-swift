@@ -30,7 +30,7 @@ final class LiveEngineFederationTests: XCTestCase {
 
     private static func request(
         _ token: String = "provider-token",
-        _ provider: AuthClientProvider = .facebook,
+        _ provider: AmplifyCognitoClientProvider = .facebook,
         developerProvidedIdentityId: String? = nil
     ) -> EngineFederationRequest {
         EngineFederationRequest(token: token, provider: provider, developerProvidedIdentityId: developerProvidedIdentityId)
@@ -77,7 +77,7 @@ final class LiveEngineFederationTests: XCTestCase {
     ///    - `GetId`'s login key is the plugin's identity pool provider name: the well-known domains, or the
     ///      name given for OIDC, SAML and custom providers
     func testEachProviderUsesTheIdentityPoolLoginKey() async throws {
-        let cases: [(AuthClientProvider, String)] = [
+        let cases: [(AmplifyCognitoClientProvider, String)] = [
             (.amazon, "www.amazon.com"),
             (.apple, "appleid.apple.com"),
             (.facebook, "graph.facebook.com"),
@@ -208,7 +208,7 @@ final class LiveEngineFederationTests: XCTestCase {
     /// - Then:
     ///    - each throws `.service` with `invalidParameter`, then `resourceNotFound`
     func testAnUnconfiguredProviderIsAServiceError() async throws {
-        let cases: [(Error, AuthClientServiceErrorCode)] = [
+        let cases: [(Error, AmplifyCognitoClientServiceErrorCode)] = [
             (AWSCognitoIdentity.InvalidParameterException(message: "Invalid login provider."), .invalidParameter),
             (AWSCognitoIdentity.ResourceNotFoundException(message: "Identity pool not found."), .resourceNotFound)
         ]
@@ -360,30 +360,29 @@ final class LiveEngineFederationTests: XCTestCase {
         }
         harness.cognito.clearCalls()
 
-        let expired = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+        let expired = await authClientError { try await client.fetchAuthSession(options: .init(forceRefresh: true)) }
         harness.cognito.clearCalls()
-        let again = try await client.fetchAuthSession()
+        let again = await authClientError { try await client.fetchAuthSession() }
         let state = await client.currentSessionState()
 
-        for session in [expired, again] {
-            XCTAssertThrowsError(try session.awsCredentialsResult.get()) { error in
-                guard case .sessionExpired(let description, let suggestion, _) = authError(error) else {
-                    return XCTFail("expected sessionExpired, got \(error)")
-                }
-                // A federated session has no refresh token, and a sign-in is refused over it: it federates again.
-                XCTAssertEqual(description, "Session \"work\"'s provider token is no longer accepted by the identity pool.")
-                XCTAssertEqual(
-                    suggestion,
-                    "Call federateToIdentityPool with a new provider token for this session. Other sessions are unaffected."
-                )
+        for error in [expired, again] {
+            guard case .sessionExpired(let description, let suggestion, _)? = error else {
+                XCTFail("expected sessionExpired, got \(String(describing: error))")
+                continue
             }
+            // A federated session has no refresh token, and a sign-in is refused over it: it federates again.
+            XCTAssertEqual(description, "Session \"work\"'s provider token is no longer accepted by the identity pool.")
+            XCTAssertEqual(
+                suggestion,
+                "Call federateToIdentityPool with a new provider token for this session. Other sessions are unaffected."
+            )
         }
         XCTAssertEqual(harness.cognito.operations, [])
         XCTAssertEqual(state, .federated(identityId: "us-east-1:federated-id"))
 
         _ = try await client.federateToIdentityPool(withProviderToken: "fresh-token", for: .google)
         let recovered = try await client.fetchAuthSession()
-        XCTAssertEqual(try recovered.awsCredentialsResult.get().accessKeyId, "AKID-v1")
+        XCTAssertEqual(recovered.awsCredentials?.accessKeyId, "AKID-v1")
         // Ends on an event no fetch or federation sends: once `.signedOut` has arrived, a second `.sessionExpired`
         // has too.
         _ = await client.signOut()
@@ -432,30 +431,16 @@ final class LiveEngineFederationTests: XCTestCase {
         XCTAssertEqual(result.identityId, "us-east-1:federated-id")
         XCTAssertEqual(result.credentials.accessKeyId, "AKID-v1")
         XCTAssertEqual(state, .federated(identityId: "us-east-1:federated-id"))
-        XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:federated-id")
-        XCTAssertEqual(try session.awsCredentialsResult.get().accessKeyId, "AKID-v1")
-        // The user fields say what lets a user in: `signIn` is refused over a federated session, so not "sign in".
-        for (field, result) in [
-            ("userSub", session.userSubResult.map { _ in () }),
-            ("userPoolTokens", session.userPoolTokensResult.map { _ in () })
-        ] {
-            guard case .failure(let error) = result else {
-                XCTFail("\(field) should fail")
-                continue
-            }
-            XCTAssertEqual(error.kind, .notSignedIn, field)
-            XCTAssertEqual(error.errorDescription, "Session \"work\" has no user pool user: it is federated to the identity pool.", field)
-            XCTAssertEqual(
-                error.recoverySuggestion,
-                "Call clearFederationToIdentityPool() or sign the session out, then sign in through the user pool.",
-                field
-            )
-        }
+        XCTAssertEqual(session.identityId, "us-east-1:federated-id")
+        XCTAssertEqual(session.awsCredentials?.accessKeyId, "AKID-v1")
+        // A federated session has no user: the user fields are `nil`.
+        XCTAssertNil(session.userSub)
+        XCTAssertNil(session.userPoolTokens)
         XCTAssertEqual(record?.kind, .federated)
         XCTAssertNil(record?.username)
 
         try await client.clearFederationToIdentityPool()
-        XCTAssertEqual(try clientHarness.storedRecord(work)?.kind, SessionKind.signedOut)
+        XCTAssertEqual(try clientHarness.storedRecord(work)?.kind, AmplifyCognitoClientSessionKind.signedOut)
         let cleared = await client.currentSessionState()
         XCTAssertEqual(cleared, .signedOut)
 

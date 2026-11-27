@@ -29,7 +29,7 @@ final class FederationTests: ClientIntegrationTestCase {
         do {
             _ = try await client.federateToIdentityPool(withProviderToken: "someToken", for: .facebook)
             XCTFail("federating an invalid token should fail")
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             guard case .notAuthorized = error else {
                 return XCTFail("expected notAuthorized, got \(Self.caseName(of: error))")
             }
@@ -54,14 +54,14 @@ final class FederationTests: ClientIntegrationTestCase {
     ///
     func testUnsuccessfulFederationKeepsTheGuest() async throws {
         let client = try makeClient("fedguest")
-        let before = try await client.fetchAuthSession().identityIdResult.get()
+        let before = try await client.fetchAuthSession().requireIdentityId()
         let guestState = await client.currentSessionState()
         XCTAssertTrue(guestState == .guest, "the session should be a guest")
 
         do {
             _ = try await client.federateToIdentityPool(withProviderToken: "someToken", for: .facebook)
             XCTFail("federating an invalid token should fail")
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             guard case .notAuthorized = error else {
                 return XCTFail("expected notAuthorized, got \(Self.caseName(of: error))")
             }
@@ -69,13 +69,13 @@ final class FederationTests: ClientIntegrationTestCase {
 
         let state = await client.currentSessionState()
         XCTAssertTrue(state == .guest, "the session should still be a guest")
-        let after = try await client.fetchAuthSession().identityIdResult.get()
+        let after = try await client.fetchAuthSession().requireIdentityId()
         // Compared without printing: identity IDs stay out of the logs.
         XCTAssertTrue(after == before, "the guest identity changed")
     }
 
     /// The error's case name only: a service message can name the identity pool.
-    private static func caseName(of error: AuthClientError) -> String {
+    private static func caseName(of error: AmplifyCognitoClientError) -> String {
         Mirror(reflecting: error).children.first?.label ?? "unknown"
     }
 }

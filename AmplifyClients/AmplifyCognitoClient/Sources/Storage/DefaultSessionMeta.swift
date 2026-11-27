@@ -25,8 +25,8 @@ import Foundation
 /// version-1 reader cannot interpret bumps `schemaVersion`; purely additive keys do not, since readers ignore
 /// keys they do not know.
 ///
-/// **It is bound to a user** (`applies(toRecordUser:recordIsSignedOut:)`), so a label never passes from one
-/// user to another. `deadToken` is bound to the token it names instead (`DeadToken`): the plugin saving a new login
+/// **It is bound to a user** (`applies(toRecordUser:recordIsSignedOut:)`), so a label set for one user never passes
+/// to another (the session ID's own label, `AmplifyCognitoClientSessionID.label`, is saved for each). `deadToken` is bound to the token it names instead (`DeadToken`): the plugin saving a new login
 /// leaves the sidecar as it was, and the marker then no longer applies.
 struct DefaultSessionMeta: Equatable, Sendable {
 
@@ -78,7 +78,7 @@ struct DefaultSessionMeta: Equatable, Sendable {
     ///    signed-out row with its label and last username.
     /// 3. While the record holds a different principal, it does not apply: another user, or a guest or
     ///    federated identity where the sidecar names a user. Its label is dropped, and the next write rewrites
-    ///    the sidecar for the new principal, with no label.
+    ///    the sidecar for the new principal, with no label, or with the one a sign-in's session ID was created with.
     /// 4. A sidecar with no user yet (a label set before anyone signed in) applies whatever the record holds, so
     ///    the label is kept when a user signs in.
     ///

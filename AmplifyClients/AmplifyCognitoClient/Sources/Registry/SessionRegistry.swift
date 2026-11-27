@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// The process-wide table that makes two handles with the same `SessionID` share one session.
+/// The process-wide table that makes two handles with the same `AmplifyCognitoClientSessionID` share one session.
 ///
 /// It is what makes "one state machine per session ID" true, and therefore what makes two
 /// handles diverging over one stored record structurally impossible within a process.
@@ -46,13 +46,13 @@ final class SessionRegistry<Namespace: Equatable & Sendable, Fingerprint: Equata
     }
 
     private let lock = NSLock()
-    private var entries: [SessionID: Entry] = [:]
+    private var entries: [AmplifyCognitoClientSessionID: Entry] = [:]
 
     /// Test seam: runs under the lock, right after a lookup has promoted a live entry to a strong
     /// reference. Lets a test drop the last handle at exactly that moment.
-    private let didLoadLiveEntry: (@Sendable (SessionID) -> Void)?
+    private let didLoadLiveEntry: (@Sendable (AmplifyCognitoClientSessionID) -> Void)?
 
-    init(didLoadLiveEntry: (@Sendable (SessionID) -> Void)? = nil) {
+    init(didLoadLiveEntry: (@Sendable (AmplifyCognitoClientSessionID) -> Void)? = nil) {
         self.didLoadLiveEntry = didLoadLiveEntry
     }
 
@@ -62,10 +62,10 @@ final class SessionRegistry<Namespace: Equatable & Sendable, Fingerprint: Equata
     /// cannot both build a session. It must therefore be cheap and must not call back into the
     /// registry, which would deadlock.
     ///
-    /// - Throws: `AuthClientError.sessionConfigurationMismatch` if the session is already live under
+    /// - Throws: `AmplifyCognitoClientError.sessionConfigurationMismatch` if the session is already live under
     ///   a different namespace or fingerprint, or whatever `make` throws.
     func session(
-        for sessionId: SessionID,
+        for sessionId: AmplifyCognitoClientSessionID,
         namespace: Namespace,
         fingerprint: Fingerprint,
         make: () throws -> Session
@@ -76,14 +76,14 @@ final class SessionRegistry<Namespace: Equatable & Sendable, Fingerprint: Equata
         if let entry = entries[sessionId], let live = entry.session {
             didLoadLiveEntry?(sessionId)
             guard entry.namespace == namespace else {
-                throw AuthClientError.sessionConfigurationMismatch(
+                throw AmplifyCognitoClientError.sessionConfigurationMismatch(
                     sessionId,
                     "Session \"\(sessionId)\" is already in use with a different user pool, identity pool or keychain access group.",
                     "Use a different session ID for each configuration, or construct every client for this session with the same pools and access group."
                 )
             }
             guard entry.fingerprint == fingerprint else {
-                throw AuthClientError.sessionConfigurationMismatch(
+                throw AmplifyCognitoClientError.sessionConfigurationMismatch(
                     sessionId,
                     "Session \"\(sessionId)\" is already in use with different settings.",
                     "Construct every client for one session with the same configuration."
@@ -102,7 +102,7 @@ final class SessionRegistry<Namespace: Equatable & Sendable, Fingerprint: Equata
     ///
     /// The strong reference is moved out of the locked region before it is returned, so if the caller
     /// ends up holding the last reference, the session is released outside the lock.
-    func liveSession(for sessionId: SessionID) -> (session: Session, namespace: Namespace)? {
+    func liveSession(for sessionId: AmplifyCognitoClientSessionID) -> (session: Session, namespace: Namespace)? {
         let found: (session: Session, namespace: Namespace)?
         lock.lock()
         if let entry = entries[sessionId], let live = entry.session {
@@ -125,7 +125,7 @@ final class SessionRegistry<Namespace: Equatable & Sendable, Fingerprint: Equata
     /// Removes the entry for `sessionId` if its session has been released. Safe to call at any
     /// time; a live entry is left alone, so a racing construction that has just replaced it is not
     /// disturbed.
-    func pruneIfReleased(_ sessionId: SessionID) {
+    func pruneIfReleased(_ sessionId: AmplifyCognitoClientSessionID) {
         lock.lock()
         defer { lock.unlock() }
         if let entry = entries[sessionId], entry.session == nil {
@@ -134,7 +134,7 @@ final class SessionRegistry<Namespace: Equatable & Sendable, Fingerprint: Equata
     }
 
     /// The session IDs whose sessions are currently alive in this process.
-    var liveSessionIDs: Set<SessionID> {
+    var liveSessionIDs: Set<AmplifyCognitoClientSessionID> {
         lock.lock()
         defer { lock.unlock() }
         return Set(entries.compactMap { $0.value.session == nil ? nil : $0.key })

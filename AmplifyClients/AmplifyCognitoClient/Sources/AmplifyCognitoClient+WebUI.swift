@@ -11,7 +11,7 @@ import InternalAWSCognitoAuth
 
 // The hosted UI: per session, each call acts on this client's `sessionId`. The client's sessions show one system sheet
 // at a time per process, whichever session asks (the Auth plugin's sheets do not take part): see
-// `WebUIOptions.whenBrowserBusy`.
+// `AmplifyCognitoClientWebUIOptions.whenBrowserBusy`.
 @_spi(AmplifyExperimental)
 public extension AmplifyCognitoClient {
 
@@ -29,15 +29,20 @@ public extension AmplifyCognitoClient {
     /// with `invalidState` if this call then takes the sheet; `cancelWebUISignIn()`, or cancelling this call, ends
     /// the wait and keeps the challenge.
     ///
-    /// Private (ephemeral) by default, unlike the plugin: see `WebUIOptions.prefersEphemeralSession`.
+    /// Private (ephemeral) by default, unlike the plugin: see `AmplifyCognitoClientWebUIOptions.prefersEphemeralSession`.
     ///
     /// - Returns: `.done`. The result can carry a later step without an API change; the hosted UI has none today.
     /// - Throws:
     ///   - `invalidState` if this session is signed in or federated, or has no usable window (`invalidContext`);
     ///   - `configuration` without a user pool or a hosted UI (`auth.oauth`), or with a bad redirect URI;
-    ///   - `browserBusy(holder:)` if the system sheet is held (by a hosted-UI sign-in or sign-out page, or a
-    ///     passkey sheet, of another session or of this one), or this session already has a hosted-UI sign-in
-    ///     in progress, or a `.wait(timeout:)` expired first;
+    ///   - `browserBusy(holder:)` if another session holds the system sheet (its hosted-UI sign-in or sign-out
+    ///     page, or its passkey sheet); if this session holds it with a sheet that is not a sign-in step in
+    ///     progress, such as its browser still closing after a cancel (with `.fail`; a `.wait(timeout:)` queues
+    ///     behind a browser that is closing); if this session already has a hosted-UI sign-in in progress, which
+    ///     is refused at once, whatever the policy; or if a `.wait(timeout:)` expired first. A sign-in step of
+    ///     this session's own that is still in progress, its passkey sheet included, is not a refusal: this call
+    ///     waits for it before it looks at the sheet, so `.fail` and a `.wait(timeout:)` count from when that step
+    ///     ends. The browser then opens also when that step stopped on a challenge, and ends that challenge;
     ///   - `validation(field: "presentationAnchor")` if the window has closed, before anything is shown;
     ///   - `userCancelled` if the user closed the browser, or `cancelWebUISignIn()` or `resetSystemSheet()` ran;
     ///   - `CancellationError` if the calling task was cancelled, which also dismisses the browser;
@@ -50,31 +55,29 @@ public extension AmplifyCognitoClient {
     ///     does not recognise.
     @MainActor
     func signInWithWebUI(
-        presentationAnchor: AuthClientPresentationAnchor,
-        options: WebUIOptions = WebUIOptions()
-    ) async throws -> AuthClientSignInResult {
+        presentationAnchor: AmplifyCognitoClientPresentationAnchor,
+        options: AmplifyCognitoClientWebUIOptions = AmplifyCognitoClientWebUIOptions()
+    ) async throws -> AmplifyCognitoClientSignInResult {
         let anchor = EnginePresentationAnchorBox(presentationAnchor)
         let core = core
         return try await core.signInWithWebUI(anchor: anchor, options: options)
     }
 
     /// Signs this session in through the hosted UI, straight to `provider`, skipping Cognito's provider picker:
-    /// `signInWithWebUI(presentationAnchor:options:)` with `options.provider` set to `provider`. An
-    /// `options.idpIdentifier` still wins over it, as with the plugin.
+    /// otherwise as `signInWithWebUI(presentationAnchor:options:)`. This overload is the only way to pick a
+    /// provider, as with the plugin. An `options.idpIdentifier` still wins over it, as with the plugin.
     @MainActor
     func signInWithWebUI(
-        for provider: AuthClientProvider,
-        presentationAnchor: AuthClientPresentationAnchor,
-        options: WebUIOptions = WebUIOptions()
-    ) async throws -> AuthClientSignInResult {
-        var options = options
-        options.provider = provider
-        return try await signInWithWebUI(presentationAnchor: presentationAnchor, options: options)
+        for provider: AmplifyCognitoClientProvider,
+        presentationAnchor: AmplifyCognitoClientPresentationAnchor,
+        options: AmplifyCognitoClientWebUIOptions = AmplifyCognitoClientWebUIOptions()
+    ) async throws -> AmplifyCognitoClientSignInResult {
+        try await signInWithWebUI(presentationAnchor: presentationAnchor, options: options.with(provider: provider))
     }
 
     /// Signs this session out, as `signOut(options:)` does, first showing the hosted UI's sign-out in
     /// `presentationAnchor`'s window if this session's sign-in shared the browser's cookies
-    /// (`WebUIOptions.prefersEphemeralSession` off). That is what clears the hosted UI's cookie, so the next
+    /// (`AmplifyCognitoClientWebUIOptions.prefersEphemeralSession` off). That is what clears the hosted UI's cookie, so the next
     /// hosted-UI sign-in asks for credentials again. A private sign-in left no cookie, so nothing is shown.
     ///
     /// The sign-out page is shown at most once, while this session holds the system sheet. This session's
@@ -98,21 +101,20 @@ public extension AmplifyCognitoClient {
     ///     `.validation` if the window has closed; or the browser's own failure.
     @MainActor
     @discardableResult
-    func signOut(
-        presentationAnchor: AuthClientPresentationAnchor,
-        options: AuthClientSignOutOptions = AuthClientSignOutOptions()
-    ) async -> AuthClientSignOutResult {
+    func signOutWithWebUI(
+        presentationAnchor: AmplifyCognitoClientPresentationAnchor,
+        options: AmplifyCognitoClientSignOutOptions = AmplifyCognitoClientSignOutOptions()
+    ) async -> AmplifyCognitoClientSignOutResult {
         let window = SignOutWindow.anchor(EnginePresentationAnchorBox(presentationAnchor))
         let core = core
         return await core.signOut(global: options.globalSignOut, purge: options.purgeStoredSession, window: window)
     }
 
     /// Cancels this session's hosted-UI sign-in, once it holds or is queued for the system sheet: the browser
-    /// is dismissed and the call throws `userCancelled` once the sign-in has released the sheet, so
-    /// `systemSheetHolder` no longer names this session by then (it is `nil`, or a session that was queued behind
-    /// it). If the sheet isn't released within a second (the browser is slow to close, or the code exchange was
-    /// already running), the call throws anyway, and the sheet stays held until the sign-in's remaining calls
-    /// finish. Idempotent; never throws; a no-op when there is none.
+    /// is dismissed and the call throws `userCancelled` once the sign-in has released the sheet (the sheet is then
+    /// free, or held by a session that was queued behind it). If the sheet isn't released within a second (the
+    /// browser is slow to close, or the code exchange was already running), the call throws anyway, and the sheet
+    /// stays held until the sign-in's remaining calls finish. Idempotent; never throws; a no-op when there is none.
     ///
     /// It also closes this session's hosted-UI sign-out page, if one is showing: that sign-out is then
     /// `.failed(.userCancelled)` and the session stays signed in, as when the user closes the page (a session a
@@ -136,18 +138,18 @@ public extension AmplifyCognitoClient {
     /// hosted-UI sign-out page holding it is closed, and its sign-out reports what it did. The next call may
     /// then show its sheet. In memory only.
     ///
-    /// The system sheet is one per process, shared by every client's sessions, so this and
-    /// `systemSheetHolder` see every session of every client. They do not see the Auth plugin's hosted UI or
-    /// passkey sheets, which do not take part.
+    /// The system sheet is one per process, shared by every client's sessions, so this sees every session of
+    /// every client. It does not see the Auth plugin's hosted UI or passkey sheets, which do not take part.
     ///
     /// - Returns: the session that was holding it, or `nil` if it was free.
     @discardableResult
-    static func resetSystemSheet() async -> SessionID? {
+    static func resetSystemSheet() async -> AmplifyCognitoClientSessionID? {
         await SystemSheetLock.shared.reset()
     }
 
-    /// The session holding the process's system sheet, or `nil`: for "Finish signing in to <name> first".
-    static var systemSheetHolder: SessionID? {
+    /// The session holding the process's system sheet, or `nil`. Not public: a value read before a call can be
+    /// stale by the call, and `browserBusy(holder:)` names the holder when a call is refused.
+    internal static var systemSheetHolder: AmplifyCognitoClientSessionID? {
         get async { await SystemSheetLock.shared.currentHolder }
     }
 }

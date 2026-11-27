@@ -55,8 +55,8 @@ extension SessionRecordStore {
 
     /// The session's challenge record.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be read. Never `.absent` for a failure.
-    func readChallenge(_ sessionId: SessionID) throws -> ChallengeRead {
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be read. Never `.absent` for a failure.
+    func readChallenge(_ sessionId: AmplifyCognitoClientSessionID) throws -> ChallengeRead {
         guard let data = try fetch(challengeAccount(for: sessionId), operation: "read the interrupted sign-in record") else {
             return .absent
         }
@@ -79,9 +79,9 @@ extension SessionRecordStore {
     /// The read is best effort: a record that cannot be read is replaced, with the new `createdAt`.
     ///
     /// - Returns: The record as written.
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be written.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be written.
     @discardableResult
-    func writeChallenge(_ record: ChallengeRecord, for sessionId: SessionID) throws -> ChallengeRecord {
+    func writeChallenge(_ record: ChallengeRecord, for sessionId: AmplifyCognitoClientSessionID) throws -> ChallengeRecord {
         var written = record
         if case .record(let stored) = try? readChallenge(sessionId),
            let session = stored.state.session, session == record.state.session {
@@ -96,8 +96,8 @@ extension SessionRecordStore {
 
     /// Deletes the session's challenge record. Deleting an absent record succeeds.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be deleted.
-    func deleteChallenge(_ sessionId: SessionID) throws {
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be deleted.
+    func deleteChallenge(_ sessionId: AmplifyCognitoClientSessionID) throws {
         try performChallengeStorage("delete the interrupted sign-in record") {
             try keychain.remove(challengeAccount(for: sessionId))
         }
@@ -105,7 +105,7 @@ extension SessionRecordStore {
 
     /// Deletes the interrupted-sign-in record of a session a sign-out has ended, best effort: the session is signed out
     /// whatever happens here, so a failure logs `ChallengeLog.signOutDeleteFailed` once and is not thrown.
-    func deleteChallengeAfterSignOut(_ sessionId: SessionID) {
+    func deleteChallengeAfterSignOut(_ sessionId: AmplifyCognitoClientSessionID) {
         do {
             try keychain.remove(challengeAccount(for: sessionId))
         } catch {
@@ -147,9 +147,9 @@ extension SessionRecordStore {
     ///   - reference: The record being signed out, when the caller has it; otherwise this namespace's record is read.
     ///   - throwing: whether a failure throws (purge), or is logged (sign-out, which has already signed the session out
     ///     and must not fail on this).
-    /// - Throws: `AuthClientError.storageUnavailable`, when `throwing`, if the marker or a record could not be read,
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable`, when `throwing`, if the marker or a record could not be read,
     ///   or a record deleted.
-    func removeRememberedChallenges(of sessionId: SessionID, reference knownReference: SessionRecord? = nil, throwing: Bool = true) throws {
+    func removeRememberedChallenges(of sessionId: AmplifyCognitoClientSessionID, reference knownReference: SessionRecord? = nil, throwing: Bool = true) throws {
         let own = namespace.pools.keyComponent
         let copies: [NamespaceMarker.Copy]
         do {
@@ -233,7 +233,7 @@ extension SessionRecordStore {
         do {
             return try body()
         } catch {
-            throw AuthClientError.storageUnavailable(from: error, operation: operation)
+            throw AmplifyCognitoClientError.storageUnavailable(from: error, operation: operation)
         }
     }
 }

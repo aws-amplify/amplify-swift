@@ -25,7 +25,7 @@ final class CognitoBackendSmokeTests: XCTestCase {
     ///
     func testIdentityPoolVendsGuestCredentials() async throws {
         try IntegrationTestEnvironment.requireProvisioned()
-        let configuration = try AuthClientConfiguration(
+        let configuration = try AmplifyCognitoClientConfiguration(
             from: IntegrationTestEnvironment.outputsResource,
             bundle: IntegrationTestEnvironment.outputsBundle(.standard)
         )

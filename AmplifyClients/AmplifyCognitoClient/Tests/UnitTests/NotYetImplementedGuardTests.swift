@@ -45,7 +45,7 @@ final class NotYetImplementedGuardTests: XCTestCase {
     /// - Then:
     ///    - none is found: every operation is implemented
     func testNoStubCallRemains() throws {
-        XCTAssertTrue(FileManager.default.fileExists(atPath: Self.sources.appendingPathComponent("AuthClientError.swift").path), "the scan's path is wrong")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: Self.sources.appendingPathComponent("AmplifyCognitoClientError.swift").path), "the scan's path is wrong")
         let found = try Self.stubsInSources()
         XCTAssertEqual(found, [:], "these operations still throw notYetImplemented")
     }
@@ -56,7 +56,7 @@ final class NotYetImplementedGuardTests: XCTestCase {
     ///    - neither `func notYetImplemented` nor the text "not implemented yet" appears: every row has landed, so
     ///      a stub cannot come back through a helper or a hand-written message the call scan would miss
     func testNoStubHelperOrMessageRemains() throws {
-        XCTAssertTrue(FileManager.default.fileExists(atPath: Self.sources.appendingPathComponent("AuthClientError.swift").path), "the scan's path is wrong")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: Self.sources.appendingPathComponent("AmplifyCognitoClientError.swift").path), "the scan's path is wrong")
         let helper = try NSRegularExpression(pattern: #"func\s+notYetImplemented\b"#)
         let message = try NSRegularExpression(pattern: "not implemented yet", options: .caseInsensitive)
         var hits: [String] = []

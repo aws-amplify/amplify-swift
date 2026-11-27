@@ -43,36 +43,38 @@ extension SessionCore {
     /// has started, a cancelled caller still waits for the step and its commit, and may return successfully
     /// with `Task.isCancelled` true.
     ///
-    /// **WebAuthn.** `presentationAnchor` is the window a passkey sheet
-    /// attaches to, from the anchored overload; without one, a WebAuthn first factor is refused before
-    /// anything is sent, and a WebAuthn step Cognito starts on its own fails without presenting. With one,
-    /// the step runs its ceremony under the sheet lease, and the caller's cancellation stops it.
+    /// **WebAuthn.** The options' `presentationAnchorForWebAuthn` is the window a passkey sheet attaches to;
+    /// without one, a WebAuthn first factor is refused before anything is sent, and a WebAuthn step Cognito
+    /// starts on its own fails without presenting. With one, the step runs its ceremony under the sheet lease,
+    /// and the caller's cancellation stops it.
     ///
-    /// - Throws: `validation` for an empty username, and (`field: "presentationAnchor"`) for a WebAuthn first
-    ///   factor without an anchor; `configuration` without a user pool;
+    /// - Throws: `validation` for an empty username, and (`field: "presentationAnchorForWebAuthn"`) for a
+    ///   WebAuthn first factor without an anchor; `configuration` without a user pool;
     ///   `storageUnavailable` if storage could not be read, which is never reported as signed out; the
     ///   record's own error if it is unreadable; otherwise the engine's mapped failure.
     nonisolated func signIn(
         username: String,
         password: String?,
-        options: AuthClientSignInOptions,
-        presentationAnchor: EnginePresentationAnchorBox? = nil
-    ) async throws -> AuthClientSignInResult {
+        options: AmplifyCognitoClientSignInOptions
+    ) async throws -> AmplifyCognitoClientSignInResult {
         guard !username.isEmpty else {
-            throw AuthClientError.validation(
+            throw AmplifyCognitoClientError.validation(
                 field: "username",
                 "Username is required to signIn",
                 "Make sure that a valid username is passed during signIn"
             )
         }
         try requireUserPool(for: "sign in")
+        // Whether a window was given, not whether it is still there: one that has gone since is refused when
+        // the ceremony starts, as the window's validation error.
+        let presentationAnchor = options.webAuthnAnchor.box
         if presentationAnchor == nil, Self.asksForWebAuthn(options.authFlowType) {
             throw Self.presentationAnchorRequired()
         }
         _ = try await restoredSnapshot()
         let engine = engine
         let endings = await sessionEndings
-        let step: @Sendable (EngineCeremonyContext?) async throws -> AuthClientSignInResult = { [self] webAuthn in
+        let step: @Sendable (EngineCeremonyContext?) async throws -> AmplifyCognitoClientSignInResult = { [self] webAuthn in
             let request = EngineSignInRequest(
                 username: username,
                 password: password,
@@ -95,22 +97,22 @@ extension SessionCore {
 
     /// Answers the challenge this session's sign-in is waiting on.
     ///
-    /// A `"WEB_AUTHN"` answer runs the passkey ceremony over `presentationAnchor`, else over the window the
-    /// sign-in was given. Every confirmation carries a ceremony context of its
+    /// A `"WEB_AUTHN"` answer runs the passkey ceremony over the options' `presentationAnchorForWebAuthn`, else
+    /// over the window the sign-in was given. Every confirmation carries a ceremony context of its
     /// own, so the caller's cancellation stops a ceremony it starts, whichever window it uses.
     ///
-    /// - Throws: `validation` for an empty response, and (`field: "presentationAnchor"`) for a `"WEB_AUTHN"`
-    ///   answer with no window at all, which keeps the challenge; `invalidState` if no sign-in is in progress
+    /// - Throws: `validation` for an empty response, and (`field: "presentationAnchorForWebAuthn"`) for a
+    ///   `"WEB_AUTHN"` answer with no window left, which keeps the challenge; `invalidState` if no sign-in is
+    ///   in progress
     ///   on this session; `challengeExpired` if Cognito's challenge session has expired, so sign-in must
     ///   restart; otherwise the engine's mapped failure. After a retryable failure (a wrong code) the
     ///   challenge is still pending, and the state still reports it.
     nonisolated func confirmSignIn(
         challengeResponse: String,
-        options: AuthClientConfirmSignInOptions,
-        presentationAnchor: EnginePresentationAnchorBox? = nil
-    ) async throws -> AuthClientSignInResult {
+        options: AmplifyCognitoClientConfirmSignInOptions
+    ) async throws -> AmplifyCognitoClientSignInResult {
         guard !challengeResponse.isEmpty else {
-            throw AuthClientError.validation(
+            throw AmplifyCognitoClientError.validation(
                 field: "challengeResponse",
                 "challengeResponse is required to confirmSignIn",
                 "Make sure that a valid challenge response is passed for confirmSignIn"
@@ -124,7 +126,9 @@ extension SessionCore {
         )
         let engine = engine
         let endings = await sessionEndings
-        return try await withSheetCeremony(anchor: presentationAnchor) { [self] webAuthn in
+        // A window of its own that has gone by now is no window, as the options read it: the sign-in's is used.
+        let anchor = await Self.liveAnchor(options.webAuthnAnchor.box)
+        return try await withSheetCeremony(anchor: anchor) { [self] webAuthn in
             let request = EngineConfirmSignInRequest(
                 challengeResponse: challengeResponse,
                 userAttributes: userAttributes,
@@ -155,7 +159,7 @@ extension SessionCore {
     /// The auto-sign-in session is the engine's, so it is this session's only.
     ///
     /// - Throws: `configuration` without a user pool; `invalidState` as above; otherwise as `signIn`.
-    nonisolated func autoSignIn() async throws -> AuthClientSignInResult {
+    nonisolated func autoSignIn() async throws -> AmplifyCognitoClientSignInResult {
         try requireUserPool(for: "sign in automatically")
         _ = try await restoredSnapshot()
         let engine = engine
@@ -180,8 +184,8 @@ extension SessionCore {
     /// the session never runs either: `endings` is the session-ending count taken before queueing.
     nonisolated func withSignInLock(
         endedSince endings: UInt64,
-        _ body: @escaping @Sendable () async throws -> AuthClientSignInResult
-    ) async throws -> AuthClientSignInResult {
+        _ body: @escaping @Sendable () async throws -> AmplifyCognitoClientSignInResult
+    ) async throws -> AmplifyCognitoClientSignInResult {
         try await signInLock.withLock { [self] in
             guard await sessionEndings == endings else {
                 throw Self.signInCancelled()
@@ -195,17 +199,17 @@ extension SessionCore {
     /// types; the MFA selection's names all three values it accepts (the plugin's leaves out `EMAIL_OTP`). The client
     /// adds two: an MFA setup selection must be one of the step's choices, and a `WEB_AUTHN` first factor one the step
     /// offers. A failure keeps the attempt: nothing reached the engine.
-    static func validate(_ response: String, for step: AuthClientSignInStep?) throws {
+    static func validate(_ response: String, for step: AmplifyCognitoClientSignInStep?) throws {
         switch step {
         case .continueSignInWithMFASelection:
             let names = ["SMS_MFA", "SOFTWARE_TOKEN_MFA", "EMAIL_OTP"]
             guard names.contains(where: { response.caseInsensitiveCompare($0) == .orderedSame }) else {
-                throw AuthClientError.validation(
+                throw AmplifyCognitoClientError.validation(
                     field: "challengeResponse",
                     "challengeResponse for MFA selection can only be SMS_MFA, SOFTWARE_TOKEN_MFA or EMAIL_OTP.",
                     """
                     Make sure that a valid challenge response is passed for confirmSignIn.
-                    Try using `AuthClientMFAType.<type>.challengeResponse` as the challenge response.
+                    Try using `AmplifyCognitoClientMFAType.<type>.challengeResponse` as the challenge response.
                     """
                 )
             }
@@ -214,23 +218,23 @@ extension SessionCore {
             // MFA-type parser would refuse it without naming the choices.
             let names = allowed.map(\.challengeResponse).sorted()
             guard names.contains(where: { response.caseInsensitiveCompare($0) == .orderedSame }) else {
-                throw AuthClientError.validation(
+                throw AmplifyCognitoClientError.validation(
                     field: "challengeResponse",
                     "challengeResponse for MFA setup selection can only be \(Self.choices(names)).",
                     """
                     Make sure that a valid challenge response is passed for confirmSignIn.
-                    Try using `AuthClientMFAType.<type>.challengeResponse` of a type the step allows as the challenge response.
+                    Try using `AmplifyCognitoClientMFAType.<type>.challengeResponse` of a type the step allows as the challenge response.
                     """
                 )
             }
         case .continueSignInWithFirstFactorSelection(let offered):
             guard ["PASSWORD", "PASSWORD_SRP", "SMS_OTP", "EMAIL_OTP", "WEB_AUTHN"].contains(response) else {
-                throw AuthClientError.validation(
+                throw AmplifyCognitoClientError.validation(
                     field: "challengeResponse",
-                    "challengeResponse for factor selection can only be one of the `AuthClientFactorType` values.",
+                    "challengeResponse for factor selection can only be one of the `AmplifyCognitoClientFactorType` values.",
                     """
                     Make sure that a valid challenge response is passed for confirmSignIn.
-                    Try using `AuthClientFactorType.<type>.challengeResponse` as the challenge response.
+                    Try using `AmplifyCognitoClientFactorType.<type>.challengeResponse` as the challenge response.
                     """
                 )
             }
@@ -239,12 +243,12 @@ extension SessionCore {
             // Cognito's WebAuthn challenge would end the sign-in, and the selection with it.
             let names = offered.map(\.challengeResponse).sorted()
             guard response != "WEB_AUTHN" || names.contains(response) else {
-                throw AuthClientError.validation(
+                throw AmplifyCognitoClientError.validation(
                     field: "challengeResponse",
                     "challengeResponse WEB_AUTHN is not one of the factors this step offers: \(Self.choices(names)).",
                     """
                     Make sure that a valid challenge response is passed for confirmSignIn.
-                    Try using `AuthClientFactorType.<type>.challengeResponse` of a factor the step offers as the challenge response.
+                    Try using `AmplifyCognitoClientFactorType.<type>.challengeResponse` of a factor the step offers as the challenge response.
                     """
                 )
             }
@@ -264,7 +268,7 @@ extension SessionCore {
 
     /// Whether a sign-in asks for a WebAuthn first factor, which needs a presentation anchor: without one it
     /// is refused before anything is sent (`presentationAnchorRequired()`).
-    static func asksForWebAuthn(_ flow: AuthClientAuthFlowType?) -> Bool {
+    static func asksForWebAuthn(_ flow: AmplifyCognitoClientAuthFlowType?) -> Bool {
         #if os(iOS) || os(macOS) || os(visionOS)
         if #available(iOS 17.4, macOS 13.5, visionOS 1.0, *), case .userAuth(.webAuthn?) = flow {
             return true
@@ -296,11 +300,11 @@ extension SessionCore {
     func signInSeed() throws -> (SessionSnapshot, Data?) {
         guard let snapshot = restoredSnapshotIfAny else {
             // `restoredSnapshot()` returned, so a snapshot is installed; nothing ever removes one.
-            throw AuthClientError.unknown("The session could not be restored.", "Retry the operation.")
+            throw AmplifyCognitoClientError.unknown("The session could not be restored.", "Retry the operation.")
         }
         switch snapshot.state(engine: engine, challenge: nil) {
         case .signedIn where !isExpired:
-            throw AuthClientError.invalidState(
+            throw AmplifyCognitoClientError.invalidState(
                 "There is already a user in signedIn state. SignOut the user first before calling signIn",
                 "Operation performed is not a valid operation for the current auth state"
             )
@@ -308,7 +312,7 @@ extension SessionCore {
             return (snapshot, snapshot.credentials)
         case .federated:
             // The plugin's sign-in waits for a state it never reaches here; the client says why instead.
-            throw AuthClientError.invalidState(
+            throw AmplifyCognitoClientError.invalidState(
                 "Session \"\(sessionId)\" is federated to the identity pool, so a user cannot sign in to it.",
                 "Call clearFederationToIdentityPool() first, or sign in to another session."
             )
@@ -316,7 +320,7 @@ extension SessionCore {
             // An expired session signs in again: that is how its user recovers.
             return (snapshot, nil)
         case .unavailable(let reason):
-            throw AuthClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later. Do not treat this as signed out.")
+            throw AmplifyCognitoClientError.storageUnavailable(reason, "Secure storage could not be read.", "Retry later. Do not treat this as signed out.")
         case .failed(let error):
             throw error
         }
@@ -334,7 +338,7 @@ extension SessionCore {
         epoch: UInt64,
         superseding: Bool = false,
         _ step: @Sendable () async throws -> EngineStepResult
-    ) async throws -> AuthClientSignInResult {
+    ) async throws -> AmplifyCognitoClientSignInResult {
         if superseding {
             await deleteChallengeRecord(epoch: epoch)
         }
@@ -373,7 +377,7 @@ extension SessionCore {
                 await engine.cancelPendingSignIn(before: epoch &+ 1)
                 throw Self.signInCancelled()
             }
-            return AuthClientSignInResult(nextStep: step)
+            return AmplifyCognitoClientSignInResult(nextStep: step)
         case .done(let payload):
             do {
                 try await commitSignIn(payload, base: base, epoch: epoch)
@@ -386,7 +390,7 @@ extension SessionCore {
                 await deleteChallengeRecord(epoch: epoch)
                 throw error
             }
-            return AuthClientSignInResult(nextStep: .done)
+            return AmplifyCognitoClientSignInResult(nextStep: .done)
         }
     }
 
@@ -434,7 +438,8 @@ extension SessionCore {
                     kind: summary.kind,
                     credentials: payload
                 )
-                if case .committed(let committed) = try await store.write(record, for: sessionId, expecting: current.version) {
+                let outcome = try await store.write(record, for: sessionId, expecting: current.version, labelIfNone: sessionId.label)
+                if case .committed(let committed) = outcome {
                     // The sign-in is complete, so its challenge record goes, under the same gate. Best effort: a
                     // record left beside a signed-in session is deleted by the next restore, never resumed.
                     await deleteChallengeRecord(in: store)
@@ -444,7 +449,7 @@ extension SessionCore {
                 let reread = try await store.load(sessionId)
                 if try holdsAnotherPrincipal(reread, than: summary) {
                     await apply(reread, challenge: .set(nil), event: nil)
-                    throw AuthClientError.invalidState(
+                    throw AmplifyCognitoClientError.invalidState(
                         "Another sign-in completed for this session while this one was in progress",
                         "The other user is still signed in to this session. Sign them out first, then sign in again."
                     )
@@ -472,6 +477,9 @@ extension SessionCore {
     /// never had one) or the same user, and cleared when it names someone else: a different user signing in
     /// over an expired session, or a different user, a guest or a federated identity taking a signed-out row
     /// left by another user. A guest or federated identity names no user, so it never matches one.
+    ///
+    /// Where none is kept, the write saves the label the session's ID was created with (`AmplifyCognitoClientSessionID.label`), passed
+    /// to the store as `labelIfNone`: this core's ID, which is the ID of the client that built the session.
     static func label(keptFrom replaced: SessionRecord?, for signedIn: CredentialSummary) -> String? {
         guard let replaced, let label = replaced.label else {
             return nil
@@ -505,7 +513,7 @@ extension SessionCore {
 
     nonisolated func requireUserPool(for operation: String) throws {
         guard configuration.userPool != nil else {
-            throw AuthClientError.configuration(
+            throw AmplifyCognitoClientError.configuration(
                 "This session cannot \(operation): the configuration has no user pool.",
                 "Add a user pool to the configuration (the auth section of amplify_outputs.json)."
             )
@@ -513,14 +521,14 @@ extension SessionCore {
     }
 
     /// The plugin's `autoSignIn` refusal when there is no sign-up to complete, string for string.
-    static func notSignedUp() -> AuthClientError {
+    static func notSignedUp() -> AmplifyCognitoClientError {
         .invalidState(
             "Not in a signed up state. Please call signUp() and confirmSignUp() before calling autoSignIn()",
             "Operation performed is not a valid operation for the current auth state"
         )
     }
 
-    static func signInCancelled() -> AuthClientError {
+    static func signInCancelled() -> AmplifyCognitoClientError {
         .invalidState(
             "The sign-in was cancelled: the session was signed out, purged or deleted while it was in progress.",
             "Sign in again."
@@ -530,15 +538,15 @@ extension SessionCore {
     /// Maps an engine failure from a sign-in step onto the public errors.
     static func signInFailure(_ error: Error) -> Error {
         switch error {
-        case is AuthClientError, is CancellationError:
+        case is AmplifyCognitoClientError, is CancellationError:
             return error
         case SessionEngineError.service(let error):
             return error
         case SessionEngineError.notSignedIn:
-            return AuthClientError.notSignedIn("The session is not signed in.", "Sign in first.", error)
+            return AmplifyCognitoClientError.notSignedIn("The session is not signed in.", "Sign in first.", error)
         default:
-            return AuthClientError.transportFailure(error)
-                ?? AuthClientError.unknown("The sign-in could not be completed.", "Retry the sign-in.", error)
+            return AmplifyCognitoClientError.transportFailure(error)
+                ?? AmplifyCognitoClientError.unknown("The sign-in could not be completed.", "Retry the sign-in.", error)
         }
     }
 }

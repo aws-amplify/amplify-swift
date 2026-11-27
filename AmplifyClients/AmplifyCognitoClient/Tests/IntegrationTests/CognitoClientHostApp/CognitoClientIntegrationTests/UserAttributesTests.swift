@@ -134,8 +134,8 @@ final class UserAttributesTests: ClientIntegrationTestCase {
         )
 
         XCTAssertEqual(results, [
-            .familyName: AuthClientUpdateAttributeResult(isUpdated: true, nextStep: .done),
-            .name: AuthClientUpdateAttributeResult(isUpdated: true, nextStep: .done)
+            .familyName: AmplifyCognitoClientUpdateAttributeResult(isUpdated: true, nextStep: .done),
+            .name: AmplifyCognitoClientUpdateAttributeResult(isUpdated: true, nextStep: .done)
         ])
         let attributes = try await client.fetchUserAttributes()
         XCTAssertEqual(attributes.first { $0.key == .familyName }?.value, familyName)
@@ -164,7 +164,7 @@ final class UserAttributesTests: ClientIntegrationTestCase {
         do {
             try await client.confirm(userAttribute: .email, confirmationCode: "123")
             XCTFail("the attribute confirmation unexpectedly succeeded")
-        } catch AuthClientError.service(.codeMismatch?, _, _, _) {
+        } catch AmplifyCognitoClientError.service(.codeMismatch?, _, _, _) {
             return
         } catch {
             XCTFail("expected .service(.codeMismatch); got \(ClientErrorShape.of(error))")
@@ -254,7 +254,7 @@ final class UserAttributesTests: ClientIntegrationTestCase {
 
     /// `step` is `.confirmAttributeWithCode` for `email`, delivered by email.
     private func assertCodeSentToTheEmail(
-        _ step: AuthClientUpdateAttributeStep,
+        _ step: AmplifyCognitoClientUpdateAttributeStep,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {

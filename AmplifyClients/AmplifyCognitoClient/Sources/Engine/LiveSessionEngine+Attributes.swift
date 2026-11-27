@@ -26,7 +26,7 @@ extension LiveSessionEngine {
     ///
     /// - Throws: Cognito's answer, mapped; `unknown` if Cognito answers without attributes (with the plugin's
     ///   message).
-    nonisolated func fetchUserAttributes(_ payload: Data) async throws -> [AuthClientUserAttribute] {
+    nonisolated func fetchUserAttributes(_ payload: Data) async throws -> [AmplifyCognitoClientUserAttribute] {
         let accessToken = try attributeOperationAccessToken(in: payload)
         let userPool = try attributeOperationUserPool()
         let output = try await Self.mappingAttributeOperationErrors {
@@ -35,13 +35,13 @@ extension LiveSessionEngine {
         guard let attributes = output.userAttributes else {
             // The plugin's `AuthError.unknown(…, nil)`, so its wording ("Unexpected error occurred with
             // message: …") and suggestion, and its message, although no delivery details are involved.
-            throw AuthClientError(engine: .unknown("Unable to get Auth code delivery details"))
+            throw AmplifyCognitoClientError(engine: .unknown("Unable to get Auth code delivery details"))
         }
         return attributes.compactMap { attribute in
             guard let name = attribute.name, let value = attribute.value else {
                 return nil
             }
-            return AuthClientUserAttribute(AuthClientUserAttributeKey(cognitoName: name), value: value)
+            return AmplifyCognitoClientUserAttribute(AmplifyCognitoClientUserAttributeKey(cognitoName: name), value: value)
         }
     }
 
@@ -52,9 +52,9 @@ extension LiveSessionEngine {
     /// - Throws: Cognito's answer, mapped.
     nonisolated func updateUserAttributes(
         _ payload: Data,
-        attributes: [AuthClientUserAttribute],
+        attributes: [AmplifyCognitoClientUserAttribute],
         clientMetadata: [String: String]
-    ) async throws -> [AuthClientUserAttributeKey: AuthClientUpdateAttributeResult] {
+    ) async throws -> [AmplifyCognitoClientUserAttributeKey: AmplifyCognitoClientUpdateAttributeResult] {
         let accessToken = try attributeOperationAccessToken(in: payload)
         let userPool = try attributeOperationUserPool()
         let output = try await Self.mappingAttributeOperationErrors {
@@ -66,18 +66,18 @@ extension LiveSessionEngine {
                 }
             ))
         }
-        var results: [AuthClientUserAttributeKey: AuthClientUpdateAttributeResult] = [:]
+        var results: [AmplifyCognitoClientUserAttributeKey: AmplifyCognitoClientUpdateAttributeResult] = [:]
         for item in output.codeDeliveryDetailsList ?? [] {
             guard let attribute = item.attributeName else {
                 continue
             }
-            results[AuthClientUserAttributeKey(cognitoName: attribute)] = AuthClientUpdateAttributeResult(
+            results[AmplifyCognitoClientUserAttributeKey(cognitoName: attribute)] = AmplifyCognitoClientUpdateAttributeResult(
                 isUpdated: false,
-                nextStep: .confirmAttributeWithCode(AuthClientCodeDeliveryDetails(item.toEngineCodeDeliveryDetails()), nil)
+                nextStep: .confirmAttributeWithCode(AmplifyCognitoClientCodeDeliveryDetails(item.toEngineCodeDeliveryDetails()), nil)
             )
         }
         for attribute in attributes where results[attribute.key] == nil {
-            results[attribute.key] = AuthClientUpdateAttributeResult(isUpdated: true, nextStep: .done)
+            results[attribute.key] = AmplifyCognitoClientUpdateAttributeResult(isUpdated: true, nextStep: .done)
         }
         return results
     }
@@ -87,9 +87,9 @@ extension LiveSessionEngine {
     /// - Throws: Cognito's answer, mapped; `unknown` if Cognito answers without delivery details.
     nonisolated func sendVerificationCode(
         _ payload: Data,
-        attributeKey: AuthClientUserAttributeKey,
+        attributeKey: AmplifyCognitoClientUserAttributeKey,
         clientMetadata: [String: String]
-    ) async throws -> AuthClientCodeDeliveryDetails {
+    ) async throws -> AmplifyCognitoClientCodeDeliveryDetails {
         let accessToken = try attributeOperationAccessToken(in: payload)
         let userPool = try attributeOperationUserPool()
         let output = try await Self.mappingAttributeOperationErrors {
@@ -102,15 +102,15 @@ extension LiveSessionEngine {
         guard let details = output.codeDeliveryDetails?.toEngineCodeDeliveryDetails() else {
             // The plugin's `AuthError.unknown(…, nil)`, so its wording ("Unexpected error occurred with
             // message: …") and suggestion.
-            throw AuthClientError(engine: .unknown("Unable to get Auth code delivery details"))
+            throw AmplifyCognitoClientError(engine: .unknown("Unable to get Auth code delivery details"))
         }
-        return AuthClientCodeDeliveryDetails(details)
+        return AmplifyCognitoClientCodeDeliveryDetails(details)
     }
 
     /// Confirms an attribute with its code (`AWSAuthConfirmUserAttributeTask.confirmUserAttribute`).
     ///
     /// - Throws: Cognito's answer, mapped (`codeMismatch`, `codeExpired`, …).
-    nonisolated func confirmUserAttribute(_ payload: Data, attributeKey: AuthClientUserAttributeKey, confirmationCode: String) async throws {
+    nonisolated func confirmUserAttribute(_ payload: Data, attributeKey: AmplifyCognitoClientUserAttributeKey, confirmationCode: String) async throws {
         let accessToken = try attributeOperationAccessToken(in: payload)
         let userPool = try attributeOperationUserPool()
         _ = try await Self.mappingAttributeOperationErrors {
@@ -160,7 +160,7 @@ extension LiveSessionEngine {
         do {
             return try await call()
         } catch let error as EngineAuthErrorConvertible {
-            throw AuthClientError(engineFailure: error)
+            throw AmplifyCognitoClientError(engineFailure: error)
         }
     }
 }

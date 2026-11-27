@@ -17,7 +17,7 @@ final class FederationTests: XCTestCase {
     private var harness: ClientHarness!
     private let work = ClientFixtures.id("work")
     private let home = ClientFixtures.id("home")
-    private static let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+    private static let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
 
     override func setUp() {
         harness = ClientHarness()
@@ -39,7 +39,7 @@ final class FederationTests: XCTestCase {
     ///      is stored, and the session stays signed out
     func testEmptyFederationInputsAreValidationErrors() async throws {
         let client = try harness.client(work)
-        let cases: [(String, AuthClientProvider, String)] = [
+        let cases: [(String, AmplifyCognitoClientProvider, String)] = [
             ("", .google, "withProviderToken"),
             ("", .oidc("issuer.example.com"), "withProviderToken"),
             ("token", .oidc(""), "provider"),
@@ -50,7 +50,7 @@ final class FederationTests: XCTestCase {
             do {
                 _ = try await client.federateToIdentityPool(withProviderToken: token, for: provider)
                 XCTFail("\(provider): expected a validation error")
-            } catch AuthClientError.validation(let named, let description, let suggestion, _) {
+            } catch AmplifyCognitoClientError.validation(let named, let description, let suggestion, _) {
                 XCTAssertEqual(named, field, "\(provider)")
                 XCTAssertFalse(description.contains("bug"), description)
                 XCTAssertFalse(suggestion.isEmpty, "\(provider)")
@@ -79,7 +79,7 @@ final class FederationTests: XCTestCase {
         let result = try await client.federateToIdentityPool(withProviderToken: "token", for: .google)
 
         XCTAssertEqual(result.identityId, "us-east-1:fed")
-        XCTAssertEqual(result.credentials, AuthClientAWSCredentials(federated.awsCredentials))
+        XCTAssertEqual(result.credentials, AmplifyCognitoClientAWSCredentials(federated.awsCredentials))
         let record = try XCTUnwrap(harness.storedRecord(work))
         XCTAssertEqual(record.kind, .federated)
         XCTAssertNil(record.username)
@@ -88,8 +88,8 @@ final class FederationTests: XCTestCase {
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .federated(identityId: "us-east-1:fed"))
         let session = try await client.fetchAuthSession()
-        XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:fed")
-        XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(federated.awsCredentials))
+        XCTAssertEqual(session.identityId, "us-east-1:fed")
+        XCTAssertEqual(session.awsCredentials, AmplifyCognitoClientAWSCredentials(federated.awsCredentials))
 
         XCTAssertEqual(harness.engine(for: home)?.accountOperationCalls, [])
         XCTAssertNil(try harness.storedRecord(home))
@@ -254,7 +254,7 @@ final class FederationTests: XCTestCase {
         }
         XCTAssertEqual(try harness.storedRecord(work)?.username, "alice")
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 
     /// The federation being replaced, refreshed by another writer meanwhile, is still replaced: the caller
@@ -544,7 +544,7 @@ final class FederationTests: XCTestCase {
         let credentials = try await client.credentialsProvider.resolve()
 
         XCTAssertEqual(harness.engine(for: work)?.refreshCalls, [stale.data])
-        XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(stale.refreshed.awsCredentials))
+        XCTAssertEqual(session.awsCredentials, AmplifyCognitoClientAWSCredentials(stale.refreshed.awsCredentials))
         XCTAssertEqual(credentials as? CognitoAWSCredentials, stale.refreshed.awsCredentials)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, stale.refreshed.data)
         let state = await client.currentSessionState()
@@ -597,7 +597,7 @@ final class FederationTests: XCTestCase {
         try await client.clearFederationToIdentityPool()
 
         let record = try XCTUnwrap(harness.storedRecord(work))
-        XCTAssertEqual(record.kind, SessionKind.signedOut)
+        XCTAssertEqual(record.kind, AmplifyCognitoClientSessionKind.signedOut)
         XCTAssertNil(record.credentials)
         XCTAssertEqual(record.label, "Tablet")
         let state = await client.currentSessionState()
@@ -669,7 +669,7 @@ final class FederationTests: XCTestCase {
         }
         XCTAssertEqual(try harness.storedRecord(work)?.username, "alice")
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 
     /// Only the identity the clear found is ever cleared: a different federated identity stored meanwhile is

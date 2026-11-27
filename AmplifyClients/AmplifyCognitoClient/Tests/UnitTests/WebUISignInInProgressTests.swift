@@ -21,7 +21,7 @@ final class WebUISignInInProgressTests: XCTestCase {
     private var harness: ClientHarness!
     /// The window to anchor sheets to, made on first use: a process's first `UIWindow()` can block for minutes on a
     /// just-booted simulator.
-    private var window: AuthClientPresentationAnchor {
+    private var window: AmplifyCognitoClientPresentationAnchor {
         get async { await HostedUIFixtures.window() }
     }
     private let work = ClientFixtures.id("work")
@@ -49,14 +49,14 @@ final class WebUISignInInProgressTests: XCTestCase {
         harness = nil
     }
 
-    private func client(_ sessionId: SessionID) throws -> AmplifyCognitoClient {
+    private func client(_ sessionId: AmplifyCognitoClientSessionID) throws -> AmplifyCognitoClient {
         try harness.client(sessionId, configuration: HostedUIFixtures.configuration)
     }
 
     private func startSignIn(
         _ client: AmplifyCognitoClient,
-        options: WebUIOptions = WebUIOptions()
-    ) async -> Task<AuthClientSignInResult, Error> {
+        options: AmplifyCognitoClientWebUIOptions = AmplifyCognitoClientWebUIOptions()
+    ) async -> Task<AmplifyCognitoClientSignInResult, Error> {
         let window = await window
         return Task { try await client.signInWithWebUI(presentationAnchor: window, options: options) }
     }
@@ -75,9 +75,9 @@ final class WebUISignInInProgressTests: XCTestCase {
         let holder = await harness.sheetLock.currentHolder
         XCTAssertNil(holder)
 
-        for policy in [WebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
+        for policy in [AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
             let error = await authClientError {
-                try await startSignIn(client, options: WebUIOptions(whenBrowserBusy: policy)).value(within: 10)
+                try await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: policy)).value(within: 10)
             }
             XCTAssertEqual(error?.kind, .browserBusy(holder: work), "\(policy)")
             XCTAssertEqual(error?.errorDescription, "Session \"work\" already has a hosted-UI sign-in in progress.", "\(policy)")
@@ -108,7 +108,7 @@ final class WebUISignInInProgressTests: XCTestCase {
         let homeSignIn = await startSignIn(homeClient)
         try await homeBrowser.shown.arrivals(1, within: 10)
         let carolClient = try client(carol)
-        let carolSignIn = await startSignIn(carolClient, options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let carolSignIn = await startSignIn(carolClient, options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
         let lock = harness.sheetLock
         await waitUntil("carol is queued for the sheet") { await lock.waiterCount == 1 }
         let client = try client(work)
@@ -145,8 +145,8 @@ final class WebUISignInInProgressTests: XCTestCase {
         let alice = ClientFixtures.id("alice")
         let bob = ClientFixtures.id("bob")
 
-        let other = AuthClientError.browserBusy(heldBy: alice, requestedBy: bob, reason: .signInInProgress)
-        let itself = AuthClientError.browserBusy(heldBy: bob, requestedBy: bob, reason: .signInInProgress)
+        let other = AmplifyCognitoClientError.browserBusy(heldBy: alice, requestedBy: bob, reason: .signInInProgress)
+        let itself = AmplifyCognitoClientError.browserBusy(heldBy: bob, requestedBy: bob, reason: .signInInProgress)
 
         XCTAssertEqual(other.kind, .browserBusy(holder: alice))
         XCTAssertEqual(itself.kind, .browserBusy(holder: bob))

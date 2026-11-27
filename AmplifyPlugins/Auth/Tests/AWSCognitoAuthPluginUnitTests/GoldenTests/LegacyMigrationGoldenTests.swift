@@ -25,7 +25,7 @@ import XCTest
 ///
 /// The baseline was recorded before the engine moved, but after the legacy-migration fixes that ship with it, so these
 /// results record the migration as of the engine extraction, not as last released. Two of them differ from
-/// the released plugin, deliberately (see the pending release notes): `locked-keychain` keeps the legacy
+/// the released plugin, deliberately (see 2.63.0's GitHub release notes): `locked-keychain` keeps the legacy
 /// stores and saves nothing when a read fails, and `existing-session-present` never writes the legacy session
 /// over the newer saved one.
 ///

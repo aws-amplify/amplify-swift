@@ -13,7 +13,7 @@ struct SessionIdentity: Sendable {
     let namespace: SessionStorageNamespace
     let fingerprint: SessionFingerprint
 
-    init(configuration: AuthClientConfiguration, options: AmplifyCognitoClient.Options) {
+    init(configuration: AmplifyCognitoClientConfiguration, options: AmplifyCognitoClient.Options) {
         self.init(
             configuration: configuration,
             accessGroup: options.accessGroup,
@@ -21,7 +21,7 @@ struct SessionIdentity: Sendable {
         )
     }
 
-    init(configuration: AuthClientConfiguration, accessGroup: String?, customizesUserPoolClient: Bool) {
+    init(configuration: AmplifyCognitoClientConfiguration, accessGroup: String?, customizesUserPoolClient: Bool) {
         self.namespace = SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: accessGroup)
         self.fingerprint = SessionFingerprint(
             configuration: configuration,
@@ -35,7 +35,7 @@ struct SessionIdentity: Sendable {
 /// What the engine is configured with (`EngineConfigurationInput`), not the whole public configuration.
 /// It holds both pools, the app client ID and secret, the regions, the hosted UI and the Authenticator
 /// settings the engine carries. Settings the engine never receives do not take part. These are the redirect
-/// URIs past the first, identity providers, response type, MFA, guest access, and the standard attributes
+/// URIs past the first, identity providers, response type, MFA, and the standard attributes
 /// the engine drops. So a handle read from `amplify_outputs` and one built from pool IDs alone join when
 /// the engine would treat them alike. Scope order is not compared either, because OAuth scopes are a set.
 /// Any field the engine input gains joins the comparison automatically. Compared for equality only, never
@@ -49,7 +49,7 @@ struct SessionFingerprint: Equatable, Sendable {
     let engineInput: EngineConfigurationInput
     let customizesUserPoolClient: Bool
 
-    init(configuration: AuthClientConfiguration, customizesUserPoolClient: Bool) {
+    init(configuration: AmplifyCognitoClientConfiguration, customizesUserPoolClient: Bool) {
         self.engineInput = Self.sortingScopes(configuration.engineInput)
         self.customizesUserPoolClient = customizesUserPoolClient
     }

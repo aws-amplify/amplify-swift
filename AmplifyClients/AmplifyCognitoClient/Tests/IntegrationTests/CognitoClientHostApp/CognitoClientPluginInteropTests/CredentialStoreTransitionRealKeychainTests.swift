@@ -68,14 +68,14 @@ final class CredentialStoreTransitionRealKeychainTests: XCTestCase {
     private var defaultGroup = ""
     private var sharedGroup = ""
     private var plugin: AWSCognitoAuthPlugin?
-    private var clientConfiguration: AuthClientConfiguration?
+    private var clientConfiguration: AmplifyCognitoClientConfiguration?
 
     override func setUpWithError() throws {
         try super.setUpWithError()
         defaultGroup = try RealKeychain.defaultGroup()
         sharedGroup = RealKeychain.sharedGroup(defaultGroup: defaultGroup)
         try InteropEnvironment.requireProvisioned()
-        clientConfiguration = try AuthClientConfiguration(
+        clientConfiguration = try AmplifyCognitoClientConfiguration(
             from: InteropEnvironment.outputsResource,
             bundle: InteropEnvironment.outputsBundle()
         )
@@ -322,10 +322,10 @@ final class CredentialStoreTransitionRealKeychainTests: XCTestCase {
 
     /// Writes a labelled, signed-out row for a new named session through the client's API, then drops
     /// the client and waits until the registry has released it.
-    private func writeClientRow() async throws -> SessionID {
+    private func writeClientRow() async throws -> AmplifyCognitoClientSessionID {
         let configuration = try XCTUnwrap(clientConfiguration)
         let suffix = UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(8).lowercased()
-        let sessionId = try SessionID.named("io-\(suffix)")
+        let sessionId = try AmplifyCognitoClientSessionID.named("io-\(suffix)")
         try await AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
             .setSessionLabel(Self.clientLabel)
         try await InteropEnvironment.waitUntilReleased(sessionId)
@@ -388,18 +388,18 @@ final class CredentialStoreTransitionRealKeychainTests: XCTestCase {
             return
         }
         XCTAssertEqual(row?.label, label, "the client lists \(listed) \(scope); \(observed)")
-        XCTAssertEqual(row?.kind, SessionKind.signedOut, "the client lists \(listed) \(scope); \(observed)")
+        XCTAssertEqual(row?.kind, AmplifyCognitoClientSessionKind.signedOut, "the client lists \(listed) \(scope); \(observed)")
     }
 
     /// The client lists `sessionId` from storage, with its label, as a signed-out row.
-    private func assertClientStillLists(_ sessionId: SessionID, observed: String) async throws {
+    private func assertClientStillLists(_ sessionId: AmplifyCognitoClientSessionID, observed: String) async throws {
         let listed = try await AmplifyCognitoClient.storedSessions(
             configuration: XCTUnwrap(clientConfiguration),
             includingSignedOut: true
         )
         let row = listed.first { $0.sessionId == sessionId }
         XCTAssertEqual(row?.label, Self.clientLabel, "the client lists \(listed); \(observed)")
-        XCTAssertEqual(row?.kind, SessionKind.signedOut, "the client lists \(listed); \(observed)")
+        XCTAssertEqual(row?.kind, AmplifyCognitoClientSessionKind.signedOut, "the client lists \(listed); \(observed)")
     }
 
     private func seedUnsharedService() {

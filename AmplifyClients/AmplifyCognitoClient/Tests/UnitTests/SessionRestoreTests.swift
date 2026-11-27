@@ -37,7 +37,7 @@ final class SessionRestoreTests: XCTestCase {
 
         let state = try await harness.client(work).currentSessionState()
 
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 
     /// The bound is real only because what is raced is abandonable: the stuck read carries on, and the
@@ -63,7 +63,7 @@ final class SessionRestoreTests: XCTestCase {
         XCTAssertEqual(stalled, .unavailable(.interrupted))
         stall.release()
         let recovered = await client.currentSessionState()
-        XCTAssertEqual(recovered, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(recovered, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 
     /// - Given: a stored session whose reads fail as if entitlements were missing
@@ -87,7 +87,7 @@ final class SessionRestoreTests: XCTestCase {
 
         harness.keychain.clearFailures()
         let recovered = await client.currentSessionState()
-        XCTAssertEqual(recovered, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(recovered, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 
     /// A storage failure must never be answered with sign-in.
@@ -114,11 +114,11 @@ final class SessionRestoreTests: XCTestCase {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
 
-        let states = await withTaskGroup(of: AuthSessionState.self) { group in
+        let states = await withTaskGroup(of: AmplifyCognitoClientSessionState.self) { group in
             for _ in 0 ..< 50 {
                 group.addTask { await client.currentSessionState() }
             }
-            var states: [AuthSessionState] = []
+            var states: [AmplifyCognitoClientSessionState] = []
             for await state in group {
                 states.append(state)
             }
@@ -126,7 +126,7 @@ final class SessionRestoreTests: XCTestCase {
         }
 
         XCTAssertEqual(states.count, 50)
-        XCTAssertTrue(states.allSatisfy { $0 == .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")) })
+        XCTAssertTrue(states.allSatisfy { $0 == .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")) })
         XCTAssertEqual(harness.recordReads(work), 1)
     }
 
@@ -142,7 +142,7 @@ final class SessionRestoreTests: XCTestCase {
 
         let state = await client.currentSessionState()
 
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(harness.engine(for: work)?.refreshCalls.count, 0)
     }
 
@@ -159,7 +159,7 @@ final class SessionRestoreTests: XCTestCase {
 
         let again = await client.currentSessionState()
 
-        XCTAssertEqual(again, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(again, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(harness.recordReads(work), 0)
     }
 }

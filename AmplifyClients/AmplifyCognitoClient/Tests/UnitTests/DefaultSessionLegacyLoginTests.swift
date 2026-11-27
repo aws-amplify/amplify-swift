@@ -44,7 +44,7 @@ final class DefaultSessionLegacyLoginTests: XCTestCase {
         let userPool = "\(bundle).AWSCognitoIdentityUserPool"
         let identityPool = "\(bundle).AWSCognitoCredentialsProvider.\(StorageFixtures.identityPoolId)"
         let mobileClient = "\(String(describing: Bundle.main.bundleIdentifier)).AWSMobileClient"
-        let cases: [(AuthClientConfiguration, [String])] = [
+        let cases: [(AmplifyCognitoClientConfiguration, [String])] = [
             (ClientFixtures.configuration, [userPool, identityPool, mobileClient]),
             (ClientFixtures.userPoolOnlyConfiguration, [userPool, mobileClient]),
             (ClientFixtures.identityPoolOnlyConfiguration, [identityPool, mobileClient])
@@ -569,6 +569,7 @@ final class DefaultSessionLegacyLoginTests: XCTestCase {
             refreshTokenOf: TestKeychain.refreshToken,
             markerScope: TestKeychain.markerScope,
             summarizeSharedRecord: TestKeychain.summarizeSharedRecord,
+            describeCredentials: TestKeychain.describeCredentials,
             rereadsAbsentSharedRecord: false,
             sameCredentials: TestKeychain.sameCredentials,
             legacyLoginStores: legacyLoginStores ?? { services.map { keychain.itemStore(service: $0) } }

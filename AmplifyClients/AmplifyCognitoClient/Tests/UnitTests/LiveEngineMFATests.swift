@@ -199,7 +199,7 @@ final class LiveEngineMFATests: XCTestCase {
     func testVerifyTOTPSetupMapsCognitoErrors() async throws {
         let engine = try harness.engine()
         let payload = try await signedIn(on: engine)
-        let cases: [(any Error & Sendable, AuthClientServiceErrorCode)] = [
+        let cases: [(any Error & Sendable, AmplifyCognitoClientServiceErrorCode)] = [
             (CodeMismatchException(message: "Invalid code received for user"), .codeMismatch),
             (LimitExceededException(message: "Attempt limit exceeded"), .limitExceeded),
             (AWSCognitoIdentityProvider.TooManyRequestsException(message: "Rate exceeded"), .requestLimitExceeded)
@@ -274,14 +274,14 @@ final class LiveEngineMFATests: XCTestCase {
     func testFetchMFAPreferenceReadsGetUser() async throws {
         let engine = try harness.engine()
         let payload = try await signedIn(on: engine)
-        let cases: [([String]?, String?, AuthClientUserMFAPreference)] = [
-            (nil, nil, AuthClientUserMFAPreference(enabled: nil, preferred: nil)),
-            ([], nil, AuthClientUserMFAPreference(enabled: nil, preferred: nil)),
-            (["SOFTWARE_TOKEN_MFA"], nil, AuthClientUserMFAPreference(enabled: [.totp], preferred: nil)),
-            (["SMS_MFA", "SOFTWARE_TOKEN_MFA"], "SOFTWARE_TOKEN_MFA", AuthClientUserMFAPreference(enabled: [.sms, .totp], preferred: .totp)),
-            (["sms_mfa", "EMAIL_OTP"], "EMAIL_OTP", AuthClientUserMFAPreference(enabled: [.sms, .email], preferred: .email)),
-            (["WEB_AUTHN"], "WEB_AUTHN", AuthClientUserMFAPreference(enabled: nil, preferred: nil)),
-            (["WEB_AUTHN", "SMS_MFA"], "SMS_MFA", AuthClientUserMFAPreference(enabled: [.sms], preferred: .sms))
+        let cases: [([String]?, String?, AmplifyCognitoClientUserMFAPreference)] = [
+            (nil, nil, AmplifyCognitoClientUserMFAPreference(enabled: nil, preferred: nil)),
+            ([], nil, AmplifyCognitoClientUserMFAPreference(enabled: nil, preferred: nil)),
+            (["SOFTWARE_TOKEN_MFA"], nil, AmplifyCognitoClientUserMFAPreference(enabled: [.totp], preferred: nil)),
+            (["SMS_MFA", "SOFTWARE_TOKEN_MFA"], "SOFTWARE_TOKEN_MFA", AmplifyCognitoClientUserMFAPreference(enabled: [.sms, .totp], preferred: .totp)),
+            (["sms_mfa", "EMAIL_OTP"], "EMAIL_OTP", AmplifyCognitoClientUserMFAPreference(enabled: [.sms, .email], preferred: .email)),
+            (["WEB_AUTHN"], "WEB_AUTHN", AmplifyCognitoClientUserMFAPreference(enabled: nil, preferred: nil)),
+            (["WEB_AUTHN", "SMS_MFA"], "SMS_MFA", AmplifyCognitoClientUserMFAPreference(enabled: [.sms], preferred: .sms))
         ]
 
         for (settings, preferred, expected) in cases {
@@ -340,7 +340,7 @@ final class LiveEngineMFATests: XCTestCase {
         let engine = try harness.engine()
         let payload = try await signedIn(on: engine)
         harness.cognito.always("SetUserMFAPreference") { (_: SetUserMFAPreferenceInput) in SetUserMFAPreferenceOutput() }
-        let preferences: [AuthClientMFAPreference] = [.enabled, .preferred, .notPreferred, .disabled]
+        let preferences: [AmplifyCognitoClientMFAPreference] = [.enabled, .preferred, .notPreferred, .disabled]
 
         for current in [nil, "SMS_MFA", "SOFTWARE_TOKEN_MFA", "EMAIL_OTP"] {
             for preference in preferences {
@@ -577,7 +577,7 @@ final class LiveEngineMFATests: XCTestCase {
 
         XCTAssertEqual(details.sharedSecret, "FIXTURESECRET")
         XCTAssertEqual(details.username, "alice")
-        XCTAssertEqual(preference, AuthClientUserMFAPreference(enabled: [.totp], preferred: .totp))
+        XCTAssertEqual(preference, AmplifyCognitoClientUserMFAPreference(enabled: [.totp], preferred: .totp))
         XCTAssertEqual(harness.cognito.operations, [
             "AssociateSoftwareToken", "VerifySoftwareToken", "VerifySoftwareToken",
             "GetUser", "SetUserMFAPreference", "GetUser", "GetUser"
@@ -600,6 +600,6 @@ final class LiveEngineMFATests: XCTestCase {
         XCTAssertEqual(setting?.softwareTokenMfaSettings?.preferredMfa, true)
         XCTAssertNil(setting?.smsMfaSettings)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 }

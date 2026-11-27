@@ -13,7 +13,7 @@ import XCTest
 /// callers ask, and a global sign-out reaching a sibling session on its next refresh.
 final class RefreshTests: ClientIntegrationTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -60,13 +60,13 @@ final class RefreshTests: ClientIntegrationTestCase {
         let results = try await withThrowingTaskGroup(of: (String, String).self) { group in
             for _ in 0 ..< 20 {
                 group.addTask {
-                    try await ("alice-forced", alice.fetchAuthSession(options: .init(forceRefresh: true)).userPoolTokensResult.get().accessToken)
+                    try await ("alice-forced", alice.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens().accessToken)
                 }
                 group.addTask {
                     try await ("alice-provider", alice.userPoolTokenProvider.accessToken())
                 }
                 group.addTask {
-                    try await ("bob-forced", bob.fetchAuthSession(options: .init(forceRefresh: true)).userPoolTokensResult.get().accessToken)
+                    try await ("bob-forced", bob.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens().accessToken)
                 }
             }
             var results: [(String, String)] = []
@@ -112,7 +112,7 @@ final class RefreshTests: ClientIntegrationTestCase {
     /// - Then:
     ///    - A's sign-out is `.complete`
     ///    - B's refreshes report `.sessionExpired` in the token field; B stays `.signedIn(user)`,
-    ///      and its row is kept and still listed
+    ///      and its row is kept and still listed, `.signedIn(user)` too
     ///    - B's credentials provider and its user pool token provider throw `CredentialsError.sessionExpired`
     ///    - B's event stream delivered `.sessionExpired` exactly once
     ///
@@ -130,8 +130,8 @@ final class RefreshTests: ClientIntegrationTestCase {
                 configuration: poolConfiguration
             )
         }
-        let signOutResult: AuthClientSignOutResult
-        let events: StreamRecorder<AuthEvent>
+        let signOutResult: AmplifyCognitoClientSignOutResult
+        let events: StreamRecorder<AmplifyCognitoClientEvent>
         do {
             let a = try AmplifyCognitoClient(configuration: poolConfiguration, options: .init(sessionId: sessionA))
             let b = try AmplifyCognitoClient(configuration: poolConfiguration, options: .init(sessionId: sessionB))
@@ -145,16 +145,17 @@ final class RefreshTests: ClientIntegrationTestCase {
             signOutResult = await a.signOut(options: .init(globalSignOut: true))
 
             for attempt in 1 ... 2 {
-                let refreshed = try await b.fetchAuthSession(options: .init(forceRefresh: true))
-                guard case .failure(let error) = refreshed.userPoolTokensResult else {
-                    return XCTFail("refresh \(attempt) after a global sign-out elsewhere succeeded")
+                let error = await Expect.authClientError("refresh \(attempt) after a global sign-out elsewhere") {
+                    try await b.fetchAuthSession(options: .init(forceRefresh: true))
                 }
-                XCTAssertEqual(error.kind, .sessionExpired, "refresh \(attempt): \(error)")
+                XCTAssertEqual(error?.kind, .sessionExpired, "refresh \(attempt): \(String(describing: error?.kind))")
             }
             let state = await b.currentSessionState()
             XCTAssertState(state, .signedIn(user), "an expired session stays signed in as its user")
             let listed = try await AmplifyCognitoClient.storedSessions(configuration: poolConfiguration)
-            XCTAssertTrue(listed.first { $0.sessionId == sessionB }?.username == fresh.username, "the expired session's row is kept")
+            let row = try XCTUnwrap(listed.first { $0.sessionId == sessionB }, "the expired session's row is kept")
+            XCTAssertTrue(row.user == user, "the expired session's row names its user")
+            XCTAssertState(row.state, .signedIn(user), "an expired session's row is still signed in as its user")
             let credentialsError = await Expect.credentialsError("an expired session's AWS credentials") {
                 try await b.credentialsProvider.resolve()
             }

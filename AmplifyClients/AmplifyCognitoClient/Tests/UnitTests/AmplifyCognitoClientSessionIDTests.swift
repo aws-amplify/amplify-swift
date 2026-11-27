@@ -1,0 +1,213 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import XCTest
+@_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
+
+final class AmplifyCognitoClientSessionIDTests: XCTestCase {
+
+    /// - Given: identifiers built only from the permitted charset, at both length bounds
+    /// - When: passed to `named(_:label:)`
+    /// - Then:
+    ///    - each is accepted and round-trips through `stringValue`
+    func testAcceptsPermittedIdentifiers() throws {
+        let longest = String(repeating: "a", count: AmplifyCognitoClientSessionID.maximumLength)
+        for id in ["work", "Work-2", "tenant_42", "a", "A-z_0-9", longest] {
+            XCTAssertEqual(try AmplifyCognitoClientSessionID.named(id).stringValue, id)
+        }
+    }
+
+    /// - Given: an empty string
+    /// - When: passed to `named(_:label:)`
+    /// - Then:
+    ///    - it throws `invalidSessionID`
+    func testRejectsEmpty() {
+        XCTAssertThrowsError(try AmplifyCognitoClientSessionID.named("")) { error in
+            guard case AmplifyCognitoClientError.invalidSessionID = error else {
+                return XCTFail("Expected invalidSessionID, got \(error)")
+            }
+        }
+    }
+
+    /// - Given: an identifier one character over the limit
+    /// - When: passed to `named(_:label:)`
+    /// - Then:
+    ///    - it throws `invalidSessionID`
+    func testRejectsOverlong() {
+        let tooLong = String(repeating: "a", count: AmplifyCognitoClientSessionID.maximumLength + 1)
+        XCTAssertThrowsError(try AmplifyCognitoClientSessionID.named(tooLong))
+    }
+
+    /// The charset rule is what keeps the storage key unambiguous, so the delimiter characters in
+    /// particular must never get through.
+    ///
+    /// - Given: identifiers containing `.`, `/`, `$`, a space, and a non-ASCII letter
+    /// - When: passed to `named(_:label:)`
+    /// - Then:
+    ///    - each throws, and the message names the offending character but never repeats the ID
+    func testRejectsForbiddenCharactersAndNamesThem() {
+        let cases: [(String, String)] = [
+            ("a.b", "."), ("a/b", "/"), ("$work", "$"), ("my work", " "), ("café", "é")
+        ]
+        for (id, offender) in cases {
+            XCTAssertThrowsError(try AmplifyCognitoClientSessionID.named(id), id) { error in
+                guard case AmplifyCognitoClientError.invalidSessionID(let description, let suggestion, _) = error else {
+                    return XCTFail("Expected invalidSessionID for \(id), got \(error)")
+                }
+                XCTAssertTrue(description.contains("\"\(offender)\""), "Message should name \(offender): \(description)")
+                XCTAssertFalse(description.contains(id), "Message repeats the ID: \(description)")
+                XCTAssertFalse(suggestion.contains(id), "Suggestion repeats the ID: \(suggestion)")
+            }
+        }
+    }
+
+    /// The reason for the `$`: an app naming a session "default" for its own purposes must not land
+    /// on `.default`, which is the Auth plugin's own saved login.
+    ///
+    /// - Given: `named("default")`, and other spellings near the sentinel
+    /// - When: compared with the library's sentinel
+    /// - Then:
+    ///    - none equals `.default`: only the sentinel's own `stringValue` reads back as `.default`
+    func testSentinelIsUnforgeable() throws {
+        XCTAssertNotEqual(try AmplifyCognitoClientSessionID.named("default"), .default)
+        for spelling in ["$Default", "$default ", " $default", "$$default", "$defaults"] {
+            XCTAssertThrowsError(try AmplifyCognitoClientSessionID.named(spelling), spelling)
+        }
+    }
+
+    /// A persisted `stringValue` always rebuilds its ID, `.default`'s included.
+    ///
+    /// - Given: `.default`'s `stringValue`, `"$default"`, and a named ID's `stringValue`
+    /// - When: each is passed to `named(_:label:)`
+    /// - Then:
+    ///    - `"$default"` is `.default`, and the named ID is itself
+    func testNamedRebuildsAPersistedStringValue() throws {
+        XCTAssertEqual(try AmplifyCognitoClientSessionID.named(AmplifyCognitoClientSessionID.default.stringValue), .default)
+        XCTAssertEqual(try AmplifyCognitoClientSessionID.named("$default"), .default)
+        let work = try AmplifyCognitoClientSessionID.named("work")
+        XCTAssertEqual(try AmplifyCognitoClientSessionID.named(work.stringValue), work)
+    }
+
+    /// `.default` is the only sentinel: it is the Auth plugin's own saved login, so no second ID
+    /// can address the plugin's record.
+    ///
+    /// - Given: the retired `$plugin` spelling, as a stored key segment and as encoded JSON
+    /// - When: it is read back
+    /// - Then:
+    ///    - it is rejected in both forms
+    func testRetiredPluginSentinelIsNotASessionID() {
+        XCTAssertNil(AmplifyCognitoClientSessionID(storageComponent: "$plugin"))
+        XCTAssertThrowsError(try JSONDecoder().decode(AmplifyCognitoClientSessionID.self, from: Data(#""$plugin""#.utf8)))
+        XCTAssertThrowsError(try AmplifyCognitoClientSessionID.named("$plugin"))
+    }
+
+    /// Merging IDs that differ only by case would silently cross two users' credentials.
+    ///
+    /// - Given: `"Work"` and `"work"`
+    /// - When: compared
+    /// - Then:
+    ///    - they are different sessions
+    func testIsCaseSensitive() throws {
+        XCTAssertNotEqual(try AmplifyCognitoClientSessionID.named("Work"), try AmplifyCognitoClientSessionID.named("work"))
+    }
+
+    /// - Given: two library-minted IDs
+    /// - When: inspected
+    /// - Then:
+    ///    - both are distinct and both would pass `named(_:label:)`, so a minted ID is always storable
+    func testNewIsUniqueAndValid() throws {
+        let first = AmplifyCognitoClientSessionID.new()
+        let second = AmplifyCognitoClientSessionID.new()
+        XCTAssertNotEqual(first, second)
+        XCTAssertEqual(try AmplifyCognitoClientSessionID.named(first.stringValue), first)
+    }
+
+    /// - Given: a named ID, a minted ID and the sentinel
+    /// - When: encoded and decoded
+    /// - Then:
+    ///    - each round-trips to an equal value, the sentinel included
+    func testCodableRoundTrip() throws {
+        for id in [try AmplifyCognitoClientSessionID.named("work"), .default, .new()] {
+            let data = try JSONEncoder().encode(id)
+            XCTAssertEqual(try JSONDecoder().decode(AmplifyCognitoClientSessionID.self, from: data), id)
+        }
+    }
+
+    /// Decoding is the one path that bypasses `named(_:label:)`, so it must apply the same rule.
+    ///
+    /// - Given: a JSON string containing a forbidden character
+    /// - When: decoded as an `AmplifyCognitoClientSessionID`
+    /// - Then:
+    ///    - decoding throws rather than producing an ID that could corrupt a storage key
+    func testDecodingRejectsInvalidValue() {
+        XCTAssertThrowsError(try JSONDecoder().decode(AmplifyCognitoClientSessionID.self, from: Data(#""user@example.com""#.utf8))) { error in
+            guard case DecodingError.dataCorrupted(let context) = error else {
+                return XCTFail("Expected dataCorrupted, got \(error)")
+            }
+            XCTAssertFalse(context.debugDescription.contains("user@example.com"), context.debugDescription)
+        }
+        let data = Data("\"a.b\"".utf8)
+        XCTAssertThrowsError(try JSONDecoder().decode(AmplifyCognitoClientSessionID.self, from: data))
+    }
+
+    // MARK: Label
+
+    /// The label is metadata, not identity: the session registry and the per-session gates are keyed by the ID.
+    ///
+    /// - Given: IDs with one name, created with different labels and with none
+    /// - When: compared and hashed
+    /// - Then:
+    ///    - they are equal and hash the same, so they are one key; each keeps the label it was created with
+    func testIDsThatDifferOnlyInLabelAreEqualAndHashTheSame() throws {
+        let plain = try AmplifyCognitoClientSessionID.named("work")
+        let work = try AmplifyCognitoClientSessionID.named("work", label: "Work")
+        let office = try AmplifyCognitoClientSessionID.named("work", label: "Office")
+
+        XCTAssertEqual(work, office)
+        XCTAssertEqual(work, plain)
+        XCTAssertEqual(work.hashValue, office.hashValue)
+        XCTAssertEqual(work.hashValue, plain.hashValue)
+        XCTAssertEqual(Set([plain, work, office]).count, 1)
+        XCTAssertEqual([plain: 1][office], 1)
+        XCTAssertNil(plain.label)
+        XCTAssertEqual(work.label, "Work")
+        XCTAssertEqual(office.label, "Office")
+        XCTAssertEqual(AmplifyCognitoClientSessionID.new(label: "Added").label, "Added")
+        XCTAssertNil(AmplifyCognitoClientSessionID.new().label)
+    }
+
+    /// - Given: `.default`, and `"$default"` named with a label
+    /// - When: compared
+    /// - Then:
+    ///    - `.default` has no label; the named one is `.default`, carrying its label
+    func testDefaultHasNoLabelAndNamingItWithOneCarriesIt() throws {
+        let labelled = try AmplifyCognitoClientSessionID.named("$default", label: "Home")
+
+        XCTAssertNil(AmplifyCognitoClientSessionID.default.label)
+        XCTAssertNil(try AmplifyCognitoClientSessionID.named("$default").label)
+        XCTAssertEqual(labelled, .default)
+        XCTAssertEqual(labelled.hashValue, AmplifyCognitoClientSessionID.default.hashValue)
+        XCTAssertEqual(labelled.label, "Home")
+    }
+
+    /// A persisted ID is its `stringValue` alone, so saved IDs are unchanged.
+    ///
+    /// - Given: an ID created with a label
+    /// - When: encoded, and decoded again
+    /// - Then:
+    ///    - the encoding is the string value alone; the decoded ID is equal, and has no label
+    func testEncodingDropsTheLabel() throws {
+        let id = try AmplifyCognitoClientSessionID.named("work", label: "Work")
+
+        let data = try JSONEncoder().encode(id)
+
+        XCTAssertEqual(String(decoding: data, as: UTF8.self), #""work""#)
+        let decoded = try JSONDecoder().decode(AmplifyCognitoClientSessionID.self, from: data)
+        XCTAssertEqual(decoded, id)
+        XCTAssertNil(decoded.label)
+    }
+}

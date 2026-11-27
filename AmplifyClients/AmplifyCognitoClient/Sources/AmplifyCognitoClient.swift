@@ -21,8 +21,8 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 /// A handle onto one Cognito session.
 ///
 /// Construction is synchronous and throwing, like every client in the family. Built from an
-/// `AuthClientConfiguration`, it does no file or keychain I/O (`init(from:bundle:options:)` reads the
-/// configuration file first): the saved session is restored in the background, and every operation waits
+/// `AmplifyCognitoClientConfiguration`, it does no file or keychain I/O (`AmplifyCognitoClientConfiguration(from:bundle:)` is what
+/// reads the configuration file): the saved session is restored in the background, and every operation waits
 /// for that restore internally, bounded, so a caller never has to sequence around it.
 ///
 /// **Two clients with the same session ID are two handles onto one session.** Constructing a second
@@ -32,8 +32,9 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 /// configuration throws `sessionConfigurationMismatch` rather than silently attaching.
 ///
 /// ```swift
-/// let work = try AmplifyCognitoClient(options: .init(sessionId: .named("work")))
-/// let home = try AmplifyCognitoClient(options: .init(sessionId: .named("home")))
+/// let configuration = try AmplifyCognitoClientConfiguration()
+/// let work = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: .named("work")))
+/// let home = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: .named("home")))
 /// let connect = AmplifyConnectClient(
 ///     configuration: connectConfiguration,
 ///     credentialsProvider: work.credentialsProvider
@@ -56,7 +57,7 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 /// A named session's credentials are saved in the keychain under its session ID, scoped to the configuration's
 /// pools (the user pool ID, the identity pool ID, or both) and to the keychain access group
 /// (`Options.accessGroup`). `.default`'s are the Auth plugin's own saved login, under the plugin's key for the same
-/// pools and access group, with no session ID in it (see `SessionID.default`). Constructing a client restores the
+/// pools and access group, with no session ID in it (see `AmplifyCognitoClientSessionID.default`). Constructing a client restores the
 /// session saved there, in this launch or a later one. `storedSessions(configuration:accessGroup:includingSignedOut:)`
 /// lists the sessions saved under one configuration and access group, for an account picker. Signing out keeps a
 /// session's row, with its label, until it is purged.
@@ -67,7 +68,7 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 /// configuration reads a different set of them, and `storedSessions` lists only that configuration's. When
 /// the pools change, a named session is carried forward the first time it is restored, as the plugin carries its
 /// record, from the configuration this app last kept that session under (`.default`, the plugin's own record,
-/// follows the plugin's rule instead: see `SessionID.default`):
+/// follows the plugin's rule instead: see `AmplifyCognitoClientSessionID.default`):
 ///
 /// - an identity pool only, then a user pool added beside it: the guest or federated identity, as it was;
 /// - a user pool only, then an identity pool added: signed in, with the identity fetched on first use;
@@ -98,13 +99,16 @@ public final class AmplifyCognitoClient: Sendable {
         /// only one that uses `AWSCognitoAuthPlugin`'s saved login: it reads and writes the plugin's own record.
         ///
         /// Running the plugin and this client side by side over `.default` in one app is not supported: each keeps
-        /// its tokens in memory. See `SessionID.default`.
-        public var sessionId: SessionID
+        /// its tokens in memory. See `AmplifyCognitoClientSessionID.default`.
+        ///
+        /// An ID created with a label (`AmplifyCognitoClientSessionID.named(_:label:)`, `AmplifyCognitoClientSessionID.new(label:)`) labels the session's
+        /// row at sign-in, with no keychain call when the client is built. See `AmplifyCognitoClientSessionID.label`.
+        public let sessionId: AmplifyCognitoClientSessionID
 
         /// The keychain access group to store the session in, to share it between apps and extensions,
         /// as the plugin does today. Part of which record the session reads, so every handle on a
         /// session must pass the same one, and a different group sees different saved sessions.
-        public var accessGroup: String?
+        public let accessGroup: String?
 
         /// Customizes the user pool SDK client's configuration.
         ///
@@ -129,14 +133,14 @@ public final class AmplifyCognitoClient: Sendable {
         /// other client in the process can be built until it returns. Only set configuration values in it:
         /// don't build an `AmplifyCognitoClient` in it, which deadlocks, and don't block waiting on work on
         /// another thread, which can deadlock the same way.
-        public var configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider?
+        public let configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider?
 
         /// - Parameters:
         ///   - sessionId: The session to be a handle onto; `.default` if not given.
         ///   - accessGroup: The keychain access group to store the session in; the app's default if `nil`.
         ///   - configureUserPoolClient: Customizes the user pool SDK client's configuration.
         public init(
-            sessionId: SessionID = .default,
+            sessionId: AmplifyCognitoClientSessionID = .default,
             accessGroup: String? = nil,
             configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider? = nil
         ) {
@@ -146,8 +150,9 @@ public final class AmplifyCognitoClient: Sendable {
         }
     }
 
-    /// The session this handle is bound to.
-    public let sessionId: SessionID
+    /// The session this handle is bound to, as given: its `label` is this handle's own, which the session uses only
+    /// if this handle built it (`AmplifyCognitoClientSessionID.label`).
+    public let sessionId: AmplifyCognitoClientSessionID
 
     /// The session. Strong: a handle keeps its session alive.
     let core: SessionCore
@@ -156,38 +161,23 @@ public final class AmplifyCognitoClient: Sendable {
     ///
     /// Switching configuration under one **named** session ID (release the handles of one, then build one with
     /// another) keeps each configuration's saved record: switching back finds that configuration's session as it
-    /// was, unless it was signed out there. See `SessionID`. `.default`, the default `options.sessionId`, follows
+    /// was, unless it was signed out there. See `AmplifyCognitoClientSessionID`. `.default`, the default `options.sessionId`, follows
     /// the Auth plugin's rule instead and keeps one backend's login at a time: a move to another user pool deletes
-    /// the old login, so switching back finds it signed out. See `SessionID.default`, and use named sessions to
+    /// the old login, so switching back finds it signed out. See `AmplifyCognitoClientSessionID.default`, and use named sessions to
     /// switch between backends.
     ///
-    /// - Throws: `AuthClientError.sessionConfigurationMismatch` if that session is already live in this
-    ///   process under a different configuration; `AuthClientError.configuration` if the SDK clients
+    /// - Throws: `AmplifyCognitoClientError.sessionConfigurationMismatch` if that session is already live in this
+    ///   process under a different configuration; `AmplifyCognitoClientError.configuration` if the SDK clients
     ///   could not be configured.
-    public convenience init(configuration: AuthClientConfiguration, options: Options = Options()) throws {
+    public convenience init(configuration: AmplifyCognitoClientConfiguration, options: Options = Options()) throws {
         try self.init(configuration: configuration, options: options, dependencies: .live)
-    }
-
-    /// Builds a handle from the `auth` section of a Gen2 `amplify_outputs` JSON resource.
-    ///
-    /// Gen2 `amplify_outputs` only: a Gen1 `amplifyconfiguration.json` is refused. The file is read by
-    /// `AuthClientConfiguration.init(from:bundle:)`, never by the client itself.
-    ///
-    /// - Throws: `AuthClientError.configuration` naming the problem with the resource, or anything
-    ///   `init(configuration:options:)` throws.
-    public convenience init(
-        from resource: String = "amplify_outputs",
-        bundle: Bundle = .main,
-        options: Options = Options()
-    ) throws {
-        try self.init(configuration: AuthClientConfiguration(from: resource, bundle: bundle), options: options)
     }
 
     /// The designated initializer, with every dependency injectable.
     ///
     /// No `await` and no keychain call: the core is found or built under the registry lock, and its
     /// restore is only scheduled.
-    init(configuration: AuthClientConfiguration, options: Options, dependencies: SessionCoreDependencies) throws {
+    init(configuration: AmplifyCognitoClientConfiguration, options: Options, dependencies: SessionCoreDependencies) throws {
         let identity = SessionIdentity(configuration: configuration, options: options)
         let sessionId = options.sessionId
         let configureUserPoolClient = options.configureUserPoolClient
@@ -200,10 +190,10 @@ public final class AmplifyCognitoClient: Sendable {
             let clients: CognitoServiceClients
             do {
                 clients = try dependencies.makeClients(configuration, configureUserPoolClient)
-            } catch let error as AuthClientError {
+            } catch let error as AmplifyCognitoClientError {
                 throw error
             } catch {
-                throw AuthClientError.configuration(
+                throw AmplifyCognitoClientError.configuration(
                     "The Cognito SDK clients could not be configured.",
                     "Check the region in the configuration, and any changes made by configureUserPoolClient.",
                     error
@@ -228,7 +218,7 @@ public final class AmplifyCognitoClient: Sendable {
     /// session uses, shared by every handle on it.
     ///
     /// Operations that need AWS (SigV4) credentials, such as the `Admin*` operations, throw
-    /// `AuthClientError.configuration` by design, unless `Options.configureUserPoolClient` set an
+    /// `AmplifyCognitoClientError.configuration` by design, unless `Options.configureUserPoolClient` set an
     /// `awsCredentialIdentityResolver`.
     public func getUserPoolClient() -> CognitoIdentityProviderClient? {
         core.clients.userPool
@@ -237,7 +227,7 @@ public final class AmplifyCognitoClient: Sendable {
     /// The session's identity pool SDK client, or `nil` if no identity pool is configured.
     ///
     /// Operations that need AWS (SigV4) credentials, such as `DescribeIdentityPool`, throw
-    /// `AuthClientError.configuration` by design. To make them, build your own `CognitoIdentityClient`.
+    /// `AmplifyCognitoClientError.configuration` by design. To make them, build your own `CognitoIdentityClient`.
     public func getIdentityClient() -> CognitoIdentityClient? {
         core.clients.identity
     }
@@ -250,12 +240,12 @@ public final class AmplifyCognitoClient: Sendable {
     /// Passing it to a client in the `AmplifyClients` family is how AWS calls are made as this session.
     /// Amplify's category plugins (Storage, Analytics, API and the rest) cannot take it: they always use the
     /// Auth plugin's session in `Amplify.Auth`, whichever session this is.
-    public var credentialsProvider: CognitoCredentialsProvider {
-        CognitoCredentialsProvider(core: core)
+    public var credentialsProvider: AmplifyCognitoClientCredentialsProvider {
+        AmplifyCognitoClientCredentialsProvider(core: core)
     }
 
     /// This session's user pool access token. Bound to this session for life, and keeps it alive.
-    public var userPoolTokenProvider: CognitoUserPoolTokenProvider {
-        CognitoUserPoolTokenProvider(core: core)
+    public var userPoolTokenProvider: AmplifyCognitoClientUserPoolTokenProvider {
+        AmplifyCognitoClientUserPoolTokenProvider(core: core)
     }
 }

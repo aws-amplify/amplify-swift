@@ -43,7 +43,8 @@ Applications that evaluate all members of an enumeration using a `switch` statem
 
 ## Releasing
 
-Releases are cut with the Fastlane `release` lane (`bundle exec fastlane ios release`). It bumps the versions, generates
+Releases are cut with the Fastlane `release` lane (`bundle exec fastlane ios release`). It bumps the versions (the one in
+the `AmplifyCognitoClient` README's install snippet included), generates
 the `CHANGELOG.md` entry from the commits since the last release, which keeps only `feat` and `fix` commits and breaking
 changes, tags the release and pushes it. Release checklist:
 

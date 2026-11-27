@@ -16,7 +16,7 @@ import XCTest
 /// signs up on the default backend, on the real keychain.
 final class MultiSessionFlowTests: ClientIntegrationTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
     /// This test's own two users: fresh ones on the default backend (`makeSignInUser()`), never users
     /// another run shares.
     var users: (alice: TestUser, bob: TestUser)!
@@ -27,7 +27,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         users = try await (makeSignInUser(), makeSignInUser())
     }
 
-    private func account(_ sessionId: SessionID) -> String {
+    private func account(_ sessionId: AmplifyCognitoClientSessionID) -> String {
         SessionRecordKey.account(for: sessionId, in: configuration.poolNamespace, kind: .session)
     }
 
@@ -118,8 +118,8 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         XCTAssertEqual(aliceState, .signedOut)
         let withSignedOut = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         let aliceRow = try XCTUnwrap(withSignedOut.first { $0.sessionId == aliceId })
-        XCTAssertEqual(aliceRow.kind, SessionKind.signedOut)
-        XCTAssertTrue(aliceRow.username == users.alice.username, "the signed-out row names alice")
+        XCTAssertEqual(aliceRow.kind, AmplifyCognitoClientSessionKind.signedOut)
+        XCTAssertTrue(aliceRow.user?.username == users.alice.username, "the signed-out row names alice")
         let withoutSignedOut = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
         XCTAssertFalse(withoutSignedOut.contains { $0.sessionId == aliceId }, "a signed-out row is hidden by default")
         _ = try await bob.credentialsProvider.resolve()
@@ -138,32 +138,37 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
     /// `storedSessions()` lists every stored session from the real keychain, with its label, and without a
     /// network call; the plugin's own record is `.default`'s, and adds no other session (MS-4).
     ///
-    /// - Given: alice and bob signed in under two named session IDs, alice labelled `"Work"`, every handle then
-    ///   dropped, and a plugin record (`amplify.<ns>.session`) in the same keychain service: written by the test,
-    ///   for a probe user, unless one is already there
+    /// - Given: alice and bob signed in under two named session IDs, alice labelled `"Work"` through her client and
+    ///   bob `"Home"` by his session ID's own label, every handle then dropped, and a plugin record
+    ///   (`amplify.<ns>.session`) in the same keychain service: written by the test, for a probe user, unless one
+    ///   is already there
     /// - When:
     ///    - `storedSessions()` reads the keychain, with no live session for any of them
+    ///    - then the static `setSessionLabel` renames bob's session, and a new client is built for it
     /// - Then:
-    ///    - both session IDs are listed, alice with the label `"Work"`, each naming its user
-    ///    - every listed ID is a named session's v1 `amplify.1.` record's, or `.default`, whose record is the
-    ///      plugin's; the plugin's account is never a session ID of its own
+    ///    - both session IDs are listed, alice with the label `"Work"` and bob with `"Home"`, each naming its user
+    ///    - every listed ID is a named session's v1 `amplify.1.` record's, a session's with a sign-in waiting on a
+    ///      challenge (its `.challenge` record: one another test left less than 15 minutes ago is listed), or
+    ///      `.default`, whose record is the plugin's; the plugin's account is never a session ID of its own
     ///    - when the test wrote the plugin record, `.default` is listed from it, naming the probe user
     ///    - no request is sent: structurally, since no handle is live and the listing reads only the
     ///      keychain; the recorder the handles used confirms it saw nothing
+    ///    - after the rename bob's row is labelled `"Renamed"`, and the new client restores signed in as bob, the
+    ///      row's user
     ///
     func testStoredSessionsListsEverySession() async throws {
         let aliceId = try makeSessionID("alice")
         let bobId = try makeSessionID("bob")
         let recorder = RecordingHTTPClient()
         try await signIn(aliceId, as: users.alice, label: "Work", recorder: recorder)
-        try await signIn(bobId, as: users.bob, label: nil, recorder: recorder)
+        try await signIn(AmplifyCognitoClientSessionID.named(bobId.stringValue, label: "Home"), as: users.bob, label: nil, recorder: recorder)
         try await SessionCleanup.waitUntilReleased([aliceId, bobId])
         recorder.reset()
         let pluginAccount = SessionRecordKey.pluginSessionAccount(in: configuration.poolNamespace)
         let pluginRecordWritten = try !IntegrationTestEnvironment.rawKeychainAccounts().contains(pluginAccount)
         if pluginRecordWritten {
             let status = RealKeychain.add(
-                #"{"userPoolOnly":{"signedInData":{"username":"plugin-probe"}}}"#,
+                #"{"userPoolOnly":{"signedInData":{"username":"plugin-probe","userId":"plugin-probe-sub"}}}"#,
                 account: pluginAccount,
                 service: IntegrationTestEnvironment.sessionService
             )
@@ -179,13 +184,15 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
 
         XCTAssertEqual(recorder.requests, [], "listing sessions makes no network call")
         let byId = Dictionary(uniqueKeysWithValues: stored.map { ($0.sessionId, $0) })
-        XCTAssertTrue(byId[aliceId]?.username == users.alice.username, "alice's row names another user")
+        XCTAssertTrue(byId[aliceId]?.user?.username == users.alice.username, "alice's row names another user")
         XCTAssertEqual(byId[aliceId]?.label, "Work")
-        XCTAssertTrue(byId[bobId]?.username == users.bob.username, "bob's row names another user")
-        XCTAssertNil(byId[bobId]?.label)
-        // A `$default.session` record is a development build's leftover, never `.default`'s record.
-        let v1Ids = try Set(IntegrationTestEnvironment.rawKeychainAccounts().compactMap { account -> SessionID? in
-            guard let parsed = SessionRecordKey.parse(account), parsed.kind == .session, parsed.sessionId != .default,
+        XCTAssertTrue(byId[bobId]?.user?.username == users.bob.username, "bob's row names another user")
+        XCTAssertEqual(byId[bobId]?.label, "Home")
+        // A `$default.session` record is a development build's leftover, never `.default`'s record. A session with
+        // nothing saved but an interrupted sign-in is listed from its `.challenge` record.
+        let v1Ids = try Set(IntegrationTestEnvironment.rawKeychainAccounts().compactMap { account -> AmplifyCognitoClientSessionID? in
+            guard let parsed = SessionRecordKey.parse(account),
+                  parsed.kind == .challenge || (parsed.kind == .session && parsed.sessionId != .default),
                   parsed.namespaceComponent == configuration.poolNamespace.keyComponent else {
                 return nil
             }
@@ -194,12 +201,24 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         for row in stored {
             XCTAssertTrue(
                 v1Ids.contains(row.sessionId) || row.sessionId == .default,
-                "a listed session came from neither a named session's v1 record nor the plugin's record"
+                "a listed session came from neither a named session's v1 record or interrupted sign-in nor the plugin's record"
             )
         }
         if pluginRecordWritten {
-            XCTAssertEqual(byId[.default]?.username, "plugin-probe", "`.default` is not listed from the plugin's record")
+            XCTAssertEqual(byId[.default]?.user?.username, "plugin-probe", "`.default` is not listed from the plugin's record")
         }
+
+        try await AmplifyCognitoClient.setSessionLabel("Renamed", sessionId: bobId, configuration: configuration)
+
+        let relabelled = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
+        let bobRow = try XCTUnwrap(relabelled.first { $0.sessionId == bobId }, "bob's row is no longer listed")
+        XCTAssertEqual(bobRow.label, "Renamed")
+        let bob = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: bobId))
+        let restored = await bob.currentSessionState()
+        let bobUser = try await bob.getCurrentUser()
+        XCTAssertState(restored, .signedIn(bobUser), "a relabelled session restores signed in")
+        XCTAssertTrue(bobUser.username == users.bob.username, "bob's session restores as another user")
+        XCTAssertTrue(bobRow.user == bobUser, "bob's row names another user")
     }
 
     /// Deletes one raw account from the session records' service.
@@ -211,7 +230,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
     }
 
     /// Signs `user` in on `sessionId`, labels it, and releases the client on return.
-    private func signIn(_ sessionId: SessionID, as user: TestUser, label: String?, recorder: RecordingHTTPClient) async throws {
+    private func signIn(_ sessionId: AmplifyCognitoClientSessionID, as user: TestUser, label: String?, recorder: RecordingHTTPClient) async throws {
         let client = try AmplifyCognitoClient(
             configuration: configuration,
             options: .init(sessionId: sessionId, configureUserPoolClient: recorder.configureUserPoolClient)
@@ -249,13 +268,13 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         let aliceResolved = try await alice.credentialsProvider.resolve()
         let bobResolved = try await bob.credentialsProvider.resolve()
 
-        let aliceKey = try aliceSession.awsCredentialsResult.get().accessKeyId
-        let bobKey = try bobSession.awsCredentialsResult.get().accessKeyId
+        let aliceKey = try aliceSession.requireAWSCredentials().accessKeyId
+        let bobKey = try bobSession.requireAWSCredentials().accessKeyId
         XCTAssertTrue(aliceResolved.accessKeyId == aliceKey, "alice's provider should resolve her session's credentials")
         XCTAssertTrue(bobResolved.accessKeyId == bobKey, "bob's provider should resolve his session's credentials")
         XCTAssertTrue(aliceResolved.accessKeyId != bobResolved.accessKeyId, "alice's and bob's credentials should differ")
-        let aliceIdentity = try aliceSession.identityIdResult.get()
-        let bobIdentity = try bobSession.identityIdResult.get()
+        let aliceIdentity = try aliceSession.requireIdentityId()
+        let bobIdentity = try bobSession.requireIdentityId()
         XCTAssertTrue(aliceIdentity != bobIdentity, "alice's and bob's identities should differ")
         let roles = try await SandboxRoles()
         for client in [alice, bob] {

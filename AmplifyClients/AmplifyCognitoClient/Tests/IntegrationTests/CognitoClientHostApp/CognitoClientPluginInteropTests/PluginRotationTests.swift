@@ -36,7 +36,7 @@ final class PluginRotationTests: XCTestCase {
 
     static let outputsResource = "AmplifyCognitoClientRotationIntegrationTests-amplify_outputs"
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
     private var outputsData = Data()
     /// The test's own user, signed up in `setUp` and deleted at teardown.
     private var alice: InteropUser?
@@ -48,9 +48,9 @@ final class PluginRotationTests: XCTestCase {
             return
         }
         outputsData = try Data(contentsOf: url)
-        configuration = try AuthClientConfiguration(from: Self.outputsResource, bundle: InteropEnvironment.bundle)
+        configuration = try AmplifyCognitoClientConfiguration(from: Self.outputsResource, bundle: InteropEnvironment.bundle)
         let baseResource = InteropEnvironment.rotationBaseResource
-        let base = try AuthClientConfiguration(from: baseResource, bundle: InteropEnvironment.outputsBundle(baseResource))
+        let base = try AmplifyCognitoClientConfiguration(from: baseResource, bundle: InteropEnvironment.outputsBundle(baseResource))
         guard InteropEnvironment.signsUpOnTheRotationPool(
             rotationPoolId: configuration.userPool?.poolId,
             basePoolId: base.userPool?.poolId
@@ -103,10 +103,12 @@ final class PluginRotationTests: XCTestCase {
             guard case .done = signIn.nextStep else {
                 return XCTFail("alice did not sign in through the client")
             }
-            let first = try await client.fetchAuthSession().userPoolTokensResult.get().refreshToken
-            let refreshed = try await client.fetchAuthSession(options: .init(forceRefresh: true)).userPoolTokensResult
-            guard case .success(let tokens) = refreshed else {
-                return XCTFail("the client's refresh failed: \(Self.caseName(of: refreshed))")
+            let first = try await client.fetchAuthSession().requireUserPoolTokens().refreshToken
+            let tokens: AmplifyCognitoClientUserPoolTokens
+            do {
+                tokens = try await client.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens()
+            } catch {
+                return XCTFail("the client's refresh failed: \(Self.caseName(of: error))")
             }
             XCTAssertTrue(tokens.refreshToken != first, "the client's refresh did not rotate the refresh token: is rotation on?")
             rotated = tokens.refreshToken
@@ -155,11 +157,13 @@ final class PluginRotationTests: XCTestCase {
             guard case .signedIn(let restored) = state, restored.username == fresh.username else {
                 return XCTFail("`.default` did not restore alice from the plugin's record")
             }
-            let held = try await client.fetchAuthSession().userPoolTokensResult.get().refreshToken
+            let held = try await client.fetchAuthSession().requireUserPoolTokens().refreshToken
             XCTAssertTrue(held == pluginRotated, "`.default` does not hold the plugin's rotated token")
-            let refreshed = try await client.fetchAuthSession(options: .init(forceRefresh: true)).userPoolTokensResult
-            guard case .success(let tokens) = refreshed else {
-                return XCTFail("the client's refresh with the plugin's rotated token failed: \(Self.caseName(of: refreshed))")
+            let tokens: AmplifyCognitoClientUserPoolTokens
+            do {
+                tokens = try await client.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens()
+            } catch {
+                return XCTFail("the client's refresh with the plugin's rotated token failed: \(Self.caseName(of: error))")
             }
             XCTAssertTrue(tokens.refreshToken != pluginRotated, "the client's refresh did not rotate the token again")
             clientRotated = tokens.refreshToken
@@ -237,9 +241,9 @@ final class PluginRotationTests: XCTestCase {
     }
 
     /// A client token result's error by its case name only, never its text or payload.
-    private static func caseName(of result: Result<AuthClientUserPoolTokens, AuthClientError>) -> String {
-        guard case .failure(let error) = result else {
-            return "success"
+    private static func caseName(of error: Error) -> String {
+        guard let error = error as? AmplifyCognitoClientError else {
+            return String(describing: type(of: error))
         }
         let described = String(describing: error.kind)
         return described.firstIndex(of: "(").map { String(described[..<$0]) } ?? described

@@ -292,7 +292,7 @@ extension HarnessHelperTests {
     /// - When:
     ///    - `SessionCleanup.cleanUp` runs for both, the failing one first
     /// - Then:
-    ///    - It throws the first session's `AuthClientError`
+    ///    - It throws the first session's `AmplifyCognitoClientError`
     ///    - The second session was still cleaned up: it is not live, and it has no row
     ///
     func testCleanUpContinuesPastAFailingSession() async throws {
@@ -317,7 +317,7 @@ extension HarnessHelperTests {
             )
             XCTFail("Cleanup of a session in a group the app is not entitled to succeeded")
         } catch {
-            XCTAssertTrue(error is AuthClientError, "\(error)")
+            XCTAssertTrue(error is AmplifyCognitoClientError, "\(error)")
         }
 
         XCTAssertNil(SessionCoreRegistry.shared.liveSession(for: ordinary))

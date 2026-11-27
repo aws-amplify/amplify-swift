@@ -55,14 +55,14 @@ extension ClientIntegrationTestCase {
     func signInToDone(
         _ client: AmplifyCognitoClient,
         _ user: FreshUser,
-        flow: AuthClientAuthFlowType? = nil,
+        flow: AmplifyCognitoClientAuthFlowType? = nil,
         file: StaticString = #filePath,
         line: UInt = #line
     ) async throws {
         let result = try await client.signIn(
             username: user.username,
             password: user.password,
-            options: AuthClientSignInOptions(authFlowType: flow)
+            options: AmplifyCognitoClientSignInOptions(authFlowType: flow)
         )
         XCTAssertEqual(result.nextStep, .done, "the sign-in did not complete", file: file, line: line)
     }
@@ -70,7 +70,7 @@ extension ClientIntegrationTestCase {
     /// The device key Cognito put in the session's current access token (`device_key`): the id
     /// `fetchDevices()` lists this session's device under.
     func thisDeviceKey(_ client: AmplifyCognitoClient) async throws -> String {
-        let tokens = try await client.fetchAuthSession().userPoolTokensResult.get()
+        let tokens = try await client.fetchAuthSession().requireUserPoolTokens()
         return try Self.deviceKey(in: tokens.accessToken)
     }
 
@@ -87,15 +87,14 @@ extension ClientIntegrationTestCase {
         _ description: String,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) async throws -> AuthClientUserPoolTokens {
-        let before = try await client.fetchAuthSession().userPoolTokensResult.get()
-        let session = try await client.fetchAuthSession(options: .init(forceRefresh: true))
-        let tokens: AuthClientUserPoolTokens
-        switch session.userPoolTokensResult {
-        case .success(let refreshed):
-            tokens = refreshed
-        case .failure(let error):
-            XCTFail("\(description): the refresh failed (\(error.kind))", file: file, line: line)
+    ) async throws -> AmplifyCognitoClientUserPoolTokens {
+        let before = try await client.fetchAuthSession().requireUserPoolTokens()
+        let tokens: AmplifyCognitoClientUserPoolTokens
+        do {
+            tokens = try await client.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens()
+        } catch {
+            let kind = (error as? AmplifyCognitoClientError).map { "\($0.kind)" } ?? "\(type(of: error))"
+            XCTFail("\(description): the refresh failed (\(kind))", file: file, line: line)
             throw error
         }
         XCTAssertFalse(tokens.idToken.isEmpty, "\(description): no id token", file: file, line: line)
@@ -128,7 +127,7 @@ extension ClientIntegrationTestCase {
 
     /// Checks that `devices` is exactly one device, this session's.
     func assertOnlyThisDevice(
-        _ devices: [AuthClientDevice],
+        _ devices: [AmplifyCognitoClientDevice],
         _ deviceKey: String,
         _ description: String,
         file: StaticString = #filePath,

@@ -9,8 +9,8 @@ import Foundation
 import InternalAWSCognitoAuth
 
 // `.default` runs the Auth plugin's configuration-change rule before it reads (`SessionRecordStore+PluginConfiguration.swift`):
-// at restore, and first in the static `signOutStoredSession` and `purgeStoredSession`, so each acts on what a restore
-// would see. A login the rule deleted is revoked here, best effort and off the restore's path.
+// at restore, and first in the static `signOutStoredSession`, `purgeStoredSession` and `setSessionLabel`, so each acts
+// on what a restore would see. A login the rule deleted is revoked here, best effort and off the restore's path.
 extension SessionCore {
 
     /// The engine configuration `.default` records for the Auth plugin, and runs the plugin's rule with.
@@ -24,7 +24,7 @@ extension SessionCore {
     /// configuration.
     ///
     /// - Returns: What the rule did: for the static sign-out, the record it carried from.
-    /// - Throws: `AuthClientError.storageUnavailable` if storage failed; `SessionRecordStore.CarrySourceChanged` if
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage failed; `SessionRecordStore.CarrySourceChanged` if
     ///   the previous configuration no longer names `heldSource`.
     @discardableResult
     static func applyPluginConfigurationRule(
@@ -87,7 +87,7 @@ extension SessionCore {
         Task.detached {
             let revoked: Bool
             do {
-                revoked = try await makeRevoker(previous).revoke(payload).revokeError == nil
+                revoked = try await makeRevoker(previous).revoke(payload, global: false).revokeError == nil
             } catch {
                 revoked = false
             }
@@ -106,5 +106,5 @@ extension SessionCore {
 private struct AppliedPluginRule: Sendable {
     let outcome: SessionRecordStore.PluginConfigurationOutcome
     let revocable: (payload: Data, previous: AuthConfiguration)?
-    let recordFailure: AuthClientError?
+    let recordFailure: AmplifyCognitoClientError?
 }

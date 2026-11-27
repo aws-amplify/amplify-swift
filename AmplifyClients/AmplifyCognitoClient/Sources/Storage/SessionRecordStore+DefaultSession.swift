@@ -31,7 +31,8 @@ import InternalAWSCognitoAuth
 // **The sidecar is bound to a user** (`DefaultSessionMeta.applies`). It is the only place `.default`'s label
 // lives: a write of the shared record keeps the stored sidecar's label only while it applies to the record's new
 // principal, and rewrites it for that principal otherwise, with no label; only with no readable sidecar is the
-// record's own label used. It is cosmetic, so a failure to write it is logged and never fails the write of the record.
+// record's own label used. A sign-in that keeps no label saves the one its session ID was created with
+// (`labelIfNone`). The sidecar is cosmetic, so a failure to write it is logged and never fails the write of the record.
 //
 // **What a read derives.** The kind, the username and the user ID come from the record's stored format
 // (`PluginRecordSummary`). `identityPending` is a `userPoolOnly` record under a configuration with an identity
@@ -111,7 +112,7 @@ extension SessionRecordStore {
     /// The shared record's bytes, `nil` if there is no item. With `rereadsAbsentSharedRecord`, an absent item is
     /// read once more before answering `nil`, so another process's delete-then-add is not taken for a sign-out.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be read.
     func fetchSharedRecord(operation: String) throws -> Data? {
         try fetchRereadingAbsent(sharedRecordAccount, operation: operation)
     }
@@ -120,7 +121,7 @@ extension SessionRecordStore {
     /// read once more first. For `.default`'s shared record, and the previous configuration's record that the
     /// plugin's configuration-change rule copies or deletes.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be read.
     func fetchRereadingAbsent(_ account: String, operation: String) throws -> Data? {
         if let data = try fetch(account, operation: operation) {
             return data
@@ -133,14 +134,14 @@ extension SessionRecordStore {
 
     /// `.default`'s sidecar.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be read.
     func readSidecar() throws -> SidecarRead {
         try readSidecar(at: sidecarAccount)
     }
 
     /// The sidecar at `account`: this namespace's, or another's (`SessionRecordStore+PluginConfiguration.swift`).
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be read.
     func readSidecar(at account: String) throws -> SidecarRead {
         guard let data = try fetch(account, operation: "read the default session's sidecar") else {
             return .absent
@@ -165,7 +166,7 @@ extension SessionRecordStore {
     ///   its bytes, which stay as they are.
     /// - Bytes that are not the plugin's format: `.corrupt`.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the record or the sidecar could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the record or the sidecar could not be read.
     func readDefault() throws -> ReadResult {
         let bytes = try fetchSharedRecord(operation: "read the default session's saved login")
         let sidecar = try readSidecar().meta
@@ -224,7 +225,7 @@ extension SessionRecordStore {
     /// leaves that writer's sidecar, never one naming the user who was signing out. A process stopped between the two
     /// writes leaves the sidecar the record had, which for a sign-out is the same user's: the signed-out row keeps the
     /// label and last user it had, if any. No namespace marker is written.
-    func writeDefault(_ record: SessionRecord, expecting expected: RecordVersion?) throws -> CommitOutcome {
+    func writeDefault(_ record: SessionRecord, expecting expected: RecordVersion?, labelIfNone: String? = nil) throws -> CommitOutcome {
         let account = sharedRecordAccount
         let current = try fetch(account, operation: "read the default session's saved login before writing it")
         switch expected {
@@ -249,7 +250,7 @@ extension SessionRecordStore {
         guard committed else {
             return .discarded
         }
-        let sidecar = updateSidecar(for: record)
+        let sidecar = updateSidecar(for: record, labelIfNone: labelIfNone)
         let written = defaultRecord(holding: payload, sidecar: sidecar) ?? record
         return .committed(VersionedSessionRecord(record: written, version: .storedBytes(payload)))
     }
@@ -261,12 +262,15 @@ extension SessionRecordStore {
     ///   user yet); otherwise no label. With no readable sidecar, the record's own label.
     /// - A guest or federated identity: no user, keeping the label only of a sidecar with no user.
     ///
+    /// Where that leaves no label, `labelIfNone` is the label: the one a sign-in's session ID was created with. It is
+    /// passed apart from the record's own label, which was read before this write: a label cleared since is not brought back from the record.
+    ///
     /// Nothing is written when nothing changes. Guarded on the sidecar's own bytes; a lost race re-reads and tries
     /// once more. A newer schema's sidecar is never overwritten. Best effort: a failure is logged.
     ///
     /// - Returns: The sidecar that now describes `record`, as written, or as it would have been.
     @discardableResult
-    func updateSidecar(for record: SessionRecord) -> DefaultSessionMeta? {
+    func updateSidecar(for record: SessionRecord, labelIfNone: String? = nil) -> DefaultSessionMeta? {
         var next: DefaultSessionMeta?
         for _ in 1 ... 2 {
             let stored: SidecarRead
@@ -278,7 +282,7 @@ extension SessionRecordStore {
             if case .unsupportedSchema = stored {
                 return nil
             }
-            next = sidecar(after: record, replacing: stored.meta)
+            next = sidecar(after: record, replacing: stored.meta, labelIfNone: labelIfNone)
             guard let wanted = next, !Self.describesTheSame(wanted, stored.meta) else {
                 return next ?? stored.meta
             }
@@ -298,8 +302,12 @@ extension SessionRecordStore {
     }
 
     /// The sidecar that describes `record`, given the stored one; `nil` when there is nothing to keep.
-    private func sidecar(after record: SessionRecord, replacing previous: DefaultSessionMeta?) -> DefaultSessionMeta? {
-        let label: String?
+    private func sidecar(
+        after record: SessionRecord,
+        replacing previous: DefaultSessionMeta?,
+        labelIfNone: String? = nil
+    ) -> DefaultSessionMeta? {
+        var label: String?
         let username: String?
         let userId: String?
         if record.isSignedOut || record.credentials == nil {
@@ -314,6 +322,7 @@ extension SessionRecordStore {
             }
             (username, userId) = Self.isUserKind(record.kind) ? (record.username, record.userId) : (nil, nil)
         }
+        label = label ?? labelIfNone
         // Only what `record` itself says: a write of other credentials (a refresh, a new login) or a sign-out ends it.
         let deadToken = record.credentials == nil ? nil : record.deadToken
         guard previous != nil || label != nil || username != nil || userId != nil || deadToken != nil else {
@@ -328,7 +337,7 @@ extension SessionRecordStore {
     /// record still holds the bytes `expected` names. The shared record is never rewritten for it. A lost sidecar race
     /// re-reads and tries once more; a newer schema's sidecar is never overwritten (`.discarded`).
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage could not be read or written.
     func saveDefaultDeadToken(_ deadToken: DeadToken, expecting expected: RecordVersion?) throws -> CommitOutcome {
         guard let bytes = try fetchSharedRecord(operation: "read the default session's saved login"),
               expected == .storedBytes(bytes) else {
@@ -374,7 +383,7 @@ extension SessionRecordStore {
     /// shared record holds (or, signed out or absent, to the last user the sidecar names). The shared record is never
     /// rewritten for a label.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if storage could not be read or written.
     func setDefaultLabel(_ label: String?) throws -> DefaultLabelOutcome {
         let bytes = try fetchSharedRecord(operation: "read the default session's saved login")
         let stored = try readSidecar()
@@ -582,7 +591,7 @@ extension SessionRecordStore {
         isUserKind(summary.kind) ? summary.userId : nil
     }
 
-    static func isUserKind(_ kind: SessionKind) -> Bool {
+    static func isUserKind(_ kind: AmplifyCognitoClientSessionKind) -> Bool {
         kind == .userPoolOnly || kind == .userPoolAndIdentityPool
     }
 

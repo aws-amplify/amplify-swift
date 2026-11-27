@@ -74,7 +74,7 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertEqual(harness.keychain.value(oldSidecar), sidecar)
         let rowsBack = try await listed(ChangeConfigs.userPoolOnly, includingSignedOut: true)
         XCTAssertEqual(rowsBack.map(\.sessionId), [.default])
-        XCTAssertEqual(rowsBack.first?.username, "alice")
+        XCTAssertEqual(rowsBack.first?.user?.username, "alice")
         XCTAssertEqual(rowsBack.first?.label, "Work")
         XCTAssertEqual(rowsBack.first?.kind, .userPoolOnly)
     }

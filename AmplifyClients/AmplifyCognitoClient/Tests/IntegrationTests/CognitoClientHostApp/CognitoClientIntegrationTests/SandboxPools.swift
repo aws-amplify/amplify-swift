@@ -29,7 +29,7 @@ import Foundation
 /// The multi-pool fixtures: one entry point per plugin-parity pool
 /// for everything a parity test needs besides its assertions.
 ///
-/// `SandboxPools.pool(.standard)` gives the pool's `AuthClientConfiguration` (for the client under
+/// `SandboxPools.pool(.standard)` gives the pool's `AmplifyCognitoClientConfiguration` (for the client under
 /// test) and a plain SDK client on the same public app client (for setup, raw checks and cleanup).
 /// Every call is unauthenticated or authorized by a user's own tokens, so no AWS credentials are
 /// needed. The build phase copies every role's plugin outputs file into the bundle.
@@ -110,7 +110,7 @@ extension SandboxPool {
 struct SandboxPoolClient: Sendable {
     let pool: SandboxPool
     /// The pool's outputs, loaded exactly as an app loads them.
-    let configuration: AuthClientConfiguration
+    let configuration: AmplifyCognitoClientConfiguration
     /// A plain SDK client for the pool's region. Its calls carry no AWS credentials.
     let client: CognitoIdentityProviderClient
     /// The public app client every call goes through.

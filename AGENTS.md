@@ -13,7 +13,7 @@ Detailed conventions and patterns live closer to the code. Read the relevant gui
 
 - [`Amplify/AGENTS.md`](Amplify/AGENTS.md) — Core framework: categories, plugin protocols, error handling, configuration, Hub
 - [`AmplifyPlugins/AGENTS.md`](AmplifyPlugins/AGENTS.md) — Plugin implementations: Auth, API, Storage, DataStore, etc.
-- [`AmplifyClients/AGENTS.md`](AmplifyClients/AGENTS.md) — Standalone clients: Kinesis, Firehose, Connect, EventEnrichment, plus shared RecordCache (new pattern)
+- [`AmplifyClients/AGENTS.md`](AmplifyClients/AGENTS.md) — Standalone clients: Kinesis, Firehose, Connect, EventEnrichment, Cognito, plus shared RecordCache (new pattern)
 
 ## Linting & Formatting (MUST pass)
 
@@ -44,7 +44,7 @@ swiftlint --fix               # Then lint
 amplify-swift/
 ├── Amplify/                    # Core framework (categories, protocols, errors, config)
 ├── AmplifyPlugins/             # AWS service plugins (Auth, API, Storage, DataStore, etc.)
-├── AmplifyClients/             # Standalone AWS clients (Kinesis, Firehose, Connect, EventEnrichment) — new pattern
+├── AmplifyClients/             # Standalone AWS clients (Kinesis, Firehose, Connect, EventEnrichment, CloudWatch, Cognito) — new pattern
 ├── AmplifyFoundation/          # Shared protocols (credentials, logging, errors) — no deps
 ├── AmplifyFoundationBridge/    # Foundation ↔ AWS SDK adapters
 ├── AmplifyTests/               # Core unit tests

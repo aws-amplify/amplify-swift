@@ -116,7 +116,7 @@ final class LiveEngineSessionTests: XCTestCase {
                 // Mapped by the engine (to the plugin's unknown, the client's code-less service error), not folded
                 // into either refresh-token case.
                 if case SessionEngineError.service(.service(nil, let description, let suggestion, _)) = $0 {
-                    return description.contains("boom") && suggestion == AuthClientError.serviceFaultSuggestion
+                    return description.contains("boom") && suggestion == AmplifyCognitoClientError.serviceFaultSuggestion
                 }
                 return false
             })
@@ -369,7 +369,7 @@ final class LiveEngineSessionTests: XCTestCase {
             return XCTFail("expected the mapped revoke failure, got \(String(describing: outcome.revokeError))")
         }
         XCTAssertTrue(description.contains("boom"), description)
-        XCTAssertEqual(suggestion, AuthClientError.revokeNotRetriedSuggestion)
+        XCTAssertEqual(suggestion, AmplifyCognitoClientError.revokeNotRetriedSuggestion)
         XCTAssertNil(outcome.globalSignOutError)
     }
 

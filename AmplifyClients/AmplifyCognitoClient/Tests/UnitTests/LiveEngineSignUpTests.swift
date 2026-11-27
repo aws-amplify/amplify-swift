@@ -60,8 +60,8 @@ final class LiveEngineSignUpTests: XCTestCase {
             clientMetadata: ["app": "test"]
         ))
 
-        XCTAssertEqual(result, AuthClientSignUpResult(
-            .confirmUser(AuthClientCodeDeliveryDetails(destination: .email("c***@e***"), attributeKey: .email), nil, "sub-carol"),
+        XCTAssertEqual(result, AmplifyCognitoClientSignUpResult(
+            .confirmUser(AmplifyCognitoClientCodeDeliveryDetails(destination: .email("c***@e***"), attributeKey: .email), nil, "sub-carol"),
             userId: "sub-carol"
         ))
         XCTAssertFalse(result.isSignUpComplete)
@@ -101,7 +101,7 @@ final class LiveEngineSignUpTests: XCTestCase {
             clientMetadata: [:]
         ))
 
-        XCTAssertEqual(result, AuthClientSignUpResult(.done, userId: "sub-carol"))
+        XCTAssertEqual(result, AmplifyCognitoClientSignUpResult(.done, userId: "sub-carol"))
         XCTAssertTrue(result.isSignUpComplete)
         let input = try XCTUnwrap(harness.cognito.inputs("SignUp", as: SignUpInput.self).first)
         XCTAssertNil(input.password)
@@ -129,7 +129,7 @@ final class LiveEngineSignUpTests: XCTestCase {
 
         let result = try await engine.signUp(.carol)
 
-        XCTAssertEqual(result, AuthClientSignUpResult(.completeAutoSignIn("auto-session"), userId: "sub-carol"))
+        XCTAssertEqual(result, AmplifyCognitoClientSignUpResult(.completeAutoSignIn("auto-session"), userId: "sub-carol"))
         XCTAssertTrue(result.isSignUpComplete)
         let hasSession = await engine.hasAutoSignInSession
         XCTAssertTrue(hasSession)
@@ -186,7 +186,7 @@ final class LiveEngineSignUpTests: XCTestCase {
             forceAliasCreation: true
         ))
 
-        XCTAssertEqual(result, AuthClientSignUpResult(.completeAutoSignIn("auto-session")))
+        XCTAssertEqual(result, AmplifyCognitoClientSignUpResult(.completeAutoSignIn("auto-session")))
         let input = try XCTUnwrap(harness.cognito.inputs("ConfirmSignUp", as: ConfirmSignUpInput.self).first)
         XCTAssertEqual(input.username, "carol")
         XCTAssertEqual(input.confirmationCode, "123456")
@@ -216,7 +216,7 @@ final class LiveEngineSignUpTests: XCTestCase {
 
         let result = try await engine.confirmSignUp(.code("123456", for: "dave"))
 
-        XCTAssertEqual(result, AuthClientSignUpResult(.done))
+        XCTAssertEqual(result, AmplifyCognitoClientSignUpResult(.done))
         let input = try XCTUnwrap(harness.cognito.inputs("ConfirmSignUp", as: ConfirmSignUpInput.self).first)
         XCTAssertNil(input.session)
         XCTAssertNil(input.clientMetadata)
@@ -805,7 +805,7 @@ final class LiveEngineSignUpTests: XCTestCase {
         let withMetadata = try await engine.resendSignUpCode(username: "carol", clientMetadata: ["app": "test"])
         let without = try await engine.resendSignUpCode(username: "carol", clientMetadata: [:])
 
-        let expected = AuthClientCodeDeliveryDetails(destination: .email("c***@e***"), attributeKey: .email)
+        let expected = AmplifyCognitoClientCodeDeliveryDetails(destination: .email("c***@e***"), attributeKey: .email)
         XCTAssertEqual(withMetadata, expected)
         XCTAssertEqual(without, expected)
         let inputs = harness.cognito.inputs("ResendConfirmationCode", as: ResendConfirmationCodeInput.self)
@@ -836,7 +836,7 @@ final class LiveEngineSignUpTests: XCTestCase {
             throw LimitExceededException(message: "Attempt limit exceeded, please try after some time.")
         }
 
-        let mapped = AuthClientError(engine: .unknown("Unable to get Auth code delivery details"))
+        let mapped = AmplifyCognitoClientError(engine: .unknown("Unable to get Auth code delivery details"))
         await assertThrowsAsync({ try await engine.resendSignUpCode(username: "carol", clientMetadata: [:]) }) { error in
             guard case .unknown(let description, let suggestion, _) = authError(error) else {
                 return XCTFail("\(error)")
@@ -930,7 +930,7 @@ final class LiveEngineSignUpTests: XCTestCase {
 
         XCTAssertEqual(signUp.nextStep, .confirmUser(nil, nil, "sub"))
         XCTAssertEqual(confirm.nextStep, .completeAutoSignIn("auto-session"))
-        XCTAssertEqual(result, AuthClientSignInResult(nextStep: .done))
+        XCTAssertEqual(result, AmplifyCognitoClientSignInResult(nextStep: .done))
         let user = try await client.getCurrentUser()
         XCTAssertEqual(user.username, "carol")
         XCTAssertEqual(try clientHarness.storedRecord(work)?.username, "carol")
@@ -990,7 +990,7 @@ final class LiveEngineSignUpTests: XCTestCase {
         )
         let result = try await client.autoSignIn()
 
-        XCTAssertEqual(result, AuthClientSignInResult(nextStep: .done))
+        XCTAssertEqual(result, AmplifyCognitoClientSignInResult(nextStep: .done))
         let input = try XCTUnwrap(harness.cognito.inputs("InitiateAuth", as: InitiateAuthInput.self).first)
         XCTAssertEqual(input.session, "auto-session")
         XCTAssertEqual(harness.cognito.operations, ["SignUp", "InitiateAuth", "GetId", "GetCredentialsForIdentity"])
@@ -1025,7 +1025,7 @@ final class LiveEngineSignUpTests: XCTestCase {
         _ = try await dave.value
         _ = try await engine.confirmSignUp(.code("654321", for: "dave"))
 
-        XCTAssertEqual(confirmation, AuthClientSignUpResult(.done))
+        XCTAssertEqual(confirmation, AmplifyCognitoClientSignUpResult(.done))
         XCTAssertEqual(harness.cognito.inputs("ConfirmSignUp", as: ConfirmSignUpInput.self).map(\.session), [nil, nil])
         let held = await engine.hasAutoSignInSession
         XCTAssertFalse(held)

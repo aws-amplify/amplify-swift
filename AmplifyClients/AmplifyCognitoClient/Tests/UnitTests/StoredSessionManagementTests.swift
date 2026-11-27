@@ -30,7 +30,7 @@ final class StoredSessionManagementTests: XCTestCase {
 
     // MARK: Calls under test
 
-    private func storedSessions(accessGroup: String? = nil, includingSignedOut: Bool = false) async throws -> [StoredSession] {
+    private func storedSessions(accessGroup: String? = nil, includingSignedOut: Bool = false) async throws -> [AmplifyCognitoClientStoredSession] {
         try await AmplifyCognitoClient.storedSessions(
             configuration: ClientFixtures.configuration,
             accessGroup: accessGroup,
@@ -39,7 +39,7 @@ final class StoredSessionManagementTests: XCTestCase {
         )
     }
 
-    private func purge(_ sessionId: SessionID, accessGroup: String? = nil) async throws {
+    private func purge(_ sessionId: AmplifyCognitoClientSessionID, accessGroup: String? = nil) async throws {
         try await AmplifyCognitoClient.purgeStoredSession(
             sessionId: sessionId,
             configuration: ClientFixtures.configuration,
@@ -48,7 +48,7 @@ final class StoredSessionManagementTests: XCTestCase {
         )
     }
 
-    private func signOut(_ sessionId: SessionID, accessGroup: String? = nil) async -> AuthClientSignOutResult {
+    private func signOut(_ sessionId: AmplifyCognitoClientSessionID, accessGroup: String? = nil) async -> AmplifyCognitoClientSignOutResult {
         await AmplifyCognitoClient.signOutStoredSession(
             sessionId: sessionId,
             configuration: ClientFixtures.configuration,
@@ -76,7 +76,7 @@ final class StoredSessionManagementTests: XCTestCase {
         XCTAssertEqual(signedIn.map(\.sessionId), [work])
         XCTAssertEqual(all.map(\.sessionId), [home, work])
         XCTAssertEqual(all.first?.label, "Home")
-        XCTAssertEqual(shared.map(\.username), ["carol"])
+        XCTAssertEqual(shared.map(\.user), [AmplifyCognitoClientUser(username: "carol", userId: "sub-carol")])
     }
 
     /// - Given: saved sessions, and a keychain whose listing fails as if locked
@@ -88,7 +88,7 @@ final class StoredSessionManagementTests: XCTestCase {
         harness.keychain.failing(.list, with: errSecInteractionNotAllowed)
 
         await assertThrowsAsync({ try await self.storedSessions() }) { error in
-            XCTAssertEqual((error as? AuthClientError)?.storageUnavailableReason, .locked, "\(error)")
+            XCTAssertEqual((error as? AmplifyCognitoClientError)?.storageUnavailableReason, .locked, "\(error)")
         }
     }
 
@@ -252,7 +252,7 @@ final class StoredSessionManagementTests: XCTestCase {
         XCTAssertEqual(harness.engine(for: work)?.cancelPendingSignInCount, 0)
         XCTAssertEqual(events.received, [])
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 
     // MARK: Sign-out without a live session
@@ -291,7 +291,7 @@ final class StoredSessionManagementTests: XCTestCase {
     ///    - it is still signed out locally, and the result is `.partial` with the revoke error
     func testStaticSignOutWithAFailedRevokeIsPartial() async throws {
         try harness.signIn(work, .signedIn("alice"))
-        harness.revoker.scriptRevoke { _ in throw AuthClientError.unknown("network down", "retry") }
+        harness.revoker.scriptRevoke { _ in throw AmplifyCognitoClientError.unknown("network down", "retry") }
 
         let result = await signOut(work)
 
@@ -308,7 +308,7 @@ final class StoredSessionManagementTests: XCTestCase {
     ///    - it is signed out locally, and the result is `.partial` with that error and no global failure
     func testStaticSignOutWithAReportedRevokeFailureIsPartial() async throws {
         try harness.signIn(work, .signedIn("alice"))
-        let failure = AuthClientError.service(.network, "revoke failed", "retry")
+        let failure = AmplifyCognitoClientError.service(.network, "revoke failed", "retry")
         harness.revoker.scriptRevokeOutcome { _ in EngineSignOutOutcome(revokeError: failure) }
 
         let result = await signOut(work)
@@ -467,8 +467,8 @@ final class StoredSessionManagementTests: XCTestCase {
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
 
-    /// Two guest payloads with no identity ID to compare (these fakes name none, and the static call reads only the
-    /// plugin's format) have nothing that shows new guest credentials are the same principal's. Treating them as the
+    /// Two guest payloads with no identity ID to compare (the static call reads only the plugin's format, which
+    /// these fakes are not, so it finds none) have nothing that shows new guest credentials are the same principal's. Treating them as the
     /// same would revoke and clear a session this call never saw.
     ///
     /// - Given: a saved guest session, and another process that stores different guest credentials, with no identity
@@ -560,12 +560,12 @@ final class StoredSessionManagementTests: XCTestCase {
                let current = envelope.record.credentials.flatMap(FakePayload.decode) {
                 try store.write(current.refreshed.record(), for: work, expecting: envelope.version)
             }
-            throw AuthClientError.unknown("revoke failed", "retry")
+            throw AmplifyCognitoClientError.unknown("revoke failed", "retry")
         }
 
         let error = await failedSignOutError(signOut(work))
         XCTAssertEqual(error?.storageUnavailableReason, .interrupted, "\(String(describing: error))")
-        XCTAssertEqual((error?.underlyingError as? AuthClientError)?.errorDescription, "revoke failed")
+        XCTAssertEqual((error?.underlyingError as? AmplifyCognitoClientError)?.errorDescription, "revoke failed")
         XCTAssertEqual(harness.revoker.revokeCalls.count, SessionSignOut.maximumAttempts)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
     }
@@ -604,7 +604,7 @@ final class StoredSessionManagementTests: XCTestCase {
             let error = await failedSignOutError(client.signOut(options: .init(globalSignOut: global)))
 
             XCTAssertEqual(error?.storageUnavailableReason, .interrupted, "\(label): \(String(describing: error))")
-            let underlying = try XCTUnwrap(error?.underlyingError as? AuthClientError, label)
+            let underlying = try XCTUnwrap(error?.underlyingError as? AmplifyCognitoClientError, label)
             XCTAssertEqual(underlying.kind, .service(nil), label)
             XCTAssertEqual(underlying.errorDescription, description, label)
             XCTAssertEqual(underlying.recoverySuggestion, suggestion, label)
@@ -628,13 +628,13 @@ final class StoredSessionManagementTests: XCTestCase {
     ///      tokens could not be revoked and suggests retrying the sign-out
     ///    - no underlying error says the session was signed out on this device, or that it will not be retried
     func testAContendedSignOutCarriesAThrownRevokeFailureWithoutTheSignOutsContext() async throws {
-        let rows: [(label: String, error: Error, kind: AuthClientError.Kind, description: String, suggestion: String)] = [
+        let rows: [(label: String, error: Error, kind: AmplifyCognitoClientError.Kind, description: String, suggestion: String)] = [
             (
                 "network",
                 URLError(.notConnectedToInternet),
                 .service(nil),
-                AuthClientError.networkFailureDescription,
-                AuthClientError.clientServiceSuggestion
+                AmplifyCognitoClientError.networkFailureDescription,
+                AmplifyCognitoClientError.clientServiceSuggestion
             ),
             (
                 "other",
@@ -660,7 +660,7 @@ final class StoredSessionManagementTests: XCTestCase {
             let error = await failedSignOutError(signOut(sessionId))
 
             XCTAssertEqual(error?.storageUnavailableReason, .interrupted, "\(row.label): \(String(describing: error))")
-            let underlying = try XCTUnwrap(error?.underlyingError as? AuthClientError, row.label)
+            let underlying = try XCTUnwrap(error?.underlyingError as? AmplifyCognitoClientError, row.label)
             XCTAssertEqual(underlying.kind, row.kind, row.label)
             XCTAssertEqual(underlying.errorDescription, row.description, row.label)
             XCTAssertEqual(underlying.recoverySuggestion, row.suggestion, row.label)
@@ -679,7 +679,7 @@ final class StoredSessionManagementTests: XCTestCase {
     func testACancelledRevokeRetryHasAPlainMappingForAnUnfinishedSignOut() throws {
         let outcome = SessionSignOut.revokeFailureOutcome(CancellationError())
 
-        XCTAssertEqual(outcome.revokeError?.recoverySuggestion, AuthClientError.revokeNotRetriedSuggestion)
+        XCTAssertEqual(outcome.revokeError?.recoverySuggestion, AmplifyCognitoClientError.revokeNotRetriedSuggestion)
         let plain = try XCTUnwrap(outcome.firstError)
         XCTAssertEqual(plain.kind, .unknown)
         XCTAssertEqual(plain.errorDescription, "The sign-out was cancelled before it could revoke the session's latest tokens.")
@@ -780,7 +780,7 @@ final class StoredSessionManagementTests: XCTestCase {
         XCTAssertEqual(result, .failed(SessionSignOut.supersededError()))
         XCTAssertEqual(events.received, [])
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
     }
 }
 
@@ -789,10 +789,10 @@ final class StoredSessionManagementTests: XCTestCase {
 private final class ReaderBox: @unchecked Sendable {
     private let lock = NSLock()
     private var client: AmplifyCognitoClient?
-    private var task: Task<AuthSessionState, Never>?
-    private var recorder: StreamRecorder<AuthEvent>?
+    private var task: Task<AmplifyCognitoClientSessionState, Never>?
+    private var recorder: StreamRecorder<AmplifyCognitoClientEvent>?
 
-    var events: StreamRecorder<AuthEvent> {
+    var events: StreamRecorder<AmplifyCognitoClientEvent> {
         lock.lock()
         defer { lock.unlock() }
         return recorder!
@@ -808,14 +808,14 @@ private final class ReaderBox: @unchecked Sendable {
         lock.unlock()
     }
 
-    func state() async throws -> AuthSessionState {
+    func state() async throws -> AmplifyCognitoClientSessionState {
         guard let task = startedTask() else {
             throw FixtureError(description: "the hook never constructed a client")
         }
         return await task.value
     }
 
-    private func startedTask() -> Task<AuthSessionState, Never>? {
+    private func startedTask() -> Task<AmplifyCognitoClientSessionState, Never>? {
         lock.lock()
         defer { lock.unlock() }
         return task

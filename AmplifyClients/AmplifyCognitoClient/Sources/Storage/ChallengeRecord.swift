@@ -112,7 +112,7 @@ struct ChallengeRecord: Equatable, Sendable {
     /// The step a challenge waits on: its kind, and the payload the kind carries.
     struct Step: Codable, Equatable, Sendable {
 
-        /// The step's case, spelled as `AuthClientSignInStep` spells it. Frozen: part of the stored format.
+        /// The step's case, spelled as `AmplifyCognitoClientSignInStep` spells it. Frozen: part of the stored format.
         enum Kind: String, Codable, Sendable, CaseIterable {
             case confirmSignInWithSMSMFACode
             case confirmSignInWithCustomChallenge

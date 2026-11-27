@@ -37,7 +37,7 @@ final class PasswordResetTests: ClientIntegrationTestCase {
             guard case .confirmResetPasswordWithCode = result.nextStep else {
                 return XCTFail("expected .confirmResetPasswordWithCode")
             }
-        } catch AuthClientError.service(let code?, _, _, _) where [.userNotFound, .limitExceeded].contains(code) {
+        } catch AmplifyCognitoClientError.service(let code?, _, _, _) where [.userNotFound, .limitExceeded].contains(code) {
             return
         } catch {
             XCTFail("expected a simulated delivery, .userNotFound or .limitExceeded; got \(ClientErrorShape.of(error))")
@@ -63,7 +63,7 @@ final class PasswordResetTests: ClientIntegrationTestCase {
                 confirmationCode: "123"
             )
             XCTFail("confirmResetPassword for a user who does not exist should fail")
-        } catch AuthClientError.service(let code?, _, _, _) where [.userNotFound, .codeExpired, .limitExceeded].contains(code) {
+        } catch AmplifyCognitoClientError.service(let code?, _, _, _) where [.userNotFound, .codeExpired, .limitExceeded].contains(code) {
             return
         } catch {
             XCTFail("expected .userNotFound, .codeExpired or .limitExceeded; got \(ClientErrorShape.of(error))")

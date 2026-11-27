@@ -16,7 +16,7 @@ import InternalAWSCognitoAuth
 
 extension AuthConfiguration {
 
-    init(client configuration: AuthClientConfiguration) {
+    init(client configuration: AmplifyCognitoClientConfiguration) {
         self.init(configuration.engineInput)
     }
 
@@ -110,7 +110,7 @@ extension UserPoolConfigurationData.PasswordCharacterPolicy {
 
 extension UserPoolConfigurationData.UsernameAttribute {
 
-    init(_ attribute: AuthClientConfiguration.UsernameAttribute) {
+    init(_ attribute: AmplifyCognitoClientConfiguration.UsernameAttribute) {
         switch attribute {
         case .email: self = .email
         case .phoneNumber: self = .phoneNumber
@@ -120,7 +120,7 @@ extension UserPoolConfigurationData.UsernameAttribute {
 
 extension UserPoolConfigurationData.VerificationMechanism {
 
-    init(_ mechanism: AuthClientConfiguration.VerificationMechanism) {
+    init(_ mechanism: AmplifyCognitoClientConfiguration.VerificationMechanism) {
         switch mechanism {
         case .email: self = .email
         case .phoneNumber: self = .phoneNumber
@@ -133,7 +133,7 @@ extension UserPoolConfigurationData.SignUpAttributeType {
     /// The engine's case for a standard attribute, or `nil` for the ones it has none for.
     /// `EngineUserPoolSettings.signUpAttributes` holds only the 13 it has (`signUpAttributeKeys`), so `nil` is
     /// unreachable from a configuration; it keeps the switch exhaustive without a `default:`.
-    init?(_ key: AuthClientUserAttributeKey) {
+    init?(_ key: AmplifyCognitoClientUserAttributeKey) {
         switch key {
         case .address: self = .address
         case .birthDate: self = .birthDate

@@ -28,56 +28,21 @@ extension SessionCore {
     nonisolated func setSessionLabel(_ label: String?) async throws {
         _ = try await restoredSnapshot()
         try await withRecord { [self] store in
-            for _ in 1 ... Self.maximumRecordWriteAttempts {
-                if sessionId == .default {
-                    switch try await store.setDefaultLabel(label) {
-                    case .written(let result):
-                        await apply(SessionSnapshot(result), event: nil)
-                        return
-                    case .discarded:
-                        continue
-                    case .unreadableRecord:
-                        throw Self.unlabellable(sessionId)
-                    case .unreadableSidecar:
-                        throw Self.labelUnreadable(sessionId)
-                    }
-                }
-                let record: SessionRecord
-                let expected: RecordVersion?
-                switch try await store.read(sessionId) {
-                case .absent:
-                    guard label != nil else {
-                        return
-                    }
-                    // A labelled signed-out row, listed with `includingSignedOut: true`.
-                    record = .signedOut(label: label, username: nil)
-                    expected = nil
-                case .record(let stored):
-                    var labelled = stored.record
-                    labelled.label = label
-                    record = labelled
-                    expected = stored.version
-                case .unsupportedSchema, .corrupt:
-                    throw Self.unlabellable(sessionId)
-                }
-                if case .committed(let committed) = try await store.write(record, for: sessionId, expecting: expected) {
-                    await apply(SessionSnapshot(committed), event: nil)
-                    return
-                }
+            if let labelled = try await store.setLabel(label, for: sessionId) {
+                await apply(labelled, event: nil)
             }
-            throw Self.contended("label")
         }
     }
 
     /// `.default`'s label is kept in a sidecar written by a newer version, which this one never overwrites.
-    private static func labelUnreadable(_ sessionId: SessionID) -> AuthClientError {
+    static func labelUnreadable(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .unknown(
             "Session \"\(sessionId)\" cannot be labelled: its saved label was written by a newer version of the app, which this version cannot read.",
             "Update the app. A purge would reset the label, but for this session it also deletes the Auth plugin's saved login, which signs the user out."
         )
     }
 
-    private static func unlabellable(_ sessionId: SessionID) -> AuthClientError {
+    static func unlabellable(_ sessionId: AmplifyCognitoClientSessionID) -> AmplifyCognitoClientError {
         .unknown(
             "Session \"\(sessionId)\" cannot be labelled: its saved record is one this version cannot read.",
             "Sign the session out to reset it, or update the app."
@@ -138,7 +103,7 @@ extension SessionCore {
         global: Bool = false,
         purge: Bool = false,
         window: SignOutWindow = .none
-    ) async -> AuthClientSignOutResult {
+    ) async -> AmplifyCognitoClientSignOutResult {
         do {
             _ = try await restoredSnapshot()
             return try await withRecord { [self] store in
@@ -187,13 +152,7 @@ extension SessionCore {
                         try await store.purge(sessionId)
                     } catch {
                         // Signed out, but the row is kept: `.partial` with the purge's failure.
-                        let reason = (error as? AuthClientError).flatMap(\.storageUnavailableReason) ?? .interrupted
-                        return outcome.server.signedOutResult(storageError: .storageUnavailable(
-                            reason,
-                            "Session \"\(sessionId)\" was signed out, but its saved row could not be removed.",
-                            "Purge the session to remove the row.",
-                            error
-                        ))
+                        return outcome.server.signedOutResult(storageError: Self.rowNotRemoved(sessionId, error))
                     }
                     await apply(.absent, event: nil)
                 }
@@ -207,7 +166,18 @@ extension SessionCore {
 
     // MARK: Helpers
 
-    static func contended(_ operation: String) -> AuthClientError {
+    /// What a purging sign-out reports as its `storageError` when the session was signed out but its row was not
+    /// removed.
+    static func rowNotRemoved(_ sessionId: AmplifyCognitoClientSessionID, _ error: Error) -> AmplifyCognitoClientError {
+        .storageUnavailable(
+            (error as? AmplifyCognitoClientError).flatMap(\.storageUnavailableReason) ?? .interrupted,
+            "Session \"\(sessionId)\" was signed out, but its saved row could not be removed.",
+            "Purge the session to remove the row.",
+            error
+        )
+    }
+
+    static func contended(_ operation: String) -> AmplifyCognitoClientError {
         .storageUnavailable(
             .interrupted,
             "The session's saved record kept changing, so the \(operation) could not be saved.",

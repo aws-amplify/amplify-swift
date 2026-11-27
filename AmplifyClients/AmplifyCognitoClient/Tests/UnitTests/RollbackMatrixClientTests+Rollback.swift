@@ -85,8 +85,8 @@ extension RollbackMatrixClientTests {
         let state = await rolledForward.currentSessionState()
         let session = try await rolledForward.fetchAuthSession(options: .init(forceRefresh: true))
 
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
-        XCTAssertEqual(try session.userPoolTokensResult.get().refreshToken, "rotated-by-the-client")
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(session.userPoolTokens?.refreshToken, "rotated-by-the-client")
         XCTAssertEqual(cognito.sent, ["refresh-alice-v1", "rotated-by-the-released-plugin", "rotated-by-the-current-plugin"])
         XCTAssertEqual(cognito.refused, [])
         XCTAssertEqual(hiddenReads.accounts, [])
@@ -121,7 +121,7 @@ extension RollbackMatrixClientTests {
             let signedOut = await client?.signOut()
             client = nil
             await harness.waitForBaseline()
-            XCTAssertEqual(carried, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")), label)
+            XCTAssertEqual(carried, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")), label)
             XCTAssertEqual(signedOut, .complete, label)
             XCTAssertEqual(try AmplifyCredentials.decoded(XCTUnwrap(harness.keychain.value(accountA))), try AmplifyCredentials.decoded(alice), label)
 
@@ -173,7 +173,7 @@ extension RollbackMatrixClientTests {
                     let purged = await client?.signOut(options: .init(purgeStoredSession: true))
                     client = nil
                     await harness.waitForBaseline()
-                    XCTAssertEqual(carried, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")), label)
+                    XCTAssertEqual(carried, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")), label)
                     XCTAssertEqual(purged, .complete, label)
                 } else if let binary {
                     let underC = pluginStore(binary, recording: hiddenReads)
@@ -185,7 +185,7 @@ extension RollbackMatrixClientTests {
 
                 guard let binary else {
                     let state = await (try makeClient(configuration: configurationA)).currentSessionState()
-                    XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")), label)
+                    XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")), label)
                     continue
                 }
                 XCTAssertEqual(try pluginStore(binary, configurationA, recording: hiddenReads).retrieveCredential(), try AmplifyCredentials.decoded(alice), label)
@@ -234,8 +234,8 @@ extension RollbackMatrixClientTests {
             app = nil
             await harness.waitForBaseline()
 
-            XCTAssertEqual(relaunched, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")), "\(binary)")
-            XCTAssertEqual(try session?.userPoolTokensResult.get().refreshToken, "rotated-by-the-app", "\(binary)")
+            XCTAssertEqual(relaunched, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")), "\(binary)")
+            XCTAssertEqual(session?.userPoolTokens?.refreshToken, "rotated-by-the-app", "\(binary)")
             XCTAssertEqual(cognito.sent, ["refresh-alice-v1", "rotated-by-the-extension"], "\(binary)")
             XCTAssertEqual(cognito.refused, [], "\(binary)")
             XCTAssertEqual(signedOut, .complete, "\(binary)")
@@ -286,7 +286,7 @@ extension RollbackMatrixClientTests {
             let rolledForward = try await listed()
             XCTAssertEqual(Set(rolledForward.map(\.sessionId)), [work, home], "\(binary)")
             let workBack = await (try makeClient(work)).currentSessionState()
-            XCTAssertEqual(workBack, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")), "\(binary)")
+            XCTAssertEqual(workBack, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")), "\(binary)")
             await harness.waitForBaseline()
 
             try accessGroupTransitionWithoutMigration(binary, over: pluginKeychain, recording: hiddenReads)
@@ -335,8 +335,8 @@ extension RollbackMatrixClientTests {
         client = nil
         await harness.waitForBaseline()
 
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: nil, username: "alice", kind: .userPoolAndIdentityPool)])
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(rows, [AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(signedOut, .complete)
         XCTAssertEqual(harness.keychain.value(pluginAccount), try JSONEncoder().encode(AmplifyCredentials.noCredentials))
         let hiddenReads = HiddenReads()
@@ -397,7 +397,7 @@ extension RollbackMatrixClientTests {
             case .released:
                 XCTAssertNotNil(harness.keychain.value(sidecarAccount), "\(binary)")
                 XCTAssertEqual(listed, [
-                    StoredSession(sessionId: .default, label: "Work", username: "alice", kind: .signedOut)
+                    AmplifyCognitoClientStoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)
                 ], "\(binary)")
             case .current:
                 XCTAssertNil(harness.keychain.value(sidecarAccount), "\(binary)")

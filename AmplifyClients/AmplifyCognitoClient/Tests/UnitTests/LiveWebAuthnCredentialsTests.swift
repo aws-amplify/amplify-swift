@@ -81,11 +81,11 @@ final class LiveWebAuthnCredentialsTests: XCTestCase {
         let deletes = harness.cognito.inputs("DeleteWebAuthnCredential", as: DeleteWebAuthnCredentialInput.self)
         XCTAssertEqual(deletes.map(\.accessToken), [token])
         XCTAssertEqual(deletes.map(\.credentialId), ["cred-2"])
-        XCTAssertEqual(first, AuthClientListWebAuthnCredentialsResult(
+        XCTAssertEqual(first, AmplifyCognitoClientListWebAuthnCredentialsResult(
             credentials: [credential("cred-1", name: "Phone"), credential("cred-2", name: nil)],
             nextToken: "page-2"
         ))
-        XCTAssertEqual(second, AuthClientListWebAuthnCredentialsResult(credentials: [credential("cred-3", name: nil)], nextToken: nil))
+        XCTAssertEqual(second, AmplifyCognitoClientListWebAuthnCredentialsResult(credentials: [credential("cred-3", name: nil)], nextToken: nil))
         XCTAssertFalse(harness.cognito.operations.contains("GetTokensFromRefreshToken"))
         XCTAssertEqual(try clientHarness.storedRecord(ClientFixtures.id("work")), before)
     }
@@ -130,7 +130,7 @@ final class LiveWebAuthnCredentialsTests: XCTestCase {
     func testTheWebAuthnExceptionsAreServiceErrorsWithTheirCode() async throws {
         let engine = try harness.engine()
         let payload = try await harness.signedInPayload("alice", on: engine)
-        let cases: [(Error, AuthClientServiceErrorCode)] = [
+        let cases: [(Error, AmplifyCognitoClientServiceErrorCode)] = [
             (WebAuthnNotEnabledException(message: "m"), .webAuthnNotEnabled),
             (WebAuthnCredentialNotSupportedException(message: "m"), .webAuthnNotSupported),
             (WebAuthnConfigurationMissingException(message: "m"), .webAuthnConfigurationMissing),
@@ -266,7 +266,7 @@ final class LiveWebAuthnCredentialsTests: XCTestCase {
             XCTAssertTrue(error is CancellationError, "\(error)")
         }
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 
     /// - Given: the live engine
@@ -296,8 +296,8 @@ final class LiveWebAuthnCredentialsTests: XCTestCase {
     /// - When: each is mapped, with the calling task cancelled or not
     /// - Then:
     ///    - a cancelled task, a `CancellationError`, and a `.service` with one underneath, bare or in an operation's
-    ///      `Failure`, are `CancellationError`; any other engine error is `AuthClientError(engine:)`, and an
-    ///      operation's `Failure` `AuthClientError(engine:cause:)` with its cause, so a Cognito internal error is
+    ///      `Failure`, are `CancellationError`; any other engine error is `AmplifyCognitoClientError(engine:)`, and an
+    ///      operation's `Failure` `AmplifyCognitoClientError(engine:cause:)` with its cause, so a Cognito internal error is
     ///      `.service` with no code and the retry suggestion; anything else is unchanged
     func testTheFailureRule() {
         let cancelledService = WebAuthnError.unknown(message: "m", error: CancellationError()).engineError
@@ -315,7 +315,7 @@ final class LiveWebAuthnCredentialsTests: XCTestCase {
         XCTAssertEqual(authError(LiveSessionEngine.signedInFailure(notEnabled, cancelled: false))?.kind, .service(.webAuthnNotEnabled))
         let mappedInternal = authError(LiveSessionEngine.signedInFailure(internalFailure, cancelled: false))
         XCTAssertEqual(mappedInternal?.kind, .service(nil))
-        XCTAssertEqual(mappedInternal?.recoverySuggestion, AuthClientError.serviceFaultSuggestion)
+        XCTAssertEqual(mappedInternal?.recoverySuggestion, AmplifyCognitoClientError.serviceFaultSuggestion)
         XCTAssertEqual(authError(LiveSessionEngine.signedInFailure(internalError.engineError, cancelled: false))?.kind, .unknown)
         XCTAssertTrue(LiveSessionEngine.signedInFailure(other, cancelled: false) is FixtureError)
     }
@@ -366,8 +366,8 @@ final class LiveWebAuthnCredentialsTests: XCTestCase {
         )
     }
 
-    private func credential(_ credentialId: String, name: String?) -> AuthClientWebAuthnCredential {
-        AuthClientWebAuthnCredential(credentialId: credentialId, createdAt: created, relyingPartyId: "rp.example", friendlyName: name)
+    private func credential(_ credentialId: String, name: String?) -> AmplifyCognitoClientWebAuthnCredential {
+        AmplifyCognitoClientWebAuthnCredential(credentialId: credentialId, createdAt: created, relyingPartyId: "rp.example", friendlyName: name)
     }
 }
 

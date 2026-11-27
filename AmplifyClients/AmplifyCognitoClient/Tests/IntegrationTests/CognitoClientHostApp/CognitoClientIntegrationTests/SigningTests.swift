@@ -48,7 +48,7 @@ final class SigningTests: ClientIntegrationTestCase {
     ///
     func testCredentialsProviderSignsAnAppSyncRequest() async throws {
         let client = try makeClient("guest-signer")
-        let credentials = try await client.fetchAuthSession().awsCredentialsResult.get()
+        let credentials = try await client.fetchAuthSession().requireAWSCredentials()
 
         let signed = try await Self.sign(
             host: "graphql.com",

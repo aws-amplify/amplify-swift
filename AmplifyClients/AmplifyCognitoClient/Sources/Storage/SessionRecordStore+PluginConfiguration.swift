@@ -39,7 +39,7 @@ import InternalAWSCognitoAuth
 // too, so no signed-out row is left for a login the user never signed out of, and so does the old namespace's
 // interrupted sign-in (`$default.challenge`). All are best effort.
 //
-// **The static `signOutStoredSession` and `purgeStoredSession` apply the rule only when it carries**: they can
+// **The static `signOutStoredSession`, `purgeStoredSession` and `setSessionLabel` apply the rule only when it carries**: they can
 // be called with a configuration other than the app's, which must never delete the app's login (`onlyIfCarrying`).
 // **And they never write `authConfiguration`**: only the app actually running a configuration, a restore, records
 // it. Otherwise a static purge under Y while the app runs X would record Y, and the app's next restore under X would
@@ -78,7 +78,7 @@ extension SessionRecordStore {
     /// The configuration the plugin, or `.default`, last ran with: `nil` if none is recorded, or if the bytes are not a
     /// configuration (as the plugin reads them).
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the item could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the item could not be read.
     func previousPluginConfiguration() throws -> AuthConfiguration? {
         guard let data = try fetch(Self.pluginConfigurationAccount, operation: "read the Auth plugin's last configuration") else {
             return nil
@@ -89,7 +89,7 @@ extension SessionRecordStore {
     /// The namespace other than this one that the recorded previous configuration names: the gate a `.default` restore
     /// also takes, as a named session's takes the namespace its marker names.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the item could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the item could not be read.
     func pluginConfigurationSource() throws -> PoolNamespace? {
         Self.otherNamespace(of: try previousPluginConfiguration(), than: namespace.pools)
     }
@@ -102,12 +102,12 @@ extension SessionRecordStore {
     ///   - current: The engine configuration `.default` runs with now, `AuthConfiguration(client:)`.
     ///   - heldSource: For a caller holding the gate of the namespace the previous configuration names: the namespace
     ///     it expects. Another throws `CarrySourceChanged`, and nothing is changed. `nil` does not check.
-    ///   - onlyIfCarrying: For the static `signOutStoredSession` and `purgeStoredSession`: apply the rule
+    ///   - onlyIfCarrying: For the static `signOutStoredSession`, `purgeStoredSession` and `setSessionLabel`: apply the rule
     ///     only when it carries, and never record `current`. They may be called with a configuration other than the
     ///     app's, which must never delete the app's login, so any other decision changes nothing at all; and a carry
     ///     leaves `authConfiguration` naming the configuration the app last ran with, which only a restore records.
     ///     The next restore under the new configuration applies the rule in full.
-    /// - Throws: `AuthClientError.storageUnavailable` if an item could not be read, written or deleted. Nothing after
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if an item could not be read, written or deleted. Nothing after
     ///   the failure is done, and `authConfiguration` is written only once the rest succeeded.
     func applyPluginConfigurationRule(
         current: AuthConfiguration,
@@ -129,13 +129,13 @@ extension SessionRecordStore {
     /// thrown: the carry or delete has happened by then, and a deleted login must still be
     /// revoked, though the restore fails. The next restore applies the rule again, and finds nothing left to delete.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if an item could not be read, written or deleted before the
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if an item could not be read, written or deleted before the
     ///   record of `current`; `CarrySourceChanged` as `applyPluginConfigurationRule` does.
     func applyPluginConfigurationRuleReportingRecord(
         current: AuthConfiguration,
         heldSource: PoolNamespace??,
         onlyIfCarrying: Bool
-    ) throws -> (outcome: PluginConfigurationOutcome, recordFailure: AuthClientError?) {
+    ) throws -> (outcome: PluginConfigurationOutcome, recordFailure: AmplifyCognitoClientError?) {
         let previous = try previousPluginConfiguration()
         if let heldSource, Self.otherNamespace(of: previous, than: namespace.pools) != heldSource {
             throw CarrySourceChanged()
@@ -169,7 +169,7 @@ extension SessionRecordStore {
             try perform("record the configuration for the Auth plugin") {
                 try keychain.set(AWSCognitoAuthCredentialStore.encodeAuthConfiguration(current), key: Self.pluginConfigurationAccount)
             }
-        } catch let failure as AuthClientError {
+        } catch let failure as AmplifyCognitoClientError {
             return (outcome, failure)
         }
         return (outcome, nil)
@@ -191,7 +191,7 @@ extension SessionRecordStore {
     /// configuration's record when the rule would carry it here, else `nil` (read this namespace's own). What a
     /// picker shown before the first restore after a change lists. A deleting change lists no row of the old record.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if an item could not be read.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if an item could not be read.
     func pendingPluginCarry(current: AuthConfiguration) throws -> SessionRecord? {
         let previous = try previousPluginConfiguration()
         guard case .carry(let fromAccount, let toAccount) = AWSCognitoAuthCredentialStore.configurationChange(from: previous, to: current),
@@ -234,7 +234,7 @@ extension SessionRecordStore {
     /// identity.
     ///
     /// - Returns: `true` if the record was signed out; `false` if it no longer holds `carried` (or it is a guest's).
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be read or written.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be read or written.
     func signOutCarrySource(_ account: String, carried bytes: Data) throws -> Bool {
         guard summarizeSharedRecord(bytes).kind != .guest else {
             return false

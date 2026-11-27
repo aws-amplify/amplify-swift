@@ -20,35 +20,55 @@ final class PublicTestDoubleTests: XCTestCase {
     /// - Then:
     ///    - every value holds what it was given
     func testResultTypesHavePublicInitializers() throws {
-        let tokens = AuthClientUserPoolTokens(idToken: "id", accessToken: "access", refreshToken: "refresh")
-        let credentials = AuthClientAWSCredentials(
+        let tokens = AmplifyCognitoClientUserPoolTokens(idToken: "id", accessToken: "access", refreshToken: "refresh")
+        let credentials = AmplifyCognitoClientAWSCredentials(
             accessKeyId: "AKID",
             secretAccessKey: "secret",
             sessionToken: "token",
             expiration: Date(timeIntervalSince1970: 0)
         )
-        let session = AuthClientSession(
-            identityIdResult: .success("identity"),
-            awsCredentialsResult: .success(credentials),
-            userSubResult: .success("sub"),
-            userPoolTokensResult: .success(tokens)
+        let session = AmplifyCognitoClientAuthSession(
+            identityId: "identity",
+            awsCredentials: credentials,
+            userSub: "sub",
+            userPoolTokens: tokens
         )
-        let result = AuthClientSignInResult(nextStep: .confirmSignInWithTOTPCode)
-        let partial = AuthClientSignOutResult.partial(
+        let result = AmplifyCognitoClientSignInResult(nextStep: .confirmSignInWithTOTPCode)
+        let partial = AmplifyCognitoClientSignOutResult.partial(
             revokeTokenError: nil,
-            globalSignOutError: .unknown("global", "retry"),
+            globalSignOutError: AmplifyCognitoClientGlobalSignOutError(error: .unknown("global", "retry")),
             hostedUIError: nil,
             storageError: nil
         )
 
-        XCTAssertEqual(try session.userPoolTokensResult.get(), tokens)
-        XCTAssertEqual(try session.awsCredentialsResult.get().accessKeyId, "AKID")
+        XCTAssertEqual(session.userPoolTokens, tokens)
+        XCTAssertEqual(session.awsCredentials?.accessKeyId, "AKID")
         XCTAssertEqual(result.nextStep, .confirmSignInWithTOTPCode)
         XCTAssertTrue(partial.signedOutLocally)
         guard case .partial(let revokeTokenError, let globalSignOutError, _, _) = partial else {
             return XCTFail("expected .partial, got \(partial)")
         }
         XCTAssertNil(revokeTokenError)
-        XCTAssertNotNil(globalSignOutError)
+        XCTAssertEqual(globalSignOutError?.error.errorDescription, "global")
+        XCTAssertEqual(AmplifyCognitoClientRevokeTokenError(error: .unknown("revoke", "retry")).error.errorDescription, "revoke")
+        XCTAssertEqual(AmplifyCognitoClientHostedUIError(error: .unknown("page", "retry")).error.errorDescription, "page")
+    }
+
+    /// - Given: an app outside the module
+    /// - When: it builds each empty options type with its public initializer
+    /// - Then:
+    ///    - each compiles (the initializers are public), and two values of a type are equal
+    func testTheEmptyOptionsAreBuildableOutsideTheModule() {
+        XCTAssertEqual(AmplifyCognitoClientChangePasswordOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientFetchUserAttributesOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientConfirmUserAttributeOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientFetchDevicesOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientRememberDeviceOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientForgetDeviceOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientDeleteWebAuthnCredentialOptions(), .init())
+        XCTAssertEqual(AmplifyCognitoClientClearFederationToIdentityPoolOptions(), .init())
+        #if os(iOS) || os(macOS) || os(visionOS)
+        XCTAssertEqual(AmplifyCognitoClientAssociateWebAuthnCredentialOptions(), .init())
+        #endif
     }
 }

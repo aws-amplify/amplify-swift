@@ -33,7 +33,7 @@ final class DefaultSessionItemAccountTests: XCTestCase {
     ///    - `.default`'s session account and every named session's account are not
     ///
     func testMetaAndChallengeAccountsMoveWithThePluginsSession() throws {
-        let work = try SessionID.named("work")
+        let work = try AmplifyCognitoClientSessionID.named("work")
         for namespace in namespaces {
             let meta = SessionRecordKey.metaAccount(in: namespace)
             let challenge = SessionRecordKey.account(for: .default, in: namespace, kind: .challenge)

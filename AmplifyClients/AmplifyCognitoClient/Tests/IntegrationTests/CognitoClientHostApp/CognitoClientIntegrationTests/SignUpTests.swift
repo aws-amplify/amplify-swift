@@ -158,13 +158,13 @@ final class SignUpTests: ClientSignUpTestCase {
             guard case .email = details.destination else {
                 return XCTFail("expected an email destination")
             }
-        } catch AuthClientError.service(.limitExceeded?, _, _, _) {
+        } catch AmplifyCognitoClientError.service(.limitExceeded?, _, _, _) {
             // The SDK retries `LimitExceededException`, so every attempt was the same request, and none counts
             // as answered.
             XCTAssertFalse(recorder.operations.isEmpty, "no ResendConfirmationCode was sent")
             XCTAssertEqual(Set(recorder.operations), ["ResendConfirmationCode"])
             return
-        } catch AuthClientError.service(.userNotFound?, _, _, _) {
+        } catch AmplifyCognitoClientError.service(.userNotFound?, _, _, _) {
             // User-existence errors are on.
         }
         XCTAssertEqual(recorder.answeredOperations, ["ResendConfirmationCode"])

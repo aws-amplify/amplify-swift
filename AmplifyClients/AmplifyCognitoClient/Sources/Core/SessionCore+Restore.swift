@@ -33,7 +33,7 @@ extension SessionCore {
         if let current = await restoredSnapshotIfAny {
             return current
         }
-        let timeout = AuthClientError.storageUnavailable(
+        let timeout = AmplifyCognitoClientError.storageUnavailable(
             .interrupted,
             "Secure storage did not respond within \(bounds.restoreNanoseconds / 1_000_000) ms while restoring session \"\(sessionId)\".",
             "Retry the operation. Do not treat this as signed out."
@@ -44,7 +44,7 @@ extension SessionCore {
                     try await restoreOnce()
                 }
             }
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             if case .storageUnavailable(let reason, _, _, _) = error {
                 await restoreFailed(reason)
             }
@@ -109,7 +109,7 @@ extension SessionCore {
         // The marker kept changing: this restore fails as interrupted, which is not cached, so the next operation
         // on this core restores again, and carries if it can. Reading without carrying would adopt "absent" for
         // the rest of this core's life.
-        throw AuthClientError.storageUnavailable(
+        throw AmplifyCognitoClientError.storageUnavailable(
             .interrupted,
             "Session \"\(sessionId)\"'s saved configuration changed while it was being restored.",
             "Retry the operation. Do not treat this as signed out."
@@ -118,10 +118,10 @@ extension SessionCore {
 
     /// The session's state. Never throws: a storage failure is `.unavailable(reason)`, anything else
     /// unrecoverable is `.failed`. Answers from memory after the restore, without re-reading storage.
-    nonisolated func sessionState() async -> AuthSessionState {
+    nonisolated func sessionState() async -> AmplifyCognitoClientSessionState {
         do {
             _ = try await restoredSnapshot()
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             if case .storageUnavailable(let reason, _, _, _) = error {
                 return .unavailable(reason)
             }

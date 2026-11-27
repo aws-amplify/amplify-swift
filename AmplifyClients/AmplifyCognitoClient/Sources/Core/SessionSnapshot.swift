@@ -94,6 +94,12 @@ struct SessionSnapshot: Sendable, Equatable {
     /// otherwise from the engine, which reads the payload without the network. `nil` if the session
     /// holds no credentials.
     func summary(engine: any SessionEngine) throws -> CredentialSummary? {
+        try Self.summary(of: source, describe: engine.describe)
+    }
+
+    /// `summary(engine:)` of a `source`, over any reader of a credentials payload: an engine's `describe`, or the
+    /// offline one of a listing (`SessionRecordStore.listing`).
+    static func summary(of source: Source, describe: (Data) throws -> CredentialSummary) throws -> CredentialSummary? {
         switch source {
         case .absent, .unreadable:
             return nil
@@ -105,7 +111,7 @@ struct SessionSnapshot: Sendable, Equatable {
             if record.kind == .guest || fromRecord.user != nil {
                 return fromRecord
             }
-            let described = try engine.describe(credentials)
+            let described = try describe(credentials)
             // A federated record names no user, so it always gets here: its identity is the payload's.
             return CredentialSummary(
                 kind: record.kind,
@@ -122,17 +128,28 @@ struct SessionSnapshot: Sendable, Equatable {
     /// refresh that proved the refresh token dead does not change the state: the session stays
     /// `.signedIn(user)`, so an app knows which user to re-authenticate, and its operations throw
     /// `sessionExpired`.
-    func state(engine: any SessionEngine, challenge: AuthClientSignInStep?) -> AuthSessionState {
-        let base = baseState(engine: engine)
+    func state(engine: any SessionEngine, challenge: AmplifyCognitoClientSignInStep?) -> AmplifyCognitoClientSessionState {
+        Self.state(of: source, challenge: challenge, describe: engine.describe)
+    }
+
+    /// `state(engine:challenge:)` of a `source`, over any reader of a credentials payload. A live session and the
+    /// listing of saved sessions (`SessionRecordStore.listing`) both project through it, so they report one state
+    /// for the same saved record and pending challenge.
+    static func state(
+        of source: Source,
+        challenge: AmplifyCognitoClientSignInStep?,
+        describe: (Data) throws -> CredentialSummary
+    ) -> AmplifyCognitoClientSessionState {
+        let base = baseState(of: source, describe: describe)
         switch base {
         case .unavailable, .failed:
             return base
         case .signedIn, .federated, .signedOut, .guest, .awaitingChallenge:
-            return challenge.map(AuthSessionState.awaitingChallenge) ?? base
+            return challenge.map(AmplifyCognitoClientSessionState.awaitingChallenge) ?? base
         }
     }
 
-    private func baseState(engine: any SessionEngine) -> AuthSessionState {
+    private static func baseState(of source: Source, describe: (Data) throws -> CredentialSummary) -> AmplifyCognitoClientSessionState {
         switch source {
         case .absent:
             return .signedOut
@@ -156,7 +173,7 @@ struct SessionSnapshot: Sendable, Equatable {
         case .own:
             let summary: CredentialSummary?
             do {
-                summary = try self.summary(engine: engine)
+                summary = try self.summary(of: source, describe: describe)
             } catch {
                 return .failed(.unknown(
                     "This session's saved credentials could not be read.",
@@ -167,11 +184,11 @@ struct SessionSnapshot: Sendable, Equatable {
             guard let summary else {
                 return .signedOut
             }
-            return Self.state(for: summary)
+            return state(for: summary)
         }
     }
 
-    private static func state(for summary: CredentialSummary) -> AuthSessionState {
+    private static func state(for summary: CredentialSummary) -> AmplifyCognitoClientSessionState {
         switch summary.kind {
         case .signedOut:
             return .signedOut

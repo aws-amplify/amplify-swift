@@ -23,8 +23,22 @@ final class StoredSessionsTests: XCTestCase {
         store = keychain.recordStore(for: StorageFixtures.namespace)
     }
 
-    private func id(_ name: String) throws -> SessionID {
-        try SessionID.named(name)
+    private func id(_ name: String) throws -> AmplifyCognitoClientSessionID {
+        try AmplifyCognitoClientSessionID.named(name)
+    }
+
+    /// Whether a row's state is the `.failed(.unknown)` a restore reports for a record it cannot use.
+    private func isFailed(_ state: AmplifyCognitoClientSessionState?) -> Bool {
+        if case .failed(.unknown)? = state {
+            return true
+        }
+        return false
+    }
+
+    /// The state a restore reports for `record`, its credentials decoded by the live engine's own decode
+    /// (`LiveSessionEngine.describe`).
+    private func restoredByTheEngine(_ record: SessionRecord) -> AmplifyCognitoClientSessionState {
+        SessionSnapshot.state(of: .own(record), challenge: nil) { try CredentialSummary(LiveSessionEngine.credentials(in: $0)) }
     }
 
     private func assertStorageUnavailable(
@@ -34,7 +48,7 @@ final class StoredSessionsTests: XCTestCase {
         _ body: () throws -> some Any
     ) {
         XCTAssertThrowsError(try body(), file: file, line: line) { error in
-            XCTAssertEqual((error as? AuthClientError)?.storageUnavailableReason, reason, "\(error)", file: file, line: line)
+            XCTAssertEqual((error as? AmplifyCognitoClientError)?.storageUnavailableReason, reason, "\(error)", file: file, line: line)
         }
     }
 
@@ -75,34 +89,111 @@ final class StoredSessionsTests: XCTestCase {
         XCTAssertFalse(keychain.hasMutations)
     }
 
-    /// - Given: a signed-in session with a label and a guest session
+    /// - Given: a signed-in session with a label, a guest session and a federated session
     /// - When: saved sessions are listed
     /// - Then:
-    ///    - each row carries the stored label, username and kind, and the guest row has no username
+    ///    - each row carries the stored label and kind, and the state the record projects to
+    ///    - the signed-in row's user is the record's username and user ID; the guest and federated rows have none
     func testRowsCarryTheListingMetadata() throws {
-        try store.write(StorageFixtures.signedIn(label: "Acme Corp", username: "alice@corp"), for: id("work"), expecting: nil)
+        let alice = AmplifyCognitoClientUser(username: "alice@corp", userId: "sub-alice")
+        try store.write(StorageFixtures.signedIn(label: "Acme Corp", username: alice.username, userId: alice.userId), for: id("work"), expecting: nil)
         try store.write(StorageFixtures.guest, for: id("browse"), expecting: nil)
+        let federated = SessionRecord(label: nil, username: nil, kind: .federated, credentials: PluginRecordFixtures.identityPoolWithFederation)
+        try store.write(federated, for: id("partner"), expecting: nil)
 
         XCTAssertEqual(try store.storedSessions(), [
-            StoredSession(sessionId: try id("browse"), label: nil, username: nil, kind: .guest),
-            StoredSession(sessionId: try id("work"), label: "Acme Corp", username: "alice@corp", kind: .userPoolAndIdentityPool)
+            AmplifyCognitoClientStoredSession(sessionId: try id("browse"), label: nil, user: nil, kind: .guest, state: .guest),
+            AmplifyCognitoClientStoredSession(sessionId: try id("partner"), label: nil, user: nil, kind: .federated, state: .federated(identityId: "identityId")),
+            AmplifyCognitoClientStoredSession(sessionId: try id("work"), label: "Acme Corp", user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice))
         ])
     }
 
     /// - Given: two signed-in sessions, one of which is then signed out
     /// - When: saved sessions are listed with and without `includingSignedOut`
     /// - Then:
-    ///    - the default hides the signed-out row; `includingSignedOut: true` shows it with its label
+    ///    - the default hides the signed-out row; `includingSignedOut: true` shows it with its label and its last
+    ///      user
     func testSignedOutRowsAreHiddenByDefault() throws {
-        try store.write(StorageFixtures.signedIn(label: "Acme Corp"), for: id("work"), expecting: nil)
-        try store.write(StorageFixtures.signedIn(), for: id("home"), expecting: nil)
+        let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
+        try store.write(StorageFixtures.signedIn(label: "Acme Corp", userId: alice.userId), for: id("work"), expecting: nil)
+        try store.write(StorageFixtures.signedIn(userId: alice.userId), for: id("home"), expecting: nil)
         XCTAssertEqual(try store.signOut(id("work")), .signedOut)
 
         XCTAssertEqual(try store.storedSessions().map(\.sessionId), [try id("home")])
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: try id("home"), label: nil, username: "alice", kind: .userPoolAndIdentityPool),
-            StoredSession(sessionId: try id("work"), label: "Acme Corp", username: "alice", kind: .signedOut)
+            AmplifyCognitoClientStoredSession(sessionId: try id("home"), label: nil, user: alice, kind: .userPoolAndIdentityPool, state: .signedIn(alice)),
+            AmplifyCognitoClientStoredSession(sessionId: try id("work"), label: "Acme Corp", user: alice, kind: .signedOut, state: .signedOut)
         ])
+    }
+
+    /// A record saved before records kept the user's ID names its user only in its credentials.
+    ///
+    /// - Given: four records with a username and no user ID: one signed out; one signed in whose credentials the
+    ///   engine cannot decode; one signed in whose credentials name the user in their stored format, but which the
+    ///   engine cannot decode either; and one signed in whose credentials the engine decodes
+    /// - When: saved sessions are listed by a store with the readers an app's store has
+    /// - Then:
+    ///    - the last row's user is read from its credentials, and it is `.signedIn` with that user
+    ///    - the other three rows have no user: the signed-in ones are `.failed`, and the signed-out one `.signedOut`
+    ///    - each row's state is the one the live engine's own decode of the record's credentials gives
+    ///    - nothing is written
+    func testARecordWithoutAUserIdNamesTheUserItsCredentialsHold() throws {
+        let appStore = SessionRecordStore(
+            namespace: StorageFixtures.namespace,
+            keychain: keychain.itemStore(service: SessionRecordStore.unsharedService)
+        )
+        let peekable = Data(#"{"userPoolOnly":{"signedInData":{"username":"alice@corp","userId":"1234567890"}}}"#.utf8)
+        let names = ["gone", "opaque", "peekable", "readable"]
+        let records = [
+            SessionRecord.signedOut(label: nil, username: "alice"),
+            StorageFixtures.signedIn(),
+            SessionRecord(label: nil, username: pluginUsername, kind: .userPoolOnly, credentials: peekable),
+            SessionRecord(label: nil, username: pluginUsername, kind: .userPoolOnly, credentials: PluginRecordFixtures.userPoolOnly)
+        ]
+        for (name, record) in zip(names, records) {
+            try store.write(record, for: id(name), expecting: nil)
+        }
+        keychain.resetLogs()
+
+        let listed = try appStore.storedSessions(includingSignedOut: true)
+
+        XCTAssertEqual(listed.map(\.sessionId), try names.map(id))
+        XCTAssertEqual(listed.map(\.user), [nil, nil, nil, pluginUser])
+        XCTAssertEqual(listed.map(\.kind), [.signedOut, .userPoolAndIdentityPool, .userPoolOnly, .userPoolOnly])
+        XCTAssertEqual(listed.map(\.state), records.map(restoredByTheEngine))
+        XCTAssertEqual(listed.map { isFailed($0.state) }, [false, true, true, false], "\(listed)")
+        XCTAssertEqual(listed.first?.state, .signedOut)
+        XCTAssertEqual(listed.last?.state, .signedIn(pluginUser))
+        XCTAssertFalse(keychain.hasMutations)
+    }
+
+    /// No writer saves a user on a guest or federated record: a row never takes one from it.
+    ///
+    /// - Given: a guest record and a federated record that each hold a username and a user ID
+    /// - When: saved sessions are listed
+    /// - Then:
+    ///    - neither row names a user
+    ///    - the guest row is `.guest`; the federated row is `.failed`, as a restore reports it: a record that names
+    ///      a user is not read for its identity
+    func testAGuestOrFederatedRowNamesNoUserWhateverItsRecordHolds() throws {
+        var guest = StorageFixtures.guest
+        (guest.username, guest.userId) = ("alice", "sub-alice")
+        let federated = SessionRecord(
+            label: nil,
+            username: "alice",
+            userId: "sub-alice",
+            kind: .federated,
+            credentials: PluginRecordFixtures.identityPoolWithFederation
+        )
+        try store.write(guest, for: id("browse"), expecting: nil)
+        try store.write(federated, for: id("partner"), expecting: nil)
+
+        let listed = try store.storedSessions()
+
+        XCTAssertEqual(listed.map(\.kind), [.guest, .federated])
+        XCTAssertEqual(listed.map(\.user), [nil, nil])
+        XCTAssertEqual(listed.first?.state, .guest)
+        XCTAssertTrue(isFailed(listed.last?.state), "\(listed)")
     }
 
     // MARK: The plugin's record, listed as `.default`
@@ -123,6 +214,9 @@ final class StoredSessionsTests: XCTestCase {
     /// The plugin fixtures' user.
     private let pluginUserId = "1234567890"
     private let pluginUsername = "alice@corp"
+    private var pluginUser: AmplifyCognitoClientUser {
+        AmplifyCognitoClientUser(username: pluginUsername, userId: pluginUserId)
+    }
 
     private func putSidecar(label: String?, username: String?, userId: String?) throws {
         let meta = DefaultSessionMeta(lastWriteTimestamp: TestClock.start, label: label, username: username, userId: userId)
@@ -135,21 +229,21 @@ final class StoredSessionsTests: XCTestCase {
     /// - Given: only the plugin's record, in each of its signed-in shapes as the plugin writes them
     /// - When: saved sessions are listed
     /// - Then:
-    ///    - there is one `.default` row with the mapped kind, the signed-in username for the user-pool
+    ///    - there is one `.default` row with the mapped kind and state, the signed-in user for the user-pool
     ///      shapes and none otherwise, no label, and nothing is written
     func testPluginOnlyRecordIsListedAsTheDefaultSession() throws {
-        let cases: [(Data, SessionKind, String?)] = [
-            (PluginRecordFixtures.userPoolOnly, .userPoolOnly, "alice@corp"),
-            (PluginRecordFixtures.userPoolAndIdentityPool, .userPoolAndIdentityPool, "alice@corp"),
-            (PluginRecordFixtures.identityPoolOnly, .guest, nil),
-            (PluginRecordFixtures.identityPoolWithFederation, .federated, nil)
+        let cases: [(Data, AmplifyCognitoClientSessionKind, AmplifyCognitoClientUser?, AmplifyCognitoClientSessionState)] = [
+            (PluginRecordFixtures.userPoolOnly, .userPoolOnly, pluginUser, .signedIn(pluginUser)),
+            (PluginRecordFixtures.userPoolAndIdentityPool, .userPoolAndIdentityPool, pluginUser, .signedIn(pluginUser)),
+            (PluginRecordFixtures.identityPoolOnly, .guest, nil, .guest),
+            (PluginRecordFixtures.identityPoolWithFederation, .federated, nil, .federated(identityId: "identityId"))
         ]
-        for (record, kind, username) in cases {
+        for (record, kind, user, state) in cases {
             keychain.put(record, pluginAccount)
 
             XCTAssertEqual(
                 try store.storedSessions(),
-                [StoredSession(sessionId: .default, label: nil, username: username, kind: kind)],
+                [AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: user, kind: kind, state: state)],
                 "\(kind)"
             )
         }
@@ -176,7 +270,7 @@ final class StoredSessionsTests: XCTestCase {
         try putSidecar(label: "Home", username: pluginUsername, userId: pluginUserId)
 
         XCTAssertEqual(try store.storedSessions(), [
-            StoredSession(sessionId: .default, label: "Home", username: pluginUsername, kind: .userPoolAndIdentityPool)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: "Home", user: pluginUser, kind: .userPoolAndIdentityPool, state: .signedIn(pluginUser))
         ])
         XCTAssertFalse(keychain.hasMutations)
     }
@@ -193,7 +287,7 @@ final class StoredSessionsTests: XCTestCase {
         let sidecar = keychain.value(sidecarAccount)
 
         XCTAssertEqual(try store.storedSessions(), [
-            StoredSession(sessionId: .default, label: nil, username: pluginUsername, kind: .userPoolAndIdentityPool)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: pluginUser, kind: .userPoolAndIdentityPool, state: .signedIn(pluginUser))
         ])
         XCTAssertEqual(keychain.value(sidecarAccount), sidecar)
     }
@@ -208,7 +302,22 @@ final class StoredSessionsTests: XCTestCase {
 
         XCTAssertEqual(try store.storedSessions(), [])
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: "Home", username: pluginUsername, kind: .signedOut)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: "Home", user: pluginUser, kind: .signedOut, state: .signedOut)
+        ])
+    }
+
+    /// A user needs both names: a sidecar saved before it kept the user's ID gives the row no user.
+    ///
+    /// - Given: the plugin's record signed out, and a sidecar with a label and alice's username but no user ID
+    /// - When: saved sessions are listed with `includingSignedOut`
+    /// - Then:
+    ///    - the signed-out row keeps the label and has no user
+    func testASignedOutDefaultRowWhoseSidecarHasNoUserIdHasNoUser() throws {
+        keychain.put(PluginRecordFixtures.noCredentials, pluginAccount)
+        try putSidecar(label: "Home", username: pluginUsername, userId: nil)
+
+        XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: "Home", user: nil, kind: .signedOut, state: .signedOut)
         ])
     }
 
@@ -224,7 +333,7 @@ final class StoredSessionsTests: XCTestCase {
 
         XCTAssertEqual(try store.storedSessions(), [])
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: "Home", username: pluginUsername, kind: .signedOut)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: "Home", user: pluginUser, kind: .signedOut, state: .signedOut)
         ])
     }
 
@@ -259,7 +368,7 @@ final class StoredSessionsTests: XCTestCase {
         let listing = try store.listing()
 
         XCTAssertEqual(listing.sessions, [
-            StoredSession(sessionId: .default, label: nil, username: pluginUsername, kind: .userPoolAndIdentityPool)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: pluginUser, kind: .userPoolAndIdentityPool, state: .signedIn(pluginUser))
         ])
         XCTAssertEqual(listing.unreadable, [:])
     }
@@ -273,7 +382,7 @@ final class StoredSessionsTests: XCTestCase {
 
         XCTAssertEqual(try store.storedSessions(), [])
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: nil, username: nil, kind: .signedOut)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: nil, kind: .signedOut, state: .signedOut)
         ])
     }
 
@@ -283,7 +392,8 @@ final class StoredSessionsTests: XCTestCase {
     ///   and that is not JSON
     /// - When: saved sessions are listed
     /// - Then:
-    ///    - each is still a `.default` row, as `.userPoolOnly` with no username
+    ///    - each is still a `.default` row, as `.userPoolOnly` with no label or user, and `.failed`, as its client
+    ///      restores
     func testUnrecognisedPluginRecordIsListedConservatively() throws {
         let shapes = [
             #"{"userPoolWithPasskey":{"signedInData":{"username":"alice"}}}"#,
@@ -294,11 +404,12 @@ final class StoredSessionsTests: XCTestCase {
         for shape in shapes {
             keychain.put(Data(shape.utf8), pluginAccount)
 
-            XCTAssertEqual(
-                try store.storedSessions(),
-                [StoredSession(sessionId: .default, label: nil, username: nil, kind: .userPoolOnly)],
-                shape
-            )
+            let listed = try store.storedSessions()
+
+            XCTAssertEqual(listed.map(\.sessionId), [.default], shape)
+            XCTAssertEqual(listed.first?.kind, .userPoolOnly, shape)
+            XCTAssertEqual([listed.first?.label, listed.first?.user?.username], [nil, nil], shape)
+            XCTAssertTrue(isFailed(listed.first?.state), shape)
         }
         XCTAssertEqual(PluginRecordSummary.unrecognisedKind, .userPoolOnly)
     }
@@ -352,22 +463,27 @@ final class StoredSessionsTests: XCTestCase {
     /// - Given: three saved sessions, one written by a newer schema and one corrupt
     /// - When: saved sessions are listed
     /// - Then:
-    ///    - the readable one is returned, the other two are reported as unreadable with their reasons,
-    ///      and nothing is written or deleted
+    ///    - the readable one is returned as it is; the other two are `.failed` rows, of kind `.userPoolOnly`, reported
+    ///      as unreadable with their reasons, and listed without signed-out rows too
+    ///    - nothing is written or deleted
     func testRecordsThisBuildCannotReadDoNotBlankTheList() throws {
-        try store.write(StorageFixtures.signedIn(), for: id("good"), expecting: nil)
+        let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
+        try store.write(StorageFixtures.signedIn(userId: alice.userId), for: id("good"), expecting: nil)
         keychain.put(StorageFixtures.futureSchemaRecord, store.sessionAccount(for: try id("future")))
         keychain.put(StorageFixtures.corruptRecord, store.sessionAccount(for: try id("broken")))
         keychain.resetLogs()
 
         let listing = try store.listing()
 
-        XCTAssertEqual(listing.sessions.map(\.sessionId), [try id("good")])
+        XCTAssertEqual(listing.sessions.map(\.sessionId), [try id("broken"), try id("future"), try id("good")])
+        XCTAssertEqual(listing.sessions.map(\.kind), [.userPoolOnly, .userPoolOnly, .userPoolAndIdentityPool])
+        XCTAssertEqual(listing.sessions.map { isFailed($0.state) }, [true, true, false])
+        XCTAssertEqual(listing.sessions.last?.state, .signedIn(alice))
         XCTAssertEqual(listing.unreadable, [
             try id("future"): .unsupportedSchema(version: 2),
             try id("broken"): .corrupt
         ])
-        XCTAssertEqual(try store.storedSessions().map(\.sessionId), [try id("good")])
+        XCTAssertEqual(try store.storedSessions(), listing.sessions)
         XCTAssertFalse(keychain.hasMutations)
         XCTAssertEqual(keychain.value(store.sessionAccount(for: try id("future"))), StorageFixtures.futureSchemaRecord)
     }
@@ -406,14 +522,18 @@ final class StoredSessionsTests: XCTestCase {
         assertStorageUnavailable(.interrupted) { try store.storedSessions() }
     }
 
-    /// - Given: only records this build cannot read, from a newer schema
+    /// - Given: only a record this build cannot read, from a newer schema
     /// - When: saved sessions are listed
     /// - Then:
-    ///    - the list is empty without throwing: they are skipped, as a newer binary's records must be
-    func testOnlyFutureSchemaRecordsListAsEmpty() throws {
+    ///    - it is a `.failed` row, without throwing, and the record is left as a newer binary's must be
+    func testOnlyFutureSchemaRecordsListAsFailedRows() throws {
         keychain.put(StorageFixtures.futureSchemaRecord, store.sessionAccount(for: try id("future")))
 
-        XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [])
+        let listed = try store.storedSessions()
+
+        XCTAssertEqual(listed.map(\.sessionId), [try id("future")])
+        XCTAssertTrue(isFailed(listed.first?.state), "\(listed)")
+        XCTAssertEqual(keychain.value(store.sessionAccount(for: try id("future"))), StorageFixtures.futureSchemaRecord)
     }
 
     /// An unscoped listing returns an account once per access group that holds it.

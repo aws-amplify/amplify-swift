@@ -86,7 +86,7 @@ final class ClientConstructionTests: XCTestCase {
         _ construct: () throws -> AmplifyCognitoClient
     ) {
         XCTAssertThrowsError(try construct(), description, file: file, line: line) { error in
-            let error = error as? AuthClientError
+            let error = error as? AmplifyCognitoClientError
             XCTAssertEqual(error?.isMismatch(for: ClientFixtures.id("work")), true, "\(String(describing: error))", file: file, line: line)
             XCTAssertEqual(
                 error?.errorDescription.contains(fragment),
@@ -189,12 +189,11 @@ final class ClientConstructionTests: XCTestCase {
         redirectSignOutURIs: [String] = ["app://out/"],
         identityProviders: [String] = ["GOOGLE"],
         responseType: String = "code",
-        passwordPolicy: AuthClientConfiguration.PasswordPolicy = .init(minLength: 8, requiresNumbers: true),
-        standardRequiredAttributes: [AuthClientUserAttributeKey] = [.email],
-        mfaEnforcement: AuthClientConfiguration.MFAEnforcement? = .optional,
-        mfaMethods: [AuthClientMFAType] = [.sms, .totp],
-        unauthenticatedIdentitiesEnabled: Bool? = nil
-    ) -> AuthClientConfiguration {
+        passwordPolicy: AmplifyCognitoClientConfiguration.PasswordPolicy = .init(minLength: 8, requiresNumbers: true),
+        standardRequiredAttributes: [AmplifyCognitoClientUserAttributeKey] = [.email],
+        mfaEnforcement: AmplifyCognitoClientConfiguration.MFAEnforcement? = .optional,
+        mfaMethods: [AmplifyCognitoClientMFAType] = [.sms, .totp]
+    ) -> AmplifyCognitoClientConfiguration {
         ClientFixtures.make(
             userPool: .init(
                 poolId: poolId,
@@ -217,8 +216,7 @@ final class ClientConstructionTests: XCTestCase {
             ),
             identityPool: .init(
                 poolId: ClientFixtures.identityPool.poolId,
-                region: ClientFixtures.identityPool.region,
-                unauthenticatedIdentitiesEnabled: unauthenticatedIdentitiesEnabled
+                region: ClientFixtures.identityPool.region
             )
         )
     }
@@ -232,7 +230,7 @@ final class ClientConstructionTests: XCTestCase {
     ///   setting the engine does receive
     /// - Then:
     ///    - `"work"` is joined despite reordered scopes, extra redirect URIs, other identity providers and
-    ///      response type, another MFA enforcement and method list, stated guest access, and extra
+    ///      response type, another MFA enforcement and method list, and extra
     ///      standard attributes the engine drops
     ///    - `"plain"` is joined by the same pools carrying only such settings, as a configuration read
     ///      from `amplify_outputs` would
@@ -241,7 +239,7 @@ final class ClientConstructionTests: XCTestCase {
         let work = ClientFixtures.id("work")
         let original = try harness.client(work, configuration: settingsConfiguration())
 
-        let joining: [(String, AuthClientConfiguration)] = [
+        let joining: [(String, AmplifyCognitoClientConfiguration)] = [
             ("reordered scopes", settingsConfiguration(scopes: ["email", "openid"])),
             ("extra redirect URIs", settingsConfiguration(
                 redirectSignInURIs: ["app://in/", "https://example.com/in"],
@@ -251,7 +249,6 @@ final class ClientConstructionTests: XCTestCase {
             ("another response type", settingsConfiguration(responseType: "token")),
             ("another MFA enforcement", settingsConfiguration(mfaEnforcement: .required)),
             ("another MFA method list", settingsConfiguration(mfaMethods: [.totp])),
-            ("guest access stated", settingsConfiguration(unauthenticatedIdentitiesEnabled: true)),
             ("attributes the engine drops", settingsConfiguration(standardRequiredAttributes: [.email, .locale, .sub]))
         ]
         for (description, configuration) in joining {
@@ -271,8 +268,7 @@ final class ClientConstructionTests: XCTestCase {
             ),
             identityPool: .init(
                 poolId: ClientFixtures.identityPool.poolId,
-                region: ClientFixtures.identityPool.region,
-                unauthenticatedIdentitiesEnabled: false
+                region: ClientFixtures.identityPool.region
             )
         )
         XCTAssertTrue(try harness.client(plain, configuration: fromOutputs).core === bare.core)
@@ -355,12 +351,12 @@ final class ClientConstructionTests: XCTestCase {
     /// - Given: SDK clients whose configuration throws
     /// - When: a client is constructed
     /// - Then:
-    ///    - it throws `AuthClientError.configuration` carrying the SDK error, and no session is registered
+    ///    - it throws `AmplifyCognitoClientError.configuration` carrying the SDK error, and no session is registered
     func testSDKConfigurationErrorBecomesConfigurationError() {
         harness.useClientsFactory { _, _ in throw FixtureError(description: "bad region") }
 
         XCTAssertThrowsError(try harness.client()) { error in
-            guard case .configuration(_, _, let underlying) = error as? AuthClientError else {
+            guard case .configuration(_, _, let underlying) = error as? AmplifyCognitoClientError else {
                 return XCTFail("\(error)")
             }
             XCTAssertEqual((underlying as? FixtureError)?.description, "bad region")
@@ -373,7 +369,7 @@ final class ClientConstructionTests: XCTestCase {
     /// - Then:
     ///    - the first construction throws the error and registers nothing; the second succeeds
     func testEngineCreationFailureRegistersNothing() throws {
-        harness.failEngineCreation(with: AuthClientError.unknown("no engine", "retry"))
+        harness.failEngineCreation(with: AmplifyCognitoClientError.unknown("no engine", "retry"))
 
         XCTAssertThrowsError(try harness.client())
         XCTAssertEqual(harness.registry.entryCount, 0)
@@ -460,7 +456,7 @@ final class ClientConstructionTests: XCTestCase {
                 _ = try harness.client(work, accessGroup: "group.other")
                 XCTFail("the mismatched construction must throw")
             } catch {
-                XCTAssertEqual((error as? AuthClientError)?.isMismatch(for: work), true, "\(error)")
+                XCTAssertEqual((error as? AmplifyCognitoClientError)?.isMismatch(for: work), true, "\(error)")
             }
             finished.raise()
             returned.fulfill()

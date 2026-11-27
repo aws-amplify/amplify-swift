@@ -9,7 +9,7 @@ import Foundation
 import InternalAWSCognitoAuth
 
 /// Revokes a stored session's tokens when no live session core holds it (`signOutStoredSession`), with the
-/// same `revoke(payload, global: false)` a live session runs.
+/// same `revoke(payload, global:)` a live session runs.
 ///
 /// **Stateless, and it touches no keychain.** Its engine's device records are inert: every read is absent,
 /// every write is dropped. A revoke never reads device records anyway; the inert store makes sure of it. Its
@@ -19,7 +19,7 @@ struct LiveSessionRevoker: SessionRevoker {
 
     private let engine: Result<LiveSessionEngine, Error>
 
-    init(configuration: AuthClientConfiguration) {
+    init(configuration: AmplifyCognitoClientConfiguration) {
         self.engine = Result {
             try LiveSessionEngine(resources: Self.resources(
                 configuration: configuration,
@@ -67,7 +67,7 @@ struct LiveSessionRevoker: SessionRevoker {
     ///
     /// - Parameter services: what the engine calls Cognito through; the clients' own unless a test scripts them.
     static func resources(
-        configuration: AuthClientConfiguration,
+        configuration: AmplifyCognitoClientConfiguration,
         clients: CognitoServiceClients,
         services: EngineServices? = nil
     ) -> EngineResources {
@@ -81,8 +81,8 @@ struct LiveSessionRevoker: SessionRevoker {
         )
     }
 
-    func revoke(_ payload: Data) async throws -> EngineSignOutOutcome {
-        try await engine.get().revoke(payload, global: false)
+    func revoke(_ payload: Data, global: Bool) async throws -> EngineSignOutOutcome {
+        try await engine.get().revoke(payload, global: global)
     }
 
     func signOutPresentsBrowser(_ payload: Data) -> Bool {

@@ -34,7 +34,7 @@ final class AccessGroupRemovalRealKeychainTests: XCTestCase {
     private let accessGroupDefaultsKey = "amplify_secure_storage_scopes.awsCognitoAuthPlugin.accessGroup"
 
     private var sharedGroup = ""
-    private var configuration: AuthClientConfiguration?
+    private var configuration: AmplifyCognitoClientConfiguration?
     /// The test's own user, deleted at teardown.
     private var alice: InteropUser?
 
@@ -42,7 +42,7 @@ final class AccessGroupRemovalRealKeychainTests: XCTestCase {
         try await super.setUp()
         try InteropEnvironment.requireProvisioned()
         sharedGroup = try RealKeychain.sharedGroup(defaultGroup: RealKeychain.defaultGroup())
-        configuration = try AuthClientConfiguration(
+        configuration = try AmplifyCognitoClientConfiguration(
             from: InteropEnvironment.outputsResource,
             bundle: InteropEnvironment.outputsBundle()
         )
@@ -122,7 +122,7 @@ final class AccessGroupRemovalRealKeychainTests: XCTestCase {
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
         let defaultRow = listed.first { $0.sessionId == .default }
         RealKeychain.report(self, "the client lists \(listed)")
-        XCTAssertTrue(defaultRow?.username == alice.username, "the client's listing is \(listed)")
+        XCTAssertTrue(defaultRow?.user?.username == alice.username, "the client's listing is \(listed)")
         XCTAssertEqual(defaultRow?.kind, .userPoolAndIdentityPool, "the client's listing is \(listed)")
 
         do {

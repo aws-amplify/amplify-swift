@@ -15,7 +15,7 @@ import Security
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// Listing before a restore, and the static `signOutStoredSession` and `purgeStoredSession`.
+/// Listing before a restore, and the static `signOutStoredSession`, `purgeStoredSession` and `setSessionLabel`.
 extension DefaultSessionConfigurationChangeTests {
 
     // MARK: - Listing and the static calls
@@ -35,8 +35,27 @@ extension DefaultSessionConfigurationChangeTests {
 
         let rows = try await listed(ChangeConfigs.both)
 
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: "Work", username: "alice", kind: .userPoolOnly)])
+        XCTAssertEqual(rows, [AmplifyCognitoClientStoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
         XCTAssertEqual(harness.keychain.writtenAccounts, [])
+    }
+
+    /// - Given: the plugin's guest record under both pools, no restore since the identity pool was removed, and a
+    ///   sign-in saved under the new configuration while it waited on a challenge
+    /// - When: the saved sessions are listed under the new configuration; then a client restores under it
+    /// - Then:
+    ///    - `.default` is listed as the carried record will be read, a signed-out row, awaiting the challenge
+    ///    - the client restores to the same state
+    func testListingBeforeRestore_withAPendingChallenge_listsTheCarriedRowAwaitingIt() async throws {
+        let step = AmplifyCognitoClientSignInStep.confirmSignInWithTOTPCode
+        try pluginSaves(ChangePayloads.guest(), under: ChangeConfigs.both)
+        let challenge = ChallengeRecord(createdAt: TestClock.start, state: try XCTUnwrap(.fake(step)))
+        try harness.store(configuration: ChangeConfigs.userPoolOnly).putChallenge(challenge, for: .default)
+
+        let rows = try await listed(ChangeConfigs.userPoolOnly)
+        let restored = await makeClient(ChangeConfigs.userPoolOnly).currentSessionState()
+
+        XCTAssertEqual(rows, [AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: nil, kind: .signedOut, state: .awaitingChallenge(step))])
+        XCTAssertEqual(restored, .awaitingChallenge(step))
     }
 
     /// - Given: alice's record under user pool A, and no restore since the user pool changed
@@ -125,7 +144,7 @@ extension DefaultSessionConfigurationChangeTests {
         await harness.waitForBaseline()
         XCTAssertEqual(restoredUnderApp, .signedOut)
         XCTAssertEqual(rows.map(\.label), ["Work"])
-        XCTAssertEqual(rows.map(\.username), ["alice"])
+        XCTAssertEqual(rows.map(\.user?.username), ["alice"])
 
         let restoredUnderCarrying = await makeClient(carryingConfiguration).currentSessionState()
         XCTAssertEqual(restoredUnderCarrying, .signedOut)
@@ -146,7 +165,7 @@ extension DefaultSessionConfigurationChangeTests {
         let appConfiguration = ChangeConfigs.userPoolOnly
         let carryingConfiguration = ChangeConfigs.both
         let before = try await pluginSignsIn("alice", under: appConfiguration)
-        let failure = AuthClientError.service(.network, "RevokeToken failed", "Retry later.")
+        let failure = AmplifyCognitoClientError.service(.network, "RevokeToken failed", "Retry later.")
         harness.revoker.scriptRevokeOutcome { _ in EngineSignOutOutcome(revokeError: failure) }
 
         let result = await AmplifyCognitoClient.signOutStoredSession(
@@ -281,7 +300,7 @@ extension DefaultSessionConfigurationChangeTests {
         let appConfiguration = ChangeConfigs.identityPoolOnly
         let carryingConfiguration = ChangeConfigs.both
         let guest = try pluginSaves(ChangePayloads.guest(), under: appConfiguration)
-        let guestRow = StoredSession(sessionId: .default, label: nil, username: nil, kind: .guest)
+        let guestRow = AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: nil, kind: .guest, state: .guest)
 
         let result = await AmplifyCognitoClient.signOutStoredSession(
             sessionId: .default,
@@ -400,7 +419,7 @@ extension DefaultSessionConfigurationChangeTests {
 
         let rows = try await listed(ChangeConfigs.both)
         XCTAssertEqual(rows.map(\.sessionId), [.default])
-        XCTAssertEqual(rows.first?.username, "alice")
+        XCTAssertEqual(rows.first?.user?.username, "alice")
         let restored = await makeClient(ChangeConfigs.both).currentSessionState()
         XCTAssertEqual(restored, .signedIn(alice))
         XCTAssertNotNil(harness.keychain.value(account(ChangeConfigs.both)))
@@ -465,7 +484,7 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertEqual(harness.keychain.value(account(appConfiguration)), before)
         XCTAssertEqual(harness.keychain.value(appSidecar), sidecarBefore)
         XCTAssertEqual(restored, .signedIn(alice))
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: "Work", username: "alice", kind: .userPoolOnly)])
+        XCTAssertEqual(rows, [AmplifyCognitoClientStoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
     }
 
     #if os(iOS) || os(macOS) || os(visionOS)
@@ -501,5 +520,64 @@ extension DefaultSessionConfigurationChangeTests {
                 expiration: Date(timeIntervalSince1970: 4_000_000_000)
             )
         ))
+    }
+}
+
+// MARK: - The static setSessionLabel
+
+extension DefaultSessionConfigurationChangeTests {
+
+    /// - Given: alice's record under a user-pool-only configuration, and no restore since an identity pool was added
+    /// - When: the static `setSessionLabel` labels `.default` under the new configuration, then the saved sessions
+    ///   are listed under it
+    /// - Then:
+    ///    - the rule runs first: the record is carried to the new account, still signed in, and the label is bound
+    ///      to alice there
+    ///    - the old record is left as it was, nothing is revoked, and `authConfiguration` still names the old
+    ///      configuration, which only a restore replaces
+    func testStaticLabelAfterAChange_appliesTheRuleFirst() async throws {
+        let old = try await pluginSignsIn("alice", under: ChangeConfigs.userPoolOnly)
+
+        try await AmplifyCognitoClient.setSessionLabel(
+            "Work",
+            sessionId: .default,
+            configuration: ChangeConfigs.both,
+            accessGroup: nil,
+            dependencies: dependencies
+        )
+        let rows = try await listed(ChangeConfigs.both)
+
+        XCTAssertEqual(rows.map(\.label), ["Work"])
+        XCTAssertEqual(rows.map(\.user?.username), ["alice"])
+        XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.both)), old)
+        XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.userPoolOnly)), old)
+        XCTAssertEqual(harness.revoker.revokeCalls, [])
+        XCTAssertEqual(harness.keychain.recordedPluginConfiguration(), AuthConfiguration(client: ChangeConfigs.userPoolOnly))
+    }
+
+    /// - Given: alice's record under user pool A, and no restore since the user pool changed
+    /// - When: the static `setSessionLabel` labels `.default` under user pool B, then the saved sessions are listed
+    ///   under B, signed-out rows included
+    /// - Then:
+    ///    - the rule does not carry, so it is not applied: alice's record under A is left as it was, and nothing is
+    ///      revoked
+    ///    - B has no login, so the label is a signed-out row's there, bound to nobody
+    func testStaticLabelAfterAClearingChange_leavesTheOldLogin() async throws {
+        let old = try await pluginSignsIn("alice", under: ChangeConfigs.both)
+
+        try await AmplifyCognitoClient.setSessionLabel(
+            "Work",
+            sessionId: .default,
+            configuration: ChangeConfigs.otherUserPool,
+            accessGroup: nil,
+            dependencies: dependencies
+        )
+        let rows = try await listed(ChangeConfigs.otherUserPool, includingSignedOut: true)
+
+        XCTAssertEqual(rows, [AmplifyCognitoClientStoredSession(sessionId: .default, label: "Work", user: nil, kind: .signedOut, state: .signedOut)])
+        XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.both)), old)
+        XCTAssertNil(harness.keychain.value(account(ChangeConfigs.otherUserPool)))
+        XCTAssertEqual(harness.revoker.revokeCalls, [])
+        XCTAssertEqual(harness.keychain.recordedPluginConfiguration(), AuthConfiguration(client: ChangeConfigs.both))
     }
 }

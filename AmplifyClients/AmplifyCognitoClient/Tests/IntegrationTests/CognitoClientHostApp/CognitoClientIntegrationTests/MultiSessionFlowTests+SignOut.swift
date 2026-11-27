@@ -27,8 +27,8 @@ extension MultiSessionFlowTests {
         let users = try XCTUnwrap(users)
         let aliceId = try makeSessionID("alice")
         let bobId = try makeSessionID("bob")
-        let aliceEvents: StreamRecorder<AuthEvent>
-        let bobEvents: StreamRecorder<AuthEvent>
+        let aliceEvents: StreamRecorder<AmplifyCognitoClientEvent>
+        let bobEvents: StreamRecorder<AmplifyCognitoClientEvent>
         do {
             let alice = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: aliceId))
             let bob = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: bobId))
@@ -46,7 +46,7 @@ extension MultiSessionFlowTests {
             let bobState = await bob.currentSessionState()
             XCTAssertState(bobState, .signedIn(bobUser))
             let refreshed = try await bob.fetchAuthSession(options: .init(forceRefresh: true))
-            let accessToken = try refreshed.userPoolTokensResult.get().accessToken
+            let accessToken = try refreshed.requireUserPoolTokens().accessToken
             XCTAssertTrue(
                 try IntegrationTestEnvironment.jwtClaims(accessToken)["username"] as? String == users.bob.username,
                 "B's refreshed token names another user"

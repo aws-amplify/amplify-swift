@@ -112,8 +112,8 @@ extension RollbackMatrixPluginTests {
         let state = await rolledForward.currentSessionState()
         let session = try await rolledForward.fetchAuthSession(options: .init(forceRefresh: true))
 
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "alice-sub")))
-        XCTAssertEqual(try session.userPoolTokensResult.get().refreshToken, "rotated-by-the-client")
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "alice-sub")))
+        XCTAssertEqual(session.userPoolTokens?.refreshToken, "rotated-by-the-client")
         XCTAssertEqual(cognito.sent, ["refresh-alice", "rotated-by-the-released-plugin", "rotated-by-the-current-plugin"])
         XCTAssertEqual(cognito.refused, [])
         XCTAssertEqual(try storedRefreshToken(), "rotated-by-the-client")
@@ -165,8 +165,8 @@ extension RollbackMatrixPluginTests {
             client = nil
             await app.waitForBaseline()
 
-            XCTAssertEqual(relaunched, .signedIn(AuthClientUser(username: "alice", userId: "alice-sub")), "\(binary)")
-            XCTAssertEqual(try session?.userPoolTokensResult.get().refreshToken, "rotated-by-the-app", "\(binary)")
+            XCTAssertEqual(relaunched, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "alice-sub")), "\(binary)")
+            XCTAssertEqual(session?.userPoolTokens?.refreshToken, "rotated-by-the-app", "\(binary)")
             XCTAssertEqual(cognito.sent, ["refresh-alice", "rotated-by-the-extension"], "\(binary)")
             XCTAssertEqual(cognito.refused, [], "\(binary)")
             XCTAssertEqual(signedOut, .complete, "\(binary)")
@@ -195,8 +195,8 @@ extension RollbackMatrixPluginTests {
     func testMatrix_namedSessionsDisappearOnRollbackAndReturnOnRollForward() async throws {
         for binary in RollbackPluginBinary.allCases {
             resetKeychain()
-            let work = try SessionID.named("work")
-            let home = try SessionID.named("home")
+            let work = try AmplifyCognitoClientSessionID.named("work")
+            let home = try AmplifyCognitoClientSessionID.named("home")
             try RollbackMatrixBytes.writeClientRecord(RollbackMatrixBytes.pluginPayload("userPoolOnly"), for: work, in: keychain, pools: pools)
             try RollbackMatrixBytes.writeClientRecord(RollbackMatrixBytes.pluginPayload("identityPoolOnly"), for: home, in: keychain, pools: pools)
             let namedAccounts = [work, home].map { SessionRecordKey.account(for: $0, in: pools, kind: .session) }
@@ -255,7 +255,7 @@ extension RollbackMatrixPluginTests {
         }
         XCTAssertNil(held.record.label)
         XCTAssertEqual(try client.storedSessions(), [
-            StoredSession(sessionId: .default, label: nil, username: "fixture-user", kind: .userPoolAndIdentityPool)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub")))
         ])
         guard case .unreadableSidecar = try client.setDefaultLabel("Mine") else {
             return XCTFail("A newer sidecar must not be labelled over")
@@ -331,7 +331,7 @@ extension RollbackMatrixPluginTests {
             case .released:
                 XCTAssertNotNil(keychain.value(service: pluginKeychainService, account: sidecarC), "\(binary)")
                 XCTAssertEqual(listed, [
-                    StoredSession(sessionId: .default, label: "Work", username: "fixture-user", kind: .signedOut)
+                    AmplifyCognitoClientStoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub"), kind: .signedOut, state: .signedOut)
                 ], "\(binary)")
             case .current:
                 XCTAssertNil(keychain.value(service: pluginKeychainService, account: sidecarC), "\(binary)")

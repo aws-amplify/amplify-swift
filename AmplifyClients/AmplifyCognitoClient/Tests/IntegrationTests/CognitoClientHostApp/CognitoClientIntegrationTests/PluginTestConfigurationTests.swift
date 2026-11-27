@@ -55,7 +55,7 @@ final class PluginTestConfigurationTests: XCTestCase {
         let bundle = try makeBundle([gen1: Self.gen1(settings: Self.fullSettings, api: true)])
 
         let outputs = try Self.document(PluginTestConfiguration.outputsData(gen2, in: bundle))
-        let configuration = try AuthClientConfiguration(
+        let configuration = try AmplifyCognitoClientConfiguration(
             from: gen2,
             bundle: PluginTestConfiguration.outputsBundle(gen2, in: bundle)
         )
@@ -65,7 +65,7 @@ final class PluginTestConfigurationTests: XCTestCase {
         XCTAssertEqual(userPool.appClientId, "client")
         XCTAssertEqual(userPool.region, "us-west-2")
         XCTAssertNil(userPool.appClientSecret)
-        XCTAssertEqual(userPool.oauth, AuthClientConfiguration.OAuth(
+        XCTAssertEqual(userPool.oauth, AmplifyCognitoClientConfiguration.OAuth(
             domain: "example.auth.us-west-2.amazoncognito.com",
             scopes: ["openid", "email"],
             redirectSignInURIs: ["myapp://"],
@@ -73,7 +73,7 @@ final class PluginTestConfigurationTests: XCTestCase {
             identityProviders: ["GOOGLE", "LOGIN_WITH_AMAZON", "SIGN_IN_WITH_APPLE"],
             responseType: "code"
         ))
-        XCTAssertEqual(userPool.passwordPolicy, AuthClientConfiguration.PasswordPolicy(
+        XCTAssertEqual(userPool.passwordPolicy, AmplifyCognitoClientConfiguration.PasswordPolicy(
             minLength: 10,
             requiresLowercase: true,
             requiresUppercase: false,
@@ -109,7 +109,7 @@ final class PluginTestConfigurationTests: XCTestCase {
         let bundle = try makeBundle([gen1: Self.gen1(settings: ["authenticationFlowType": "USER_SRP_AUTH"], identityPool: nil)])
 
         let outputs = try Self.document(PluginTestConfiguration.outputsData(gen2, in: bundle))
-        let configuration = try AuthClientConfiguration(
+        let configuration = try AmplifyCognitoClientConfiguration(
             from: gen2,
             bundle: PluginTestConfiguration.outputsBundle(gen2, in: bundle)
         )

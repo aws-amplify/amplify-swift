@@ -37,7 +37,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
     /// - Given: The plugin's outputs file for each role (or the Gen2 translation of its Gen1 file), copied into
     ///   the bundle
     /// - When:
-    ///    - Each is loaded with `AuthClientConfiguration(from:bundle:)`, and the identity-only role is derived
+    ///    - Each is loaded with `AmplifyCognitoClientConfiguration(from:bundle:)`, and the identity-only role is derived
     /// - Then:
     ///    - Each has a user pool; the seven roles with users of their own are seven distinct pools, and the
     ///      hosted-UI file names a different app client from the default one, on the default pool (the

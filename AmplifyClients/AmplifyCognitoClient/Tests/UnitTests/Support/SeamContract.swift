@@ -30,7 +30,7 @@ protocol SeamContractDriver: AnyObject {
 }
 
 /// The contract's cases, run over any driver. Every case uses `alice`, a new-password challenge, and the
-/// seam's own vocabulary (`EngineStepResult`, `pendingChallenge`, `AuthClientError`).
+/// seam's own vocabulary (`EngineStepResult`, `pendingChallenge`, `AmplifyCognitoClientError`).
 enum SeamContractCases {
 
     static let request = EngineSignInRequest(username: "alice", password: "password", authFlowType: nil, clientMetadata: [:])
@@ -44,7 +44,7 @@ enum SeamContractCases {
         .fake(.confirmSignInWithTOTPCode)
     }
 
-    static func isNewPassword(_ step: AuthClientSignInStep?) -> Bool {
+    static func isNewPassword(_ step: AmplifyCognitoClientSignInStep?) -> Bool {
         if case .confirmSignInWithNewPassword = step {
             return true
         }
@@ -54,7 +54,7 @@ enum SeamContractCases {
     /// A confirmation with nothing pending is `invalidState("There is no sign-in in progress …")`.
     static func nothingPendingIsInvalidState(_ driver: SeamContractDriver) async {
         await assertThrowsAsync({ try await driver.engine.confirmSignIn(answer("x"), current: nil) }) { error in
-            guard case .invalidState(let description, _, _) = error as? AuthClientError else {
+            guard case .invalidState(let description, _, _) = error as? AmplifyCognitoClientError else {
                 return XCTFail("expected invalidState, got \(error)")
             }
             XCTAssertEqual(description, "There is no sign-in in progress for this session")
@@ -81,7 +81,7 @@ enum SeamContractCases {
         _ = try await driver.engine.signIn(request, current: nil)
 
         await assertThrowsAsync({ try await driver.engine.confirmSignIn(answer("weak"), current: nil) }) { error in
-            guard case .service(.invalidPassword?, _, _, _) = error as? AuthClientError else {
+            guard case .service(.invalidPassword?, _, _, _) = error as? AmplifyCognitoClientError else {
                 return XCTFail("expected .service(.invalidPassword), got \(error)")
             }
         }
@@ -105,7 +105,7 @@ enum SeamContractCases {
         _ = try await driver.engine.signIn(request, current: nil)
 
         await assertThrowsAsync({ try await driver.engine.confirmSignIn(answer("Str0ng!Passw0rd"), current: nil) }) { error in
-            guard case .challengeExpired = error as? AuthClientError else {
+            guard case .challengeExpired = error as? AmplifyCognitoClientError else {
                 return XCTFail("expected challengeExpired, got \(error)")
             }
         }
@@ -153,7 +153,7 @@ enum SeamContractCases {
         _ = try await driver.engine.signIn(request, current: nil, epoch: 1)
 
         await assertThrowsAsync({ try await driver.engine.confirmSignIn(answer("Str0ng!Passw0rd"), current: nil, epoch: 2) }) { error in
-            guard case .invalidState(let description, _, _) = error as? AuthClientError else {
+            guard case .invalidState(let description, _, _) = error as? AmplifyCognitoClientError else {
                 return XCTFail("expected invalidState, got \(error)")
             }
             XCTAssertEqual(description, "There is no sign-in in progress for this session")
@@ -161,7 +161,7 @@ enum SeamContractCases {
         let pending = await driver.engine.pendingChallenge
         XCTAssertNil(pending, "an earlier epoch's attempt must be dropped, not kept")
         await assertThrowsAsync({ try await driver.engine.confirmSignIn(answer("Str0ng!Passw0rd"), current: nil, epoch: 1) }) { error in
-            guard case .invalidState(let description, _, _) = error as? AuthClientError else {
+            guard case .invalidState(let description, _, _) = error as? AmplifyCognitoClientError else {
                 return XCTFail("expected invalidState, got \(error)")
             }
             XCTAssertEqual(description, "There is no sign-in in progress for this session")
@@ -219,7 +219,7 @@ enum SeamContractCases {
         _ = try await driver.engine.signIn(request, current: nil, epoch: 1)
 
         await assertThrowsAsync({ try await driver.engine.autoSignIn(current: nil, epoch: 2) }) { error in
-            guard case .invalidState(let description, _, _) = error as? AuthClientError else {
+            guard case .invalidState(let description, _, _) = error as? AmplifyCognitoClientError else {
                 return XCTFail("expected invalidState, got \(error)")
             }
             XCTAssertEqual(description, SessionCore.notSignedUp().errorDescription)
@@ -303,7 +303,7 @@ final class FakeSeamContractDriver: SeamContractDriver {
         let confirmations = confirmations
         fake.scriptConfirmSignIn { _ in
             if await confirmations.increment() == 1 {
-                throw FakeRetryable(error: AuthClientError.service(.invalidPassword, "Password does not conform to policy", "s"))
+                throw FakeRetryable(error: AmplifyCognitoClientError.service(.invalidPassword, "Password does not conform to policy", "s"))
             }
             return .done(payload: FakePayload.signedIn("alice").data)
         }
@@ -311,7 +311,7 @@ final class FakeSeamContractDriver: SeamContractDriver {
 
     func scriptExpiredSession() {
         fake.scriptConfirmSignIn { _ in
-            throw AuthClientError.challengeExpired("Invalid session for the user, session is expired.", "s")
+            throw AmplifyCognitoClientError.challengeExpired("Invalid session for the user, session is expired.", "s")
         }
     }
 

@@ -19,7 +19,7 @@ import XCTest
 /// written first, with the sign-in they depend on.
 final class SignInFlowTests: ClientIntegrationTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -50,7 +50,7 @@ final class SignInFlowTests: ClientIntegrationTestCase {
         let defaultRecordAccount = SessionRecordKey.pluginSessionAccount(in: pools)
         let defaultRecordBefore = try IntegrationTestEnvironment.rawKeychainAccounts().contains(defaultRecordAccount)
         let recorder = RecordingHTTPClient()
-        let events: StreamRecorder<AuthEvent>
+        let events: StreamRecorder<AmplifyCognitoClientEvent>
         do {
             let client = try AmplifyCognitoClient(
                 configuration: configuration,
@@ -61,11 +61,11 @@ final class SignInFlowTests: ClientIntegrationTestCase {
             let result = try await client.signIn(username: alice.username, password: alice.password)
 
             XCTAssertEqual(result.nextStep, .done)
-            let idToken = try await client.fetchAuthSession().userPoolTokensResult.get().idToken
+            let idToken = try await client.fetchAuthSession().requireUserPoolTokens().idToken
             let sub = try XCTUnwrap(IntegrationTestEnvironment.jwtClaims(idToken)["sub"] as? String)
             let state = await client.currentSessionState()
             XCTAssertTrue(
-                state == .signedIn(AuthClientUser(username: alice.username, userId: sub)),
+                state == .signedIn(AmplifyCognitoClientUser(username: alice.username, userId: sub)),
                 "the state should be .signedIn as alice, with her id token's sub"
             )
         }
@@ -106,17 +106,17 @@ final class SignInFlowTests: ClientIntegrationTestCase {
         try await SessionCleanup.waitUntilReleased([sessionId])
 
         let reread = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
-        let restored = try await reread.fetchAuthSession().userPoolTokensResult.get().accessToken
+        let restored = try await reread.fetchAuthSession().requireUserPoolTokens().accessToken
 
         XCTAssertTrue(fingerprint(restored) == committed, "a new handle should read the committed token")
     }
 
     /// Signs alice in, forces a refresh with the recorder and the event stream watching, asserts RF-1's
     /// in-session half, and returns the new access token's fingerprint. The client is released on return.
-    private func refreshAndDrop(_ sessionId: SessionID) async throws -> String {
+    private func refreshAndDrop(_ sessionId: AmplifyCognitoClientSessionID) async throws -> String {
         let alice = try await makeSignInUser()
         let recorder = RecordingHTTPClient()
-        let events: StreamRecorder<AuthEvent>
+        let events: StreamRecorder<AmplifyCognitoClientEvent>
         let after: String
         do {
             let client = try AmplifyCognitoClient(
@@ -137,8 +137,8 @@ final class SignInFlowTests: ClientIntegrationTestCase {
 
             XCTAssertFalse(second == forced, "a forced refresh should return a new session")
             XCTAssertTrue(forced == cached, "an unforced fetch after the refresh should serve the refreshed session")
-            let before = try second.userPoolTokensResult.get().accessToken
-            after = try forced.userPoolTokensResult.get().accessToken
+            let before = try second.requireUserPoolTokens().accessToken
+            after = try forced.requireUserPoolTokens().accessToken
             let beforeClaims = try IntegrationTestEnvironment.jwtClaims(before)
             let afterClaims = try IntegrationTestEnvironment.jwtClaims(after)
             XCTAssertFalse(fingerprint(before) == fingerprint(after), "a forced refresh should mint a new access token")
@@ -163,7 +163,7 @@ final class SignInFlowTests: ClientIntegrationTestCase {
     /// - When:
     ///    - `fetchAuthSession()` acquires guest credentials, and the provider signs `GetCallerIdentity`
     /// - Then:
-    ///    - the state is `.guest`, `identityIdResult` succeeds, and the stored row's kind is `.guest`
+    ///    - the state is `.guest`, `identityId` is set, and the stored row's kind is `.guest`
     ///    - the session is not signed in: it carries no user pool tokens (the plugin's
     ///      `SignedOutAuthSessionTests.testSuccessfulSessionFetch` checks `isSignedIn == false`)
     ///    - the provider resolves the session's own credentials (the same access key ID)
@@ -179,10 +179,10 @@ final class SignInFlowTests: ClientIntegrationTestCase {
 
         let state = await client.currentSessionState()
         XCTAssertTrue(state == .guest, "the session is a guest")
-        XCTAssertNoThrow(try session.identityIdResult.get())
-        XCTAssertThrowsError(try session.userPoolTokensResult.get(), "a guest session has no user pool tokens")
+        XCTAssertNoThrow(try session.requireIdentityId())
+        XCTAssertThrowsError(try session.requireUserPoolTokens(), "a guest session has no user pool tokens")
         let resolved = try await client.credentialsProvider.resolve()
-        let guestKey = try session.awsCredentialsResult.get().accessKeyId
+        let guestKey = try session.requireAWSCredentials().accessKeyId
         XCTAssertTrue(resolved.accessKeyId == guestKey, "the provider should resolve the session's own credentials")
         let role = try await SandboxRoles().role(of: client.credentialsProvider, region: region)
         XCTAssertEqual(role, .unauthenticated, "a guest signs as the unauthenticated role")
@@ -211,7 +211,7 @@ final class SignInFlowTests: ClientIntegrationTestCase {
         let role = try await SandboxRoles().role(of: client.credentialsProvider, region: region)
 
         let session = try await client.fetchAuthSession()
-        let sessionKey = try session.awsCredentialsResult.get().accessKeyId
+        let sessionKey = try session.requireAWSCredentials().accessKeyId
         XCTAssertTrue(resolved.accessKeyId == sessionKey, "the provider should resolve the session's own credentials")
         let expiration = try XCTUnwrap((resolved as? any AWSTemporaryCredentials)?.expiration)
         XCTAssertGreaterThan(expiration, Date())
@@ -247,7 +247,7 @@ final class SignInFlowTests: ClientIntegrationTestCase {
         try await assertRestores(sessionId, as: stored, user: alice, through: changed)
         try await SessionCleanup.waitUntilReleased([sessionId])
         let recorder = try await assertRestores(sessionId, as: stored, user: alice, through: configuration) { client in
-            _ = try await client.fetchAuthSession(options: .init(forceRefresh: true)).userPoolTokensResult.get()
+            _ = try await client.fetchAuthSession(options: .init(forceRefresh: true)).requireUserPoolTokens()
         }
 
         XCTAssertEqual(recorder.answeredOperations, ["GetTokensFromRefreshToken"], "the restored refresh token refreshes")
@@ -258,10 +258,10 @@ final class SignInFlowTests: ClientIntegrationTestCase {
     /// return.
     @discardableResult
     private func assertRestores(
-        _ sessionId: SessionID,
-        as stored: AuthClientSession,
+        _ sessionId: AmplifyCognitoClientSessionID,
+        as stored: AmplifyCognitoClientAuthSession,
         user alice: TestUser,
-        through outputs: AuthClientConfiguration,
+        through outputs: AmplifyCognitoClientConfiguration,
         then: (AmplifyCognitoClient) async throws -> Void = { _ in }
     ) async throws -> RecordingHTTPClient {
         let recorder = RecordingHTTPClient()
@@ -276,11 +276,11 @@ final class SignInFlowTests: ClientIntegrationTestCase {
         XCTAssertTrue(state == .signedIn(user), "the restored state should be .signedIn as alice")
         let restored = try await reread.fetchAuthSession()
         XCTAssertTrue(
-            try restored.identityIdResult.get() == stored.identityIdResult.get(),
+            try restored.requireIdentityId() == stored.requireIdentityId(),
             "the restored identity ID should be the stored one"
         )
         XCTAssertTrue(
-            try restored.awsCredentialsResult.get() == stored.awsCredentialsResult.get(),
+            try restored.requireAWSCredentials() == stored.requireAWSCredentials(),
             "the restored AWS credentials should be the stored ones"
         )
         XCTAssertTrue(restored == stored, "the restored session should be the stored one, tokens included")
@@ -292,12 +292,12 @@ final class SignInFlowTests: ClientIntegrationTestCase {
 
     /// The outputs with sections added that an auth client does not read: what changes when an app adds
     /// another category, and must not touch a stored session.
-    private static func withUnrelatedSections(_ outputs: Data) throws -> AuthClientConfiguration {
+    private static func withUnrelatedSections(_ outputs: Data) throws -> AmplifyCognitoClientConfiguration {
         var json = try XCTUnwrap(JSONSerialization.jsonObject(with: outputs) as? [String: Any])
         json["analytics"] = ["amazon_pinpoint": ["aws_region": "us-east-1", "app_id": "unrelated-app"]]
         json["notifications"] = ["aws_region": "us-east-1", "amazon_pinpoint_app_id": "unrelated-app", "channels": ["APNS"]]
         json["custom"] = ["note": "changed after the sign-in"]
-        return try AuthClientConfiguration(
+        return try AmplifyCognitoClientConfiguration(
             outputsData: JSONSerialization.data(withJSONObject: json),
             resourceName: IntegrationTestEnvironment.outputsResource
         )
@@ -305,12 +305,12 @@ final class SignInFlowTests: ClientIntegrationTestCase {
 
     /// Signs alice in on `sessionId` through a client that is released when this returns, and returns her
     /// session, which holds an identity ID and AWS credentials.
-    private func signInAndDrop(_ sessionId: SessionID, as alice: TestUser) async throws -> AuthClientSession {
+    private func signInAndDrop(_ sessionId: AmplifyCognitoClientSessionID, as alice: TestUser) async throws -> AmplifyCognitoClientAuthSession {
         let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
         _ = try await client.signIn(username: alice.username, password: alice.password)
         let session = try await client.fetchAuthSession()
-        XCTAssertNoThrow(try session.identityIdResult.get(), "the signed-in session has an identity ID")
-        XCTAssertNoThrow(try session.awsCredentialsResult.get(), "the signed-in session has AWS credentials")
+        XCTAssertNoThrow(try session.requireIdentityId(), "the signed-in session has an identity ID")
+        XCTAssertNoThrow(try session.requireAWSCredentials(), "the signed-in session has AWS credentials")
         return session
     }
 }

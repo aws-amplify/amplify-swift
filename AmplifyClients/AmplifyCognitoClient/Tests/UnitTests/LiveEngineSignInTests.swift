@@ -172,7 +172,7 @@ final class LiveEngineSignInTests: XCTestCase {
                 return XCTFail("expected a service error with no code, got \(error)")
             }
             XCTAssertTrue(description.contains("boom"), description)
-            XCTAssertEqual(suggestion, AuthClientError.serviceFaultSuggestion)
+            XCTAssertEqual(suggestion, AmplifyCognitoClientError.serviceFaultSuggestion)
         }
 
         let pending = await engine.pendingChallenge
@@ -774,8 +774,8 @@ final class LiveEngineSignInTests: XCTestCase {
     /// - When:
     ///    - alice signs in with `USER_AUTH` and no preference, and no ceremony context
     /// - Then:
-    ///    - it throws `.validation(field: "presentationAnchor")`, nothing is pending, and the challenge is never
-    ///      answered
+    ///    - it throws `.validation(field: "presentationAnchorForWebAuthn")`, nothing is pending, and the challenge
+    ///      is never answered
     ///
     func testAWebAuthnStepFromCognitoIsRefused() async throws {
         let engine = try harness.engine()
@@ -784,7 +784,7 @@ final class LiveEngineSignInTests: XCTestCase {
         }
 
         await assertThrowsAsync({ try await engine.signIn(.flow(.userAuth(preferredFirstFactor: nil), password: nil), current: nil) }) { error in
-            XCTAssertEqual(authError(error)?.kind, .validation(field: "presentationAnchor"))
+            XCTAssertEqual(authError(error)?.kind, .validation(field: "presentationAnchorForWebAuthn"))
         }
         let pending = await engine.pendingChallenge
         XCTAssertNil(pending)

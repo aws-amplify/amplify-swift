@@ -25,8 +25,8 @@ import InternalAWSCognitoAuth
 actor SessionCore {
 
     // Immutable and Sendable, so synchronously readable from any context.
-    nonisolated let sessionId: SessionID
-    nonisolated let configuration: AuthClientConfiguration
+    nonisolated let sessionId: AmplifyCognitoClientSessionID
+    nonisolated let configuration: AmplifyCognitoClientConfiguration
     nonisolated let namespace: SessionStorageNamespace
     nonisolated let clients: CognitoServiceClients
     /// Only ever used off the actor.
@@ -45,8 +45,8 @@ actor SessionCore {
     nonisolated let signInLock = SessionRecordGate()
     /// One per session; holds multi-step sign-in progress.
     nonisolated let engine: any SessionEngine
-    nonisolated let events = SessionEventStream<AuthEvent>()
-    nonisolated let states = SessionEventStream<AuthSessionState>()
+    nonisolated let events = SessionEventStream<AmplifyCognitoClientEvent>()
+    nonisolated let states = SessionEventStream<AmplifyCognitoClientSessionState>()
     nonisolated let restoreFlight = SingleFlight<SessionSnapshot>()
     /// One flight per kind of operation, because a flight's joiners take its result whatever they asked
     /// for: a refresh when the credentials need one, ...
@@ -70,7 +70,7 @@ actor SessionCore {
     /// hosted-UI sign-in and the first attempt of a sign-out that shows the logout page.
     nonisolated let sheetLock: SystemSheetLock
     /// `SessionCoreDependencies.afterLogoutStop`: a test seam, a no-op in the app.
-    nonisolated let afterLogoutStop: @Sendable (SessionID) async -> Void
+    nonisolated let afterLogoutStop: @Sendable (AmplifyCognitoClientSessionID) async -> Void
     #endif
 
     // Mutable, in memory only.
@@ -79,7 +79,7 @@ actor SessionCore {
     private var snapshot: SessionSnapshot?
 
     /// The sign-in step the session is waiting on, as last reported by the engine.
-    private(set) var pendingChallenge: AuthClientSignInStep?
+    private(set) var pendingChallenge: AmplifyCognitoClientSignInStep?
 
     /// Bumped whenever `pendingChallenge` is set, so a reader that suspended can tell it went stale.
     private(set) var challengeGeneration: UInt64 = 0
@@ -96,7 +96,7 @@ actor SessionCore {
     private(set) var sessionEndings: UInt64 = 0
 
     /// The last state sent on `states`, to send only changes.
-    private var lastPublished: AuthSessionState?
+    private var lastPublished: AmplifyCognitoClientSessionState?
 
     /// The session is known to be expired: a refresh proved the refresh token of `credentials` dead, for `cause`.
     struct Expiry: Sendable {
@@ -140,8 +140,8 @@ actor SessionCore {
     /// Builds a core. Runs under the registry lock, inside the client's synchronous `init`: cheap, no
     /// `await`, no keychain call, no call back into the registry.
     init(
-        sessionId: SessionID,
-        configuration: AuthClientConfiguration,
+        sessionId: AmplifyCognitoClientSessionID,
+        configuration: AmplifyCognitoClientConfiguration,
         namespace: SessionStorageNamespace,
         clients: CognitoServiceClients,
         dependencies: SessionCoreDependencies
@@ -197,13 +197,13 @@ actor SessionCore {
     }
 
     /// The current state, or `nil` before the first restore.
-    var currentState: AuthSessionState? {
+    var currentState: AmplifyCognitoClientSessionState? {
         snapshot.map { $0.state(engine: engine, challenge: pendingChallenge) }
     }
 
     enum ChallengeUpdate: Sendable {
         case unchanged
-        case set(AuthClientSignInStep?)
+        case set(AmplifyCognitoClientSignInStep?)
     }
 
     /// Installs a snapshot read or written by an operation, publishes the state it projects to if that
@@ -223,7 +223,7 @@ actor SessionCore {
     func apply(
         _ newSnapshot: SessionSnapshot,
         challenge update: ChallengeUpdate = .unchanged,
-        event: AuthEvent?,
+        event: AmplifyCognitoClientEvent?,
         newLogin: Bool = false
     ) -> SessionSnapshot {
         if newLogin || (newSnapshot.credentials != snapshot?.credentials && !holdsDeadRefreshToken(newSnapshot.credentials)) {
@@ -249,7 +249,7 @@ actor SessionCore {
     /// session's challenge was set since then, the newer one is kept rather than overwritten.
     func adoptRestored(
         _ restored: SessionSnapshot,
-        challenge pending: AuthClientSignInStep?,
+        challenge pending: AmplifyCognitoClientSignInStep?,
         readAtChallengeGeneration generation: UInt64
     ) -> SessionSnapshot {
         if let snapshot {
@@ -270,7 +270,7 @@ actor SessionCore {
 
     /// Records the sign-in step the session now waits on (`nil` when none). The sign-in paths of task
     /// 2.5 call this; two different steps both publish.
-    func setPendingChallenge(_ step: AuthClientSignInStep?) {
+    func setPendingChallenge(_ step: AmplifyCognitoClientSignInStep?) {
         guard let snapshot else {
             setChallenge(step)
             return
@@ -365,14 +365,14 @@ actor SessionCore {
     }
 
     /// `setPendingChallenge(_:)`, unless the sign-in epoch has moved from `epoch`.
-    func setPendingChallenge(_ step: AuthClientSignInStep?, ifEpoch epoch: UInt64) {
+    func setPendingChallenge(_ step: AmplifyCognitoClientSignInStep?, ifEpoch epoch: UInt64) {
         guard signInEpoch == epoch else {
             return
         }
         setPendingChallenge(step)
     }
 
-    private func setChallenge(_ step: AuthClientSignInStep?) {
+    private func setChallenge(_ step: AmplifyCognitoClientSignInStep?) {
         pendingChallenge = step
         challengeGeneration &+= 1
     }
@@ -441,7 +441,7 @@ actor SessionCore {
         return (try? engine.checkedUserPoolTokens(in: payload))??.refreshToken == deadToken
     }
 
-    private func publish(_ state: AuthSessionState) {
+    private func publish(_ state: AmplifyCognitoClientSessionState) {
         guard state != lastPublished else {
             return
         }

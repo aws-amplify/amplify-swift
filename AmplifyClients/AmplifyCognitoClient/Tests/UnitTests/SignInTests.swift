@@ -17,7 +17,7 @@ final class SignInTests: XCTestCase {
     private var harness: ClientHarness!
     private let work = ClientFixtures.id("work")
     private let home = ClientFixtures.id("home")
-    private let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+    private let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
 
     override func setUp() {
         harness = ClientHarness()
@@ -142,7 +142,7 @@ final class SignInTests: XCTestCase {
         XCTAssertEqual(result.nextStep, .done)
         XCTAssertEqual(try harness.storedRecord(work)?.username, "alice")
         let homeState = await homeClient.currentSessionState()
-        XCTAssertEqual(homeState, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(homeState, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
     }
 
     /// An expired session stays `.signedIn(user)` so the app knows whom to re-authenticate. It must
@@ -183,7 +183,7 @@ final class SignInTests: XCTestCase {
 
         XCTAssertEqual(try harness.storedRecord(work), FakePayload.signedIn("bob").record(label: nil))
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
     }
 
     // MARK: Guest
@@ -270,14 +270,14 @@ final class SignInTests: XCTestCase {
     /// - Given: engine sign-ins that fail with a mapped error, a seam error, and an unmapped error
     /// - When: each is surfaced
     /// - Then:
-    ///    - an `AuthClientError` passes through; `SessionEngineError.service` is unwrapped; anything else
+    ///    - an `AmplifyCognitoClientError` passes through; `SessionEngineError.service` is unwrapped; anything else
     ///      is `unknown` with the engine's error underneath. Nothing is committed, no event is sent
     func testEngineFailuresAreMapped() async throws {
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let events = StreamRecorder(client.listenToAuthEvents())
 
-        engine.scriptSignIn { _, _ in throw AuthClientError.notAuthorized("Incorrect username or password.", "Check them.") }
+        engine.scriptSignIn { _, _ in throw AmplifyCognitoClientError.notAuthorized("Incorrect username or password.", "Check them.") }
         let notAuthorized = await authClientError { try await client.signInForTest() }
         engine.scriptSignIn { _, _ in
             throw SessionEngineError.service(.service(.userNotConfirmed, "not confirmed", "confirm"))
@@ -449,7 +449,7 @@ final class SignInTests: XCTestCase {
         XCTAssertEqual(engine.revokeCalls, [FakePayload.signedIn("alice").data])
         XCTAssertEqual(engine.revokeGlobalFlags, [false])
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         XCTAssertEqual(events.received, [])
     }
 

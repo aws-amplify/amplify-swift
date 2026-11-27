@@ -121,7 +121,7 @@ final class SessionRecordGates: @unchecked Sendable {
 
     struct Key: Hashable, Sendable {
         let namespace: SessionStorageNamespace
-        let sessionId: SessionID
+        let sessionId: AmplifyCognitoClientSessionID
     }
 
     private final class WeakGate {
@@ -156,7 +156,7 @@ final class SessionRecordGates: @unchecked Sendable {
     init() {}
 
     /// The gate for one record: the live one if anybody holds it, else a new one.
-    func gate(for namespace: SessionStorageNamespace, sessionId: SessionID) -> SessionRecordGate {
+    func gate(for namespace: SessionStorageNamespace, sessionId: AmplifyCognitoClientSessionID) -> SessionRecordGate {
         let key = Key(namespace: namespace, sessionId: sessionId)
         lock.lock()
         defer { lock.unlock() }
@@ -170,7 +170,7 @@ final class SessionRecordGates: @unchecked Sendable {
     }
 
     /// What this table remembers about one record: the same object for every core of it.
-    func memory(for namespace: SessionStorageNamespace, sessionId: SessionID) -> RecordMemory {
+    func memory(for namespace: SessionStorageNamespace, sessionId: AmplifyCognitoClientSessionID) -> RecordMemory {
         let key = Key(namespace: namespace, sessionId: sessionId)
         lock.lock()
         defer { lock.unlock() }
@@ -205,7 +205,7 @@ extension SessionRecordGates {
     /// that each need several never deadlock.
     func holding<T: Sendable>(
         _ namespaces: [SessionStorageNamespace],
-        sessionId: SessionID,
+        sessionId: AmplifyCognitoClientSessionID,
         _ body: @escaping @Sendable () async throws -> T
     ) async throws -> T {
         let ordered = Array(Set(namespaces)).sorted { Self.order($0) < Self.order($1) }

@@ -101,9 +101,9 @@ extension SessionCore {
     /// resume, and corrupt bytes are deleted too. A newer schema's record is left for its writer. None is read over a
     /// session record that could not be read.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the record of a session that can be signing in could not be
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the record of a session that can be signing in could not be
     ///   read: the restore fails, and a retry may succeed. Unreadable is not absent.
-    nonisolated func pendingOrResumedChallenge(_ loaded: SessionSnapshot, store: SessionRecordIO) async throws -> AuthClientSignInStep? {
+    nonisolated func pendingOrResumedChallenge(_ loaded: SessionSnapshot, store: SessionRecordIO) async throws -> AmplifyCognitoClientSignInStep? {
         if let pending = await engine.pendingChallenge {
             return pending
         }

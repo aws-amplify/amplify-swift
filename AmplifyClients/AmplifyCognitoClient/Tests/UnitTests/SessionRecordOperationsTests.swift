@@ -29,7 +29,7 @@ final class SessionRecordOperationsTests: XCTestCase {
         harness = nil
     }
 
-    private func envelope(_ sessionId: SessionID) throws -> VersionedSessionRecord? {
+    private func envelope(_ sessionId: AmplifyCognitoClientSessionID) throws -> VersionedSessionRecord? {
         guard case .record(let envelope) = try harness.store().read(sessionId) else {
             return nil
         }
@@ -121,7 +121,7 @@ final class SessionRecordOperationsTests: XCTestCase {
         let client = try harness.client(work)
 
         await assertThrowsAsync({ try await client.setSessionLabel("Work") }) { error in
-            guard case .unknown = error as? AuthClientError else {
+            guard case .unknown = error as? AmplifyCognitoClientError else {
                 return XCTFail("\(error)")
             }
         }
@@ -133,15 +133,15 @@ final class SessionRecordOperationsTests: XCTestCase {
     /// - Given: `.default` on a plugin record that is not the plugin's format, under the plugin's last configuration
     /// - When: a label is set
     /// - Then:
-    ///    - it throws `AuthClientError.unknown`, and nothing is written
+    ///    - it throws `AmplifyCognitoClientError.unknown`, and nothing is written
     func testLabelOnAnUnrecognisedDefaultRecordThrowsAndWritesNothing() async throws {
         harness.keychain.put(Data("opaque".utf8), pluginAccount)
         harness.keychain.recordPluginConfiguration()
         let client = try harness.client(.default)
 
         await assertThrowsAsync({ try await client.setSessionLabel("Main") }) { error in
-            guard case .unknown = error as? AuthClientError else {
-                return XCTFail("expected AuthClientError.unknown, got \(error)")
+            guard case .unknown = error as? AmplifyCognitoClientError else {
+                return XCTFail("expected AmplifyCognitoClientError.unknown, got \(error)")
             }
         }
         XCTAssertEqual(harness.keychain.writtenAccounts, [])
@@ -192,7 +192,7 @@ final class SessionRecordOperationsTests: XCTestCase {
         harness.keychain.afterEveryRead(of: harness.store().sessionAccount(for: work)) { rival.move() }
 
         await assertThrowsAsync({ try await client.setSessionLabel("Work") }) { error in
-            XCTAssertEqual((error as? AuthClientError)?.storageUnavailableReason, .interrupted, "\(error)")
+            XCTAssertEqual((error as? AmplifyCognitoClientError)?.storageUnavailableReason, .interrupted, "\(error)")
         }
         harness.keychain.afterEveryRead(of: harness.store().sessionAccount(for: work), nil)
         XCTAssertEqual(rival.commits, 2 * SessionCore.maximumRecordWriteAttempts)
@@ -338,5 +338,198 @@ final class SessionRecordOperationsTests: XCTestCase {
         let record = try XCTUnwrap(harness.storedRecord(work))
         XCTAssertEqual(record.username, "alice")
         XCTAssertEqual(record.label, "Tablet")
+    }
+
+    // MARK: The session ID's label
+
+    /// A label given when the session ID is created is the row's label once someone signs in, with no
+    /// `setSessionLabel` call. Nothing is saved before that.
+    ///
+    /// - Given: nothing stored, and a client built with an ID created with a label
+    /// - When: its state is read, then a user signs in
+    /// - Then:
+    ///    - building the client touches no storage, and restoring it saves nothing: no row is listed
+    ///    - after the sign-in, `storedSessions` lists the row with the label
+    func testALabelGivenWithTheIDIsListedAfterSignIn() async throws {
+        let client = try harness.client(.named("work", label: "Work"))
+        XCTAssertEqual(harness.keychain.readAccounts, [])
+        XCTAssertFalse(harness.keychain.hasMutations)
+        _ = await client.currentSessionState()
+        XCTAssertEqual(try harness.store().storedSessions(includingSignedOut: true), [])
+
+        try await client.signInForTest("alice")
+
+        let listed = try await AmplifyCognitoClient.storedSessions(
+            configuration: ClientFixtures.configuration,
+            accessGroup: nil,
+            includingSignedOut: false,
+            dependencies: harness.dependencies
+        )
+        XCTAssertEqual(listed.map(\.sessionId), [work])
+        XCTAssertEqual(listed.map(\.label), ["Work"])
+    }
+
+    /// A label the row keeps wins over the ID's: the same user's, and one set before anyone signed in.
+    ///
+    /// - Given:
+    ///    - alice's saved session, labelled, and a client of it built with an ID created with another label
+    ///    - a second session with nothing stored, built with an ID created with a label, then labelled
+    /// - When: alice signs out and signs in again; a user signs in to the second session
+    /// - Then:
+    ///    - each row keeps the label it had
+    func testAnExistingLabelIsKeptOverTheIDsLabel() async throws {
+        try harness.signIn(work, .signedIn("alice"), label: "Alice's work")
+        let client = try harness.client(.named("work", label: "Work"))
+        _ = await client.signOut()
+
+        try await client.signInForTest("alice")
+
+        XCTAssertEqual(try harness.storedRecord(work)?.label, "Alice's work")
+
+        let home = try harness.client(.named("home", label: "Home"))
+        try await home.setSessionLabel("Shared iPad")
+
+        try await home.signInForTest("bob")
+
+        XCTAssertEqual(try harness.storedRecord(ClientFixtures.id("home"))?.label, "Shared iPad")
+    }
+
+    /// When a different user signs in, the previous user's label is dropped, and the ID's label names the new
+    /// user's row.
+    ///
+    /// - Given: a session whose ID was created with a label, where alice signed in, renamed the row and signed out
+    /// - When: bob signs in
+    /// - Then:
+    ///    - alice's signed-out row kept her label; bob's row has the ID's label
+    func testADifferentUsersSignInSavesTheIDsLabel() async throws {
+        let client = try harness.client(.named("work", label: "Work"))
+        try await client.signInForTest("alice")
+        try await client.setSessionLabel("Alice's work")
+        _ = await client.signOut()
+        XCTAssertEqual(
+            try harness.storedRecord(work),
+            .signedOut(label: "Alice's work", username: "alice", userId: "sub-alice")
+        )
+
+        try await client.signInForTest("bob")
+
+        let bob = try XCTUnwrap(harness.storedRecord(work))
+        XCTAssertEqual(bob.username, "bob")
+        XCTAssertEqual(bob.label, "Work")
+    }
+
+    /// Two handles whose IDs were created with different labels are one session, which uses the label of the
+    /// handle that built it.
+    ///
+    /// - Given: two clients of one session, the first built with one label and the second with another
+    /// - When: a user signs in through the second
+    /// - Then:
+    ///    - they are one session; the row has the first handle's label; each handle's `sessionId` keeps its own
+    func testTwoHandlesWithDifferentIDLabelsUseTheLabelOfTheOneThatBuiltTheSession() async throws {
+        let first = try harness.client(.named("work", label: "First"))
+        let second = try harness.client(.named("work", label: "Second"))
+        XCTAssertEqual(harness.registry.entryCount, 1)
+        XCTAssertEqual(harness.engines.count, 1)
+
+        try await second.signInForTest("alice")
+
+        XCTAssertEqual(try harness.storedRecord(work)?.label, "First")
+        XCTAssertEqual(first.sessionId.label, "First")
+        XCTAssertEqual(second.sessionId.label, "Second")
+        let state = await first.currentSessionState()
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
+    }
+
+    /// A guest and a federation save the ID's label, as a sign-in does.
+    ///
+    /// - Given: two sessions with nothing stored, each built with an ID created with a label
+    /// - When: one's session is fetched, which makes it a guest, and a user then signs in; the other federates
+    /// - Then:
+    ///    - the guest's row has its ID's label, and the user keeps it; the federated row has its ID's label
+    func testAGuestAndAFederationSaveTheIDsLabel() async throws {
+        let kiosk = try harness.client(.named("work", label: "Kiosk"))
+
+        _ = try await kiosk.fetchAuthSession()
+
+        let guest = try XCTUnwrap(harness.storedRecord(work))
+        XCTAssertEqual(guest.kind, .guest)
+        XCTAssertEqual(guest.label, "Kiosk")
+        try await kiosk.signInForTest("alice")
+        XCTAssertEqual(try harness.storedRecord(work)?.label, "Kiosk")
+
+        let home = ClientFixtures.id("home")
+        let tablet = try harness.client(.named("home", label: "Tablet"))
+        try XCTUnwrap(harness.engine(for: home)).scriptAccountOperation(.federateToIdentityPool) { _ in
+            FakePayload.federated(identityId: "us-east-1:fed").data
+        }
+
+        _ = try await tablet.federateToIdentityPool(withProviderToken: "token", for: .google)
+
+        let federated = try XCTUnwrap(harness.storedRecord(home))
+        XCTAssertEqual(federated.kind, .federated)
+        XCTAssertEqual(federated.label, "Tablet")
+    }
+
+    /// `setSessionLabel`, instance and static, replaces the label the ID supplied; once it is cleared, only a
+    /// sign-in saves the ID's again.
+    ///
+    /// - Given: a signed-in session whose row took the label its ID was created with
+    /// - When: the instance call renames it, the static call renames it again, the instance call clears it, and
+    ///   the same user signs out and in again
+    /// - Then:
+    ///    - each call's label is the row's; cleared, the row has none; the sign-in saves the ID's again
+    func testSetSessionLabelReplacesTheIDsLabel() async throws {
+        let client = try harness.client(.named("work", label: "Work"))
+        try await client.signInForTest("alice")
+        XCTAssertEqual(try harness.storedRecord(work)?.label, "Work")
+
+        try await client.setSessionLabel("Renamed")
+        XCTAssertEqual(try harness.storedRecord(work)?.label, "Renamed")
+
+        try await AmplifyCognitoClient.setSessionLabel(
+            "Picked",
+            sessionId: .named("work", label: "Ignored"),
+            configuration: ClientFixtures.configuration,
+            accessGroup: nil,
+            dependencies: harness.dependencies
+        )
+        XCTAssertEqual(try harness.storedRecord(work)?.label, "Picked")
+
+        try await client.setSessionLabel(nil)
+        XCTAssertNil(try harness.storedRecord(work)?.label)
+
+        _ = await client.signOut()
+        try await client.signInForTest("alice")
+        XCTAssertEqual(try harness.storedRecord(work)?.label, "Work")
+    }
+
+    /// Only a sign-in saves the ID's label: a session that is already signed in keeps its row as it is.
+    ///
+    /// - Given: a signed-in session saved with no label, needing a refresh
+    /// - When: a client built with an ID created with a label refreshes it
+    /// - Then:
+    ///    - the refreshed row still has no label
+    func testARefreshNeverSavesTheIDsLabel() async throws {
+        let alice = FakePayload.signedIn("alice", stale: true)
+        try harness.signIn(work, alice)
+        let client = try harness.client(.named("work", label: "Work"))
+
+        _ = try await client.userPoolTokenProvider.accessToken()
+
+        XCTAssertEqual(try harness.storedRecord(work), alice.refreshed.record(label: nil))
+    }
+
+    /// - Given: a signed-in session saved with no label
+    /// - When: a client built with an ID created with a label signs it out
+    /// - Then:
+    ///    - the signed-out row has no label: only a sign-in saves the ID's
+    func testASignOutNeverSavesTheIDsLabel() async throws {
+        try harness.signIn(work, .signedIn("alice"))
+        let client = try harness.client(.named("work", label: "Work"))
+
+        let result = await client.signOut()
+
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(try harness.storedRecord(work), .signedOut(label: nil, username: "alice", userId: "sub-alice"))
     }
 }

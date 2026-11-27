@@ -46,7 +46,7 @@ final class FakeSessionEngineCancelledStepTests: XCTestCase {
     // MARK: Helpers
 
     private func makeEngine() throws -> FakeSessionEngine {
-        let configuration = try AuthClientConfiguration(
+        let configuration = try AmplifyCognitoClientConfiguration(
             userPool: .init(poolId: StorageFixtures.userPoolId, appClientId: "app-client-1", region: "us-east-1"),
             identityPool: .init(poolId: StorageFixtures.identityPoolId, region: "us-east-1")
         )

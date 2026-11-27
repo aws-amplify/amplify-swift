@@ -201,7 +201,7 @@ struct EngineResources: Sendable {
         guard let client else {
             throw EngineAuthError.configuration(
                 "The \(pool) is not configured for this session.",
-                "Configure the \(pool) in AuthClientConfiguration."
+                "Configure the \(pool) in AmplifyCognitoClientConfiguration."
             )
         }
         return client

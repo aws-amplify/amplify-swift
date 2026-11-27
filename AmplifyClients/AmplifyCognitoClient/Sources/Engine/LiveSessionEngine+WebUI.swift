@@ -156,7 +156,7 @@ extension LiveSessionEngine {
             // `ShowHostedUISignOut` does; unreachable with the shipped presenter, which only throws `HostedUIError`.
             return outcome(of: signedOut)
         case .signingOut(.error(.hostedUI(let error))):
-            let mapped = AuthClientError(engineFailure: error)
+            let mapped = AmplifyCognitoClientError(engineFailure: error)
             switch error {
             case .cancelled:
                 throw mapped
@@ -169,7 +169,7 @@ extension LiveSessionEngine {
                 throw SignOutRefusal(error: mapped)
             }
         case .signingOut(.error(let error)):
-            throw AuthClientError(engineFailure: error)
+            throw AmplifyCognitoClientError(engineFailure: error)
         default:
             return nil
         }
@@ -207,14 +207,14 @@ extension LiveSessionEngine {
         }
     }
 
-    static func hostedUINotConfigured() -> AuthClientError {
+    static func hostedUINotConfigured() -> AmplifyCognitoClientError {
         .configuration(
             "The configuration has no hosted UI: auth.oauth, with a sign-in and a sign-out redirect URI, is missing.",
             "Add the hosted UI (oauth) settings to the configuration (the auth section of amplify_outputs.json)."
         )
     }
 
-    static func presentationAnchorGone() -> AuthClientError {
+    static func presentationAnchorGone() -> AmplifyCognitoClientError {
         .validation(
             field: "presentationAnchor",
             "The window given as the presentation anchor has closed, so the browser could not be shown.",
@@ -222,7 +222,7 @@ extension LiveSessionEngine {
         )
     }
 
-    static func hostedUIUnavailable() -> AuthClientError {
+    static func hostedUIUnavailable() -> AmplifyCognitoClientError {
         .invalidState(
             "The hosted UI is only available on iOS, macOS and visionOS.",
             "Sign in with signIn(username:password:options:) instead."
@@ -271,13 +271,13 @@ enum LiveHostedUISteps {
     /// challenge.
     static func progress(of state: AuthState, operation: EngineOperation) throws -> SignInStepOutcome? {
         if case .configured(.signingIn(.signingInWithHostedUI(.error(let error))), _, _) = state {
-            throw LiveSignInSteps.dropping(AuthClientError(hostedUISignIn: error))
+            throw LiveSignInSteps.dropping(AmplifyCognitoClientError(hostedUISignIn: error))
         }
         return try LiveSignInSteps.progress(of: state, operation: operation, confirming: false)
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     /// A hosted-UI sign-in failure. The identity checks' refusal becomes `.unexpectedIdentity` for a user who is
     /// not the one asked for, and `.service` naming the failed check for a response that is not attributable to
@@ -309,7 +309,7 @@ extension AuthClientError {
         let userId = mismatch.returnedUserId ?? ""
         self = .unexpectedIdentity(
             expected: mismatch.reason == .notExpectedIdentity ? mismatch.expected : nil,
-            returned: AuthClientUser(username: mismatch.returnedUsername ?? userId, userId: userId),
+            returned: AmplifyCognitoClientUser(username: mismatch.returnedUsername ?? userId, userId: userId),
             mismatch.errorDescription,
             suggestion,
             mismatch

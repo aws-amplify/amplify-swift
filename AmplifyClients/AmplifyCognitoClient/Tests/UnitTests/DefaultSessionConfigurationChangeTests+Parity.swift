@@ -159,7 +159,7 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertEqual(harness.keychain.value(account(ChangeConfigs.both)), harness.keychain.value(account(ChangeConfigs.userPoolOnly)))
         XCTAssertNotNil(harness.keychain.value(oldSidecar))
         XCTAssertNil(harness.keychain.value(newSidecar))
-        XCTAssertEqual(rows, [StoredSession(sessionId: .default, label: nil, username: "alice", kind: .userPoolOnly)])
+        XCTAssertEqual(rows, [AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
         XCTAssertEqual(restored, .signedIn(alice))
         XCTAssertNil(try harness.storedRecord(.default)?.label)
     }
@@ -167,7 +167,7 @@ extension DefaultSessionConfigurationChangeTests {
     // MARK: Helpers
 
     /// The plugin started with `configuration` over `keychain`: what it then retrieves.
-    private func startPlugin(_ configuration: AuthClientConfiguration, over keychain: TestKeychain) throws -> AmplifyCredentials? {
+    private func startPlugin(_ configuration: AmplifyCognitoClientConfiguration, over keychain: TestKeychain) throws -> AmplifyCredentials? {
         let store = AWSCognitoAuthCredentialStore(
             authConfiguration: AuthConfiguration(client: configuration),
             keychain: keychain.itemStore(service: SessionRecordStore.unsharedService),
@@ -181,7 +181,7 @@ extension DefaultSessionConfigurationChangeTests {
     }
 
     /// The client's `.default` started with `configuration` over `keychain`: the rule, then the read.
-    private func startClient(_ configuration: AuthClientConfiguration, over keychain: TestKeychain) throws -> AmplifyCredentials? {
+    private func startClient(_ configuration: AmplifyCognitoClientConfiguration, over keychain: TestKeychain) throws -> AmplifyCredentials? {
         let store = keychain.recordStore(for: SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: nil))
         _ = try store.applyPluginConfigurationRule(current: AuthConfiguration(client: configuration))
         guard case .record(let stored) = try store.read(.default), let credentials = stored.record.credentials else {

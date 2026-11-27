@@ -14,7 +14,7 @@ import Foundation
 /// carries. `AmplifyCognitoClient` fills it before each sign-in step with a `Ceremony`, and the assertion
 /// then runs as that ceremony says (`Ceremony.assert(_:)`):
 /// - **no anchor** (a sign-in without a window reached a WebAuthn step): refused with
-///   `EngineAuthError.validation("presentationAnchor", …)` before the runner, so nothing is presented;
+///   `EngineAuthError.validation("presentationAnchorForWebAuthn", …)` before the runner, so nothing is presented;
 /// - otherwise **inside the ceremony's runner** (the client's process-wide sheet lease). The body unboxes
 ///   the anchor on the main actor (a window that has gone is the same `.validation`, and nothing is
 ///   presented), makes the asserter there, and asserts. It converts its own errors to `WebAuthnError`
@@ -68,11 +68,15 @@ package final class WebAuthnSignInCeremonySlot: @unchecked Sendable {
 
 package extension WebAuthnCredentialOperations {
 
+    /// The `.validation` field for a sign-in's presentation anchor, missing or gone: the name of the sign-in
+    /// options' field. Associate keeps `presentationAnchorField`, its parameter's name.
+    static let signInPresentationAnchorField = "presentationAnchorForWebAuthn"
+
     /// A WebAuthn step reached without a presentation anchor.
     static let presentationAnchorMissingDescription =
         "A WebAuthn sign-in step needs a presentation anchor, and none was given, so the passkey sheet was not presented."
     static let presentationAnchorMissingRecovery =
-        "Pass the window the passkey sheet attaches to (a presentationAnchor), such as the key window of the active scene."
+        "Set the window the passkey sheet attaches to as the options' presentationAnchorForWebAuthn, such as the key window of the active scene."
 }
 
 #if os(iOS) || os(macOS) || os(visionOS)
@@ -81,13 +85,13 @@ extension WebAuthnSignInCeremonySlot.Ceremony {
     /// The assertion, run as this ceremony says (see `WebAuthnSignInCeremonySlot`).
     ///
     /// - Returns: the assertion payload, as `AssertWebAuthnCredentials` sends it to Cognito.
-    /// - Throws: `EngineAuthError.validation("presentationAnchor", …)` with no anchor, before the runner;
+    /// - Throws: `EngineAuthError.validation("presentationAnchorForWebAuthn", …)` with no anchor, before the runner;
     ///   a `WebAuthnError` from the body; the runner's own error unchanged.
     @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
     package func assert(_ options: CredentialAssertionOptions, logger: any EngineScopedLogger) async throws -> String {
         guard let anchor else {
             throw EngineAuthError.validation(
-                WebAuthnCredentialOperations.presentationAnchorField,
+                WebAuthnCredentialOperations.signInPresentationAnchorField,
                 WebAuthnCredentialOperations.presentationAnchorMissingDescription,
                 WebAuthnCredentialOperations.presentationAnchorMissingRecovery
             )
@@ -120,7 +124,7 @@ extension WebAuthnSignInCeremonySlot.Ceremony {
     ) throws -> CredentialAsserterProtocol {
         guard let window = box.anchor else {
             throw EngineAuthError.validation(
-                WebAuthnCredentialOperations.presentationAnchorField,
+                WebAuthnCredentialOperations.signInPresentationAnchorField,
                 WebAuthnCredentialOperations.presentationAnchorGoneDescription,
                 WebAuthnCredentialOperations.presentationAnchorGoneRecovery
             )

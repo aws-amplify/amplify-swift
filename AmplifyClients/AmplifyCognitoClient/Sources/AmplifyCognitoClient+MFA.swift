@@ -18,11 +18,11 @@ public extension AmplifyCognitoClient {
     /// Starts setting up TOTP for the signed-in user.
     ///
     /// - Returns: The shared secret, and `getSetupURI(appName:accountName:)` for an authenticator app.
-    /// - Throws: `AuthClientError.notSignedIn` for a signed-out, guest or federated session, and while a
+    /// - Throws: `AmplifyCognitoClientError.notSignedIn` for a signed-out, guest or federated session, and while a
     ///   sign-in waits on a challenge; `.configuration` without a user pool; `.sessionExpired`;
     ///   `.storageUnavailable`; `.notAuthorized` when Cognito rejects the access token (revoked, for
     ///   example); `.service` as Cognito answers otherwise.
-    func setUpTOTP() async throws -> AuthClientTOTPSetupDetails {
+    func setUpTOTP() async throws -> AmplifyCognitoClientTOTPSetupDetails {
         let core = core
         return try await core.signedInOperation("set up TOTP") { engine, payload in
             try await engine.setUpTOTP(payload)
@@ -36,7 +36,7 @@ public extension AmplifyCognitoClient {
     ///   with a right code.
     func verifyTOTPSetup(
         code: String,
-        options: AuthClientVerifyTOTPSetupOptions = AuthClientVerifyTOTPSetupOptions()
+        options: AmplifyCognitoClientVerifyTOTPSetupOptions = AmplifyCognitoClientVerifyTOTPSetupOptions()
     ) async throws {
         let friendlyDeviceName = options.friendlyDeviceName
         let core = core
@@ -48,7 +48,7 @@ public extension AmplifyCognitoClient {
     /// The signed-in user's MFA settings.
     ///
     /// - Throws: as `setUpTOTP()`.
-    func fetchMFAPreference() async throws -> AuthClientUserMFAPreference {
+    func fetchMFAPreference() async throws -> AmplifyCognitoClientUserMFAPreference {
         let core = core
         return try await core.signedInOperation("fetch the MFA preference") { engine, payload in
             try await engine.fetchMFAPreference(payload)
@@ -61,9 +61,9 @@ public extension AmplifyCognitoClient {
     /// - Throws: as `setUpTOTP()`; `.service(.invalidParameter, …)` when more than one type would be
     ///   preferred.
     func updateMFAPreference(
-        sms: AuthClientMFAPreference? = nil,
-        totp: AuthClientMFAPreference? = nil,
-        email: AuthClientMFAPreference? = nil
+        sms: AmplifyCognitoClientMFAPreference? = nil,
+        totp: AmplifyCognitoClientMFAPreference? = nil,
+        email: AmplifyCognitoClientMFAPreference? = nil
     ) async throws {
         let core = core
         try await core.signedInOperation("update the MFA preference") { engine, payload in

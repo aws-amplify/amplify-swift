@@ -16,7 +16,7 @@ the call fails once with a JSON decoding error (`NSCocoaErrorDomain` 3840) and i
 - That error carries no HTTP status, so the SDK's retry classifier (`AWSRetryErrorInfoProvider`) does not see a
   5xx and does not retry. An empty 5xx body, by contrast, becomes `UnknownHTTPServiceError` and is retried.
 - The engine surfaces it as `FetchSessionError.service(NSError)`; the plugin reports `AuthError.service`, the
-  client `AuthClientError.service(nil, …)`. Neither treats it as terminal: the session stays signed in and only
+  client `AmplifyCognitoClientError.service(nil, …)`. Neither treats it as terminal: the session stays signed in and only
   that call fails.
 
 Seen once in a full client integration run (`MultiSessionFlowTests.testSameUserInTwoSessionsIsTwoIndependentSessions`,

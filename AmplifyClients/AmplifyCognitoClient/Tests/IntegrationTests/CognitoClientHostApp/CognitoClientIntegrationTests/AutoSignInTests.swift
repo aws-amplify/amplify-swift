@@ -30,7 +30,7 @@ final class AutoSignInTests: ClientSignUpTestCase {
         do {
             _ = try await client.autoSignIn()
             XCTFail("auto sign-in without a sign-up should not succeed")
-        } catch AuthClientError.invalidState {
+        } catch AmplifyCognitoClientError.invalidState {
             // Expected.
         } catch {
             XCTFail("expected invalidState, got \(error)")
@@ -68,7 +68,7 @@ final class AutoSignInTests: ClientSignUpTestCase {
         let firstEvent = try await Self.firstEvent(of: events)
         XCTAssertEqual(firstEvent, .signedIn)
         let stored = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
-        XCTAssertTrue(stored.first { $0.sessionId == client.sessionId }?.username == user.username, "the row names the user")
+        XCTAssertTrue(stored.first { $0.sessionId == client.sessionId }?.user?.username == user.username, "the row names the user")
         XCTAssertFalse(stored.contains { $0.sessionId == other.sessionId }, "the other session stores nothing")
         let otherState = await other.currentSessionState()
         XCTAssertEqual(otherState, .signedOut)
@@ -106,7 +106,7 @@ final class AutoSignInTests: ClientSignUpTestCase {
         do {
             _ = try await client.autoSignIn()
             XCTFail("a second auto sign-in with the same session should not succeed")
-        } catch AuthClientError.notAuthorized {
+        } catch AmplifyCognitoClientError.notAuthorized {
             // Expected.
         } catch {
             XCTFail("expected notAuthorized, got \(error)")
@@ -115,8 +115,8 @@ final class AutoSignInTests: ClientSignUpTestCase {
     }
 
     /// The first event `events` delivers, within 10 seconds.
-    private static func firstEvent(of events: AsyncStream<AuthEvent>) async throws -> AuthEvent? {
-        try await withThrowingTaskGroup(of: AuthEvent?.self) { group in
+    private static func firstEvent(of events: AsyncStream<AmplifyCognitoClientEvent>) async throws -> AmplifyCognitoClientEvent? {
+        try await withThrowingTaskGroup(of: AmplifyCognitoClientEvent?.self) { group in
             group.addTask {
                 for await event in events {
                     return event

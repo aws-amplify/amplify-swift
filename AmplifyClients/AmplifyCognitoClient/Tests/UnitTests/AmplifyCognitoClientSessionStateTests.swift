@@ -1,0 +1,290 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+@_spi(AmplifyExperimental) import AmplifyFoundation
+import XCTest
+@_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
+
+final class AmplifyCognitoClientSessionStateTests: XCTestCase {
+
+    private struct Underlying: Error, Equatable {
+        let code: Int
+    }
+
+    /// One value of every `AmplifyCognitoClientSessionState` case.
+    private static let oneOfEach: [AmplifyCognitoClientSessionState] = [
+        .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-1")),
+        .federated(identityId: "us-east-1:federated"),
+        .signedOut,
+        .guest,
+        .awaitingChallenge(.confirmSignInWithTOTPCode),
+        .unavailable(.locked),
+        .failed(.configuration("bad config", "fix it"))
+    ]
+
+    /// Exhaustive on purpose: a new state case does not compile until `oneOfEach` is revisited.
+    private static func name(of state: AmplifyCognitoClientSessionState) -> String {
+        switch state {
+        case .signedIn: return "signedIn"
+        case .federated: return "federated"
+        case .signedOut: return "signedOut"
+        case .guest: return "guest"
+        case .awaitingChallenge: return "awaitingChallenge"
+        case .unavailable: return "unavailable"
+        case .failed: return "failed"
+        }
+    }
+
+    /// Every `AmplifyCognitoClientError` case, by name. `errorCase(of:)` and `sample(of:)` keep it complete.
+    private enum ErrorCase: CaseIterable {
+        case configuration, storageUnavailable, sessionExpired, notSignedIn, invalidSessionID, challengeExpired
+        case browserBusy, sessionConfigurationMismatch, validation, service, notAuthorized, invalidState
+        case userCancelled, webAuthnCeremonyFailed, unexpectedIdentity, unknown
+    }
+
+    /// Exhaustive on purpose, with no `default`: a new `AmplifyCognitoClientError` case does not compile until it is
+    /// given an `ErrorCase`, and then `sample(of:)` does not compile until it is given a sample.
+    private static func errorCase(of error: AmplifyCognitoClientError) -> ErrorCase {
+        switch error {
+        case .configuration: return .configuration
+        case .storageUnavailable: return .storageUnavailable
+        case .sessionExpired: return .sessionExpired
+        case .notSignedIn: return .notSignedIn
+        case .invalidSessionID: return .invalidSessionID
+        case .challengeExpired: return .challengeExpired
+        case .browserBusy: return .browserBusy
+        case .sessionConfigurationMismatch: return .sessionConfigurationMismatch
+        case .validation: return .validation
+        case .service: return .service
+        case .notAuthorized: return .notAuthorized
+        case .invalidState: return .invalidState
+        case .userCancelled: return .userCancelled
+        case .webAuthnCeremonyFailed: return .webAuthnCeremonyFailed
+        case .unexpectedIdentity: return .unexpectedIdentity
+        case .unknown: return .unknown
+        }
+    }
+
+    /// One value of `errorCase`, with the same strings as every other, so only the case and its structured
+    /// payload tell them apart.
+    private static func sample(of errorCase: ErrorCase) -> AmplifyCognitoClientError {
+        switch errorCase {
+        case .configuration: return .configuration("d", "s")
+        case .storageUnavailable: return .storageUnavailable(.locked, "d", "s")
+        case .sessionExpired: return .sessionExpired("d", "s")
+        case .notSignedIn: return .notSignedIn("d", "s")
+        case .invalidSessionID: return .invalidSessionID("d", "s")
+        case .challengeExpired: return .challengeExpired("d", "s")
+        case .browserBusy: return .browserBusy(holder: .default, "d", "s")
+        case .sessionConfigurationMismatch: return .sessionConfigurationMismatch(.default, "d", "s")
+        case .validation: return .validation(field: "f", "d", "s")
+        case .service: return .service(.userNotFound, "d", "s")
+        case .notAuthorized: return .notAuthorized("d", "s")
+        case .invalidState: return .invalidState("d", "s")
+        case .userCancelled: return .userCancelled("d", "s")
+        case .webAuthnCeremonyFailed: return .webAuthnCeremonyFailed(.failed, "d", "s")
+        case .unexpectedIdentity: return .unexpectedIdentity(expected: "alice", returned: AmplifyCognitoClientUser(username: "bob", userId: "sub-bob"), "d", "s")
+        case .unknown: return .unknown("d", "s")
+        }
+    }
+
+    /// One value of every `AmplifyCognitoClientError` case, from `sample(of:)`.
+    private static func oneOfEachError() -> [AmplifyCognitoClientError] {
+        ErrorCase.allCases.map(sample(of:))
+    }
+
+    // MARK: - The case matrix
+
+    /// - Given: one value of each of the seven cases, named through an exhaustive switch
+    /// - When: every pair is compared
+    /// - Then:
+    ///    - each value equals itself and differs from every other case, so no case (in particular
+    ///      `.guest` or `.unavailable`) collapses into `.signedOut`
+    func testEveryCaseEqualsItselfAndDiffersFromEveryOther() {
+        XCTAssertEqual(
+            Self.oneOfEach.map(Self.name(of:)),
+            ["signedIn", "federated", "signedOut", "guest", "awaitingChallenge", "unavailable", "failed"]
+        )
+        for (index, state) in Self.oneOfEach.enumerated() {
+            for (otherIndex, other) in Self.oneOfEach.enumerated() {
+                if index == otherIndex {
+                    XCTAssertEqual(state, other, "\(Self.name(of: state)) should equal itself")
+                } else {
+                    XCTAssertNotEqual(state, other, "\(Self.name(of: state)) vs \(Self.name(of: other))")
+                }
+            }
+        }
+    }
+
+    // MARK: - Payload-carrying cases
+
+    /// - Given: `.signedIn` with the same user, and with users differing in either field
+    /// - When: they are compared
+    /// - Then:
+    ///    - only the same user compares equal
+    func testSignedInComparesTheUser() {
+        let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-1")
+        XCTAssertEqual(AmplifyCognitoClientSessionState.signedIn(alice), .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-1")))
+        XCTAssertNotEqual(AmplifyCognitoClientSessionState.signedIn(alice), .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-1")))
+        XCTAssertNotEqual(AmplifyCognitoClientSessionState.signedIn(alice), .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-2")))
+    }
+
+    /// - Given: `.federated` with the same identity and a different one
+    /// - When: they are compared
+    /// - Then:
+    ///    - only the same identity compares equal
+    func testFederatedComparesTheIdentity() {
+        XCTAssertEqual(AmplifyCognitoClientSessionState.federated(identityId: "us-east-1:a"), .federated(identityId: "us-east-1:a"))
+        XCTAssertNotEqual(AmplifyCognitoClientSessionState.federated(identityId: "us-east-1:a"), .federated(identityId: "us-east-1:b"))
+    }
+
+    /// - Given: `.awaitingChallenge` with the same step, a different step, and the same step with
+    ///   a different payload
+    /// - When: they are compared
+    /// - Then:
+    ///    - only the identical step compares equal
+    func testAwaitingChallengeComparesTheStep() {
+        let email = AmplifyCognitoClientCodeDeliveryDetails(destination: .email("a***"))
+        let sms = AmplifyCognitoClientCodeDeliveryDetails(destination: .sms("+1***"))
+        XCTAssertEqual(AmplifyCognitoClientSessionState.awaitingChallenge(.confirmSignInWithOTP(email)), .awaitingChallenge(.confirmSignInWithOTP(email)))
+        XCTAssertNotEqual(AmplifyCognitoClientSessionState.awaitingChallenge(.confirmSignInWithOTP(email)), .awaitingChallenge(.confirmSignInWithOTP(sms)))
+        XCTAssertNotEqual(AmplifyCognitoClientSessionState.awaitingChallenge(.confirmSignInWithTOTPCode), .awaitingChallenge(.done))
+    }
+
+    /// - Given: `.unavailable` with each `StorageUnavailableReason`
+    /// - When: they are compared
+    /// - Then:
+    ///    - only the same reason compares equal, so "wait" (`locked`) stays distinct from
+    ///      "misconfigured" (`denied`)
+    func testUnavailableComparesTheReason() {
+        let reasons: [StorageUnavailableReason] = [.locked, .interrupted, .denied]
+        for reason in reasons {
+            for other in reasons {
+                XCTAssertEqual(AmplifyCognitoClientSessionState.unavailable(reason) == .unavailable(other), reason == other)
+            }
+        }
+    }
+
+    // MARK: - The `.failed` rule
+
+    /// - Given: two `.failed` states whose errors are the same case with the same strings
+    /// - When: they are compared
+    /// - Then:
+    ///    - they are equal
+    func testFailedEqualWhenSameCaseAndStrings() {
+        XCTAssertEqual(
+            AmplifyCognitoClientSessionState.failed(.configuration("bad config", "fix it")),
+            .failed(.configuration("bad config", "fix it"))
+        )
+    }
+
+    /// The rule is not payload-blind: every `AmplifyCognitoClientError` case, given identical strings,
+    /// is still a different failure.
+    ///
+    /// - Given: one error of every `AmplifyCognitoClientError` case, built through exhaustive switches, all carrying the
+    ///   same description and suggestion
+    /// - When: each pair is wrapped in `.failed` and compared
+    /// - Then:
+    ///    - every sample is of the case it was built for
+    ///    - each equals itself and differs from every other case
+    func testFailedDistinguishesEveryErrorCase() {
+        let errors = Self.oneOfEachError()
+        XCTAssertEqual(errors.map(Self.errorCase(of:)), ErrorCase.allCases)
+        for (index, error) in errors.enumerated() {
+            for (otherIndex, other) in errors.enumerated() {
+                XCTAssertEqual(
+                    AmplifyCognitoClientSessionState.failed(error) == .failed(other),
+                    index == otherIndex,
+                    "\(error) vs \(other)"
+                )
+            }
+        }
+    }
+
+    /// - Given: `.failed` errors of one case that differ only in description, or only in
+    ///   recovery suggestion
+    /// - When: they are compared
+    /// - Then:
+    ///    - they are unequal
+    func testFailedComparesDescriptionAndSuggestion() {
+        XCTAssertNotEqual(AmplifyCognitoClientSessionState.failed(.unknown("a", "s")), .failed(.unknown("b", "s")))
+        XCTAssertNotEqual(AmplifyCognitoClientSessionState.failed(.unknown("d", "a")), .failed(.unknown("d", "b")))
+    }
+
+    /// - Given: `.failed` errors of one case that differ only in their structured payload: the
+    ///   storage reason, the busy holder, the mismatched session, the validation field, the service
+    ///   code, the ceremony failure, and the expected or returned user of an unexpected identity
+    /// - When: they are compared
+    /// - Then:
+    ///    - each pair is unequal, and a pair with equal payloads is equal
+    func testFailedComparesStructuredPayload() throws {
+        let work = try AmplifyCognitoClientSessionID.named("work")
+        XCTAssertNotEqual(
+            AmplifyCognitoClientSessionState.failed(.storageUnavailable(.locked, "d", "s")),
+            .failed(.storageUnavailable(.denied, "d", "s"))
+        )
+        XCTAssertNotEqual(
+            AmplifyCognitoClientSessionState.failed(.browserBusy(holder: .default, "d", "s")),
+            .failed(.browserBusy(holder: work, "d", "s"))
+        )
+        XCTAssertNotEqual(
+            AmplifyCognitoClientSessionState.failed(.sessionConfigurationMismatch(.default, "d", "s")),
+            .failed(.sessionConfigurationMismatch(work, "d", "s"))
+        )
+        XCTAssertNotEqual(
+            AmplifyCognitoClientSessionState.failed(.validation(field: "appName", "d", "s")),
+            .failed(.validation(field: "accountName", "d", "s"))
+        )
+        XCTAssertNotEqual(
+            AmplifyCognitoClientSessionState.failed(.service(.userNotFound, "d", "s")),
+            .failed(.service(.codeMismatch, "d", "s"))
+        )
+        XCTAssertNotEqual(
+            AmplifyCognitoClientSessionState.failed(.service(.userNotFound, "d", "s")),
+            .failed(.service(nil, "d", "s"))
+        )
+        XCTAssertNotEqual(
+            AmplifyCognitoClientSessionState.failed(.webAuthnCeremonyFailed(.failed, "d", "s")),
+            .failed(.webAuthnCeremonyFailed(.credentialAlreadyExists, "d", "s"))
+        )
+        let bob = AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")
+        XCTAssertNotEqual(
+            AmplifyCognitoClientSessionState.failed(.unexpectedIdentity(expected: "alice", returned: bob, "d", "s")),
+            .failed(.unexpectedIdentity(expected: nil, returned: bob, "d", "s"))
+        )
+        XCTAssertNotEqual(
+            AmplifyCognitoClientSessionState.failed(.unexpectedIdentity(expected: "alice", returned: bob, "d", "s")),
+            .failed(.unexpectedIdentity(expected: "alice", returned: AmplifyCognitoClientUser(username: "bob", userId: "sub-other"), "d", "s"))
+        )
+        XCTAssertEqual(
+            AmplifyCognitoClientSessionState.failed(.browserBusy(holder: work, "d", "s")),
+            .failed(.browserBusy(holder: try AmplifyCognitoClientSessionID.named("work"), "d", "s"))
+        )
+        XCTAssertEqual(
+            AmplifyCognitoClientSessionState.failed(.unexpectedIdentity(expected: "alice", returned: bob, "d", "s")),
+            .failed(.unexpectedIdentity(expected: "alice", returned: AmplifyCognitoClientUser(username: "bob", userId: "sub-bob"), "d", "s"))
+        )
+    }
+
+    /// The one documented blind spot: `any Error` has no equality, so the underlying error is
+    /// not compared. This pins that, so a change to the rule is a deliberate one.
+    ///
+    /// - Given: `.failed` errors identical except for the underlying error (different, and absent)
+    /// - When: they are compared
+    /// - Then:
+    ///    - they are equal
+    func testFailedIgnoresUnderlyingError() {
+        XCTAssertEqual(
+            AmplifyCognitoClientSessionState.failed(.unknown("d", "s", Underlying(code: 1))),
+            .failed(.unknown("d", "s", Underlying(code: 2)))
+        )
+        XCTAssertEqual(
+            AmplifyCognitoClientSessionState.failed(.unknown("d", "s", Underlying(code: 1))),
+            .failed(.unknown("d", "s"))
+        )
+    }
+}

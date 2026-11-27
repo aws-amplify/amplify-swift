@@ -26,7 +26,7 @@ class ClientIntegrationTestCase: XCTestCase {
     /// A unique session ID (`<tag>-<8 hex>`), cleaned up in `tearDown`. Pass the `pool` the session signs
     /// in to (nil is the main configuration, the default backend's), so its sign-out revokes against that
     /// pool.
-    func makeSessionID(_ tag: String, pool: SandboxPool? = nil, accessGroup: String? = nil) throws -> SessionID {
+    func makeSessionID(_ tag: String, pool: SandboxPool? = nil, accessGroup: String? = nil) throws -> AmplifyCognitoClientSessionID {
         let sessionId = try IntegrationTestEnvironment.uniqueSessionID(tag)
         createdSessions.append(CreatedSession(sessionId: sessionId, accessGroup: accessGroup, pool: pool))
         return sessionId
@@ -92,7 +92,7 @@ class ClientIntegrationTestCase: XCTestCase {
 
 /// One session a test created, and the access group it was created in.
 struct CreatedSession: Sendable {
-    let sessionId: SessionID
+    let sessionId: AmplifyCognitoClientSessionID
     let accessGroup: String?
     /// The pool the session signs in to; nil is the main configuration.
     var pool: SandboxPool?
@@ -133,7 +133,7 @@ enum SessionCleanup {
     /// way. The first error is rethrown at the end: a sign-out's `.failed` result (the session is still signed
     /// in), a purge's error, or a call that ran out of time. A `.partial` sign-out signed the session out here,
     /// and the purge follows, so it is not a failure.
-    static func cleanUp(_ sessions: [CreatedSession], configuration: AuthClientConfiguration) async throws {
+    static func cleanUp(_ sessions: [CreatedSession], configuration: AmplifyCognitoClientConfiguration) async throws {
         var firstError: Error?
         // Bounded: a call routed through a live core that deadlocked must fail the teardown, not hang the run.
         func attempt(_ what: String, _ operation: @escaping @Sendable () async throws -> Void) async {
@@ -175,7 +175,7 @@ enum SessionCleanup {
 
     /// Waits until the registry holds no live session for any of `sessionIds`. The bound only stops a
     /// leaked handle from hanging the run; nothing asserts on how long the wait takes.
-    static func waitUntilReleased(_ sessionIds: [SessionID], timeout: TimeInterval = 10) async throws {
+    static func waitUntilReleased(_ sessionIds: [AmplifyCognitoClientSessionID], timeout: TimeInterval = 10) async throws {
         let deadline = Date().addingTimeInterval(timeout)
         while let live = sessionIds.first(where: { SessionCoreRegistry.shared.liveSession(for: $0) != nil }) {
             guard Date() < deadline else {

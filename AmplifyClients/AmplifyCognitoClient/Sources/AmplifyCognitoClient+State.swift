@@ -22,8 +22,8 @@ public extension AmplifyCognitoClient {
     /// The first read after launch can be `.awaitingChallenge(step)`: a sign-in this session started before the
     /// app was closed, saved on the device, which the app may resume (present the step, then
     /// `confirmSignIn(challengeResponse:options:)`) or abandon (call `signIn` again). A resumed challenge whose
-    /// Cognito session has since expired fails that answer with `AuthClientError.challengeExpired`.
-    func currentSessionState() async -> AuthSessionState {
+    /// Cognito session has since expired fails that answer with `AmplifyCognitoClientError.challengeExpired`.
+    func currentSessionState() async -> AmplifyCognitoClientSessionState {
         let core = core
         return await core.sessionState()
     }
@@ -33,7 +33,7 @@ public extension AmplifyCognitoClient {
     ///
     /// A subscription does not keep the session alive. When the last handle and the last provider for
     /// the session go away, the stream finishes and a `for await` loop over it exits.
-    func listenToSessionStateChanges() -> AsyncStream<AuthSessionState> {
+    func listenToSessionStateChanges() -> AsyncStream<AmplifyCognitoClientSessionState> {
         core.states.events()
     }
 
@@ -45,7 +45,7 @@ public extension AmplifyCognitoClient {
     ///
     /// A subscription does not keep the session alive. When the last handle and the last provider for
     /// the session go away, the stream finishes and a `for await` loop over it exits.
-    func listenToAuthEvents() -> AsyncStream<AuthEvent> {
+    func listenToAuthEvents() -> AsyncStream<AmplifyCognitoClientEvent> {
         core.events.events()
     }
 }

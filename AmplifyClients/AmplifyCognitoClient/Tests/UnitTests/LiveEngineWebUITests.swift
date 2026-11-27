@@ -20,7 +20,7 @@ final class LiveEngineWebUITests: XCTestCase {
     private var harness: LiveEngineHarness!
     /// The window to anchor sheets to, made on first use rather than in `setUp()`: a process's first `UIWindow()`
     /// can block for minutes on a just-booted simulator, so a test that needs no window makes none.
-    private var window: AuthClientPresentationAnchor {
+    private var window: AmplifyCognitoClientPresentationAnchor {
         get async { await HostedUIFixtures.window() }
     }
 
@@ -43,7 +43,7 @@ final class LiveEngineWebUITests: XCTestCase {
     }
 
     private func request(
-        _ options: WebUIOptions = WebUIOptions(),
+        _ options: AmplifyCognitoClientWebUIOptions = AmplifyCognitoClientWebUIOptions(),
         identity: EngineIdentityPolicy = .none,
         nonce: String = "flow-nonce"
     ) async -> EngineWebUISignInRequest {
@@ -72,7 +72,7 @@ final class LiveEngineWebUITests: XCTestCase {
     func testAHostedUISignInReachesDoneWithTheChosenPrivacy() async throws {
         for ephemeral in [true, false] {
             let engine = try harness.engine()
-            let request = await request(WebUIOptions(prefersEphemeralSession: ephemeral))
+            let request = await request(AmplifyCognitoClientWebUIOptions(prefersEphemeralSession: ephemeral))
 
             let result = try await engine.signInWithWebUI(request, current: nil, epoch: 0)
 
@@ -91,21 +91,22 @@ final class LiveEngineWebUITests: XCTestCase {
         }
     }
 
-    /// - Given: options with a provider and an `idpIdentifier`, no scopes, no prompt, and the other fields
+    /// - Given: options with a provider, set as the `for:` overload sets it, and an `idpIdentifier`, no scopes, no
+    ///   prompt, and the other fields
     /// - When: a hosted-UI sign-in runs
     /// - Then:
     ///    - the authorize URL sends `idp_identifier` and no `identity_provider`, the configuration's scopes
     ///      sorted, the nonce, `lang`, `login_hint` and `resource`, and no `prompt` item
     func testTheAuthorizeRequestCarriesTheOptions() async throws {
         let engine = try harness.engine()
-        let request = await request(WebUIOptions(
-            provider: .google,
+        let options = AmplifyCognitoClientWebUIOptions(
             idpIdentifier: "corp",
             language: "fr",
             loginHint: "alice@example.com",
             prompt: [],
             resource: "https://api.example.com"
-        ))
+        ).with(provider: .google)
+        let request = await request(options)
 
         _ = try await engine.signInWithWebUI(request, current: nil, epoch: 0)
 
@@ -132,7 +133,7 @@ final class LiveEngineWebUITests: XCTestCase {
     func testTheRequestsScopesReplaceTheConfiguredOnes() async throws {
         for (scopes, expected) in [(["profile", "aws.cognito.signin.user.admin"], "aws.cognito.signin.user.admin profile"), ([], "")] {
             let engine = try harness.engine()
-            let request = await request(WebUIOptions(scopes: scopes))
+            let request = await request(AmplifyCognitoClientWebUIOptions(scopes: scopes))
 
             _ = try await engine.signInWithWebUI(request, current: nil, epoch: 0)
 
@@ -147,7 +148,7 @@ final class LiveEngineWebUITests: XCTestCase {
     ///    - the authorize URL sends the provider's `identity_provider` and the prompt, space-separated
     func testAProviderAndAPromptReachTheAuthorizeRequest() async throws {
         let engine = try harness.engine()
-        let request = await request(WebUIOptions(provider: .apple, prompt: [.login, .selectAccount]))
+        let request = await request(AmplifyCognitoClientWebUIOptions(prompt: [.login, .selectAccount]).with(provider: .apple))
 
         _ = try await engine.signInWithWebUI(request, current: nil, epoch: 0)
 
@@ -163,7 +164,7 @@ final class LiveEngineWebUITests: XCTestCase {
     ///    - each throws `.unexpectedIdentity` returning alice (the first carrying the expectation), and no payload
     ///      is returned, so nothing can be committed
     func testAnUnexpectedIdentityIsRefused() async throws {
-        let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+        let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
         for (identity, expected) in [
             (EngineIdentityPolicy(expectedIdentity: "bob"), "bob" as String?),
             (EngineIdentityPolicy(excludedSubjects: ["sub-alice"]), nil)
@@ -261,7 +262,7 @@ final class LiveEngineWebUITests: XCTestCase {
         let engine = try harness.engine()
         let request = EngineWebUISignInRequest(
             anchor: gone,
-            options: EngineWebUIOptions(WebUIOptions(), nonce: "n"),
+            options: EngineWebUIOptions(AmplifyCognitoClientWebUIOptions(), nonce: "n"),
             identity: .none
         )
 
@@ -352,7 +353,7 @@ final class LiveEngineWebUITests: XCTestCase {
     ///      the sign-in reaches `.done`; without one, it carries no `Authorization` header
     func testTheTokenExchangeCarriesTheAppClientSecret() async throws {
         let base = HostedUIFixtures.userPool
-        let confidential = AuthClientConfiguration.UserPool(
+        let confidential = AmplifyCognitoClientConfiguration.UserPool(
             poolId: base.poolId,
             appClientId: base.appClientId,
             region: base.region,
@@ -538,7 +539,7 @@ final class LiveEngineWebUITests: XCTestCase {
                 XCTFail("expected a refusal for \(failure)")
             } catch let refusal as SignOutRefusal {
                 XCTAssertTrue(refusal.error.isEquivalent(to: SessionCore.noHostedUIForSignOut()), "\(failure)")
-                XCTAssertEqual((refusal.error.underlyingError as? AuthClientError)?.kind, .configuration, "\(failure)")
+                XCTAssertEqual((refusal.error.underlyingError as? AmplifyCognitoClientError)?.kind, .configuration, "\(failure)")
             }
 
             XCTAssertEqual(harness.cognito.operations, [], "\(failure)")
@@ -570,14 +571,14 @@ final class LiveEngineWebUITests: XCTestCase {
                 XCTFail("expected a refusal for \(failure)")
             } catch let refusal as SignOutRefusal {
                 XCTAssertTrue(
-                    refusal.error.isEquivalent(to: AuthClientError(engine: failure.engineError)),
+                    refusal.error.isEquivalent(to: AmplifyCognitoClientError(engine: failure.engineError)),
                     "\(failure): \(refusal.error)"
                 )
             }
 
             XCTAssertEqual(harness.cognito.operations, [], "\(failure)")
         }
-        XCTAssertEqual(AuthClientError(engine: HostedUIError.unableToStartASWebAuthenticationSession.engineError).kind, .service(.errorLoadingUI))
+        XCTAssertEqual(AmplifyCognitoClientError(engine: HostedUIError.unableToStartASWebAuthenticationSession.engineError).kind, .service(.errorLoadingUI))
     }
 
     /// - Given: a shared-cookie payload
@@ -606,7 +607,7 @@ final class LiveEngineWebUITests: XCTestCase {
 
     private func sharedCookiePayload() async throws -> Data {
         let engine = try harness.engine()
-        let sharedRequest = await request(WebUIOptions(prefersEphemeralSession: false))
+        let sharedRequest = await request(AmplifyCognitoClientWebUIOptions(prefersEphemeralSession: false))
         guard case .done(let payload) = try await engine.signInWithWebUI(sharedRequest, current: nil, epoch: 0) else {
             throw FixtureError(description: "the hosted-UI sign-in did not finish")
         }
@@ -614,7 +615,7 @@ final class LiveEngineWebUITests: XCTestCase {
     }
 }
 
-/// `AuthClientError(hostedUIMismatch:)`, every reason.
+/// `AmplifyCognitoClientError(hostedUIMismatch:)`, every reason.
 final class HostedUIMismatchMappingTests: XCTestCase {
 
     /// - Given: a mismatch of each reason, returning a user by `sub` and username
@@ -632,13 +633,13 @@ final class HostedUIMismatchMappingTests: XCTestCase {
                 returnedUserId: "sub-alice"
             )
 
-            let error = AuthClientError(hostedUIMismatch: mismatch)
+            let error = AmplifyCognitoClientError(hostedUIMismatch: mismatch)
 
             switch reason {
             case .notExpectedIdentity:
-                XCTAssertEqual(error.kind, .unexpectedIdentity(expected: "bob", returned: AuthClientUser(username: "alice", userId: "sub-alice")))
+                XCTAssertEqual(error.kind, .unexpectedIdentity(expected: "bob", returned: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
             case .signedInToAnotherSession:
-                XCTAssertEqual(error.kind, .unexpectedIdentity(expected: nil, returned: AuthClientUser(username: "alice", userId: "sub-alice")))
+                XCTAssertEqual(error.kind, .unexpectedIdentity(expected: nil, returned: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
             case .tokenUse, .audience, .issuer, .nonce, .subject, .missingIdentity:
                 XCTAssertEqual(error.kind, .service(nil), "\(reason)")
                 XCTAssertTrue(error.errorDescription.contains("could not be verified"), "\(reason)")
@@ -658,9 +659,9 @@ final class HostedUIMismatchMappingTests: XCTestCase {
     func testTheReturnedUsernameFallsBackToTheSubject() {
         let mismatch = HostedUIIdentityMismatch(reason: .signedInToAnotherSession, returnedUsername: nil, returnedUserId: "sub-alice")
 
-        let error = AuthClientError(hostedUIMismatch: mismatch)
+        let error = AmplifyCognitoClientError(hostedUIMismatch: mismatch)
 
-        XCTAssertEqual(error.kind, .unexpectedIdentity(expected: nil, returned: AuthClientUser(username: "sub-alice", userId: "sub-alice")))
+        XCTAssertEqual(error.kind, .unexpectedIdentity(expected: nil, returned: AmplifyCognitoClientUser(username: "sub-alice", userId: "sub-alice")))
     }
 
     /// - Given: a hosted-UI failure that is not an identity check (the browser could not start)
@@ -668,7 +669,7 @@ final class HostedUIMismatchMappingTests: XCTestCase {
     /// - Then:
     ///    - it maps as any engine error does: `.service(.errorLoadingUI)`
     func testOtherHostedUIFailuresMapAsEngineErrors() {
-        let error = AuthClientError(hostedUISignIn: .hostedUI(.unableToStartASWebAuthenticationSession))
+        let error = AmplifyCognitoClientError(hostedUISignIn: .hostedUI(.unableToStartASWebAuthenticationSession))
 
         XCTAssertEqual(error.kind, .service(.errorLoadingUI))
     }

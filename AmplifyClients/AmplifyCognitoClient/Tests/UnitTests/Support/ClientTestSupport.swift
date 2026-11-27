@@ -26,7 +26,7 @@ final class ClientHarness: @unchecked Sendable {
     var sheetLock = SystemSheetLock()
     /// Runs inside a sign-out's logout-page lease body, once it has stopped the passkey registrations
     /// (`SessionCoreDependencies.afterLogoutStop`). A test may replace it before it makes its clients.
-    var afterLogoutStop: @Sendable (SessionID) async -> Void = { _ in }
+    var afterLogoutStop: @Sendable (AmplifyCognitoClientSessionID) async -> Void = { _ in }
     #endif
 
     // `@unchecked Sendable`: the properties below are only touched while holding `lock`.
@@ -34,7 +34,7 @@ final class ClientHarness: @unchecked Sendable {
     private var madeEngines: [FakeSessionEngine] = []
     private var engineFailure: Error?
     private var clientsFactory: (@Sendable (
-        AuthClientConfiguration,
+        AmplifyCognitoClientConfiguration,
         AmplifyCognitoClientUserPoolConfigurationProvider?
     ) throws -> CognitoServiceClients)?
     private var restoreBound: UInt64
@@ -114,7 +114,7 @@ final class ClientHarness: @unchecked Sendable {
 
     func useClientsFactory(
         _ factory: (@Sendable (
-            AuthClientConfiguration,
+            AmplifyCognitoClientConfiguration,
             AmplifyCognitoClientUserPoolConfigurationProvider?
         ) throws -> CognitoServiceClients)?
     ) {
@@ -124,8 +124,8 @@ final class ClientHarness: @unchecked Sendable {
     // MARK: Construction
 
     func client(
-        _ sessionId: SessionID = .default,
-        configuration: AuthClientConfiguration = ClientFixtures.configuration,
+        _ sessionId: AmplifyCognitoClientSessionID = .default,
+        configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration,
         accessGroup: String? = nil,
         configureUserPoolClient: AmplifyCognitoClientUserPoolConfigurationProvider? = nil
     ) throws -> AmplifyCognitoClient {
@@ -143,13 +143,13 @@ final class ClientHarness: @unchecked Sendable {
     }
 
     /// The most recently made engine for `sessionId`.
-    func engine(for sessionId: SessionID) -> FakeSessionEngine? {
+    func engine(for sessionId: AmplifyCognitoClientSessionID) -> FakeSessionEngine? {
         engines.last { $0.context.sessionId == sessionId }
     }
 
     /// A record store over this harness's keychain, for fixtures and inspection.
     func store(
-        configuration: AuthClientConfiguration = ClientFixtures.configuration,
+        configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration,
         accessGroup: String? = nil
     ) -> SessionRecordStore {
         keychain.recordStore(for: SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: accessGroup))
@@ -158,7 +158,7 @@ final class ClientHarness: @unchecked Sendable {
     /// Stores `payload` as a signed-in record for `sessionId`, then clears the keychain logs.
     @discardableResult
     func signIn(
-        _ sessionId: SessionID,
+        _ sessionId: AmplifyCognitoClientSessionID,
         _ payload: FakePayload = .signedIn(),
         label: String? = nil,
         accessGroup: String? = nil
@@ -172,7 +172,7 @@ final class ClientHarness: @unchecked Sendable {
     }
 
     /// The stored record for `sessionId`, if readable.
-    func storedRecord(_ sessionId: SessionID, accessGroup: String? = nil) throws -> SessionRecord? {
+    func storedRecord(_ sessionId: AmplifyCognitoClientSessionID, accessGroup: String? = nil) throws -> SessionRecord? {
         guard case .record(let envelope) = try store(accessGroup: accessGroup).read(sessionId) else {
             return nil
         }
@@ -182,12 +182,12 @@ final class ClientHarness: @unchecked Sendable {
     /// The bytes stored under `sessionId`'s own record key, if any (for `.default`, the Auth plugin's record): what a
     /// test compares with an envelope's `encoded()` to check every field of it, the schema version and timestamp
     /// included.
-    func storedBytes(_ sessionId: SessionID, accessGroup: String? = nil) -> Data? {
+    func storedBytes(_ sessionId: AmplifyCognitoClientSessionID, accessGroup: String? = nil) -> Data? {
         keychain.value(store(accessGroup: accessGroup).sessionAccount(for: sessionId), accessGroup: accessGroup)
     }
 
     /// Reads of `sessionId`'s own record key since the logs were last cleared.
-    func recordReads(_ sessionId: SessionID, accessGroup: String? = nil) -> Int {
+    func recordReads(_ sessionId: AmplifyCognitoClientSessionID, accessGroup: String? = nil) -> Int {
         let account = store(accessGroup: accessGroup).sessionAccount(for: sessionId)
         return keychain.readAccounts.count(where: { $0 == account })
     }
@@ -208,13 +208,13 @@ final class ClientHarness: @unchecked Sendable {
 
 enum ClientFixtures {
 
-    static let userPool = AuthClientConfiguration.UserPool(
+    static let userPool = AmplifyCognitoClientConfiguration.UserPool(
         poolId: StorageFixtures.userPoolId,
         appClientId: "app-client-1",
         region: "us-east-1"
     )
 
-    static let identityPool = AuthClientConfiguration.IdentityPool(poolId: StorageFixtures.identityPoolId, region: "us-east-1")
+    static let identityPool = AmplifyCognitoClientConfiguration.IdentityPool(poolId: StorageFixtures.identityPoolId, region: "us-east-1")
 
     /// Both pools: the namespace is `StorageFixtures.namespace`.
     static let configuration = make(userPool: userPool, identityPool: identityPool)
@@ -224,19 +224,19 @@ enum ClientFixtures {
     static let identityPoolOnlyConfiguration = make(userPool: nil, identityPool: identityPool)
 
     static func make(
-        userPool: AuthClientConfiguration.UserPool?,
-        identityPool: AuthClientConfiguration.IdentityPool?
-    ) -> AuthClientConfiguration {
+        userPool: AmplifyCognitoClientConfiguration.UserPool?,
+        identityPool: AmplifyCognitoClientConfiguration.IdentityPool?
+    ) -> AmplifyCognitoClientConfiguration {
         do {
-            return try AuthClientConfiguration(userPool: userPool, identityPool: identityPool)
+            return try AmplifyCognitoClientConfiguration(userPool: userPool, identityPool: identityPool)
         } catch {
             preconditionFailure("fixture configuration is invalid: \(error)")
         }
     }
 
-    static func id(_ name: String) -> SessionID {
+    static func id(_ name: String) -> AmplifyCognitoClientSessionID {
         do {
-            return try SessionID.named(name)
+            return try AmplifyCognitoClientSessionID.named(name)
         } catch {
             preconditionFailure("fixture session ID is invalid: \(error)")
         }
@@ -308,7 +308,7 @@ final class Stall: @unchecked Sendable {
 final class ConcurrentWriter: @unchecked Sendable {
 
     private let store: SessionRecordStore
-    private let sessionId: SessionID
+    private let sessionId: AmplifyCognitoClientSessionID
     private let budget: Int
     private let change: @Sendable (VersionedSessionRecord) -> SessionRecord
     private let lock = NSLock()
@@ -317,7 +317,7 @@ final class ConcurrentWriter: @unchecked Sendable {
 
     init(
         store: SessionRecordStore,
-        sessionId: SessionID,
+        sessionId: AmplifyCognitoClientSessionID,
         budget: Int = 1,
         change: @escaping @Sendable (VersionedSessionRecord) -> SessionRecord
     ) {
@@ -419,39 +419,39 @@ final class StreamRecorder<Element: Sendable>: @unchecked Sendable {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     /// Whether this is `sessionConfigurationMismatch` for `sessionId`.
-    func isMismatch(for sessionId: SessionID) -> Bool {
+    func isMismatch(for sessionId: AmplifyCognitoClientSessionID) -> Bool {
         guard case .sessionConfigurationMismatch(let id, _, _, _) = self else { return false }
         return id == sessionId
     }
 }
 
-/// Runs `body`, expecting it to throw an `AuthClientError`, and returns that error.
+/// Runs `body`, expecting it to throw an `AmplifyCognitoClientError`, and returns that error.
 func authClientError(
     _ body: () async throws -> some Any,
     file: StaticString = #filePath,
     line: UInt = #line
-) async -> AuthClientError? {
+) async -> AmplifyCognitoClientError? {
     do {
         _ = try await body()
         XCTFail("expected an error", file: file, line: line)
         return nil
-    } catch let error as AuthClientError {
+    } catch let error as AmplifyCognitoClientError {
         return error
     } catch {
-        XCTFail("expected an AuthClientError, got \(error)", file: file, line: line)
+        XCTFail("expected an AmplifyCognitoClientError, got \(error)", file: file, line: line)
         return nil
     }
 }
 
 /// The error of a `.failed` sign-out, expecting one: what a sign-out that used to throw now returns.
 func failedSignOutError(
-    _ result: AuthClientSignOutResult,
+    _ result: AmplifyCognitoClientSignOutResult,
     file: StaticString = #filePath,
     line: UInt = #line
-) -> AuthClientError? {
+) -> AmplifyCognitoClientError? {
     guard case .failed(let error) = result else {
         XCTFail("expected .failed, got \(result)", file: file, line: line)
         return nil
@@ -460,29 +460,29 @@ func failedSignOutError(
     return error
 }
 
-extension AuthClientSignOutResult {
+extension AmplifyCognitoClientSignOutResult {
 
-    /// `.partial`, with each part `nil` unless given.
+    /// `.partial`, with each part `nil` unless given, each error in its wrapper.
     static func partialResult(
-        revokeTokenError: AuthClientError? = nil,
-        globalSignOutError: AuthClientError? = nil,
-        hostedUIError: AuthClientError? = nil,
-        storageError: AuthClientError? = nil
-    ) -> AuthClientSignOutResult {
+        revokeTokenError: AmplifyCognitoClientError? = nil,
+        globalSignOutError: AmplifyCognitoClientError? = nil,
+        hostedUIError: AmplifyCognitoClientError? = nil,
+        storageError: AmplifyCognitoClientError? = nil
+    ) -> AmplifyCognitoClientSignOutResult {
         .partial(
-            revokeTokenError: revokeTokenError,
-            globalSignOutError: globalSignOutError,
-            hostedUIError: hostedUIError,
+            revokeTokenError: revokeTokenError.map(AmplifyCognitoClientRevokeTokenError.init(error:)),
+            globalSignOutError: globalSignOutError.map(AmplifyCognitoClientGlobalSignOutError.init(error:)),
+            hostedUIError: hostedUIError.map(AmplifyCognitoClientHostedUIError.init(error:)),
             storageError: storageError
         )
     }
 
-    /// The parts of a `.partial` result, by name.
+    /// The parts of a `.partial` result, by name, each error out of its wrapper.
     struct PartialErrors {
-        let revokeTokenError: AuthClientError?
-        let globalSignOutError: AuthClientError?
-        let hostedUIError: AuthClientError?
-        let storageError: AuthClientError?
+        let revokeTokenError: AmplifyCognitoClientError?
+        let globalSignOutError: AmplifyCognitoClientError?
+        let hostedUIError: AmplifyCognitoClientError?
+        let storageError: AmplifyCognitoClientError?
     }
 
     /// The parts, or `nil` for any other case.
@@ -490,7 +490,12 @@ extension AuthClientSignOutResult {
         guard case .partial(let revoke, let global, let hostedUI, let storage) = self else {
             return nil
         }
-        return PartialErrors(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: hostedUI, storageError: storage)
+        return PartialErrors(
+            revokeTokenError: revoke?.error,
+            globalSignOutError: global?.error,
+            hostedUIError: hostedUI?.error,
+            storageError: storage
+        )
     }
 }
 
@@ -498,7 +503,7 @@ extension AmplifyCognitoClient {
 
     /// Signs in through the public API as `username`, with the fake engine's default (done).
     @discardableResult
-    func signInForTest(_ username: String = "alice") async throws -> AuthClientSignInResult {
+    func signInForTest(_ username: String = "alice") async throws -> AmplifyCognitoClientSignInResult {
         try await signIn(username: username, password: "password")
     }
 }
@@ -506,22 +511,30 @@ extension AmplifyCognitoClient {
 extension CredentialsError {
 
     var isNotSignedIn: Bool {
-        if case .notSignedIn = self { return true }
+        if case .notSignedIn = self {
+            return true
+        }
         return false
     }
 
     var isSessionExpired: Bool {
-        if case .sessionExpired = self { return true }
+        if case .sessionExpired = self {
+            return true
+        }
         return false
     }
 
     var isNotConfigured: Bool {
-        if case .notConfigured = self { return true }
+        if case .notConfigured = self {
+            return true
+        }
         return false
     }
 
     var isUnknown: Bool {
-        if case .unknown = self { return true }
+        if case .unknown = self {
+            return true
+        }
         return false
     }
 

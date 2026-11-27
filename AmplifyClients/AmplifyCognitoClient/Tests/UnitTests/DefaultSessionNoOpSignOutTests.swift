@@ -140,6 +140,7 @@ final class DefaultSessionNoOpSignOutTests: XCTestCase {
             refreshTokenOf: TestKeychain.refreshToken,
             markerScope: TestKeychain.markerScope,
             summarizeSharedRecord: TestKeychain.summarizeSharedRecord,
+            describeCredentials: TestKeychain.describeCredentials,
             rereadsAbsentSharedRecord: false,
             sameCredentials: TestKeychain.sameCredentials,
             legacyLoginStores: {

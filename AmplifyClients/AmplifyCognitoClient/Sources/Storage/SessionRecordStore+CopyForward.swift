@@ -205,7 +205,7 @@ extension SessionRecordStore {
         case userPoolTokensOnly(identityPending: Bool)
 
         /// The kinds of record this carry takes.
-        func accepts(_ kind: SessionKind) -> Bool {
+        func accepts(_ kind: AmplifyCognitoClientSessionKind) -> Bool {
             switch self {
             case .asIs:
                 return kind == .guest || kind == .federated
@@ -235,7 +235,7 @@ extension SessionRecordStore {
 
     // MARK: Markers
 
-    func markerAccount(for sessionId: SessionID) -> String {
+    func markerAccount(for sessionId: AmplifyCognitoClientSessionID) -> String {
         SessionRecordKey.markerAccount(for: sessionId, scope: markerScope)
     }
 
@@ -245,8 +245,8 @@ extension SessionRecordStore {
 
     /// The session's namespace marker for this app.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be read.
-    func readMarker(for sessionId: SessionID) throws -> MarkerRead {
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be read.
+    func readMarker(for sessionId: AmplifyCognitoClientSessionID) throws -> MarkerRead {
         // `.default` keeps no marker; a `$default` one is a development build's leftover, never read.
         guard sessionId != .default else {
             return .absent
@@ -264,8 +264,8 @@ extension SessionRecordStore {
 
     /// The session's readable marker, or `nil` if it is absent or unreadable.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be read.
-    func marker(for sessionId: SessionID) throws -> NamespaceMarker? {
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be read.
+    func marker(for sessionId: AmplifyCognitoClientSessionID) throws -> NamespaceMarker? {
         guard case .marker(let marker) = try readMarker(for: sessionId) else {
             return nil
         }
@@ -274,8 +274,8 @@ extension SessionRecordStore {
 
     /// Writes the session's namespace marker for this app.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if it could not be written.
-    func writeMarker(_ marker: NamespaceMarker, for sessionId: SessionID) throws {
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if it could not be written.
+    func writeMarker(_ marker: NamespaceMarker, for sessionId: AmplifyCognitoClientSessionID) throws {
         guard sessionId != .default else {
             return
         }
@@ -290,7 +290,7 @@ extension SessionRecordStore {
     /// Rewrites the session's marker as `change` returns it, if it changed; never an unreadable one. Best effort: a
     /// failure is logged and leaves the marker as it was. A stale marker only matters after a later configuration
     /// change, and then carries at most the record it names, under the checks of every carry.
-    func updateMarker(_ sessionId: SessionID, _ change: (NamespaceMarker?) -> NamespaceMarker) {
+    func updateMarker(_ sessionId: AmplifyCognitoClientSessionID, _ change: (NamespaceMarker?) -> NamespaceMarker) {
         guard sessionId != .default else {
             return
         }
@@ -313,7 +313,7 @@ extension SessionRecordStore {
     }
 
     /// Records that the session's record, `record`, is kept under this namespace, remembering `copy`.
-    func recordRunningHere(_ sessionId: SessionID, record: SessionRecord, remembering copy: NamespaceMarker.Copy? = nil) {
+    func recordRunningHere(_ sessionId: AmplifyCognitoClientSessionID, record: SessionRecord, remembering copy: NamespaceMarker.Copy? = nil) {
         let own = namespace.pools.keyComponent
         let user = userKey(record)
         updateMarker(sessionId) { ($0 ?? NamespaceMarker(poolNamespace: own)).keptHere(own, user: user, remembering: copy) }
@@ -327,7 +327,7 @@ extension SessionRecordStore {
     /// here: switching back reads it as it was, unless it was signed out there. The marker's other copies are kept
     /// whoever starts here: each names its user, and only that user's sign-out, purge or rollback check takes it.
     /// Best effort: a failed read remembers nothing.
-    func recordStartedHere(_ sessionId: SessionID, record: SessionRecord) {
+    func recordStartedHere(_ sessionId: AmplifyCognitoClientSessionID, record: SessionRecord) {
         let own = namespace.pools.keyComponent
         let user = userKey(record)
         updateMarker(sessionId) { current in
@@ -355,7 +355,7 @@ extension SessionRecordStore {
     /// this namespace: one naming another records that namespace's user, which this write did not change, and with
     /// no marker there is nothing to correct. The copies are kept, each for its own user. Best effort, as every
     /// marker update.
-    func recordUserChangedHere(_ sessionId: SessionID, record: SessionRecord) {
+    func recordUserChangedHere(_ sessionId: AmplifyCognitoClientSessionID, record: SessionRecord) {
         do {
             guard case .marker(var marker) = try readMarker(for: sessionId),
                   marker.poolNamespace == namespace.pools.keyComponent,
@@ -418,13 +418,13 @@ extension SessionRecordStore {
 
     /// The namespace other than this one that the session's marker names, if any: the gate a restore also takes.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the marker could not be read.
-    func carrySource(for sessionId: SessionID) throws -> PoolNamespace? {
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the marker could not be read.
+    func carrySource(for sessionId: AmplifyCognitoClientSessionID) throws -> PoolNamespace? {
         markerSource(try marker(for: sessionId))
     }
 
     /// The record under the recorded namespace, as it would be carried here, with its account and stored bytes.
-    private func pendingCarry(for sessionId: SessionID, marker: NamespaceMarker?) throws -> (account: String, data: Data, record: SessionRecord)? {
+    private func pendingCarry(for sessionId: AmplifyCognitoClientSessionID, marker: NamespaceMarker?) throws -> (account: String, data: Data, record: SessionRecord)? {
         guard let previous = recordedPrevious(marker) else {
             return nil
         }
@@ -454,9 +454,9 @@ extension SessionRecordStore {
     ///   namespace it expects. A marker naming another throws `CarrySourceChanged` instead. `nil` does not check.
     /// `.default` keeps no marker: this is its plain `read`.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the marker or a record could not be read or written;
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the marker or a record could not be read or written;
     ///   nothing is carried then.
-    func readCarryingForward(_ sessionId: SessionID, heldSource: PoolNamespace?? = nil) throws -> ReadResult {
+    func readCarryingForward(_ sessionId: AmplifyCognitoClientSessionID, heldSource: PoolNamespace?? = nil) throws -> ReadResult {
         guard sessionId != .default else {
             return try read(sessionId)
         }
@@ -524,7 +524,7 @@ extension SessionRecordStore {
     ///   here from now on, and the record there, if not signed out, is remembered as a copy with its own user.
     private func readKept(
         _ stored: VersionedSessionRecord,
-        of sessionId: SessionID,
+        of sessionId: AmplifyCognitoClientSessionID,
         markerRead: MarkerRead,
         heldSource: PoolNamespace??
     ) throws -> ReadResult {
@@ -604,11 +604,11 @@ extension SessionRecordStore {
     /// is undone as a carry's is (`undoIfTheSourceEnded`): the session reads as absent, which is what the untouched copy
     /// of an ended session reads as. `nil` if not carried: the caller keeps the record here.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if this record could not be re-read or the carry written.
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if this record could not be re-read or the carry written.
     private func carryNewerBack(
         _ other: SessionRecord,
         over stored: VersionedSessionRecord,
-        of sessionId: SessionID,
+        of sessionId: AmplifyCognitoClientSessionID,
         marker: NamespaceMarker,
         remembering copy: NamespaceMarker.Copy,
         source: String
@@ -643,7 +643,7 @@ extension SessionRecordStore {
     /// purge or sign-out under the old configuration raced the carry), undoes the carry, deleting the new record
     /// while it still holds exactly the committed record (its generation and contents). Best effort: a failure is
     /// logged, and the carried record kept.
-    private func undoIfTheSourceEnded(_ sessionId: SessionID, source: String, committed: VersionedSessionRecord) -> ReadResult {
+    private func undoIfTheSourceEnded(_ sessionId: AmplifyCognitoClientSessionID, source: String, committed: VersionedSessionRecord) -> ReadResult {
         do {
             if let data = try fetch(source, operation: "re-read the carried session record") {
                 guard case .envelope(let stored) = SessionRecordEnvelope.decode(data), stored.record.isSignedOut else {
@@ -671,7 +671,7 @@ extension SessionRecordStore {
 
     /// `removePreviousCopies`, logging a failure instead of throwing: for a restore, whose answer does not depend on
     /// it.
-    private func sweepQuietly(_ sessionId: SessionID, marker: NamespaceMarker, reference: SessionRecord?) {
+    private func sweepQuietly(_ sessionId: AmplifyCognitoClientSessionID, marker: NamespaceMarker, reference: SessionRecord?) {
         guard !marker.copies.isEmpty else {
             return
         }
@@ -691,10 +691,10 @@ extension SessionRecordStore {
     ///   - reference: the session's record, if the caller has just read it (a sign-out: the record it signed out).
     ///   - throwing: whether a failure throws (purge), or is logged (sign-out, which has already signed the session
     ///     out here and must not fail on this).
-    /// - Throws: `AuthClientError.storageUnavailable`, when `throwing`, if the marker, the session's record or a copy
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable`, when `throwing`, if the marker, the session's record or a copy
     ///   could not be read, or a copy or the marker could not be written.
     func removePreviousCopies(
-        of sessionId: SessionID,
+        of sessionId: AmplifyCognitoClientSessionID,
         marker knownMarker: NamespaceMarker? = nil,
         reference knownReference: SessionRecord? = nil,
         throwing: Bool = true
@@ -776,8 +776,8 @@ extension SessionRecordStore {
     /// revoke accepts them. A copy under another user pool is swept without a revoke, and its refresh token stays
     /// valid until it expires.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the marker, the session's record or a copy could not be read.
-    func copiesToRevoke(of sessionId: SessionID, revoking payload: Data) throws -> [Data] {
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the marker, the session's record or a copy could not be read.
+    func copiesToRevoke(of sessionId: AmplifyCognitoClientSessionID, revoking payload: Data) throws -> [Data] {
         guard sessionId != .default, case .marker(let marker) = try readMarker(for: sessionId), !marker.copies.isEmpty,
               let userPool = namespace.pools.userPoolId else {
             return []
@@ -814,23 +814,16 @@ extension SessionRecordStore {
     /// The record a session with no record here would carry from the recorded namespace, as it would be carried:
     /// what a picker shows before the session is restored.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the marker or the record could not be read.
-    func pendingCarriedRecord(for sessionId: SessionID) throws -> SessionRecord? {
+    /// - Throws: `AmplifyCognitoClientError.storageUnavailable` if the marker or the record could not be read.
+    func pendingCarriedRecord(for sessionId: AmplifyCognitoClientSessionID) throws -> SessionRecord? {
         try pendingCarry(for: sessionId, marker: marker(for: sessionId))?.record
-    }
-
-    /// `pendingCarriedRecord` as a listing row.
-    func pendingCarryRow(for sessionId: SessionID) throws -> StoredSession? {
-        try pendingCarriedRecord(for: sessionId).map {
-            StoredSession(sessionId: sessionId, label: $0.label, username: $0.username, kind: $0.kind)
-        }
     }
 
     private func performStorage<Value>(_ operation: String, _ body: () throws -> Value) throws -> Value {
         do {
             return try body()
         } catch {
-            throw AuthClientError.storageUnavailable(from: error, operation: operation)
+            throw AmplifyCognitoClientError.storageUnavailable(from: error, operation: operation)
         }
     }
 }

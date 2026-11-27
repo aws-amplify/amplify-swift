@@ -436,7 +436,7 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
     func testSessionsOnSeveralPoolsAreCleanedUpWithTheirOwnPool() async throws {
         let parityConfiguration = try IntegrationTestEnvironment.configuration(.passwordless)
         var sessions: [CreatedSession] = []
-        var refreshTokens: [(token: String, deviceKey: String?, configuration: AuthClientConfiguration)] = []
+        var refreshTokens: [(token: String, deviceKey: String?, configuration: AmplifyCognitoClientConfiguration)] = []
         for pool in [nil, SandboxPool.passwordless] {
             let user = try await makeFreshUser(on: pool ?? .standard)
             let client = try makeClient("h2-\(pool?.rawValue ?? "rup")", pool: pool)
@@ -452,7 +452,7 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
             guard case .done = signIn.nextStep else {
                 return XCTFail("The \(pool?.rawValue ?? "main") user's sign-in did not complete")
             }
-            let tokens = try await client.fetchAuthSession().userPoolTokensResult.get()
+            let tokens = try await client.fetchAuthSession().requireUserPoolTokens()
             refreshTokens.append((tokens.refreshToken, RawUserPool.deviceKey(of: tokens.accessToken), client.core.configuration))
         }
         let before = try IntegrationTestEnvironment.rawKeychainAccounts()
@@ -488,7 +488,7 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
     private static func refresh(
         _ refreshToken: String,
         deviceKey: String?,
-        on configuration: AuthClientConfiguration
+        on configuration: AmplifyCognitoClientConfiguration
     ) async throws {
         let userPool = try XCTUnwrap(configuration.userPool)
         let client = try await CognitoIdentityProviderClient(

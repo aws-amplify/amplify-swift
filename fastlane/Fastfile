@@ -53,6 +53,23 @@ platform :ios do
 
     foundation_metadata_path = "AmplifyFoundation/Sources/AmplifyMetadata.swift"
     set_key_value(file: foundation_metadata_path, key: "version", value: version)
+
+    # The AmplifyCognitoClient beta is pinned to an exact release, so its README's install snippet names the release
+    # the README is in. Whatever goes wrong here is only logged: it must not stop a release.
+    begin
+      # `sh` returns stderr with stdout: the root is the line that is a directory.
+      root = sh('git', 'rev-parse', '--show-toplevel', log: false).lines.map(&:strip).reverse.find { |line| File.directory?(line) }
+      readme_path = File.join(root, "AmplifyClients/AmplifyCognitoClient/README.md")
+      readme = File.read(readme_path, encoding: "UTF-8")
+      pinned = readme.sub(/(aws-amplify\/amplify-swift", exact: ")[^"\n]*/) { "#{$1}#{version}" }
+      if pinned.include?("aws-amplify/amplify-swift\", exact: \"#{version}\"")
+        File.write(readme_path, pinned, encoding: "UTF-8")
+      else
+        UI.important("No install snippet to set the version in: #{readme_path}")
+      end
+    rescue StandardError => e
+      UI.important("The AmplifyCognitoClient README's install snippet was not updated: #{e.message}")
+    end
   end
 
   desc "Commit and push"

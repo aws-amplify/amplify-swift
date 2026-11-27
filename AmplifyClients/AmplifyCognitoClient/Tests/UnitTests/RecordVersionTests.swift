@@ -14,13 +14,13 @@ final class RecordVersionTests: XCTestCase {
 
     private var keychain: TestKeychain!
     private var store: SessionRecordStore!
-    private var work: SessionID!
+    private var work: AmplifyCognitoClientSessionID!
     private var workAccount: String { store.sessionAccount(for: work) }
 
     override func setUpWithError() throws {
         keychain = TestKeychain()
         store = keychain.recordStore(for: StorageFixtures.namespace)
-        work = try SessionID.named("work")
+        work = try AmplifyCognitoClientSessionID.named("work")
     }
 
     /// The version a read of the record returns; `nil` if it is not a readable record.

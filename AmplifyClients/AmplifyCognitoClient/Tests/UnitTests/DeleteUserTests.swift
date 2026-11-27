@@ -146,7 +146,7 @@ final class DeleteUserTests: XCTestCase {
         let alice = FakePayload.signedIn("alice")
         try harness.signIn(work, alice)
         let client = try harness.client(work)
-        harness.engine(for: work)?.scriptDeleteUser { _ in throw AuthClientError.notAuthorized("Access Token has been revoked", "Sign in again.") }
+        harness.engine(for: work)?.scriptDeleteUser { _ in throw AmplifyCognitoClientError.notAuthorized("Access Token has been revoked", "Sign in again.") }
         let events = StreamRecorder(client.listenToAuthEvents())
 
         let error = await authClientError { try await client.deleteUser() }
@@ -154,7 +154,7 @@ final class DeleteUserTests: XCTestCase {
         XCTAssertEqual(error?.kind, .notAuthorized)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, alice.data)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         // Nothing was sent: ended with a known event, as the recorder appends on its own task.
         _ = await client.signOut()
         await events.waitFor(1)

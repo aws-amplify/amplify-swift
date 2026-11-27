@@ -13,7 +13,7 @@ import XCTest
 /// the never-guest rule for a signed-out session, and a guest session signing in in place.
 final class CredentialsProviderTests: ClientIntegrationTestCase {
 
-    private var configuration: AuthClientConfiguration!
+    private var configuration: AmplifyCognitoClientConfiguration!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -42,7 +42,7 @@ final class CredentialsProviderTests: ClientIntegrationTestCase {
         XCTAssertTrue(claims["username"] as? String == alice.username, "the token names another user")
         let appClientId = try XCTUnwrap(configuration.userPool).appClientId
         XCTAssertTrue(claims["client_id"] as? String == appClientId, "the token is not the configured app client's")
-        let sessionToken = try await client.fetchAuthSession().userPoolTokensResult.get().accessToken
+        let sessionToken = try await client.fetchAuthSession().requireUserPoolTokens().accessToken
         XCTAssertTrue(token == sessionToken, "the provider and the session disagree on the access token")
     }
 
@@ -92,7 +92,7 @@ final class CredentialsProviderTests: ClientIntegrationTestCase {
         let sessionId = try makeSessionID("guest-then-alice")
         let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
         let guest = try await client.fetchAuthSession()
-        XCTAssertNoThrow(try guest.identityIdResult.get())
+        XCTAssertNoThrow(try guest.requireIdentityId())
         let guestState = await client.currentSessionState()
         XCTAssertState(guestState, .guest)
         let guestRole = try await roles.role(of: client.credentialsProvider, region: region)
@@ -113,17 +113,17 @@ final class CredentialsProviderTests: ClientIntegrationTestCase {
         let row = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
             .first { $0.sessionId == sessionId }
         XCTAssertEqual(row?.kind, .userPoolAndIdentityPool)
-        XCTAssertTrue(row?.username == aliceCredentials.username, "the row names another user")
+        XCTAssertTrue(row?.user?.username == aliceCredentials.username, "the row names another user")
         // As the plugin case ends: a signed-in fetch returns the user's tokens, identity and credentials.
         let session = try await client.fetchAuthSession()
-        let tokens = try session.userPoolTokensResult.get()
+        let tokens = try session.requireUserPoolTokens()
         XCTAssertTrue(
             try IntegrationTestEnvironment.jwtClaims(tokens.accessToken)["username"] as? String == aliceCredentials.username,
             "the tokens name another user"
         )
-        XCTAssertTrue(try session.userSubResult.get() == alice.userId, "the session's sub is not alice's")
+        XCTAssertTrue(try session.requireUserSub() == alice.userId, "the session's sub is not alice's")
         // Not necessarily the guest's identity: Cognito maps alice's login to an identity of its own.
-        XCTAssertNoThrow(try session.identityIdResult.get())
-        XCTAssertNoThrow(try session.awsCredentialsResult.get())
+        XCTAssertNoThrow(try session.requireIdentityId())
+        XCTAssertNoThrow(try session.requireAWSCredentials())
     }
 }

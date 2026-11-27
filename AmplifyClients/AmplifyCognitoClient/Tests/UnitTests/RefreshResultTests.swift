@@ -57,8 +57,8 @@ final class RefreshResultTests: XCTestCase {
 
         XCTAssertEqual(credentials as? CognitoAWSCredentials, FakePayload.signedIn("alice", version: 2).awsCredentials)
         XCTAssertEqual(token, "access-alice-v3")
-        XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(FakePayload.signedIn("alice", version: 4).awsCredentials))
-        XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, "access-alice-v4")
+        XCTAssertEqual(session.awsCredentials, AmplifyCognitoClientAWSCredentials(FakePayload.signedIn("alice", version: 4).awsCredentials))
+        XCTAssertEqual(session.userPoolTokens?.accessToken, "access-alice-v4")
         XCTAssertEqual(engine.refreshCalls.count, 3)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, FakePayload.signedIn("alice", version: 4, stale: true).data)
     }
@@ -93,12 +93,10 @@ final class RefreshResultTests: XCTestCase {
         } catch let thrown as CredentialsError {
             error = thrown
         }
-        let session = try await client.fetchAuthSession()
+        let fetched = await authClientError { try await client.fetchAuthSession() }
 
         XCTAssertEqual(error?.isUnknown, true, "\(String(describing: error))")
-        XCTAssertThrowsError(try session.awsCredentialsResult.get()) { error in
-            XCTAssertEqual((error as? AuthClientError)?.kind, .unknown)
-        }
+        XCTAssertEqual(fetched?.isEquivalent(to: SessionCore.notRefreshed(work)), true, "\(String(describing: fetched))")
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, FakePayload.signedIn("alice", version: 201, stale: true).data)
     }
 }

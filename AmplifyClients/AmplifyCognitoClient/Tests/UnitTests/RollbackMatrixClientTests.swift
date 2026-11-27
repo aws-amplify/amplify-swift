@@ -81,10 +81,11 @@ final class RollbackMatrixClientTests: XCTestCase {
     ///
     /// - Given: Alice signed in through the client, and a live core holding her
     /// - When:
-    ///    - The plugin's store deletes its record while the client's next refresh is at Cognito
+    ///    - The plugin's store deletes its record while the client's next refresh, a forced fetch's, is at Cognito
     /// - Then:
-    ///    - The client's guarded write is discarded, the re-read finds nothing, and the session is `.signedOut`
-    ///    - The record is never recreated, and a new core restores `.signedOut`
+    ///    - The client's guarded write is discarded and the re-read finds nothing, so the fetch answers as a
+    ///      signed-out session's does: it becomes a guest, which the identity pool allows
+    ///    - Alice's login is never recreated: the record is the guest's, and a new core restores `.guest`
     ///
     func testMatrix_oldPluginSignOut_isSeenByTheClient() async throws {
         var client: AmplifyCognitoClient? = try makeClient()
@@ -99,13 +100,17 @@ final class RollbackMatrixClientTests: XCTestCase {
         _ = try? await client?.fetchAuthSession(options: .init(forceRefresh: true))
 
         let state = await client?.currentSessionState()
-        XCTAssertEqual(state, .signedOut)
-        XCTAssertNil(harness.keychain.value(pluginAccount))
+        XCTAssertEqual(state, .guest)
+        guard case .identityPoolOnly = try pluginStore().retrieveCredential() else {
+            return XCTFail("expected a guest's record, got \(try pluginStore().retrieveCredential())")
+        }
         client = nil
         await harness.waitForBaseline()
         let restored = try await makeClient().currentSessionState()
-        XCTAssertEqual(restored, .signedOut)
-        XCTAssertNil(harness.keychain.value(pluginAccount))
+        XCTAssertEqual(restored, .guest)
+        guard case .identityPoolOnly = try pluginStore().retrieveCredential() else {
+            return XCTFail("expected a guest's record, got \(try pluginStore().retrieveCredential())")
+        }
     }
 
     /// The label is bound to the user: it is dropped when the plugin signs another user in.
@@ -134,7 +139,7 @@ final class RollbackMatrixClientTests: XCTestCase {
 
         let afterAliceRefreshed = try await listed()
         XCTAssertEqual(afterAliceRefreshed, [
-            StoredSession(sessionId: .default, label: "Work", username: "alice", kind: .userPoolAndIdentityPool)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         ])
 
         let bob = try await live.signedInPayload("bob", on: engine)
@@ -142,12 +147,12 @@ final class RollbackMatrixClientTests: XCTestCase {
 
         let afterBob = try await listed()
         XCTAssertEqual(afterBob, [
-            StoredSession(sessionId: .default, label: nil, username: "bob", kind: .userPoolAndIdentityPool)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "bob", userId: "sub-bob"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         ])
         XCTAssertNil(try harness.storedRecord(.default)?.label)
         let restored = try makeClient()
         let restoredState = await restored.currentSessionState()
-        XCTAssertEqual(restoredState, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(restoredState, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         live.scriptRefresh("bob", version: 3)
         _ = try await restored.fetchAuthSession(options: .init(forceRefresh: true))
         let sidecar = try XCTUnwrap(harness.keychain.value(sidecarAccount))
@@ -215,7 +220,7 @@ final class RollbackMatrixClientTests: XCTestCase {
 
         let rows = try await listed(includingSignedOut: true)
         XCTAssertEqual(rows, [
-            StoredSession(sessionId: .default, label: nil, username: "alice", kind: .userPoolAndIdentityPool)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         ])
     }
 
@@ -287,7 +292,7 @@ final class RollbackMatrixClientTests: XCTestCase {
         let defaultBack = await (try makeClient()).currentSessionState()
         let workBack = await (try makeClient(work)).currentSessionState()
         XCTAssertEqual(defaultBack, .signedOut)
-        XCTAssertEqual(workBack, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(workBack, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 
     /// A plugin build with the older configuration runs its own rule after the client recorded a newer one.
@@ -317,7 +322,11 @@ final class RollbackMatrixClientTests: XCTestCase {
                 .saveCredential(AmplifyCredentials.decoded(olderLogin))
             let client = keychain.recordStore(for: SessionStorageNamespace(pools: PoolNamespace(pair.current), accessGroup: nil))
             _ = try client.applyPluginConfigurationRule(current: pair.current)
-            let version: RecordVersion? = if case .record(let held) = try client.read(.default) { held.version } else { nil }
+            let version: RecordVersion? = if case .record(let held) = try client.read(.default) {
+                held.version
+            } else {
+                nil
+            }
             let summary = PluginRecordSummary.peek(alice)
             let record = SessionRecord(label: nil, username: summary.username, userId: summary.userId, kind: summary.kind, credentials: alice)
             XCTAssertTrue(try client.write(record, for: .default, expecting: version).didCommit, pair.name)
@@ -349,7 +358,7 @@ final class RollbackMatrixClientTests: XCTestCase {
     }
 
     /// The plugin's own credential store over the harness's keychain, with `configuration`.
-    func pluginStore(_ configuration: AuthClientConfiguration) -> AWSCognitoAuthCredentialStore {
+    func pluginStore(_ configuration: AmplifyCognitoClientConfiguration) -> AWSCognitoAuthCredentialStore {
         AWSCognitoAuthCredentialStore(
             authConfiguration: AuthConfiguration(client: configuration),
             keychain: harness.keychain.itemStore(service: SessionRecordStore.unsharedService),
@@ -361,7 +370,7 @@ final class RollbackMatrixClientTests: XCTestCase {
     /// records in `hiddenReads`.
     func pluginStore(
         _ binary: RollbackPluginBinary,
-        _ configuration: AuthClientConfiguration = ClientFixtures.configuration,
+        _ configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration,
         recording hiddenReads: HiddenReads
     ) -> AWSCognitoAuthCredentialStore {
         AWSCognitoAuthCredentialStore(
@@ -386,7 +395,7 @@ final class RollbackMatrixClientTests: XCTestCase {
         XCTAssertEqual(result.nextStep, .done)
     }
 
-    func listed(includingSignedOut: Bool = false) async throws -> [StoredSession] {
+    func listed(includingSignedOut: Bool = false) async throws -> [AmplifyCognitoClientStoredSession] {
         try await AmplifyCognitoClient.storedSessions(
             configuration: ClientFixtures.configuration,
             accessGroup: nil,
@@ -418,8 +427,8 @@ final class RollbackMatrixClientTests: XCTestCase {
     }
 
     func makeClient(
-        _ sessionId: SessionID = .default,
-        configuration: AuthClientConfiguration = ClientFixtures.configuration
+        _ sessionId: AmplifyCognitoClientSessionID = .default,
+        configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration
     ) throws -> AmplifyCognitoClient {
         try AmplifyCognitoClient(
             configuration: configuration,

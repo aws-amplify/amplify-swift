@@ -28,7 +28,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
     private var leftoverAccount: String { SessionRecordKey.account(for: .default, in: pools, kind: .session) }
     private var leftoverMarker: String { SessionRecordKey.markerAccount(for: .default, scope: TestKeychain.markerScope) }
 
-    private let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+    private let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
 
     override func setUp() {
         harness = ClientHarness()
@@ -53,7 +53,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
 
         let state = await client.currentSessionState()
 
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice@corp", userId: "1234567890")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice@corp", userId: "1234567890")))
         XCTAssertFalse(harness.keychain.hasMutations)
     }
 
@@ -186,7 +186,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertEqual(first?.isUnknown, true, "\(String(describing: first))")
         for (name, error) in [("second", second), ("third", third), ("fourth", fourth)] {
             XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
-            XCTAssertEqual((error?.underlyingError as? AuthClientError)?.errorDescription, Self.refreshTokenAlreadyUsed, name)
+            XCTAssertEqual((error?.underlyingError as? AmplifyCognitoClientError)?.errorDescription, Self.refreshTokenAlreadyUsed, name)
         }
         XCTAssertEqual(engine.refreshCalls.count, 2)
         // Ends with a known event, so an extra `.sessionExpired` still in the recorder's buffer is counted too.
@@ -224,7 +224,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         for (name, error) in [("first", first), ("second", second)] {
             XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
             XCTAssertEqual(
-                (error?.underlyingError as? AuthClientError)?.errorDescription,
+                (error?.underlyingError as? AmplifyCognitoClientError)?.errorDescription,
                 "Session \"$default\"'s refresh token has expired or been revoked.",
                 name
             )
@@ -265,7 +265,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
 
         for (name, error) in [("third", third), ("fourth", fourth)] {
             XCTAssertEqual(error?.isSessionExpired, true, "\(name): \(String(describing: error))")
-            XCTAssertEqual((error?.underlyingError as? AuthClientError)?.errorDescription, Self.refreshTokenAlreadyUsed, name)
+            XCTAssertEqual((error?.underlyingError as? AmplifyCognitoClientError)?.errorDescription, Self.refreshTokenAlreadyUsed, name)
         }
         XCTAssertEqual(engine.refreshCalls.count, 2)
         XCTAssertEqual(harness.keychain.value(pluginAccount), resaved)
@@ -324,13 +324,10 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         }
         let client = try liveClient(live)
         _ = try await client.signIn(username: "alice", password: "password")
-        _ = try await client.fetchAuthSession(options: .init(forceRefresh: true))
+        _ = try? await client.fetchAuthSession(options: .init(forceRefresh: true))
         harness.advanceClock(by: RefreshTokenReuse.minimumGap)
-        let expired = try await client.fetchAuthSession(options: .init(forceRefresh: true))
-        guard case .failure(let expiry) = expired.userPoolTokensResult else {
-            return XCTFail("the second forced refresh should have expired the session")
-        }
-        XCTAssertEqual(expiry.errorDescription, Self.refreshTokenAlreadyUsed)
+        let expiry = await authClientError { try await client.fetchAuthSession(options: .init(forceRefresh: true)) }
+        XCTAssertEqual(expiry?.errorDescription, Self.refreshTokenAlreadyUsed, "the second forced refresh expires the session")
         let stored = try XCTUnwrap(harness.keychain.value(pluginAccount))
         let flagged = try flaggedExpired(stored)
         let engine = try live.engine()
@@ -338,16 +335,13 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertEqual(try engine.userPoolTokens(in: flagged)?.refreshToken, try engine.userPoolTokens(in: stored)?.refreshToken)
         harness.keychain.put(flagged, pluginAccount)
 
-        let session = try await client.fetchAuthSession()
+        let error = await authClientError { try await client.fetchAuthSession() }
         let aws = await credentialsError { try await client.credentialsProvider.resolve() }
 
-        guard case .failure(let error) = session.userPoolTokensResult else {
-            return XCTFail("the plugin's flagged re-save was taken for a new login")
-        }
-        XCTAssertEqual(error.kind, .sessionExpired, "\(error)")
-        XCTAssertEqual(error.errorDescription, Self.refreshTokenAlreadyUsed)
+        XCTAssertEqual(error?.kind, .sessionExpired, "the plugin's flagged re-save is not a new login: \(String(describing: error))")
+        XCTAssertEqual(error?.errorDescription, Self.refreshTokenAlreadyUsed)
         XCTAssertEqual(aws?.isSessionExpired, true, "\(String(describing: aws))")
-        XCTAssertEqual((aws?.underlyingError as? AuthClientError)?.errorDescription, Self.refreshTokenAlreadyUsed)
+        XCTAssertEqual((aws?.underlyingError as? AmplifyCognitoClientError)?.errorDescription, Self.refreshTokenAlreadyUsed)
         XCTAssertEqual(live.cognito.operations.count(where: { $0 == "GetTokensFromRefreshToken" }), 2)
     }
 
@@ -463,7 +457,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         let meta = try XCTUnwrap(sidecar())
         XCTAssertEqual([meta.label, meta.username, meta.userId], ["Home", "alice", "sub-alice"])
         XCTAssertEqual(try harness.store().storedSessions(includingSignedOut: true), [
-            StoredSession(sessionId: .default, label: "Home", username: "alice", kind: .signedOut)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: "Home", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)
         ])
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedOut)
@@ -584,7 +578,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         )
 
         XCTAssertEqual(restored, .signedOut)
-        XCTAssertEqual(listed, [StoredSession(sessionId: .default, label: "Home", username: "alice", kind: .signedOut)])
+        XCTAssertEqual(listed, [AmplifyCognitoClientStoredSession(sessionId: .default, label: "Home", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .signedOut, state: .signedOut)])
         XCTAssertEqual(userIds, [.default: "sub-alice"])
         XCTAssertFalse(touched().contains(leftoverAccount))
         XCTAssertFalse(touched().contains(leftoverMarker))
@@ -710,6 +704,68 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertNil(try harness.storedRecord(.default)?.label)
         XCTAssertEqual(sidecar()?.userId, "sub-bob")
         XCTAssertNil(sidecar()?.label)
+    }
+
+    /// `named("$default", label:)` is `.default` with a label, which a sign-in saves in the sidecar when it keeps
+    /// none.
+    ///
+    /// - Given: nothing stored, and a client of `.default` built with `named("$default", label: "Home")`
+    /// - When: alice signs in; she renames the row and signs out; bob signs in
+    /// - Then:
+    ///    - alice's row has the ID's label, in the sidecar, bound to her
+    ///    - bob's sign-in drops alice's label, and his row has the ID's, bound to him
+    func testASignInOnDefaultSavesTheIDsLabelWhenTheSidecarKeepsNone() async throws {
+        let client = try harness.client(.named("$default", label: "Home"))
+
+        try await client.signInForTest("alice")
+
+        XCTAssertEqual(try harness.storedRecord(.default)?.label, "Home")
+        XCTAssertEqual(sidecar()?.label, "Home")
+        XCTAssertEqual(sidecar()?.userId, "sub-alice")
+        try await client.setSessionLabel("Alice's")
+        let signedOut = await client.signOut()
+        XCTAssertEqual(signedOut, .complete, "\(signedOut)")
+        XCTAssertEqual(sidecar()?.label, "Alice's")
+
+        try await client.signInForTest("bob")
+
+        XCTAssertEqual(try harness.storedRecord(.default)?.label, "Home")
+        XCTAssertEqual(sidecar()?.userId, "sub-bob")
+        XCTAssertEqual(sidecar()?.label, "Home")
+    }
+
+    /// On `.default` too, only a sign-in saves the ID's label, and the sidecar's own label wins over it.
+    ///
+    /// - Given: the plugin's login for alice, needing a refresh, with no label, and a client of `.default` built
+    ///   with `named("$default", label: "Home")`
+    /// - When: the session refreshes; alice signs out and in again; she renames the row, signs out and in again
+    /// - Then:
+    ///    - the refresh saves no label
+    ///    - her first sign-in, over her own row with no label, saves the ID's
+    ///    - her second keeps the label she set
+    func testDefaultKeepsItsSidecarsLabelOverTheIDsAndARefreshSavesNone() async throws {
+        harness.keychain.put(FakePayload.signedIn("alice", stale: true).data, pluginAccount)
+        let client = try harness.client(.named("$default", label: "Home"))
+
+        _ = try await client.credentialsProvider.resolve()
+
+        XCTAssertEqual(sidecar()?.userId, "sub-alice")
+        XCTAssertNil(sidecar()?.label)
+        XCTAssertNil(try harness.storedRecord(.default)?.label)
+
+        var signedOut = await client.signOut()
+        XCTAssertEqual(signedOut, .complete, "\(signedOut)")
+        try await client.signInForTest("alice")
+
+        XCTAssertEqual(sidecar()?.label, "Home")
+
+        try await client.setSessionLabel("Mine")
+        signedOut = await client.signOut()
+        XCTAssertEqual(signedOut, .complete, "\(signedOut)")
+        try await client.signInForTest("alice")
+
+        XCTAssertEqual(try harness.storedRecord(.default)?.label, "Mine")
+        XCTAssertEqual(sidecar()?.label, "Mine")
     }
 
     /// The sidecar is cosmetic: failing to write it never fails the session.
@@ -1003,10 +1059,10 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertNil(try harness.storedRecord(.default)?.label)
         XCTAssertEqual(try harness.storedRecord(.default)?.username, "bob")
         XCTAssertEqual(try harness.store().storedSessions(), [
-            StoredSession(sessionId: .default, label: nil, username: "bob", kind: .userPoolAndIdentityPool)
+            AmplifyCognitoClientStoredSession(sessionId: .default, label: nil, user: AmplifyCognitoClientUser(username: "bob", userId: "sub-bob"), kind: .userPoolAndIdentityPool, state: .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         ])
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
     }
 
     // MARK: Helpers

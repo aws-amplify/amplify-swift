@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// An empty shell. It exists so the integration tests run inside a signed iOS app, which is what
+/// An empty shell. It exists so the integration tests run inside a signed app, which is what
 /// gives them a real data-protection keychain; `swift test` on macOS is unsigned and cannot.
 @main
 struct CognitoClientHostAppApp: App {

@@ -51,7 +51,7 @@ extension RollbackMatrixPluginTests {
             let signedOut = await client?.signOut()
             client = nil
             await clients.waitForBaseline()
-            XCTAssertEqual(carried, .signedIn(AuthClientUser(username: "fixture-user", userId: "fixture-sub")), label)
+            XCTAssertEqual(carried, .signedIn(AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub")), label)
             XCTAssertEqual(signedOut, .complete, label)
             XCTAssertEqual(try decoded(XCTUnwrap(keychain.value(service: pluginKeychainService, account: accountA))), try decoded(alice), label)
 
@@ -99,7 +99,7 @@ extension RollbackMatrixPluginTests {
                     let purged = await client?.signOut(options: .init(purgeStoredSession: true))
                     client = nil
                     await clients.waitForBaseline()
-                    XCTAssertEqual(carried, .signedIn(AuthClientUser(username: "fixture-user", userId: "fixture-sub")), label)
+                    XCTAssertEqual(carried, .signedIn(AmplifyCognitoClientUser(username: "fixture-user", userId: "fixture-sub")), label)
                     XCTAssertEqual(purged, .complete, label)
                 } else {
                     let underC = pluginStore(binary, clientPluginConfiguration)

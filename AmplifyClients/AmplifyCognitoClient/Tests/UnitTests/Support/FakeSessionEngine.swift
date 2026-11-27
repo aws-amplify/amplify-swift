@@ -38,7 +38,8 @@ struct FakePayload: Codable, Equatable {
     var stale: Bool
     /// Whether the payload holds AWS credentials.
     var aws: Bool
-    /// The identity pool identity, if the payload names one.
+    /// The identity pool identity, if the payload names one. The factories below name one whenever the payload
+    /// holds AWS credentials, as real credentials do; set it to `nil` for a payload that lacks it.
     var identityId: String? = nil
     /// Whether the fake reports the user pool tokens themselves as needing a refresh (`nil`: no).
     var tokensStale: Bool? = nil
@@ -47,6 +48,8 @@ struct FakePayload: Codable, Equatable {
     var hostedUIShared: Bool? = nil
     /// The user pool refresh token, if a test needs one other than the default `refresh-<username>` (a rotation).
     var refreshToken: String? = nil
+    /// Whether the payload lacks the user pool tokens its user should have (`nil`: no).
+    var withoutUserPoolTokens: Bool? = nil
     /// The version of the AWS credentials, if a test needs them refreshed apart from the user pool tokens (`nil`:
     /// `version`).
     var awsVersion: Int? = nil
@@ -54,7 +57,7 @@ struct FakePayload: Codable, Equatable {
     static func signedIn(
         _ username: String = "alice",
         userId: String? = nil,
-        kind: SessionKind = .userPoolAndIdentityPool,
+        kind: AmplifyCognitoClientSessionKind = .userPoolAndIdentityPool,
         version: Int = 1,
         stale: Bool = false,
         identityId: String? = nil
@@ -66,15 +69,15 @@ struct FakePayload: Codable, Equatable {
             version: version,
             stale: stale,
             aws: kind != .userPoolOnly,
-            identityId: identityId
+            identityId: identityId ?? (kind == .userPoolOnly ? nil : "us-east-1:\(username)")
         )
     }
 
-    static func guest(version: Int = 1, stale: Bool = false, identityId: String? = nil) -> FakePayload {
+    static func guest(version: Int = 1, stale: Bool = false, identityId: String = "us-east-1:guest") -> FakePayload {
         FakePayload(
             username: nil,
             userId: nil,
-            kind: SessionKind.guest.storedValue,
+            kind: AmplifyCognitoClientSessionKind.guest.storedValue,
             version: version,
             stale: stale,
             aws: true,
@@ -87,7 +90,7 @@ struct FakePayload: Codable, Equatable {
         FakePayload(
             username: nil,
             userId: nil,
-            kind: SessionKind.federated.storedValue,
+            kind: AmplifyCognitoClientSessionKind.federated.storedValue,
             version: version,
             stale: stale,
             aws: true,
@@ -123,7 +126,7 @@ struct FakePayload: Codable, Equatable {
             label: label,
             username: username,
             userId: includeUserId ? userId : nil,
-            kind: SessionKind(storedValue: kind) ?? .signedOut,
+            kind: AmplifyCognitoClientSessionKind(storedValue: kind) ?? .signedOut,
             credentials: data
         )
     }
@@ -141,18 +144,18 @@ struct FakePayload: Codable, Equatable {
 
     /// The access token the fake vends for this payload.
     var accessToken: String? {
-        guard let username, kind != SessionKind.guest.storedValue, kind != SessionKind.federated.storedValue else {
+        guard let username, kind != AmplifyCognitoClientSessionKind.guest.storedValue, kind != AmplifyCognitoClientSessionKind.federated.storedValue else {
             return nil
         }
         return "access-\(username)-v\(version)"
     }
 
     /// The user pool tokens the fake vends for this payload.
-    var userPoolTokens: AuthClientUserPoolTokens? {
-        guard let username, let accessToken else {
+    var userPoolTokens: AmplifyCognitoClientUserPoolTokens? {
+        guard withoutUserPoolTokens != true, let username, let accessToken else {
             return nil
         }
-        return AuthClientUserPoolTokens(
+        return AmplifyCognitoClientUserPoolTokens(
             idToken: "id-\(username)-v\(version)",
             accessToken: accessToken,
             refreshToken: "refresh-\(username)-v\(version)"
@@ -175,7 +178,7 @@ struct FakeRetryable: Error {
 /// a refresh or a sign-in open on a `Gate` until the test opens it.
 ///
 /// Its pending sign-in follows the seam's contract: a sign-in that reaches a challenge is retained; a new
-/// sign-in supersedes it; `.done` or a failure clears it, except a `FakeRetryable` or `AuthClientError.validation`
+/// sign-in supersedes it; `.done` or a failure clears it, except a `FakeRetryable` or `AmplifyCognitoClientError.validation`
 /// failure of `confirmSignIn`; `confirmSignIn` with nothing pending throws `invalidState`; and a step held by
 /// `holdSignIns(on:)` throws `CancellationError` when released if `cancelPendingSignIn` ran meanwhile.
 /// Its epochs follow the live engine's rules: `confirmSignIn` answers only an attempt of its own epoch, and
@@ -214,7 +217,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         /// Cognito had already issued the tokens: return them, for the core to refuse and revoke.
         case returnIssuedTokens
     }
-    private var challenge: AuthClientSignInStep?
+    private var challenge: AmplifyCognitoClientSignInStep?
     /// The core's epoch of the pending attempt, and the epoch the latest cancel ended everything below.
     private var attemptEpoch: UInt64 = 0
     private var latestCancelBefore: UInt64 = 0
@@ -350,7 +353,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         }
     }
 
-    func setPendingChallenge(_ step: AuthClientSignInStep?) {
+    func setPendingChallenge(_ step: AmplifyCognitoClientSignInStep?) {
         withLock { challenge = step }
     }
 
@@ -427,7 +430,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
 
     func describe(_ payload: Data) throws -> CredentialSummary {
         withLock { describes += 1 }
-        guard let decoded = FakePayload.decode(payload), let kind = SessionKind(storedValue: decoded.kind) else {
+        guard let decoded = FakePayload.decode(payload), let kind = AmplifyCognitoClientSessionKind(storedValue: decoded.kind) else {
             throw FakeEngineError.unreadablePayload
         }
         return CredentialSummary(kind: kind, username: decoded.username, userId: decoded.userId, identityId: decoded.identityId)
@@ -456,7 +459,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         return decoded.accessToken
     }
 
-    func userPoolTokens(in payload: Data) throws -> AuthClientUserPoolTokens? {
+    func userPoolTokens(in payload: Data) throws -> AmplifyCognitoClientUserPoolTokens? {
         guard let decoded = FakePayload.decode(payload) else {
             throw FakeEngineError.unreadablePayload
         }
@@ -512,10 +515,10 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     ///
     /// A guest's sign-in gets an identity minted for the login (`loginIdentityId(for:)`), never the guest's: the
     /// live engine's identity pool step sends `GetId` with the login alone, so Cognito answers with the identity it
-    /// maps the login to, as for the plugin. With no guest, the payload names no identity, as the fixtures' signed-in
-    /// payloads do.
+    /// maps the login to, as for the plugin. With no guest, the payload names the fixtures' default identity for the
+    /// user, as their signed-in payloads do.
     static func signedIn(_ username: String, from current: Data?) -> FakePayload {
-        let wasGuest = current.flatMap(FakePayload.decode)?.kind == SessionKind.guest.storedValue
+        let wasGuest = current.flatMap(FakePayload.decode)?.kind == AmplifyCognitoClientSessionKind.guest.storedValue
         return FakePayload.signedIn(username, identityId: wasGuest ? loginIdentityId(for: username) : nil)
     }
 
@@ -546,11 +549,19 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         guard pending else {
             throw LiveSignInSteps.noSignInInProgress()
         }
-        // The live engine's rule: a WebAuthn selection with no window at all is refused before anything is
-        // sent, and the challenge is kept.
-        let (step, anchor) = withLock { (challenge, request.webAuthn?.anchor ?? attemptWebAuthnAnchor) }
-        if anchor == nil, let step, LiveSignInSteps.selectsWebAuthn(request.challengeResponse, at: step) {
-            throw SessionCore.presentationAnchorRequired()
+        // The live engine's rule: a WebAuthn selection with no window of its own uses the sign-in's if it is still
+        // there, read as the live engine reads it (`SessionCore.liveAnchor`). With neither it is refused before
+        // anything is sent, and the challenge is kept. No other answer reads the window.
+        let (step, kept) = withLock { (challenge, attemptWebAuthnAnchor) }
+        if request.webAuthn?.anchor == nil, let step, LiveSignInSteps.selectsWebAuthn(request.challengeResponse, at: step) {
+            let live = await SessionCore.liveAnchor(kept)
+            // As in the live engine: a cancel may have ended the attempt while this waited for the main actor.
+            guard withLock({ challenge != nil && attemptEpoch == epoch }) else {
+                throw LiveSignInSteps.noSignInInProgress()
+            }
+            if live == nil {
+                throw SessionCore.presentationAnchorRequired()
+            }
         }
         let inFlightStep = withLock { beginStep(epoch: epoch) }
         defer { withLock { _ = endStep(inFlightStep) } }
@@ -604,7 +615,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         } catch let error as FakeRetryable where retryable {
             withLock { _ = endStep(step) }
             throw error.error
-        } catch let error as AuthClientError where retryable && error.isValidation {
+        } catch let error as AmplifyCognitoClientError where retryable && error.isValidation {
             // The contract: an answer rejected as invalid keeps the attempt.
             withLock { _ = endStep(step) }
             throw error
@@ -722,7 +733,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         try await script?(payload)
     }
 
-    var pendingChallenge: AuthClientSignInStep? {
+    var pendingChallenge: AmplifyCognitoClientSignInStep? {
         get async {
             let (value, hook) = withLock { (challenge, challengeReadHook) }
             await hook?()
@@ -748,7 +759,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
 
     /// Resumes a saved sign-in as the pending attempt of `epoch`, as the live engine does: refused while one is
     /// pending or a sign-in step is in flight, and when `refuseResumes` was called.
-    func resumeSignIn(from state: ChallengeRecord.State, epoch: UInt64) async -> AuthClientSignInStep? {
+    func resumeSignIn(from state: ChallengeRecord.State, epoch: UInt64) async -> AmplifyCognitoClientSignInStep? {
         withLock {
             resumes.append((state, epoch))
             // Refused while an attempt or a step is live, as the live engine refuses: either is newer.
@@ -821,9 +832,13 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         withLock { ceremonyAnchors }
     }
 
-    /// The window a confirmation's ceremony uses: its own, else the pending attempt's sign-in's.
-    func webAuthnAnchor(for request: EngineConfirmSignInRequest) -> EnginePresentationAnchorBox? {
-        withLock { request.webAuthn?.anchor ?? attemptWebAuthnAnchor }
+    /// The window a confirmation's ceremony uses: its own, else the pending attempt's sign-in's if it is still
+    /// there, read as the live engine reads it (`SessionCore.liveAnchor`).
+    func webAuthnAnchor(for request: EngineConfirmSignInRequest) async -> EnginePresentationAnchorBox? {
+        if let own = request.webAuthn?.anchor {
+            return own
+        }
+        return await SessionCore.liveAnchor(withLock { attemptWebAuthnAnchor })
     }
 
     /// Runs one ceremony where the live engine does: through the context's runner (the sheet lease), with
@@ -898,7 +913,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         } else {
             typed = defaultResult()
         }
-        if let signUp = typed as? AuthClientSignUpResult, case .completeAutoSignIn = signUp.nextStep {
+        if let signUp = typed as? AmplifyCognitoClientSignUpResult, case .completeAutoSignIn = signUp.nextStep {
             let username: String?
             switch call {
             case .signUp(let request):
@@ -1010,7 +1025,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     }
 }
 
-extension AuthClientError {
+extension AmplifyCognitoClientError {
 
     var isValidation: Bool {
         if case .validation = self {
@@ -1025,12 +1040,20 @@ final class FakeRevoker: SessionRevoker, @unchecked Sendable {
 
     private let lock = NSLock()
     private var calls: [Data] = []
+    private var globalFlags: [Bool] = []
     private var script: (@Sendable (Data) throws -> EngineSignOutOutcome)?
 
     var revokeCalls: [Data] {
         lock.lock()
         defer { lock.unlock() }
         return calls
+    }
+
+    /// The `global` flag of each revoke, in order.
+    var revokeGlobalFlags: [Bool] {
+        lock.lock()
+        defer { lock.unlock() }
+        return globalFlags
     }
 
     /// Replaces the default revoke (complete) with a script that either throws or completes.
@@ -1047,18 +1070,19 @@ final class FakeRevoker: SessionRevoker, @unchecked Sendable {
         self.script = script
     }
 
-    func revoke(_ payload: Data) async throws -> EngineSignOutOutcome {
-        try record(payload)?(payload) ?? .complete
+    func revoke(_ payload: Data, global: Bool) async throws -> EngineSignOutOutcome {
+        try record(payload, global)?(payload) ?? .complete
     }
 
     func signOutPresentsBrowser(_ payload: Data) -> Bool {
         FakePayload.decode(payload)?.hostedUIShared ?? false
     }
 
-    private func record(_ payload: Data) -> (@Sendable (Data) throws -> EngineSignOutOutcome)? {
+    private func record(_ payload: Data, _ global: Bool) -> (@Sendable (Data) throws -> EngineSignOutOutcome)? {
         lock.lock()
         defer { lock.unlock() }
         calls.append(payload)
+        globalFlags.append(global)
         return script
     }
 }

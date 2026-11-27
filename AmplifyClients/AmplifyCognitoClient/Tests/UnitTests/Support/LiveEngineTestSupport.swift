@@ -19,13 +19,13 @@ final class LiveEngineHarness: @unchecked Sendable {
 
     let cognito = ScriptedCognito()
     let keychain = TestKeychain()
-    let configuration: AuthClientConfiguration
+    let configuration: AmplifyCognitoClientConfiguration
     /// The hosted UI's browser and token endpoint, when a test scripts them (`LiveEngineWebUITests`).
     let hostedUIPresenter: (any HostedUISessionBehavior)?
     let hostedUIURLSession: (@Sendable () -> URLSession)?
 
     init(
-        configuration: AuthClientConfiguration = ClientFixtures.configuration,
+        configuration: AmplifyCognitoClientConfiguration = ClientFixtures.configuration,
         hostedUIPresenter: (any HostedUISessionBehavior)? = nil,
         hostedUIURLSession: (@Sendable () -> URLSession)? = nil
     ) {
@@ -138,7 +138,7 @@ extension EngineSignInRequest {
     }
 
     static func flow(
-        _ flow: AuthClientAuthFlowType,
+        _ flow: AmplifyCognitoClientAuthFlowType,
         _ username: String = "alice",
         password: String? = "password"
     ) -> EngineSignInRequest {
@@ -340,7 +340,7 @@ extension AmplifyCredentials {
     }
 }
 
-/// The last error of a throwing call, as `AuthClientError`, or `nil`.
-func authError(_ error: Error) -> AuthClientError? {
-    error as? AuthClientError
+/// The last error of a throwing call, as `AmplifyCognitoClientError`, or `nil`.
+func authError(_ error: Error) -> AmplifyCognitoClientError? {
+    error as? AmplifyCognitoClientError
 }

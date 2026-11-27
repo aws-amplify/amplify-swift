@@ -146,7 +146,7 @@ enum SandboxUserCleanup {
         }
         do {
             return try await deleteThroughClient(user, on: pool)
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             guard case .storageUnavailable = error.kind else {
                 throw error
             }
@@ -173,14 +173,14 @@ enum SandboxUserCleanup {
                 await purge()
                 throw HarnessError.malformedFixture("\(user)'s cleanup sign-in stopped at a challenge.")
             }
-        } catch let error as AuthClientError where [.notAuthorized, .service(.userNotFound)].contains(error.kind) {
+        } catch let error as AmplifyCognitoClientError where [.notAuthorized, .service(.userNotFound)].contains(error.kind) {
             await purge()
             user.recordDeleted()
             return .alreadyGone
         }
         do {
             try await client.deleteUser()
-        } catch let error as AuthClientError where error.kind == .service(.userNotFound) {
+        } catch let error as AmplifyCognitoClientError where error.kind == .service(.userNotFound) {
             // A retried `DeleteUser` whose first attempt deleted the user, as in `delete(_:sink:)`.
         } catch {
             await purge()

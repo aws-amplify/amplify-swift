@@ -62,7 +62,7 @@ final class SessionLifecycleTests: XCTestCase {
         let stateA = await clientA.currentSessionState()
         let stateB = await clientB.currentSessionState()
         XCTAssertEqual(stateA, .signedOut)
-        XCTAssertEqual(stateB, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(stateB, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         guard case .record(let stored) = try harness.store().read(home) else {
             return XCTFail("B's record is gone")
         }
@@ -108,7 +108,7 @@ final class SessionLifecycleTests: XCTestCase {
         await eventsA.waitFor(4)
         XCTAssertEqual(eventsA.received, [.signedIn, .signedOut, .signedIn, .userDeleted])
         let stateB = await clientB.currentSessionState()
-        XCTAssertEqual(stateB, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(stateB, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         XCTAssertEqual(try harness.store().read(home), .record(homeRecord))
         XCTAssertEqual(harness.storedBytes(home), homeBytes)
         let credentialsB = try await clientB.credentialsProvider.resolve()
@@ -140,7 +140,7 @@ final class SessionLifecycleTests: XCTestCase {
         weak let probe = client?.core
         let latch = Gate()
         try XCTUnwrap(harness.engine(for: work)).holdRefreshes(on: latch)
-        var provider: CognitoCredentialsProvider? = client?.credentialsProvider
+        var provider: AmplifyCognitoClientCredentialsProvider? = client?.credentialsProvider
         var call: Task<CognitoAWSCredentials?, Error>? = Task { [provider] in
             try await provider?.resolve() as? CognitoAWSCredentials
         }
@@ -194,8 +194,8 @@ final class SessionLifecycleTests: XCTestCase {
     /// in flight; the streams deliver in order, so anything sent earlier is counted here.
     private func assertOnlyItsOwnSignOutReaches(
         _ client: AmplifyCognitoClient,
-        states: StreamRecorder<AuthSessionState>,
-        events: StreamRecorder<AuthEvent>,
+        states: StreamRecorder<AmplifyCognitoClientSessionState>,
+        events: StreamRecorder<AmplifyCognitoClientEvent>,
         file: StaticString = #filePath,
         line: UInt = #line
     ) async {

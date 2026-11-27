@@ -89,7 +89,7 @@ final class LiveEngineServiceFailureTests: XCTestCase {
         ]
         for (name, body) in operations {
             await assertThrowsAsync(body) { error in
-                Self.assertCodelessService(error, suggesting: AuthClientError.serviceFaultSuggestion, name)
+                Self.assertCodelessService(error, suggesting: AmplifyCognitoClientError.serviceFaultSuggestion, name)
                 XCTAssertTrue(Self.mapped(error)?.errorDescription.contains("boom") == true, "\(name): \(error)")
             }
         }
@@ -112,7 +112,7 @@ final class LiveEngineServiceFailureTests: XCTestCase {
         }
 
         await assertThrowsAsync({ try await engine.confirmSignIn(.answer("123456"), current: nil) }) { error in
-            Self.assertCodelessService(error, suggesting: AuthClientError.serviceFaultSuggestion, "confirmSignIn")
+            Self.assertCodelessService(error, suggesting: AmplifyCognitoClientError.serviceFaultSuggestion, "confirmSignIn")
         }
     }
 
@@ -171,7 +171,7 @@ final class LiveEngineServiceFailureTests: XCTestCase {
             harness = fresh
             let engine = try fresh.engine()
             await assertThrowsAsync({ try await body(fresh, engine) }) { error in
-                Self.assertCodelessService(error, suggesting: AuthClientError.serviceFaultSuggestion, name)
+                Self.assertCodelessService(error, suggesting: AmplifyCognitoClientError.serviceFaultSuggestion, name)
                 XCTAssertTrue(Self.mapped(error)?.errorDescription.contains("boom") == true, "\(name): \(error)")
             }
         }
@@ -243,7 +243,7 @@ final class LiveEngineServiceFailureTests: XCTestCase {
             harness = fresh
             let engine = try fresh.engine(sheet: FakePasskeySheet())
             await assertThrowsAsync({ try await body(fresh, engine) }) { error in
-                Self.assertCodelessService(error, suggesting: AuthClientError.serviceFaultSuggestion, name)
+                Self.assertCodelessService(error, suggesting: AmplifyCognitoClientError.serviceFaultSuggestion, name)
                 XCTAssertTrue(Self.mapped(error)?.errorDescription.contains("boom") == true, "\(name): \(error)")
             }
             fresh.cognito.assertConsumed()
@@ -259,9 +259,9 @@ final class LiveEngineServiceFailureTests: XCTestCase {
     ///      report
     func testAnErrorStatusTheSDKDoesNotModelSuggestsARetryOrNamesTheRefusal() async throws {
         let cases: [(HTTPStatusCode, String)] = [
-            (.internalServerError, AuthClientError.serviceFaultSuggestion),
-            (.serviceUnavailable, AuthClientError.serviceFaultSuggestion),
-            (.badRequest, AuthClientError.unrecognisedServiceErrorSuggestion)
+            (.internalServerError, AmplifyCognitoClientError.serviceFaultSuggestion),
+            (.serviceUnavailable, AmplifyCognitoClientError.serviceFaultSuggestion),
+            (.badRequest, AmplifyCognitoClientError.unrecognisedServiceErrorSuggestion)
         ]
         for (status, expected) in cases {
             harness = LiveEngineHarness()
@@ -343,21 +343,21 @@ final class LiveEngineServiceFailureTests: XCTestCase {
             ]
             for (name, body) in operations {
                 await assertThrowsAsync(body) { error in
-                    Self.assertCodelessService(error, suggesting: AuthClientError.serviceFaultSuggestion, "\(name), \(label)")
+                    Self.assertCodelessService(error, suggesting: AmplifyCognitoClientError.serviceFaultSuggestion, "\(name), \(label)")
                     XCTAssertTrue(Self.mapped(error)?.errorDescription.contains(shown) == true, "\(name), \(label): \(error)")
                 }
             }
 
             let local = try await engine.revoke(payload, global: false)
             let revokeError = try XCTUnwrap(local.revokeError, label)
-            Self.assertCodelessService(revokeError, suggesting: AuthClientError.revokeNotRetriedSuggestion, "revoke, \(label)")
+            Self.assertCodelessService(revokeError, suggesting: AmplifyCognitoClientError.revokeNotRetriedSuggestion, "revoke, \(label)")
             XCTAssertTrue(revokeError.errorDescription.contains(shown), "revoke, \(label): \(revokeError)")
 
             let global = try await engine.revoke(payload, global: true)
             let globalSignOutError = try XCTUnwrap(global.globalSignOutError, label)
             Self.assertCodelessService(
                 globalSignOutError,
-                suggesting: AuthClientError.globalSignOutFailedNotRetriedSuggestion,
+                suggesting: AmplifyCognitoClientError.globalSignOutFailedNotRetriedSuggestion,
                 "globalSignOut, \(label)"
             )
             XCTAssertTrue(globalSignOutError.errorDescription.contains(shown), "globalSignOut, \(label): \(globalSignOutError)")
@@ -406,7 +406,7 @@ final class LiveEngineServiceFailureTests: XCTestCase {
             let context = EngineCeremonyContext(anchor: anchor, ceremony: WebAuthnCredentialOperations.runCeremonyDirectly)
 
             await assertThrowsAsync({ try await engine.associateWebAuthnCredential(payload, context: context) }) { error in
-                Self.assertCodelessService(error, suggesting: AuthClientError.serviceFaultSuggestion, "associate, \(label)")
+                Self.assertCodelessService(error, suggesting: AmplifyCognitoClientError.serviceFaultSuggestion, "associate, \(label)")
                 XCTAssertTrue(Self.mapped(error)?.errorDescription.contains(shown) == true, "associate, \(label): \(error)")
             }
             XCTAssertEqual(sheet.started, 1, label)
@@ -427,13 +427,13 @@ final class LiveEngineServiceFailureTests: XCTestCase {
     ///      unrecognised-refusal suggestion and the service's message; neither asks for a bug report
     func testCognitosUnmodelledAnswersThroughTheSDKAreMapped() async throws {
         let cases: [(StatusAnswerHTTPClient, String)] = [
-            (StatusAnswerHTTPClient(statusCode: 500, body: Data()), AuthClientError.serviceFaultSuggestion),
+            (StatusAnswerHTTPClient(statusCode: 500, body: Data()), AmplifyCognitoClientError.serviceFaultSuggestion),
             (
                 StatusAnswerHTTPClient(
                     statusCode: 400,
                     body: Data(#"{"__type":"FixtureUnmodelledException","message":"fixture refusal"}"#.utf8)
                 ),
-                AuthClientError.unrecognisedServiceErrorSuggestion
+                AmplifyCognitoClientError.unrecognisedServiceErrorSuggestion
             )
         ]
         for (http, expected) in cases {
@@ -494,11 +494,11 @@ final class LiveEngineServiceFailureTests: XCTestCase {
     }
 
     /// The client error a live engine call threw: itself, or the one a session operation carries.
-    private static func mapped(_ error: Error) -> AuthClientError? {
+    private static func mapped(_ error: Error) -> AmplifyCognitoClientError? {
         if case SessionEngineError.service(let mapped) = error {
             return mapped
         }
-        return error as? AuthClientError
+        return error as? AmplifyCognitoClientError
     }
 
     private static func assertCodelessService(

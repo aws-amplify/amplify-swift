@@ -22,7 +22,7 @@ struct CognitoAWSCredentials: AWSTemporaryCredentials, Sendable, Equatable {
 
 extension CognitoAWSCredentials: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
 
-    /// Redacted, as `AuthClientAWSCredentials` is: what `credentialsProvider.resolve()` returns never puts the
+    /// Redacted, as `AmplifyCognitoClientAWSCredentials` is: what `credentialsProvider.resolve()` returns never puts the
     /// secret or the session token in a log through string interpolation.
     var debugDescription: String {
         "CognitoAWSCredentials(accessKeyId: \(maskedAccessKeyId), secretAccessKey: <redacted>, sessionToken: <redacted>, expiration: \(expiration))"

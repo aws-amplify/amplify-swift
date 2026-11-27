@@ -106,7 +106,7 @@ final class LiveEnginePresentingSignOutTests: XCTestCase {
         let box = await MainActor.run { EnginePresentationAnchorBox(window) }
         let request = EngineWebUISignInRequest(
             anchor: box,
-            options: EngineWebUIOptions(WebUIOptions(prefersEphemeralSession: false), nonce: "flow-nonce"),
+            options: EngineWebUIOptions(AmplifyCognitoClientWebUIOptions(prefersEphemeralSession: false), nonce: "flow-nonce"),
             identity: .none
         )
         guard case .done(let payload) = try await engine.signInWithWebUI(request, current: nil, epoch: 0) else {

@@ -22,7 +22,7 @@ final class WebUISignOutTests: XCTestCase {
     private var harness: ClientHarness!
     /// The window to anchor sheets to, made on first use rather than in `setUp()`: a process's first `UIWindow()`
     /// can block for minutes on a just-booted simulator, so a test that needs no window makes none.
-    private var window: AuthClientPresentationAnchor {
+    private var window: AmplifyCognitoClientPresentationAnchor {
         get async { await HostedUIFixtures.window() }
     }
     private let work = ClientFixtures.id("work")
@@ -40,18 +40,18 @@ final class WebUISignOutTests: XCTestCase {
     }
 
     private func client(
-        _ sessionId: SessionID,
-        configuration: AuthClientConfiguration = HostedUIFixtures.configuration
+        _ sessionId: AmplifyCognitoClientSessionID,
+        configuration: AmplifyCognitoClientConfiguration = HostedUIFixtures.configuration
     ) throws -> AmplifyCognitoClient {
         try harness.client(sessionId, configuration: configuration)
     }
 
     private func signOut(
         _ client: AmplifyCognitoClient,
-        options: AuthClientSignOutOptions = AuthClientSignOutOptions()
-    ) async -> AuthClientSignOutResult {
+        options: AmplifyCognitoClientSignOutOptions = AmplifyCognitoClientSignOutOptions()
+    ) async -> AmplifyCognitoClientSignOutResult {
         let window = await window
-        return await client.signOut(presentationAnchor: window, options: options)
+        return await client.signOutWithWebUI(presentationAnchor: window, options: options)
     }
 
     /// The plan the engine got, without the box (boxes compare by identity).
@@ -64,7 +64,7 @@ final class WebUISignOutTests: XCTestCase {
         }
     }
 
-    private func hostedUIError(_ result: AuthClientSignOutResult) -> AuthClientError? {
+    private func hostedUIError(_ result: AmplifyCognitoClientSignOutResult) -> AmplifyCognitoClientError? {
         result.partialErrors?.hostedUIError
     }
 
@@ -112,7 +112,7 @@ final class WebUISignOutTests: XCTestCase {
             return .complete
         }
 
-        let result = await signOut(client, options: AuthClientSignOutOptions(globalSignOut: true))
+        let result = await signOut(client, options: AmplifyCognitoClientSignOutOptions(globalSignOut: true))
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(plans(engine), ["present"])
@@ -200,7 +200,7 @@ final class WebUISignOutTests: XCTestCase {
             try await held.answer()
             return Data()
         }
-        engine.scriptHostedUIRevoke { _, _, _ in throw AuthClientError.userCancelled("closed", "retry") }
+        engine.scriptHostedUIRevoke { _, _, _ in throw AmplifyCognitoClientError.userCancelled("closed", "retry") }
 
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await held.up()
@@ -210,7 +210,7 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(signOutError?.kind, .userCancelled)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(associateError?.kind, .invalidState)
         XCTAssertEqual(associateError?.errorDescription, SessionCore.passkeyRegistrationEnded().errorDescription)
         XCTAssertEqual(
@@ -254,7 +254,7 @@ final class WebUISignOutTests: XCTestCase {
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await up.arrivals(1)
         let result = try await withinTime(10, "the sign-out") {
-            await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions())
+            await client.signOutWithWebUI(presentationAnchor: window, options: AmplifyCognitoClientSignOutOptions())
         }
 
         XCTAssertEqual(failedSignOutError(result)?.kind, .browserBusy(holder: work))
@@ -311,7 +311,7 @@ final class WebUISignOutTests: XCTestCase {
         try await start.arrivals(1)
 
         let result = try await withinTime(10, "the sign-out") {
-            await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions())
+            await client.signOutWithWebUI(presentationAnchor: window, options: AmplifyCognitoClientSignOutOptions())
         }
 
         XCTAssertEqual(failedSignOutError(result)?.kind, .browserBusy(holder: home))
@@ -322,7 +322,7 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(waiters, 0)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         await otherRelease.open()
         _ = try await other.value(within: 10)
         await start.open()
@@ -330,7 +330,7 @@ final class WebUISignOutTests: XCTestCase {
             try await associate.value(within: 10)
         } catch {
             // Names the error, so a regression reads `passkeyRegistrationEnded()` rather than a bare throw.
-            XCTFail("the registration failed: \((error as? AuthClientError)?.errorDescription ?? "\(error)")")
+            XCTFail("the registration failed: \((error as? AmplifyCognitoClientError)?.errorDescription ?? "\(error)")")
         }
         XCTAssertEqual(engine.ceremonyAnchorCalls.count, 1)
     }
@@ -382,7 +382,7 @@ final class WebUISignOutTests: XCTestCase {
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await start.arrivals(1)
 
-        let signOut = Task { await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions()) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window, options: AmplifyCognitoClientSignOutOptions()) }
         try await signOutAsks.arrivals(1)
         let otherHolds = Gate(isOpen: true)
         let otherRelease = Gate()
@@ -404,7 +404,7 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(waiters, 0)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         await otherRelease.open()
         _ = try await other.value(within: 10)
         await start.open()
@@ -412,7 +412,7 @@ final class WebUISignOutTests: XCTestCase {
             try await associate.value(within: 10)
         } catch {
             // Names the error, so a regression reads `passkeyRegistrationEnded()` rather than a bare throw.
-            XCTFail("the registration failed: \((error as? AuthClientError)?.errorDescription ?? "\(error)")")
+            XCTFail("the registration failed: \((error as? AmplifyCognitoClientError)?.errorDescription ?? "\(error)")")
         }
         XCTAssertEqual(engine.ceremonyAnchorCalls.count, 1)
     }
@@ -474,7 +474,7 @@ final class WebUISignOutTests: XCTestCase {
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await held.up()
 
-        let signOut = Task { await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions()) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window, options: AmplifyCognitoClientSignOutOptions()) }
         try await releaseHeld.arrivals(1)
         await waitUntil("the sign-out queues behind its own closing sheet") { await lock.waiterCount == 1 }
 
@@ -534,7 +534,7 @@ final class WebUISignOutTests: XCTestCase {
         }
         await waitUntil("the other session queues behind the passkey sheet") { await lock.waiterCount == 1 }
 
-        let signOut = Task { await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions()) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window, options: AmplifyCognitoClientSignOutOptions()) }
         try await releaseHeld.arrivals(1)
         await waitUntil("the sign-out queues behind its own closing sheet") { await lock.waiterCount == 2 }
         await releaseGo.open()
@@ -544,7 +544,7 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(refusal?.kind, .browserBusy(holder: home))
         XCTAssertEqual(
             refusal?.errorDescription,
-            AuthClientError.browserBusy(heldBy: home, requestedBy: work, reason: .heldByAnotherSession).errorDescription
+            AmplifyCognitoClientError.browserBusy(heldBy: home, requestedBy: work, reason: .heldByAnotherSession).errorDescription
         )
         XCTAssertEqual(refusal?.recoverySuggestion, SessionCore.signOutBrowserBusySuggestion)
         XCTAssertEqual(plans(engine), [])
@@ -611,7 +611,7 @@ final class WebUISignOutTests: XCTestCase {
         try await holds.arrivals(1)
 
         let result = try await withinTime(10, "the sign-out") {
-            await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions())
+            await client.signOutWithWebUI(presentationAnchor: window, options: AmplifyCognitoClientSignOutOptions())
         }
 
         XCTAssertEqual(result, .complete)
@@ -648,7 +648,7 @@ final class WebUISignOutTests: XCTestCase {
         }
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await start.arrivals(1)
-        let duringRevoke = ResultBox<AuthClientError?>()
+        let duringRevoke = ResultBox<AmplifyCognitoClientError?>()
         engine.scriptHostedUIRevoke { _, _, _ in
             let holder = await lock.currentHolder
             XCTAssertEqual(holder, work)
@@ -705,7 +705,7 @@ final class WebUISignOutTests: XCTestCase {
 
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await seamHeld.arrivals(1)
-        let signOut = Task { await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions()) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window, options: AmplifyCognitoClientSignOutOptions()) }
         await waitUntil("the sign-out queues behind the stopped lease") { await lock.waiterCount == 1 }
         await seamRelease.open()
 
@@ -756,7 +756,7 @@ final class WebUISignOutTests: XCTestCase {
     ///    - the sign-in errors themselves still suggest `whenBrowserBusy: .wait(timeout:)`
     func testABusySignOutRefusalSuggestsRetryingTheSignOut() {
         for reason in [BrowserBusyReason.heldByAnotherSession, .stillClosing, .timedOut] {
-            let signIn = AuthClientError.browserBusy(heldBy: home, requestedBy: work, reason: reason)
+            let signIn = AmplifyCognitoClientError.browserBusy(heldBy: home, requestedBy: work, reason: reason)
 
             let signOut = SessionCore.signOutBrowserBusy(signIn)
 
@@ -831,7 +831,7 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(engine.revokeCalls, [])
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(events.received, [])
     }
 
@@ -845,11 +845,11 @@ final class WebUISignOutTests: XCTestCase {
         let payload = HostedUIFixtures.hostedUIPayload()
         try harness.signIn(work, payload)
         let oauth = try XCTUnwrap(HostedUIFixtures.userPool.oauth)
-        let userPool = AuthClientConfiguration.UserPool(
+        let userPool = AmplifyCognitoClientConfiguration.UserPool(
             poolId: HostedUIFixtures.userPool.poolId,
             appClientId: HostedUIFixtures.userPool.appClientId,
             region: HostedUIFixtures.userPool.region,
-            oauth: AuthClientConfiguration.OAuth(
+            oauth: AmplifyCognitoClientConfiguration.OAuth(
                 domain: oauth.domain,
                 scopes: oauth.scopes,
                 redirectSignInURIs: oauth.redirectSignInURIs,
@@ -866,7 +866,7 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(engine.revokeCalls, [])
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 
     /// The engine's own check of the hosted UI's configuration (`HostedUIError.pluginConfiguration`, or a
@@ -881,7 +881,7 @@ final class WebUISignOutTests: XCTestCase {
         try harness.signIn(work, payload)
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let refused = AuthClientError.configuration("no sign-out redirect URI", "add one")
+        let refused = AmplifyCognitoClientError.configuration("no sign-out redirect URI", "add one")
         engine.scriptHostedUIRevoke { _, _, _ in throw SignOutRefusal(error: refused) }
 
         let result = await signOut(client)
@@ -890,7 +890,7 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(engine.revokeCalls.count, 1)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
     }
 
     /// A failure the engine continues past (one that is not a `HostedUIError`, which the plugin also continues past
@@ -925,7 +925,7 @@ final class WebUISignOutTests: XCTestCase {
         try harness.signIn(work, payload)
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        engine.scriptHostedUIRevoke { _, _, _ in throw AuthClientError.userCancelled("closed", "retry") }
+        engine.scriptHostedUIRevoke { _, _, _ in throw AmplifyCognitoClientError.userCancelled("closed", "retry") }
         let events = StreamRecorder(client.listenToAuthEvents())
 
         let error = await failedSignOutError(signOut(client))
@@ -936,7 +936,7 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(engine.revokeCalls.count, 1)
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(events.received, [])
     }
 
@@ -957,11 +957,11 @@ final class WebUISignOutTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
-        _ = try await client.fetchAuthSession()
+        _ = try? await client.fetchAuthSession()
         let pageError = FixtureError(description: "the page")
         engine.scriptHostedUIRevoke { _, _, plan in
             if case .present = plan {
-                throw AuthClientError.userCancelled("closed", "Sign out again.", pageError)
+                throw AmplifyCognitoClientError.userCancelled("closed", "Sign out again.", pageError)
             }
             return .complete
         }
@@ -1003,7 +1003,7 @@ final class WebUISignOutTests: XCTestCase {
         try harness.signIn(work, payload)
         var expiring: AmplifyCognitoClient? = try client(work)
         harness.engine(for: work)?.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
-        _ = try await XCTUnwrap(expiring).fetchAuthSession()
+        _ = try? await XCTUnwrap(expiring).fetchAuthSession()
         expiring = nil
         await harness.waitForBaseline()
 
@@ -1012,7 +1012,7 @@ final class WebUISignOutTests: XCTestCase {
         let engine = try XCTUnwrap(relaunched.engine(for: work))
         engine.scriptHostedUIRevoke { _, _, plan in
             if case .present = plan {
-                throw AuthClientError.userCancelled("closed", "Sign out again.")
+                throw AmplifyCognitoClientError.userCancelled("closed", "Sign out again.")
             }
             return .complete
         }
@@ -1045,11 +1045,8 @@ final class WebUISignOutTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
-        let expired = try await client.fetchAuthSession()
-        guard case .failure(let expiry) = expired.userPoolTokensResult else {
-            return XCTFail("the fetch should have found the session expired")
-        }
-        XCTAssertEqual(expiry.kind, .sessionExpired)
+        let expiry = await authClientError { try await client.fetchAuthSession() }
+        XCTAssertEqual(expiry?.kind, .sessionExpired, "the fetch should have found the session expired")
         let newLogin = HostedUIFixtures.hostedUIPayload(version: 2)
         guard case .record(let envelope) = try harness.store().read(work) else {
             return XCTFail("the expired record was not kept")
@@ -1057,7 +1054,7 @@ final class WebUISignOutTests: XCTestCase {
         try harness.store().write(newLogin.record(), for: work, expecting: envelope.version)
         engine.scriptHostedUIRevoke { _, _, plan in
             if case .present = plan {
-                throw AuthClientError.userCancelled("closed", "Sign out again.")
+                throw AmplifyCognitoClientError.userCancelled("closed", "Sign out again.")
             }
             return .complete
         }
@@ -1139,7 +1136,7 @@ final class WebUISignOutTests: XCTestCase {
         _ client: AmplifyCognitoClient,
         _ engine: FakeSessionEngine,
         end: @escaping @Sendable (_ interrupted: Bool) throws -> EngineSignOutOutcome
-    ) async -> Task<AuthClientSignOutResult, Never> {
+    ) async -> Task<AmplifyCognitoClientSignOutResult, Never> {
         let opened = Gate(isOpen: true)
         let closed = Gate()
         engine.scriptHostedUIRevoke { _, _, _ in
@@ -1148,7 +1145,7 @@ final class WebUISignOutTests: XCTestCase {
             return try end(Task.isCancelled)
         }
         let window = await window
-        let signOut = Task { await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window) }
         await opened.waitForArrivals(1)
         await client.cancelWebUISignIn()
         await closed.open()
@@ -1168,7 +1165,7 @@ final class WebUISignOutTests: XCTestCase {
 
         let signOut = await interruptedSignOut(client, engine) { interrupted in
             XCTAssertTrue(interrupted)
-            throw AuthClientError.userCancelled("closed", "retry")
+            throw AmplifyCognitoClientError.userCancelled("closed", "retry")
         }
 
         let error = await failedSignOutError(signOut.value)
@@ -1193,7 +1190,7 @@ final class WebUISignOutTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
-        _ = try await client.fetchAuthSession()
+        _ = try? await client.fetchAuthSession()
 
         let signOut = await interruptedSignOut(client, engine) { interrupted in
             if interrupted {
@@ -1240,7 +1237,7 @@ final class WebUISignOutTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
 
         let signOut = await interruptedSignOut(client, engine) { _ in
-            throw AuthClientError.service(nil, "revoke failed", "retry")
+            throw AmplifyCognitoClientError.service(nil, "revoke failed", "retry")
         }
 
         let result = await signOut.value
@@ -1257,7 +1254,7 @@ final class WebUISignOutTests: XCTestCase {
         _ client: AmplifyCognitoClient,
         _ engine: FakeSessionEngine,
         end: @escaping @Sendable (_ interrupted: Bool) throws -> EngineSignOutOutcome
-    ) async -> AuthClientSignOutResult {
+    ) async -> AmplifyCognitoClientSignOutResult {
         let opened = Gate(isOpen: true)
         let closed = Gate()
         engine.scriptHostedUIRevoke { _, _, _ in
@@ -1266,7 +1263,7 @@ final class WebUISignOutTests: XCTestCase {
             return try end(Task.isCancelled)
         }
         let window = await window
-        let signOut = Task { await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window) }
         await opened.waitForArrivals(1)
         signOut.cancel()
         await closed.open()
@@ -1302,7 +1299,7 @@ final class WebUISignOutTests: XCTestCase {
 
         let result = await callerCancelledSignOut(client, engine) { interrupted in
             XCTAssertTrue(interrupted)
-            throw AuthClientError.userCancelled("closed", "retry")
+            throw AmplifyCognitoClientError.userCancelled("closed", "retry")
         }
 
         let error = failedSignOutError(result)
@@ -1328,7 +1325,7 @@ final class WebUISignOutTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let lock = harness.sheetLock
         let window = await window
-        let signOut = Task { await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: window) }
         await held.waitForArrivals(1)
 
         await client.cancelWebUISignIn()
@@ -1374,7 +1371,7 @@ final class WebUISignOutTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let anchor = await self.window
-        let signOut = Task { await client.signOut(presentationAnchor: anchor) }
+        let signOut = Task { await client.signOutWithWebUI(presentationAnchor: anchor) }
         await held.waitForArrivals(1)
 
         switch window {
@@ -1384,7 +1381,7 @@ final class WebUISignOutTests: XCTestCase {
             await harness.sheetLock.reset()
         }
         let answered = expectation(description: "the interrupted sign-out answers")
-        let outcome = ResultBox<AuthClientSignOutResult>()
+        let outcome = ResultBox<AmplifyCognitoClientSignOutResult>()
         Task {
             outcome.set(.success(await signOut.value))
             answered.fulfill()
@@ -1407,7 +1404,7 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false, file: file, line: line)
 
         let followUp = expectation(description: "a later sign-out on the same client returns")
-        let later = ResultBox<AuthClientSignOutResult>()
+        let later = ResultBox<AmplifyCognitoClientSignOutResult>()
         Task {
             later.set(.success(await client.signOut()))
             followUp.fulfill()
@@ -1496,8 +1493,8 @@ final class WebUISignOutTests: XCTestCase {
 /// sign-out's thrown error.
 final class SignOutOutcomeHostedUITests: XCTestCase {
 
-    private let busy = AuthClientError.browserBusy(holder: .default, "busy", "wait")
-    private let revoke = AuthClientError.service(nil, "revoke failed", "retry")
+    private let busy = AmplifyCognitoClientError.browserBusy(holder: .default, "busy", "wait")
+    private let revoke = AmplifyCognitoClientError.service(nil, "revoke failed", "retry")
 
     /// - Given: an outcome with only a hosted-UI failure
     /// - When: it is read
@@ -1529,7 +1526,7 @@ final class SignOutOutcomeHostedUITests: XCTestCase {
     func testEqualityComparesTheHostedUIFailure() {
         XCTAssertNotEqual(EngineSignOutOutcome(hostedUIError: busy), EngineSignOutOutcome.complete)
         XCTAssertNotEqual(
-            AuthClientSignOutResult.partialResult(hostedUIError: busy),
+            AmplifyCognitoClientSignOutResult.partialResult(hostedUIError: busy),
             .partialResult()
         )
     }
@@ -1543,7 +1540,7 @@ final class SignOutOutcomeHostedUITests: XCTestCase {
 
         let error = failedSignOutError(outcome.result())
         XCTAssertEqual(error?.storageUnavailableReason, .interrupted)
-        XCTAssertEqual((error?.underlyingError as? AuthClientError)?.kind, .browserBusy(holder: .default))
+        XCTAssertEqual((error?.underlyingError as? AmplifyCognitoClientError)?.kind, .browserBusy(holder: .default))
     }
 }
 

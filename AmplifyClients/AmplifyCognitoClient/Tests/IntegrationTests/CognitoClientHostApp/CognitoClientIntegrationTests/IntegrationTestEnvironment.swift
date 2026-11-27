@@ -40,7 +40,7 @@ import XCTest
 enum IntegrationTestEnvironment {
 
     /// The main configuration: the plugin's default backend (`SandboxPool.standard`). The resource name
-    /// `AuthClientConfiguration(from:bundle:)` is given, exactly as an app would.
+    /// `AmplifyCognitoClientConfiguration(from:bundle:)` is given, exactly as an app would.
     static let outputsResource = SandboxPool.standard.outputsResource
     /// The default backend's credentials file: its custom-auth answer, its new-password users and the
     /// second identity pool.
@@ -125,18 +125,18 @@ enum IntegrationTestEnvironment {
 
     /// The main client configuration, loaded from the default backend's outputs exactly as an app loads
     /// them.
-    static func configuration() throws -> AuthClientConfiguration {
+    static func configuration() throws -> AmplifyCognitoClientConfiguration {
         try configuration(.standard)
     }
 
     /// The client configuration of one role, loaded from its plugin outputs file (or the Gen2 translation of
     /// the plugin's Gen1 file) exactly as an app loads its outputs file.
-    static func configuration(_ pool: SandboxPool) throws -> AuthClientConfiguration {
+    static func configuration(_ pool: SandboxPool) throws -> AmplifyCognitoClientConfiguration {
         try requireProvisioned()
-        return try AuthClientConfiguration(from: pool.outputsResource, bundle: outputsBundle(pool))
+        return try AmplifyCognitoClientConfiguration(from: pool.outputsResource, bundle: outputsBundle(pool))
     }
 
-    /// The raw `auth` section of a role's outputs, for what `AuthClientConfiguration` does not parse, such
+    /// The raw `auth` section of a role's outputs, for what `AmplifyCognitoClientConfiguration` does not parse, such
     /// as the `oauth` block.
     static func outputsAuthSection(_ pool: SandboxPool) throws -> [String: Any] {
         guard let auth = try outputsDocument(pool)["auth"] as? [String: Any] else {
@@ -163,7 +163,7 @@ enum IntegrationTestEnvironment {
     /// backend's), for the configuration-change rows (CS-3): another backend's identity pool from the
     /// plugin's file set, which federates none of the first one's user pool, or, where none has one (the
     /// sandbox's set), the default credentials file's `second_identity_pool_id`.
-    static func secondIdentityPool(besides identityPoolId: String? = nil) throws -> AuthClientConfiguration.IdentityPool {
+    static func secondIdentityPool(besides identityPoolId: String? = nil) throws -> AmplifyCognitoClientConfiguration.IdentityPool {
         let firstPool = try identityPoolId ?? identityOnlyAuthSection()["identity_pool_id"] as? String
         for pool in SandboxPool.allCases {
             guard hasOutputs(pool),
@@ -173,7 +173,7 @@ enum IntegrationTestEnvironment {
                   let region = auth["aws_region"] as? String else {
                 continue
             }
-            return .init(poolId: poolId, region: region, unauthenticatedIdentitiesEnabled: true)
+            return .init(poolId: poolId, region: region)
         }
         let credentials = try credentials()
         guard let poolId = credentials.secondIdentityPoolId, poolId != firstPool,
@@ -184,7 +184,7 @@ enum IntegrationTestEnvironment {
             second_identity_pool_id.
             """)
         }
-        return .init(poolId: poolId, region: region, unauthenticatedIdentitiesEnabled: true)
+        return .init(poolId: poolId, region: region)
     }
 
     /// A role whose user pool does not track devices and whose outputs name an identity pool with guest
@@ -195,8 +195,8 @@ enum IntegrationTestEnvironment {
     static func untrackedFederatedRole() throws -> SandboxPool {
         for pool in SandboxPool.allCases where !pool.tracksDevices {
             guard hasOutputs(pool),
-                  let identityPool = try? configuration(pool).identityPool,
-                  identityPool.unauthenticatedIdentitiesEnabled == true else {
+                  (try? configuration(pool).identityPool) != nil,
+                  (try? outputsAuthSection(pool))?["unauthenticated_identities_enabled"] as? Bool == true else {
                 continue
             }
             return pool
@@ -444,9 +444,9 @@ enum IntegrationTestEnvironment {
     // MARK: - Session IDs
 
     /// A session ID no other test, and no earlier run, uses: `<tag>-<8 hex digits>`.
-    static func uniqueSessionID(_ tag: String) throws -> SessionID {
+    static func uniqueSessionID(_ tag: String) throws -> AmplifyCognitoClientSessionID {
         let suffix = UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(8).lowercased()
-        return try SessionID.named("\(tag)-\(suffix)")
+        return try AmplifyCognitoClientSessionID.named("\(tag)-\(suffix)")
     }
 
     // MARK: - Keychain
@@ -856,6 +856,7 @@ enum HarnessError: Error, CustomStringConvertible {
     case malformedToken(String)
     case keychain(String, OSStatus)
     case timedOut(String)
+    case missingSessionField(String)
 
     var description: String {
         switch self {
@@ -875,6 +876,41 @@ enum HarnessError: Error, CustomStringConvertible {
             return "\(operation) returned \(status)."
         case .timedOut(let what):
             return "Timed out waiting for \(what)."
+        case .missingSessionField(let field):
+            return "The fetched session holds no \(field)."
         }
+    }
+}
+
+/// A fetched session's fields, for a test that expects them: each throws when the session holds none, where the
+/// field itself is `nil`.
+extension AmplifyCognitoClientAuthSession {
+
+    func requireUserPoolTokens() throws -> AmplifyCognitoClientUserPoolTokens {
+        guard let userPoolTokens else {
+            throw HarnessError.missingSessionField("user pool tokens")
+        }
+        return userPoolTokens
+    }
+
+    func requireUserSub() throws -> String {
+        guard let userSub else {
+            throw HarnessError.missingSessionField("user sub")
+        }
+        return userSub
+    }
+
+    func requireIdentityId() throws -> String {
+        guard let identityId else {
+            throw HarnessError.missingSessionField("identity ID")
+        }
+        return identityId
+    }
+
+    func requireAWSCredentials() throws -> AmplifyCognitoClientAWSCredentials {
+        guard let awsCredentials else {
+            throw HarnessError.missingSessionField("AWS credentials")
+        }
+        return awsCredentials
     }
 }

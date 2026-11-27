@@ -117,7 +117,7 @@ struct HostedUIView: View {
             do {
                 currentUsername = try await client.getCurrentUser().username
                 isSignedIn = true
-            } catch AuthClientError.notSignedIn {
+            } catch AmplifyCognitoClientError.notSignedIn {
                 isSignedIn = false
             } catch {
                 lastResult = "Load failed: \(harnessResultText(error))"
@@ -131,7 +131,7 @@ struct HostedUIView: View {
     private func signIn(_ client: AmplifyCognitoClient, presentationAnchor: UIWindow) async throws -> String {
         let result = try await client.signInWithWebUI(
             presentationAnchor: presentationAnchor,
-            options: WebUIOptions(prefersEphemeralSession: true)
+            options: AmplifyCognitoClientWebUIOptions(prefersEphemeralSession: true)
         )
         guard case .done = result.nextStep else {
             return "Sign In returned an unexpected next step"
@@ -141,7 +141,7 @@ struct HostedUIView: View {
         return "User is signed in"
     }
 
-    /// `signOut(presentationAnchor:)` with the view's window. After a private sign-in it shows nothing
+    /// `signOutWithWebUI(presentationAnchor:)` with the view's window. After a private sign-in it shows nothing
     /// (no cookie to clear) and revokes the tokens. The session is purged, so a run leaves no login behind: the
     /// shared login (the plugin's record), the sidecar and any interrupted sign-in go. The configuration `.default`
     /// records for the plugin (`authConfiguration`) stays, as the plugin's own does.
@@ -158,9 +158,9 @@ struct HostedUIView: View {
         guard let window = windowHolder.window ?? HostedUIHarness.foregroundKeyWindow() else {
             throw HarnessAppError("The view is in no window")
         }
-        let result = await client.signOut(
+        let result = await client.signOutWithWebUI(
             presentationAnchor: window,
-            options: AuthClientSignOutOptions(purgeStoredSession: true)
+            options: AmplifyCognitoClientSignOutOptions(purgeStoredSession: true)
         )
         if case .failed(let error) = result {
             throw HarnessAppError(error.harnessCaseName)
@@ -168,7 +168,7 @@ struct HostedUIView: View {
         do {
             _ = try await client.getCurrentUser()
             return "Sign Out left a user signed in"
-        } catch AuthClientError.notSignedIn {
+        } catch AmplifyCognitoClientError.notSignedIn {
             isSignedIn = false
             currentUsername = ""
             return result == .complete ? "User is signed out" : "User is signed out, but part of it failed: \(result.failedParts)"

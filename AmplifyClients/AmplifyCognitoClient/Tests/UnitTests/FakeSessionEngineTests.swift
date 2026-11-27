@@ -13,7 +13,7 @@ import XCTest
 final class FakeSessionEngineTests: XCTestCase {
 
     private func makeEngine() throws -> FakeSessionEngine {
-        let configuration = try AuthClientConfiguration(
+        let configuration = try AmplifyCognitoClientConfiguration(
             userPool: .init(poolId: StorageFixtures.userPoolId, appClientId: "app-client-1", region: "us-east-1"),
             identityPool: .init(poolId: StorageFixtures.identityPoolId, region: "us-east-1")
         )
@@ -39,7 +39,7 @@ final class FakeSessionEngineTests: XCTestCase {
 
         XCTAssertEqual(
             try engine.describe(alice.data),
-            CredentialSummary(kind: .userPoolAndIdentityPool, username: "alice", userId: "sub-alice")
+            CredentialSummary(kind: .userPoolAndIdentityPool, username: "alice", userId: "sub-alice", identityId: "us-east-1:alice")
         )
         XCTAssertEqual(try engine.awsCredentials(in: alice.data), alice.awsCredentials)
         XCTAssertEqual(try engine.accessToken(in: alice.data), "access-alice-v1")
@@ -258,7 +258,7 @@ final class FakeSessionEngineTests: XCTestCase {
         let browser = FakeBrowser()
         let request = EngineWebUISignInRequest(
             anchor: .empty(),
-            options: EngineWebUIOptions(WebUIOptions(), nonce: "n"),
+            options: EngineWebUIOptions(AmplifyCognitoClientWebUIOptions(), nonce: "n"),
             identity: .none
         )
         let done = EngineStepResult.done(payload: FakePayload.signedIn("web-user").data)
@@ -294,7 +294,7 @@ final class FakeSessionEngineTests: XCTestCase {
         _ = try await engine.signIn(Self.request("alice"), current: nil, epoch: 2)
         let request = EngineWebUISignInRequest(
             anchor: .empty(),
-            options: EngineWebUIOptions(WebUIOptions(), nonce: "n"),
+            options: EngineWebUIOptions(AmplifyCognitoClientWebUIOptions(), nonce: "n"),
             identity: .none
         )
 
@@ -369,20 +369,20 @@ final class FakeSessionEngineTests: XCTestCase {
     func testConfirmationFailuresFollowTheSeamContract() async throws {
         let engine = try makeEngine()
         await assertThrowsAsync({ try await engine.confirmSignIn(Self.answer("1"), current: nil) }) { error in
-            guard case .invalidState = error as? AuthClientError else {
+            guard case .invalidState = error as? AmplifyCognitoClientError else {
                 return XCTFail("\(error)")
             }
         }
 
         engine.setPendingChallenge(.confirmSignInWithTOTPCode)
         engine.scriptConfirmSignIn { _ in
-            throw FakeRetryable(error: AuthClientError.service(.codeMismatch, "wrong", "retry"))
+            throw FakeRetryable(error: AmplifyCognitoClientError.service(.codeMismatch, "wrong", "retry"))
         }
         await assertThrowsAsync { try await engine.confirmSignIn(Self.answer("2"), current: nil) }
         let kept = await engine.pendingChallenge
         XCTAssertEqual(kept, .confirmSignInWithTOTPCode)
 
-        engine.scriptConfirmSignIn { _ in throw AuthClientError.challengeExpired("expired", "restart") }
+        engine.scriptConfirmSignIn { _ in throw AmplifyCognitoClientError.challengeExpired("expired", "restart") }
         await assertThrowsAsync { try await engine.confirmSignIn(Self.answer("3"), current: nil) }
         let dropped = await engine.pendingChallenge
         XCTAssertNil(dropped)
@@ -430,10 +430,10 @@ final class FakeSessionEngineTests: XCTestCase {
         let latch = Gate()
         engine.scriptAccountOperation(.signUp) { call in
             guard case .signUp(let request) = call, request.username == "dave" else {
-                return AuthClientSignUpResult(.confirmUser())
+                return AmplifyCognitoClientSignUpResult(.confirmUser())
             }
             await latch.pass()
-            return AuthClientSignUpResult(.completeAutoSignIn("session-dave"))
+            return AmplifyCognitoClientSignUpResult(.completeAutoSignIn("session-dave"))
         }
         let daveRequest = Self.signUpRequest("dave")
         let dave = Task { try await engine.signUp(daveRequest) }

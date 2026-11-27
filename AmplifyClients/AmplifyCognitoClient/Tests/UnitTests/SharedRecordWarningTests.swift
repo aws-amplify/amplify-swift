@@ -76,7 +76,7 @@ final class SharedRecordWarningTests: XCTestCase {
         await refresh(client)
 
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         assertOneWarning(naming: ["alice", "bob", "sub-", LiveEngineFixtures.identityId])
     }
 
@@ -182,7 +182,7 @@ final class SharedRecordWarningTests: XCTestCase {
         await refresh(client)
 
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         XCTAssertEqual(try storedCredentials(), bob)
         assertOneWarning(naming: ["alice", "bob", "sub-"])
     }
@@ -224,7 +224,7 @@ final class SharedRecordWarningTests: XCTestCase {
         try await client.setSessionLabel("Work")
 
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         assertOneWarning(naming: ["alice", "bob", "sub-", "Work"])
     }
 
@@ -232,16 +232,17 @@ final class SharedRecordWarningTests: XCTestCase {
 
     /// - Given: `.default` restored as alice
     /// - When:
-    ///    - the real plugin store signs out, saving `noCredentials`, and the client refreshes; then, on a new core
-    ///      restored as alice, the plugin store deletes its record, and the client refreshes
+    ///    - the real plugin store signs out, saving `noCredentials`, and the client refreshes with a forced fetch;
+    ///      then, on a new core restored as alice, the plugin store deletes its record, and the client refreshes
     /// - Then:
-    ///    - each core is signed out, and nothing is logged under the category
+    ///    - each fetch finds the session signed out and becomes a guest, as a signed-out session's fetch does, and
+    ///      nothing is logged under the category
     func testPluginSignOut_logsNothing() async throws {
         var client: AmplifyCognitoClient? = try await restoredClient(holding: user("alice"))
         try pluginSaves(.noCredentials)
         try await refresh(XCTUnwrap(client))
         let afterNoCredentials = await client?.currentSessionState()
-        XCTAssertEqual(afterNoCredentials, .signedOut)
+        XCTAssertEqual(afterNoCredentials, .guest)
         client = nil
         await harness.waitForBaseline()
 
@@ -249,7 +250,7 @@ final class SharedRecordWarningTests: XCTestCase {
         try pluginStore().deleteCredential()
         try await refresh(XCTUnwrap(client))
         let afterDeletion = await client?.currentSessionState()
-        XCTAssertEqual(afterDeletion, .signedOut)
+        XCTAssertEqual(afterDeletion, .guest)
 
         XCTAssertEqual(sink.lines, [])
     }
@@ -269,7 +270,7 @@ final class SharedRecordWarningTests: XCTestCase {
         await refresh(client)
 
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(sink.lines, [])
     }
 
@@ -308,7 +309,7 @@ final class SharedRecordWarningTests: XCTestCase {
 
         XCTAssertEqual(signedIn.nextStep, .done)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(sink.lines, [])
     }
 
@@ -323,10 +324,8 @@ final class SharedRecordWarningTests: XCTestCase {
             throw AWSCognitoIdentityProvider.NotAuthorizedException(message: "Refresh Token has been revoked")
         }
         await refresh(client)
-        let expired = try await client.fetchAuthSession()
-        guard case .failure(.sessionExpired) = expired.userPoolTokensResult else {
-            return XCTFail("alice's refresh token should be dead, got \(expired.userPoolTokensResult)")
-        }
+        let expired = await authClientError { try await client.fetchAuthSession() }
+        XCTAssertEqual(expired?.kind, .sessionExpired, "alice's refresh token should be dead")
 
         live.scriptSRP("bob")
         let signedIn = try await client.signIn(username: "bob", password: "password")
@@ -334,7 +333,7 @@ final class SharedRecordWarningTests: XCTestCase {
 
         XCTAssertEqual(signedIn.nextStep, .done)
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         XCTAssertEqual(sink.lines, [])
     }
 
@@ -380,7 +379,7 @@ final class SharedRecordWarningTests: XCTestCase {
         await refresh(client)
 
         let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        XCTAssertEqual(state, .signedIn(AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")))
         XCTAssertEqual(sink.lines, [])
     }
 
@@ -434,7 +433,7 @@ final class SharedRecordWarningTests: XCTestCase {
         )
         XCTAssertEqual(logged.level, .warn, file: file, line: line)
         XCTAssertEqual(logged.name, Self.category, file: file, line: line)
-        for identifier in identifiers + [SessionID.default.stringValue, "amplify."] {
+        for identifier in identifiers + [AmplifyCognitoClientSessionID.default.stringValue, "amplify."] {
             XCTAssertFalse(logged.content.contains(identifier), "The warning names \(identifier)", file: file, line: line)
         }
     }
@@ -542,7 +541,7 @@ final class SharedRecordWarningTests: XCTestCase {
         return dependencies
     }
 
-    private func makeClient(_ sessionId: SessionID = .default) throws -> AmplifyCognitoClient {
+    private func makeClient(_ sessionId: AmplifyCognitoClientSessionID = .default) throws -> AmplifyCognitoClient {
         try AmplifyCognitoClient(
             configuration: ClientFixtures.configuration,
             options: .init(sessionId: sessionId),

@@ -180,7 +180,7 @@ final class CustomAuthTests: ClientIntegrationTestCase {
 
     // MARK: - Helpers
 
-    private static func isCustomChallenge(_ step: AuthClientSignInStep) -> Bool {
+    private static func isCustomChallenge(_ step: AmplifyCognitoClientSignInStep) -> Bool {
         if case .confirmSignInWithCustomChallenge = step {
             return true
         }
@@ -189,7 +189,7 @@ final class CustomAuthTests: ClientIntegrationTestCase {
 
     /// Asserts the custom-challenge step, with the trigger's public parameters. Prints case names only.
     private func assertCustomChallenge(
-        _ step: AuthClientSignInStep,
+        _ step: AmplifyCognitoClientSignInStep,
         file: StaticString = #filePath,
         line: UInt = #line
     ) throws {

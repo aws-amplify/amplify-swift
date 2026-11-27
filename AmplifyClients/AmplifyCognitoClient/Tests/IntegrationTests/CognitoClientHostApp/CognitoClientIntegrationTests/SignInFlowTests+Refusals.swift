@@ -36,7 +36,7 @@ extension SignInFlowTests {
         let result = try await client.signIn(
             username: bob.username,
             password: bob.password,
-            options: AuthClientSignInOptions(authFlowType: .userPassword)
+            options: AmplifyCognitoClientSignInOptions(authFlowType: .userPassword)
         )
 
         XCTAssertStep(result.nextStep, .done)

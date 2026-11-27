@@ -33,7 +33,7 @@ Amplify Clients are **standalone AWS service clients** independent of the core `
 
 Zero-dependency protocol layer providing:
 
-**Credentials** — `AWSCredentials`, `AWSTemporaryCredentials`, `AWSCredentialsProvider` (async resolution)
+**Credentials** — `AWSCredentials`, `AWSTemporaryCredentials`, `AWSCredentialsProvider` (async resolution), and `AccessTokenProvider` (user pool access tokens; experimental SPI, like `CredentialsError`)
 
 **Logging** — `Logger` protocol with `error`/`warn`/`info`/`debug`/`verbose` levels. `BroadcastLogger` routes to multiple `LogSinkBehavior` sinks. `AmplifyOSLogSink` provides os.log integration.
 
@@ -110,7 +110,7 @@ AmplifyClients/Amplify<Service>Client/
 │   └── UnitTests/
 ```
 
-Integration tests are not co-located per client. `AmplifyConnectClient` has its own host app under `Tests/ConnectClientHostApp/`, Kinesis and Firehose share `AmplifyClients/Tests/IntegrationTests/KinesisFirehoseClientHostApp/`, and `AmplifyEventEnrichmentClient` has unit tests only.
+Integration tests are not co-located per client. `AmplifyConnectClient` has its own host app under `Tests/ConnectClientHostApp/`, `AmplifyCognitoClient` has its own under `Tests/IntegrationTests/CognitoClientHostApp/`, `AmplifyCloudWatchClient` has its own under `Tests/IntegrationTests/CloudWatchLoggingClientHostApp/`, Kinesis and Firehose share `AmplifyClients/Tests/IntegrationTests/KinesisFirehoseClientHostApp/`, and `AmplifyEventEnrichmentClient` has unit tests only.
 
 ### Package.swift target
 

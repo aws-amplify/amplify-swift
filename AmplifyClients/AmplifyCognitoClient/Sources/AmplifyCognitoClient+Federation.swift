@@ -9,7 +9,7 @@ import Foundation
 
 /// Federation to the identity pool, with the plugin's semantics, for this session only.
 ///
-/// A federated session reports `AuthSessionState.federated(identityId:)`: it holds an identity pool
+/// A federated session reports `AmplifyCognitoClientSessionState.federated(identityId:)`: it holds an identity pool
 /// identity and its AWS credentials, and no user pool user. Its credentials provider vends those
 /// credentials, refreshed with the stored provider token when they expire; its access-token provider has
 /// none to give. `signIn` refuses it (`invalidState`): clear the federation, or sign it out, first. When the
@@ -30,7 +30,7 @@ public extension AmplifyCognitoClient {
     ///   - provider: The provider that issued it.
     ///   - options: A developer-provided identity ID, if the backend already has one.
     /// - Returns: The federated identity's credentials and ID.
-    /// - Throws: `AuthClientError.validation(field: "withProviderToken")` for an empty token, and
+    /// - Throws: `AmplifyCognitoClientError.validation(field: "withProviderToken")` for an empty token, and
     ///   `.validation(field: "provider")` for an `.oidc`, `.saml` or `.custom` provider with an empty name, before
     ///   anything else is checked or sent; `.configuration` without an identity pool; `.invalidState` if this session is
     ///   signed in to the user pool or waiting on a challenge, before any request (sign out first); if a
@@ -40,9 +40,9 @@ public extension AmplifyCognitoClient {
     ///   `.service` as Cognito answers otherwise.
     func federateToIdentityPool(
         withProviderToken: String,
-        for provider: AuthClientProvider,
-        options: AuthClientFederateToIdentityPoolOptions = AuthClientFederateToIdentityPoolOptions()
-    ) async throws -> AuthClientFederateToIdentityPoolResult {
+        for provider: AmplifyCognitoClientProvider,
+        options: AmplifyCognitoClientFederateToIdentityPoolOptions = AmplifyCognitoClientFederateToIdentityPoolOptions()
+    ) async throws -> AmplifyCognitoClientFederateToIdentityPoolResult {
         try Self.validateFederation(token: withProviderToken, provider: provider)
         let request = EngineFederationRequest(
             token: withProviderToken,
@@ -56,10 +56,13 @@ public extension AmplifyCognitoClient {
     /// Ends this session's federation, clearing its credentials. The session's row is kept, signed out, with
     /// its label, as after `signOut()`.
     ///
-    /// - Throws: `AuthClientError.invalidState` if this session is not federated, or if what is stored is no
+    /// - Parameter options: Nothing yet; here so the call keeps the plugin's shape.
+    /// - Throws: `AmplifyCognitoClientError.invalidState` if this session is not federated, or if what is stored is no
     ///   longer the identity it found (a user, or another federation, stored meanwhile: nothing is cleared);
     ///   `.storageUnavailable` if storage could not be read or written.
-    func clearFederationToIdentityPool() async throws {
+    func clearFederationToIdentityPool(
+        options: AmplifyCognitoClientClearFederationToIdentityPoolOptions = AmplifyCognitoClientClearFederationToIdentityPoolOptions()
+    ) async throws {
         let core = core
         try await core.clearFederationToIdentityPool()
     }
@@ -69,9 +72,9 @@ extension AmplifyCognitoClient {
 
     /// `federateToIdentityPool`'s argument checks, before anything else: the identity pool rejects an empty token or
     /// login key only with a validation error the client doesn't recognise.
-    static func validateFederation(token: String, provider: AuthClientProvider) throws {
+    static func validateFederation(token: String, provider: AmplifyCognitoClientProvider) throws {
         guard !token.isEmpty else {
-            throw AuthClientError.validation(
+            throw AmplifyCognitoClientError.validation(
                 field: "withProviderToken",
                 "A provider token is required to federate to the identity pool.",
                 "Pass the token the identity provider issued."
@@ -80,7 +83,7 @@ extension AmplifyCognitoClient {
         switch provider {
         case .oidc(let name), .saml(let name), .custom(let name):
             guard !name.isEmpty else {
-                throw AuthClientError.validation(
+                throw AmplifyCognitoClientError.validation(
                     field: "provider",
                     "The provider's name is required to federate to the identity pool.",
                     "Pass the identity pool's login key for the provider: the issuer host for OIDC, the provider's ARN for SAML."

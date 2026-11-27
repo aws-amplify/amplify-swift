@@ -21,16 +21,16 @@ final class SystemSheetLockTests: XCTestCase {
 
     private struct Failure: Error, Equatable {}
 
-    private static let alice = try! SessionID.named("alice")
-    private static let bob = try! SessionID.named("bob")
-    private static let carol = try! SessionID.named("carol")
-    private static let dave = try! SessionID.named("dave")
+    private static let alice = try! AmplifyCognitoClientSessionID.named("alice")
+    private static let bob = try! AmplifyCognitoClientSessionID.named("bob")
+    private static let carol = try! AmplifyCognitoClientSessionID.named("carol")
+    private static let dave = try! AmplifyCognitoClientSessionID.named("dave")
 
     /// Records the order in which flows ran their bodies.
     private actor Journal {
-        private(set) var entries: [SessionID] = []
+        private(set) var entries: [AmplifyCognitoClientSessionID] = []
 
-        func record(_ session: SessionID) {
+        func record(_ session: AmplifyCognitoClientSessionID) {
             entries.append(session)
         }
     }
@@ -73,7 +73,7 @@ final class SystemSheetLockTests: XCTestCase {
     }
 
     /// A body that waits at `gate`, ignoring cancellation, then returns its holder.
-    private static func heldBody(_ gate: Gate) -> @Sendable (BrowserLease) async throws -> SessionID {
+    private static func heldBody(_ gate: Gate) -> @Sendable (BrowserLease) async throws -> AmplifyCognitoClientSessionID {
         return { lease in
             await gate.pass()
             return lease.holder
@@ -83,7 +83,7 @@ final class SystemSheetLockTests: XCTestCase {
     /// A body that waits at `gate` until the gate opens or the task is cancelled, then throws
     /// `CancellationError` if it was cancelled. The shape a real presenter has: cancelling it
     /// dismisses the browser.
-    private static func cancellableBody(_ gate: Gate, probe: CancellationProbe) -> @Sendable (BrowserLease) async throws -> SessionID {
+    private static func cancellableBody(_ gate: Gate, probe: CancellationProbe) -> @Sendable (BrowserLease) async throws -> AmplifyCognitoClientSessionID {
         return { lease in
             await withTaskCancellationHandler {
                 await gate.pass()
@@ -103,8 +103,8 @@ final class SystemSheetLockTests: XCTestCase {
     /// isolation checker does not understand how to check").
     private static func start<T: Sendable>(
         _ lock: SystemSheetLock,
-        _ session: SessionID,
-        _ policy: WebUIOptions.BrowserBusyPolicy,
+        _ session: AmplifyCognitoClientSessionID,
+        _ policy: AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy,
         after gate: Gate? = nil,
         waitsOnlyForItself: Bool = false,
         waitsForRelease: Bool = false,
@@ -125,15 +125,15 @@ final class SystemSheetLockTests: XCTestCase {
     /// Bounded, as `assertCancelled` is: a task that is never answered fails the test with `WaitTimedOut` rather than
     /// hanging it.
     private static func assertBrowserBusy(
-        _ task: Task<SessionID, Error>,
-        holder expected: SessionID,
+        _ task: Task<AmplifyCognitoClientSessionID, Error>,
+        holder expected: AmplifyCognitoClientSessionID,
         file: StaticString = #filePath,
         line: UInt = #line
     ) async {
         do {
             let value = try await task.value(within: 10)
             XCTFail("Expected browserBusy, got \(value)", file: file, line: line)
-        } catch AuthClientError.browserBusy(let holder, _, _, _) {
+        } catch AmplifyCognitoClientError.browserBusy(let holder, _, _, _) {
             XCTAssertEqual(holder, expected, file: file, line: line)
         } catch {
             XCTFail("Expected browserBusy, got \(error)", file: file, line: line)
@@ -143,7 +143,7 @@ final class SystemSheetLockTests: XCTestCase {
     /// Bounded: a task that is never answered, as when a release wait's timer stops answering, fails the test with
     /// `WaitTimedOut` rather than hanging it.
     private static func assertCancelled(
-        _ task: Task<SessionID, Error>,
+        _ task: Task<AmplifyCognitoClientSessionID, Error>,
         file: StaticString = #filePath,
         line: UInt = #line
     ) async {
@@ -200,8 +200,8 @@ final class SystemSheetLockTests: XCTestCase {
     /// - Then:
     ///    - both carry the holder, and their descriptions differ
     func testBrowserBusyNamesTheHolderAndDistinguishesARepeatCall() {
-        let clash = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob)
-        let repeated = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice)
+        let clash = AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob)
+        let repeated = AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice)
 
         guard case .browserBusy(let clashHolder, _, _, _) = clash,
               case .browserBusy(let repeatHolder, _, _, _) = repeated else {
@@ -248,7 +248,7 @@ final class SystemSheetLockTests: XCTestCase {
         let lock = SystemSheetLock()
         let gate = Gate()
         let journal = Journal()
-        let recordingBody: @Sendable (BrowserLease) async throws -> SessionID = { lease in
+        let recordingBody: @Sendable (BrowserLease) async throws -> AmplifyCognitoClientSessionID = { lease in
             await journal.record(lease.holder)
             return lease.holder
         }
@@ -283,7 +283,7 @@ final class SystemSheetLockTests: XCTestCase {
     ///      and none names a browser sign-in, since the sheet may be a passkey sheet or a sign-out page
     func testAlreadyQueuedMessageNamesTheQueuedSession() {
         let reasons: [BrowserBusyReason] = [.heldByAnotherSession, .alreadyInFlight, .alreadyQueued, .stillClosing, .timedOut]
-        let errors = reasons.map { AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob, reason: $0) }
+        let errors = reasons.map { AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob, reason: $0) }
 
         for error in errors {
             guard case .browserBusy(let holder, _, _, _) = error else {
@@ -336,7 +336,7 @@ final class SystemSheetLockTests: XCTestCase {
         let lock = SystemSheetLock()
         let gate = Gate()
         let journal = Journal()
-        let recordingBody: @Sendable (BrowserLease) async throws -> SessionID = { lease in
+        let recordingBody: @Sendable (BrowserLease) async throws -> AmplifyCognitoClientSessionID = { lease in
             await journal.record(lease.holder)
             return lease.holder
         }
@@ -344,7 +344,7 @@ final class SystemSheetLockTests: XCTestCase {
         let alice = Self.start(lock, Self.alice, .fail, Self.heldBody(gate))
         await gate.waitForArrivals(1)
 
-        var waiters: [Task<SessionID, Error>] = []
+        var waiters: [Task<AmplifyCognitoClientSessionID, Error>] = []
         for (index, session) in [Self.bob, Self.carol, Self.dave].enumerated() {
             waiters.append(Self.start(lock, session, .wait(timeout: 3_600), recordingBody))
             // Each joins the queue before the next is started, so the arrival order is fixed.
@@ -388,8 +388,8 @@ final class SystemSheetLockTests: XCTestCase {
         do {
             _ = try await bob.value
             XCTFail("Expected browserBusy")
-        } catch let error as AuthClientError {
-            let timedOut = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob, reason: .timedOut)
+        } catch let error as AmplifyCognitoClientError {
+            let timedOut = AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob, reason: .timedOut)
             XCTAssertEqual(error.errorDescription, timedOut.errorDescription)
             XCTAssertTrue(error.errorDescription.contains("until its timeout"), error.errorDescription)
         } catch {
@@ -419,7 +419,7 @@ final class SystemSheetLockTests: XCTestCase {
         let lock = SystemSheetLock()
         let gate = Gate()
         let journal = Journal()
-        let recordingBody: @Sendable (BrowserLease) async throws -> SessionID = { lease in
+        let recordingBody: @Sendable (BrowserLease) async throws -> AmplifyCognitoClientSessionID = { lease in
             await journal.record(lease.holder)
             return lease.holder
         }
@@ -554,8 +554,8 @@ final class SystemSheetLockTests: XCTestCase {
         do {
             let value = try await failingRetry.value
             XCTFail("Expected browserBusy, got \(value)")
-        } catch let error as AuthClientError {
-            let closingError = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice, reason: .stillClosing)
+        } catch let error as AmplifyCognitoClientError {
+            let closingError = AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice, reason: .stillClosing)
             XCTAssertEqual(error.errorDescription, closingError.errorDescription)
         }
 
@@ -597,13 +597,13 @@ final class SystemSheetLockTests: XCTestCase {
         let retry = Self.start(lock, Self.alice, .wait(timeout: 3_600)) { $0.holder }
         await waitUntil("the retry is queued behind the closing flow") { await lock.waiterCount == 1 }
 
-        let closingError = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice, reason: .stillClosing)
-        for policy in [WebUIOptions.BrowserBusyPolicy.wait(timeout: 3_600), .fail] {
+        let closingError = AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.alice, reason: .stillClosing)
+        for policy in [AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy.wait(timeout: 3_600), .fail] {
             let again = Self.start(lock, Self.alice, policy) { $0.holder }
             do {
                 let value = try await again.value(within: 10)
                 XCTFail("Expected browserBusy, got \(value)")
-            } catch let error as AuthClientError {
+            } catch let error as AmplifyCognitoClientError {
                 XCTAssertEqual(error.kind, .browserBusy(holder: Self.alice), "\(policy)")
                 XCTAssertEqual(error.errorDescription, closingError.errorDescription, "\(policy)")
                 XCTAssertNotEqual(error.recoverySuggestion, closingError.recoverySuggestion, "\(policy)")
@@ -686,8 +686,8 @@ final class SystemSheetLockTests: XCTestCase {
         do {
             let value = try await bob.value
             XCTFail("Expected browserBusy, got \(value)")
-        } catch let error as AuthClientError {
-            let expected = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob, reason: .heldByAnotherSession)
+        } catch let error as AmplifyCognitoClientError {
+            let expected = AmplifyCognitoClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob, reason: .heldByAnotherSession)
             XCTAssertEqual(error.kind, .browserBusy(holder: Self.alice))
             XCTAssertEqual(error.errorDescription, expected.errorDescription)
         }
@@ -729,8 +729,8 @@ final class SystemSheetLockTests: XCTestCase {
         do {
             let value = try await retry.value(within: 10)
             XCTFail("Expected browserBusy, got \(value)")
-        } catch let error as AuthClientError {
-            let expected = AuthClientError.browserBusy(heldBy: Self.bob, requestedBy: Self.alice, reason: .heldByAnotherSession)
+        } catch let error as AmplifyCognitoClientError {
+            let expected = AmplifyCognitoClientError.browserBusy(heldBy: Self.bob, requestedBy: Self.alice, reason: .heldByAnotherSession)
             XCTAssertEqual(error.kind, .browserBusy(holder: Self.bob))
             XCTAssertEqual(error.errorDescription, expected.errorDescription)
         }
@@ -763,7 +763,7 @@ final class SystemSheetLockTests: XCTestCase {
         let finished = Journal()
         let committed = Journal()
 
-        let caller = Self.start(lock, Self.alice, .fail) { lease -> SessionID in
+        let caller = Self.start(lock, Self.alice, .fail) { lease -> AmplifyCognitoClientSessionID in
             await gate.pass()
             await finished.record(lease.holder)
             return lease.holder
@@ -846,7 +846,7 @@ final class SystemSheetLockTests: XCTestCase {
         let lock = SystemSheetLock()
 
         do {
-            _ = try await lock.withLease(for: Self.alice, policy: .fail) { _ -> SessionID in
+            _ = try await lock.withLease(for: Self.alice, policy: .fail) { _ -> AmplifyCognitoClientSessionID in
                 throw Failure()
             }
             XCTFail("Expected the flow's error")
@@ -949,7 +949,7 @@ final class SystemSheetLockTests: XCTestCase {
     // MARK: - Race windows
 
     /// A seam that holds only `session`'s caller at `gate`, and lets every other caller through.
-    private static func holding(_ session: SessionID, at gate: Gate) -> SystemSheetLock.Seam {
+    private static func holding(_ session: AmplifyCognitoClientSessionID, at gate: Gate) -> SystemSheetLock.Seam {
         return { lease in
             if lease.holder == session {
                 await gate.pass()
@@ -997,7 +997,7 @@ final class SystemSheetLockTests: XCTestCase {
         let seam = Gate()
         let lock = SystemSheetLock(afterAcquire: Self.holding(Self.alice, at: seam))
         let journal = Journal()
-        let recordingBody: @Sendable (BrowserLease) async throws -> SessionID = { lease in
+        let recordingBody: @Sendable (BrowserLease) async throws -> AmplifyCognitoClientSessionID = { lease in
             await journal.record(lease.holder)
             return lease.holder
         }
@@ -1105,7 +1105,7 @@ final class SystemSheetLockTests: XCTestCase {
         let lock = SystemSheetLock(afterAcquire: Self.holding(Self.bob, at: seam))
         let gate = Gate()
         let journal = Journal()
-        let recordingBody: @Sendable (BrowserLease) async throws -> SessionID = { lease in
+        let recordingBody: @Sendable (BrowserLease) async throws -> AmplifyCognitoClientSessionID = { lease in
             await journal.record(lease.holder)
             return lease.holder
         }
@@ -1209,7 +1209,7 @@ final class SystemSheetLockTests: XCTestCase {
     func testSixtyFourWayContentionHasExactlyOneHolderAtATime() async throws {
         let lock = SystemSheetLock()
         let tally = OccupancyTally()
-        let sessions = try (0 ..< 64).map { try SessionID.named("session-\($0)") }
+        let sessions = try (0 ..< 64).map { try AmplifyCognitoClientSessionID.named("session-\($0)") }
 
         // Handles are kept for the whole test, so every caller stays alive until it has been served.
         let body: @Sendable (BrowserLease) async throws -> Bool = { lease in

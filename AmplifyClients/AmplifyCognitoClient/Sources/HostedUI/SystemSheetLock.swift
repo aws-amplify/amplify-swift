@@ -16,7 +16,7 @@ struct BrowserLease: Sendable, Equatable {
     let id: UInt64
 
     /// The session holding the browser.
-    let holder: SessionID
+    let holder: AmplifyCognitoClientSessionID
 }
 
 /// The one place that enforces the rule that only one system sheet is up per process: the hosted UI's browser
@@ -76,7 +76,7 @@ actor SystemSheetLock {
     typealias Seam = @Sendable (BrowserLease) async -> Void
 
     /// A test seam before a caller asks for the lock, given the session asking. Does nothing in production.
-    typealias RequestSeam = @Sendable (SessionID) async -> Void
+    typealias RequestSeam = @Sendable (AmplifyCognitoClientSessionID) async -> Void
 
     private struct Holder {
         let lease: BrowserLease
@@ -95,7 +95,7 @@ actor SystemSheetLock {
 
     private struct Waiter {
         let id: UInt64
-        let session: SessionID
+        let session: AmplifyCognitoClientSessionID
         let continuation: CheckedContinuation<BrowserLease, Error>
         var timeout: Task<Void, Never>?
         /// Queued only behind its own session's closing sheet: refused once the lock passes to another session.
@@ -163,13 +163,13 @@ actor SystemSheetLock {
     }
 
     /// The session whose browser sign-in is in flight, or `nil` when the lock is free.
-    var currentHolder: SessionID? {
+    var currentHolder: AmplifyCognitoClientSessionID? {
         holder?.lease.holder
     }
 
     /// The session holding the sheet, or `nil` when the lock is free, and whether `session` is queued for it, read
     /// in one step so they agree.
-    func holderAndQueue(for session: SessionID) -> (holder: SessionID?, queued: Bool) {
+    func holderAndQueue(for session: AmplifyCognitoClientSessionID) -> (holder: AmplifyCognitoClientSessionID?, queued: Bool) {
         (currentHolder, waiters.contains { $0.session == session })
     }
 
@@ -225,11 +225,11 @@ actor SystemSheetLock {
     ///   whichever comes first, so a caller told its sign-in was cancelled finds the sheet free. The caller's own
     ///   cancellation, and `reset()`, which frees the lock at once, still answer at once. `false` by default:
     ///   the caller is answered at once, while the flow may still be unwinding.
-    /// - Throws: `AuthClientError.browserBusy(holder:)` if the lock could not be acquired under
+    /// - Throws: `AmplifyCognitoClientError.browserBusy(holder:)` if the lock could not be acquired under
     ///   `policy`; `CancellationError` as above; otherwise whatever `body` throws.
     nonisolated func withLease<T: Sendable>(
-        for session: SessionID,
-        policy: WebUIOptions.BrowserBusyPolicy,
+        for session: AmplifyCognitoClientSessionID,
+        policy: AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy,
         waitsOnlyForItself: Bool = false,
         waitsForReleaseWhenInterrupted: Bool = false,
         _ body: @escaping @Sendable (BrowserLease) async throws -> T
@@ -333,7 +333,7 @@ actor SystemSheetLock {
     /// A holder's flow is cancelled and its caller throws `CancellationError`; the lock is released
     /// once the flow has unwound. A queued caller throws `CancellationError` and leaves the queue.
     /// Idempotent, and a no-op for a session with no sign-in.
-    func cancel(for session: SessionID) {
+    func cancel(for session: AmplifyCognitoClientSessionID) {
         if holder?.lease.holder == session {
             if let flow = holder?.flow {
                 flow.interrupt()
@@ -359,7 +359,7 @@ actor SystemSheetLock {
     ///
     /// - Returns: the session that was holding the lock, or `nil` if it was already free.
     @discardableResult
-    func reset() -> SessionID? {
+    func reset() -> AmplifyCognitoClientSessionID? {
         guard let current = holder else {
             return nil
         }
@@ -375,8 +375,8 @@ actor SystemSheetLock {
     // MARK: - Internals
 
     private func acquire(
-        for session: SessionID,
-        policy: WebUIOptions.BrowserBusyPolicy,
+        for session: AmplifyCognitoClientSessionID,
+        policy: AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy,
         waitsOnlyForItself: Bool
     ) async throws -> BrowserLease {
         let id = mintID()
@@ -400,7 +400,7 @@ actor SystemSheetLock {
                 // otherwise be served straight after the first: a second browser nobody asked for. Queued behind
                 // its own sheet, the session is waiting for that sheet to close, which is what it is told.
                 guard !waiters.contains(where: { $0.session == session }) else {
-                    continuation.resume(throwing: AuthClientError.browserBusy(
+                    continuation.resume(throwing: AmplifyCognitoClientError.browserBusy(
                         heldBy: holding,
                         requestedBy: session,
                         reason: holding == session ? .stillClosingWithCallQueued : .alreadyQueued
@@ -412,7 +412,7 @@ actor SystemSheetLock {
                 // "Cancel, then Sign in again" can queue behind the closing browser.
                 let isClosing = current.isDraining
                 if holding == session, !isClosing {
-                    continuation.resume(throwing: AuthClientError.browserBusy(
+                    continuation.resume(throwing: AmplifyCognitoClientError.browserBusy(
                         heldBy: holding,
                         requestedBy: session,
                         reason: .alreadyInFlight
@@ -421,7 +421,7 @@ actor SystemSheetLock {
                 }
                 // A caller waiting only for its own closing sheet never queues behind another session.
                 if waitsOnlyForItself, holding != session {
-                    continuation.resume(throwing: AuthClientError.browserBusy(
+                    continuation.resume(throwing: AmplifyCognitoClientError.browserBusy(
                         heldBy: holding,
                         requestedBy: session,
                         reason: .heldByAnotherSession
@@ -429,7 +429,7 @@ actor SystemSheetLock {
                     return
                 }
                 guard let timeout = policy.timeoutNanoseconds, timeout > 0 else {
-                    continuation.resume(throwing: AuthClientError.browserBusy(
+                    continuation.resume(throwing: AmplifyCognitoClientError.browserBusy(
                         heldBy: holding,
                         requestedBy: session,
                         reason: holding == session ? .stillClosing : .heldByAnotherSession
@@ -502,7 +502,7 @@ actor SystemSheetLock {
 
     /// The lock has passed to `newHolder`: a waiter of another session that waits only for its own closing sheet
     /// will never be served behind it, so it is refused now rather than when its timeout expires.
-    private func refuseWaitersOnlyForThemselves(behind newHolder: SessionID) {
+    private func refuseWaitersOnlyForThemselves(behind newHolder: AmplifyCognitoClientSessionID) {
         let refused = waiters.filter { $0.waitsOnlyForItself && $0.session != newHolder }
         guard !refused.isEmpty else {
             return
@@ -510,7 +510,7 @@ actor SystemSheetLock {
         waiters.removeAll { $0.waitsOnlyForItself && $0.session != newHolder }
         for waiter in refused {
             waiter.timeout?.cancel()
-            waiter.continuation.resume(throwing: AuthClientError.browserBusy(
+            waiter.continuation.resume(throwing: AmplifyCognitoClientError.browserBusy(
                 heldBy: newHolder,
                 requestedBy: waiter.session,
                 reason: .heldByAnotherSession
@@ -534,7 +534,7 @@ actor SystemSheetLock {
             waiter.continuation.resume(returning: lease)
             return
         }
-        waiter.continuation.resume(throwing: AuthClientError.browserBusy(
+        waiter.continuation.resume(throwing: AmplifyCognitoClientError.browserBusy(
             heldBy: holding,
             requestedBy: waiter.session,
             reason: .timedOut

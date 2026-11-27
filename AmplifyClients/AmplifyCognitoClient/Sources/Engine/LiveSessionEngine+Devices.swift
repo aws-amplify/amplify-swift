@@ -26,19 +26,19 @@ extension LiveSessionEngine {
     /// Lists the user's devices (`AWSAuthFetchDevicesTask.fetchDevices`).
     ///
     /// - Throws: Cognito's answer, mapped; `unknown` if Cognito answers without a device list.
-    nonisolated func fetchDevices(_ payload: Data) async throws -> [AuthClientDevice] {
+    nonisolated func fetchDevices(_ payload: Data) async throws -> [AmplifyCognitoClientDevice] {
         let signedIn = try signedInUser(in: payload)
         let userPool = try deviceUserPool()
         let output = try await Self.mappingServiceErrors {
             try await userPool.listDevices(input: ListDevicesInput(accessToken: signedIn.accessToken))
         }
         guard let devices = output.devices else {
-            throw AuthClientError.unknown(
+            throw AmplifyCognitoClientError.unknown(
                 "Unable to get devices list from response",
                 "This is not expected. Retry the operation."
             )
         }
-        return devices.map(AuthClientDevice.init)
+        return devices.map(AmplifyCognitoClientDevice.init)
     }
 
     /// Marks this device remembered (`AWSAuthRememberDeviceTask.rememberDevice`).
@@ -140,7 +140,7 @@ extension LiveSessionEngine {
         case .undecodable:
             resources.logger.error("Unable to decode the stored device metadata", nil)
         }
-        throw AuthClientError.unknown(
+        throw AmplifyCognitoClientError.unknown(
             "Unable to get device metadata",
             "Enable device tracking on the user pool, sign in on this device, then retry."
         )
@@ -152,12 +152,12 @@ extension LiveSessionEngine {
         do {
             return try await call()
         } catch let error as EngineAuthErrorConvertible {
-            throw AuthClientError(engineFailure: error)
+            throw AmplifyCognitoClientError(engineFailure: error)
         }
     }
 }
 
-extension AuthClientDevice {
+extension AmplifyCognitoClientDevice {
 
     /// A listed device as the plugin maps it (`DeviceType.toAWSAuthDevice()`): the key as the id (empty if
     /// missing), the `device_name` attribute as the name (empty if missing), every named attribute, and

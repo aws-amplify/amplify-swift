@@ -18,7 +18,7 @@ final class SessionCopyForwardTests: XCTestCase {
 
     private var harness: ClientHarness!
     private let work = ClientFixtures.id("work")
-    private let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+    private let alice = AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")
 
     override func setUp() {
         harness = ClientHarness()
@@ -59,20 +59,6 @@ final class SessionCopyForwardTests: XCTestCase {
         return envelope.record
     }
 
-    /// Asserts `result` failed with an error described as `expected` is.
-    private func assertFails<Value>(
-        _ result: Result<Value, AuthClientError>,
-        with expected: AuthClientError,
-        _ message: String = "",
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) {
-        guard case .failure(let error) = result else {
-            return XCTFail("expected a failure. \(message)", file: file, line: line)
-        }
-        XCTAssertEqual(error.errorDescription, expected.errorDescription, message, file: file, line: line)
-    }
-
     /// The description of the error `body` throws, or `nil` if it throws none.
     private func authClientErrorDescription(_ body: () async throws -> some Any) async -> String? {
         do {
@@ -80,7 +66,7 @@ final class SessionCopyForwardTests: XCTestCase {
             return nil
         } catch let error as CredentialsError {
             return error.errorDescription
-        } catch let error as AuthClientError {
+        } catch let error as AmplifyCognitoClientError {
             return error.errorDescription
         } catch {
             return "\(error)"
@@ -105,7 +91,7 @@ final class SessionCopyForwardTests: XCTestCase {
     }
 
     /// A refresh that stores new user pool tokens, then fails the identity step with `error`.
-    private func scriptIdentityFailure(_ engine: FakeSessionEngine, _ error: AuthClientError) {
+    private func scriptIdentityFailure(_ engine: FakeSessionEngine, _ error: AmplifyCognitoClientError) {
         let stored = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 2)
         engine.scriptRefresh { _ in
             throw SessionEngineError.refreshedThenFailed(payload: stored.data, error: .service(error))
@@ -149,10 +135,10 @@ final class SessionCopyForwardTests: XCTestCase {
         let first = try await client.fetchAuthSession()
         let second = try await client.fetchAuthSession()
 
-        XCTAssertEqual(try first.identityIdResult.get(), "us-east-1:new")
-        XCTAssertNoThrow(try first.awsCredentialsResult.get())
+        XCTAssertEqual(first.identityId, "us-east-1:new")
+        XCTAssertNotNil(first.awsCredentials)
         XCTAssertEqual(engine.refreshForceFlags, [false])
-        XCTAssertEqual(try second.identityIdResult.get(), "us-east-1:new")
+        XCTAssertEqual(second.identityId, "us-east-1:new")
         let record = try XCTUnwrap(currentRecord())
         XCTAssertFalse(record.identityPending)
         XCTAssertEqual(record.kind, .userPoolAndIdentityPool)
@@ -214,7 +200,7 @@ final class SessionCopyForwardTests: XCTestCase {
     ///
     /// - Given: alice's session carried from the user pool alone, and a refresh that returns user pool tokens only
     /// - When: the session is fetched
-    /// - Then: its tokens and sub succeed, its identity fails, and the record no longer waits
+    /// - Then: it holds its tokens and sub and no identity, and the record no longer waits
     func testASuccessfulRefreshWithoutAnIdentityStopsWaiting() async throws {
         try aliceUnderTheUserPoolOnly()
         let client = try harness.client(work)
@@ -223,17 +209,18 @@ final class SessionCopyForwardTests: XCTestCase {
 
         let session = try await client.fetchAuthSession()
 
-        XCTAssertThrowsError(try session.identityIdResult.get())
-        XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, "access-alice-v2")
-        XCTAssertEqual(try session.userSubResult.get(), "sub-alice")
+        XCTAssertNil(session.identityId)
+        XCTAssertNil(session.awsCredentials)
+        XCTAssertEqual(session.userPoolTokens?.accessToken, "access-alice-v2")
+        XCTAssertEqual(session.userSub, "sub-alice")
         XCTAssertFalse(try XCTUnwrap(currentRecord()).identityPending)
     }
 
     // MARK: Identity-step failures
 
-    /// An identity step refused for good fails only the identity, and is not retried in this process, by this core or a
-    /// later one of the same record, while the user pool tokens need no refresh and no fetch forces one; the record
-    /// keeps waiting, so a new process tries again.
+    /// An identity step refused for good fails the fetch, as the plugin's does, and keeps the tokens its refresh
+    /// stored. It is not retried in this process, by this core or a later one of the same record, while the user pool
+    /// tokens need no refresh and no fetch forces one; the record keeps waiting, so a new process tries again.
     ///
     /// - Given: alice's session carried from the user pool alone, and a refresh that stores new tokens then fails
     ///   the identity step with `.notAuthorized` (an identity pool that does not federate the user pool)
@@ -241,28 +228,25 @@ final class SessionCopyForwardTests: XCTestCase {
     ///   and the session is fetched again; then the client is released and a new one, on a new core in the same
     ///   process, fetches it
     /// - Then:
-    ///    - every fetch returns the tokens and sub, and fails the identity and credentials with the refusal, as does
-    ///      the provider; only the first refreshes; the record still waits for its identity
-    ///    - the new core does not refresh either, and reports the refusal
+    ///    - every fetch throws the refusal, as does the provider; only the first refreshes; the token provider vends
+    ///      the refreshed token; the record still waits for its identity
+    ///    - the new core does not refresh either, and throws the refusal
     func testAPermanentIdentityFailureIsNotRetriedInThisProcess() async throws {
         try aliceUnderTheUserPoolOnly()
-        let refusal = AuthClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
+        let refusal = AmplifyCognitoClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
         var client: AmplifyCognitoClient? = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         scriptIdentityFailure(engine, refusal)
 
-        let first = try await XCTUnwrap(client).fetchAuthSession()
-        let second = try await XCTUnwrap(client).fetchAuthSession()
+        let first = await authClientError { try await XCTUnwrap(client).fetchAuthSession() }?.errorDescription
+        let second = await authClientError { try await XCTUnwrap(client).fetchAuthSession() }?.errorDescription
         let provider = await authClientErrorDescription { try await XCTUnwrap(client).credentialsProvider.resolve() }
         harness.advanceClock(by: PendingIdentityRetry.interval + 1)
-        let later = try await XCTUnwrap(client).fetchAuthSession()
+        let later = await authClientError { try await XCTUnwrap(client).fetchAuthSession() }?.errorDescription
+        let token = try await XCTUnwrap(client).userPoolTokenProvider.accessToken()
 
-        for session in [first, second, later] {
-            XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, "access-alice-v2")
-            XCTAssertEqual(try session.userSubResult.get(), "sub-alice")
-            assertFails(session.identityIdResult, with: refusal)
-            assertFails(session.awsCredentialsResult, with: refusal)
-        }
+        XCTAssertEqual([first, second, later], Array(repeating: refusal.errorDescription, count: 3))
+        XCTAssertEqual(token, "access-alice-v2")
         XCTAssertEqual(provider, refusal.errorDescription)
         XCTAssertEqual(engine.refreshCalls.count, 1, "no user pool refresh on every call")
         XCTAssertTrue(try XCTUnwrap(currentRecord()).identityPending, "the record keeps waiting")
@@ -273,10 +257,9 @@ final class SessionCopyForwardTests: XCTestCase {
         let next = try XCTUnwrap(harness.engine(for: work))
         XCTAssertFalse(next === engine, "a new core")
         next.scriptRefresh { _ in FakePayload.signedIn("alice", version: 3, identityId: "us-east-1:new").data }
-        let fetched = try await relaunched.fetchAuthSession()
+        let fetched = await authClientError { try await relaunched.fetchAuthSession() }?.errorDescription
         XCTAssertEqual(next.refreshCalls.count, 0, "the refusal holds for the process")
-        assertFails(fetched.identityIdResult, with: refusal)
-        XCTAssertEqual(try fetched.userSubResult.get(), "sub-alice")
+        XCTAssertEqual(fetched, refusal.errorDescription)
     }
 
     /// A known refusal holds only while nothing refreshes the user pool tokens: a forced fetch refreshes them, which
@@ -291,7 +274,7 @@ final class SessionCopyForwardTests: XCTestCase {
     ///   identity; the last resolve returns its AWS credentials
     func testAForcedFetchRetriesARefusedIdentityStep() async throws {
         try aliceUnderTheUserPoolOnly()
-        let refusal = AuthClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
+        let refusal = AmplifyCognitoClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let identified = FakePayload.signedIn("alice", version: 3, identityId: "us-east-1:alice")
@@ -311,30 +294,30 @@ final class SessionCopyForwardTests: XCTestCase {
 
         XCTAssertEqual(refused?.disposition, .failLoudly)
         XCTAssertEqual(engine.refreshCalls.count, 2)
-        XCTAssertEqual(try forced.identityIdResult.get(), "us-east-1:alice")
+        XCTAssertEqual(forced.identityId, "us-east-1:alice")
         XCTAssertEqual(credentials as? CognitoAWSCredentials, identified.awsCredentials)
     }
 
     /// A transient identity failure keeps the record waiting, but the next attempt waits its interval, so a
-    /// throttled `GetId` does not spend a refresh token per call; until then the failure answers for the identity.
+    /// throttled `GetId` does not spend a refresh token per call; until then the failure answers for the fetch.
     ///
     /// - Given: alice's session carried from the user pool alone, and a refresh that stores new tokens then fails
     ///   the identity step, in turn with throttling, `.unknown`, a service error with no code, and an engine failure
-    ///   that is not an `AuthClientError`
+    ///   that is not an `AmplifyCognitoClientError`
     /// - When: the session is fetched, fetched again at once, the credentials provider resolves, then the session is
     ///   fetched after `PendingIdentityRetry.interval`
     /// - Then:
     ///    - the first fetch and the last refresh; the second fetch and the provider do not
     ///    - the provider's failure keeps the disposition `.retryWithBackoff`
-    ///    - the second fetch returns the tokens and fails its identity and credentials with the first fetch's
-    ///      error, and so does the provider (not "no identity pool", not "sign in again")
+    ///    - the second fetch throws the first fetch's error, and so does the provider (not "no identity pool", not
+    ///      "sign in again"); the token provider vends the refreshed token
     ///    - the record keeps waiting throughout
     func testATransientIdentityFailureIsRetriedAfterItsInterval() async throws {
         let failures: [(String, SessionEngineError)] = [
             ("throttling", .service(.service(.limitExceeded, "Rate exceeded.", "Retry."))),
             ("unknown", .service(.unknown("Something failed.", "Retry."))),
             ("no code", .service(.service(nil, "InternalErrorException", "Retry."))),
-            ("not an AuthClientError", .refreshedThenFailed(payload: Data(), error: .notSignedIn))
+            ("not an AmplifyCognitoClientError", .refreshedThenFailed(payload: Data(), error: .notSignedIn))
         ]
         for (name, failure) in failures {
             harness = ClientHarness()
@@ -344,26 +327,22 @@ final class SessionCopyForwardTests: XCTestCase {
             let stored = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 2)
             engine.scriptRefresh { _ in throw SessionEngineError.refreshedThenFailed(payload: stored.data, error: failure) }
 
-            let first = try await client.fetchAuthSession()
-            let second = try await client.fetchAuthSession()
+            let first = await authClientError { try await client.fetchAuthSession() }?.errorDescription
+            let second = await authClientError { try await client.fetchAuthSession() }?.errorDescription
             let provider = await authClientErrorDescription { try await client.credentialsProvider.resolve() }
             let disposition = await providerError { try await client.credentialsProvider.resolve() }?.disposition
+            let token = try await client.userPoolTokenProvider.accessToken()
             XCTAssertEqual(disposition, .retryWithBackoff, "\(name): a transient failure is retried")
             XCTAssertEqual(engine.refreshCalls.count, 1, "\(name): no retry within the interval")
             XCTAssertTrue(try XCTUnwrap(currentRecord()).identityPending, name)
             harness.advanceClock(by: PendingIdentityRetry.interval + 1)
-            _ = try await client.fetchAuthSession()
+            _ = try? await client.fetchAuthSession()
 
             XCTAssertEqual(engine.refreshCalls.count, 2, name)
-            guard case .failure(let error) = first.identityIdResult else {
-                XCTFail("\(name): the identity should fail")
-                continue
-            }
-            XCTAssertEqual(try first.userPoolTokensResult.get().accessToken, "access-alice-v2", name)
-            XCTAssertEqual(try second.userPoolTokensResult.get().accessToken, "access-alice-v2", name)
-            assertFails(second.identityIdResult, with: error, name)
-            assertFails(second.awsCredentialsResult, with: error, name)
-            XCTAssertEqual(provider, error.errorDescription, name)
+            XCTAssertNotNil(first, "\(name): the fetch should throw")
+            XCTAssertEqual(token, "access-alice-v2", name)
+            XCTAssertEqual(second, first, name)
+            XCTAssertEqual(provider, first, name)
             XCTAssertTrue(try XCTUnwrap(currentRecord()).identityPending, name)
         }
     }
@@ -382,10 +361,10 @@ final class SessionCopyForwardTests: XCTestCase {
     /// - Then:
     ///    - every resolve throws `CredentialsError.notConfigured` (`.failLoudly`) with the refusal's description and
     ///      recovery suggestion, and the refusal as its underlying error
-    ///    - `fetchAuthSession`'s identity and credentials still fail with the refusal itself, and its tokens succeed
+    ///    - `fetchAuthSession` still throws the refusal itself
     ///    - the token provider still vends the refreshed access token
     func testAKnownIdentityRefusalFailsTheProviderLoudly() async throws {
-        let refusals: [(String, AuthClientError)] = [
+        let refusals: [(String, AmplifyCognitoClientError)] = [
             ("notAuthorized", .notAuthorized("Invalid login token.", "Check the identity pool's providers.")),
             ("resourceNotFound", .service(.resourceNotFound, "IdentityPool not found.", "Check the identity pool ID.")),
             ("invalidParameter", .service(.invalidParameter, "Invalid identity pool configuration.", "Check the identity pool.")),
@@ -405,7 +384,7 @@ final class SessionCopyForwardTests: XCTestCase {
                     resolved.append(await providerError { try await client.credentialsProvider.resolve() })
                 }
                 resolved.append(await providerError { try await client.credentialsProvider.resolve() })
-                let session = try await client.fetchAuthSession()
+                let fetched = await authClientError { try await client.fetchAuthSession() }
                 if !providerFirst {
                     resolved.append(await providerError { try await client.credentialsProvider.resolve() })
                 }
@@ -416,11 +395,9 @@ final class SessionCopyForwardTests: XCTestCase {
                     XCTAssertEqual(error?.disposition, .failLoudly, label)
                     XCTAssertEqual(error?.errorDescription, refusal.errorDescription, label)
                     XCTAssertEqual(error?.recoverySuggestion, refusal.recoverySuggestion, label)
-                    XCTAssertEqual((error?.underlyingError as? AuthClientError)?.errorDescription, refusal.errorDescription, label)
+                    XCTAssertEqual((error?.underlyingError as? AmplifyCognitoClientError)?.errorDescription, refusal.errorDescription, label)
                 }
-                assertFails(session.identityIdResult, with: refusal, label)
-                assertFails(session.awsCredentialsResult, with: refusal, label)
-                XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, "access-alice-v2", label)
+                XCTAssertEqual(fetched?.isEquivalent(to: refusal), true, "\(label): \(String(describing: fetched))")
                 XCTAssertEqual(token, "access-alice-v2", label)
                 XCTAssertEqual(engine.refreshCalls.count, 1, "\(label): the refusal is not retried")
             }
@@ -440,7 +417,7 @@ final class SessionCopyForwardTests: XCTestCase {
     ///    - it throws `CredentialsError.notConfigured` (`.failLoudly`) with the refusal's description, as the first
     ///      resolve did
     func testAnAdoptedRecordWaitingForARefusedIdentityFailsTheProviderWithTheRefusal() async throws {
-        let refusal = AuthClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
+        let refusal = AmplifyCognitoClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
         try aliceUnderTheUserPoolOnly()
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
@@ -503,16 +480,16 @@ final class SessionCopyForwardTests: XCTestCase {
         let second = try await client.fetchAuthSession()
 
         XCTAssertEqual(engine.refreshCalls.count, 2)
-        XCTAssertEqual(try second.identityIdResult.get(), "us-east-1:new")
+        XCTAssertEqual(second.identityId, "us-east-1:new")
     }
 
-    /// - Given: a bare `CancellationError`, an `AuthClientError` caused by one, and two other failures
+    /// - Given: a bare `CancellationError`, an `AmplifyCognitoClientError` caused by one, and two other failures
     /// - When: `isCancellation` classifies each
     /// - Then: the first two are cancellations, the others not
     func testWhichFailuresAreCancellations() {
         XCTAssertTrue(SessionCore.isCancellation(CancellationError()))
-        XCTAssertTrue(SessionCore.isCancellation(AuthClientError.unknown("", "", CancellationError())))
-        XCTAssertFalse(SessionCore.isCancellation(AuthClientError.unknown("", "")))
+        XCTAssertTrue(SessionCore.isCancellation(AmplifyCognitoClientError.unknown("", "", CancellationError())))
+        XCTAssertFalse(SessionCore.isCancellation(AmplifyCognitoClientError.unknown("", "")))
         XCTAssertFalse(SessionCore.isCancellation(FixtureError(description: "not a cancellation")))
     }
 
@@ -544,22 +521,27 @@ final class SessionCopyForwardTests: XCTestCase {
 
         let session = try await client.fetchAuthSession()
 
-        XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:other-writer")
+        XCTAssertEqual(session.identityId, "us-east-1:other-writer")
         XCTAssertFalse(try XCTUnwrap(currentRecord()).identityPending)
     }
 
     /// A refresh whose identity step failed, but whose commit lost to another process's sign-out, answers as the
-    /// signed-out session it now is: `notSignedIn`, never `sessionExpired` or the identity step's failure.
+    /// signed-out session it now is, never `sessionExpired` or the identity step's failure: the fetch becomes a
+    /// guest where the identity pool allows one, and throws `notSignedIn` where it doesn't, and the provider throws
+    /// `notSignedIn`.
     ///
     /// - Given: alice's session carried from the user pool alone, and a refresh during which another process signs
     ///   the session out, then which stores new tokens and fails the identity step with a refusal
-    /// - When: the session is fetched; then, the same again, its AWS credentials are asked for
+    /// - When: the session is fetched; then, the same again, it is fetched where the identity pool allows no guests;
+    ///   then, the same again, its AWS credentials are asked for
     /// - Then:
-    ///    - every field of the fetch fails with `notSignedIn`, and the state is `.signedOut`
-    ///    - the provider throws `notSignedIn`
-    func testAnIdentityFailureWhoseCommitLostToASignOutIsNotSignedIn() async throws {
-        let refusal = AuthClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
-        for call in ["fetchAuthSession", "credentialsProvider"] {
+    ///    - the fetch returns a guest session, after one guest fetch, and the state is `.guest`
+    ///    - without guest access the fetch throws `notSignedIn`, and the state is `.signedOut`
+    ///    - the provider throws `notSignedIn`, and the state is `.signedOut`
+    func testAnIdentityFailureWhoseCommitLostToASignOutAnswersAsSignedOut() async throws {
+        let refusal = AmplifyCognitoClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
+        for call in ["fetchAuthSession", "fetchAuthSession without guest access", "credentialsProvider"] {
+            await harness.waitForBaseline()
             harness = ClientHarness()
             try aliceUnderTheUserPoolOnly()
             let client = try harness.client(work)
@@ -575,57 +557,54 @@ final class SessionCopyForwardTests: XCTestCase {
 
             if call == "fetchAuthSession" {
                 let session = try await client.fetchAuthSession()
-                for result in [session.userPoolTokensResult.map { _ in () }, session.userSubResult.map { _ in () },
-                               session.identityIdResult.map { _ in () }, session.awsCredentialsResult.map { _ in () }] {
-                    guard case .failure(let error) = result else {
-                        XCTFail("\(call): every field should fail")
-                        continue
-                    }
-                    XCTAssertEqual(error.kind, .notSignedIn, "\(call): \(error)")
-                }
-            } else {
+                XCTAssertEqual(session, AmplifyCognitoClientAuthSession(
+                    identityId: "us-east-1:guest",
+                    awsCredentials: AmplifyCognitoClientAWSCredentials(FakePayload.guest().awsCredentials)
+                ), call)
+                XCTAssertEqual(engine.guestFetchCount, 1, call)
+                let state = await client.currentSessionState()
+                XCTAssertEqual(state, .guest, call)
+                continue
+            }
+            if call == "credentialsProvider" {
                 let error = await providerError { try await client.credentialsProvider.resolve() }
                 XCTAssertEqual(error?.isNotSignedIn, true, "\(call): \(String(describing: error))")
+            } else {
+                engine.scriptGuestCredentials { _ in throw SessionEngineError.notSignedIn }
+                let error = await authClientError { try await client.fetchAuthSession() }
+                XCTAssertEqual(error?.kind, .notSignedIn, "\(call): \(String(describing: error))")
             }
             let state = await client.currentSessionState()
             XCTAssertEqual(state, .signedOut, call)
         }
     }
 
-    /// A refresh whose refresh token is refused reports the session expired in every field, as the plugin does;
-    /// only an identity-step failure keeps the tokens.
+    /// A refresh whose refresh token is refused expires the session, as the plugin does.
     ///
     /// - Given: alice's session carried from the user pool alone, and a refresh refusing the refresh token
     /// - When: the session is fetched
-    /// - Then: every field fails with `sessionExpired`
-    func testARefusedRefreshTokenExpiresEveryField() async throws {
+    /// - Then: it throws `sessionExpired`
+    func testARefusedRefreshTokenThrowsSessionExpired() async throws {
         try aliceUnderTheUserPoolOnly()
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         engine.scriptRefresh { _ in throw SessionEngineError.refreshTokenInvalid }
 
-        let session = try await client.fetchAuthSession()
+        let error = await authClientError { try await client.fetchAuthSession() }
 
-        for result in [session.userPoolTokensResult.map { _ in () }, session.userSubResult.map { _ in () },
-                       session.identityIdResult.map { _ in () }, session.awsCredentialsResult.map { _ in () }] {
-            guard case .failure(let error) = result else {
-                XCTFail("every field should fail")
-                continue
-            }
-            XCTAssertEqual(error.kind, .sessionExpired)
-        }
+        XCTAssertEqual(error?.kind, .sessionExpired)
     }
 
-    /// The refresh's own committed tokens are reported as they are, as for a refresh that succeeded: checked again by
-    /// a device clock running ahead of Cognito's, every refresh Cognito accepted would read as expired.
+    /// An identity-step failure fails the fetch, as the plugin's does, whatever the tokens its refresh committed read
+    /// as: it throws the step's failure, never `sessionExpired`, and the committed tokens stay in the record.
     ///
     /// - Given: alice's session carried from the user pool alone, and a refresh that stores tokens which still read as
     ///   needing a refresh (a device clock far ahead), then fails the identity step
     /// - When: the session is fetched
     /// - Then:
-    ///    - it reports the committed tokens and sub, and fails only the identity and the AWS credentials
+    ///    - it throws the identity step's refusal
     ///    - it refreshed once, and the record holds the committed tokens
-    func testAnIdentityFailureReportsTheTokensItsRefreshCommittedAsTheyAre() async throws {
+    func testAnIdentityFailureThrowsAndKeepsTheTokensItsRefreshCommitted() async throws {
         try aliceUnderTheUserPoolOnly()
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
@@ -633,17 +612,14 @@ final class SessionCopyForwardTests: XCTestCase {
         staleTokens.stale = true
         staleTokens.tokensStale = true
         let stored = staleTokens.data
-        let refusal = AuthClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
+        let refusal = AmplifyCognitoClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
         engine.scriptRefresh { _ in
             throw SessionEngineError.refreshedThenFailed(payload: stored, error: .service(refusal))
         }
 
-        let session = try await client.fetchAuthSession()
+        let error = await authClientError { try await client.fetchAuthSession() }
 
-        XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, "access-alice-v2")
-        XCTAssertEqual(try session.userSubResult.get(), "sub-alice")
-        assertFails(session.identityIdResult, with: refusal)
-        assertFails(session.awsCredentialsResult, with: refusal)
+        XCTAssertEqual(error?.isEquivalent(to: refusal), true, "\(String(describing: error))")
         XCTAssertEqual(engine.refreshCalls.count, 1)
         XCTAssertEqual(try XCTUnwrap(currentRecord()).credentials, stored)
     }
@@ -679,16 +655,16 @@ final class SessionCopyForwardTests: XCTestCase {
         XCTAssertEqual(engine.refreshCalls.count, 1)
     }
 
-    /// Tokens adopted from another writer are not this refresh's result: ones that need a refresh are still reported
-    /// expired, and never handed out.
+    /// Tokens adopted from another writer are not this refresh's result, and ones that need a refresh are never
+    /// handed out: the fetch throws the identity step's failure, as it does over its own tokens.
     ///
     /// - Given: alice's session carried from the user pool alone, and a refresh during which another process stores
     ///   alice's tokens, still waiting for their identity and needing a refresh, so the refresh's commit loses and
     ///   adopts them; the refresh then fails the identity step
     /// - When: the session is fetched
     /// - Then:
-    ///    - every field fails with `sessionExpired`, and the record holds the other writer's tokens
-    func testAnIdentityFailureWithAdoptedTokensThatNeedARefreshExpiresEveryField() async throws {
+    ///    - it throws the identity step's failure, and the record holds the other writer's tokens
+    func testAnIdentityFailureWithAdoptedTokensThatNeedARefreshThrowsTheFailure() async throws {
         try aliceUnderTheUserPoolOnly()
         let client = try harness.client(work)
         _ = await client.currentSessionState()
@@ -709,56 +685,49 @@ final class SessionCopyForwardTests: XCTestCase {
             throw SessionEngineError.refreshedThenFailed(payload: stored.data, error: .service(.service(.limitExceeded, "", "")))
         }
 
-        let session = try await client.fetchAuthSession()
+        let error = await authClientError { try await client.fetchAuthSession() }
 
-        for result in [session.userPoolTokensResult.map { _ in () }, session.userSubResult.map { _ in () },
-                       session.identityIdResult.map { _ in () }, session.awsCredentialsResult.map { _ in () }] {
-            guard case .failure(let error) = result else {
-                XCTFail("every field should fail")
-                continue
-            }
-            XCTAssertEqual(error.kind, .sessionExpired)
-        }
+        XCTAssertEqual(error?.kind, .service(.limitExceeded), "\(String(describing: error))")
         XCTAssertEqual(try XCTUnwrap(currentRecord()).credentials, adopted.data)
     }
 
     /// Which identity-step failures are transient: only the known refusals are permanent.
     ///
-    /// - Given: each kind of failure, every `AuthClientError` case among them
+    /// - Given: each kind of failure, every `AmplifyCognitoClientError` case among them
     /// - When: `isTransient` classifies it
     /// - Then: `.notAuthorized`, `.invalidParameter`, `.resourceNotFound` and `.configuration` are permanent; a 5xx,
     ///   a service error with no code, `.unknown`, the network, the three limit-exceeded codes, storage, a
-    ///   cancellation, an error that is not an `AuthClientError`, and every other `AuthClientError` case are
+    ///   cancellation, an error that is not an `AmplifyCognitoClientError`, and every other `AmplifyCognitoClientError` case are
     ///   transient
     func testWhichIdentityFailuresAreTransient() {
         let permanent: [Error] = [
-            AuthClientError.notAuthorized("", ""),
-            AuthClientError.service(.invalidParameter, "", ""),
-            AuthClientError.service(.resourceNotFound, "", ""),
-            AuthClientError.configuration("", "")
+            AmplifyCognitoClientError.notAuthorized("", ""),
+            AmplifyCognitoClientError.service(.invalidParameter, "", ""),
+            AmplifyCognitoClientError.service(.resourceNotFound, "", ""),
+            AmplifyCognitoClientError.configuration("", "")
         ]
         let transient: [Error] = [
-            AuthClientError.service(nil, "InternalErrorException", ""),
-            AuthClientError.service(.externalServiceException, "", ""),
-            AuthClientError.unknown("", ""),
-            AuthClientError.service(.network, "", ""),
-            AuthClientError.service(.limitExceeded, "", ""),
-            AuthClientError.service(.requestLimitExceeded, "", ""),
-            AuthClientError.service(.limitExceededException, "", ""),
-            AuthClientError.storageUnavailable(.locked, "", ""),
+            AmplifyCognitoClientError.service(nil, "InternalErrorException", ""),
+            AmplifyCognitoClientError.service(.externalServiceException, "", ""),
+            AmplifyCognitoClientError.unknown("", ""),
+            AmplifyCognitoClientError.service(.network, "", ""),
+            AmplifyCognitoClientError.service(.limitExceeded, "", ""),
+            AmplifyCognitoClientError.service(.requestLimitExceeded, "", ""),
+            AmplifyCognitoClientError.service(.limitExceededException, "", ""),
+            AmplifyCognitoClientError.storageUnavailable(.locked, "", ""),
             CancellationError(),
-            FixtureError(description: "not an AuthClientError"),
-            AuthClientError.sessionExpired("", ""),
-            AuthClientError.notSignedIn("", ""),
-            AuthClientError.invalidSessionID("", ""),
-            AuthClientError.challengeExpired("", ""),
-            AuthClientError.browserBusy(holder: .default, "", ""),
-            AuthClientError.sessionConfigurationMismatch(.default, "", ""),
-            AuthClientError.validation(field: "username", "", ""),
-            AuthClientError.invalidState("", ""),
-            AuthClientError.userCancelled("", ""),
-            AuthClientError.webAuthnCeremonyFailed(.failed, "", ""),
-            AuthClientError.unexpectedIdentity(expected: nil, returned: AuthClientUser(username: "alice", userId: "sub-alice"), "", "")
+            FixtureError(description: "not an AmplifyCognitoClientError"),
+            AmplifyCognitoClientError.sessionExpired("", ""),
+            AmplifyCognitoClientError.notSignedIn("", ""),
+            AmplifyCognitoClientError.invalidSessionID("", ""),
+            AmplifyCognitoClientError.challengeExpired("", ""),
+            AmplifyCognitoClientError.browserBusy(holder: .default, "", ""),
+            AmplifyCognitoClientError.sessionConfigurationMismatch(.default, "", ""),
+            AmplifyCognitoClientError.validation(field: "username", "", ""),
+            AmplifyCognitoClientError.invalidState("", ""),
+            AmplifyCognitoClientError.userCancelled("", ""),
+            AmplifyCognitoClientError.webAuthnCeremonyFailed(.failed, "", ""),
+            AmplifyCognitoClientError.unexpectedIdentity(expected: nil, returned: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), "", "")
         ]
         for error in permanent {
             XCTAssertFalse(SessionCore.isTransient(error), "\(error)")
@@ -780,7 +749,7 @@ final class SessionCopyForwardTests: XCTestCase {
         let session = try await client.fetchAuthSession(options: .init(forceRefresh: true))
 
         XCTAssertEqual(engine.refreshForceFlags, [true])
-        XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:new")
+        XCTAssertEqual(session.identityId, "us-east-1:new")
         let record = try XCTUnwrap(currentRecord())
         XCTAssertFalse(record.identityPending)
         XCTAssertEqual(record.kind, .userPoolAndIdentityPool)
@@ -810,7 +779,7 @@ final class SessionCopyForwardTests: XCTestCase {
 
         let session = try await client.fetchAuthSession()
 
-        XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:other-writer")
+        XCTAssertEqual(session.identityId, "us-east-1:other-writer")
         XCTAssertFalse(try XCTUnwrap(currentRecord()).identityPending)
     }
 
@@ -830,8 +799,8 @@ final class SessionCopyForwardTests: XCTestCase {
 
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .guest)
-        XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:guest-1")
-        XCTAssertEqual(try session.awsCredentialsResult.get().accessKeyId, guest.awsCredentials.accessKeyId)
+        XCTAssertEqual(session.identityId, "us-east-1:guest-1")
+        XCTAssertEqual(session.awsCredentials?.accessKeyId, guest.awsCredentials.accessKeyId)
         XCTAssertEqual(harness.engine(for: work)?.guestFetchCount, 0)
         XCTAssertEqual(harness.engine(for: work)?.refreshCalls.count, 0)
     }
@@ -852,7 +821,48 @@ final class SessionCopyForwardTests: XCTestCase {
         XCTAssertEqual(recovered, .signedIn(alice))
     }
 
+    /// A carry is not a sign-in: it never saves the label the session ID was created with.
+    ///
+    /// - Given: alice under the user pool alone, with no label
+    /// - When: a client over both pools, built with an ID created with a label, restores and carries her session
+    /// - Then: she is signed in under both pools, and the carried row still has no label
+    func testACarryNeverSavesTheIDsLabel() async throws {
+        try userPoolOnlyStore.write(FakePayload.signedIn("alice", kind: .userPoolOnly).record(label: nil), for: work, expecting: nil)
+        let client = try harness.client(.named(work.stringValue, label: "Office"))
+
+        let state = await client.currentSessionState()
+
+        XCTAssertEqual(state, .signedIn(alice))
+        XCTAssertNil(try XCTUnwrap(currentRecord()).label)
+    }
+
     // MARK: Stored-session calls
+
+    /// A label written where nothing is saved yet would stop the carry, and the session would restore signed out.
+    ///
+    /// - Given: alice under the user pool alone, labelled "Work", and no live client
+    /// - When: the static `setSessionLabel` runs over both pools, then a client reads the session
+    /// - Then: the record is carried first, so the label lands on alice's login under both pools; nothing is
+    ///   revoked; the client reads `.signedIn(alice)`
+    func testSetSessionLabelBeforeARestoreCarriesTheSessionFirst() async throws {
+        try aliceUnderTheUserPoolOnly()
+
+        try await AmplifyCognitoClient.setSessionLabel(
+            "Office",
+            sessionId: work,
+            configuration: ClientFixtures.configuration,
+            accessGroup: nil,
+            dependencies: harness.dependencies
+        )
+
+        let carried = try XCTUnwrap(currentRecord())
+        XCTAssertEqual(carried.label, "Office")
+        XCTAssertEqual(carried.username, "alice")
+        XCTAssertFalse(carried.isSignedOut)
+        XCTAssertEqual(harness.revoker.revokeCalls, [])
+        let state = await (try harness.client(work)).currentSessionState()
+        XCTAssertEqual(state, .signedIn(alice))
+    }
 
     /// - Given: alice under the user pool alone, and no live client
     /// - When: `signOutStoredSession` runs over both pools, then a client reads the session
@@ -969,12 +979,75 @@ final class SessionCopyForwardTests: XCTestCase {
                 XCTAssertEqual(state, .signedOut)
                 XCTAssertEqual(try harness.store().read(work), .absent)
             case .failure(let error):
-                guard case .sessionConfigurationMismatch = error as? AuthClientError else {
+                guard case .sessionConfigurationMismatch = error as? AmplifyCognitoClientError else {
                     return XCTFail("unexpected \(error)")
                 }
                 XCTAssertEqual(state, .signedIn(alice))
                 XCTAssertNotEqual(try userPoolOnlyStore.read(work), .absent)
             }
+        }
+    }
+
+    /// Race: the static label, which carries the session first, and a warm restore that carries it, at once. They
+    /// share the gates and the registry, so the label lands on alice's login whichever goes first, never over it.
+    ///
+    /// - Given: alice under the user pool alone, labelled "Work"
+    /// - When: a client over both pools is built with a warm restore, and the static `setSessionLabel` runs over both
+    ///   pools, many times over (each bounded), the one starting a varying number of yields before the other
+    /// - Then: the call succeeds, having carried and labelled the record before the restore read it, or having
+    ///   found the client and labelled through it; either way the client reads `.signedIn(alice)`, the record under
+    ///   both pools is alice's carried login with the new label, never a signed-out row, the client's copy has the
+    ///   label, the old record is kept, and nothing is revoked
+    func testAStaticLabelRacingAWarmRestoreKeepsTheLogin() async throws {
+        var carried = FakePayload.signedIn("alice", kind: .userPoolOnly).record(label: "Office")
+        carried.identityPending = true
+        for round in 0 ..< 40 {
+            harness = ClientHarness(restoresOnConstruction: true)
+            let old = try aliceUnderTheUserPoolOnly()
+            let dependencies = harness.dependencies
+            let work = work
+            let setLabel: @Sendable () async throws -> Void = {
+                try await bounded(10, "the label") {
+                    try await AmplifyCognitoClient.setSessionLabel(
+                        "Office",
+                        sessionId: work,
+                        configuration: ClientFixtures.configuration,
+                        accessGroup: nil,
+                        dependencies: dependencies
+                    )
+                }
+            }
+            // Which of the two starts first, and how far ahead, changes with the round: the label is tried before
+            // the client is registered, between its registration and its restore, and after the restore.
+            let lead = round / 2 % 4 * 100
+            let label: Task<Void, Error>
+            let client: AmplifyCognitoClient
+            if round.isMultiple(of: 2) {
+                label = Task { try await setLabel() }
+                for _ in 0 ..< lead {
+                    await Task.yield()
+                }
+                client = try harness.client(work)
+            } else {
+                client = try harness.client(work)
+                for _ in 0 ..< lead {
+                    await Task.yield()
+                }
+                label = Task { try await setLabel() }
+            }
+            let state = await client.currentSessionState()
+            try await label.value
+
+            XCTAssertEqual(state, .signedIn(alice), "round \(round)")
+            XCTAssertEqual(try currentRecord(), carried, "round \(round)")
+            let held = await client.core.restoredSnapshotIfAny?.ownRecord?.label
+            XCTAssertEqual(held, "Office", "round \(round)")
+            XCTAssertEqual(
+                harness.keychain.value(userPoolOnlyStore.sessionAccount(for: work)),
+                old,
+                "round \(round): the old record is kept"
+            )
+            XCTAssertEqual(harness.revoker.revokeCalls, [], "round \(round)")
         }
     }
 
@@ -1119,7 +1192,7 @@ final class SessionCopyForwardTests: XCTestCase {
             return XCTFail("no record under the user pool alone")
         }
         XCTAssertEqual(FakePayload.decode(try XCTUnwrap(restored.record.credentials))?.refreshToken, "refresh-alice-R2")
-        XCTAssertEqual(try session.userPoolTokensResult.get().accessToken, "access-alice-v2")
+        XCTAssertEqual(session.userPoolTokens?.accessToken, "access-alice-v2")
         let engine = try XCTUnwrap(harness.engine(for: work))
         XCTAssertEqual(engine.refreshCalls.count, 0)
         _ = await release3.signOut()
@@ -1132,9 +1205,9 @@ final class SessionCopyForwardTests: XCTestCase {
     /// - Given: alice carried from the user pool alone into both pools, then refreshed there, and her record under the
     ///   user pool alone refreshed by an extension still on it (so it is not the untouched copy), with and (a second
     ///   run) without rotation; no client held
-    /// - When: `signOutStoredSession` runs with the user-pool-only configuration (a rollback)
+    /// - When: `signOutStoredSession` runs with the user-pool-only configuration (a rollback), globally
     /// - Then: with the rotation, the revoker revokes her own record and the rotated copy; without it, only her own
-    ///   record; the copy is deleted either way
+    ///   record; the copy is deleted either way. Only her own record's revoke is global: the copy's never is
     func testSignOutStoredSessionRevokesACopyWithARotatedRefreshToken() async throws {
         for rotated in [true, false] {
             harness = ClientHarness()
@@ -1156,12 +1229,14 @@ final class SessionCopyForwardTests: XCTestCase {
                 sessionId: work,
                 configuration: ClientFixtures.userPoolOnlyConfiguration,
                 accessGroup: nil,
+                options: AmplifyCognitoClientSignOutOptions(globalSignOut: true),
                 dependencies: harness.dependencies
             )
 
             XCTAssertEqual(result, .complete, "rotated: \(rotated)")
             let revoked = harness.revoker.revokeCalls.compactMap { FakePayload.decode($0) }
             XCTAssertEqual(revoked.map(\.version), rotated ? [3, 2] : [3], "rotated: \(rotated)")
+            XCTAssertEqual(harness.revoker.revokeGlobalFlags, rotated ? [true, false] : [true], "rotated: \(rotated)")
             XCTAssertEqual(try bothStore.read(work), .absent, "rotated: \(rotated): the copy is swept")
         }
     }
@@ -1173,7 +1248,7 @@ final class SessionCopyForwardTests: XCTestCase {
     /// - Then: alice is blocked with the refusal, bob is not; after the reset, alice is not
     func testAnIdentityRefusalIsTheRefusedUsersAndASignOutForgetsIt() {
         let retry = PendingIdentityRetry()
-        let refusal = AuthClientError.notAuthorized("Refused.", "Check the providers.")
+        let refusal = AmplifyCognitoClientError.notAuthorized("Refused.", "Check the providers.")
         let now = Date()
         retry.failed(refusal, at: now, transient: false, userId: "sub-alice")
 
@@ -1191,8 +1266,8 @@ final class SessionCopyForwardTests: XCTestCase {
     /// - Then: alice is blocked with the throttling error before, and not after
     func testATransientIdentityFailureAfterARefusalIsRetriedAfterItsInterval() {
         let retry = PendingIdentityRetry()
-        let refusal = AuthClientError.notAuthorized("Refused.", "Check the providers.")
-        let throttled = AuthClientError.service(.limitExceeded, "Rate exceeded.", "Retry.")
+        let refusal = AmplifyCognitoClientError.notAuthorized("Refused.", "Check the providers.")
+        let throttled = AmplifyCognitoClientError.service(.limitExceeded, "Rate exceeded.", "Retry.")
         let refusedAt = Date()
         let throttledAt = refusedAt.addingTimeInterval(3_480)
         retry.failed(refusal, at: refusedAt, transient: false, userId: "sub-alice")
@@ -1218,8 +1293,8 @@ final class SessionCopyForwardTests: XCTestCase {
     ///    - the fourth refreshes, and returns the AWS credentials
     func testAProviderRetriesATransientIdentityFailureAfterARefusal() async throws {
         try aliceUnderTheUserPoolOnly()
-        let refusal = AuthClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
-        let throttled = AuthClientError.service(.limitExceeded, "Rate exceeded.", "Retry.")
+        let refusal = AmplifyCognitoClientError.notAuthorized("Invalid login token.", "Check the identity pool's providers.")
+        let throttled = AmplifyCognitoClientError.service(.limitExceeded, "Rate exceeded.", "Retry.")
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let identified = FakePayload.signedIn("alice", version: 4, identityId: "us-east-1:alice")
@@ -1265,7 +1340,7 @@ final class SessionCopyForwardTests: XCTestCase {
     /// - Then: before the call, the memory blocks alice and holds the reused token; after it, it does neither
     func testEveryEndOfTheSessionForgetsTheRecordsMemory() async throws {
         let namespace = SessionStorageNamespace(pools: ClientFixtures.configuration.poolNamespace, accessGroup: nil)
-        let ends: [(String, @Sendable (AmplifyCognitoClient?, ClientHarness, SessionID) async throws -> Void)] = [
+        let ends: [(String, @Sendable (AmplifyCognitoClient?, ClientHarness, AmplifyCognitoClientSessionID) async throws -> Void)] = [
             ("sign-out", { client, _, _ in _ = await client?.signOut() }),
             ("purge through a live client", { _, harness, work in
                 try await AmplifyCognitoClient.purgeStoredSession(
@@ -1300,7 +1375,7 @@ final class SessionCopyForwardTests: XCTestCase {
             let engine = try XCTUnwrap(harness.engine(for: work))
             scriptIdentityFailure(engine, .notAuthorized("Refused.", "Check the providers."))
             let memory = harness.gates.memory(for: namespace, sessionId: work)
-            _ = try await client?.fetchAuthSession()
+            _ = try? await client?.fetchAuthSession()
             if name.hasPrefix("stored-session") {
                 client = nil
                 await harness.waitForBaseline()
@@ -1348,7 +1423,7 @@ final class SessionCopyForwardTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         engine.scriptRevoke { payload in
             if FakePayload.decode(payload)?.version == 2 {
-                throw AuthClientError.service(.network, "The network connection was lost.", "Retry.")
+                throw AmplifyCognitoClientError.service(.network, "The network connection was lost.", "Retry.")
             }
         }
 
@@ -1468,7 +1543,7 @@ final class SessionCopyForwardTests: XCTestCase {
             dependencies: harness.dependencies
         )
 
-        XCTAssertEqual(listed, [StoredSession(sessionId: work, label: "Work", username: "alice", kind: .userPoolOnly)])
+        XCTAssertEqual(listed, [AmplifyCognitoClientStoredSession(sessionId: work, label: "Work", user: AmplifyCognitoClientUser(username: "alice", userId: "sub-alice"), kind: .userPoolOnly, state: .signedIn(AmplifyCognitoClientUser(username: "alice", userId: "sub-alice")))])
         XCTAssertEqual(try harness.store().read(work), .absent)
     }
 
@@ -1512,7 +1587,7 @@ final class SessionCopyForwardTests: XCTestCase {
         )
 
         for (name, error) in [("purge", purge.failure), ("sign-out", failedSignOutError(signOut) as Error?)] {
-            guard case .sessionConfigurationMismatch(let id, _, _, _) = error as? AuthClientError else {
+            guard case .sessionConfigurationMismatch(let id, _, _, _) = error as? AmplifyCognitoClientError else {
                 XCTFail("\(name) should refuse, got \(String(describing: error))")
                 continue
             }
@@ -1542,7 +1617,7 @@ final class SessionCopyForwardTests: XCTestCase {
             sessionId: work, configuration: ClientFixtures.configuration, accessGroup: nil, dependencies: dependencies
         ) })
 
-        guard case .sessionConfigurationMismatch = purge.failure as? AuthClientError else {
+        guard case .sessionConfigurationMismatch = purge.failure as? AmplifyCognitoClientError else {
             return XCTFail("the purge should refuse, got \(String(describing: purge.failure))")
         }
         _ = live

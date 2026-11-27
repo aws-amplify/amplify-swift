@@ -313,14 +313,14 @@ final class LiveEngineBranchTests: XCTestCase {
     /// - When:
     ///    - the sign-out's result is read at it, and at a signed-out state
     /// - Then:
-    ///    - the error is thrown as a mapped `AuthClientError`; a signed-out state is its outcome; any other
+    ///    - the error is thrown as a mapped `AmplifyCognitoClientError`; a signed-out state is its outcome; any other
     ///      state keeps waiting
     ///
     func testASignOutErrorStateIsThrown() throws {
         let failed = AuthState.configured(.signingOut(.error(.localSignOut)), .configured, .notStarted)
         XCTAssertThrowsError(try LiveSessionEngine.signOutResult(at: failed)) { error in
             // `SignOutError.localSignOut` is the engine's `.unknown`.
-            XCTAssertEqual((error as? AuthClientError)?.kind, .unknown)
+            XCTAssertEqual((error as? AmplifyCognitoClientError)?.kind, .unknown)
         }
         let signedOut = AuthState.configured(.signedOut(SignedOutData()), .configured, .notStarted)
         XCTAssertEqual(try LiveSessionEngine.signOutResult(at: signedOut), .complete)
@@ -365,14 +365,14 @@ final class LiveEngineBranchTests: XCTestCase {
         var beforeDeletion = DeletionProgress()
         XCTAssertFalse(try beforeDeletion.advance(state(.deletingUser)))
         XCTAssertThrowsError(try beforeDeletion.advance(state(.error(failure)))) { error in
-            XCTAssertEqual((error as? AuthClientError)?.kind, .service(nil))
+            XCTAssertEqual((error as? AmplifyCognitoClientError)?.kind, .service(nil))
         }
 
         let internalError = AWSCognitoIdentityProvider.InternalErrorException(message: "boom")
         var internalFailure = DeletionProgress()
         XCTAssertThrowsError(try internalFailure.advance(state(.error(internalError.engineError, cause: internalError)))) { error in
-            XCTAssertEqual((error as? AuthClientError)?.kind, .service(nil), "the cause makes it a service error")
-            XCTAssertEqual((error as? AuthClientError)?.recoverySuggestion, AuthClientError.serviceFaultSuggestion)
+            XCTAssertEqual((error as? AmplifyCognitoClientError)?.kind, .service(nil), "the cause makes it a service error")
+            XCTAssertEqual((error as? AmplifyCognitoClientError)?.recoverySuggestion, AmplifyCognitoClientError.serviceFaultSuggestion)
         }
     }
 
@@ -440,7 +440,7 @@ final class LiveEngineBranchTests: XCTestCase {
             let state = AuthState.configured(.signingIn(signInState), .configured, .notStarted)
             XCTAssertThrowsError(try LiveSignInSteps.confirmation(for: state, answering: data)) { error in
                 guard let failure = error as? SignInStepFailure,
-                      case .invalidState(let description, _, _) = failure.error as? AuthClientError else {
+                      case .invalidState(let description, _, _) = failure.error as? AmplifyCognitoClientError else {
                     return XCTFail("expected a dropping invalidState, got \(error)")
                 }
                 XCTAssertFalse(failure.keepsAttempt)

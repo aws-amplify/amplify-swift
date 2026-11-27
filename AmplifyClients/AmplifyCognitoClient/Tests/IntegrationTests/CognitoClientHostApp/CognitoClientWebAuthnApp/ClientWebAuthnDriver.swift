@@ -21,9 +21,9 @@ final class ClientWebAuthnDriver: WebAuthnHarnessDriver {
     private let client: AmplifyCognitoClient
     private let signUp: CognitoIdentityProviderClient
     private let clientId: String
-    private let configuration: AuthClientConfiguration
+    private let configuration: AmplifyCognitoClientConfiguration
 
-    init(configuration: AuthClientConfiguration) throws {
+    init(configuration: AmplifyCognitoClientConfiguration) throws {
         guard let userPool = configuration.userPool else {
             throw HarnessAppError("The WebAuthn pool outputs have no user pool")
         }
@@ -55,7 +55,7 @@ final class ClientWebAuthnDriver: WebAuthnHarnessDriver {
         let result = try await client.signIn(
             username: username,
             password: password,
-            options: AuthClientSignInOptions(authFlowType: .userPassword)
+            options: AmplifyCognitoClientSignInOptions(authFlowType: .userPassword)
         )
         guard result.nextStep == .done else {
             throw HarnessAppError("Password sign-in stopped at \(result.nextStep)")
@@ -65,8 +65,10 @@ final class ClientWebAuthnDriver: WebAuthnHarnessDriver {
     func signInWithWebAuthn(username: String, presentationAnchor: ASPresentationAnchor) async throws {
         let result = try await client.signIn(
             username: username,
-            presentationAnchor: presentationAnchor,
-            options: AuthClientSignInOptions(authFlowType: .userAuth(preferredFirstFactor: .webAuthn))
+            options: AmplifyCognitoClientSignInOptions(
+                authFlowType: .userAuth(preferredFirstFactor: .webAuthn),
+                presentationAnchorForWebAuthn: presentationAnchor
+            )
         )
         guard result.nextStep == .done else {
             throw HarnessAppError("WebAuthn sign-in stopped at \(result.nextStep)")
@@ -77,7 +79,7 @@ final class ClientWebAuthnDriver: WebAuthnHarnessDriver {
     /// says so and stays signed in. `.partial` signed it out on this device, as the plugin's app reads it.
     func signOut() async throws -> String {
         // The row is purged, not kept: this app shares its keychain with the plugin's AuthWebAuthnApp.
-        let result = await client.signOut(options: AuthClientSignOutOptions(purgeStoredSession: true))
+        let result = await client.signOut(options: AmplifyCognitoClientSignOutOptions(purgeStoredSession: true))
         switch result {
         case .complete:
             return "User is signed out"
@@ -104,11 +106,11 @@ final class ClientWebAuthnDriver: WebAuthnHarnessDriver {
     func deleteUser(username: String, password: String) async throws {
         do {
             try await client.deleteUser()
-        } catch AuthClientError.notSignedIn {
+        } catch AmplifyCognitoClientError.notSignedIn {
             _ = try await client.signIn(
                 username: username,
                 password: password,
-                options: AuthClientSignInOptions(authFlowType: .userPassword)
+                options: AmplifyCognitoClientSignInOptions(authFlowType: .userPassword)
             )
             try await client.deleteUser()
         }

@@ -72,10 +72,10 @@ final class WebAuthnCredentialsTests: XCTestCase {
         XCTAssertEqual(engine.refreshCalls, [])
         XCTAssertEqual(other.refreshCalls, [bob.data])
         XCTAssertEqual(other.accountOperationCalls, [.deleteWebAuthnCredential(payload: bob.refreshed.data, credentialId: "cred-9")])
-        XCTAssertEqual(result, AuthClientListWebAuthnCredentialsResult(
+        XCTAssertEqual(result, AmplifyCognitoClientListWebAuthnCredentialsResult(
             credentials: [
-                AuthClientWebAuthnCredential(credentialId: "cred-1", createdAt: created, relyingPartyId: "rp.example", friendlyName: "Phone"),
-                AuthClientWebAuthnCredential(credentialId: "cred-2", createdAt: created + 60, relyingPartyId: "rp.example")
+                AmplifyCognitoClientWebAuthnCredential(credentialId: "cred-1", createdAt: created, relyingPartyId: "rp.example", friendlyName: "Phone"),
+                AmplifyCognitoClientWebAuthnCredential(credentialId: "cred-2", createdAt: created + 60, relyingPartyId: "rp.example")
             ],
             nextToken: "page-2"
         ))
@@ -97,14 +97,14 @@ final class WebAuthnCredentialsTests: XCTestCase {
 
         let result = try await client.listWebAuthnCredentials()
 
-        XCTAssertEqual(AuthClientListWebAuthnCredentialsOptions(), .init(pageSize: 20, nextToken: nil))
+        XCTAssertEqual(AmplifyCognitoClientListWebAuthnCredentialsOptions(), .init(pageSize: 20, nextToken: nil))
         XCTAssertEqual(engine.accountOperationCalls.map(\.operation), [.listWebAuthnCredentials])
         guard case .listWebAuthnCredentials(_, let pageSize, let nextToken) = engine.accountOperationCalls.first else {
             return XCTFail("\(engine.accountOperationCalls)")
         }
         XCTAssertEqual(pageSize, 20)
         XCTAssertNil(nextToken)
-        XCTAssertEqual(result, AuthClientListWebAuthnCredentialsResult(credentials: [], nextToken: nil))
+        XCTAssertEqual(result, AmplifyCognitoClientListWebAuthnCredentialsResult(credentials: [], nextToken: nil))
     }
 
     /// Pagination: the result's next token, passed back in the options, asks for the next page.
@@ -275,7 +275,7 @@ final class WebAuthnCredentialsTests: XCTestCase {
     /// - Given: a signed-in session whose engine fails
     /// - When: list and delete are called
     /// - Then:
-    ///    - an `AuthClientError` (a service error) and a `CancellationError` pass through as they are
+    ///    - an `AmplifyCognitoClientError` (a service error) and a `CancellationError` pass through as they are
     ///    - anything else is `unknown`, naming the operation
     func testEngineFailuresAreMapped() async throws {
         try harness.signIn(work, .signedIn("alice"))
@@ -283,7 +283,7 @@ final class WebAuthnCredentialsTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
 
         engine.scriptAccountOperation(.listWebAuthnCredentials) { _ in
-            throw AuthClientError.service(.webAuthnNotEnabled, "not enabled", "enable it")
+            throw AmplifyCognitoClientError.service(.webAuthnNotEnabled, "not enabled", "enable it")
         }
         await assertThrowsAsync({ try await client.listWebAuthnCredentials() }) { error in
             guard case .service(.webAuthnNotEnabled?, _, _, _) = authError(error) else {
@@ -324,9 +324,9 @@ final class WebAuthnCredentialsTests: XCTestCase {
     ///      token); `AuthDeleteWebAuthnCredentialRequest.Options` has only `pluginOptions`, so the client
     ///      has no delete options
     func testTheModelsMirrorAmplifysFields() {
-        let credential = AuthClientWebAuthnCredential(credentialId: "c", createdAt: created, relyingPartyId: "rp")
-        let result = AuthClientListWebAuthnCredentialsResult(credentials: [credential])
-        let options = AuthClientListWebAuthnCredentialsOptions()
+        let credential = AmplifyCognitoClientWebAuthnCredential(credentialId: "c", createdAt: created, relyingPartyId: "rp")
+        let result = AmplifyCognitoClientListWebAuthnCredentialsResult(credentials: [credential])
+        let options = AmplifyCognitoClientListWebAuthnCredentialsOptions()
 
         XCTAssertEqual(Mirror(reflecting: credential).children.compactMap(\.label), Self.amplifyCredentialFields)
         XCTAssertEqual(Mirror(reflecting: result).children.compactMap(\.label), Self.amplifyListResultFields)

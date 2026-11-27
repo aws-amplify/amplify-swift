@@ -240,11 +240,11 @@ extension RequiredMFATests {
     /// The TOTP setup `step` carries, checked as the plugin checks it: a shared secret, and the user's
     /// username. Neither is printed.
     func totpSetupDetails(
-        _ step: AuthClientSignInStep,
+        _ step: AmplifyCognitoClientSignInStep,
         of user: FreshUser,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) throws -> AuthClientTOTPSetupDetails {
+    ) throws -> AmplifyCognitoClientTOTPSetupDetails {
         guard case .continueSignInWithTOTPSetup(let details) = step else {
             XCTFail("the step is \(step.caseName), expected continueSignInWithTOTPSetup", file: file, line: line)
             throw HarnessError.malformedFixture("no TOTP setup step")
@@ -257,7 +257,7 @@ extension RequiredMFATests {
     /// The TOTP setup `step` carries, its secret recorded on `user` before anything is verified, so the
     /// cleanup's raw sign-in can answer `SOFTWARE_TOKEN_MFA` if the setup completes.
     func recordTOTPSetup(
-        _ step: AuthClientSignInStep,
+        _ step: AmplifyCognitoClientSignInStep,
         of user: FreshUser,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -273,7 +273,7 @@ extension RequiredMFATests {
     /// `preferredChallenge`, and that the challenges answered were exactly `challenges`, in order: an SRP or other
     /// sign-in reaches the same steps on this pool (MF-15), so only the requests tell the flows apart.
     func assertUserAuthSignInSetsUpTOTP(
-        _ factor: AuthClientFactorType,
+        _ factor: AmplifyCognitoClientFactorType,
         tag: String,
         preferring preferredChallenge: String,
         answering challenges: [String]
@@ -290,7 +290,7 @@ extension RequiredMFATests {
         let result = try await client.signIn(
             username: user.username,
             password: user.password,
-            options: AuthClientSignInOptions(authFlowType: .userAuth(preferredFirstFactor: factor))
+            options: AmplifyCognitoClientSignInOptions(authFlowType: .userAuth(preferredFirstFactor: factor))
         )
 
         assertInitiated(recorder, preferring: preferredChallenge)
@@ -371,7 +371,7 @@ extension RequiredMFATests {
     }
 }
 
-extension AuthClientDeliveryDestination {
+extension AmplifyCognitoClientDeliveryDestination {
 
     /// The case's name alone, without the (masked) destination.
     var caseName: String {

@@ -45,7 +45,7 @@ extension StorageConfigurationTests {
     func testDefaultSessionIsCarriedWhenAnIdentityPoolIsAdded() async throws {
         let role = try IntegrationTestEnvironment.untrackedFederatedRole()
         let federated = try IntegrationTestEnvironment.configuration(role)
-        let userPoolOnly = try AuthClientConfiguration(userPool: federated.userPool)
+        let userPoolOnly = try AmplifyCognitoClientConfiguration(userPool: federated.userPool)
         try isolateDefaultSession(over: [userPoolOnly, federated])
         let user = try await makeFreshUser(on: role).testUser
         removeDeviceRecordsAtTeardown(of: user, under: [userPoolOnly, federated])
@@ -69,10 +69,10 @@ extension StorageConfigurationTests {
 
             let session = try await client.fetchAuthSession()
 
-            let sub = try IntegrationTestEnvironment.jwtClaims(session.userPoolTokensResult.get().idToken)["sub"] as? String
+            let sub = try IntegrationTestEnvironment.jwtClaims(session.requireUserPoolTokens().idToken)["sub"] as? String
             XCTAssertTrue(sub == alice.userId, "alice's tokens")
-            XCTAssertNoThrow(try session.identityIdResult.get(), "the identity is fetched on first use")
-            XCTAssertNoThrow(try session.awsCredentialsResult.get(), "with its AWS credentials")
+            XCTAssertNoThrow(try session.requireIdentityId(), "the identity is fetched on first use")
+            XCTAssertNoThrow(try session.requireAWSCredentials(), "with its AWS credentials")
         }
         try await SessionCleanup.waitUntilReleased([.default])
 
@@ -166,7 +166,7 @@ extension StorageConfigurationTests {
     func testDefaultSessionCarriesItsIdentityIdWhenTheIdentityPoolChanges() async throws {
         let role = try IntegrationTestEnvironment.untrackedFederatedRole()
         let federated = try IntegrationTestEnvironment.configuration(role)
-        let otherIdentityPool = try AuthClientConfiguration(
+        let otherIdentityPool = try AmplifyCognitoClientConfiguration(
             userPool: federated.userPool,
             identityPool: IntegrationTestEnvironment.secondIdentityPool(besides: federated.identityPool?.poolId)
         )
@@ -191,12 +191,12 @@ extension StorageConfigurationTests {
             XCTAssertTrue(Self.storedValue(newAccount) == oldBytes, "the record, its identity ID included, is carried as its bytes are")
 
             let carried = try await client.fetchAuthSession()
-            XCTAssertTrue(try carried.identityIdResult.get() == identityId, "the carried identity ID is R-IP′'s")
+            XCTAssertTrue(try carried.requireIdentityId() == identityId, "the carried identity ID is R-IP′'s")
 
             let refreshed = try await client.fetchAuthSession(options: .init(forceRefresh: true))
-            XCTAssertTrue(try refreshed.identityIdResult.get() == identityId, "the forced refresh keeps the carried identity ID")
+            XCTAssertTrue(try refreshed.requireIdentityId() == identityId, "the forced refresh keeps the carried identity ID")
             XCTAssertTrue(
-                try refreshed.awsCredentialsResult.get().accessKeyId != accessKeyId,
+                try refreshed.requireAWSCredentials().accessKeyId != accessKeyId,
                 "the forced refresh got no new AWS credentials for the carried identity ID"
             )
         }
@@ -225,7 +225,7 @@ extension StorageConfigurationTests {
         let standard = try IntegrationTestEnvironment.configuration()
         let userPool = try XCTUnwrap(standard.userPool)
         // Made up, never contacted: nothing is stored under it, so nothing is revoked.
-        let other = try AuthClientConfiguration(userPool: .init(poolId: "\(userPool.region)_C26Other0", appClientId: "c26otherclient", region: userPool.region))
+        let other = try AmplifyCognitoClientConfiguration(userPool: .init(poolId: "\(userPool.region)_C26Other0", appClientId: "c26otherclient", region: userPool.region))
         try isolateDefaultSession(over: [standard, other])
         let user = try await makeSignInUser()
         removeDeviceRecordsAtTeardown(of: user, under: [standard])
@@ -261,7 +261,7 @@ extension StorageConfigurationTests {
     // MARK: - `.default` helpers
 
     /// `.default`'s items under `configuration`: the plugin's record, the sidecar and the interrupted sign-in.
-    private static func defaultSessionAccounts(of configuration: AuthClientConfiguration) -> [String] {
+    private static func defaultSessionAccounts(of configuration: AmplifyCognitoClientConfiguration) -> [String] {
         let pools = configuration.poolNamespace
         return [
             SessionRecordKey.pluginSessionAccount(in: pools),
@@ -272,7 +272,7 @@ extension StorageConfigurationTests {
 
     /// Removes `.default`'s items under every one of `configurations`, and `authConfiguration`, now and at teardown,
     /// so the test reads only what it wrote. The users are fresh and deleted at teardown, which ends their tokens.
-    private func isolateDefaultSession(over configurations: [AuthClientConfiguration]) throws {
+    private func isolateDefaultSession(over configurations: [AmplifyCognitoClientConfiguration]) throws {
         let accounts = configurations.flatMap(Self.defaultSessionAccounts(of:)) + [SessionRecordStore.pluginConfigurationAccount]
         try Self.deleteAccounts(accounts)
         addTeardownBlock {
@@ -283,7 +283,7 @@ extension StorageConfigurationTests {
 
     /// Removes `user`'s device and advanced-security records under each of `configurations` at teardown, as
     /// `DeviceTestCase` does: the client keeps them per user and never removes them itself.
-    private func removeDeviceRecordsAtTeardown(of user: TestUser, under configurations: [AuthClientConfiguration]) {
+    private func removeDeviceRecordsAtTeardown(of user: TestUser, under configurations: [AmplifyCognitoClientConfiguration]) {
         let username = user.username
         let namespaces = configurations.map(\.poolNamespace)
         addTeardownBlock {
@@ -296,7 +296,7 @@ extension StorageConfigurationTests {
     }
 
     /// Signs `user` in on `.default` over `configuration`, returns the signed-in user, and releases the session.
-    private func signInDefault(_ user: TestUser, over configuration: AuthClientConfiguration) async throws -> AuthClientUser {
+    private func signInDefault(_ user: TestUser, over configuration: AmplifyCognitoClientConfiguration) async throws -> AmplifyCognitoClientUser {
         try await signInDefaultKeepingTokens(user, over: configuration).user
     }
 
@@ -304,14 +304,14 @@ extension StorageConfigurationTests {
     /// printed), and releases the session.
     private func signInDefaultKeepingTokens(
         _ user: TestUser,
-        over configuration: AuthClientConfiguration
-    ) async throws -> (user: AuthClientUser, tokens: AuthClientUserPoolTokens) {
-        let signedIn: (AuthClientUser, AuthClientUserPoolTokens)
+        over configuration: AmplifyCognitoClientConfiguration
+    ) async throws -> (user: AmplifyCognitoClientUser, tokens: AmplifyCognitoClientUserPoolTokens) {
+        let signedIn: (AmplifyCognitoClientUser, AmplifyCognitoClientUserPoolTokens)
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: .default))
             let result = try await client.signIn(username: user.username, password: user.password)
             XCTAssertStep(result.nextStep, .done)
-            signedIn = try await (client.getCurrentUser(), client.fetchAuthSession().userPoolTokensResult.get())
+            signedIn = try await (client.getCurrentUser(), client.fetchAuthSession().requireUserPoolTokens())
         }
         try await SessionCleanup.waitUntilReleased([.default])
         return signedIn
@@ -321,9 +321,9 @@ extension StorageConfigurationTests {
     /// its AWS access key ID (compared, never printed), and releases the session.
     private func signInDefaultWithIdentity(
         _ user: TestUser,
-        over configuration: AuthClientConfiguration
-    ) async throws -> (AuthClientUser, String, String) {
-        let signedIn: (AuthClientUser, String, String)
+        over configuration: AmplifyCognitoClientConfiguration
+    ) async throws -> (AmplifyCognitoClientUser, String, String) {
+        let signedIn: (AmplifyCognitoClientUser, String, String)
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: .default))
             let result = try await client.signIn(username: user.username, password: user.password)
@@ -331,8 +331,8 @@ extension StorageConfigurationTests {
             let session = try await client.fetchAuthSession()
             signedIn = try await (
                 client.getCurrentUser(),
-                session.identityIdResult.get(),
-                session.awsCredentialsResult.get().accessKeyId
+                session.requireIdentityId(),
+                session.requireAWSCredentials().accessKeyId
             )
         }
         try await SessionCleanup.waitUntilReleased([.default])
@@ -340,7 +340,7 @@ extension StorageConfigurationTests {
     }
 
     /// Whether `authConfiguration` is present and records `configuration`'s namespace, as `.default` reads it.
-    private static func recordsConfiguration(of configuration: AuthClientConfiguration) throws -> Bool {
+    private static func recordsConfiguration(of configuration: AmplifyCognitoClientConfiguration) throws -> Bool {
         let store = SessionRecordStore(namespace: SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: nil))
         return try store.previousPluginConfiguration() != nil && store.pluginConfigurationSource() == nil
     }

@@ -19,12 +19,12 @@ final class WebUISignInTests: XCTestCase {
     private var harness: ClientHarness!
     /// The window to anchor sheets to, made on first use rather than in `setUp()`: a process's first `UIWindow()`
     /// can block for minutes on a just-booted simulator, so a test that needs no window makes none.
-    private var window: AuthClientPresentationAnchor {
+    private var window: AmplifyCognitoClientPresentationAnchor {
         get async { await HostedUIFixtures.window() }
     }
     private let work = ClientFixtures.id("work")
     private let home = ClientFixtures.id("home")
-    private let webUser = AuthClientUser(username: "web-user", userId: "sub-web-user")
+    private let webUser = AmplifyCognitoClientUser(username: "web-user", userId: "sub-web-user")
 
     override func setUp() async throws {
         harness = ClientHarness()
@@ -37,15 +37,15 @@ final class WebUISignInTests: XCTestCase {
         harness = nil
     }
 
-    private func client(_ sessionId: SessionID) throws -> AmplifyCognitoClient {
+    private func client(_ sessionId: AmplifyCognitoClientSessionID) throws -> AmplifyCognitoClient {
         try harness.client(sessionId, configuration: HostedUIFixtures.configuration)
     }
 
     /// Starts a sign-in on its own task, as an app's button does.
     private func startSignIn(
         _ client: AmplifyCognitoClient,
-        options: WebUIOptions = WebUIOptions()
-    ) async -> Task<AuthClientSignInResult, Error> {
+        options: AmplifyCognitoClientWebUIOptions = AmplifyCognitoClientWebUIOptions()
+    ) async -> Task<AmplifyCognitoClientSignInResult, Error> {
         let window = await window
         return Task { try await client.signInWithWebUI(presentationAnchor: window, options: options) }
     }
@@ -92,6 +92,26 @@ final class WebUISignInTests: XCTestCase {
         XCTAssertEqual(state, .signedIn(webUser))
         await events.waitFor(1)
         XCTAssertEqual(events.received, [.signedIn])
+    }
+
+    /// A hosted-UI sign-in saves the label its session ID was created with, as a password sign-in does
+    ///
+    /// - Given: a signed-out session whose ID was created with a label
+    /// - When:
+    ///    - a hosted-UI sign-in completes
+    /// - Then:
+    ///    - the saved row has that label
+    func testAHostedUISignInSavesTheIDsLabel() async throws {
+        let client = try client(.named("work", label: "Work"))
+        let browser = FakeBrowser()
+        try XCTUnwrap(harness.engine(for: work)).showWebUISignIns(in: browser)
+
+        let signIn = await startSignIn(client)
+        await browser.shown.waitForArrivals(1)
+        browser.finishWithDefault()
+        _ = try await signIn.value
+
+        XCTAssertEqual(try harness.storedRecord(work)?.label, "Work")
     }
 
     /// A late `.done` after an interrupt is revoked, not committed
@@ -196,7 +216,7 @@ final class WebUISignInTests: XCTestCase {
         let workSignIn = await startSignIn(workClient)
         await workBrowser.shown.waitForArrivals(1)
 
-        let homeSignIn = await startSignIn(homeClient, options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let homeSignIn = await startSignIn(homeClient, options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
         let lock = harness.sheetLock
         await waitUntil("home queues") { await lock.waiterCount == 1 }
         XCTAssertEqual(harness.engine(for: home)?.webUISignInCalls.count, 0)
@@ -233,9 +253,9 @@ final class WebUISignInTests: XCTestCase {
         let lock = harness.sheetLock
         let first = await startSignIn(clients[0])
         await browsers[0].shown.waitForArrivals(1)
-        let second = await startSignIn(clients[1], options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let second = await startSignIn(clients[1], options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
         await waitUntil("home queues") { await lock.waiterCount == 1 }
-        let third = await startSignIn(clients[2], options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let third = await startSignIn(clients[2], options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
         await waitUntil("team queues") { await lock.waiterCount == 2 }
 
         for (index, signIn) in [first, second, third].enumerated() {
@@ -300,11 +320,11 @@ final class WebUISignInTests: XCTestCase {
         let lock = harness.sheetLock
         let holder = await lock.currentHolder
         XCTAssertEqual(holder, work, "the cancelled browser should still hold the sheet")
-        let retry = await startSignIn(client, options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let retry = await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
         await waitUntil("the retry is queued behind its own closing sheet") { await lock.waiterCount == 1 }
 
-        for policy in [WebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
-            let error = await authClientError { try await startSignIn(client, options: WebUIOptions(whenBrowserBusy: policy)).value(within: 10) }
+        for policy in [AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
+            let error = await authClientError { try await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: policy)).value(within: 10) }
             XCTAssertEqual(error?.kind, .browserBusy(holder: work), "\(policy)")
             XCTAssertEqual(error?.errorDescription, "Session \"work\"'s previous system sheet is still closing.", "\(policy)")
             XCTAssertEqual(
@@ -339,8 +359,8 @@ final class WebUISignInTests: XCTestCase {
         let first = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
 
-        for policy in [WebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
-            let error = await authClientError { try await startSignIn(client, options: WebUIOptions(whenBrowserBusy: policy)).value }
+        for policy in [AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
+            let error = await authClientError { try await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: policy)).value }
             XCTAssertEqual(error?.kind, .browserBusy(holder: work))
             XCTAssertEqual(error?.errorDescription, "Session \"work\" already has a system sheet in progress.")
         }
@@ -367,12 +387,12 @@ final class WebUISignInTests: XCTestCase {
         await homeBrowser.shown.waitForArrivals(1)
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let queued = await startSignIn(client, options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let queued = await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
         let lock = harness.sheetLock
         await waitUntil("work is queued for the sheet") { await lock.waiterCount == 1 }
 
-        for policy in [WebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
-            let error = await authClientError { try await startSignIn(client, options: WebUIOptions(whenBrowserBusy: policy)).value(within: 10) }
+        for policy in [AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
+            let error = await authClientError { try await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: policy)).value(within: 10) }
             XCTAssertEqual(error?.kind, .browserBusy(holder: home), "\(policy)")
             XCTAssertEqual(
                 error?.errorDescription,
@@ -489,8 +509,8 @@ final class WebUISignInTests: XCTestCase {
         let saved = try XCTUnwrap(try harness.store().storedChallenge(work))
         let epoch = await client.core.signInEpoch
 
-        for policy in [WebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 0.05)] {
-            let error = await authClientError { try await startSignIn(client, options: WebUIOptions(whenBrowserBusy: policy)).value }
+        for policy in [AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 0.05)] {
+            let error = await authClientError { try await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: policy)).value }
 
             XCTAssertEqual(error?.kind, .browserBusy(holder: home))
             let state = await client.currentSessionState()
@@ -530,7 +550,7 @@ final class WebUISignInTests: XCTestCase {
             harness.keychain.failingReads(of: harness.store().sessionAccount(for: home), with: errSecInteractionNotAllowed)
 
             let error = await authClientError {
-                try await self.startSignIn(client, options: WebUIOptions(identityExpectation: .distinctFromOtherSessions)).value
+                try await self.startSignIn(client, options: AmplifyCognitoClientWebUIOptions(identityExpectation: .distinctFromOtherSessions)).value
             }
 
             harness.keychain.clearFailures()
@@ -584,7 +604,7 @@ final class WebUISignInTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let listing = Stall()
         harness.keychain.onceAfterReading(harness.store().sessionAccount(for: home)) { listing.block() }
-        let signIn = await startSignIn(client, options: WebUIOptions(identityExpectation: .distinctFromOtherSessions))
+        let signIn = await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(identityExpectation: .distinctFromOtherSessions))
         await waitUntil("the listing is held") { listing.hasBeenReached }
 
         let signOut = Task { await client.signOut() }
@@ -644,7 +664,7 @@ final class WebUISignInTests: XCTestCase {
         await homeBrowser.shown.waitForArrivals(1)
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let signIn = await startSignIn(client, options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let signIn = await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
         let lock = harness.sheetLock
         await waitUntil("work queues") { await lock.waiterCount == 1 }
 
@@ -682,7 +702,7 @@ final class WebUISignInTests: XCTestCase {
         harness.keychain.onceAfterReading(harness.store().sessionAccount(for: team)) { listing.block() }
         let signIn = await startSignIn(
             client,
-            options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60), identityExpectation: .distinctFromOtherSessions)
+            options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: .wait(timeout: 60), identityExpectation: .distinctFromOtherSessions)
         )
         await waitUntil("the listing is held") { listing.hasBeenReached }
 
@@ -804,10 +824,10 @@ final class WebUISignInTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let homeAccount = harness.store().sessionAccount(for: home)
 
-        for policy in [WebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
+        for policy in [AmplifyCognitoClientWebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
             let listing = Stall()
             harness.keychain.onceAfterReading(homeAccount) { listing.block() }
-            let signIn = await startSignIn(client, options: WebUIOptions(whenBrowserBusy: policy, identityExpectation: .distinctFromOtherSessions))
+            let signIn = await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: policy, identityExpectation: .distinctFromOtherSessions))
             await waitUntil("the listing is held") { listing.hasBeenReached }
 
             signIn.cancel()
@@ -865,7 +885,7 @@ final class WebUISignInTests: XCTestCase {
         let signIn = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
         let lock = harness.sheetLock
-        let answered = Task { () -> (AuthClientError?, SessionID?) in
+        let answered = Task { () -> (AmplifyCognitoClientError?, AmplifyCognitoClientSessionID?) in
             let error = await authClientError { try await signIn.value }
             return (error, await lock.currentHolder)
         }
@@ -916,22 +936,24 @@ final class WebUISignInTests: XCTestCase {
 
     // MARK: The request
 
-    /// - Given: a social sign-in for Google with an `idpIdentifier`, a prompt list, and the defaults
+    /// - Given: a social sign-in through the `for:` overload, for Google, with an `idpIdentifier`, a prompt list,
+    ///   and the defaults
     /// - When: the engine receives them
     /// - Then:
-    ///    - provider and `idpIdentifier` both reach it (the engine applies the precedence), the prompt is
-    ///      space-separated in order, an empty prompt list is sent as none, and ephemeral is the default
+    ///    - the overload's provider and `idpIdentifier` both reach it (the engine applies the precedence:
+    ///      `LiveEngineWebUITests.testTheAuthorizeRequestCarriesTheOptions`), the prompt is space-separated in
+    ///      order, an empty prompt list is sent as none, and ephemeral is the default
     func testTheRequestCarriesTheOptions() async throws {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let window = await window
-        engine.scriptWebUISignIn { _, _ in throw AuthClientError.userCancelled("closed", "retry") }
+        engine.scriptWebUISignIn { _, _ in throw AmplifyCognitoClientError.userCancelled("closed", "retry") }
 
         _ = await authClientError {
             try await client.signInWithWebUI(
                 for: .google,
                 presentationAnchor: window,
-                options: WebUIOptions(
+                options: AmplifyCognitoClientWebUIOptions(
                     prefersEphemeralSession: false,
                     scopes: ["openid"],
                     idpIdentifier: "corp",
@@ -943,7 +965,7 @@ final class WebUISignInTests: XCTestCase {
             )
         }
         _ = await authClientError {
-            try await client.signInWithWebUI(presentationAnchor: window, options: WebUIOptions(prompt: []))
+            try await client.signInWithWebUI(presentationAnchor: window, options: AmplifyCognitoClientWebUIOptions(prompt: []))
         }
 
         let calls = engine.webUISignInCalls
@@ -974,9 +996,9 @@ final class WebUISignInTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let window = await window
-        engine.scriptWebUISignIn { _, _ in throw AuthClientError.userCancelled("closed", "retry") }
+        engine.scriptWebUISignIn { _, _ in throw AmplifyCognitoClientError.userCancelled("closed", "retry") }
 
-        for options in [WebUIOptions(), WebUIOptions(), WebUIOptions(nonce: "caller-nonce"), WebUIOptions(nonce: "")] {
+        for options in [AmplifyCognitoClientWebUIOptions(), AmplifyCognitoClientWebUIOptions(), AmplifyCognitoClientWebUIOptions(nonce: "caller-nonce"), AmplifyCognitoClientWebUIOptions(nonce: "")] {
             _ = await authClientError { try await client.signInWithWebUI(presentationAnchor: window, options: options) }
         }
 
@@ -999,7 +1021,7 @@ final class WebUISignInTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
 
-        _ = try await startSignIn(client, options: WebUIOptions(identityExpectation: .matches("sub-bob"))).value
+        _ = try await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(identityExpectation: .matches("sub-bob"))).value
 
         XCTAssertEqual(engine.webUISignInCalls.first?.request.identity, EngineIdentityPolicy(expectedIdentity: "sub-bob"))
     }
@@ -1039,7 +1061,7 @@ final class WebUISignInTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
 
-        _ = try await startSignIn(client, options: WebUIOptions(identityExpectation: .distinctFromOtherSessions)).value
+        _ = try await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(identityExpectation: .distinctFromOtherSessions)).value
 
         XCTAssertEqual(engine.webUISignInCalls.first?.request.identity, EngineIdentityPolicy(excludedSubjects: ["sub-bob"]))
     }
@@ -1053,13 +1075,13 @@ final class WebUISignInTests: XCTestCase {
         _ = try harness.signIn(home, .signedIn("bob"))
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let bob = AuthClientUser(username: "bob", userId: "sub-bob")
+        let bob = AmplifyCognitoClientUser(username: "bob", userId: "sub-bob")
         engine.scriptWebUISignIn { _, _ in
-            throw AuthClientError.unexpectedIdentity(expected: nil, returned: bob, "a different user", "retry with login")
+            throw AmplifyCognitoClientError.unexpectedIdentity(expected: nil, returned: bob, "a different user", "retry with login")
         }
 
         let error = await authClientError {
-            try await startSignIn(client, options: WebUIOptions(identityExpectation: .distinctFromOtherSessions)).value
+            try await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(identityExpectation: .distinctFromOtherSessions)).value
         }
 
         XCTAssertEqual(error?.kind, .unexpectedIdentity(expected: nil, returned: bob))
@@ -1092,7 +1114,7 @@ final class WebUISignInTests: XCTestCase {
         await workBrowser.shown.waitForArrivals(1)
         let homeSignIn = await startSignIn(
             homeClient,
-            options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60), identityExpectation: .distinctFromOtherSessions)
+            options: AmplifyCognitoClientWebUIOptions(whenBrowserBusy: .wait(timeout: 60), identityExpectation: .distinctFromOtherSessions)
         )
         let lock = harness.sheetLock
         await waitUntil("home queues") { await lock.waiterCount == 1 }
@@ -1142,7 +1164,7 @@ final class WebUISignInTests: XCTestCase {
         AmplifyLogging.addSink(sink)
         defer { AmplifyLogging.removeSink(sink) }
 
-        let signIn = await startSignIn(workClient, options: WebUIOptions(identityExpectation: .distinctFromOtherSessions))
+        let signIn = await startSignIn(workClient, options: AmplifyCognitoClientWebUIOptions(identityExpectation: .distinctFromOtherSessions))
         await browser.shown.waitForArrivals(1)
         harness.keychain.failingReads(of: harness.store().sessionAccount(for: home), with: errSecInteractionNotAllowed)
         browser.finishWithDefault()
@@ -1171,7 +1193,7 @@ final class WebUISignInTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
 
-        _ = try await startSignIn(client, options: WebUIOptions(identityExpectation: .distinctFromOtherSessions)).value
+        _ = try await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(identityExpectation: .distinctFromOtherSessions)).value
 
         XCTAssertEqual(engine.webUISignInCalls.first?.request.identity.excludedSubjects, ["sub-frank"])
     }
@@ -1191,7 +1213,7 @@ final class WebUISignInTests: XCTestCase {
         harness.keychain.failingReads(of: harness.store().sessionAccount(for: home), with: errSecInteractionNotAllowed)
 
         let error = await authClientError {
-            try await startSignIn(client, options: WebUIOptions(identityExpectation: .distinctFromOtherSessions)).value
+            try await startSignIn(client, options: AmplifyCognitoClientWebUIOptions(identityExpectation: .distinctFromOtherSessions)).value
         }
 
         harness.keychain.clearFailures()
@@ -1208,7 +1230,7 @@ final class WebUISignInTests: XCTestCase {
     func testEngineFailuresReachTheCaller() async throws {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let failures: [AuthClientError] = [
+        let failures: [AmplifyCognitoClientError] = [
             .validation(field: "presentationAnchor", "gone", "retry"),
             .userCancelled("closed", "retry"),
             .invalidState("no window", "retry"),
