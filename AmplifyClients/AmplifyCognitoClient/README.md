@@ -1031,13 +1031,17 @@ and `oauth` sends the secret with the hosted UI's token exchange (`Authorization
 
 One system sheet (a hosted-UI sign-in, a hosted-UI sign-out page, or a passkey sheet) is shown at a time across the
 client's sessions: every session of every `AmplifyCognitoClient` in the process. By default a second request throws
-`.browserBusy(holder:)`, naming the session that holds it. That is for a sheet another session holds. A sign-in
-request on a session whose own sign-in step is still in progress, its passkey sheet or hosted-UI browser included,
-waits for that step first, whatever `whenBrowserBusy` says, and a `.wait(timeout:)` counts from when it ends: the
-browser can then open once the passkey sheet closes. For a second hosted-UI sign-in of a session whose first is
-still in progress while no session holds the sheet, `holder` is the session itself: "Session "work" already has a
-hosted-UI sign-in in progress." A hosted-UI sign-in can queue with `.wait(timeout:)` instead, for at most one hour; a
-passkey sheet or the sign-out page fails at once while another session holds the sheet.
+`.browserBusy(holder:)`, naming the session that holds it. That is for a sheet another session holds, and for a
+sheet of the session's own that is not a sign-in step in progress: its browser still closing after a cancel, an
+`associateWebAuthnCredential` sheet, or its sign-out page. A hosted-UI sign-in on a session whose own sign-in step
+is still in progress (a password or challenge step, or its passkey sheet) waits for that step first, whatever
+`whenBrowserBusy` says, and a `.wait(timeout:)` counts from when it ends. The browser then opens if the step left
+the session signed out, and also if it stopped on a challenge, which the hosted-UI sign-in ends. A `signIn` on a
+session waits the same way behind its own hosted-UI sign-in. A second hosted-UI sign-in of a session whose first is
+still in progress is refused at once, whatever the policy; while no session holds the sheet, `holder` is the
+session itself: "Session "work" already has a hosted-UI sign-in in progress." A hosted-UI sign-in can queue with
+`.wait(timeout:)` instead, for at most one hour; a passkey sheet or the sign-out page fails at once while another
+session holds the sheet.
 
 The Auth plugin's hosted UI and passkey sheets don't take part: one can be up beside a client sheet.
 
