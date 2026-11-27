@@ -68,10 +68,11 @@ public extension AmplifyCognitoClient {
     ///     answers; `CancellationError` if the calling task is cancelled while the sheet is up, or before it
     ///     would appear;
     ///   - `.configuration` without a user pool;
-    ///   - `.invalidState` if this session is signed in (sign out first; a session whose refresh token is known
-    ///     dead may sign in again) or federated (clear the federation first); if a sign-out, purge or deletion of this session cancelled the sign-in while it was in
-    ///     progress; or if another sign-in completed for this session meanwhile, with a different user, who
-    ///     stays signed in;
+    ///   - `.invalidState` if this session is signed in (force a refresh if its refresh token may have been
+    ///     revoked elsewhere, so that it reports `sessionExpired`, or sign out first; a session whose refresh
+    ///     token is known dead may sign in again) or federated (clear the federation first); if a sign-out,
+    ///     purge or deletion of this session cancelled the sign-in while it was in progress; or if another
+    ///     sign-in completed for this session meanwhile, with a different user, who stays signed in;
     ///   - `.notAuthorized` or `.service` as Cognito answers (a wrong password is `.notAuthorized`);
     ///   - `.storageUnavailable` if storage could not be read, did not answer in time, or the result could not
     ///     be saved; never reported as signed out;

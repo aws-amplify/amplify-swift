@@ -701,12 +701,12 @@ the default branch, it can also be started by hand from the Actions tab, with a 
 
 **The other platforms run only from that manual start.** Four more toggles, off by default, run the client suite on
 tvOS, watchOS and visionOS, as the iOS client job does (same overlay, same no-skip gate), and one hosted-UI test on
-visionOS, as its iOS job does. That test does not pass yet, and its job was green all the same on 2026-11-25. Every
-single-test run of `run_integration_tests.yml` can report green when its test failed, the iOS hosted-UI jobs
-included, until that workflow is fixed in a pull request of its own: read such a job's log for the test's result
-(`Executed 1 test, with 0 failures`). The interop suite has no toggle for them. They are not part of a pull
-request's or a push's run: each is another whole pass over the same backend, and CH-1's new-password users are a
-limited pool. No macOS job runs tests ("Other platforms", above).
+visionOS, as its iOS job does. That test does not pass yet. Its job was green all the same on 2026-11-25: until
+pull request #4428, a single-test run of `run_integration_tests.yml` reported green when its test failed, the iOS
+hosted-UI jobs included. Since then such a job fails with its test, so this one is red until the test passes. The
+interop suite has no toggle for them. They are not part of a pull request's or a push's run: each is another whole
+pass over the same backend, and CH-1's new-password users are a limited pool. No macOS job runs tests ("Other
+platforms", above).
 
 **What a pull request's or a push's run does for them is compile.** Wherever the client suite runs on iOS,
 `auth-client-build-other-platforms` builds the client and interop suites for tvOS, watchOS, visionOS and macOS, and

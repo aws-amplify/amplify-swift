@@ -159,7 +159,8 @@ extension AmplifyCognitoClientWebUIOptions: Equatable {}
 @_spi(AmplifyExperimental)
 public extension AmplifyCognitoClientWebUIOptions {
 
-    /// What a hosted-UI sign-in does when another session's browser sign-in is already in flight.
+    /// What a hosted-UI sign-in does when the system sheet is held: by another session's sheet, or by this
+    /// session's own browser that is still closing.
     ///
     /// It applies once the call looks at the sheet. Two things come first, whatever the policy. A hosted-UI
     /// sign-in of the same session that is still in progress refuses the call at once with `browserBusy`. A

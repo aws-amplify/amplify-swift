@@ -1033,15 +1033,17 @@ One system sheet (a hosted-UI sign-in, a hosted-UI sign-out page, or a passkey s
 client's sessions: every session of every `AmplifyCognitoClient` in the process. By default a second request throws
 `.browserBusy(holder:)`, naming the session that holds it. That is for a sheet another session holds, and for a
 sheet of the session's own that is not a sign-in step in progress: its browser still closing after a cancel, an
-`associateWebAuthnCredential` sheet, or its sign-out page. A hosted-UI sign-in on a session whose own sign-in step
-is still in progress (a password or challenge step, or its passkey sheet) waits for that step first, whatever
+`associateWebAuthnCredential` sheet (a hosted-UI sign-out closes that sheet instead, and waits up to 10 seconds for
+it to close), or its sign-out page. A hosted-UI sign-in on a session whose own sign-in step is still in progress (a
+password or challenge step, or its passkey sheet) waits for that step first, whatever
 `whenBrowserBusy` says, and a `.wait(timeout:)` counts from when it ends. The browser then opens if the step left
 the session signed out, and also if it stopped on a challenge, which the hosted-UI sign-in ends. A `signIn` on a
 session waits the same way behind its own hosted-UI sign-in. A second hosted-UI sign-in of a session whose first is
 still in progress is refused at once, whatever the policy; while no session holds the sheet, `holder` is the
-session itself: "Session "work" already has a hosted-UI sign-in in progress." A hosted-UI sign-in can queue with
-`.wait(timeout:)` instead, for at most one hour; a passkey sheet or the sign-out page fails at once while another
-session holds the sheet.
+session itself: "Session "work" already has a hosted-UI sign-in in progress." Behind another session's sheet, or
+its own browser that is still closing after a cancel, a hosted-UI sign-in can queue with `.wait(timeout:)` instead
+of failing, for at most one hour; a passkey sheet or the sign-out page fails at once while another session holds the
+sheet.
 
 The Auth plugin's hosted UI and passkey sheets don't take part: one can be up beside a client sheet.
 
@@ -1203,12 +1205,12 @@ let connect = AmplifyConnectClient(
 
 `AmplifyKinesisClient` and `AmplifyFirehoseClient` take the provider the same way. They cache records offline, in
 one cache per region unless you name one, so give each session's client its own with `cacheIdentifier`. That option,
-the `credentials` error and the handling described below are added by the Kinesis and Firehose pull request:
+the `credentials` error and the handling described below are added by pull request #4429:
 
 ```swift
 import AmplifyKinesisClient
 
-// `cacheIdentifier` ships with the Kinesis and Firehose pull request.
+// `cacheIdentifier` ships with pull request #4429.
 let kinesis = try AmplifyKinesisClient(
     region: "us-east-1",
     credentialsProvider: client.credentialsProvider,
@@ -1226,17 +1228,18 @@ process. A named session keeps a login per backend, and its `stringValue` is the
 switches backends at run time should put the pool in the identifier too
 (`"\(userPoolId)-\(client.sessionId.stringValue)"`), or flush before it switches.
 
-With the Kinesis and Firehose pull request, when the provider can't vend credentials, a flush stops and throws
+With pull request #4429, when the provider can't vend credentials, a flush stops and throws
 `KinesisError.credentials` (`FirehoseError.credentials`), with the provider's `CredentialsError` underneath. What
 happens to the records it did not send follows the error's `disposition`:
 
 - `.discard` (the session signed out): a client with a `cacheIdentifier` deletes everything that was cached when the
-  flush began, since their user is gone; records added during the flush are kept, and no retry is counted. A client
-  without one counts a retry against the records of the request that failed, as for any failed flush, so they are
-  removed after `maxRetries + 1` failed flushes, as before: the region's cache holds every session's records, so it
-  is not emptied at once. The discard takes a flush while the session is signed out: once it is a guest (after
-  `fetchAuthSession()`), or another user has signed in to it, a flush sends those records with the new credentials,
-  so call `flush()` before, or `clearCache()` at, sign-out when records must not go out under another principal.
+  flush began, since its user is gone; records added during the flush are kept, and no retry is counted. A client
+  without one counts a retry against the records of the request that failed, as after any failed send, so they are
+  removed once that request has failed `maxRetries + 1` times, as before: the region's cache holds every session's
+  records, so it is not emptied at once. The discard takes a flush while the session is signed out: once it is a guest
+  (after `fetchAuthSession()`), or another user has signed in to it, a flush sends those records with the new
+  credentials, so call `flush()` before, or `clearCache()` at, sign-out when records must not go out under another
+  principal.
 - `.retryAfterReauthentication` (the session expired), `.retryWithBackoff` and `.failLoudly`: the records are kept,
   with no retry counted, and sent once the session can vend credentials again. Kept this way they don't expire
   through `maxRetries`, so the cache can fill to `cacheMaxBytes`, after which `record` throws `cacheLimitExceeded`.
@@ -1248,8 +1251,9 @@ signs in again to restart the schedule, but only for a client the app has not di
 collection back on.
 
 An expired session keeps answering `sessionExpired` while a sign-in on it waits on a challenge (an MFA code, say),
-so a flush during the prompt keeps the records too. They are then sent as whoever signed in: the provider is bound
-to the session, not to a user. If a different user may sign in to an expired session, call `clearCache()` first.
+so with that pull request a flush during the prompt keeps the records too. They are then sent as whoever signed in:
+the provider is bound to the session, not to a user. If a different user may sign in to an expired session, call
+`clearCache()` first.
 
 In Swift 6, calling `record(…)` on an `AmplifyKinesisClient` or `AmplifyFirehoseClient` from a `@MainActor` type (a
 SwiftUI view model, say) or an actor that holds the client fails to compile with "sending '…' risks causing data
@@ -2152,12 +2156,12 @@ The client keeps the plugin's semantics except where listed here and in the sect
 
 - **Category plugins don't follow client sessions**, and nothing warns you. See
   [above](#amplify-category-plugins-do-not-follow-these-sessions).
-- **Kinesis and Firehose share one local cache per region.** Two sessions with a Kinesis (or Firehose) client for
-  the same region share the offline record cache, so one session's flush can send another session's records with its
-  own credentials. A signed-out session's records also stay in the shared cache until a flush sends them or
-  `maxRetries + 1` flushes have failed: a flush that fails with `notSignedIn` counts a retry there and deletes
-  nothing at once. `Options.cacheIdentifier`, which gives each session's client a cache of its own, ships with
-  the Kinesis and Firehose pull request (see
+- **Kinesis and Firehose share one local cache per region.** Two sessions with a Kinesis (or Firehose) client for the
+  same region share the offline record cache, so one session's flush can send another session's records with its own
+  credentials. A signed-out session's records also stay in the shared cache until a flush sends them or their request
+  has failed `maxRetries + 1` times: a flush that fails with `notSignedIn` stops at the request it was sending, counts
+  a retry against that request's records and deletes nothing at once. `Options.cacheIdentifier`, which gives each
+  session's client a cache of its own, ships with pull request #4429 (see
   [Credentials for other AmplifyClients](#credentials-for-other-amplifyclients)).
 - **A provider is bound to a session ID, not to a user.** After a sign-out and a different user's sign-in on the
   same session ID, a consumer holding buffered data gets the new user's credentials without notice. The same goes for
@@ -2200,7 +2204,7 @@ The client keeps the plugin's semantics except where listed here and in the sect
   launch lets it sign in again too. What to do: on `sessionExpired`, show sign-in without signing out. On that
   refusal, force a refresh (`fetchAuthSession(options: .init(forceRefresh: true))`) so that it reports
   `sessionExpired`, or sign the session out first. Keep the sign-out for when the user is leaving: with
-  the Kinesis and Firehose pull request, it makes a Kinesis or Firehose client with a `cacheIdentifier` delete what
+  pull request #4429, it makes a Kinesis or Firehose client with a `cacheIdentifier` delete what
   it has cached at its next flush.
 - **A second refresh-token reuse counts as a dead token after 30 seconds, in one launch.** Until then the failure,
   forced or not, is retryable. The count is kept in memory: after an app terminated in the middle of a refresh with
