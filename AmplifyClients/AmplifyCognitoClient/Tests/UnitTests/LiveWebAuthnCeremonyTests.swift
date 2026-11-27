@@ -487,17 +487,19 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
         XCTAssertEqual(sheet.ceremonies.count, 0)
     }
 
-    /// A sign-out that lands while a `WEB_AUTHN` answer waits to read the sign-in's window ends the answer too.
+    /// A sign-out that lands while a `WEB_AUTHN` answer has yet to read the sign-in's window ends the answer too,
+    /// whether it finds the answer on its way to the main actor or waiting for it (the next test pins the wait).
     ///
     /// - Given: a sign-in with a window waiting on a first-factor selection that offers `WEB_AUTHN`, the main
-    ///   thread busy, and the selection answered with `WEB_AUTHN` and no window, so that the answer waits for the
-    ///   main actor
+    ///   thread busy, and the selection answered with `WEB_AUTHN` and no window, an answer that reads the
+    ///   sign-in's window on the main actor
     /// - When:
     ///    - the session signs out, and the main thread is then freed
     /// - Then:
     ///    - the sign-out finishes while the main thread is busy
-    ///    - the answer throws the sign-in-cancelled `invalidState`: nothing is sent for it, no sheet is made, and
-    ///      the session is signed out
+    ///    - the answer throws an `invalidState` that says the sign-in is gone (cancelled, or none in progress when
+    ///      the sign-out had already moved the session on): nothing is sent for it, no sheet is made, and the
+    ///      session is signed out
     func testASignOutWhileAPasskeyAnswerWaitsForTheMainActorCancelsIt() async throws {
         let client = try liveClient()
         let window = await WebAuthnFixtures.window()
@@ -520,17 +522,81 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
 
         let answer = Task { try await client.confirmSignIn(challengeResponse: "WEB_AUTHN") }
         await waitUntil("the answer has started") { await client.core.signInLock.isLocked }
-        // Nothing tells when the answer has reached the main actor's queue: give it the time to.
-        try await Task.sleep(nanoseconds: 200_000_000)
         _ = try await Task { await client.signOut() }.value(within: 10)
         main.release()
         let error = await authClientError { try await answer.value(within: 10) }
 
-        XCTAssertEqual(error?.errorDescription, SessionCore.signInCancelled().errorDescription)
+        // Which of the two it is depends on whether the sign-out moved the session on before the answer read it.
+        let gone = [
+            SessionCore.signInCancelled().errorDescription,
+            LiveSignInSteps.noSignInInProgress().errorDescription
+        ]
+        XCTAssertTrue(gone.contains(error?.errorDescription ?? ""), "\(String(describing: error))")
         XCTAssertEqual(harness.cognito.operations, ["InitiateAuth"])
         XCTAssertEqual(sheet.ceremonies.count, 0)
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedOut)
+        // The sign-in's window outlives the answer, so only the cancel can have stopped it.
+        withExtendedLifetime(window) {}
+    }
+
+    /// The engine's own check: a cancel that has taken the attempt, and has not stopped its machine yet, still
+    /// ends a `WEB_AUTHN` answer that was waiting for the main actor.
+    ///
+    /// - Given: an engine whose cancel waits, once it has taken a pending attempt, before stopping the
+    ///   attempt's machine; a sign-in with a window waiting on a first-factor selection that offers `WEB_AUTHN`;
+    ///   the main thread busy; and the selection answered with `WEB_AUTHN` and no window, the answer waiting
+    ///   for the main actor
+    /// - When:
+    ///    - `cancelPendingSignIn` takes the attempt and waits, and the main thread is then freed
+    /// - Then:
+    ///    - the answer throws the no-sign-in-in-progress `invalidState`, while the cancel is still waiting
+    ///    - nothing is sent for it (`InitiateAuth` is the only request), and no sheet is made
+    func testAPasskeyAnswerThatWaitedForTheMainActorIsRefusedOnceACancelHasTakenItsAttempt() async throws {
+        let stopping = Gate()
+        let engine = try LiveSessionEngine(
+            resources: harness.resources(),
+            whileStopping: { await stopping.pass() },
+            webAuthnCeremonies: sheet.factories
+        )
+        let window = await WebAuthnFixtures.window()
+        let anchor = await MainActor.run { EnginePresentationAnchorBox(window) }
+        harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in
+            InitiateAuthOutput(
+                availableChallenges: [.password, .webAuthn],
+                challengeName: .selectChallenge,
+                challengeParameters: [:],
+                session: "select-session"
+            )
+        }
+        _ = try await engine.signIn(EngineSignInRequest(
+            username: "alice",
+            password: nil,
+            authFlowType: .userAuth(preferredFirstFactor: nil),
+            clientMetadata: [:],
+            webAuthn: EngineCeremonyContext(anchor: anchor, ceremony: WebAuthnCredentialOperations.runCeremonyDirectly)
+        ), current: nil)
+        let main = Stall()
+        defer { main.release() }
+        DispatchQueue.main.async { main.block() }
+        await waitUntil("the main thread is busy") { main.hasBeenReached }
+
+        // Queued on the engine before the cancel, so the answer is waiting for the main actor when the cancel runs.
+        let answered = Flag()
+        let answer = await engine.startConfirmSignIn(.answer("WEB_AUTHN"), raising: answered)
+        let cancel = Task { await engine.cancelPendingSignIn() }
+        try await stopping.arrivals(1)
+        XCTAssertFalse(answered.isRaised, "the answer must be waiting for the main actor when the cancel takes its attempt")
+        main.release()
+        let error = await authClientError { try await answer.value(within: 10) }
+        let sent = harness.cognito.operations
+        let sheets = sheet.ceremonies.count
+        await stopping.open()
+        try await cancel.value(within: 10)
+
+        XCTAssertEqual(error?.errorDescription, LiveSignInSteps.noSignInInProgress().errorDescription)
+        XCTAssertEqual(sent, ["InitiateAuth"])
+        XCTAssertEqual(sheets, 0)
         // The sign-in's window outlives the answer, so only the cancel can have stopped it.
         withExtendedLifetime(window) {}
     }
@@ -851,6 +917,18 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
         }
         harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in LiveEngineFixtures.signedIn("alice") }
         harness.scriptIdentityPool()
+    }
+}
+
+private extension LiveSessionEngine {
+
+    /// Starts a confirmation from the engine's own actor, so it is queued there before the caller's next call:
+    /// by then it has run to its first suspension. Raises `finished` when it ends.
+    func startConfirmSignIn(_ request: EngineConfirmSignInRequest, raising finished: Flag) -> Task<EngineStepResult, Error> {
+        Task {
+            defer { finished.raise() }
+            return try await self.confirmSignIn(request, current: nil, epoch: 0)
+        }
     }
 }
 

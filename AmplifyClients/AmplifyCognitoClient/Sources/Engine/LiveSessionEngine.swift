@@ -47,8 +47,10 @@ actor LiveSessionEngine: SessionEngine {
     private var nextStepId: UInt64 = 0
     /// Told of every step's operation a cancel stopped. For tests.
     private let onStepCancelled: (@Sendable (EngineOperation) -> Void)?
-    /// Awaited while a cancel stops a step, after the step's task is cancelled and before its machine is.
-    /// For tests: the moment the cancelled step can finish and settle its tap.
+    /// Awaited while a cancel stops a step, after the step's task is cancelled and before its machine is: the
+    /// moment the cancelled step can finish and settle its tap. With no step in flight it is awaited before a
+    /// dropped attempt's machine is stopped, whatever dropped it (a cancel, a sign-in that supersedes it, or an
+    /// answer that finds it stale): the moment an answer that waited for the main actor can resume. For tests.
     private let whileStopping: (@Sendable () async -> Void)?
     /// What presents a passkey sheet: the platform's, unless a test replaces it.
     nonisolated let webAuthnCeremonies: LiveWebAuthnCeremonies
@@ -152,14 +154,16 @@ actor LiveSessionEngine: SessionEngine {
             throw LiveSignInSteps.noSignInInProgress()
         }
         // A passkey sheet uses this call's window, else the sign-in's if it is still there. The sign-in's box
-        // outlives its window, so a WebAuthn selection with no window of its own reads it, on the main actor: only
-        // that answer waits for the main actor. A WebAuthn selection with neither window is refused before
-        // anything is sent, and the challenge is kept.
+        // outlives its window, so a WebAuthn selection with no window of its own reads it, on the main actor: the
+        // engine makes no other answer wait for the main actor (the core reads a confirmation's own window there,
+        // whatever the answer). A WebAuthn selection with neither window is refused before anything is sent, and
+        // the challenge is kept.
         let selectsWebAuthn = LiveSignInSteps.selectsWebAuthn(request.challengeResponse, at: attempt.step)
         var anchor = request.webAuthn?.anchor ?? attempt.webAuthnAnchor
         if selectsWebAuthn, request.webAuthn?.anchor == nil, let kept = attempt.webAuthnAnchor {
             anchor = await SessionCore.liveAnchor(kept)
-            // A cancel may have ended the attempt while this waited for the main actor.
+            // A cancel may have taken the attempt while this waited for the main actor, and not have stopped its
+            // machine yet, which would still take the answer.
             guard self.attempt?.operation.slot === attempt.operation.slot else {
                 throw LiveSignInSteps.noSignInInProgress()
             }
@@ -408,6 +412,9 @@ actor LiveSessionEngine: SessionEngine {
             // tokens the core also revokes.
             guard dropped.operation.tokenTap !== stopped?.operation.tokenTap else {
                 return
+            }
+            if stopped == nil {
+                await whileStopping?()
             }
             await LiveSignInSteps.cancelIfSigningIn(dropped.operation)
             // A pending attempt with no step in flight has nothing to hand back.

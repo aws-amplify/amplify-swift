@@ -236,6 +236,90 @@ final class PurgedLiveSessionTests: XCTestCase {
         XCTAssertEqual(engine.refreshCalls.count, 1)
     }
 
+    // MARK: A fetch waiting behind the client's own purging sign-out
+
+    /// Starts `client`'s sign-out with `purgeStoredSession`, held at its revoke under the record's gate, then a
+    /// fetch, and lets the sign-out go once the fetch's refresh waits on the gate. The sign-out has completed
+    /// when this returns.
+    private func fetchBehindAPurgingSignOut(
+        _ client: AmplifyCognitoClient,
+        engine: FakeSessionEngine
+    ) async throws -> Task<AmplifyCognitoClientAuthSession, Error> {
+        let latch = Gate()
+        engine.scriptRevoke { _ in await latch.pass() }
+        let signOut = Task { await client.signOut(options: .init(purgeStoredSession: true)) }
+        try await latch.arrivals(1)
+
+        let fetch = Task { try await client.fetchAuthSession() }
+        let namespace = SessionStorageNamespace(pools: ClientFixtures.configuration.poolNamespace, accessGroup: nil)
+        let gate = harness.gates.gate(for: namespace, sessionId: work)
+        await waitUntil("the fetch's refresh waits on the record's gate") { await gate.waiterCount == 1 }
+        await latch.open()
+
+        let result = try await signOut.value(within: 10)
+        XCTAssertEqual(result, .complete)
+        return fetch
+    }
+
+    /// A fetch whose refresh waited behind this client's own purging sign-out is answered as a signed-out
+    /// session's is, so the removed account comes back as a guest row.
+    ///
+    /// - Given: a live, signed-in client whose ID carries a label and whose credentials need a refresh, with an
+    ///   identity pool that allows guests, and its sign-out with `purgeStoredSession` held open at the revoke
+    /// - When: a fetch starts, and, once its refresh waits on the record's gate, the sign-out is let go
+    /// - Then:
+    ///    - the fetch is a guest's, with no user: the refresh it waited for is never sent, and guest credentials
+    ///      are fetched once
+    ///    - the purged session is listed again, as a guest row with the ID's label
+    func testAFetchWaitingBehindThisClientsPurgingSignOutBecomesAGuest() async throws {
+        try harness.signIn(work, .signedIn("alice", stale: true))
+        let client = try harness.client(.named("work", label: "Work"))
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        _ = await client.currentSessionState()
+
+        let session = try await fetchBehindAPurgingSignOut(client, engine: engine).value
+
+        XCTAssertNil(session.userSub)
+        XCTAssertNil(session.userPoolTokens)
+        XCTAssertEqual(session.identityId, "us-east-1:guest")
+        XCTAssertEqual(engine.refreshCalls, [])
+        XCTAssertEqual(engine.guestFetchCount, 1)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .guest)
+        let rows = try await AmplifyCognitoClient.storedSessions(
+            configuration: ClientFixtures.configuration,
+            accessGroup: nil,
+            includingSignedOut: true,
+            dependencies: harness.dependencies
+        )
+        let row = try XCTUnwrap(rows.first { $0.sessionId == work }, "\(rows)")
+        XCTAssertEqual(row.kind, .guest)
+        XCTAssertEqual(row.label, "Work")
+        XCTAssertNil(row.user)
+    }
+
+    /// - Given: the same client and held sign-out, with an identity pool that allows no guests
+    /// - When: a fetch starts, and, once its refresh waits on the record's gate, the sign-out is let go
+    /// - Then:
+    ///    - the fetch asks for guest credentials once and throws `notSignedIn`; no refresh is sent
+    ///    - the state is `.signedOut`, and the purged session stays gone: no row is written
+    func testAFetchWaitingBehindThisClientsPurgingSignOutThrowsNotSignedInWithoutGuestAccess() async throws {
+        try harness.signIn(work, .signedIn("alice", stale: true))
+        let client = try harness.client(.named("work", label: "Work"))
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        engine.scriptGuestCredentials { _ in throw SessionEngineError.notSignedIn }
+        _ = await client.currentSessionState()
+
+        let fetch = try await fetchBehindAPurgingSignOut(client, engine: engine)
+
+        await assertNotSignedIn({ try await fetch.value }, "fetchAuthSession")
+        XCTAssertEqual(engine.refreshCalls, [])
+        XCTAssertEqual(engine.guestFetchCount, 1)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedOut)
+        XCTAssertEqual(try harness.store().read(work), .absent)
+    }
+
     // MARK: Signing in again
 
     /// A purged session is usable again, and starts clean.

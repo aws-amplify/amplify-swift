@@ -553,9 +553,15 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         // there, read as the live engine reads it (`SessionCore.liveAnchor`). With neither it is refused before
         // anything is sent, and the challenge is kept. No other answer reads the window.
         let (step, kept) = withLock { (challenge, attemptWebAuthnAnchor) }
-        if request.webAuthn?.anchor == nil, let step, LiveSignInSteps.selectsWebAuthn(request.challengeResponse, at: step),
-           await SessionCore.liveAnchor(kept) == nil {
-            throw SessionCore.presentationAnchorRequired()
+        if request.webAuthn?.anchor == nil, let step, LiveSignInSteps.selectsWebAuthn(request.challengeResponse, at: step) {
+            let live = await SessionCore.liveAnchor(kept)
+            // As in the live engine: a cancel may have ended the attempt while this waited for the main actor.
+            guard withLock({ challenge != nil && attemptEpoch == epoch }) else {
+                throw LiveSignInSteps.noSignInInProgress()
+            }
+            if live == nil {
+                throw SessionCore.presentationAnchorRequired()
+            }
         }
         let inFlightStep = withLock { beginStep(epoch: epoch) }
         defer { withLock { _ = endStep(inFlightStep) } }

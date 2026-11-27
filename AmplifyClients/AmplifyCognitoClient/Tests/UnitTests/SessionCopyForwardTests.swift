@@ -988,6 +988,69 @@ final class SessionCopyForwardTests: XCTestCase {
         }
     }
 
+    /// Race: the static label, which carries the session first, and a warm restore that carries it, at once. They
+    /// share the gates and the registry, so the label lands on alice's login whichever goes first, never over it.
+    ///
+    /// - Given: alice under the user pool alone, labelled "Work"
+    /// - When: a client over both pools is built with a warm restore, and the static `setSessionLabel` runs over both
+    ///   pools, many times over (each bounded), the one starting a varying number of yields before the other
+    /// - Then: the call succeeds, having carried and labelled the record before the restore read it, or having
+    ///   found the client and labelled through it; either way the client reads `.signedIn(alice)`, the record under
+    ///   both pools is alice's carried login with the new label, never a signed-out row, the client's copy has the
+    ///   label, the old record is kept, and nothing is revoked
+    func testAStaticLabelRacingAWarmRestoreKeepsTheLogin() async throws {
+        var carried = FakePayload.signedIn("alice", kind: .userPoolOnly).record(label: "Office")
+        carried.identityPending = true
+        for round in 0 ..< 40 {
+            harness = ClientHarness(restoresOnConstruction: true)
+            let old = try aliceUnderTheUserPoolOnly()
+            let dependencies = harness.dependencies
+            let work = work
+            let setLabel: @Sendable () async throws -> Void = {
+                try await bounded(10, "the label") {
+                    try await AmplifyCognitoClient.setSessionLabel(
+                        "Office",
+                        sessionId: work,
+                        configuration: ClientFixtures.configuration,
+                        accessGroup: nil,
+                        dependencies: dependencies
+                    )
+                }
+            }
+            // Which of the two starts first, and how far ahead, changes with the round: the label is tried before
+            // the client is registered, between its registration and its restore, and after the restore.
+            let lead = round / 2 % 4 * 100
+            let label: Task<Void, Error>
+            let client: AmplifyCognitoClient
+            if round.isMultiple(of: 2) {
+                label = Task { try await setLabel() }
+                for _ in 0 ..< lead {
+                    await Task.yield()
+                }
+                client = try harness.client(work)
+            } else {
+                client = try harness.client(work)
+                for _ in 0 ..< lead {
+                    await Task.yield()
+                }
+                label = Task { try await setLabel() }
+            }
+            let state = await client.currentSessionState()
+            try await label.value
+
+            XCTAssertEqual(state, .signedIn(alice), "round \(round)")
+            XCTAssertEqual(try currentRecord(), carried, "round \(round)")
+            let held = await client.core.restoredSnapshotIfAny?.ownRecord?.label
+            XCTAssertEqual(held, "Office", "round \(round)")
+            XCTAssertEqual(
+                harness.keychain.value(userPoolOnlyStore.sessionAccount(for: work)),
+                old,
+                "round \(round): the old record is kept"
+            )
+            XCTAssertEqual(harness.revoker.revokeCalls, [], "round \(round)")
+        }
+    }
+
     /// A restore that carries holds the source namespace's gate, so a stored-session call on that namespace and the
     /// carry never interleave.
     ///
