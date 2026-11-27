@@ -45,6 +45,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
     let requestHeaders: RequestHeaders?
     weak var session: StorageMultipartUploadSession?
     let metadata: [String: String]?
+    private let logger: Logger
 
     init(
         serviceProxy: StorageServiceProxy,
@@ -54,7 +55,8 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
         uploadFile: UploadFile,
         contentType: String? = nil,
         requestHeaders: RequestHeaders? = nil,
-        metadata: [String: String]? = nil
+        metadata: [String: String]? = nil,
+        logger: Logger = storageLogger
     ) {
         self.serviceProxy = serviceProxy
         self.fileSystem = fileSystem
@@ -64,6 +66,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
         self.contentType = contentType
         self.requestHeaders = requestHeaders
         self.metadata = metadata
+        self.logger = logger
     }
 
     func integrate(session: StorageMultipartUploadSession) {
@@ -72,8 +75,8 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
 
     // https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateMultipartUpload.html
     func createMultipartUpload() throws {
-        guard let serviceProxy,
-            let session else { fatalError() }
+        guard let session else { throw Self.sessionUnavailable }
+        guard let serviceProxy, let awsS3 = serviceProxy.awsS3 else { throw Self.serviceUnavailable }
 
         // The AWS S3 SDK handles the request so there will be not taskIdentifier
         session.handle(multipartUploadEvent: .creating)
@@ -91,7 +94,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
             key: key,
             metadata: metadata
         )
-        serviceProxy.awsS3.createMultipartUpload(request) { [weak self] result in
+        awsS3.createMultipartUpload(request) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let response):
@@ -105,8 +108,6 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
 
     // https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html
     func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageTransferTask) throws {
-        guard let serviceProxy else { fatalError("Service Proxy is required") }
-
         // A concurrent cancel() or failure can move the session past `.parts` before the caller takes this
         // snapshot (#4407); the new state owns the outcome, so there is no part to start.
         guard let uploadId = multipartUpload.uploadId,
@@ -115,8 +116,10 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
             return
         }
         guard let part = multipartUpload.part(for: partNumber) else {
-            fatalError("Part number is required")
+            throw StorageError.unknown("Part number \(partNumber) is not in this multipart upload", nil)
         }
+        // Fail before preparing the part, so a reset service fails the upload once rather than once per part.
+        guard let serviceProxy, serviceProxy.preSignedURLBuilder != nil else { throw Self.serviceUnavailable }
 
         // `@Sendable` because the result handler below captures this and calls it from a `Task`.
         let startUploadPart: @Sendable (URL, URL) async -> Void = { [weak self] partialFileURL, preSignedURL in
@@ -168,7 +171,8 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
                     }
 
                     let operation = AWSS3SigningOperation.uploadPart(partNumber: partNumber, uploadId: uploadId)
-                    let preSignedURL = try await serviceProxy.preSignedURLBuilder.getPreSignedURL(
+                    guard let preSignedURLBuilder = serviceProxy.preSignedURLBuilder else { throw Self.serviceUnavailable }
+                    let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(
                         key: self.key,
                         signingOperation: operation,
                         // user-controlled metadata should *not* be provided
@@ -189,15 +193,15 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
     }
 
     // https://docs.aws.amazon.com/AmazonS3/latest/API/API_CompleteMultipartUpload.html
-    func completeMultipartUpload(uploadId: UploadID) {
-        guard let serviceProxy,
-            let session else { fatalError() }
+    func completeMultipartUpload(uploadId: UploadID) throws {
+        guard let session else { throw Self.sessionUnavailable }
+        guard let serviceProxy, let awsS3 = serviceProxy.awsS3 else { throw Self.serviceUnavailable }
 
         let completedParts = session.completedParts ?? []
         let parts = AWSS3MultipartUploadRequestCompletedParts(completedParts: completedParts)
         let request = AWSS3CompleteMultipartUploadRequest(bucket: bucket, key: key, uploadId: uploadId, parts: parts)
 
-        serviceProxy.awsS3.completeMultipartUpload(request) { result in
+        awsS3.completeMultipartUpload(request) { result in
             switch result {
             case .success:
                 session.handle(multipartUploadEvent: .completed(uploadId: uploadId))
@@ -209,11 +213,18 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
     }
 
     // https://docs.aws.amazon.com/AmazonS3/latest/API/API_AbortMultipartUpload.html
-    func abortMultipartUpload(uploadId: UploadID, error: Error? = nil) {
-        guard let serviceProxy,
-            let session else { fatalError() }
+    func abortMultipartUpload(uploadId: UploadID, error: Error? = nil) throws {
+        guard let session else { throw Self.sessionUnavailable }
+        guard let serviceProxy, let awsS3 = serviceProxy.awsS3 else {
+            // Nothing can send the abort (#4426), so end the session as S3's response would, on another queue.
+            logger.warn("AbortMultipartUpload not sent, the storage service is no longer available: \(uploadId)")
+            DispatchQueue.global().async {
+                session.handle(multipartUploadEvent: .aborted(uploadId: uploadId, error: error ?? Self.serviceUnavailable))
+            }
+            return
+        }
 
-        serviceProxy.awsS3.abortMultipartUpload(.init(bucket: bucket, key: key, uploadId: uploadId)) { result in
+        awsS3.abortMultipartUpload(.init(bucket: bucket, key: key, uploadId: uploadId)) { result in
             switch result {
             case .success:
                 session.handle(multipartUploadEvent: .aborted(uploadId: uploadId, error: error))
@@ -225,7 +236,11 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
     }
 
     func cancelUploadTasks(taskIdentifiers: [TaskIdentifier], done: @escaping @Sendable () -> Void) {
-        guard let service = serviceProxy else { return }
+        // pause() waits for `done`.
+        guard let service = serviceProxy else {
+            done()
+            return
+        }
         service.unregister(taskIdentifiers: taskIdentifiers)
         service.urlSession.getActiveTasks { tasks in
             for task in tasks {
@@ -238,6 +253,19 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
     }
 
     // MARK: - Private -
+
+    // `serviceProxy` is weak: resetting or reconfiguring Amplify mid-upload releases or resets it (#4426).
+    private static var serviceUnavailable: StorageError {
+        .configuration(
+            "The storage service that started this multipart upload is no longer available",
+            "If Amplify was reset or reconfigured during the upload, call Amplify.configure() and start the upload again.",
+            nil
+        )
+    }
+
+    private static var sessionUnavailable: StorageError {
+        .unknown("The multipart upload session is no longer available", nil)
+    }
 
     // Note: the headers were previously filtered in the SDK
     func filter(requestHeaders: RequestHeaders) -> RequestHeaders {

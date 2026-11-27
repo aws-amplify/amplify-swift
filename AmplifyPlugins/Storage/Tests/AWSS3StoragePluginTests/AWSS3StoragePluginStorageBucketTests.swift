@@ -5,8 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSPluginsCore
+import InternalAmplifyCredentials
 import XCTest
 @testable import Amplify
+@testable import func AmplifyTestCommon.XCTAssertNoThrowFatalError
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
 
@@ -161,6 +164,65 @@ class AWSS3StoragePluginStorageBucketTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(storagePlugin.storageServicesByBucket.count, 1)
         _ = try storagePlugin.storageService(for: .fromBucketInfo(additionalBucketInfo))
         XCTAssertEqual(storagePlugin.storageServicesByBucket.count, 2)
+    }
+
+    /// Regression test for #4426: concurrent first uses of a bucket each created a storage service, and all but the one
+    /// stored last were released while their uploads were still running.
+    ///
+    /// - Given: A configured AWSS3StoragePlugin
+    /// - When:
+    ///    - storageService(for:) is invoked concurrently for each of several buckets that were not accessed before
+    /// - Then:
+    ///    - every call for a bucket returns the one service stored for that bucket
+    ///
+    func testStorageService_withNewBucketConcurrently_shouldCreateOneService() throws {
+        // MockAWSAuthService records calls without a lock, so concurrent service creation would corrupt it.
+        storagePlugin.authService = AWSAuthService()
+        // Start the transfer database's one-time recovery on a kept service, so a released duplicate can't trap in it.
+        _ = try storagePlugin.storageService(for: .fromBucketInfo(.init(bucketName: "warmUpBucket", region: "us-east-1")))
+        // Several buckets, so a reverted fix fails even where few threads overlap.
+        for index in 1 ... 4 {
+            let bucketInfo = BucketInfo(bucketName: "concurrentBucket\(index)", region: "us-east-2")
+            let services = AtomicValue<[AWSS3StorageService]>(initialValue: [])
+            DispatchQueue.concurrentPerform(iterations: 8) { _ in
+                if let service = try? storagePlugin.storageService(for: .fromBucketInfo(bucketInfo)) as? AWSS3StorageService {
+                    services.append(service)
+                }
+            }
+
+            let returned = services.get()
+            XCTAssertEqual(returned.count, 8, bucketInfo.bucketName)
+            let stored = try XCTUnwrap(storagePlugin.storageServicesByBucket[bucketInfo.bucketName] as? AWSS3StorageService)
+            let distinct = Set(returned.map { ObjectIdentifier($0) })
+            XCTAssertEqual(distinct, [ObjectIdentifier(stored)], "\(bucketInfo.bucketName): \(distinct.count) services returned")
+        }
+        XCTAssertEqual(storagePlugin.storageServicesByBucket.count, 6)
+    }
+
+    /// A first use of a bucket after reset() trapped on the nil authService (#4426).
+    ///
+    /// - Given: An AWSS3StoragePlugin that has been reset
+    /// - When:
+    ///    - storageService(for:) is invoked for a bucket that was not accessed before
+    /// - Then:
+    ///    - a StorageError.configuration is thrown, and no service is stored
+    ///
+    func testStorageService_withNewBucketAfterReset_shouldThrowConfigurationError() async throws {
+        await storagePlugin.reset()
+
+        var thrownError: Error?
+        try XCTAssertNoThrowFatalError {
+            do {
+                _ = try self.storagePlugin.storageService(for: .fromBucketInfo(self.additionalBucketInfo))
+            } catch {
+                thrownError = error
+            }
+        }
+
+        guard case .configuration? = thrownError as? StorageError else {
+            return XCTFail("Expected StorageError.configuration, got \(String(describing: thrownError))")
+        }
+        XCTAssertEqual(storagePlugin.storageServicesByBucket.count, 0)
     }
 
     /// Given: A configured AWSS3StoragePlugin

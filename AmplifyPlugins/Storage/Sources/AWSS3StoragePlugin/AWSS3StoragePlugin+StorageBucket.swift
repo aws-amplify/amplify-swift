@@ -17,7 +17,20 @@ extension AWSS3StoragePlugin {
         }
 
         let bucketInfo = try bucketInfo(from: bucket)
-        guard let storageService = storageServicesByBucket[bucketInfo.bucketName] else {
+        // Concurrent first uses of a bucket must share one service: a replaced one is released mid-upload (#4426).
+        return try storageServicesLock.execute {
+            if let storageService = storageServicesByBucket[bucketInfo.bucketName] {
+                return storageService
+            }
+            // reset() clears this under the same lock.
+            guard let authService else {
+                throw StorageError.configuration(
+                    "The Storage plugin is not configured",
+                    "Call Amplify.configure() before using Storage, and again after Amplify.reset().",
+                    nil
+                )
+            }
+
             // If no service was found for the bucket, create one
             let storageService = try createStorageService(
                 authService: authService,
@@ -26,8 +39,6 @@ extension AWSS3StoragePlugin {
             storageServicesByBucket[bucketInfo.bucketName] = storageService
             return storageService
         }
-
-        return storageService
     }
 
     /// Returns a AWSS3StorageServiceProvider callback for the given StorageBucket
