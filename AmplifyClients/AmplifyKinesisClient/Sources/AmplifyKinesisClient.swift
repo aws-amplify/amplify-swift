@@ -48,8 +48,8 @@ private let maxPartitionKeyLength = 256
 /// // Record data
 /// let result = try await kinesis.record(
 ///     data: "Hello Kinesis".data(using: .utf8)!,
-///     streamName: "my-stream",
-///     partitionKey: "partition-1"
+///     partitionKey: "partition-1",
+///     streamName: "my-stream"
 /// )
 ///
 /// // Flush cached records
@@ -85,6 +85,8 @@ public class AmplifyKinesisClient {
     /// Configuration options for AmplifyKinesisClient
     public struct Options {
         public let cacheMaxBytes: Int64
+
+        /// How many failed sends a cached record survives: failed send `maxRetries + 1` removes it.
         public let maxRetries: Int
         public let flushStrategy: FlushStrategy
 
@@ -95,16 +97,56 @@ public class AmplifyKinesisClient {
         /// take precedence over any `awsCredentialIdentityResolver` set in this closure.
         public let configureClient: AmplifyKinesisClientConfigurationProvider?
 
+        /// Names this client's offline cache within its region. `nil`, the default, uses the cache every
+        /// `AmplifyKinesisClient` of the region shares, as before this option existed.
+        ///
+        /// A cache holds the records of every client of the region with the same identifier, and a flush sends
+        /// them all with the flushing client's credentials. So when clients are given different sessions'
+        /// credentials, give each session its own identifier (an `AmplifyCognitoClient` session's
+        /// `sessionId.stringValue`, say; that client is experimental SPI): otherwise one session's flush sends
+        /// another's records as itself.
+        ///
+        /// - Any non-empty string. Identifiers that are equal as `String`s name one cache, in whichever Unicode
+        ///   normalization form they are written; identifiers that differ in case are different caches. An empty
+        ///   string throws `KinesisError.validation` from the initializer.
+        /// - The cache's file name holds an unsalted SHA-256 of the identifier (of its canonical decomposed form,
+        ///   NFD, in UTF-8), not the identifier. So any character is safe in an identifier, but do not treat the
+        ///   name as hiding an email address or a user ID from someone who can list the directory.
+        /// - The identifier is fixed for the client's life. Flush before you create a client with another
+        ///   identifier, or with one for the first time: records cached under the old identifier, or in the
+        ///   region's shared cache, stay there until a client with that identifier, or with none, flushes or
+        ///   clears them.
+        /// - A cache outlives its session's sign-out: its records stay until a flush sends them, or a client
+        ///   with that identifier calls `clearCache()`. The emptied file is never removed: it is
+        ///   `kinesis_records_<region>_<that SHA-256, lowercase hex>.db` in the Application Support directory, so
+        ///   delete it yourself once no client uses that identifier.
+        /// - Use one client per cache in a process. Two clients over one cache file (the same identifier, or none
+        ///   in the same region) each flush on their own, so both can send the same records, and one's write can
+        ///   meet the other's read and fail with "database is locked" (`KinesisError.cache`).
+        /// - The identifier does not name the backend. An app that switches backends at run time and uses one
+        ///   identifier for both (one named session's `sessionId.stringValue`, say) flushes records cached under
+        ///   the first backend with the second's credentials: include the pool in the identifier, or flush
+        ///   before switching.
+        public let cacheIdentifier: String?
+
+        /// - Parameters:
+        ///   - cacheMaxBytes: The offline cache's size limit, in bytes. 5 MB by default.
+        ///   - maxRetries: See `maxRetries`. 5 by default.
+        ///   - flushStrategy: When cached records are flushed automatically. Every 30 seconds by default.
+        ///   - cacheIdentifier: See `cacheIdentifier`. `nil` by default: the region's shared cache.
+        ///   - configureClient: See `configureClient`. `nil` by default.
         public init(
             cacheMaxBytes: Int64 = 5 * 1_024 * 1_024, // 5MB
             maxRetries: Int = 5,
             flushStrategy: FlushStrategy = .interval(),
+            cacheIdentifier: String? = nil,
             configureClient: AmplifyKinesisClientConfigurationProvider? = nil
         ) {
             self.cacheMaxBytes = cacheMaxBytes
             self.maxRetries = maxRetries
             self.flushStrategy = flushStrategy
             self.configureClient = configureClient
+            self.cacheIdentifier = cacheIdentifier
         }
     }
 
@@ -113,6 +155,8 @@ public class AmplifyKinesisClient {
     ///   - region: AWS region
     ///   - credentialsProvider: Foundation credential provider for AWS authentication
     ///   - options: Configuration options
+    /// - Throws: `KinesisError.validation` for an empty `Options.cacheIdentifier`; `KinesisError.cache` if the
+    ///   offline cache cannot be opened; the SDK's error if the client configuration cannot be built.
     public init(
         region: String,
         credentialsProvider: any AmplifyFoundation.AWSCredentialsProvider,
@@ -149,15 +193,22 @@ public class AmplifyKinesisClient {
             maxRetries: options.maxRetries
         )
 
-        let storage = try AmplifyRecordCache.SQLiteRecordStorage(
-            dbPrefix: "kinesis_records",
-            identifier: region,
-            maxRecords: maxRecordsPerStream,
-            cacheMaxBytes: options.cacheMaxBytes,
-            maxRecordSizeBytes: maxRecordSizeBytes,
-            maxBytesPerStream: maxBytesPerStream,
-            maxPartitionKeyLength: maxPartitionKeyLength
-        )
+        let storage: AmplifyRecordCache.SQLiteRecordStorage
+        do {
+            storage = try AmplifyRecordCache.SQLiteRecordStorage(
+                dbPrefix: "kinesis_records",
+                identifier: region,
+                cacheIdentifier: options.cacheIdentifier,
+                maxRecords: maxRecordsPerStream,
+                cacheMaxBytes: options.cacheMaxBytes,
+                maxRecordSizeBytes: maxRecordSizeBytes,
+                maxBytesPerStream: maxBytesPerStream,
+                maxPartitionKeyLength: maxPartitionKeyLength
+            )
+        } catch {
+            // The cache's own errors are package types: callers get `KinesisError`.
+            throw KinesisError.from(error)
+        }
 
         self.recordClient = AmplifyRecordCache.RecordClient(
             sender: sender,

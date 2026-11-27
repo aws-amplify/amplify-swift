@@ -16,7 +16,7 @@ public enum KinesisError {
   case cache(ErrorDescription, RecoverySuggestion, Error? = nil)
   /// Cache limit exceeded — no space for new records.
   case cacheLimitExceeded(ErrorDescription, RecoverySuggestion, Error? = nil)
-  /// Record input validation failed (e.g. oversized record, invalid partition key).
+  /// Input validation failed (e.g. oversized record, invalid partition key, an empty cache identifier).
   case validation(ErrorDescription, RecoverySuggestion, Error? = nil)
   /// An error that doesn't fall into the known categories above.
   case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)
