@@ -1181,11 +1181,13 @@ let connect = AmplifyConnectClient(
 ```
 
 `AmplifyKinesisClient` and `AmplifyFirehoseClient` take the provider the same way. They cache records offline, in
-one cache per region unless you name one, so give each session's client its own with `cacheIdentifier`:
+one cache per region unless you name one, so give each session's client its own with `cacheIdentifier`. That option,
+the `credentials` error and the handling described below are added by the Kinesis and Firehose pull request:
 
 ```swift
 import AmplifyKinesisClient
 
+// `cacheIdentifier` ships with the Kinesis and Firehose pull request.
 let kinesis = try AmplifyKinesisClient(
     region: "us-east-1",
     credentialsProvider: client.credentialsProvider,
@@ -1200,18 +1202,20 @@ shared cache, stay there until a client with that identifier, or with none, flus
 cache outlives its sign-out: its records stay until a flush sends them or discards them (below), or a client with
 that identifier calls `clearCache()`, and the emptied file is never removed.
 
-When the provider can't vend credentials, a flush stops and throws `KinesisError.credentials`
-(`FirehoseError.credentials`), with the provider's `CredentialsError` underneath, and counts no retry against the
-records it did not send. They follow the error's `disposition`:
+With the Kinesis and Firehose pull request, when the provider can't vend credentials, a flush stops and throws
+`KinesisError.credentials` (`FirehoseError.credentials`), with the provider's `CredentialsError` underneath. What
+happens to the records it did not send follows the error's `disposition`:
 
-- `.discard` (the session signed out): a client with a `cacheIdentifier` drops the records cached when the flush
-  began, since their user is gone. A client without one keeps them: the region's cache holds every session's records.
-  The discard takes a flush while the session is signed out: once it is a guest (after `fetchAuthSession()`), or
-  another user has signed in to it, a flush sends those records with the new credentials, so call `flush()` before,
-  or `clearCache()` at, sign-out when records must not go out under another principal.
+- `.discard` (the session signed out): a client with a `cacheIdentifier` deletes everything that was cached when the
+  flush began, since their user is gone; records added during the flush are kept, and no retry is counted. A client
+  without one counts a retry against the records of the request that failed, as for any failed flush, so they are
+  removed after `maxRetries + 1` failed flushes, as before: the region's cache holds every session's records, so it
+  is not emptied at once. The discard takes a flush while the session is signed out: once it is a guest (after
+  `fetchAuthSession()`), or another user has signed in to it, a flush sends those records with the new credentials,
+  so call `flush()` before, or `clearCache()` at, sign-out when records must not go out under another principal.
 - `.retryAfterReauthentication` (the session expired), `.retryWithBackoff` and `.failLoudly`: the records are kept,
-  and sent once the session can vend credentials again. Kept this way they don't expire through `maxRetries`, so
-  the cache can fill to `cacheMaxBytes`, after which `record` throws `cacheLimitExceeded`.
+  with no retry counted, and sent once the session can vend credentials again. Kept this way they don't expire
+  through `maxRetries`, so the cache can fill to `cacheMaxBytes`, after which `record` throws `cacheLimitExceeded`.
 
 While such failures repeat, the automatic flush backs off, doubling its interval up to 15 minutes, until a flush
 completes. A wait already under way isn't shortened, so call `enable()` after the session signs in again to restart
@@ -2122,11 +2126,13 @@ The client keeps the plugin's semantics except where listed here and in the sect
 
 - **Category plugins don't follow client sessions**, and nothing warns you. See
   [above](#amplify-category-plugins-do-not-follow-these-sessions).
-- **Kinesis and Firehose share one local cache per region unless you name one.** Two sessions with a Kinesis (or
-  Firehose) client for the same region and no `cacheIdentifier` share the offline record cache, so one session's
-  flush can send another session's records with its own credentials. Set `Options.cacheIdentifier` per session
-  (see [Credentials for other AmplifyClients](#credentials-for-other-amplifyclients)). Without one, a signed-out
-  session's records also stay in the shared cache: a flush that fails with `notSignedIn` deletes nothing there.
+- **Kinesis and Firehose share one local cache per region.** Two sessions with a Kinesis (or Firehose) client for
+  the same region share the offline record cache, so one session's flush can send another session's records with its
+  own credentials. A signed-out session's records also stay in the shared cache until a flush sends them or
+  `maxRetries + 1` flushes have failed: a flush that fails with `notSignedIn` counts a retry there and deletes
+  nothing at once. `Options.cacheIdentifier`, which gives each session's client a cache of its own, ships with
+  the Kinesis and Firehose pull request (see
+  [Credentials for other AmplifyClients](#credentials-for-other-amplifyclients)).
 - **A provider is bound to a session ID, not to a user.** After a sign-out and a different user's sign-in on the
   same session ID, a consumer holding buffered data gets the new user's credentials without notice. The same goes for
   a guest's sign-in: one that completes at once (no challenge, or a hosted-UI sign-in) hands the user's credentials to

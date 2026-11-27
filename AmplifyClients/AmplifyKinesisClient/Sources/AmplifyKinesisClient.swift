@@ -48,8 +48,8 @@ private let maxPartitionKeyLength = 256
 /// // Record data
 /// let result = try await kinesis.record(
 ///     data: "Hello Kinesis".data(using: .utf8)!,
-///     partitionKey: "partition-1",
-///     streamName: "my-stream"
+///     streamName: "my-stream",
+///     partitionKey: "partition-1"
 /// )
 ///
 /// // Flush cached records
@@ -85,9 +85,6 @@ public class AmplifyKinesisClient {
     /// Configuration options for AmplifyKinesisClient
     public struct Options {
         public let cacheMaxBytes: Int64
-
-        /// How many failed sends a cached record survives before it is removed. A flush whose credentials
-        /// provider throws AmplifyFoundation's `CredentialsError` (experimental SPI) counts no retry: see `flush()`.
         public let maxRetries: Int
         public let flushStrategy: FlushStrategy
 
@@ -98,52 +95,16 @@ public class AmplifyKinesisClient {
         /// take precedence over any `awsCredentialIdentityResolver` set in this closure.
         public let configureClient: AmplifyKinesisClientConfigurationProvider?
 
-        /// Names this client's offline cache within its region. `nil`, the default, uses the cache every client
-        /// of the region shares, as before this option existed.
-        ///
-        /// A cache holds the records of every client of the region with the same identifier, and a flush sends
-        /// them all with the flushing client's credentials. So when clients are given different sessions'
-        /// credentials, give each session its own identifier (an `AmplifyCognitoClient` session's
-        /// `sessionId.stringValue`, say; that client is experimental SPI): otherwise one session's flush sends
-        /// another's records as itself.
-        ///
-        /// - Any non-empty string. Its UTF-8 bytes are hashed into the cache's file name, so identifiers that
-        ///   differ only in case, or only in Unicode normalization form, are different caches. An empty string
-        ///   throws `KinesisError.validation` from the initializer.
-        /// - The identifier is fixed for the client's life. Flush before you create a client with another
-        ///   identifier, or with one for the first time: records cached under the old identifier, or in the
-        ///   region's shared cache, stay there until a client with that identifier, or with none, flushes or
-        ///   clears them.
-        /// - A cache outlives its session's sign-out: its records stay until a flush sends them, a flush finds
-        ///   the session signed out and discards them (below), or a client with that identifier calls
-        ///   `clearCache()`. The emptied file is never removed: it is
-        ///   `kinesis_records_<region>_<SHA-256 of the identifier, lowercase hex>.db` in the Application Support
-        ///   directory, so delete it yourself once no client uses that identifier.
-        /// - Only a cache with an identifier is discarded when the credentials provider says so (`flush()`'s
-        ///   `KinesisError.credentials`): the region's shared cache holds every session's records, so it is kept.
-        ///   The discard needs a flush while the session is signed out (once the session is a guest, or another
-        ///   user has signed in to it, a flush sends the records with those credentials), so call `flush()` before,
-        ///   or `clearCache()` at, sign-out when records must not go out under another principal.
-        public let cacheIdentifier: String?
-
-        /// - Parameters:
-        ///   - cacheMaxBytes: The offline cache's size limit, in bytes. 5 MB by default.
-        ///   - maxRetries: See `maxRetries`. 5 by default.
-        ///   - flushStrategy: When cached records are flushed automatically. Every 30 seconds by default.
-        ///   - cacheIdentifier: See `cacheIdentifier`. `nil` by default: the region's shared cache.
-        ///   - configureClient: See `configureClient`. `nil` by default.
         public init(
             cacheMaxBytes: Int64 = 5 * 1_024 * 1_024, // 5MB
             maxRetries: Int = 5,
             flushStrategy: FlushStrategy = .interval(),
-            cacheIdentifier: String? = nil,
             configureClient: AmplifyKinesisClientConfigurationProvider? = nil
         ) {
             self.cacheMaxBytes = cacheMaxBytes
             self.maxRetries = maxRetries
             self.flushStrategy = flushStrategy
             self.configureClient = configureClient
-            self.cacheIdentifier = cacheIdentifier
         }
     }
 
@@ -152,8 +113,6 @@ public class AmplifyKinesisClient {
     ///   - region: AWS region
     ///   - credentialsProvider: Foundation credential provider for AWS authentication
     ///   - options: Configuration options
-    /// - Throws: `KinesisError.validation` for an empty `Options.cacheIdentifier`; `KinesisError.cache` if the
-    ///   offline cache cannot be opened; the SDK's error if the client configuration cannot be built.
     public init(
         region: String,
         credentialsProvider: any AmplifyFoundation.AWSCredentialsProvider,
@@ -190,28 +149,20 @@ public class AmplifyKinesisClient {
             maxRetries: options.maxRetries
         )
 
-        let storage: AmplifyRecordCache.SQLiteRecordStorage
-        do {
-            storage = try AmplifyRecordCache.SQLiteRecordStorage(
-                dbPrefix: "kinesis_records",
-                identifier: region,
-                cacheIdentifier: options.cacheIdentifier,
-                maxRecords: maxRecordsPerStream,
-                cacheMaxBytes: options.cacheMaxBytes,
-                maxRecordSizeBytes: maxRecordSizeBytes,
-                maxBytesPerStream: maxBytesPerStream,
-                maxPartitionKeyLength: maxPartitionKeyLength
-            )
-        } catch {
-            // The cache's own errors are package types: callers get `KinesisError`.
-            throw KinesisError.from(error)
-        }
+        let storage = try AmplifyRecordCache.SQLiteRecordStorage(
+            dbPrefix: "kinesis_records",
+            identifier: region,
+            maxRecords: maxRecordsPerStream,
+            cacheMaxBytes: options.cacheMaxBytes,
+            maxRecordSizeBytes: maxRecordSizeBytes,
+            maxBytesPerStream: maxBytesPerStream,
+            maxPartitionKeyLength: maxPartitionKeyLength
+        )
 
         self.recordClient = AmplifyRecordCache.RecordClient(
             sender: sender,
             storage: storage,
-            maxRetries: options.maxRetries,
-            ownsCache: options.cacheIdentifier != nil
+            maxRetries: options.maxRetries
         )
 
         // Create and setup flush scheduler
@@ -274,24 +225,6 @@ public class AmplifyKinesisClient {
     /// up in the next flush cycle.
     ///
     /// Records that exceed ``Options/maxRetries`` are removed from the cache.
-    ///
-    /// **When the credentials provider throws AmplifyFoundation's `CredentialsError`** (an `AmplifyCognitoClient`
-    /// session's provider does; both are experimental SPI), the flush stops there and throws
-    /// ``KinesisError/credentials(_:_:_:)``, with that error underneath, and counts no retry against the records it
-    /// did not send. They follow the error's `disposition`:
-    /// - `.retryAfterReauthentication` (the session expired), `.retryWithBackoff` and `.failLoudly`: the records
-    ///   are kept, and sent by a later flush once the provider vends credentials again. Kept this way they do
-    ///   not expire through ``Options/maxRetries``, so the cache can fill to ``Options/cacheMaxBytes``, after
-    ///   which `record` throws ``KinesisError/cacheLimitExceeded(_:_:_:)``.
-    /// - `.discard` (the session signed out): with ``Options/cacheIdentifier`` set, the records cached when the
-    ///   flush began are removed, since they were recorded for a user who is gone; records added during the
-    ///   flush are kept. Without an identifier the records are kept: the region's shared cache holds every
-    ///   session's records.
-    ///
-    /// While such failures repeat, the automatic flush backs off, doubling its interval up to 15 minutes, until a
-    /// flush completes. A wait already under way is not shortened, so call `enable()` once the session can vend
-    /// credentials again (after a sign-in, say) to restart the schedule. Any other error from the provider is a
-    /// failed send, as before: ``KinesisError/unknown(_:_:_:)``, and a retry counted.
     ///
     /// If a flush is already in progress, the call returns immediately with
     /// `FlushData(recordsFlushed: 0, flushInProgress: true)`.

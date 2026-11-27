@@ -63,18 +63,6 @@ class FirehoseIntegrationTests: BaseStreamClientIntegrationTests {
         ).asTestable()
     }
 
-    override func createClient(
-        cacheIdentifier: String,
-        credentialsProvider: any AmplifyFoundation.AWSCredentialsProvider,
-        maxRetries: Int
-    ) throws -> TestableStreamClient {
-        try AmplifyFirehoseClient(
-            region: Self.region,
-            credentialsProvider: credentialsProvider,
-            options: .init(maxRetries: maxRetries, flushStrategy: .none, cacheIdentifier: cacheIdentifier)
-        ).asTestable()
-    }
-
     override func assertCacheLimitExceededError(_ error: Error) {
         guard let firehoseError = error as? FirehoseError,
               case .cacheLimitExceeded = firehoseError else {
@@ -87,14 +75,6 @@ class FirehoseIntegrationTests: BaseStreamClientIntegrationTests {
         guard let firehoseError = error as? FirehoseError,
               case .validation = firehoseError else {
             XCTFail("Expected FirehoseError.validation, got \(error)")
-            return
-        }
-    }
-
-    override func assertCredentialsError(_ error: Error) {
-        guard let firehoseError = error as? FirehoseError,
-              case .credentials = firehoseError else {
-            XCTFail("Expected FirehoseError.credentials, got \(error)")
             return
         }
     }

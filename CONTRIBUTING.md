@@ -50,10 +50,10 @@ changes, tags the release and pushes it. Release checklist:
 
 1. Fold the pending release notes into the release notes. Copy every row of
    [`docs/design/RELEASE-NOTES-PENDING.md`](docs/design/RELEASE-NOTES-PENDING.md) that describes a
-   change this release ships (the Auth plugin's table, the `AmplifyKinesisClient` and `AmplifyFirehoseClient` table,
-   and the `AmplifyCognitoClient` table when the client ships) into the GitHub release body, under the product it
-   changes, and remove those rows from the file in the release's follow-up commit. The generated changelog never lists
-   a change that landed in a `refactor`, `chore` or `test` commit, so this step is how such changes reach customers.
+   change this release ships (the Auth plugin's table, and the `AmplifyCognitoClient` table when the client ships) into
+   the GitHub release body, under the product it changes, and remove those rows from the file in the release's
+   follow-up commit. The generated changelog never lists a change that landed in a `refactor`, `chore` or `test`
+   commit, so this step is how such changes reach customers.
 
 ## Getting Started
 

@@ -63,18 +63,6 @@ class KinesisIntegrationTests: BaseStreamClientIntegrationTests {
         ).asTestable()
     }
 
-    override func createClient(
-        cacheIdentifier: String,
-        credentialsProvider: any AmplifyFoundation.AWSCredentialsProvider,
-        maxRetries: Int
-    ) throws -> TestableStreamClient {
-        try AmplifyKinesisClient(
-            region: Self.region,
-            credentialsProvider: credentialsProvider,
-            options: .init(maxRetries: maxRetries, flushStrategy: .none, cacheIdentifier: cacheIdentifier)
-        ).asTestable()
-    }
-
     override func assertCacheLimitExceededError(_ error: Error) {
         guard let kinesisError = error as? KinesisError,
               case .cacheLimitExceeded = kinesisError else {
@@ -87,14 +75,6 @@ class KinesisIntegrationTests: BaseStreamClientIntegrationTests {
         guard let kinesisError = error as? KinesisError,
               case .validation = kinesisError else {
             XCTFail("Expected KinesisError.validation, got \(error)")
-            return
-        }
-    }
-
-    override func assertCredentialsError(_ error: Error) {
-        guard let kinesisError = error as? KinesisError,
-              case .credentials = kinesisError else {
-            XCTFail("Expected KinesisError.credentials, got \(error)")
             return
         }
     }

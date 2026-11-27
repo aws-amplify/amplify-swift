@@ -480,7 +480,6 @@ let recordCacheTargets: [Target] = [
         name: "AmplifyRecordCacheTests",
         dependencies: [
             "AmplifyRecordCache",
-            "AmplifyFoundation",
             .product(name: "SQLite", package: "SQLite.swift"),
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],

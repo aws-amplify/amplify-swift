@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(AmplifyExperimental) import AmplifyFoundation
+import AmplifyFoundation
 import AmplifyFoundationBridge
 import AmplifyRecordCache
 import AWSCognitoAuthPlugin
@@ -54,20 +54,10 @@ class BaseStreamClientIntegrationTests: XCTestCase {
     func createClientWithBadCredentials() throws -> TestableStreamClient {
         fatalError("Subclass must override")
     }
-    func createClient(
-        cacheIdentifier: String,
-        credentialsProvider: any AmplifyFoundation.AWSCredentialsProvider,
-        maxRetries: Int
-    ) throws -> TestableStreamClient {
-        fatalError("Subclass must override")
-    }
     func assertCacheLimitExceededError(_ error: Error) {
         fatalError("Subclass must override")
     }
     func assertValidationError(_ error: Error) {
-        fatalError("Subclass must override")
-    }
-    func assertCredentialsError(_ error: Error) {
         fatalError("Subclass must override")
     }
 
@@ -79,9 +69,6 @@ class BaseStreamClientIntegrationTests: XCTestCase {
     // MARK: - Per-test setup / teardown
 
     var client: TestableStreamClient!
-
-    /// Clients a test made over caches of their own (`createOwnCacheClient`), cleared in `tearDown`.
-    private var ownCacheClients: [TestableStreamClient] = []
 
     override func setUp() async throws {
         if !Self.isConfigured {
@@ -122,26 +109,6 @@ class BaseStreamClientIntegrationTests: XCTestCase {
     override func tearDown() async throws {
         await client?.disable()
         _ = try? await client?.clearCache()
-        for ownCacheClient in ownCacheClients {
-            await ownCacheClient.disable()
-            _ = try? await ownCacheClient.clearCache()
-        }
-        ownCacheClients = []
-    }
-
-    /// A client over the cache named `cacheIdentifier`, which `tearDown` clears.
-    private func createOwnCacheClient(
-        cacheIdentifier: String,
-        credentialsProvider: any AmplifyFoundation.AWSCredentialsProvider,
-        maxRetries: Int = 5
-    ) throws -> TestableStreamClient {
-        let ownCacheClient = try createClient(
-            cacheIdentifier: cacheIdentifier,
-            credentialsProvider: credentialsProvider,
-            maxRetries: maxRetries
-        )
-        ownCacheClients.append(ownCacheClient)
-        return ownCacheClient
     }
 
     // MARK: - Core happy path
@@ -286,35 +253,6 @@ class BaseStreamClientIntegrationTests: XCTestCase {
         XCTAssertEqual(flushResult.recordsFlushed, 0)
     }
 
-    // MARK: - Cache identifier
-
-    /// Test that clients with different cache identifiers keep separate caches.
-    ///
-    /// - Given: One record cached through a client with cache identifier "a"
-    /// - When:
-    ///    - A client with identifier "b" flushes, then a second client with identifier "a" flushes
-    /// - Then:
-    ///    - The "b" client flushes 0 records and the second "a" client flushes the record (count == 1)
-    ///
-    func testCacheIdentifierSeparatesCaches() async throws {
-        // Cleared first, so no earlier run's leftover record is in either cache.
-        let first = try createOwnCacheClient(cacheIdentifier: "integ-a", credentialsProvider: Self.credentialsProvider)
-        let other = try createOwnCacheClient(cacheIdentifier: "integ-b", credentialsProvider: Self.credentialsProvider)
-        let second = try createOwnCacheClient(cacheIdentifier: "integ-a", credentialsProvider: Self.credentialsProvider)
-        try await first.clearCache()
-        try await other.clearCache()
-        try await first.record(
-            data: XCTUnwrap("own-cache".data(using: .utf8)),
-            streamName: streamName
-        )
-
-        let otherResult = try await other.flush()
-        let secondResult = try await second.flush()
-
-        XCTAssertEqual(otherResult.recordsFlushed, 0)
-        XCTAssertEqual(secondResult.recordsFlushed, 1)
-    }
-
     // MARK: - Error paths
 
     /// Test that a nonexistent stream doesn't block valid stream records.
@@ -360,45 +298,6 @@ class BaseStreamClientIntegrationTests: XCTestCase {
             // Network-level errors (e.g. TLS failures) are expected with fake credentials
         }
         try await badClient.clearCache()
-    }
-
-    /// Test that a credentials failure keeps the cached records until the provider vends credentials again.
-    ///
-    /// - Given: A client with a cache of its own and maxRetries = 1, whose credentials provider throws
-    ///   `CredentialsError.sessionExpired`, and one cached record
-    /// - When:
-    ///    - flush() is called more often than maxRetries, then the provider recovers and flush() is called again
-    /// - Then:
-    ///    - Every flush while the provider fails throws the client's credentials error, and no retry is
-    ///      counted against the record: the flush after the provider recovers sends it (count == 1)
-    ///
-    func testCredentialsFailureKeepsRecordsUntilTheProviderRecovers() async throws {
-        let maxRetries = 1
-        let provider = SwitchableCredentialsProvider(wrapping: Self.credentialsProvider)
-        let ownCacheClient = try createOwnCacheClient(
-            cacheIdentifier: "integ-credentials",
-            credentialsProvider: provider,
-            maxRetries: maxRetries
-        )
-        // No earlier run's leftover record.
-        try await ownCacheClient.clearCache()
-        try await ownCacheClient.record(
-            data: XCTUnwrap("kept-record".data(using: .utf8)),
-            streamName: streamName
-        )
-
-        for _ in 0 ..< maxRetries + 2 {
-            do {
-                _ = try await ownCacheClient.flush()
-                XCTFail("Expected credentials error")
-            } catch {
-                assertCredentialsError(error)
-            }
-        }
-
-        provider.switchOn()
-        let result = try await ownCacheClient.flush()
-        XCTAssertEqual(result.recordsFlushed, 1)
     }
 
     // MARK: - Retry exhaustion
@@ -630,37 +529,5 @@ struct InvalidCredentials: AmplifyFoundation.AWSCredentials {
 struct InvalidCredentialsProvider: AmplifyFoundation.AWSCredentialsProvider {
     func resolve() async throws -> AmplifyFoundation.AWSCredentials {
         InvalidCredentials()
-    }
-}
-
-/// A provider that throws `CredentialsError.sessionExpired` until it is switched on, then vends the wrapped
-/// provider's credentials.
-/// - Note: `final` and `@unchecked Sendable`: its one flag is read and written under a lock.
-final class SwitchableCredentialsProvider: AmplifyFoundation.AWSCredentialsProvider, @unchecked Sendable {
-    private let wrapped: any AmplifyFoundation.AWSCredentialsProvider
-    private let lock = NSLock()
-    private var on = false
-
-    init(wrapping wrapped: any AmplifyFoundation.AWSCredentialsProvider) {
-        self.wrapped = wrapped
-    }
-
-    private var isOn: Bool {
-        lock.lock()
-        defer { lock.unlock() }
-        return on
-    }
-
-    func switchOn() {
-        lock.lock()
-        defer { lock.unlock() }
-        on = true
-    }
-
-    func resolve() async throws -> AmplifyFoundation.AWSCredentials {
-        guard isOn else {
-            throw CredentialsError.sessionExpired("The session expired.", "Sign in again.")
-        }
-        return try await wrapped.resolve()
     }
 }
