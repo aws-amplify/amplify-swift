@@ -51,7 +51,39 @@ class StorageMultipartUploadSession: @unchecked Sendable {
     /// If progress does not advance for this many seconds, upload is aborted. 0 = disabled.
     private let progressStallTimeoutSeconds: TimeInterval
     private let stallTimerQueue = DispatchQueue(label: "com.amazon.aws.amplify.storage.multipart.stall-timer")
-    private var stallTimerWorkItem: DispatchWorkItem?
+    /// The armed stall timer. Only touched on `stallTimerQueue`.
+    private var stallTimer: DispatchSourceTimer?
+    /// Clock used to tell an on-time fire from a late one. Same clock as `DispatchTime.now()`.
+    private let stallTimerClock: @Sendable () -> DispatchTime
+    /// The last part of the stall interval. The upload is only aborted after the process was seen
+    /// running for this long without a part event. Never longer than the interval.
+    private let stallObservationWindowSeconds: TimeInterval
+    /// Incremented for every part event that resets the stall timer. Guarded by `serialQueue`.
+    private var partEventGeneration: UInt64 = 0
+
+    /// How far the system may defer the stall timer. Kept well below `lateStallFireThresholdSeconds`, so
+    /// that a fire is only late when the process was not running, not because the timer was coalesced.
+    private static let stallTimerLeeway: DispatchTimeInterval = .milliseconds(250)
+    /// A running process fires within `stallTimerLeeway` of the deadline, so a fire this much later means
+    /// the process was not running at the deadline.
+    private static let lateStallFireThresholdSeconds: TimeInterval = 1
+    /// Upper bound of the observation window: long enough for the URLSession events that were queued
+    /// while the process was not running to be delivered, short compared with a stall interval.
+    static let maximumStallObservationWindowSeconds: TimeInterval = 10
+
+    /// What the stall timer knew when it was armed.
+    private struct StallTimerArm {
+        enum Phase: String {
+            /// The first part of the interval. Its fire only opens the observation window.
+            case waiting
+            /// The observation window. Its fire aborts the upload, unless it is late.
+            case observing
+        }
+
+        let phase: Phase
+        let deadline: DispatchTime
+        let generation: UInt64
+    }
 
     init(
         client: StorageMultipartUploadClient,
@@ -63,10 +95,14 @@ class StorageMultipartUploadSession: @unchecked Sendable {
         behavior: StorageMultipartUploadBehavior = .progressive,
         progressStallTimeoutSeconds: TimeInterval = 0,
         fileSystem: FileSystem = .default,
-        logger: Logger = storageLogger
+        logger: Logger = storageLogger,
+        stallTimerClock: @escaping @Sendable () -> DispatchTime = { .now() },
+        stallObservationWindowSeconds: TimeInterval = StorageMultipartUploadSession.maximumStallObservationWindowSeconds
     ) {
         self.client = client
         self.progressStallTimeoutSeconds = progressStallTimeoutSeconds
+        self.stallTimerClock = stallTimerClock
+        self.stallObservationWindowSeconds = min(stallObservationWindowSeconds, progressStallTimeoutSeconds)
 
         let transferType: StorageTransferType = .multiPartUpload(onEvent: onEvent)
         let transferTask = StorageTransferTask(
@@ -100,7 +136,9 @@ class StorageMultipartUploadSession: @unchecked Sendable {
         behavior: StorageMultipartUploadBehavior = .progressive,
         progressStallTimeoutSeconds: TimeInterval = 0,
         fileSystem: FileSystem = .default,
-        logger: Logger = storageLogger
+        logger: Logger = storageLogger,
+        stallTimerClock: @escaping @Sendable () -> DispatchTime = { .now() },
+        stallObservationWindowSeconds: TimeInterval = StorageMultipartUploadSession.maximumStallObservationWindowSeconds
     ) {
         guard case let .multiPartUpload(onEvent) = transferTask.transferType else {
             return nil
@@ -111,6 +149,8 @@ class StorageMultipartUploadSession: @unchecked Sendable {
         self.multipartUpload = multipartUpload
         self.onEvent = onEvent
         self.progressStallTimeoutSeconds = progressStallTimeoutSeconds
+        self.stallTimerClock = stallTimerClock
+        self.stallObservationWindowSeconds = min(stallObservationWindowSeconds, progressStallTimeoutSeconds)
 
         self.behavior = behavior
         self.fileSystem = fileSystem
@@ -241,38 +281,103 @@ class StorageMultipartUploadSession: @unchecked Sendable {
         }
     }
 
+    /// Arms the stall timer for a full interval, replacing the armed one.
+    ///
+    /// The interval has two parts: `progressStallTimeoutSeconds - stallObservationWindowSeconds` of
+    /// waiting, then the observation window. See `fireProgressStallTimeout(arm:)`.
     private func resetProgressStallTimer() {
+        let waiting = progressStallTimeoutSeconds - stallObservationWindowSeconds
+        if waiting > 0 {
+            armProgressStallTimer(.waiting, after: waiting, continuing: nil)
+        } else {
+            armProgressStallTimer(.observing, after: stallObservationWindowSeconds, continuing: nil)
+        }
+    }
+
+    /// - Parameter firedArm: the arm whose fire asks for this one, or nil when a part event or a state
+    ///   change resets the timer. A fire only continues its own interval: if a part event was handled
+    ///   since `firedArm`, that event has armed, or is about to arm, a full interval, which the shorter
+    ///   observation window must not replace.
+    private func armProgressStallTimer(_ phase: StallTimerArm.Phase, after seconds: TimeInterval, continuing firedArm: StallTimerArm?) {
         guard progressStallTimeoutSeconds > 0 else { return }
         stallTimerQueue.async { [weak self] in
             guard let self else { return }
-            stallTimerWorkItem?.cancel()
-            let workItem = DispatchWorkItem { [weak self] in
-                self?.fireProgressStallTimeout()
+            let generation = serialQueue.sync { partEventGeneration }
+            if let firedArm, firedArm.generation != generation {
+                logger.debug("Progress stall timer: decision=ignore reason=eventDuringFire phase=\(firedArm.phase.rawValue)")
+                return
             }
-            stallTimerWorkItem = workItem
-            stallTimerQueue.asyncAfter(deadline: .now() + progressStallTimeoutSeconds, execute: workItem)
+            stallTimer?.cancel()
+            let arm = StallTimerArm(phase: phase, deadline: stallTimerClock() + seconds, generation: generation)
+            let timer = DispatchSource.makeTimerSource(queue: stallTimerQueue)
+            timer.schedule(deadline: .now() + seconds, leeway: Self.stallTimerLeeway)
+            timer.setEventHandler { [weak self, weak timer] in
+                // A reset or cancel replaces `stallTimer`, so only the armed timer gets past this.
+                guard let self, let timer, stallTimer === timer else { return }
+                timer.cancel()
+                stallTimer = nil
+                fireProgressStallTimeout(arm: arm)
+            }
+            stallTimer = timer
+            timer.resume()
         }
     }
 
     private func cancelProgressStallTimer() {
         stallTimerQueue.async { [weak self] in
-            self?.stallTimerWorkItem?.cancel()
-            self?.stallTimerWorkItem = nil
+            self?.stallTimer?.cancel()
+            self?.stallTimer = nil
         }
     }
 
-    private func fireProgressStallTimeout() {
-        stallTimerQueue.async { [weak self] in
-            self?.stallTimerWorkItem = nil
+    /// Runs on `stallTimerQueue` when no part event reset the timer before its deadline.
+    ///
+    /// "No part event for the interval" is only evidence of a stall if the process was running. Part
+    /// events come from the URLSession delegate, which cannot run while the app is suspended, but the
+    /// deadline keeps running. When the app is resumed, an overdue timer fires before the queued events
+    /// of the parts that moved or finished in the meantime are delivered.
+    ///
+    /// So the upload is only aborted after the process was seen running through the observation window,
+    /// the last part of the interval, without a part event:
+    /// - the fire of the waiting part only opens the window, whether it is on time or late;
+    /// - a fire of the window that is late means the process stopped inside it, and opens another one;
+    /// - a fire of the window that is on time aborts.
+    /// A process that keeps running therefore aborts a stalled upload at the interval, as before.
+    private func fireProgressStallTimeout(arm: StallTimerArm) {
+        // Only a part transfer can stall; ignore a timer that outlived one. A part event handled after
+        // the arm has a reset queued behind this fire.
+        guard isWatchingParts(since: arm) else { return }
+
+        let lateness = Self.seconds(from: arm.deadline, to: stallTimerClock())
+        let detail = "phase=\(arm.phase.rawValue) lateness=\(String(format: "%.1f", lateness))s"
+
+        if arm.phase == .waiting || lateness > Self.lateStallFireThresholdSeconds {
+            logger.debug("Progress stall timer: decision=observe window=\(stallObservationWindowSeconds)s \(detail)")
+            armProgressStallTimer(.observing, after: stallObservationWindowSeconds, continuing: arm)
+            return
         }
-        // Only a part transfer can stall; ignore a timer that outlived one.
-        let isUploadingParts = serialQueue.sync {
-            guard case .parts = multipartUpload else { return false }
-            return !multipartUpload.partsCompleted
+
+        // Abort, unless a part event was handled while this fire was deciding.
+        guard isWatchingParts(since: arm) else {
+            logger.debug("Progress stall timer: decision=ignore reason=eventDuringFire \(detail)")
+            return
         }
-        guard isUploadingParts else { return }
+        logger.debug("Progress stall timer: decision=abort \(detail)")
         handle(multipartUploadEvent: .aborting(error: StorageError.unknown("Upload cancelled due to progress stall timeout.", nil)))
         logger.debug("Multipart upload cancelled due to progress stall timeout")
+    }
+
+    /// Whether parts are still being transferred and no part event was handled since `arm`.
+    private func isWatchingParts(since arm: StallTimerArm) -> Bool {
+        serialQueue.sync {
+            guard case .parts = multipartUpload, !multipartUpload.partsCompleted else { return false }
+            return partEventGeneration == arm.generation
+        }
+    }
+
+    private static func seconds(from start: DispatchTime, to end: DispatchTime) -> TimeInterval {
+        guard end.uptimeNanoseconds > start.uptimeNanoseconds else { return 0 }
+        return TimeInterval(end.uptimeNanoseconds - start.uptimeNanoseconds) / 1_000_000_000
     }
 
     func fail(error: Error) {
@@ -362,6 +467,13 @@ class StorageMultipartUploadSession: @unchecked Sendable {
                 try multipartUpload.transition(uploadPartEvent: uploadPartEvent)
                 // update the transferTask with every state transition
                 transferTask.multipartUpload = multipartUpload
+                // The stall timer tells from this whether a part event was handled since it was armed.
+                switch uploadPartEvent {
+                case .progressUpdated, .completed:
+                    partEventGeneration &+= 1
+                default:
+                    break
+                }
                 return multipartUpload
             }
 

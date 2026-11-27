@@ -38,8 +38,15 @@ class MockMultipartUploadClient: StorageMultipartUploadClient, @unchecked Sendab
     var didStartPartUpload: ((StorageMultipartUploadSession, PartNumber) -> Void)?
     var didTransferBytesForPartUpload: ((StorageMultipartUploadSession, PartNumber, UInt64) -> Void)?
     var shouldFailPartUpload: ((StorageMultipartUploadSession, PartNumber) -> Bool)?
-    /// When true, uploadPart only reports started but never progress/completed (for stall timeout testing)
-    var shouldStallPartUpload = false
+    /// When true, uploadPart only reports started but never progress/completed (for stall timeout testing).
+    /// Lock-guarded: tests clear it from another queue while parts are starting.
+    var shouldStallPartUpload: Bool {
+        get { withLock { stallPartUpload } }
+        set { withLock { stallPartUpload = newValue } }
+    }
+    private var stallPartUpload = false
+    /// Parts that started and have not been reported completed by this mock, with their task identifiers.
+    private var stalledParts: [PartNumber: TaskIdentifier] = [:]
     /// Delays the `.completed` event from `completeMultipartUpload`, simulating a slow request.
     var completeMultipartUploadDelay: TimeInterval = 0
     /// Overrides the eTag a completed part reports. An empty eTag fails `validateForCompletion()`.
@@ -85,7 +92,10 @@ class MockMultipartUploadClient: StorageMultipartUploadClient, @unchecked Sendab
         session.handle(uploadPartEvent: .started(partNumber: partNumber, taskIdentifier: taskIdentifier))
         didStartPartUpload?(session, partNumber)
 
-        guard !shouldStallPartUpload else { return }
+        guard !shouldStallPartUpload else {
+            withLock { stalledParts[partNumber] = taskIdentifier }
+            return
+        }
 
         let bytesTransferred = part.bytes / 2
         session.handle(uploadPartEvent: .progressUpdated(partNumber: partNumber, bytesTransferred: bytesTransferred, taskIdentifier: taskIdentifier))
@@ -126,14 +136,48 @@ class MockMultipartUploadClient: StorageMultipartUploadClient, @unchecked Sendab
         guard let session else { throw Failure.sessionNotIntegrated }
 
         increment(\.abortMultipartUploadCount)
-
         session.handle(multipartUploadEvent: .aborted(uploadId: uploadId, error: error))
         didAbortMultipartUpload?(session, uploadId)
     }
 
     func cancelUploadTasks(taskIdentifiers: [TaskIdentifier], done: @escaping () -> Void) {
         print("Canceling upload tasks")
+        withLock { stalledParts = stalledParts.filter { !taskIdentifiers.contains($0.value) } }
         done()
+    }
+
+    /// Reports `.completed` for every part that stalled. Parts this starts afterwards follow the
+    /// stall flags, so clear them first to let the rest of the upload finish.
+    func completeStalledParts() {
+        guard let session else { return }
+        let parts = withLock {
+            let parts = stalledParts.sorted { $0.key < $1.key }
+            stalledParts = [:]
+            return parts
+        }
+        for (partNumber, taskIdentifier) in parts {
+            let eTag = eTagForPart?(partNumber) ?? UUID().uuidString
+            session.handle(uploadPartEvent: .completed(partNumber: partNumber, eTag: eTag, taskIdentifier: taskIdentifier))
+        }
+    }
+
+    /// Reports one `.progressUpdated` for every part that stalled.
+    func reportProgressForStalledParts(bytesTransferred: UInt64) {
+        guard let session else { return }
+        let parts = withLock { stalledParts.sorted { $0.key < $1.key } }
+        for (partNumber, taskIdentifier) in parts {
+            session.handle(uploadPartEvent: .progressUpdated(
+                partNumber: partNumber,
+                bytesTransferred: bytesTransferred,
+                taskIdentifier: taskIdentifier
+            ))
+        }
+    }
+
+    private func withLock<T>(_ body: () -> T) -> T {
+        counterLock.lock()
+        defer { counterLock.unlock() }
+        return body()
     }
 
 }
