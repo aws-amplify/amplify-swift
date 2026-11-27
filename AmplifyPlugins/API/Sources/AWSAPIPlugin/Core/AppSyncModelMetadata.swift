@@ -123,6 +123,19 @@ public enum AppSyncModelMetadataUtils {
                 // otherwise do nothing to the data.
             }
 
+            // Scenario: `hasOne` whose nested object is absent (mutation responses omit it).
+            // Rebuild the lazy-load identifiers from the scalar foreign key so it can still load.
+            if let metadataJSON = hasOneForeignKeyMetadata(
+                modelField,
+                in: modelJSON,
+                apiName: apiName,
+                authMode: authMode,
+                source: source
+            ) {
+                Amplify.API.log.verbose("Adding [\(modelField.name): \(metadataJSON)]")
+                modelJSON.updateValue(metadataJSON, forKey: modelField.name)
+            }
+
             // Scenario: Has-Many eager loaded or empty payloads.
             if modelField.isArray && modelField.hasAssociation,
                let associatedModelName = modelField.associatedModelName {
@@ -185,6 +198,55 @@ public enum AppSyncModelMetadataUtils {
         }
 
         return JSONValue.object(modelJSON)
+    }
+
+    /// Builds lazy-load identifier metadata for a `hasOne` from its scalar foreign key, for when
+    /// the nested object is absent (e.g. mutation responses). Returns `nil` when not applicable.
+    /// https://github.com/aws-amplify/amplify-swift/issues/3913
+    static func hasOneForeignKeyMetadata(
+        _ modelField: ModelField,
+        in modelJSON: [String: JSONValue],
+        apiName: String?,
+        authMode: AWSAuthorizationType?,
+        source: String
+    ) -> JSONValue? {
+        guard modelJSON[modelField.name] == nil,
+              !modelField.isArray,
+              case .hasOne(_, _, let targetNames) = modelField.association,
+              !targetNames.isEmpty,
+              let associatedModelName = modelField.associatedModelName,
+              let associatedModelType = ModelRegistry.modelType(from: associatedModelName),
+              associatedModelType.rootPath != nil else {
+            return nil
+        }
+        let primaryKeyFields = associatedModelType.schema.primaryKey.fields
+        guard primaryKeyFields.count == targetNames.count else {
+            return nil
+        }
+        var identifiers = [LazyReferenceIdentifier]()
+        for (primaryKeyField, targetName) in zip(primaryKeyFields, targetNames) {
+            if case .string(let value) = modelJSON[targetName] {
+                identifiers.append(.init(name: primaryKeyField.name, value: value))
+            }
+        }
+        guard identifiers.count == targetNames.count else {
+            return nil
+        }
+        let metadata = AppSyncModelDecoder.Metadata(
+            identifiers: identifiers,
+            apiName: apiName,
+            authMode: authMode,
+            source: source
+        )
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
+        guard let serialized = try? encoder.encode(metadata),
+              let metadataJSON = try? decoder.decode(JSONValue.self, from: serialized) else {
+            return nil
+        }
+        return metadataJSON
     }
 
     /// Extract the identifiers from the `modelObject`. The number of identifiers extracted compared to the number of

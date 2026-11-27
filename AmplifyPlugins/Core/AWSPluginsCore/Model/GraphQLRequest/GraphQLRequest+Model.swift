@@ -288,13 +288,21 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
     ) -> GraphQLRequest<M> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(
             modelSchema: modelSchema,
-            operationType: .mutation
+            operationType: .mutation,
+            primaryKeysOnly: true,
+            includeHasOneAssociations: false
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
 
         if let modelPath = M.rootPath as? ModelPath<M> {
             let associations = includes(modelPath)
-            documentBuilder.add(decorator: IncludeAssociationDecorator(associations))
+            // AppSync redacts (nulls) `hasOne` relational fields on mutation responses, so an
+            // explicit `includes` of a `hasOne` would re-introduce the non-null decode failure
+            // (#3913). Drop top-level `hasOne` includes on mutations.
+            let mutationSafeAssociations = associations.filter {
+                !$0.isTopLevelHasOne(on: modelSchema)
+            }
+            documentBuilder.add(decorator: IncludeAssociationDecorator(mutationSafeAssociations))
         }
 
         switch type {
@@ -453,5 +461,28 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
             decodePath: document.name,
             authMode: authMode
         )
+    }
+}
+
+private extension PropertyContainerPath {
+    /// True if this `includes` path is a `hasOne` on the model itself (e.g. `Like.user`).
+    /// These are dropped on mutations, where AppSync returns the related object as null (#3913).
+    func isTopLevelHasOne(on modelSchema: ModelSchema) -> Bool {
+        var metadata = getMetadata()
+        var topLevelName: String?
+        while metadata.name != "root" {
+            topLevelName = metadata.name
+            guard let parent = metadata.parent else { break }
+            metadata = parent.getMetadata()
+        }
+        guard let name = topLevelName,
+              let field = modelSchema.field(withName: name),
+              let association = field.association else {
+            return false
+        }
+        if case .hasOne = association {
+            return true
+        }
+        return false
     }
 }
