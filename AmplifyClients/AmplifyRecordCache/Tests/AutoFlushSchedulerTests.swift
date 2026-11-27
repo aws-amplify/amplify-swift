@@ -125,17 +125,39 @@ actor MockRecordStorage: RecordStorage {
     var deleteRecordsCallCount = 0
     var clearRecordsCallCount = 0
 
+    /// What every read returns, as one stream's records: none unless a test gives some.
+    private let records: [Record]
+    /// What `deleteRecords(upTo:)` throws, if anything.
+    private let discardError: Error?
+
+    init(records: [Record] = [], discardError: Error? = nil) {
+        self.records = records
+        self.discardError = discardError
+    }
+
     func addRecord(_ input: RecordInput) throws {
         addRecordCallCount += 1
     }
 
     func getRecordsByStream(afterIdByStream: [String: Int64]) throws -> [[Record]] {
         getRecordsByStreamCallCount += 1
-        return []
+        let pending = records.filter { $0.id > afterIdByStream[$0.streamName, default: .min] }
+        return pending.isEmpty ? [] : [pending]
     }
 
     func deleteRecords(ids: [Int64]) throws {
         deleteRecordsCallCount += 1
+    }
+
+    func maxRecordId() throws -> Int64? {
+        records.map(\.id).max()
+    }
+
+    func deleteRecords(upTo id: Int64) throws {
+        deleteRecordsCallCount += 1
+        if let discardError {
+            throw discardError
+        }
     }
 
     func incrementRetryCount(ids: [Int64]) throws {
