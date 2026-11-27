@@ -181,7 +181,7 @@ enum StorageMultipartUpload {
 
     func part(for number: PartNumber) -> StorageUploadPart? {
         guard let parts,
-              parts.count >= number else { return nil }
+              parts.indices.contains(number - 1) else { return nil }
         let part = parts[number - 1]
         return part
     }
