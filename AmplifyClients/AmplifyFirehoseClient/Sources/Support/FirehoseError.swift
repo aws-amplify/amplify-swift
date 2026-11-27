@@ -10,14 +10,22 @@ import AmplifyRecordCache
 import Foundation
 
 /// Top-level error type for Firehose operations.
+///
+/// May gain cases in a minor release: include `@unknown default` when you switch over it.
 public enum FirehoseError {
 
     /// A local cache/storage error.
     case cache(ErrorDescription, RecoverySuggestion, Error? = nil)
     /// Cache limit exceeded — no space for new records.
     case cacheLimitExceeded(ErrorDescription, RecoverySuggestion, Error? = nil)
-    /// Record input validation failed (e.g. oversized record).
+    /// Input validation failed (e.g. oversized record, an empty cache identifier).
     case validation(ErrorDescription, RecoverySuggestion, Error? = nil)
+    /// The credentials provider threw AmplifyFoundation's `CredentialsError`, which stopped the flush. The
+    /// description and recovery suggestion are the provider's, and the underlying error is that error. See
+    /// `flush()` for what happens to the cached records. To read the
+    /// error's `disposition`, cast `underlyingError` to `CredentialsError`, which is experimental SPI and needs
+    /// `@_spi(AmplifyExperimental) import AmplifyFoundation`.
+    case credentials(ErrorDescription, RecoverySuggestion, Error? = nil)
     /// An error that doesn't fall into the known categories above.
     case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
@@ -28,6 +36,7 @@ extension FirehoseError: AmplifyError {
         case .cache(let description, _, _),
             .cacheLimitExceeded(let description, _, _),
             .validation(let description, _, _),
+            .credentials(let description, _, _),
             .unknown(let description, _, _):
             return description
         }
@@ -38,6 +47,7 @@ extension FirehoseError: AmplifyError {
         case .cache(_, let suggestion, _),
             .cacheLimitExceeded(_, let suggestion, _),
             .validation(_, let suggestion, _),
+            .credentials(_, let suggestion, _),
             .unknown(_, let suggestion, _):
             return suggestion
         }
@@ -48,6 +58,7 @@ extension FirehoseError: AmplifyError {
         case .cache(_, _, let error),
             .cacheLimitExceeded(_, _, let error),
             .validation(_, _, let error),
+            .credentials(_, _, let error),
             .unknown(_, _, let error):
             return error
         }
@@ -90,6 +101,8 @@ extension FirehoseError: AmplifyError {
             return .cacheLimitExceeded(desc, recovery, underlyingError)
         case .validation(let desc, let recovery, let underlyingError):
             return .validation(desc, recovery, underlyingError)
+        case .credentials(let desc, let recovery, let underlyingError):
+            return .credentials(desc, recovery, underlyingError)
         }
     }
 }

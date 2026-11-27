@@ -17,6 +17,13 @@ package protocol RecordStorage: Actor {
     /// Deletes records by their IDs
     func deleteRecords(ids: [Int64]) async throws
 
+    /// The largest record ID in storage, or `nil` when it holds none. IDs only grow and are never reused, so
+    /// every record stored so far has an ID at or below it, and every later one an ID above it.
+    func maxRecordId() async throws -> Int64?
+
+    /// Deletes every record whose ID is at or below `id`, in every stream.
+    func deleteRecords(upTo id: Int64) async throws
+
     /// Increments the retry count for records
     func incrementRetryCount(ids: [Int64]) async throws
 

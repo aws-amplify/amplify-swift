@@ -15,6 +15,10 @@ package enum RecordCacheError: Error {
     case database(ErrorDescription, RecoverySuggestion, Error? = nil)
     /// Cache limit exceeded — no space for new records.
     case limitExceeded(ErrorDescription, RecoverySuggestion, Error? = nil)
-    /// Record input validation failed (e.g. oversized record, invalid partition key).
+    /// Input validation failed (e.g. oversized record, invalid partition key, an empty cache identifier).
     case validation(ErrorDescription, RecoverySuggestion, Error? = nil)
+    /// The credentials provider could not vend credentials, so the flush stopped at the request it was sending
+    /// (streams and batches sent before it stay sent). Carries the provider's description and recovery
+    /// suggestion, and the provider's error (a `CredentialsError`) as the underlying one.
+    case credentials(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
