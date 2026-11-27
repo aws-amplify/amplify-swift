@@ -105,12 +105,13 @@ private enum ISO8601TimeZonePart {
     case hh_mm_ss(hours: Int, minutes: Int, seconds: Int)
 
     static func from(iso8601DateString: String) -> ISO8601TimeZonePart? {
-        return tryExtract(from: iso8601DateString, with: .utc)
-        ?? tryExtract(from: iso8601DateString, with: .hh)
-        ?? tryExtract(from: iso8601DateString, with: .hhmm)
-        ?? tryExtract(from: iso8601DateString, with: .hh_mm)
-        ?? tryExtract(from: iso8601DateString, with: .hh_mm_ss)
-        ?? nil
+        let formats: [ISO8601TimeZoneFormat] = [.utc, .hh, .hhmm, .hh_mm, .hh_mm_ss]
+        for format in formats {
+            if let part = tryExtract(from: iso8601DateString, with: format) {
+                return part
+            }
+        }
+        return nil
     }
 }
 

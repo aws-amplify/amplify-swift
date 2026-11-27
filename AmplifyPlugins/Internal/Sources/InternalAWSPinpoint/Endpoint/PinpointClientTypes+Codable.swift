@@ -22,12 +22,13 @@ extension PinpointClientTypes.EndpointLocation: @retroactive Decodable, @retroac
         lhs: PinpointClientTypes.EndpointLocation,
         rhs: PinpointClientTypes.EndpointLocation
     ) -> Bool {
-        return lhs.city == rhs.city
+        let firstGroup = lhs.city == rhs.city
             && lhs.country == rhs.country
             && lhs.latitude == rhs.latitude
-            && lhs.longitude == rhs.longitude
+        let secondGroup = lhs.longitude == rhs.longitude
             && lhs.postalCode == rhs.postalCode
             && lhs.region == rhs.region
+        return firstGroup && secondGroup
     }
 
     public init(from decoder: Decoder) throws {
@@ -69,14 +70,15 @@ extension PinpointClientTypes.EndpointDemographic: @retroactive Decodable, @retr
         lhs: PinpointClientTypes.EndpointDemographic,
         rhs: PinpointClientTypes.EndpointDemographic
     ) -> Bool {
-        return lhs.appVersion == rhs.appVersion
+        let firstGroup = lhs.appVersion == rhs.appVersion
             && lhs.locale == rhs.locale
             && lhs.make == rhs.make
             && lhs.model == rhs.model
-            && lhs.modelVersion == rhs.modelVersion
+        let secondGroup = lhs.modelVersion == rhs.modelVersion
             && lhs.platform == rhs.platform
             && lhs.platformVersion == rhs.platformVersion
             && lhs.timezone == rhs.timezone
+        return firstGroup && secondGroup
     }
 
     public init(from decoder: any Decoder) throws {
