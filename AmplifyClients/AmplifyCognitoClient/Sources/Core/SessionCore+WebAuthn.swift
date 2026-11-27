@@ -115,8 +115,8 @@ extension SessionCore {
     }
 
     /// `box`, or `nil` if its window has gone, read on the main actor as a window is: what a confirmation's own
-    /// window is at the time of the call. A sign-in's keeps its box, and a window that has gone is refused when
-    /// its ceremony starts.
+    /// window is at the time of the call, and what the sign-in's kept one is when a later answer falls back to
+    /// it. A sign-in's keeps its box, and a window that has gone is refused when its own ceremony starts.
     static func liveAnchor(_ box: EnginePresentationAnchorBox?) async -> EnginePresentationAnchorBox? {
         #if os(iOS) || os(macOS) || os(visionOS)
         guard let box else {
@@ -129,9 +129,10 @@ extension SessionCore {
     }
 
     /// A WebAuthn step with no window to show the passkey sheet over: a sign-in asking for a WebAuthn first
-    /// factor, or a `"WEB_AUTHN"` selection, with no `presentationAnchorForWebAuthn` in either call's options.
-    /// Refused before anything is sent. The engine's description for the same refusal (a WebAuthn step Cognito
-    /// started), with a recovery that names both options.
+    /// factor with no `presentationAnchorForWebAuthn` in its options, or a `"WEB_AUTHN"` selection with no live
+    /// window (none in either call's options, or what was given has gone). Refused before anything is sent. The
+    /// engine's description for the same refusal (a WebAuthn step Cognito started), with a recovery that names
+    /// both options.
     static func presentationAnchorRequired() -> AmplifyCognitoClientError {
         .validation(
             field: WebAuthnCredentialOperations.signInPresentationAnchorField,

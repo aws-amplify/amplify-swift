@@ -151,10 +151,20 @@ actor LiveSessionEngine: SessionEngine {
             await stop(nil, attempt)
             throw LiveSignInSteps.noSignInInProgress()
         }
-        // A passkey sheet uses this call's window, else the sign-in's. A WebAuthn
-        // selection with neither is refused before anything is sent, and the challenge is kept.
-        let anchor = request.webAuthn?.anchor ?? attempt.webAuthnAnchor
-        if anchor == nil, LiveSignInSteps.selectsWebAuthn(request.challengeResponse, at: attempt.step) {
+        // A passkey sheet uses this call's window, else the sign-in's if it is still there. The sign-in's box
+        // outlives its window, so a WebAuthn selection with no window of its own reads it, on the main actor: only
+        // that answer waits for the main actor. A WebAuthn selection with neither window is refused before
+        // anything is sent, and the challenge is kept.
+        let selectsWebAuthn = LiveSignInSteps.selectsWebAuthn(request.challengeResponse, at: attempt.step)
+        var anchor = request.webAuthn?.anchor ?? attempt.webAuthnAnchor
+        if selectsWebAuthn, request.webAuthn?.anchor == nil, let kept = attempt.webAuthnAnchor {
+            anchor = await SessionCore.liveAnchor(kept)
+            // A cancel may have ended the attempt while this waited for the main actor.
+            guard self.attempt?.operation.slot === attempt.operation.slot else {
+                throw LiveSignInSteps.noSignInInProgress()
+            }
+        }
+        if anchor == nil, selectsWebAuthn {
             throw SessionCore.presentationAnchorRequired()
         }
         // The session became a guest while the sign-in waited: the attempt continues from the

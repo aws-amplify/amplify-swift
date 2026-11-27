@@ -792,7 +792,7 @@ Presentation anchor rules:
 
 | Rule | Result |
 |---|---|
-| `signIn` or `confirmSignIn` with no window in the options, asking for a passkey (`.userAuth(preferredFirstFactor: .webAuthn)`, or a `"WEB_AUTHN"` answer with no window in either call's options) | `.validation(field: "presentationAnchorForWebAuthn")` before anything is sent. A pending selection stays pending |
+| `signIn` or `confirmSignIn` with no window in the options, asking for a passkey (`.userAuth(preferredFirstFactor: .webAuthn)`, or a `"WEB_AUTHN"` answer with no window left: none in either call's options, or the sign-in's closed since) | `.validation(field: "presentationAnchorForWebAuthn")` before anything is sent. A pending selection stays pending |
 | The sign-in's window has closed when the sheet would appear | `.validation(field: "presentationAnchorForWebAuthn")`, nothing shown. The window is held weakly |
 | `associateWebAuthnCredential`'s window has closed when the sheet would appear | `.validation(field: "presentationAnchor")`, nothing shown. The window is held weakly |
 | Another sheet (hosted UI or passkey, any session) is up | `.browserBusy(holder:)` |

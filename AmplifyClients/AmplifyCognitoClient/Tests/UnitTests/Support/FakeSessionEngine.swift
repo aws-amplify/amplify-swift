@@ -549,10 +549,12 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         guard pending else {
             throw LiveSignInSteps.noSignInInProgress()
         }
-        // The live engine's rule: a WebAuthn selection with no window at all is refused before anything is
-        // sent, and the challenge is kept.
-        let (step, anchor) = withLock { (challenge, request.webAuthn?.anchor ?? attemptWebAuthnAnchor) }
-        if anchor == nil, let step, LiveSignInSteps.selectsWebAuthn(request.challengeResponse, at: step) {
+        // The live engine's rule: a WebAuthn selection with no window of its own uses the sign-in's if it is still
+        // there, read as the live engine reads it (`SessionCore.liveAnchor`). With neither it is refused before
+        // anything is sent, and the challenge is kept. No other answer reads the window.
+        let (step, kept) = withLock { (challenge, attemptWebAuthnAnchor) }
+        if request.webAuthn?.anchor == nil, let step, LiveSignInSteps.selectsWebAuthn(request.challengeResponse, at: step),
+           await SessionCore.liveAnchor(kept) == nil {
             throw SessionCore.presentationAnchorRequired()
         }
         let inFlightStep = withLock { beginStep(epoch: epoch) }
@@ -824,9 +826,13 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         withLock { ceremonyAnchors }
     }
 
-    /// The window a confirmation's ceremony uses: its own, else the pending attempt's sign-in's.
-    func webAuthnAnchor(for request: EngineConfirmSignInRequest) -> EnginePresentationAnchorBox? {
-        withLock { request.webAuthn?.anchor ?? attemptWebAuthnAnchor }
+    /// The window a confirmation's ceremony uses: its own, else the pending attempt's sign-in's if it is still
+    /// there, read as the live engine reads it (`SessionCore.liveAnchor`).
+    func webAuthnAnchor(for request: EngineConfirmSignInRequest) async -> EnginePresentationAnchorBox? {
+        if let own = request.webAuthn?.anchor {
+            return own
+        }
+        return await SessionCore.liveAnchor(withLock { attemptWebAuthnAnchor })
     }
 
     /// Runs one ceremony where the live engine does: through the context's runner (the sheet lease), with

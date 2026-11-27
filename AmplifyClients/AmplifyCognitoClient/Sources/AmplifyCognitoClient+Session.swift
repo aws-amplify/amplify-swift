@@ -105,7 +105,8 @@ public extension AmplifyCognitoClient {
     ///     MFA setup selection other than one of the step's types, a first-factor selection other than
     ///     `AmplifyCognitoClientFactorType.<type>.challengeResponse`, or `"WEB_AUTHN"` when the step does not offer it);
     ///     `.validation(field: "presentationAnchorForWebAuthn")` for a `"WEB_AUTHN"` answer when neither these
-    ///     options nor the sign-in's hold a window; each before anything is sent, keeping the challenge;
+    ///     options nor the sign-in's hold a window that is still there; each before anything is sent, keeping the
+    ///     challenge;
     ///   - `.configuration` without a user pool;
     ///   - `.invalidState` if no sign-in is in progress on this session; if it can no longer continue, so
     ///     sign-in must restart; if a sign-out, purge or deletion of this session cancelled it; or if another

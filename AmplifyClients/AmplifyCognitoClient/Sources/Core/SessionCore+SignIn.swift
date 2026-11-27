@@ -102,7 +102,7 @@ extension SessionCore {
     /// own, so the caller's cancellation stops a ceremony it starts, whichever window it uses.
     ///
     /// - Throws: `validation` for an empty response, and (`field: "presentationAnchorForWebAuthn"`) for a
-    ///   `"WEB_AUTHN"` answer with no window at all, which keeps the challenge; `invalidState` if no sign-in is
+    ///   `"WEB_AUTHN"` answer with no window left, which keeps the challenge; `invalidState` if no sign-in is
     ///   in progress
     ///   on this session; `challengeExpired` if Cognito's challenge session has expired, so sign-in must
     ///   restart; otherwise the engine's mapped failure. After a retryable failure (a wrong code) the

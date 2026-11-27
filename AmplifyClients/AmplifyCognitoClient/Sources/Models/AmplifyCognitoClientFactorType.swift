@@ -43,9 +43,10 @@ public extension AmplifyCognitoClientFactorType {
     /// plugin's `AuthFactorType.challengeResponse`.
     ///
     /// `webAuthn`'s `"WEB_AUTHN"` shows the passkey sheet over the window in `confirmSignIn`'s options
-    /// (`presentationAnchorForWebAuthn`), else the one in `signIn`'s. With no window at all it is refused with
+    /// (`presentationAnchorForWebAuthn`), else the one in `signIn`'s. With no window left it is refused with
     /// `.validation(field: "presentationAnchorForWebAuthn")` before anything is sent, and the selection stays
-    /// pending.
+    /// pending. A window that goes after that check and before the sheet would appear fails with the same error
+    /// and ends the sign-in: call `signIn` again.
     var challengeResponse: String {
         switch self {
         case .password: return "PASSWORD"

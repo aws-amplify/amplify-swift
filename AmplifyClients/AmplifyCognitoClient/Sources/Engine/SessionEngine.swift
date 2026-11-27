@@ -119,8 +119,10 @@ protocol SessionEngine: Sendable {
     ///
     /// **WebAuthn.** A `"WEB_AUTHN"` answer to a first-factor selection runs its ceremony over
     /// `request.webAuthn`'s window, else over the window the sign-in was given, through this call's runner.
-    /// With neither window it throws `.validation(field: "presentationAnchorForWebAuthn")` before
-    /// anything is sent, and keeps the attempt.
+    /// With neither window, or with the sign-in's gone since, it throws
+    /// `.validation(field: "presentationAnchorForWebAuthn")` before anything is sent, and keeps the attempt. A
+    /// window that goes after that check and before the sheet would appear fails with the same error once the
+    /// selection has been sent, and that drops the attempt, as every failed WebAuthn step does.
     ///
     /// The attempt is dropped, and `pendingChallenge` becomes `nil`:
     /// - `challengeExpired`, when Cognito's challenge session has expired;

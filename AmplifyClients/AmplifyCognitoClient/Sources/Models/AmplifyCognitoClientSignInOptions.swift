@@ -112,10 +112,11 @@ public struct AmplifyCognitoClientConfirmSignInOptions {
     /// `AuthConfirmSignInRequest.Options.presentationAnchorForWebAuthn`. iOS, macOS and visionOS only.
     ///
     /// `nil`, the default, uses the sign-in's window, and so does a window that has gone by the time of the
-    /// call, which reads as `nil` here. With neither window, a `"WEB_AUTHN"` answer is refused with
-    /// `.validation(field: "presentationAnchorForWebAuthn")` before anything is sent, and the selection stays
-    /// pending. Held weakly, read on the main actor, set through the main-actor `init`, and compared by identity,
-    /// as the sign-in's is.
+    /// call, which reads as `nil` here. With no window left (neither was given, or the sign-in's has gone too), a
+    /// `"WEB_AUTHN"` answer is refused with `.validation(field: "presentationAnchorForWebAuthn")` before anything
+    /// is sent, and the selection stays pending. A window that goes after that check and before the sheet would
+    /// appear fails with the same error and ends the sign-in: call `signIn` again. Held weakly, read on the main
+    /// actor, set through the main-actor `init`, and compared by identity, as the sign-in's is.
     @MainActor
     public var presentationAnchorForWebAuthn: AmplifyCognitoClientPresentationAnchor? {
         webAuthnAnchor.box?.anchor

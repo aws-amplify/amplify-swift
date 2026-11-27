@@ -388,6 +388,153 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
         XCTAssertTrue(overA)
     }
 
+    /// The sign-in's window that has gone by the selection is no window either: the answer is refused, and waits.
+    ///
+    /// - Given: a sign-in with window A waiting on a first-factor selection that offers `WEB_AUTHN`, and window A
+    ///   released since
+    /// - When:
+    ///    - the selection is answered with `WEB_AUTHN` and no window, then again with window B
+    /// - Then:
+    ///    - the first answer throws `.validation(field: "presentationAnchorForWebAuthn")`: nothing is sent, no
+    ///      sheet is made, and the selection is still pending
+    ///    - the second is `.done`, with its sheet over window B
+    func testASelectionOverTheSignInsGoneWindowIsRefusedAndStaysPending() async throws {
+        let client = try liveClient()
+        let windowB = await WebAuthnFixtures.window()
+        // Window A's only strong reference, dropped once the sign-in has stopped on the selection.
+        let holder = await MainActor.run { WindowHolder() }
+        let signInOptions = await MainActor.run {
+            autoreleasepool {
+                let window = WebAuthnFixtures.window()
+                holder.window = window
+                return AmplifyCognitoClientSignInOptions(
+                    authFlowType: .userAuth(preferredFirstFactor: nil),
+                    presentationAnchorForWebAuthn: window
+                )
+            }
+        }
+        harness.scriptIdentityPool()
+        harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in
+            InitiateAuthOutput(
+                availableChallenges: [.password, .webAuthn],
+                challengeName: .selectChallenge,
+                challengeParameters: [:],
+                session: "select-session"
+            )
+        }
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in
+            LiveEngineFixtures.challenge(.webAuthn, parameters: ["CREDENTIAL_REQUEST_OPTIONS": WebAuthnFixtures.requestOptions])
+        }
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in LiveEngineFixtures.signedIn("alice") }
+
+        _ = try await client.signIn(username: "alice", options: signInOptions)
+        let gone = await MainActor.run {
+            autoreleasepool { holder.window = nil }
+            return signInOptions.presentationAnchorForWebAuthn == nil
+        }
+        let refused = await authClientError {
+            try await client.confirmSignIn(challengeResponse: "WEB_AUTHN")
+        }
+        let sentByTheRefusal = harness.cognito.operations
+        let pending = await client.currentSessionState()
+        let confirmed = try await client.confirmSignIn(
+            challengeResponse: "WEB_AUTHN",
+            options: .init(presentationAnchorForWebAuthn: windowB)
+        )
+
+        XCTAssertTrue(gone, "the sign-in's window must be gone before the answer")
+        XCTAssertEqual(refused?.kind, .validation(field: "presentationAnchorForWebAuthn"))
+        XCTAssertEqual(sentByTheRefusal, ["InitiateAuth"])
+        guard case .awaitingChallenge(.continueSignInWithFirstFactorSelection) = pending else {
+            return XCTFail("the selection is no longer pending: \(pending)")
+        }
+        XCTAssertEqual(confirmed.nextStep, .done)
+        XCTAssertEqual(sheet.ceremonies.count, 1)
+        let overB = sheet.ceremonies.first?.anchor === windowB
+        XCTAssertTrue(overB)
+    }
+
+    /// Only a `WEB_AUTHN` selection reads the sign-in's window, so no other answer waits for the main actor.
+    ///
+    /// - Given: a sign-in that was given a window, waiting on an `EMAIL_OTP` code, and the main thread busy
+    /// - When:
+    ///    - the code is confirmed with no window
+    /// - Then:
+    ///    - the confirmation is `.done` while the main thread is still busy, and no sheet is made
+    func testAnAnswerThatIsNotAPasskeyDoesNotWaitForTheMainActor() async throws {
+        let client = try liveClient()
+        let window = await WebAuthnFixtures.window()
+        harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in
+            LiveEngineFixtures.initiateChallenge(.emailOtp, parameters: [
+                "CODE_DELIVERY_DELIVERY_MEDIUM": "EMAIL",
+                "CODE_DELIVERY_DESTINATION": "a***@e***"
+            ])
+        }
+        harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in LiveEngineFixtures.signedIn("alice") }
+        harness.scriptIdentityPool()
+        _ = try await client.signIn(
+            username: "alice",
+            options: .init(authFlowType: .userAuth(preferredFirstFactor: .emailOTP), presentationAnchorForWebAuthn: window)
+        )
+        let main = Stall()
+        defer { main.release() }
+        DispatchQueue.main.async { main.block() }
+        await waitUntil("the main thread is busy") { main.hasBeenReached }
+
+        let confirmed = try await Task { try await client.confirmSignIn(challengeResponse: "123456") }.value(within: 10)
+
+        XCTAssertEqual(confirmed.nextStep, .done)
+        XCTAssertEqual(sheet.ceremonies.count, 0)
+    }
+
+    /// A sign-out that lands while a `WEB_AUTHN` answer waits to read the sign-in's window ends the answer too.
+    ///
+    /// - Given: a sign-in with a window waiting on a first-factor selection that offers `WEB_AUTHN`, the main
+    ///   thread busy, and the selection answered with `WEB_AUTHN` and no window, so that the answer waits for the
+    ///   main actor
+    /// - When:
+    ///    - the session signs out, and the main thread is then freed
+    /// - Then:
+    ///    - the sign-out finishes while the main thread is busy
+    ///    - the answer throws the sign-in-cancelled `invalidState`: nothing is sent for it, no sheet is made, and
+    ///      the session is signed out
+    func testASignOutWhileAPasskeyAnswerWaitsForTheMainActorCancelsIt() async throws {
+        let client = try liveClient()
+        let window = await WebAuthnFixtures.window()
+        harness.cognito.once("InitiateAuth") { (_: InitiateAuthInput) in
+            InitiateAuthOutput(
+                availableChallenges: [.password, .webAuthn],
+                challengeName: .selectChallenge,
+                challengeParameters: [:],
+                session: "select-session"
+            )
+        }
+        _ = try await client.signIn(
+            username: "alice",
+            options: .init(authFlowType: .userAuth(preferredFirstFactor: nil), presentationAnchorForWebAuthn: window)
+        )
+        let main = Stall()
+        defer { main.release() }
+        DispatchQueue.main.async { main.block() }
+        await waitUntil("the main thread is busy") { main.hasBeenReached }
+
+        let answer = Task { try await client.confirmSignIn(challengeResponse: "WEB_AUTHN") }
+        await waitUntil("the answer has started") { await client.core.signInLock.isLocked }
+        // Nothing tells when the answer has reached the main actor's queue: give it the time to.
+        try await Task.sleep(nanoseconds: 200_000_000)
+        _ = try await Task { await client.signOut() }.value(within: 10)
+        main.release()
+        let error = await authClientError { try await answer.value(within: 10) }
+
+        XCTAssertEqual(error?.errorDescription, SessionCore.signInCancelled().errorDescription)
+        XCTAssertEqual(harness.cognito.operations, ["InitiateAuth"])
+        XCTAssertEqual(sheet.ceremonies.count, 0)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedOut)
+        // The sign-in's window outlives the answer, so only the cancel can have stopped it.
+        withExtendedLifetime(window) {}
+    }
+
     /// A user closing the sign-in's sheet ends the sign-in: no attempt is left, and a new sign-in works.
     ///
     /// - Given: Cognito answering a `WEB_AUTHN` challenge, and the sheet answering `.canceled`
@@ -705,6 +852,12 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
         harness.cognito.once("RespondToAuthChallenge") { (_: RespondToAuthChallengeInput) in LiveEngineFixtures.signedIn("alice") }
         harness.scriptIdentityPool()
     }
+}
+
+/// A window's only strong reference, set and dropped on the main actor.
+@MainActor
+private final class WindowHolder {
+    var window: ASPresentationAnchor?
 }
 
 /// An SDK error a `@Sendable` script can throw.
