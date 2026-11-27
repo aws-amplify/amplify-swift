@@ -22,17 +22,17 @@ public extension AWSS3StoragePlugin {
             defaultBucket = nil
         }
 
-        for storageService in storageServicesByBucket.values {
-            storageService.reset()
+        storageServicesLock.execute {
+            for storageService in storageServicesByBucket.values {
+                storageService.reset()
+            }
+            storageServicesByBucket.removeAll()
+            // Under the lock, so storageService(for:) can't create a service once the services are gone.
+            authService = nil
         }
-        storageServicesByBucket.removeAll()
 
         if additionalBucketsByName != nil {
             additionalBucketsByName = nil
-        }
-
-        if authService != nil {
-            authService = nil
         }
 
         if queue != nil {
